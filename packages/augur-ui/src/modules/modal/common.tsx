@@ -30,6 +30,7 @@ import { PENDING, SUCCESS } from "modules/common/constants";
 export interface TitleProps {
   title: string;
   closeAction: Function;
+  bright?: boolean;
 }
 
 export interface DescriptionProps {
@@ -48,6 +49,16 @@ export interface AlertMessageProps {
 
 export interface DescriptionMessageProps {
   messages: Array<AlertMessageProps>;
+}
+
+interface SubheaderContent {
+  header: string;
+  subheaders: Array<string>;
+  numbered?: Boolean;
+}
+
+export interface SubheaderProps {
+  subheaderContent: SubheaderContent;
 }
 
 export interface CallToActionProps {
@@ -226,7 +237,7 @@ export const Examples = ({ header, previews }: ExamplesProps) => (
 );
 
 export const Title = (props: TitleProps) => (
-  <header className={Styles.TitleHeader}>
+  <header className={classNames(Styles.TitleHeader, {[Styles.Bright]: props.bright})}>
     <h1>{props.title}</h1>
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
@@ -261,6 +272,26 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
           </b>
         )}
         {message.postText}
+      </span>
+    ))}
+  </div>
+);
+
+export const Subheader = (props: SubheaderProps) => (
+  <div className={Styles.Subheader}>
+    <span>{props.subheaderContent.header}</span>
+    {props.subheaderContent.numbered && 
+      <ol>
+        {props.subheaderContent.subheaders.map((subheader, index) => (
+          <li key={index}>
+            {subheader}
+          </li>
+        ))}
+      </ol>
+    }
+    {!props.subheaderContent.numbered && props.subheaderContent.subheaders.map((subheader, index) => (
+      <span key={index}>
+        {subheader}
       </span>
     ))}
   </div>

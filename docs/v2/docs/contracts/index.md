@@ -10,7 +10,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Augur.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Augur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#Augur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#Augur.finishDeployment()"><code class="function-signature">finishDeployment()</code></a></li><li><a href="#Augur.createGenesisUniverse()"><code class="function-signature">createGenesisUniverse()</code></a></li><li><a href="#Augur.createChildUniverse(bytes32,uint256[])"><code class="function-signature">createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#Augur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#Augur.isKnownCrowdsourcer(contract IDisputeCrowdsourcer)"><code class="function-signature">isKnownCrowdsourcer(contract IDisputeCrowdsourcer _crowdsourcer)</code></a></li><li><a href="#Augur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256)"><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size)</code></a></li><li><a href="#Augur.isKnownShareToken(contract IShareToken)"><code class="function-signature">isKnownShareToken(contract IShareToken _token)</code></a></li><li><a href="#Augur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#Augur.trustedTransfer(contract IERC20,address,address,uint256)"><code class="function-signature">trustedTransfer(contract IERC20 _token, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#Augur.isTrustedSender(address)"><code class="function-signature">isTrustedSender(address _address)</code></a></li><li><a href="#Augur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#Augur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#Augur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#Augur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes)</code></a></li><li><a href="#Augur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, bytes32[] _outcomes)</code></a></li><li><a href="#Augur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor)</code></a></li><li><a href="#Augur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] _prices, uint256 _numTicks)</code></a></li><li><a href="#Augur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string)"><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string)"><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string _description)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256,bool)"><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _nextWindowStartTime, bool _pacingOn)</code></a></li><li><a href="#Augur.logInitialReporterRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logInitialReporterRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logDisputeCrowdsourcerRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#Augur.logReportingParticipantDisavowed(contract IUniverse,contract IMarket)"><code class="function-signature">logReportingParticipantDisavowed(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#Augur.logMarketParticipantsDisavowed(contract IUniverse)"><code class="function-signature">logMarketParticipantsDisavowed(contract IUniverse _universe)</code></a></li><li><a href="#Augur.logMarketFinalized(contract IUniverse,uint256[])"><code class="function-signature">logMarketFinalized(contract IUniverse _universe, uint256[] _winningPayoutNumerators)</code></a></li><li><a href="#Augur.logMarketMigrated(contract IMarket,contract IUniverse)"><code class="function-signature">logMarketMigrated(contract IMarket _market, contract IUniverse _originalUniverse)</code></a></li><li><a href="#Augur.logOrderCanceled(contract IUniverse,contract IMarket,address,uint256,uint256,bytes32)"><code class="function-signature">logOrderCanceled(contract IUniverse _universe, contract IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId)</code></a></li><li><a href="#Augur.logOrderCreated(contract IUniverse,bytes32,bytes32)"><code class="function-signature">logOrderCreated(contract IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#Augur.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#Augur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#Augur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#Augur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#Augur.getMarketOpenInterest(contract IMarket)"><code class="function-signature">getMarketOpenInterest(contract IMarket _market)</code></a></li><li><a href="#Augur.logTradingProceedsClaimed(contract IUniverse,address,address,address,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees)</code></a></li><li><a href="#Augur.logUniverseForked(contract IMarket)"><code class="function-signature">logUniverseForked(contract IMarket _forkingMarket)</code></a></li><li><a href="#Augur.logReputationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#Augur.logShareTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome)</code></a></li><li><a href="#Augur.logReputationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logReputationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logShareTokensBurned(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#Augur.logShareTokensMinted(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logDisputeWindowCreated(contract IDisputeWindow,uint256,bool)"><code class="function-signature">logDisputeWindowCreated(contract IDisputeWindow _disputeWindow, uint256 _id, bool _initial)</code></a></li><li><a href="#Augur.logParticipationTokensRedeemed(contract IUniverse,address,uint256,uint256)"><code class="function-signature">logParticipationTokensRedeemed(contract IUniverse _universe, address _account, uint256 _attoParticipationTokens, uint256 _feePayoutShare)</code></a></li><li><a href="#Augur.logTimestampSet(uint256)"><code class="function-signature">logTimestampSet(uint256 _newTimestamp)</code></a></li><li><a href="#Augur.logInitialReporterTransferred(contract IUniverse,contract IMarket,address,address)"><code class="function-signature">logInitialReporterTransferred(contract IUniverse _universe, contract IMarket _market, address _from, address _to)</code></a></li><li><a href="#Augur.logMarketTransferred(contract IUniverse,address,address)"><code class="function-signature">logMarketTransferred(contract IUniverse _universe, address _from, address _to)</code></a></li><li><a href="#Augur.logParticipationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#Augur.logParticipationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logParticipationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logOrderPriceChanged(contract IUniverse,bytes32)"><code class="function-signature">logOrderPriceChanged(contract IUniverse _universe, bytes32 _orderId)</code></a></li><li><a href="#Augur.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes)</code></a></li><li><a href="#Augur.logProfitLossChanged(contract IMarket,address,uint256,int256,uint256,int256,int256,int256)"><code class="function-signature">logProfitLossChanged(contract IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#Augur.MarketCreated(contract IUniverse,uint256,string,contract IMarket,address,address,uint256,int256[],enum IMarket.MarketType,uint256,bytes32[],uint256)"><code class="function-signature">MarketCreated(contract IUniverse universe, uint256 endTime, string extraInfo, contract IMarket market, address marketCreator, address designatedReporter, uint256 feeDivisor, int256[] prices, enum IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp)</code></a></li><li><a href="#Augur.InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string,uint256)"><code class="function-signature">InitialReportSubmitted(address universe, address reporter, address market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 timestamp)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256)"><code class="function-signature">DisputeCrowdsourcerCreated(address universe, address market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerContribution(address,address,address,address,uint256,string,uint256)"><code class="function-signature">DisputeCrowdsourcerContribution(address universe, address reporter, address market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256 timestamp)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerCompleted(address,address,address,uint256,bool)"><code class="function-signature">DisputeCrowdsourcerCompleted(address universe, address market, address disputeCrowdsourcer, uint256 nextWindowStartTime, bool pacingOn)</code></a></li><li><a href="#Augur.InitialReporterRedeemed(address,address,address,uint256,uint256,uint256[],uint256)"><code class="function-signature">InitialReporterRedeemed(address universe, address reporter, address market, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256[],uint256)"><code class="function-signature">DisputeCrowdsourcerRedeemed(address universe, address reporter, address market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp)</code></a></li><li><a href="#Augur.ReportingParticipantDisavowed(address,address,address)"><code class="function-signature">ReportingParticipantDisavowed(address universe, address market, address reportingParticipant)</code></a></li><li><a href="#Augur.MarketParticipantsDisavowed(address,address)"><code class="function-signature">MarketParticipantsDisavowed(address universe, address market)</code></a></li><li><a href="#Augur.MarketFinalized(address,address,uint256,uint256[])"><code class="function-signature">MarketFinalized(address universe, address market, uint256 timestamp, uint256[] winningPayoutNumerators)</code></a></li><li><a href="#Augur.MarketMigrated(address,address,address)"><code class="function-signature">MarketMigrated(address market, address originalUniverse, address newUniverse)</code></a></li><li><a href="#Augur.UniverseForked(address,contract IMarket)"><code class="function-signature">UniverseForked(address universe, contract IMarket forkingMarket)</code></a></li><li><a href="#Augur.UniverseCreated(address,address,uint256[])"><code class="function-signature">UniverseCreated(address parentUniverse, address childUniverse, uint256[] payoutNumerators)</code></a></li><li><a href="#Augur.OrderEvent(address,address,enum Augur.OrderEventType,enum Order.Types,bytes32,bytes32,address[],uint256[])"><code class="function-signature">OrderEvent(address universe, address market, enum Augur.OrderEventType eventType, enum Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data)</code></a></li><li><a href="#Augur.CompleteSetsPurchased(address,address,address,uint256,uint256)"><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp)</code></a></li><li><a href="#Augur.CompleteSetsSold(address,address,address,uint256,uint256,uint256)"><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp)</code></a></li><li><a href="#Augur.TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">TradingProceedsClaimed(address universe, address shareToken, address sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees, uint256 timestamp)</code></a></li><li><a href="#Augur.TokensTransferred(address,address,address,address,uint256,enum Augur.TokenType,address)"><code class="function-signature">TokensTransferred(address universe, address token, address from, address to, uint256 value, enum Augur.TokenType tokenType, address market)</code></a></li><li><a href="#Augur.TokensMinted(address,address,address,uint256,enum Augur.TokenType,address,uint256)"><code class="function-signature">TokensMinted(address universe, address token, address target, uint256 amount, enum Augur.TokenType tokenType, address market, uint256 totalSupply)</code></a></li><li><a href="#Augur.TokensBurned(address,address,address,uint256,enum Augur.TokenType,address,uint256)"><code class="function-signature">TokensBurned(address universe, address token, address target, uint256 amount, enum Augur.TokenType tokenType, address market, uint256 totalSupply)</code></a></li><li><a href="#Augur.TokenBalanceChanged(address,address,address,enum Augur.TokenType,address,uint256,uint256)"><code class="function-signature">TokenBalanceChanged(address universe, address owner, address token, enum Augur.TokenType tokenType, address market, uint256 balance, uint256 outcome)</code></a></li><li><a href="#Augur.DisputeWindowCreated(address,address,uint256,uint256,uint256,bool)"><code class="function-signature">DisputeWindowCreated(address universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial)</code></a></li><li><a href="#Augur.InitialReporterTransferred(address,address,address,address)"><code class="function-signature">InitialReporterTransferred(address universe, address market, address from, address to)</code></a></li><li><a href="#Augur.MarketTransferred(address,address,address,address)"><code class="function-signature">MarketTransferred(address universe, address market, address from, address to)</code></a></li><li><a href="#Augur.MarketVolumeChanged(address,address,uint256,uint256[])"><code class="function-signature">MarketVolumeChanged(address universe, address market, uint256 volume, uint256[] outcomeVolumes)</code></a></li><li><a href="#Augur.MarketOIChanged(address,address,uint256)"><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI)</code></a></li><li><a href="#Augur.ProfitLossChanged(address,address,address,uint256,int256,uint256,int256,int256,int256,uint256)"><code class="function-signature">ProfitLossChanged(address universe, address market, address account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp)</code></a></li><li><a href="#Augur.ParticipationTokensRedeemed(address,address,address,uint256,uint256,uint256)"><code class="function-signature">ParticipationTokensRedeemed(address universe, address disputeWindow, address account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp)</code></a></li><li><a href="#Augur.TimestampSet(uint256)"><code class="function-signature">TimestampSet(uint256 newTimestamp)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Augur.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Augur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#Augur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#Augur.finishDeployment()"><code class="function-signature">finishDeployment()</code></a></li><li><a href="#Augur.createGenesisUniverse()"><code class="function-signature">createGenesisUniverse()</code></a></li><li><a href="#Augur.createChildUniverse(bytes32,uint256[])"><code class="function-signature">createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#Augur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#Augur.isKnownCrowdsourcer(contract IDisputeCrowdsourcer)"><code class="function-signature">isKnownCrowdsourcer(contract IDisputeCrowdsourcer _crowdsourcer)</code></a></li><li><a href="#Augur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256,uint256)"><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size, uint256 _disputeRound)</code></a></li><li><a href="#Augur.isKnownShareToken(contract IShareToken)"><code class="function-signature">isKnownShareToken(contract IShareToken _token)</code></a></li><li><a href="#Augur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#Augur.trustedTransfer(contract IERC20,address,address,uint256)"><code class="function-signature">trustedTransfer(contract IERC20 _token, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#Augur.isTrustedSender(address)"><code class="function-signature">isTrustedSender(address _address)</code></a></li><li><a href="#Augur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#Augur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#Augur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#Augur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes)</code></a></li><li><a href="#Augur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] _outcomes)</code></a></li><li><a href="#Augur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash)</code></a></li><li><a href="#Augur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] _prices, uint256 _numTicks)</code></a></li><li><a href="#Augur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string,uint256,uint256)"><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string,uint256[],uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string _description, uint256[] _payoutNumerators, uint256 _currentStake, uint256 _stakeRemaining, uint256 _disputeRound)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime, bool _pacingOn, uint256 _totalRepStakedInPayout, uint256 _totalRepStakedInMarket, uint256 _disputeRound)</code></a></li><li><a href="#Augur.logInitialReporterRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logInitialReporterRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logDisputeCrowdsourcerRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#Augur.logReportingParticipantDisavowed(contract IUniverse,contract IMarket)"><code class="function-signature">logReportingParticipantDisavowed(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#Augur.logMarketParticipantsDisavowed(contract IUniverse)"><code class="function-signature">logMarketParticipantsDisavowed(contract IUniverse _universe)</code></a></li><li><a href="#Augur.logMarketFinalized(contract IUniverse,uint256[])"><code class="function-signature">logMarketFinalized(contract IUniverse _universe, uint256[] _winningPayoutNumerators)</code></a></li><li><a href="#Augur.logMarketMigrated(contract IMarket,contract IUniverse)"><code class="function-signature">logMarketMigrated(contract IMarket _market, contract IUniverse _originalUniverse)</code></a></li><li><a href="#Augur.logOrderCanceled(contract IUniverse,contract IMarket,address,uint256,uint256,bytes32)"><code class="function-signature">logOrderCanceled(contract IUniverse _universe, contract IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId)</code></a></li><li><a href="#Augur.logOrderCreated(contract IUniverse,bytes32,bytes32)"><code class="function-signature">logOrderCreated(contract IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#Augur.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#Augur.logZeroXOrderFilled(contract IUniverse,contract IMarket,bytes32,enum Order.Types,address[],uint256[])"><code class="function-signature">logZeroXOrderFilled(contract IUniverse _universe, contract IMarket _market, bytes32 _tradeGroupId, enum Order.Types _orderType, address[] _addressData, uint256[] _uint256Data)</code></a></li><li><a href="#Augur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#Augur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#Augur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#Augur.getMarketOpenInterest(contract IMarket)"><code class="function-signature">getMarketOpenInterest(contract IMarket _market)</code></a></li><li><a href="#Augur.logTradingProceedsClaimed(contract IUniverse,address,address,address,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees)</code></a></li><li><a href="#Augur.logUniverseForked(contract IMarket)"><code class="function-signature">logUniverseForked(contract IMarket _forkingMarket)</code></a></li><li><a href="#Augur.logReputationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#Augur.logShareTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome)</code></a></li><li><a href="#Augur.logReputationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logReputationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logShareTokensBurned(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#Augur.logShareTokensMinted(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logDisputeCrowdsourcerTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logDisputeWindowCreated(contract IDisputeWindow,uint256,bool)"><code class="function-signature">logDisputeWindowCreated(contract IDisputeWindow _disputeWindow, uint256 _id, bool _initial)</code></a></li><li><a href="#Augur.logParticipationTokensRedeemed(contract IUniverse,address,uint256,uint256)"><code class="function-signature">logParticipationTokensRedeemed(contract IUniverse _universe, address _account, uint256 _attoParticipationTokens, uint256 _feePayoutShare)</code></a></li><li><a href="#Augur.logTimestampSet(uint256)"><code class="function-signature">logTimestampSet(uint256 _newTimestamp)</code></a></li><li><a href="#Augur.logInitialReporterTransferred(contract IUniverse,contract IMarket,address,address)"><code class="function-signature">logInitialReporterTransferred(contract IUniverse _universe, contract IMarket _market, address _from, address _to)</code></a></li><li><a href="#Augur.logMarketTransferred(contract IUniverse,address,address)"><code class="function-signature">logMarketTransferred(contract IUniverse _universe, address _from, address _to)</code></a></li><li><a href="#Augur.logParticipationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#Augur.logParticipationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logParticipationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#Augur.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes)</code></a></li><li><a href="#Augur.logProfitLossChanged(contract IMarket,address,uint256,int256,uint256,int256,int256,int256)"><code class="function-signature">logProfitLossChanged(contract IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#Augur.MarketCreated(contract IUniverse,uint256,string,contract IMarket,address,address,uint256,int256[],enum IMarket.MarketType,uint256,bytes32[],uint256)"><code class="function-signature">MarketCreated(contract IUniverse universe, uint256 endTime, string extraInfo, contract IMarket market, address marketCreator, address designatedReporter, uint256 feePerCashInAttoCash, int256[] prices, enum IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp)</code></a></li><li><a href="#Augur.InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)"><code class="function-signature">InitialReportSubmitted(address universe, address reporter, address market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 nextWindowStartTime, uint256 nextWindowEndTime, uint256 timestamp)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256,uint256)"><code class="function-signature">DisputeCrowdsourcerCreated(address universe, address market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size, uint256 disputeRound)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerContribution(address,address,address,address,uint256,string,uint256[],uint256,uint256,uint256,uint256)"><code class="function-signature">DisputeCrowdsourcerContribution(address universe, address reporter, address market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256[] payoutNumerators, uint256 currentStake, uint256 stakeRemaining, uint256 disputeRound, uint256 timestamp)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerCompleted(address,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)"><code class="function-signature">DisputeCrowdsourcerCompleted(address universe, address market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 nextWindowStartTime, uint256 nextWindowEndTime, bool pacingOn, uint256 totalRepStakedInPayout, uint256 totalRepStakedInMarket, uint256 disputeRound)</code></a></li><li><a href="#Augur.InitialReporterRedeemed(address,address,address,address,uint256,uint256,uint256[],uint256)"><code class="function-signature">InitialReporterRedeemed(address universe, address reporter, address market, address initialReporter, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp)</code></a></li><li><a href="#Augur.DisputeCrowdsourcerRedeemed(address,address,address,address,uint256,uint256,uint256[],uint256)"><code class="function-signature">DisputeCrowdsourcerRedeemed(address universe, address reporter, address market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp)</code></a></li><li><a href="#Augur.ReportingParticipantDisavowed(address,address,address)"><code class="function-signature">ReportingParticipantDisavowed(address universe, address market, address reportingParticipant)</code></a></li><li><a href="#Augur.MarketParticipantsDisavowed(address,address)"><code class="function-signature">MarketParticipantsDisavowed(address universe, address market)</code></a></li><li><a href="#Augur.MarketFinalized(address,address,uint256,uint256[])"><code class="function-signature">MarketFinalized(address universe, address market, uint256 timestamp, uint256[] winningPayoutNumerators)</code></a></li><li><a href="#Augur.MarketMigrated(address,address,address)"><code class="function-signature">MarketMigrated(address market, address originalUniverse, address newUniverse)</code></a></li><li><a href="#Augur.UniverseForked(address,contract IMarket)"><code class="function-signature">UniverseForked(address universe, contract IMarket forkingMarket)</code></a></li><li><a href="#Augur.UniverseCreated(address,address,uint256[],uint256)"><code class="function-signature">UniverseCreated(address parentUniverse, address childUniverse, uint256[] payoutNumerators, uint256 creationTimestamp)</code></a></li><li><a href="#Augur.OrderEvent(address,address,enum Augur.OrderEventType,enum Order.Types,bytes32,bytes32,address[],uint256[])"><code class="function-signature">OrderEvent(address universe, address market, enum Augur.OrderEventType eventType, enum Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data)</code></a></li><li><a href="#Augur.CompleteSetsPurchased(address,address,address,uint256,uint256)"><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp)</code></a></li><li><a href="#Augur.CompleteSetsSold(address,address,address,uint256,uint256,uint256)"><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp)</code></a></li><li><a href="#Augur.TradingProceedsClaimed(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">TradingProceedsClaimed(address universe, address shareToken, address sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees, uint256 timestamp)</code></a></li><li><a href="#Augur.TokensTransferred(address,address,address,address,uint256,enum Augur.TokenType,address)"><code class="function-signature">TokensTransferred(address universe, address token, address from, address to, uint256 value, enum Augur.TokenType tokenType, address market)</code></a></li><li><a href="#Augur.TokensMinted(address,address,address,uint256,enum Augur.TokenType,address,uint256)"><code class="function-signature">TokensMinted(address universe, address token, address target, uint256 amount, enum Augur.TokenType tokenType, address market, uint256 totalSupply)</code></a></li><li><a href="#Augur.TokensBurned(address,address,address,uint256,enum Augur.TokenType,address,uint256)"><code class="function-signature">TokensBurned(address universe, address token, address target, uint256 amount, enum Augur.TokenType tokenType, address market, uint256 totalSupply)</code></a></li><li><a href="#Augur.TokenBalanceChanged(address,address,address,enum Augur.TokenType,address,uint256,uint256)"><code class="function-signature">TokenBalanceChanged(address universe, address owner, address token, enum Augur.TokenType tokenType, address market, uint256 balance, uint256 outcome)</code></a></li><li><a href="#Augur.DisputeWindowCreated(address,address,uint256,uint256,uint256,bool)"><code class="function-signature">DisputeWindowCreated(address universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial)</code></a></li><li><a href="#Augur.InitialReporterTransferred(address,address,address,address)"><code class="function-signature">InitialReporterTransferred(address universe, address market, address from, address to)</code></a></li><li><a href="#Augur.MarketTransferred(address,address,address,address)"><code class="function-signature">MarketTransferred(address universe, address market, address from, address to)</code></a></li><li><a href="#Augur.MarketVolumeChanged(address,address,uint256,uint256[])"><code class="function-signature">MarketVolumeChanged(address universe, address market, uint256 volume, uint256[] outcomeVolumes)</code></a></li><li><a href="#Augur.MarketOIChanged(address,address,uint256)"><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI)</code></a></li><li><a href="#Augur.ProfitLossChanged(address,address,address,uint256,int256,uint256,int256,int256,int256,uint256)"><code class="function-signature">ProfitLossChanged(address universe, address market, address account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp)</code></a></li><li><a href="#Augur.ParticipationTokensRedeemed(address,address,address,uint256,uint256,uint256)"><code class="function-signature">ParticipationTokensRedeemed(address universe, address disputeWindow, address account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp)</code></a></li><li><a href="#Augur.TimestampSet(uint256)"><code class="function-signature">TimestampSet(uint256 newTimestamp)</code></a></li></ul></div>
 
 
 
@@ -62,7 +62,7 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256)"></a><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256,uint256)"></a><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size, uint256 _disputeRound) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -116,37 +116,37 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"></a><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, bytes32[] _outcomes) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"></a><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] _outcomes) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"></a><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"></a><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"></a><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] _prices, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"></a><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] _prices, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string)"></a><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string,uint256,uint256)"></a><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string)"></a><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string _description) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string,uint256[],uint256,uint256,uint256)"></a><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string _description, uint256[] _payoutNumerators, uint256 _currentStake, uint256 _stakeRemaining, uint256 _disputeRound) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256,bool)"></a><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _nextWindowStartTime, bool _pacingOn) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)"></a><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime, bool _pacingOn, uint256 _totalRepStakedInPayout, uint256 _totalRepStakedInMarket, uint256 _disputeRound) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -201,6 +201,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="Augur.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"></a><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Augur.logZeroXOrderFilled(contract IUniverse,contract IMarket,bytes32,enum Order.Types,address[],uint256[])"></a><code class="function-signature">logZeroXOrderFilled(contract IUniverse _universe, contract IMarket _market, bytes32 _tradeGroupId, enum Order.Types _orderType, address[] _addressData, uint256[] _uint256Data) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -344,12 +350,6 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.logOrderPriceChanged(contract IUniverse,bytes32)"></a><code class="function-signature">logOrderPriceChanged(contract IUniverse _universe, bytes32 _orderId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="Augur.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"></a><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -364,37 +364,37 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.MarketCreated(contract IUniverse,uint256,string,contract IMarket,address,address,uint256,int256[],enum IMarket.MarketType,uint256,bytes32[],uint256)"></a><code class="function-signature">MarketCreated(contract IUniverse universe, uint256 endTime, string extraInfo, contract IMarket market, address marketCreator, address designatedReporter, uint256 feeDivisor, int256[] prices, enum IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.MarketCreated(contract IUniverse,uint256,string,contract IMarket,address,address,uint256,int256[],enum IMarket.MarketType,uint256,bytes32[],uint256)"></a><code class="function-signature">MarketCreated(contract IUniverse universe, uint256 endTime, string extraInfo, contract IMarket market, address marketCreator, address designatedReporter, uint256 feePerCashInAttoCash, int256[] prices, enum IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp)</code><span class="function-visibility"></span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string,uint256)"></a><code class="function-signature">InitialReportSubmitted(address universe, address reporter, address market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 timestamp)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)"></a><code class="function-signature">InitialReportSubmitted(address universe, address reporter, address market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 nextWindowStartTime, uint256 nextWindowEndTime, uint256 timestamp)</code><span class="function-visibility"></span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256)"></a><code class="function-signature">DisputeCrowdsourcerCreated(address universe, address market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256,uint256)"></a><code class="function-signature">DisputeCrowdsourcerCreated(address universe, address market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size, uint256 disputeRound)</code><span class="function-visibility"></span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.DisputeCrowdsourcerContribution(address,address,address,address,uint256,string,uint256)"></a><code class="function-signature">DisputeCrowdsourcerContribution(address universe, address reporter, address market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256 timestamp)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.DisputeCrowdsourcerContribution(address,address,address,address,uint256,string,uint256[],uint256,uint256,uint256,uint256)"></a><code class="function-signature">DisputeCrowdsourcerContribution(address universe, address reporter, address market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256[] payoutNumerators, uint256 currentStake, uint256 stakeRemaining, uint256 disputeRound, uint256 timestamp)</code><span class="function-visibility"></span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.DisputeCrowdsourcerCompleted(address,address,address,uint256,bool)"></a><code class="function-signature">DisputeCrowdsourcerCompleted(address universe, address market, address disputeCrowdsourcer, uint256 nextWindowStartTime, bool pacingOn)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.DisputeCrowdsourcerCompleted(address,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)"></a><code class="function-signature">DisputeCrowdsourcerCompleted(address universe, address market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 nextWindowStartTime, uint256 nextWindowEndTime, bool pacingOn, uint256 totalRepStakedInPayout, uint256 totalRepStakedInMarket, uint256 disputeRound)</code><span class="function-visibility"></span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.InitialReporterRedeemed(address,address,address,uint256,uint256,uint256[],uint256)"></a><code class="function-signature">InitialReporterRedeemed(address universe, address reporter, address market, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.InitialReporterRedeemed(address,address,address,address,uint256,uint256,uint256[],uint256)"></a><code class="function-signature">InitialReporterRedeemed(address universe, address reporter, address market, address initialReporter, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -436,7 +436,7 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.UniverseCreated(address,address,uint256[])"></a><code class="function-signature">UniverseCreated(address parentUniverse, address childUniverse, uint256[] payoutNumerators)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.UniverseCreated(address,address,uint256[],uint256)"></a><code class="function-signature">UniverseCreated(address parentUniverse, address childUniverse, uint256[] payoutNumerators, uint256 creationTimestamp)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -558,7 +558,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugur.createChildUniverse(bytes32,uint256[])"><code class="function-signature">createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#IAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#IAugur.trustedTransfer(contract IERC20,address,address,uint256)"><code class="function-signature">trustedTransfer(contract IERC20 _token, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#IAugur.isTrustedSender(address)"><code class="function-signature">isTrustedSender(address _address)</code></a></li><li><a href="#IAugur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, bytes32[] _outcomes)</code></a></li><li><a href="#IAugur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor)</code></a></li><li><a href="#IAugur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] _prices, uint256 _numTicks)</code></a></li><li><a href="#IAugur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string)"><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string description)</code></a></li><li><a href="#IAugur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256)"><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string)"><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string description)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256,bool)"><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _nextWindowStartTime, bool _pacingOn)</code></a></li><li><a href="#IAugur.logInitialReporterRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logInitialReporterRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logDisputeCrowdsourcerRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#IAugur.logMarketFinalized(contract IUniverse,uint256[])"><code class="function-signature">logMarketFinalized(contract IUniverse _universe, uint256[] _winningPayoutNumerators)</code></a></li><li><a href="#IAugur.logMarketMigrated(contract IMarket,contract IUniverse)"><code class="function-signature">logMarketMigrated(contract IMarket _market, contract IUniverse _originalUniverse)</code></a></li><li><a href="#IAugur.logReportingParticipantDisavowed(contract IUniverse,contract IMarket)"><code class="function-signature">logReportingParticipantDisavowed(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#IAugur.logMarketParticipantsDisavowed(contract IUniverse)"><code class="function-signature">logMarketParticipantsDisavowed(contract IUniverse _universe)</code></a></li><li><a href="#IAugur.logOrderCanceled(contract IUniverse,contract IMarket,address,uint256,uint256,bytes32)"><code class="function-signature">logOrderCanceled(contract IUniverse _universe, contract IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId)</code></a></li><li><a href="#IAugur.logOrderCreated(contract IUniverse,bytes32,bytes32)"><code class="function-signature">logOrderCreated(contract IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugur.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#IAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#IAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#IAugur.logTradingProceedsClaimed(contract IUniverse,address,address,address,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees)</code></a></li><li><a href="#IAugur.logUniverseForked(contract IMarket)"><code class="function-signature">logUniverseForked(contract IMarket _forkingMarket)</code></a></li><li><a href="#IAugur.logShareTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome)</code></a></li><li><a href="#IAugur.logReputationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#IAugur.logReputationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logReputationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logShareTokensBurned(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#IAugur.logShareTokensMinted(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logDisputeWindowCreated(contract IDisputeWindow,uint256,bool)"><code class="function-signature">logDisputeWindowCreated(contract IDisputeWindow _disputeWindow, uint256 _id, bool _initial)</code></a></li><li><a href="#IAugur.logParticipationTokensRedeemed(contract IUniverse,address,uint256,uint256)"><code class="function-signature">logParticipationTokensRedeemed(contract IUniverse universe, address _sender, uint256 _attoParticipationTokens, uint256 _feePayoutShare)</code></a></li><li><a href="#IAugur.logTimestampSet(uint256)"><code class="function-signature">logTimestampSet(uint256 _newTimestamp)</code></a></li><li><a href="#IAugur.logInitialReporterTransferred(contract IUniverse,contract IMarket,address,address)"><code class="function-signature">logInitialReporterTransferred(contract IUniverse _universe, contract IMarket _market, address _from, address _to)</code></a></li><li><a href="#IAugur.logMarketTransferred(contract IUniverse,address,address)"><code class="function-signature">logMarketTransferred(contract IUniverse _universe, address _from, address _to)</code></a></li><li><a href="#IAugur.logParticipationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#IAugur.logParticipationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logParticipationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logOrderPriceChanged(contract IUniverse,bytes32)"><code class="function-signature">logOrderPriceChanged(contract IUniverse _universe, bytes32 _orderId)</code></a></li><li><a href="#IAugur.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes)</code></a></li><li><a href="#IAugur.logProfitLossChanged(contract IMarket,address,uint256,int256,uint256,int256,int256,int256)"><code class="function-signature">logProfitLossChanged(contract IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost)</code></a></li><li><a href="#IAugur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#IAugur.isKnownShareToken(contract IShareToken)"><code class="function-signature">isKnownShareToken(contract IShareToken _token)</code></a></li><li><a href="#IAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#IAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#IAugur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#IAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#IAugur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 numOutcomes)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugur.createChildUniverse(bytes32,uint256[])"><code class="function-signature">createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#IAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#IAugur.trustedTransfer(contract IERC20,address,address,uint256)"><code class="function-signature">trustedTransfer(contract IERC20 _token, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#IAugur.isTrustedSender(address)"><code class="function-signature">isTrustedSender(address _address)</code></a></li><li><a href="#IAugur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] _outcomes)</code></a></li><li><a href="#IAugur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash)</code></a></li><li><a href="#IAugur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] _prices, uint256 _numTicks)</code></a></li><li><a href="#IAugur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string,uint256,uint256)"><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime)</code></a></li><li><a href="#IAugur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256,uint256)"><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size, uint256 _disputeRound)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string,uint256[],uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string description, uint256[] _payoutNumerators, uint256 _currentStake, uint256 _stakeRemaining, uint256 _disputeRound)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime, bool _pacingOn, uint256 _totalRepStakedInPayout, uint256 _totalRepStakedInMarket, uint256 _disputeRound)</code></a></li><li><a href="#IAugur.logInitialReporterRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logInitialReporterRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerRedeemed(contract IUniverse,address,address,uint256,uint256,uint256[])"><code class="function-signature">logDisputeCrowdsourcerRedeemed(contract IUniverse _universe, address _reporter, address _market, uint256 _amountRedeemed, uint256 _repReceived, uint256[] _payoutNumerators)</code></a></li><li><a href="#IAugur.logMarketFinalized(contract IUniverse,uint256[])"><code class="function-signature">logMarketFinalized(contract IUniverse _universe, uint256[] _winningPayoutNumerators)</code></a></li><li><a href="#IAugur.logMarketMigrated(contract IMarket,contract IUniverse)"><code class="function-signature">logMarketMigrated(contract IMarket _market, contract IUniverse _originalUniverse)</code></a></li><li><a href="#IAugur.logReportingParticipantDisavowed(contract IUniverse,contract IMarket)"><code class="function-signature">logReportingParticipantDisavowed(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#IAugur.logMarketParticipantsDisavowed(contract IUniverse)"><code class="function-signature">logMarketParticipantsDisavowed(contract IUniverse _universe)</code></a></li><li><a href="#IAugur.logOrderCanceled(contract IUniverse,contract IMarket,address,uint256,uint256,bytes32)"><code class="function-signature">logOrderCanceled(contract IUniverse _universe, contract IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId)</code></a></li><li><a href="#IAugur.logOrderCreated(contract IUniverse,bytes32,bytes32)"><code class="function-signature">logOrderCreated(contract IUniverse _universe, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugur.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId)</code></a></li><li><a href="#IAugur.logZeroXOrderFilled(contract IUniverse,contract IMarket,bytes32,enum Order.Types,address[],uint256[])"><code class="function-signature">logZeroXOrderFilled(contract IUniverse _universe, contract IMarket _market, bytes32 _tradeGroupId, enum Order.Types _orderType, address[] _addressData, uint256[] _uint256Data)</code></a></li><li><a href="#IAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#IAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#IAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#IAugur.logTradingProceedsClaimed(contract IUniverse,address,address,address,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees)</code></a></li><li><a href="#IAugur.logUniverseForked(contract IMarket)"><code class="function-signature">logUniverseForked(contract IMarket _forkingMarket)</code></a></li><li><a href="#IAugur.logShareTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome)</code></a></li><li><a href="#IAugur.logReputationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#IAugur.logReputationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logReputationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logReputationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logShareTokensBurned(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#IAugur.logShareTokensMinted(contract IUniverse,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logShareTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logDisputeCrowdsourcerTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logDisputeCrowdsourcerTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logDisputeWindowCreated(contract IDisputeWindow,uint256,bool)"><code class="function-signature">logDisputeWindowCreated(contract IDisputeWindow _disputeWindow, uint256 _id, bool _initial)</code></a></li><li><a href="#IAugur.logParticipationTokensRedeemed(contract IUniverse,address,uint256,uint256)"><code class="function-signature">logParticipationTokensRedeemed(contract IUniverse universe, address _sender, uint256 _attoParticipationTokens, uint256 _feePayoutShare)</code></a></li><li><a href="#IAugur.logTimestampSet(uint256)"><code class="function-signature">logTimestampSet(uint256 _newTimestamp)</code></a></li><li><a href="#IAugur.logInitialReporterTransferred(contract IUniverse,contract IMarket,address,address)"><code class="function-signature">logInitialReporterTransferred(contract IUniverse _universe, contract IMarket _market, address _from, address _to)</code></a></li><li><a href="#IAugur.logMarketTransferred(contract IUniverse,address,address)"><code class="function-signature">logMarketTransferred(contract IUniverse _universe, address _from, address _to)</code></a></li><li><a href="#IAugur.logParticipationTokensTransferred(contract IUniverse,address,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensTransferred(contract IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance)</code></a></li><li><a href="#IAugur.logParticipationTokensBurned(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensBurned(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logParticipationTokensMinted(contract IUniverse,address,uint256,uint256,uint256)"><code class="function-signature">logParticipationTokensMinted(contract IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance)</code></a></li><li><a href="#IAugur.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes)</code></a></li><li><a href="#IAugur.logProfitLossChanged(contract IMarket,address,uint256,int256,uint256,int256,int256,int256)"><code class="function-signature">logProfitLossChanged(contract IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost)</code></a></li><li><a href="#IAugur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#IAugur.isKnownShareToken(contract IShareToken)"><code class="function-signature">isKnownShareToken(contract IShareToken _token)</code></a></li><li><a href="#IAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#IAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#IAugur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#IAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#IAugur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 numOutcomes)</code></a></li></ul></div>
 
 
 
@@ -586,43 +586,43 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"></a><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, bytes32[] _outcomes) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logCategoricalMarketCreated(uint256,string,contract IMarket,address,address,uint256,bytes32[])"></a><code class="function-signature">logCategoricalMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] _outcomes) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"></a><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logYesNoMarketCreated(uint256,string,contract IMarket,address,address,uint256)"></a><code class="function-signature">logYesNoMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"></a><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] _prices, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logScalarMarketCreated(uint256,string,contract IMarket,address,address,uint256,int256[],uint256)"></a><code class="function-signature">logScalarMarketCreated(uint256 _endTime, string _extraInfo, contract IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] _prices, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string)"></a><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string description) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logInitialReportSubmitted(contract IUniverse,address,address,uint256,bool,uint256[],string,uint256,uint256)"></a><code class="function-signature">logInitialReportSubmitted(contract IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string _description, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256)"></a><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.disputeCrowdsourcerCreated(contract IUniverse,address,address,uint256[],uint256,uint256)"></a><code class="function-signature">disputeCrowdsourcerCreated(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _size, uint256 _disputeRound) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string)"></a><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string description) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logDisputeCrowdsourcerContribution(contract IUniverse,address,address,address,uint256,string,uint256[],uint256,uint256,uint256)"></a><code class="function-signature">logDisputeCrowdsourcerContribution(contract IUniverse _universe, address _reporter, address _market, address _disputeCrowdsourcer, uint256 _amountStaked, string description, uint256[] _payoutNumerators, uint256 _currentStake, uint256 _stakeRemaining, uint256 _disputeRound) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256,bool)"></a><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _nextWindowStartTime, bool _pacingOn) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logDisputeCrowdsourcerCompleted(contract IUniverse,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)"></a><code class="function-signature">logDisputeCrowdsourcerCompleted(contract IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256[] _payoutNumerators, uint256 _nextWindowStartTime, uint256 _nextWindowEndTime, bool _pacingOn, uint256 _totalRepStakedInPayout, uint256 _totalRepStakedInMarket, uint256 _disputeRound) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -677,6 +677,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="IAugur.logOrderFilled(contract IUniverse,address,address,uint256,uint256,uint256,bytes32,bytes32)"></a><code class="function-signature">logOrderFilled(contract IUniverse _universe, address _creator, address _filler, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _orderId, bytes32 _tradeGroupId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logZeroXOrderFilled(contract IUniverse,contract IMarket,bytes32,enum Order.Types,address[],uint256[])"></a><code class="function-signature">logZeroXOrderFilled(contract IUniverse _universe, contract IMarket _market, bytes32 _tradeGroupId, enum Order.Types _orderType, address[] _addressData, uint256[] _uint256Data) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -814,12 +820,6 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugur.logOrderPriceChanged(contract IUniverse,bytes32)"></a><code class="function-signature">logOrderPriceChanged(contract IUniverse _universe, bytes32 _orderId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="IAugur.logMarketVolumeChanged(contract IUniverse,address,uint256,uint256[])"></a><code class="function-signature">logMarketVolumeChanged(contract IUniverse _universe, address _market, uint256 _volume, uint256[] _outcomeVolumes) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -942,11 +942,17 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code></a></li><li><a href="#IDisputeWindow.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IDisputeWindow.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IDisputeWindow.getStartTime()"><code class="function-signature">getStartTime()</code></a></li><li><a href="#IDisputeWindow.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IDisputeWindow.getWindowId()"><code class="function-signature">getWindowId()</code></a></li><li><a href="#IDisputeWindow.isActive()"><code class="function-signature">isActive()</code></a></li><li><a href="#IDisputeWindow.isOver()"><code class="function-signature">isOver()</code></a></li><li><a href="#IDisputeWindow.onMarketFinalized()"><code class="function-signature">onMarketFinalized()</code></a></li><li><a href="#IDisputeWindow.redeem(address)"><code class="function-signature">redeem(address _account)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li class="inherited"><a href="#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code></a></li><li><a href="#IDisputeWindow.trustedBuy(address,uint256)"><code class="function-signature">trustedBuy(address _buyer, uint256 _attotokens)</code></a></li><li><a href="#IDisputeWindow.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IDisputeWindow.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IDisputeWindow.getStartTime()"><code class="function-signature">getStartTime()</code></a></li><li><a href="#IDisputeWindow.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IDisputeWindow.getWindowId()"><code class="function-signature">getWindowId()</code></a></li><li><a href="#IDisputeWindow.isActive()"><code class="function-signature">isActive()</code></a></li><li><a href="#IDisputeWindow.isOver()"><code class="function-signature">isOver()</code></a></li><li><a href="#IDisputeWindow.onMarketFinalized()"><code class="function-signature">onMarketFinalized()</code></a></li><li><a href="#IDisputeWindow.redeem(address)"><code class="function-signature">redeem(address _account)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li class="inherited"><a href="#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.trustedBuy(address,uint256)"></a><code class="function-signature">trustedBuy(address _buyer, uint256 _attotokens) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1728,7 +1734,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniverse.fork()"><code class="function-signature">fork()</code></a></li><li><a href="#IUniverse.updateForkValues()"><code class="function-signature">updateForkValues()</code></a></li><li><a href="#IUniverse.getParentUniverse()"><code class="function-signature">getParentUniverse()</code></a></li><li><a href="#IUniverse.createChildUniverse(uint256[])"><code class="function-signature">createChildUniverse(uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#IUniverse.getChildUniverse(bytes32)"><code class="function-signature">getChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IUniverse.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IUniverse.getForkEndTime()"><code class="function-signature">getForkEndTime()</code></a></li><li><a href="#IUniverse.getForkReputationGoal()"><code class="function-signature">getForkReputationGoal()</code></a></li><li><a href="#IUniverse.getParentPayoutDistributionHash()"><code class="function-signature">getParentPayoutDistributionHash()</code></a></li><li><a href="#IUniverse.getDisputeRoundDurationInSeconds(bool)"><code class="function-signature">getDisputeRoundDurationInSeconds(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateDisputeWindowByTimestamp(uint256,bool)"><code class="function-signature">getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateCurrentDisputeWindow(bool)"><code class="function-signature">getOrCreateCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateNextDisputeWindow(bool)"><code class="function-signature">getOrCreateNextDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreatePreviousDisputeWindow(bool)"><code class="function-signature">getOrCreatePreviousDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOpenInterestInAttoCash()"><code class="function-signature">getOpenInterestInAttoCash()</code></a></li><li><a href="#IUniverse.getRepMarketCapInAttoCash()"><code class="function-signature">getRepMarketCapInAttoCash()</code></a></li><li><a href="#IUniverse.getTargetRepMarketCapInAttoCash()"><code class="function-signature">getTargetRepMarketCapInAttoCash()</code></a></li><li><a href="#IUniverse.getOrCacheValidityBond()"><code class="function-signature">getOrCacheValidityBond()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportStake()"><code class="function-signature">getOrCacheDesignatedReportStake()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportNoShowBond()"><code class="function-signature">getOrCacheDesignatedReportNoShowBond()</code></a></li><li><a href="#IUniverse.getOrCacheMarketRepBond()"><code class="function-signature">getOrCacheMarketRepBond()</code></a></li><li><a href="#IUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForFork()"><code class="function-signature">getDisputeThresholdForFork()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForDisputePacing()"><code class="function-signature">getDisputeThresholdForDisputePacing()</code></a></li><li><a href="#IUniverse.getInitialReportMinValue()"><code class="function-signature">getInitialReportMinValue()</code></a></li><li><a href="#IUniverse.getPayoutNumerators()"><code class="function-signature">getPayoutNumerators()</code></a></li><li><a href="#IUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getPayoutNumerator(uint256)"><code class="function-signature">getPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.getWinningChildPayoutNumerator(uint256)"><code class="function-signature">getWinningChildPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.isForkingMarket()"><code class="function-signature">isForkingMarket()</code></a></li><li><a href="#IUniverse.getCurrentDisputeWindow(bool)"><code class="function-signature">getCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.isParentOf(contract IUniverse)"><code class="function-signature">isParentOf(contract IUniverse _shadyChild)</code></a></li><li><a href="#IUniverse.updateTentativeWinningChildUniverse(bytes32)"><code class="function-signature">updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.isContainerForDisputeWindow(contract IDisputeWindow)"><code class="function-signature">isContainerForDisputeWindow(contract IDisputeWindow _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForMarket(contract IMarket)"><code class="function-signature">isContainerForMarket(contract IMarket _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IUniverse.isContainerForShareToken(contract IShareToken)"><code class="function-signature">isContainerForShareToken(contract IShareToken _shadyTarget)</code></a></li><li><a href="#IUniverse.migrateMarketOut(contract IUniverse)"><code class="function-signature">migrateMarketOut(contract IUniverse _destinationUniverse)</code></a></li><li><a href="#IUniverse.migrateMarketIn(contract IMarket,uint256,uint256)"><code class="function-signature">migrateMarketIn(contract IMarket _market, uint256 _cashBalance, uint256 _marketOI)</code></a></li><li><a href="#IUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.decrementOpenInterestFromMarket(contract IMarket)"><code class="function-signature">decrementOpenInterestFromMarket(contract IMarket _market)</code></a></li><li><a href="#IUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.getWinningChildUniverse()"><code class="function-signature">getWinningChildUniverse()</code></a></li><li><a href="#IUniverse.isForking()"><code class="function-signature">isForking()</code></a></li><li><a href="#IUniverse.assertMarketBalance()"><code class="function-signature">assertMarketBalance()</code></a></li><li><a href="#IUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#IUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniverse.fork()"><code class="function-signature">fork()</code></a></li><li><a href="#IUniverse.updateForkValues()"><code class="function-signature">updateForkValues()</code></a></li><li><a href="#IUniverse.getParentUniverse()"><code class="function-signature">getParentUniverse()</code></a></li><li><a href="#IUniverse.createChildUniverse(uint256[])"><code class="function-signature">createChildUniverse(uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#IUniverse.getChildUniverse(bytes32)"><code class="function-signature">getChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IUniverse.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IUniverse.getForkEndTime()"><code class="function-signature">getForkEndTime()</code></a></li><li><a href="#IUniverse.getForkReputationGoal()"><code class="function-signature">getForkReputationGoal()</code></a></li><li><a href="#IUniverse.getParentPayoutDistributionHash()"><code class="function-signature">getParentPayoutDistributionHash()</code></a></li><li><a href="#IUniverse.getDisputeRoundDurationInSeconds(bool)"><code class="function-signature">getDisputeRoundDurationInSeconds(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateDisputeWindowByTimestamp(uint256,bool)"><code class="function-signature">getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateCurrentDisputeWindow(bool)"><code class="function-signature">getOrCreateCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateNextDisputeWindow(bool)"><code class="function-signature">getOrCreateNextDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreatePreviousDisputeWindow(bool)"><code class="function-signature">getOrCreatePreviousDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOpenInterestInAttoCash()"><code class="function-signature">getOpenInterestInAttoCash()</code></a></li><li><a href="#IUniverse.getRepMarketCapInAttoCash()"><code class="function-signature">getRepMarketCapInAttoCash()</code></a></li><li><a href="#IUniverse.getTargetRepMarketCapInAttoCash()"><code class="function-signature">getTargetRepMarketCapInAttoCash()</code></a></li><li><a href="#IUniverse.getOrCacheValidityBond()"><code class="function-signature">getOrCacheValidityBond()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportStake()"><code class="function-signature">getOrCacheDesignatedReportStake()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportNoShowBond()"><code class="function-signature">getOrCacheDesignatedReportNoShowBond()</code></a></li><li><a href="#IUniverse.getOrCacheMarketRepBond()"><code class="function-signature">getOrCacheMarketRepBond()</code></a></li><li><a href="#IUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForFork()"><code class="function-signature">getDisputeThresholdForFork()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForDisputePacing()"><code class="function-signature">getDisputeThresholdForDisputePacing()</code></a></li><li><a href="#IUniverse.getInitialReportMinValue()"><code class="function-signature">getInitialReportMinValue()</code></a></li><li><a href="#IUniverse.getPayoutNumerators()"><code class="function-signature">getPayoutNumerators()</code></a></li><li><a href="#IUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getPayoutNumerator(uint256)"><code class="function-signature">getPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.getWinningChildPayoutNumerator(uint256)"><code class="function-signature">getWinningChildPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.isOpenInterestCash(address)"><code class="function-signature">isOpenInterestCash(address)</code></a></li><li><a href="#IUniverse.isForkingMarket()"><code class="function-signature">isForkingMarket()</code></a></li><li><a href="#IUniverse.getCurrentDisputeWindow(bool)"><code class="function-signature">getCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.isParentOf(contract IUniverse)"><code class="function-signature">isParentOf(contract IUniverse _shadyChild)</code></a></li><li><a href="#IUniverse.updateTentativeWinningChildUniverse(bytes32)"><code class="function-signature">updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.isContainerForDisputeWindow(contract IDisputeWindow)"><code class="function-signature">isContainerForDisputeWindow(contract IDisputeWindow _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForMarket(contract IMarket)"><code class="function-signature">isContainerForMarket(contract IMarket _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IUniverse.isContainerForShareToken(contract IShareToken)"><code class="function-signature">isContainerForShareToken(contract IShareToken _shadyTarget)</code></a></li><li><a href="#IUniverse.migrateMarketOut(contract IUniverse)"><code class="function-signature">migrateMarketOut(contract IUniverse _destinationUniverse)</code></a></li><li><a href="#IUniverse.migrateMarketIn(contract IMarket,uint256,uint256)"><code class="function-signature">migrateMarketIn(contract IMarket _market, uint256 _cashBalance, uint256 _marketOI)</code></a></li><li><a href="#IUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.decrementOpenInterestFromMarket(contract IMarket)"><code class="function-signature">decrementOpenInterestFromMarket(contract IMarket _market)</code></a></li><li><a href="#IUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.getWinningChildUniverse()"><code class="function-signature">getWinningChildUniverse()</code></a></li><li><a href="#IUniverse.isForking()"><code class="function-signature">isForking()</code></a></li><li><a href="#IUniverse.assertMarketBalance()"><code class="function-signature">assertMarketBalance()</code></a></li><li><a href="#IUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#IUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li></ul></div>
 
 
 
@@ -1912,6 +1918,12 @@ title: Contracts
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="IUniverse.isOpenInterestCash(address)"></a><code class="function-signature">isOpenInterestCash(address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="IUniverse.isForkingMarket()"></a><code class="function-signature">isForkingMarket() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -2064,11 +2076,11 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Order.create(contract IAugur,address,uint256,enum Order.Types,uint256,uint256,contract IMarket,bytes32,bytes32,bool,contract IERC20)"><code class="function-signature">create(contract IAugur _augur, address _creator, uint256 _outcome, enum Order.Types _type, uint256 _attoshares, uint256 _price, contract IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, contract IERC20 _kycToken)</code></a></li><li><a href="#Order.getOrderId(struct Order.Data)"><code class="function-signature">getOrderId(struct Order.Data _orderData)</code></a></li><li><a href="#Order.getOrderTradingTypeFromMakerDirection(enum Order.TradeDirections)"><code class="function-signature">getOrderTradingTypeFromMakerDirection(enum Order.TradeDirections _creatorDirection)</code></a></li><li><a href="#Order.getOrderTradingTypeFromFillerDirection(enum Order.TradeDirections)"><code class="function-signature">getOrderTradingTypeFromFillerDirection(enum Order.TradeDirections _fillerDirection)</code></a></li><li><a href="#Order.escrowFunds(struct Order.Data)"><code class="function-signature">escrowFunds(struct Order.Data _orderData)</code></a></li><li><a href="#Order.saveOrder(struct Order.Data,bytes32)"><code class="function-signature">saveOrder(struct Order.Data _orderData, bytes32 _tradeGroupId)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Order.create(contract IAugur,address,uint256,enum Order.Types,uint256,uint256,contract IMarket,bytes32,bytes32,contract IERC20)"><code class="function-signature">create(contract IAugur _augur, address _creator, uint256 _outcome, enum Order.Types _type, uint256 _attoshares, uint256 _price, contract IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, contract IERC20 _kycToken)</code></a></li><li><a href="#Order.getOrderId(struct Order.Data)"><code class="function-signature">getOrderId(struct Order.Data _orderData)</code></a></li><li><a href="#Order.getOrderTradingTypeFromMakerDirection(enum Order.TradeDirections)"><code class="function-signature">getOrderTradingTypeFromMakerDirection(enum Order.TradeDirections _creatorDirection)</code></a></li><li><a href="#Order.getOrderTradingTypeFromFillerDirection(enum Order.TradeDirections)"><code class="function-signature">getOrderTradingTypeFromFillerDirection(enum Order.TradeDirections _fillerDirection)</code></a></li><li><a href="#Order.escrowFunds(struct Order.Data)"><code class="function-signature">escrowFunds(struct Order.Data _orderData)</code></a></li><li><a href="#Order.saveOrder(struct Order.Data,bytes32)"><code class="function-signature">saveOrder(struct Order.Data _orderData, bytes32 _tradeGroupId)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Order.create(contract IAugur,address,uint256,enum Order.Types,uint256,uint256,contract IMarket,bytes32,bytes32,bool,contract IERC20)"></a><code class="function-signature">create(contract IAugur _augur, address _creator, uint256 _outcome, enum Order.Types _type, uint256 _attoshares, uint256 _price, contract IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">struct Order.Data</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Order.create(contract IAugur,address,uint256,enum Order.Types,uint256,uint256,contract IMarket,bytes32,bytes32,contract IERC20)"></a><code class="function-signature">create(contract IAugur _augur, address _creator, uint256 _outcome, enum Order.Types _type, uint256 _attoshares, uint256 _price, contract IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">struct Order.Data</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2110,7 +2122,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Reporting.getDesignatedReportingDurationSeconds()"><code class="function-signature">getDesignatedReportingDurationSeconds()</code></a></li><li><a href="#Reporting.getInitialDisputeRoundDurationSeconds()"><code class="function-signature">getInitialDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getDisputeRoundDurationSeconds()"><code class="function-signature">getDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getForkDurationSeconds()"><code class="function-signature">getForkDurationSeconds()</code></a></li><li><a href="#Reporting.getBaseMarketDurationMaximum()"><code class="function-signature">getBaseMarketDurationMaximum()</code></a></li><li><a href="#Reporting.getUpgradeCadence()"><code class="function-signature">getUpgradeCadence()</code></a></li><li><a href="#Reporting.getInitialUpgradeTimestamp()"><code class="function-signature">getInitialUpgradeTimestamp()</code></a></li><li><a href="#Reporting.getDefaultValidityBond()"><code class="function-signature">getDefaultValidityBond()</code></a></li><li><a href="#Reporting.getValidityBondFloor()"><code class="function-signature">getValidityBondFloor()</code></a></li><li><a href="#Reporting.getTargetInvalidMarketsDivisor()"><code class="function-signature">getTargetInvalidMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetIncorrectDesignatedReportMarketsDivisor()"><code class="function-signature">getTargetIncorrectDesignatedReportMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetDesignatedReportNoShowsDivisor()"><code class="function-signature">getTargetDesignatedReportNoShowsDivisor()</code></a></li><li><a href="#Reporting.getTargetRepMarketCapMultiplier()"><code class="function-signature">getTargetRepMarketCapMultiplier()</code></a></li><li><a href="#Reporting.getMaximumReportingFeeDivisor()"><code class="function-signature">getMaximumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getMinimumReportingFeeDivisor()"><code class="function-signature">getMinimumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getDefaultReportingFeeDivisor()"><code class="function-signature">getDefaultReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getInitialREPSupply()"><code class="function-signature">getInitialREPSupply()</code></a></li><li><a href="#Reporting.getForkThresholdDivisor()"><code class="function-signature">getForkThresholdDivisor()</code></a></li><li><a href="#Reporting.getMaximumDisputeRounds()"><code class="function-signature">getMaximumDisputeRounds()</code></a></li><li><a href="#Reporting.getMinimumSlowRounds()"><code class="function-signature">getMinimumSlowRounds()</code></a></li><li><a href="#Reporting.getDSRToggleRewardInAttoREP()"><code class="function-signature">getDSRToggleRewardInAttoREP()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Reporting.getDesignatedReportingDurationSeconds()"><code class="function-signature">getDesignatedReportingDurationSeconds()</code></a></li><li><a href="#Reporting.getInitialDisputeRoundDurationSeconds()"><code class="function-signature">getInitialDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getDisputeWindowBufferSeconds()"><code class="function-signature">getDisputeWindowBufferSeconds()</code></a></li><li><a href="#Reporting.getDisputeRoundDurationSeconds()"><code class="function-signature">getDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getForkDurationSeconds()"><code class="function-signature">getForkDurationSeconds()</code></a></li><li><a href="#Reporting.getBaseMarketDurationMaximum()"><code class="function-signature">getBaseMarketDurationMaximum()</code></a></li><li><a href="#Reporting.getUpgradeCadence()"><code class="function-signature">getUpgradeCadence()</code></a></li><li><a href="#Reporting.getInitialUpgradeTimestamp()"><code class="function-signature">getInitialUpgradeTimestamp()</code></a></li><li><a href="#Reporting.getDefaultValidityBond()"><code class="function-signature">getDefaultValidityBond()</code></a></li><li><a href="#Reporting.getValidityBondFloor()"><code class="function-signature">getValidityBondFloor()</code></a></li><li><a href="#Reporting.getTargetInvalidMarketsDivisor()"><code class="function-signature">getTargetInvalidMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetIncorrectDesignatedReportMarketsDivisor()"><code class="function-signature">getTargetIncorrectDesignatedReportMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetDesignatedReportNoShowsDivisor()"><code class="function-signature">getTargetDesignatedReportNoShowsDivisor()</code></a></li><li><a href="#Reporting.getTargetRepMarketCapMultiplier()"><code class="function-signature">getTargetRepMarketCapMultiplier()</code></a></li><li><a href="#Reporting.getMaximumReportingFeeDivisor()"><code class="function-signature">getMaximumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getMinimumReportingFeeDivisor()"><code class="function-signature">getMinimumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getDefaultReportingFeeDivisor()"><code class="function-signature">getDefaultReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getInitialREPSupply()"><code class="function-signature">getInitialREPSupply()</code></a></li><li><a href="#Reporting.getForkThresholdDivisor()"><code class="function-signature">getForkThresholdDivisor()</code></a></li><li><a href="#Reporting.getMaximumDisputeRounds()"><code class="function-signature">getMaximumDisputeRounds()</code></a></li><li><a href="#Reporting.getMinimumSlowRounds()"><code class="function-signature">getMinimumSlowRounds()</code></a></li></ul></div>
 
 
 
@@ -2121,6 +2133,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="Reporting.getInitialDisputeRoundDurationSeconds()"></a><code class="function-signature">getInitialDisputeRoundDurationSeconds() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Reporting.getDisputeWindowBufferSeconds()"></a><code class="function-signature">getDisputeWindowBufferSeconds() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2229,12 +2247,6 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="Reporting.getMinimumSlowRounds()"></a><code class="function-signature">getMinimumSlowRounds() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Reporting.getDSRToggleRewardInAttoREP()"></a><code class="function-signature">getDSRToggleRewardInAttoREP() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2597,6 +2609,526 @@ Make a call on a contract without throwing if the function does not exist.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ERC1820Registry.ManagerChanged(address,address)"></a><code class="function-signature">ManagerChanged(address addr, address newManager)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `BaseSafe`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BaseSafe.setupSafe(address[],uint256,address,bytes)"><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="BaseSafe.setupSafe(address[],uint256,address,bytes)"></a><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code><span class="function-visibility">internal</span></h4>
+
+Setup function sets initial storage of contract.
+ @param _owners List of Safe owners.
+ @param _threshold Number of required confirmations for a Safe transaction.
+ @param to Contract address for optional delegate call.
+ @param data Data payload for optional delegate call.
+
+
+
+
+
+### `Enum`
+
+
+
+<div class="contract-index"></div>
+
+
+
+
+
+### `EtherPaymentFallback`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="EtherPaymentFallback.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+Fallback function accepts Ether transactions.
+
+
+
+
+
+### `Executor`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"></a><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.executeCall(address,uint256,bytes,uint256)"></a><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.executeDelegateCall(address,bytes,uint256)"></a><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.executeCreate(bytes)"></a><code class="function-signature">executeCreate(bytes data) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.ContractCreation(address)"></a><code class="function-signature">ContractCreation(address newContract)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `GnosisSafe`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafe.setup(address[],uint256,address,bytes,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li><li><a href="#GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures)</code></a></li><li><a href="#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code></a></li><li><a href="#GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#GnosisSafe.approveHash(bytes32)"><code class="function-signature">approveHash(bytes32 hashToApprove)</code></a></li><li><a href="#GnosisSafe.signMessage(bytes)"><code class="function-signature">signMessage(bytes _data)</code></a></li><li><a href="#GnosisSafe.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#GnosisSafe.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes message)</code></a></li><li><a href="#GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li><a href="#GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li class="inherited"><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li><li class="inherited"><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li class="inherited"><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li><li class="inherited"><a href="#BaseSafe.setupSafe(address[],uint256,address,bytes)"><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GnosisSafe.ExecutionFailed(bytes32)"><code class="function-signature">ExecutionFailed(bytes32 txHash)</code></a></li><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.setup(address[],uint256,address,bytes,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
+
+Setup function sets initial storage of contract.
+ @param _owners List of Safe owners.
+ @param _threshold Number of required confirmations for a Safe transaction.
+ @param to Contract address for optional delegate call.
+ @param data Data payload for optional delegate call.
+ @param paymentToken Token that should be used for the payment (0 is ETH)
+ @param payment Value that should be paid
+ @param paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"></a><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+Allows to execute a Safe transaction confirmed by required number of owners and then pays the account that submitted the transaction.
+      Note: The fees are always transfered, even if the user transaction fails.
+ @param to Destination address of Safe transaction.
+ @param value Ether value of Safe transaction.
+ @param data Data payload of Safe transaction.
+ @param operation Operation type of Safe transaction.
+ @param safeTxGas Gas that should be used for the Safe transaction.
+ @param baseGas Gas costs for that are indipendent of the transaction execution(e.g. base transaction fee, signature check, payment of the refund)
+ @param gasPrice Gas price that should be used for the payment calculation.
+ @param gasToken Token address (or 0 if ETH) that is used for the payment.
+ @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+ @param signatures Packed signature data ({bytes32 r}{bytes32 s}{uint8 v})
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"></a><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code><span class="function-visibility">internal</span></h4>
+
+Checks whether the signature provided is valid for the provided data, hash. Will revert otherwise.
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Allows to estimate a Safe transaction.
+      This method is only meant for estimation purpose, therfore two different protection mechanism against execution in a transaction have been made:
+      1.) The method can only be called from the safe itself
+      2.) The response is returned with a revert
+      When estimating set `from` to the address of the safe.
+      Since the `estimateGas` function includes refunds, call this method to get an estimated of the costs that are deducted from the safe with [`execTransaction`](.#GnosisSafe.execTransaction(address,uint256,bytes,enum%20Enum.Operation,uint256,uint256,uint256,address,address%20payable,bytes))
+ @param to Destination address of Safe transaction.
+ @param value Ether value of Safe transaction.
+ @param data Data payload of Safe transaction.
+ @param operation Operation type of Safe transaction.
+ @return Estimate without refunds and overhead fees (base transaction and payload data gas costs).
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.approveHash(bytes32)"></a><code class="function-signature">approveHash(bytes32 hashToApprove)</code><span class="function-visibility">external</span></h4>
+
+Marks a hash as approved. This can be used to validate a hash that is used by a signature.
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.signMessage(bytes)"></a><code class="function-signature">signMessage(bytes _data)</code><span class="function-visibility">external</span></h4>
+
+Marks a message as signed
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Should return whether the signature provided is valid for the provided data
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.getMessageHash(bytes)"></a><code class="function-signature">getMessageHash(bytes message) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+Returns hash of a message that can be signed by owners.
+ @param message Message that should be hashed
+ @return Message hash.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"></a><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Returns the bytes that are hashed to be signed by owners.
+ @param to Destination address.
+ @param value Ether value.
+ @param data Data payload.
+ @param operation Operation type.
+ @param safeTxGas Fas that should be used for the safe transaction.
+ @param baseGas Gas costs for data used to trigger the safe transaction.
+ @param gasPrice Maximum gas price that should be used for this transaction.
+ @param gasToken Token address (or 0 if ETH) that is used for the payment.
+ @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+ @param _nonce Transaction nonce.
+ @return Transaction hash bytes.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"></a><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+Returns hash to be signed by owners.
+ @param to Destination address.
+ @param value Ether value.
+ @param data Data payload.
+ @param operation Operation type.
+ @param safeTxGas Fas that should be used for the safe transaction.
+ @param baseGas Gas costs for data used to trigger the safe transaction.
+ @param gasPrice Maximum gas price that should be used for this transaction.
+ @param gasToken Token address (or 0 if ETH) that is used for the payment.
+ @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+ @param _nonce Transaction nonce.
+ @return Transaction hash.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionFailed(bytes32)"></a><code class="function-signature">ExecutionFailed(bytes32 txHash)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `ISignatureValidator`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISignatureValidator.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ISignatureValidator.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Should return whether the signature provided is valid for the provided data
+
+
+
+
+
+
+### `MasterCopy`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MasterCopy.changeMasterCopy(address)"></a><code class="function-signature">changeMasterCopy(address _masterCopy)</code><span class="function-visibility">public</span></h4>
+
+Allows to upgrade the contract. This can only be done via a Safe transaction.
+ @param _masterCopy New contract address.
+
+
+
+
+
+### `Module`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Module.setManager()"><code class="function-signature">setManager()</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Module.setManager()"></a><code class="function-signature">setManager()</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `ModuleManager`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.setupModules(address,bytes)"></a><code class="function-signature">setupModules(address to, bytes data)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.enableModule(contract Module)"></a><code class="function-signature">enableModule(contract Module module)</code><span class="function-visibility">public</span></h4>
+
+Allows to add a module to the whitelist.
+      This can only be done via a Safe transaction.
+ @param module Module to be whitelisted.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.disableModule(contract Module,contract Module)"></a><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code><span class="function-visibility">public</span></h4>
+
+Allows to remove a module from the whitelist.
+      This can only be done via a Safe transaction.
+ @param prevModule Module that pointed to the module to be removed in the linked list
+ @param module Module to be removed.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Allows a Module to execute a Safe transaction without any further confirmations.
+ @param to Destination address of module transaction.
+ @param value Ether value of module transaction.
+ @param data Data payload of module transaction.
+ @param operation Operation type of module transaction.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.getModules()"></a><code class="function-signature">getModules() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+Returns array of modules.
+ @return Array of modules.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.EnabledModule(contract Module)"></a><code class="function-signature">EnabledModule(contract Module module)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.DisabledModule(contract Module)"></a><code class="function-signature">DisabledModule(contract Module module)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `OwnerManager`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.setupOwners(address[],uint256)"></a><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code><span class="function-visibility">internal</span></h4>
+
+Setup function sets initial storage of contract.
+ @param _owners List of Safe owners.
+ @param _threshold Number of required confirmations for a Safe transaction.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.addOwnerWithThreshold(address,uint256)"></a><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code><span class="function-visibility">public</span></h4>
+
+Allows to add a new owner to the Safe and update the threshold at the same time.
+      This can only be done via a Safe transaction.
+ @param owner New owner address.
+ @param _threshold New threshold.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.removeOwner(address,address,uint256)"></a><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code><span class="function-visibility">public</span></h4>
+
+Allows to remove an owner from the Safe and update the threshold at the same time.
+      This can only be done via a Safe transaction.
+ @param prevOwner Owner that pointed to the owner to be removed in the linked list
+ @param owner Owner address to be removed.
+ @param _threshold New threshold.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.swapOwner(address,address,address)"></a><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code><span class="function-visibility">public</span></h4>
+
+Allows to swap/replace an owner from the Safe with another address.
+      This can only be done via a Safe transaction.
+ @param prevOwner Owner that pointed to the owner to be replaced in the linked list
+ @param oldOwner Owner address to be replaced.
+ @param newOwner New owner address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.changeThreshold(uint256)"></a><code class="function-signature">changeThreshold(uint256 _threshold)</code><span class="function-visibility">public</span></h4>
+
+Allows to update the number of required confirmations by Safe owners.
+      This can only be done via a Safe transaction.
+ @param _threshold New threshold.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.getThreshold()"></a><code class="function-signature">getThreshold() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.isOwner(address)"></a><code class="function-signature">isOwner(address owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+Returns array of owners.
+ @return Array of Safe owners.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.AddedOwner(address)"></a><code class="function-signature">AddedOwner(address owner)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.RemovedOwner(address)"></a><code class="function-signature">RemovedOwner(address owner)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.ChangedThreshold(uint256)"></a><code class="function-signature">ChangedThreshold(uint256 threshold)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `SafeMath`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SafeMath.mul(uint256,uint256)"><code class="function-signature">mul(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.div(uint256,uint256)"><code class="function-signature">div(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.sub(uint256,uint256)"><code class="function-signature">sub(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.add(uint256,uint256)"><code class="function-signature">add(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.mod(uint256,uint256)"><code class="function-signature">mod(uint256 a, uint256 b)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.mul(uint256,uint256)"></a><code class="function-signature">mul(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Multiplies two numbers, reverts on overflow.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.div(uint256,uint256)"></a><code class="function-signature">div(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Integer division of two numbers truncating the quotient, reverts on division by zero.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.sub(uint256,uint256)"></a><code class="function-signature">sub(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Subtracts two numbers, reverts on overflow (i.e. if subtrahend is greater than minuend).
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.add(uint256,uint256)"></a><code class="function-signature">add(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Adds two numbers, reverts on overflow.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.mod(uint256,uint256)"></a><code class="function-signature">mod(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Divides two numbers and returns the remainder (unsigned integer modulo),
+reverts when dividing by zero.
+
+
+
+
+
+### `SecuredTokenTransfer`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SecuredTokenTransfer.transferToken(address,address,uint256)"></a><code class="function-signature">transferToken(address token, address receiver, uint256 amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Transfers a token and returns if it was a success
+ @param token Token that should be transferred
+ @param receiver Receiver to whom the token should be transferred
+ @param amount The amount of tokens that should be transferred
+
+
+
+
+
+### `SelfAuthorized`
+
+
+
+<div class="contract-index"></div>
+
+
+
+
+
+### `SignatureDecoder`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SignatureDecoder.recoverKey(bytes32,bytes,uint256)"></a><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Recovers address who signed the message
+ @param messageHash operation ethereum signed message hash
+ @param messageSignature message `txHash` signature
+ @param pos which signature to read
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SignatureDecoder.signatureSplit(bytes,uint256)"></a><code class="function-signature">signatureSplit(bytes signatures, uint256 pos) <span class="return-arrow">→</span> <span class="return-type">uint8,bytes32,bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
+ @notice Make sure to peform a bounds check for @param pos, to avoid out of bounds access on @param signatures
+ @param pos which signature to read. A prior bounds check of this parameter should be performed, to avoid out of bounds access
+ @param signatures concatenated rsv signatures
 
 
 
@@ -3371,6 +3903,95 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 
 
 
+### `Proxy`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Proxy.constructor(address)"><code class="function-signature">constructor(address _masterCopy)</code></a></li><li><a href="#Proxy.fallback()"><code class="function-signature">fallback()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Proxy.constructor(address)"></a><code class="function-signature">constructor(address _masterCopy)</code><span class="function-visibility">public</span></h4>
+
+Constructor function sets address of master copy contract.
+ @param _masterCopy Master copy address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Proxy.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+Fallback function forwards all transactions and returns all received return data.
+
+
+
+
+
+### `ProxyFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxy(address,bytes)"></a><code class="function-signature">createProxy(address masterCopy, bytes data) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
+
+Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
+ @param masterCopy Address of master copy.
+ @param data Payload for message call sent to new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.proxyRuntimeCode()"></a><code class="function-signature">proxyRuntimeCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Allows to retrieve the runtime code of a deployed Proxy. This can be used to check that the expected Proxy was deployed.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.proxyCreationCode()"></a><code class="function-signature">proxyCreationCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Allows to retrieve the creation code used for the Proxy deployment. With this it is easily possible to calculate predicted address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">internal</span></h4>
+
+Allows to create new proxy contact using CREATE2 but it doesn&#x27;t run the initializer.
+      This method is only meant as an utility to be called from other methods
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
+
+Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"></a><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">external</span></h4>
+
+Allows to get the address for a new proxy contact created via [`createProxyWithNonce`](.#ProxyFactory.createProxyWithNonce(address,bytes,uint256))
+      This method is only meant for address calculation purpose when you use an initializer that would revert,
+      therefore the response is returned with a revert. When calling this method set `from` to the address of the proxy factory.
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.ProxyCreation(contract Proxy)"></a><code class="function-signature">ProxyCreation(contract Proxy proxy)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
 ### `IRepPriceOracle`
 
 
@@ -3744,7 +4365,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProfitLoss.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#IProfitLoss.recordFrozenFundChange(contract IMarket,address,uint256,int256)"><code class="function-signature">recordFrozenFundChange(contract IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta)</code></a></li><li><a href="#IProfitLoss.recordTrade(contract IMarket,address,address,uint256,int256,int256,uint256,uint256,uint256,uint256)"><code class="function-signature">recordTrade(contract IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares)</code></a></li><li><a href="#IProfitLoss.recordClaim(contract IMarket,address)"><code class="function-signature">recordClaim(contract IMarket _market, address _account)</code></a></li><li><a href="#IProfitLoss.recordExternalTransfer(address,address,uint256)"><code class="function-signature">recordExternalTransfer(address _source, address _destination, uint256 _value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProfitLoss.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#IProfitLoss.recordFrozenFundChange(contract IMarket,address,uint256,int256)"><code class="function-signature">recordFrozenFundChange(contract IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta)</code></a></li><li><a href="#IProfitLoss.adjustTraderProfitForFees(contract IMarket,address,uint256,uint256)"><code class="function-signature">adjustTraderProfitForFees(contract IMarket _market, address _trader, uint256 _outcome, uint256 _fees)</code></a></li><li><a href="#IProfitLoss.recordTrade(contract IMarket,address,address,uint256,int256,int256,uint256,uint256,uint256,uint256)"><code class="function-signature">recordTrade(contract IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares)</code></a></li><li><a href="#IProfitLoss.recordClaim(contract IMarket,address,uint256[])"><code class="function-signature">recordClaim(contract IMarket _market, address _account, uint256[] _outcomeFees)</code></a></li><li><a href="#IProfitLoss.recordExternalTransfer(address,address,uint256)"><code class="function-signature">recordExternalTransfer(address _source, address _destination, uint256 _value)</code></a></li></ul></div>
 
 
 
@@ -3760,13 +4381,19 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.adjustTraderProfitForFees(contract IMarket,address,uint256,uint256)"></a><code class="function-signature">adjustTraderProfitForFees(contract IMarket _market, address _trader, uint256 _outcome, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="IProfitLoss.recordTrade(contract IMarket,address,address,uint256,int256,int256,uint256,uint256,uint256,uint256)"></a><code class="function-signature">recordTrade(contract IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.recordClaim(contract IMarket,address)"></a><code class="function-signature">recordClaim(contract IMarket _market, address _account) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.recordClaim(contract IMarket,address,uint256[])"></a><code class="function-signature">recordClaim(contract IMarket _market, address _account, uint256[] _outcomeFees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3784,7 +4411,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Orders.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#Orders.getMarket(bytes32)"><code class="function-signature">getMarket(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderType(bytes32)"><code class="function-signature">getOrderType(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOutcome(bytes32)"><code class="function-signature">getOutcome(bytes32 _orderId)</code></a></li><li><a href="#Orders.getKYCToken(bytes32)"><code class="function-signature">getKYCToken(bytes32 _orderId)</code></a></li><li><a href="#Orders.getAmount(bytes32)"><code class="function-signature">getAmount(bytes32 _orderId)</code></a></li><li><a href="#Orders.getPrice(bytes32)"><code class="function-signature">getPrice(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderCreator(bytes32)"><code class="function-signature">getOrderCreator(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderSharesEscrowed(bytes32)"><code class="function-signature">getOrderSharesEscrowed(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderMoneyEscrowed(bytes32)"><code class="function-signature">getOrderMoneyEscrowed(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderDataForLogs(bytes32)"><code class="function-signature">getOrderDataForLogs(bytes32 _orderId)</code></a></li><li><a href="#Orders.getTotalEscrowed(contract IMarket)"><code class="function-signature">getTotalEscrowed(contract IMarket _market)</code></a></li><li><a href="#Orders.getLastOutcomePrice(contract IMarket,uint256)"><code class="function-signature">getLastOutcomePrice(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#Orders.getBetterOrderId(bytes32)"><code class="function-signature">getBetterOrderId(bytes32 _orderId)</code></a></li><li><a href="#Orders.getWorseOrderId(bytes32)"><code class="function-signature">getWorseOrderId(bytes32 _orderId)</code></a></li><li><a href="#Orders.getBestOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getBestOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.getWorstOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getWorstOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.getOrderId(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,uint256,contract IERC20)"><code class="function-signature">getOrderId(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.isBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li><a href="#Orders.isWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li><a href="#Orders.assertIsNotBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _betterOrderId)</code></a></li><li><a href="#Orders.assertIsNotWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _worseOrderId)</code></a></li><li><a href="#Orders.saveOrder(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,bytes32,bytes32,bytes32,contract IERC20)"><code class="function-signature">saveOrder(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.removeOrder(bytes32)"><code class="function-signature">removeOrder(bytes32 _orderId)</code></a></li><li><a href="#Orders.recordFillOrder(bytes32,uint256,uint256,uint256)"><code class="function-signature">recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill)</code></a></li><li><a href="#Orders.setPrice(contract IMarket,uint256,uint256)"><code class="function-signature">setPrice(contract IMarket _market, uint256 _outcome, uint256 _price)</code></a></li><li><a href="#Orders.setOrderPrice(bytes32,uint256,bytes32,bytes32)"><code class="function-signature">setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li><li><a href="#Orders.ascendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">ascendOrderList(enum Order.Types _type, uint256 _price, bytes32 _lowestOrderId)</code></a></li><li><a href="#Orders.descendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">descendOrderList(enum Order.Types _type, uint256 _price, bytes32 _highestOrderId)</code></a></li><li><a href="#Orders.findBoundingOrders(enum Order.Types,uint256,bytes32,bytes32,bytes32,bytes32)"><code class="function-signature">findBoundingOrders(enum Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Orders.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#Orders.getMarket(bytes32)"><code class="function-signature">getMarket(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderType(bytes32)"><code class="function-signature">getOrderType(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOutcome(bytes32)"><code class="function-signature">getOutcome(bytes32 _orderId)</code></a></li><li><a href="#Orders.getKYCToken(bytes32)"><code class="function-signature">getKYCToken(bytes32 _orderId)</code></a></li><li><a href="#Orders.getAmount(bytes32)"><code class="function-signature">getAmount(bytes32 _orderId)</code></a></li><li><a href="#Orders.getPrice(bytes32)"><code class="function-signature">getPrice(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderCreator(bytes32)"><code class="function-signature">getOrderCreator(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderSharesEscrowed(bytes32)"><code class="function-signature">getOrderSharesEscrowed(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderMoneyEscrowed(bytes32)"><code class="function-signature">getOrderMoneyEscrowed(bytes32 _orderId)</code></a></li><li><a href="#Orders.getOrderDataForLogs(bytes32)"><code class="function-signature">getOrderDataForLogs(bytes32 _orderId)</code></a></li><li><a href="#Orders.getTotalEscrowed(contract IMarket)"><code class="function-signature">getTotalEscrowed(contract IMarket _market)</code></a></li><li><a href="#Orders.getLastOutcomePrice(contract IMarket,uint256)"><code class="function-signature">getLastOutcomePrice(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#Orders.getBetterOrderId(bytes32)"><code class="function-signature">getBetterOrderId(bytes32 _orderId)</code></a></li><li><a href="#Orders.getWorseOrderId(bytes32)"><code class="function-signature">getWorseOrderId(bytes32 _orderId)</code></a></li><li><a href="#Orders.getBestOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getBestOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.getWorstOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getWorstOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.getOrderId(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,uint256,contract IERC20)"><code class="function-signature">getOrderId(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.isBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li><a href="#Orders.isWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li><a href="#Orders.assertIsNotBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _betterOrderId)</code></a></li><li><a href="#Orders.assertIsNotWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _worseOrderId)</code></a></li><li><a href="#Orders.saveOrder(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,bytes32,bytes32,bytes32,contract IERC20)"><code class="function-signature">saveOrder(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, contract IERC20 _kycToken)</code></a></li><li><a href="#Orders.removeOrder(bytes32)"><code class="function-signature">removeOrder(bytes32 _orderId)</code></a></li><li><a href="#Orders.recordFillOrder(bytes32,uint256,uint256,uint256)"><code class="function-signature">recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill)</code></a></li><li><a href="#Orders.setPrice(contract IMarket,uint256,uint256)"><code class="function-signature">setPrice(contract IMarket _market, uint256 _outcome, uint256 _price)</code></a></li><li><a href="#Orders.ascendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">ascendOrderList(enum Order.Types _type, uint256 _price, bytes32 _lowestOrderId)</code></a></li><li><a href="#Orders.descendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">descendOrderList(enum Order.Types _type, uint256 _price, bytes32 _highestOrderId)</code></a></li><li><a href="#Orders.findBoundingOrders(enum Order.Types,uint256,bytes32,bytes32,bytes32,bytes32)"><code class="function-signature">findBoundingOrders(enum Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -3944,12 +4571,6 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Orders.setOrderPrice(bytes32,uint256,bytes32,bytes32)"></a><code class="function-signature">setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="Orders.ascendOrderList(enum Order.Types,uint256,bytes32)"></a><code class="function-signature">ascendOrderList(enum Order.Types _type, uint256 _price, bytes32 _lowestOrderId) <span class="return-arrow">→</span> <span class="return-type">bytes32,bytes32</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -4050,7 +4671,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestOrders.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#TestOrders.testSaveOrder(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,bytes32,bytes32,bytes32,contract IERC20)"><code class="function-signature">testSaveOrder(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, contract IERC20 _kycToken)</code></a></li><li><a href="#TestOrders.testRemoveOrder(bytes32)"><code class="function-signature">testRemoveOrder(bytes32 _orderId)</code></a></li><li><a href="#TestOrders.testRecordFillOrder(bytes32,uint256,uint256,uint256)"><code class="function-signature">testRecordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill)</code></a></li><li class="inherited"><a href="#Orders.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li class="inherited"><a href="#Orders.getMarket(bytes32)"><code class="function-signature">getMarket(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderType(bytes32)"><code class="function-signature">getOrderType(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOutcome(bytes32)"><code class="function-signature">getOutcome(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getKYCToken(bytes32)"><code class="function-signature">getKYCToken(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getAmount(bytes32)"><code class="function-signature">getAmount(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getPrice(bytes32)"><code class="function-signature">getPrice(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderCreator(bytes32)"><code class="function-signature">getOrderCreator(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderSharesEscrowed(bytes32)"><code class="function-signature">getOrderSharesEscrowed(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderMoneyEscrowed(bytes32)"><code class="function-signature">getOrderMoneyEscrowed(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderDataForLogs(bytes32)"><code class="function-signature">getOrderDataForLogs(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getTotalEscrowed(contract IMarket)"><code class="function-signature">getTotalEscrowed(contract IMarket _market)</code></a></li><li class="inherited"><a href="#Orders.getLastOutcomePrice(contract IMarket,uint256)"><code class="function-signature">getLastOutcomePrice(contract IMarket _market, uint256 _outcome)</code></a></li><li class="inherited"><a href="#Orders.getBetterOrderId(bytes32)"><code class="function-signature">getBetterOrderId(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getWorseOrderId(bytes32)"><code class="function-signature">getWorseOrderId(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getBestOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getBestOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.getWorstOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getWorstOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.getOrderId(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,uint256,contract IERC20)"><code class="function-signature">getOrderId(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.isBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.isWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.assertIsNotBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _betterOrderId)</code></a></li><li class="inherited"><a href="#Orders.assertIsNotWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Orders.saveOrder(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,bytes32,bytes32,bytes32,contract IERC20)"><code class="function-signature">saveOrder(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.removeOrder(bytes32)"><code class="function-signature">removeOrder(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.recordFillOrder(bytes32,uint256,uint256,uint256)"><code class="function-signature">recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill)</code></a></li><li class="inherited"><a href="#Orders.setPrice(contract IMarket,uint256,uint256)"><code class="function-signature">setPrice(contract IMarket _market, uint256 _outcome, uint256 _price)</code></a></li><li class="inherited"><a href="#Orders.setOrderPrice(bytes32,uint256,bytes32,bytes32)"><code class="function-signature">setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Orders.ascendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">ascendOrderList(enum Order.Types _type, uint256 _price, bytes32 _lowestOrderId)</code></a></li><li class="inherited"><a href="#Orders.descendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">descendOrderList(enum Order.Types _type, uint256 _price, bytes32 _highestOrderId)</code></a></li><li class="inherited"><a href="#Orders.findBoundingOrders(enum Order.Types,uint256,bytes32,bytes32,bytes32,bytes32)"><code class="function-signature">findBoundingOrders(enum Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestOrders.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#TestOrders.testSaveOrder(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,bytes32,bytes32,bytes32,contract IERC20)"><code class="function-signature">testSaveOrder(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, contract IERC20 _kycToken)</code></a></li><li><a href="#TestOrders.testRemoveOrder(bytes32)"><code class="function-signature">testRemoveOrder(bytes32 _orderId)</code></a></li><li><a href="#TestOrders.testRecordFillOrder(bytes32,uint256,uint256,uint256)"><code class="function-signature">testRecordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill)</code></a></li><li class="inherited"><a href="#Orders.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li class="inherited"><a href="#Orders.getMarket(bytes32)"><code class="function-signature">getMarket(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderType(bytes32)"><code class="function-signature">getOrderType(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOutcome(bytes32)"><code class="function-signature">getOutcome(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getKYCToken(bytes32)"><code class="function-signature">getKYCToken(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getAmount(bytes32)"><code class="function-signature">getAmount(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getPrice(bytes32)"><code class="function-signature">getPrice(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderCreator(bytes32)"><code class="function-signature">getOrderCreator(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderSharesEscrowed(bytes32)"><code class="function-signature">getOrderSharesEscrowed(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderMoneyEscrowed(bytes32)"><code class="function-signature">getOrderMoneyEscrowed(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getOrderDataForLogs(bytes32)"><code class="function-signature">getOrderDataForLogs(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getTotalEscrowed(contract IMarket)"><code class="function-signature">getTotalEscrowed(contract IMarket _market)</code></a></li><li class="inherited"><a href="#Orders.getLastOutcomePrice(contract IMarket,uint256)"><code class="function-signature">getLastOutcomePrice(contract IMarket _market, uint256 _outcome)</code></a></li><li class="inherited"><a href="#Orders.getBetterOrderId(bytes32)"><code class="function-signature">getBetterOrderId(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getWorseOrderId(bytes32)"><code class="function-signature">getWorseOrderId(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.getBestOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getBestOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.getWorstOrderId(enum Order.Types,contract IMarket,uint256,contract IERC20)"><code class="function-signature">getWorstOrderId(enum Order.Types _type, contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.getOrderId(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,uint256,contract IERC20)"><code class="function-signature">getOrderId(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.isBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.isWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">isWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.assertIsNotBetterPrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotBetterPrice(enum Order.Types _type, uint256 _price, bytes32 _betterOrderId)</code></a></li><li class="inherited"><a href="#Orders.assertIsNotWorsePrice(enum Order.Types,uint256,bytes32)"><code class="function-signature">assertIsNotWorsePrice(enum Order.Types _type, uint256 _price, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Orders.saveOrder(enum Order.Types,contract IMarket,uint256,uint256,address,uint256,uint256,uint256,bytes32,bytes32,bytes32,contract IERC20)"><code class="function-signature">saveOrder(enum Order.Types _type, contract IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="#Orders.removeOrder(bytes32)"><code class="function-signature">removeOrder(bytes32 _orderId)</code></a></li><li class="inherited"><a href="#Orders.recordFillOrder(bytes32,uint256,uint256,uint256)"><code class="function-signature">recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill)</code></a></li><li class="inherited"><a href="#Orders.setPrice(contract IMarket,uint256,uint256)"><code class="function-signature">setPrice(contract IMarket _market, uint256 _outcome, uint256 _price)</code></a></li><li class="inherited"><a href="#Orders.ascendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">ascendOrderList(enum Order.Types _type, uint256 _price, bytes32 _lowestOrderId)</code></a></li><li class="inherited"><a href="#Orders.descendOrderList(enum Order.Types,uint256,bytes32)"><code class="function-signature">descendOrderList(enum Order.Types _type, uint256 _price, bytes32 _highestOrderId)</code></a></li><li class="inherited"><a href="#Orders.findBoundingOrders(enum Order.Types,uint256,bytes32,bytes32,bytes32,bytes32)"><code class="function-signature">findBoundingOrders(enum Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -4143,6 +4764,357 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 <h4><a class="anchor" aria-hidden="true" id="TimeControlled.getTypeName()"></a><code class="function-signature">getTypeName() <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
 
 
+
+
+
+
+
+### `IExchange`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IExchange.getOrderInfo(struct IExchange.Order)"><code class="function-signature">getOrderInfo(struct IExchange.Order order)</code></a></li><li><a href="#IExchange.fillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#IExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IExchange.getOrderInfo(struct IExchange.Order)"></a><code class="function-signature">getOrderInfo(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.OrderInfo</span></code><span class="function-visibility">public</span></h4>
+
+Gets information about an order: status, hash, and amount filled.
+ @param order Order to gather information on.
+ @return OrderInfo Information about the order and its state.
+         See LibOrder.OrderInfo for a complete description.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IExchange.fillOrder(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
+
+Fills the input order.
+ @param order Order struct containing order specifications.
+ @param takerAssetFillAmount Desired amount of takerAsset to sell.
+ @param signature Proof that order has been created by maker.
+ @return Amounts filled and fees paid by maker and taker.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
+
+Fills an order with specified parameters and ECDSA signature.
+      Returns false if the transaction would otherwise revert.
+ @param order Order struct containing order specifications.
+ @param takerAssetFillAmount Desired amount of takerAsset to sell.
+ @param signature Proof that order has been created by maker.
+ @return Amounts filled and fees paid by maker and taker.
+
+
+
+
+
+### `IWallet`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWallet.isValidSignature(bytes32,bytes)"><code class="function-signature">isValidSignature(bytes32 hash, bytes signature)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWallet.isValidSignature(bytes32,bytes)"></a><code class="function-signature">isValidSignature(bytes32 hash, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+Verifies that a signature is valid.
+ @param hash Message hash that is signed.
+ @param signature Proof of signing.
+ @return Validity of order signature.
+
+
+
+
+
+### `ReentrancyGuard`
+
+
+
+<div class="contract-index"></div>
+
+
+
+
+
+### `ZeroXExchange`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXExchange.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#ZeroXExchange.addFillResults(struct IExchange.FillResults,struct IExchange.FillResults)"><code class="function-signature">addFillResults(struct IExchange.FillResults totalFillResults, struct IExchange.FillResults singleFillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.abiEncodeFillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">abiEncodeFillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.fillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)"><code class="function-signature">executeTransaction(uint256 salt, address signerAddress, bytes data, bytes signature)</code></a></li><li><a href="#ZeroXExchange.updateFilledState(struct IExchange.Order,address,bytes32,uint256,struct IExchange.FillResults)"><code class="function-signature">updateFilledState(struct IExchange.Order, address, bytes32 orderHash, uint256 orderTakerAssetFilledAmount, struct IExchange.FillResults fillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderInternal(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderInternal(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.assertValidFill(struct IExchange.Order,struct IExchange.OrderInfo,uint256,uint256,uint256)"><code class="function-signature">assertValidFill(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, uint256 takerAssetFillAmount, uint256 takerAssetFilledAmount, uint256 makerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.calculateFillResults(struct IExchange.Order,uint256)"><code class="function-signature">calculateFillResults(struct IExchange.Order order, uint256 takerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.hashZeroExTransaction(uint256,address,bytes)"><code class="function-signature">hashZeroExTransaction(uint256 salt, address signerAddress, bytes data)</code></a></li><li><a href="#ZeroXExchange.getOrderInfo(struct IExchange.Order)"><code class="function-signature">getOrderInfo(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.getOrderHash(struct IExchange.Order)"><code class="function-signature">getOrderHash(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashOrder(struct IExchange.Order)"><code class="function-signature">hashOrder(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashEIP712Message(bytes32)"><code class="function-signature">hashEIP712Message(bytes32 hashStruct)</code></a></li><li><a href="#ZeroXExchange.getCurrentContextAddress()"><code class="function-signature">getCurrentContextAddress()</code></a></li><li><a href="#ZeroXExchange.assertFillableOrder(struct IExchange.Order,struct IExchange.OrderInfo,address,bytes)"><code class="function-signature">assertFillableOrder(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, address takerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.safeGetPartialAmountFloor(uint256,uint256,uint256)"><code class="function-signature">safeGetPartialAmountFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.isRoundingErrorFloor(uint256,uint256,uint256)"><code class="function-signature">isRoundingErrorFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.dispatchTransferFrom(bytes,address,address,uint256)"><code class="function-signature">dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.isValidSignature(bytes32,address,bytes)"><code class="function-signature">isValidSignature(bytes32 hash, address signerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li><li><a href="#ZeroXExchange.readBytes32(bytes,uint256)"><code class="function-signature">readBytes32(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.isValidWalletSignature(bytes32,address,bytes)"><code class="function-signature">isValidWalletSignature(bytes32 hash, address walletAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.transferFrom(bytes,address,address,uint256)"><code class="function-signature">transferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.transferFromInternal(bytes,address,address,uint256)"><code class="function-signature">transferFromInternal(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li><a href="#ZeroXExchange.readBytes4(bytes,uint256)"><code class="function-signature">readBytes4(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.readAddress(bytes,uint256)"><code class="function-signature">readAddress(bytes b, uint256 index)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.addFillResults(struct IExchange.FillResults,struct IExchange.FillResults)"></a><code class="function-signature">addFillResults(struct IExchange.FillResults totalFillResults, struct IExchange.FillResults singleFillResults)</code><span class="function-visibility">internal</span></h4>
+
+Adds properties of both FillResults instances.
+      Modifies the first FillResults instance specified.
+ @param totalFillResults Fill results instance that will be added onto.
+ @param singleFillResults Fill results instance that will be added to totalFillResults.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
+
+Fills the input order.
+      Returns false if the transaction would otherwise revert.
+ @param order Order struct containing order specifications.
+ @param takerAssetFillAmount Desired amount of takerAsset to sell.
+ @param signature Proof that order has been created by maker.
+ @return Amounts filled and fees paid by maker and taker.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.abiEncodeFillOrder(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">abiEncodeFillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+ABI encodes calldata for [`fillOrder`](.#ZeroXExchange.fillOrder(struct%20IExchange.Order,uint256,bytes)).
+ @param order Order struct containing order specifications.
+ @param takerAssetFillAmount Desired amount of takerAsset to sell.
+ @param signature Proof that order has been created by maker.
+ @return ABI encoded calldata for [`fillOrder`](.#ZeroXExchange.fillOrder(struct%20IExchange.Order,uint256,bytes)).
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.fillOrder(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
+
+Fills the input order.
+ @param order Order struct containing order specifications.
+ @param takerAssetFillAmount Desired amount of takerAsset to sell.
+ @param signature Proof that order has been created by maker.
+ @return Amounts filled and fees paid by maker and taker.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)"></a><code class="function-signature">executeTransaction(uint256 salt, address signerAddress, bytes data, bytes signature)</code><span class="function-visibility">internal</span></h4>
+
+Executes an exchange method call in the context of signer.
+ @param salt Arbitrary number to ensure uniqueness of transaction hash.
+ @param signerAddress Address of transaction signer.
+ @param data AbiV2 encoded calldata.
+ @param signature Proof of signer transaction by signer.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.updateFilledState(struct IExchange.Order,address,bytes32,uint256,struct IExchange.FillResults)"></a><code class="function-signature">updateFilledState(struct IExchange.Order, address, bytes32 orderHash, uint256 orderTakerAssetFilledAmount, struct IExchange.FillResults fillResults)</code><span class="function-visibility">internal</span></h4>
+
+Updates state with results of a fill order.
+ @param orderTakerAssetFilledAmount Amount of order already filled.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.fillOrderInternal(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrderInternal(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">internal</span></h4>
+
+Fills the input order.
+ @param order Order struct containing order specifications.
+ @param takerAssetFillAmount Desired amount of takerAsset to sell.
+ @param signature Proof that order has been created by maker.
+ @return Amounts filled and fees paid by maker and taker.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.assertValidFill(struct IExchange.Order,struct IExchange.OrderInfo,uint256,uint256,uint256)"></a><code class="function-signature">assertValidFill(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, uint256 takerAssetFillAmount, uint256 takerAssetFilledAmount, uint256 makerAssetFilledAmount)</code><span class="function-visibility">internal</span></h4>
+
+Validates context for fillOrder. Succeeds or throws.
+ @param order to be filled.
+ @param orderInfo OrderStatus, orderHash, and amount already filled of order.
+ @param takerAssetFillAmount Desired amount of order to fill by taker.
+ @param takerAssetFilledAmount Amount of takerAsset that will be filled.
+ @param makerAssetFilledAmount Amount of makerAsset that will be transfered.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.calculateFillResults(struct IExchange.Order,uint256)"></a><code class="function-signature">calculateFillResults(struct IExchange.Order order, uint256 takerAssetFilledAmount) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">internal</span></h4>
+
+Calculates amounts filled and fees paid by maker and taker.
+ @param order to be filled.
+ @param takerAssetFilledAmount Amount of takerAsset that will be filled.
+ @return fillResults Amounts filled and fees paid by maker and taker.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.hashZeroExTransaction(uint256,address,bytes)"></a><code class="function-signature">hashZeroExTransaction(uint256 salt, address signerAddress, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+Calculates EIP712 hash of the Transaction.
+ @param salt Arbitrary number to ensure uniqueness of transaction hash.
+ @param signerAddress Address of transaction signer.
+ @param data AbiV2 encoded calldata.
+ @return EIP712 hash of the Transaction.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.getOrderInfo(struct IExchange.Order)"></a><code class="function-signature">getOrderInfo(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.OrderInfo</span></code><span class="function-visibility">public</span></h4>
+
+Gets information about an order: status, hash, and amount filled.
+ @param order Order to gather information on.
+ @return OrderInfo Information about the order and its state.
+         See LibOrder.OrderInfo for a complete description.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.getOrderHash(struct IExchange.Order)"></a><code class="function-signature">getOrderHash(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+Calculates Keccak-256 hash of the order.
+ @param order The order structure.
+ @return Keccak-256 EIP712 hash of the order.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.hashOrder(struct IExchange.Order)"></a><code class="function-signature">hashOrder(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+Calculates EIP712 hash of the order.
+ @param order The order structure.
+ @return EIP712 hash of the order.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.hashEIP712Message(bytes32)"></a><code class="function-signature">hashEIP712Message(bytes32 hashStruct) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+Calculates EIP712 encoding for a hash struct in this EIP712 Domain.
+ @param hashStruct The EIP712 hash struct.
+ @return EIP712 hash applied to this EIP712 Domain.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.getCurrentContextAddress()"></a><code class="function-signature">getCurrentContextAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+The current function will be called in the context of this address (either 0x transaction signer or `msg.sender`).
+      If calling a fill function, this address will represent the taker.
+      If calling a cancel function, this address will represent the maker.
+ @return Signer of 0x transaction if entry point is [`executeTransaction`](.#ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)).
+         `msg.sender` if entry point is any other function.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.assertFillableOrder(struct IExchange.Order,struct IExchange.OrderInfo,address,bytes)"></a><code class="function-signature">assertFillableOrder(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, address takerAddress, bytes signature)</code><span class="function-visibility">internal</span></h4>
+
+Validates context for fillOrder. Succeeds or throws.
+ @param order to be filled.
+ @param orderInfo OrderStatus, orderHash, and amount already filled of order.
+ @param takerAddress Address of order taker.
+ @param signature Proof that the orders was created by its maker.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.safeGetPartialAmountFloor(uint256,uint256,uint256)"></a><code class="function-signature">safeGetPartialAmountFloor(uint256 numerator, uint256 denominator, uint256 target) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Calculates partial value given a numerator and denominator rounded down.
+      Reverts if rounding error is &gt;= 0.1%
+ @param numerator Numerator.
+ @param denominator Denominator.
+ @param target Value to calculate partial of.
+ @return Partial value of target rounded down.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.isRoundingErrorFloor(uint256,uint256,uint256)"></a><code class="function-signature">isRoundingErrorFloor(uint256 numerator, uint256 denominator, uint256 target) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Checks if rounding error &gt;= 0.1% when rounding down.
+ @param numerator Numerator.
+ @param denominator Denominator.
+ @param target Value to multiply with numerator/denominator.
+ @return Rounding error is present.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.dispatchTransferFrom(bytes,address,address,uint256)"></a><code class="function-signature">dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">internal</span></h4>
+
+Forwards arguments to assetProxy and calls [`transferFrom`](.#ZeroXExchange.transferFrom(bytes,address,address,uint256)). Either succeeds or throws.
+ @param assetData Byte array encoded for the asset.
+ @param from Address to transfer token from.
+ @param to Address to transfer token to.
+ @param amount Amount of token to transfer.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.isValidSignature(bytes32,address,bytes)"></a><code class="function-signature">isValidSignature(bytes32 hash, address signerAddress, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Verifies that a hash has been signed by the given signer.
+ @param hash Any 32 byte hash.
+ @param signerAddress Address that should have signed the given hash.
+ @param signature Proof that the hash has been signed by signer.
+ @return True if the address recovered from the provided signature matches the input signer address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.popLastByte(bytes)"></a><code class="function-signature">popLastByte(bytes b) <span class="return-arrow">→</span> <span class="return-type">bytes1</span></code><span class="function-visibility">internal</span></h4>
+
+Pops the last byte off of a byte array by modifying its length.
+ @param b Byte array that will be modified.
+ @return The byte that was popped off.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.readBytes32(bytes,uint256)"></a><code class="function-signature">readBytes32(bytes b, uint256 index) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+Reads a bytes32 value from a position in a byte array.
+ @param b Byte array containing a bytes32 value.
+ @param index Index in byte array of bytes32 value.
+ @return bytes32 value from byte array.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.isValidWalletSignature(bytes32,address,bytes)"></a><code class="function-signature">isValidWalletSignature(bytes32 hash, address walletAddress, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Verifies signature using logic defined by Wallet contract.
+ @param hash Any 32 byte hash.
+ @param walletAddress Address that should have signed the given hash
+                      and defines its own signature verification method.
+ @param signature Proof that the hash has been signed by signer.
+ @return True if signature is valid for given wallet..
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.transferFrom(bytes,address,address,uint256)"></a><code class="function-signature">transferFrom(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">external</span></h4>
+
+Transfers assets. Either succeeds or throws.
+ @param assetData Encoded byte array.
+ @param from Address to transfer asset from.
+ @param to Address to transfer asset to.
+ @param amount Amount of asset to transfer.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.transferFromInternal(bytes,address,address,uint256)"></a><code class="function-signature">transferFromInternal(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">internal</span></h4>
+
+Internal version of [`transferFrom`](.#ZeroXExchange.transferFrom(bytes,address,address,uint256)).
+ @param assetData Encoded byte array.
+ @param from Address to transfer asset from.
+ @param to Address to transfer asset to.
+ @param amount Amount of asset to transfer.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.decodeERC20AssetData(bytes)"></a><code class="function-signature">decodeERC20AssetData(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address</span></code><span class="function-visibility">public</span></h4>
+
+Decode ERC-20 asset data from the format described in the AssetProxy contract specification.
+ @param assetData AssetProxy-compliant asset data describing an ERC-20 asset.
+ @return The ERC-20 AssetProxy identifier, and the address of the ERC-20
+ contract hosting this asset.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.readBytes4(bytes,uint256)"></a><code class="function-signature">readBytes4(bytes b, uint256 index) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">internal</span></h4>
+
+Reads an unpadded bytes4 value from a position in a byte array.
+ @param b Byte array containing a bytes4 value.
+ @param index Index in byte array of bytes4 value.
+ @return bytes4 value from byte array.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.readAddress(bytes,uint256)"></a><code class="function-signature">readAddress(bytes b, uint256 index) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Reads an address from a position in a byte array.
+ @param b Byte array containing an address.
+ @param index Index in byte array of address.
+ @return address from byte array.
 
 
 

@@ -66,7 +66,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Create order
     fixture.contracts['Cash'].faucet(creatorTokens, sender=creatorKey)
-    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = creatorKey)
+    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender = creatorKey)
 
     # Validate order
     assert orders.getAmount(orderId) == orderSize
@@ -87,7 +87,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Fill order
     fixture.contracts['Cash'].faucet(fillerTokens, sender=fillerKey)
-    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = fillerKey)
+    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), "0x0000000000000000000000000000000000000000", sender = fillerKey)
     assert not remaining
 
     # Move time and sweep interest
@@ -115,8 +115,8 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     assert market.finalize()
 
     claimTradingProceeds = fixture.contracts['ClaimTradingProceeds']
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account1)
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account2)
+    assert claimTradingProceeds.claimTradingProceeds(market.address, account1, nullAddress)
+    assert claimTradingProceeds.claimTradingProceeds(market.address, account2, nullAddress)
 
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):

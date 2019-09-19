@@ -3,14 +3,14 @@
 .ChevronFlip {
   cursor: pointer;
   transition: transform 0.3s ease;
-  width: @size-16;
+  width: @size-10;
 
   &.pointDown {
     transform: rotate(-180deg);
   }
 
   > polyline {
-    fill: @color-lightgray;
+    fill: @color-secondary-text;
   }
 
   &.big {
@@ -25,12 +25,12 @@
     &:hover {
       > g {
         > g {
-          stroke: @color-secondary-text;
+          stroke: @color-primary-text;
         }
       }
 
       > path {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
     }
   }

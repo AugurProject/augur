@@ -1,57 +1,58 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from 'react';
+import classNames from 'classnames';
 
-import { CategoryTagTrail, MarketTypeLabel, InReportingLabel } from "modules/common/labels";
-import { OutcomeGroup, LabelValue, HoverIcon, ResolvedOutcomes } from "modules/market-cards/common";
-import toggleTag from "modules/routes/helpers/toggle-tag";
-import toggleCategory from "modules/routes/helpers/toggle-category";
-import { MARKETS } from "modules/routes/constants/views";
-import makePath from "modules/routes/helpers/make-path";
-import MarketLink from "modules/market/components/market-link/market-link";
+import { CategoryTagTrail, MarketTypeLabel, InReportingLabel } from 'modules/common/labels';
+import { OutcomeGroup, LabelValue, HoverIcon, ResolvedOutcomes } from 'modules/market-cards/common';
+import toggleCategory from 'modules/routes/helpers/toggle-category';
+import { MARKETS } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import MarketLink from 'modules/market/components/market-link/market-link';
 import { CATEGORICAL, COPY_MARKET_ID, COPY_AUTHOR, REPORTING_STATE } from 'modules/common/constants';
-import { FavoritesButton } from "modules/common/buttons";
-import Clipboard from "clipboard";
-import { DotSelection } from "modules/common/selection";
-import { DateFormattedObject } from "modules/types";
-import { PaperClip, Person, MarketCreator, PositionIcon, DesignatedReporter, DisputeStake } from "modules/common/icons";
-import { MarketProgress } from "modules/common/progress";
-import ChevronFlip from "modules/common/chevron-flip";
-import { MarketData } from "modules/types";
+import { FavoritesButton } from 'modules/common/buttons';
+import Clipboard from 'clipboard';
+import { DotSelection } from 'modules/common/selection';
+import { PaperClip, Person, MarketCreator, PositionIcon, DesignatedReporter, DisputeStake } from 'modules/common/icons';
+import { MarketProgress } from 'modules/common/progress';
+import ChevronFlip from 'modules/common/chevron-flip';
+import { MarketData } from 'modules/types';
+import { formatAttoRep } from 'utils/format-number';
 
-import Styles from "modules/market-cards/market-card.styles";
+import Styles from 'modules/market-cards/market-card.styles.less';
 
 interface MarketCardProps {
   market: MarketData;
-  isLogged?: Boolean;
-  history: object;
-  location: object;
+  isLogged?: boolean;
+  history: History;
+  location: Location;
   toggleFavorite: Function;
   currentAugurTimestamp: number;
-  reportingWindowStatsEndTime: number;
-  condensed?: Boolean;
-  expandedView?: Boolean;
+  disputingWindowEndTime: number;
+  condensed?: boolean;
+  expandedView?: boolean;
   address: string;
-  loading?: Boolean;
-  isFavorite?: Boolean;
+  loading?: boolean;
+  isFavorite?: boolean;
+  hasPosition?: boolean;
+  hasStaked?: boolean;
+  dispute: Function;
 }
 
 interface MarketCardState {
-  expanded: Boolean;
+  expanded: boolean;
 }
 
 export default class MarketCard extends React.Component<
   MarketCardProps,
   MarketCardState
 > {
-  clipboardMarketId: any = new Clipboard("#copy_marketId");
-  clipboardAuthor: any = new Clipboard("#copy_author");
-  state: FormDetailsState = {
+  clipboardMarketId = new Clipboard('#copy_marketId');
+  clipboardAuthor = new Clipboard('#copy_author');
+  state: MarketCardState = {
     expanded: false,
   };
 
   expand = () => {
-    this.setState({expanded: !this.state.expanded})
+    this.setState({expanded: !this.state.expanded});
   }
 
   addToFavorites = () => {
@@ -65,12 +66,15 @@ export default class MarketCard extends React.Component<
       history,
       isLogged,
       currentAugurTimestamp,
-      reportingWindowStatsEndTime,
+      disputingWindowEndTime,
       condensed,
       address,
       expandedView,
       loading,
-      isFavorite
+      isFavorite,
+      hasPosition,
+      hasStaked,
+      dispute,
     } = this.props;
 
     const s = this.state;
@@ -80,42 +84,23 @@ export default class MarketCard extends React.Component<
       outcomesFormatted,
       marketType,
       scalarDenomination,
-      minPrice,
-      maxPrice,
+      minPriceBigNumber,
+      maxPriceBigNumber,
       categories,
       id,
       marketStatus,
       author,
       reportingState,
-      endTime,
       openInterestFormatted,
       volumeFormatted,
-      tags,
       disputeInfo,
-      endTimeFormatted
+      endTimeFormatted,
+      designatedReporter,
     } = market;
 
-    const path =
-    location.pathname === makePath(MARKETS)
-      ? location
-      : { pathname: makePath(MARKETS) };
-
-    const process = (...arr) =>
-      arr.filter(Boolean).map(label => ({
-        label,
-        onClick: toggleCategory(label, path, history)
-      }));
-
-    const categoriesWithClick = process(categories[0]);
-    const tagsWithClick = tags.filter(Boolean).map(tag => ({
-      label: tag,
-      onClick: toggleTag(tag, path, history)
-    }));
-
-    const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
- 
-    return (
-      <div 
+    if (loading) {
+      return (
+        <div
         className={classNames(Styles.MarketCard, {[Styles.Loading]: loading})}
       >
         {loading &&
@@ -129,54 +114,90 @@ export default class MarketCard extends React.Component<
             <div/>
           </>
         }
-        {!loading && 
+        </div>
+      );
+    }
+
+    const InfoIcons = (
+      <>
+        {address && address.toUpperCase() === author.toUpperCase() &&
+          <HoverIcon
+            label='marketCreator'
+            icon={MarketCreator}
+            hoverText='Market Creator'
+          />
+        }
+        {address && address.toUpperCase() === designatedReporter.toUpperCase() &&
+          <HoverIcon
+            label='reporter'
+            icon={DesignatedReporter}
+            hoverText='Designated Reporter'
+          />
+        }
+        {hasPosition &&
+          <HoverIcon
+            label='Position'
+            icon={PositionIcon}
+            hoverText='Position'
+          />
+        }
+        {hasStaked &&
+          <HoverIcon
+            label='dispute'
+            icon={DisputeStake}
+            hoverText='Dispute Stake'
+          />
+        }
+      </>
+    );
+
+    const path =
+    location.pathname === makePath(MARKETS)
+      ? location
+      : { pathname: makePath(MARKETS) };
+
+    const categoriesLowerCased = categories.map(item => item.toLowerCase());
+    const categoriesWithClick = categoriesLowerCased
+      .filter(Boolean)
+      .map((label, idx) => ({
+        label,
+        onClick: toggleCategory(categoriesLowerCased.slice(0, idx + 1).toString(), path, history),
+      }));
+
+    const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+
+    return (
+      <div
+        className={classNames(Styles.MarketCard, {[Styles.Loading]: loading})}
+      >
           <>
             <div>
-              {address && address.toUpperCase() === author.toUpperCase() &&
-                <HoverIcon
-                  label="marketCreator"
-                  icon={MarketCreator}
-                  hoverText="Market Creator"
-                />
-              }
-              <HoverIcon
-                label="reporter"
-                icon={DesignatedReporter}
-                hoverText="Designated Reporter"
-              />
-              <HoverIcon
-                label="Position"
-                icon={PositionIcon}
-                hoverText="Position"
-              />
-              <HoverIcon
-                label="dispute"
-                icon={DisputeStake}
-                hoverText="Dispute Stake"
-              />
+              {InfoIcons}
             </div>
             <div>
               <InReportingLabel
                 marketStatus={marketStatus}
                 reportingState={reportingState}
                 disputeInfo={disputeInfo}
-                endTime={endTimeFormatted}
+                endTimeFormatted={endTimeFormatted}
                 currentAugurTimestamp={currentAugurTimestamp}
-                reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+                disputingWindowEndTime={disputingWindowEndTime}
               />
               <MarketTypeLabel marketType={marketType} />
               <CategoryTagTrail
                 categories={categoriesWithClick}
-                tags={tagsWithClick}
               />
               <MarketProgress
                 reportingState={reportingState}
                 currentTime={currentAugurTimestamp}
-                endTime={endTime}
-                reportingWindowEndtime={reportingWindowStatsEndTime}
+                endTimeFormatted={endTimeFormatted}
+                reportingWindowEndtime={disputingWindowEndTime}
                 alignRight
               />
               <div>
+                <div>
+                  {InfoIcons}
+                </div>
                 <FavoritesButton
                   action={this.addToFavorites}
                   isFavorite={isFavorite}
@@ -186,13 +207,13 @@ export default class MarketCard extends React.Component<
               </div>
               <DotSelection>
                 <div
-                  id="copy_marketId"
+                  id='copy_marketId'
                   data-clipboard-text={id}
                 >
                   {PaperClip} {COPY_MARKET_ID}
                 </div>
                 <div
-                  id="copy_author"
+                  id='copy_author'
                   data-clipboard-text={author}
                 >
                   {Person} {COPY_AUTHOR}
@@ -203,13 +224,15 @@ export default class MarketCard extends React.Component<
               {reportingState === REPORTING_STATE.PRE_REPORTING &&
                 <>
                   <LabelValue
-                    label="VOL"
+                    label='Total Volume'
                     value={volumeFormatted.formatted}
+                    condensed
                   />
-                  {!condensed && 
+                  {!condensed &&
                     <LabelValue
-                      label="OI"
+                      label='Open Interest'
                       value={openInterestFormatted.formatted}
+                      condensed
                     />
                   }
                 </>
@@ -217,48 +240,58 @@ export default class MarketCard extends React.Component<
               {reportingState !== REPORTING_STATE.PRE_REPORTING &&
                 <LabelValue
                   condensed
-                  label="Total Dispute Stake"
-                  value={disputeInfo.stakeCompletedTotal}
+                  label='Total Dispute Stake'
+                  value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
                 />
               }
+              <MarketProgress
+                reportingState={reportingState}
+                currentTime={currentAugurTimestamp}
+                endTimeFormatted={endTimeFormatted}
+                reportingWindowEndtime={disputingWindowEndTime}
+                alignRight
+              />
             </div>
-            
+
             <MarketLink id={id}>
               {description}
             </MarketLink>
-            {!condensed && !marketResolved &&
+            {!condensed && !marketResolved ?
               <>
-                <OutcomeGroup 
-                  outcomes={outcomesFormatted} 
+                <OutcomeGroup
+                  outcomes={outcomesFormatted}
                   marketType={marketType}
                   scalarDenomination={scalarDenomination}
-                  min={minPrice}
-                  max={maxPrice}
-                  lastPrice={0}
+                  min={minPriceBigNumber}
+                  max={maxPriceBigNumber}
                   expanded={expandedView ? true : s.expanded}
+                  reportingState={reportingState}
+                  stakes={disputeInfo.stakes}
+                  dispute={dispute}
                 />
-                {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
+                {marketType === CATEGORICAL && outcomesFormatted && outcomesFormatted.length > 3 && !expandedView &&
                   <button onClick={this.expand}>
                     <ChevronFlip
-                      stroke="#fff"
+                      stroke='#fff'
                       pointDown={s.expanded}
                       quick
                       filledInIcon
                       hover
                     />
-                    {s.expanded ? "show less" : "view all outcomes"}
+                    {s.expanded ? 'show less' : 'view all outcomes'}
                   </button>
                 }
               </>
+              :
+              <div style={{ display: 'none' }}></div>
             }
             {marketResolved &&
               <ResolvedOutcomes
-                outcomes={o}
+                outcomes={outcomesFormatted}
                 expanded={expandedView}
               />
             }
           </>
-        }
       </div>
     );
   }

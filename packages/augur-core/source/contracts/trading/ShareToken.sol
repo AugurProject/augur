@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/trading/IShareToken.sol';
@@ -30,7 +30,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     address public claimTradingProceeds;
     IProfitLoss public profitLoss;
 
-    bool private shouldUpdatePL = true;
+    bool private shouldUpdatePL;
 
     modifier doesNotUpdatePL() {
         shouldUpdatePL = false;
@@ -43,6 +43,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         market = _market;
         outcome = _outcome;
         augur = _augur;
+        shouldUpdatePL = true;
         createOrder = _augur.lookup("CreateOrder");
         fillOrder = _augur.lookup("FillOrder");
         cancelOrder = _augur.lookup("CancelOrder");

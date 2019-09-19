@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
-import OpenOrder from "modules/portfolio/containers/open-order";
-import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
-import OrderMarketRow from "modules/portfolio/components/common/order-market-row";
+import FilterSwitchBox from 'modules/portfolio/containers/filter-switch-box';
+import OpenOrder from 'modules/portfolio/containers/open-order';
+import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
+import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 
 const sortByOptions = [
   {
-    label: "View by Most Recently Traded Market",
-    value: "tradedMarket",
-    comp: null
+    label: 'Most Recently Traded Market',
+    value: 'tradedMarket',
+    comp: null,
   },
   {
-    label: "View by Most Recently Traded Outcome",
-    value: "tradedOutcome",
-    comp: null
-  }
+    label: 'Most Recently Traded Outcome',
+    value: 'tradedOutcome',
+    comp: null,
+  },
 ];
 
 export default class OpenOrders extends Component {
@@ -24,14 +24,14 @@ export default class OpenOrders extends Component {
     markets: PropTypes.array.isRequired,
     openOrders: PropTypes.array.isRequired,
     marketsObj: PropTypes.object.isRequired,
-    ordersObj: PropTypes.object.isRequired
+    ordersObj: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      viewByMarkets: true
+      viewByMarkets: true,
     };
 
     this.filterComp = this.filterComp.bind(this);
@@ -45,7 +45,7 @@ export default class OpenOrders extends Component {
 
   switchView() {
     this.setState({
-      viewByMarkets: !this.state.viewByMarkets
+      viewByMarkets: !this.state.viewByMarkets,
     });
   }
 
@@ -58,12 +58,12 @@ export default class OpenOrders extends Component {
     if (!marketView && !orderView) return null;
     return marketView ? (
       <OrderMarketRow
-        key={"openOrderMarket_" + data.id}
+        key={'openOrderMarket_' + data.id}
         market={marketsObj[data.id]}
       />
     ) : (
       <OpenOrder
-        key={"openOrder_" + data.id}
+        key={'openOrder_' + data.id}
         openOrder={ordersObj[data.id]}
         isSingle
       />
@@ -71,7 +71,7 @@ export default class OpenOrders extends Component {
   }
 
   render() {
-    const { markets, openOrders } = this.props;
+    const { markets, openOrders, toggle, extend, hide } = this.props;
     const { viewByMarkets } = this.state;
 
     return (
@@ -80,12 +80,15 @@ export default class OpenOrders extends Component {
         showFilterSearch
         filterLabel="open orders"
         sortByOptions={sortByOptions}
-        sortByStyles={{ minWidth: "13.6875rem" }}
+        sortByStyles={{ minWidth: '13.6875rem' }}
         data={viewByMarkets ? markets : openOrders}
         filterComp={this.filterComp}
         switchView={this.switchView}
         bottomBarContent={<OpenOrdersHeader />}
         renderRows={this.renderRows}
+        toggle={toggle}
+        extend={extend}
+        hide={hide}
       />
     );
   }

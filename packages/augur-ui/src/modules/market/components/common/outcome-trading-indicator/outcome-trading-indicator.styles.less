@@ -1,0 +1,24 @@
+@import (reference) "~assets/styles/shared";
+
+.Up,
+.Down {
+  border: solid transparent;
+  border-color: rgba(136, 183, 213, 0);
+  border-width: 0 @size-7 @size-7;
+  bottom: 45%;
+  margin-left: @size-16;
+  position: relative;
+
+  @media @breakpoint-mobile {
+    border-width: @size-5; 
+  }
+}
+
+.Up {
+  border-bottom-color: @color-inactive-text;
+}
+
+.Down {
+  border-top-color: @color-inactive-text;
+  border-width: @size-8 @size-7 0;
+}

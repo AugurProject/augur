@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 
 import 'ROOT/libraries/ITyped.sol';
@@ -21,6 +21,7 @@ contract IDisputeWindow is ITyped, IERC20 {
     uint256 public designatedReporterNoShowBondTotal;
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public;
+    function trustedBuy(address _buyer, uint256 _attotokens) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getReputationToken() public view returns (IReputationToken);
     function getStartTime() public view returns (uint256);

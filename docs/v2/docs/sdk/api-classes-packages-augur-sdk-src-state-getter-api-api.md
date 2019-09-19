@@ -18,6 +18,7 @@ sidebar_label: API
 
 ### Properties
 
+* [db](api-classes-packages-augur-sdk-src-state-getter-api-api.md#db)
 * [router](api-classes-packages-augur-sdk-src-state-getter-api-api.md#router)
 
 ### Methods
@@ -34,7 +35,7 @@ sidebar_label: API
 
 ⊕ **new API**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *`Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>*): [API](api-classes-packages-augur-sdk-src-state-getter-api-api.md)
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/API.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:16](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/API.ts#L16)*
 
 **Parameters:**
 
@@ -49,13 +50,22 @@ ___
 
 ## Properties
 
+<a id="db"></a>
+
+###  db
+
+**● db**: *`Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>*
+
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:16](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/API.ts#L16)*
+
+___
 <a id="router"></a>
 
 ### `<Private>` router
 
 **● router**: *[Router](api-classes-packages-augur-sdk-src-state-getter-router-router.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/API.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:15](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/API.ts#L15)*
 
 ___
 
@@ -67,7 +77,7 @@ ___
 
 ▸ **route**(name: *`string`*, params: *`any`*): `Promise`<`any`>
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/API.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:23](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/API.ts#L23)*
 
 **Parameters:**
 

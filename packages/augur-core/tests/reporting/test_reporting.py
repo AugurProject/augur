@@ -1,7 +1,7 @@
 from datetime import timedelta
 from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, mark, raises
-from utils import longTo32Bytes, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
+from utils import longTo32Bytes, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash, nullAddress
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 from decimal import Decimal
 from constants import YES, NO
@@ -23,6 +23,7 @@ def test_designatedReportHappyPath(localFixture, universe, market):
         market.clearCrowdsourcers()
 
     # do an initial report as the designated reporter
+    disputeWindow = localFixture.applySignature("DisputeWindow", universe.getOrCreateNextDisputeWindow(True))
     initialReportLog = {
         "universe": universe.address,
         "reporter": localFixture.accounts[0],
@@ -31,6 +32,8 @@ def test_designatedReportHappyPath(localFixture, universe, market):
         "isDesignatedReporter": True,
         "payoutNumerators": [0, 0, market.getNumTicks()],
         "description": "Obviously I'm right",
+        "nextWindowStartTime": disputeWindow.getStartTime(),
+        "nextWindowEndTime": disputeWindow.getEndTime()
     }
     with AssertLog(localFixture, "InitialReportSubmitted", initialReportLog):
         assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right", 0)
@@ -168,11 +171,21 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         "market": market.address,
         "amountStaked": universe.getInitialReportMinValue() * 2,
         "description": "Clearly incorrect",
+        "payoutNumerators": [0, 0, market.getNumTicks()],
+        "currentStake": universe.getInitialReportMinValue() * 2,
+        "stakeRemaining": 0,
     }
 
+    disputeWindow = localFixture.applySignature("DisputeWindow", universe.getOrCreateNextDisputeWindow(False))
     crowdsourcerCompletedLog = {
         "universe": universe.address,
-        "market": market.address
+        "market": market.address,
+        "nextWindowStartTime": disputeWindow.getStartTime(),
+        "nextWindowEndTime": disputeWindow.getEndTime(),
+        "totalRepStakedInMarket": universe.getInitialReportMinValue() * 3,
+        "disputeRound": 2,
+        "payoutNumerators": [0, 0, market.getNumTicks()],
+        "totalRepStakedInPayout": universe.getInitialReportMinValue() * 2,
     }
 
     with AssertLog(localFixture, "DisputeCrowdsourcerCreated", crowdsourcerCreatedLog):
@@ -192,9 +205,9 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
-    #(False, True),
-    #(True, False),
-    #(False, False),
+    (False, True),
+    (True, False),
+    (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
     claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
@@ -276,11 +289,11 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     expectedYesPayout = expectedYesOutcomePayout * yesShare.balanceOf(localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0])
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0], nullAddress)
 
     expectedNoPayout = expectedNoOutcomePayout * noShare.balanceOf(localFixture.accounts[1]) * .98 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1])
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
     # buy some complete sets to change OI of the cat market
     numSets = 10

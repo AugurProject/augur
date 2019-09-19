@@ -1,15 +1,18 @@
-import fs from "fs";
-import Find from "pouchdb-find";
-import Memory from "pouchdb-adapter-memory";
-import PouchDB from "pouchdb";
-import Upsert from "pouchdb-upsert";
+import fs from 'fs';
+import Find from 'pouchdb-find';
+import Memory from 'pouchdb-adapter-memory';
+import PouchDB from 'pouchdb';
+import Upsert from 'pouchdb-upsert';
+import pouchdbDebug from 'pouchdb-debug';
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
+import PouchDb from 'pouchdb-browser';
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 PouchDB.plugin(Upsert);
+PouchDB.plugin(pouchdbDebug);
 
 interface DocumentIDToDoc {
   [docId: string]: PouchDB.Core.ExistingDocument<{}>;
@@ -21,7 +24,7 @@ export interface BaseDocument {
 }
 
 export abstract class AbstractDB {
-  public db: PouchDB.Database;
+  db: PouchDB.Database;
   protected networkId: number;
   readonly dbName: string;
 
@@ -33,6 +36,10 @@ export abstract class AbstractDB {
 
   async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
     return this.db.allDocs({ include_docs: true });
+  }
+
+  async info(): Promise<PouchDB.Core.DatabaseInfo> {
+    return await this.db.info();
   }
 
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {
@@ -72,13 +79,14 @@ export abstract class AbstractDB {
   }
 
   private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+    if (documents.length < 1) return true;
     const mergedRevisionDocuments = _.map(documents, (doc) => {
       // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
       delete doc.constructor;
 
-      const previousDoc = previousDocs[doc._id!];
+      const previousDoc = previousDocs[doc._id!] || { _id: doc._id, _rev: undefined };
       return Object.assign(
-        previousDoc ? previousDoc : {},
+        previousDoc,
         doc
       );
     });
@@ -89,10 +97,6 @@ export abstract class AbstractDB {
       console.error(`ERROR in bulk upsert: ${JSON.stringify(err)}`);
       return false;
     }
-  }
-
-  async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
-    return this.db.info();
   }
 
   async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
@@ -109,7 +113,7 @@ export abstract class AbstractDB {
 export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
 
 export function PouchDBFactory(dbArgs: DatabaseConfiguration) {
-  const dbDir = "db";
+  const dbDir = 'db';
 
   if (fs && fs.existsSync && !fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir);

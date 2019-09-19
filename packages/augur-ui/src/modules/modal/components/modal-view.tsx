@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import classNames from "classnames";
 
 import ModalSignTransaction from "modules/modal/containers/modal-sign-transaction";
+import ModalReporting from "modules/modal/containers/modal-reporting";
 import ModalConfirm from "modules/modal/components/modal-confirm";
 import ModalReview from "modules/modal/components/modal-review";
 import ModalRepFaucet from "modules/modal/containers/modal-rep-faucet";
+import ModalCreateMarket from "modules/modal/containers/modal-create-market";
 import ModalDaiFaucet from "modules/modal/containers/modal-dai-faucet";
 import ModalCreationHelp from "modules/modal/containers/modal-creation-help";
 import ModalDeposit from "modules/modal/containers/modal-deposit";
@@ -19,21 +21,19 @@ import ModalFinalize from "modules/modal/containers/modal-finalize";
 import ModalDiscard from "modules/modal/containers/modal-discard";
 import ModalMarketReview from "modules/modal/containers/modal-market-review";
 import ModalMarketReviewTrade from "modules/modal/containers/modal-market-review-trade";
-import ModalClaimReportingFeesForkedMarket from "modules/modal/containers/modal-claim-reporting-fees-forked-market";
 import ModalClaimFees from "modules/modal/containers/modal-claim-fees";
 import ModalParticipate from "modules/modal/containers/modal-participate";
-import ModalMigrateMarket from "modules/modal/containers/modal-migrate-market";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
-import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trading-proceeds";
-import ModalClaimProceeds from "modules/modal/containers/modal-claim-proceeds";
+import ModalClaimMarketsProceeds from "modules/modal/containers/modal-claim-markets-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
 import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
 import ModalContent from "modules/modal/containers/modal-content";
 import ModalCategories from "modules/modal/containers/modal-categories";
 import ModalMarketType from "modules/modal/containers/modal-market-type";
+import ModalDrQuickGuide from "modules/modal/containers/modal-dr-quick-guide";
 
 import * as TYPES from "modules/common/constants";
 
@@ -49,10 +49,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalCategories {...props} />;
     case TYPES.MODAL_CONTENT:
       return <ModalContent {...props} />;
-    case TYPES.MODAL_CLAIM_PROCEEDS:
-      return <ModalClaimProceeds {...props} />;
-    case TYPES.MODAL_CLAIM_TRADING_PROCEEDS:
-      return <ModalClaimTradingProceeds {...props} />;
+    case TYPES.MODAL_CLAIM_MARKETS_PROCEEDS:
+      return <ModalClaimMarketsProceeds {...props} />;
     case TYPES.MODAL_GAS_PRICE:
       return <ModalGasPrice {...props} />;
     case TYPES.MODAL_UNSIGNED_ORDERS:
@@ -63,6 +61,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
+    case TYPES.MODAL_CREATE_MARKET:
+      return <ModalCreateMarket />;
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
@@ -78,6 +78,8 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_LEDGER:
     case TYPES.MODAL_TREZOR:
       return <ModalSignTransaction {...modal} />;
+    case TYPES.MODAL_REPORTING:
+      return <ModalReporting {...modal} />;
     case TYPES.MODAL_PARTICIPATE:
       return <ModalParticipate />;
     case TYPES.MODAL_NETWORK_MISMATCH:
@@ -102,14 +104,14 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalClaimReportingFeesForkedMarket {...modal} />;
     case TYPES.MODAL_CLAIM_FEES:
       return <ModalClaimFees {...modal} />;
-    case TYPES.MODAL_MIGRATE_MARKET:
-      return <ModalMigrateMarket {...modal} closeModal={closeModal} />;
     case TYPES.MODAL_DISCLAIMER:
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_TRADING_OVERLAY:
       return <ModalTradingOverlay {...modal} closeModal={closeModal} />;
     case TYPES.MODAL_MARKET_LOADING:
       return <ModalMarketLoading />;
+    case TYPES.MODAL_DR_QUICK_GUIDE:
+      return <ModalDrQuickGuide />;
     default:
       return <div />;
   }

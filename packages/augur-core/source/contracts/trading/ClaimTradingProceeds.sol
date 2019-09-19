@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 
 import 'ROOT/trading/IClaimTradingProceeds.sol';
@@ -34,11 +34,12 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
      * @notice Claims winnings for multiple markets and for a particular shareholder
      * @param _markets Array of markets to claim winnings for
      * @param _shareHolder The account to claim winnings for
+     * @param _affiliateAddress An affiliate address to share market creator fees with
      * @return Bool True
      */
-    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder) external returns(bool) {
+    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder, address _affiliateAddress) external returns(bool) {
         for (uint256 i=0; i < _markets.length; i++) {
-            this.claimTradingProceeds(_markets[i], _shareHolder);
+            this.claimTradingProceeds(_markets[i], _shareHolder, _affiliateAddress);
         }
         return true;
     }
@@ -47,12 +48,15 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
      * @notice Claims winnings for a market and for a particular shareholder
      * @param _market The market to claim winnings for
      * @param _shareHolder The account to claim winnings for
+     * @param _affiliateAddress An affiliate address to share market creator fees with
      * @return Bool True
      */
-    function claimTradingProceeds(IMarket _market, address _shareHolder) external nonReentrant returns(bool) {
+    function claimTradingProceeds(IMarket _market, address _shareHolder, address _affiliateAddress) external nonReentrant returns(bool) {
         require(augur.isKnownMarket(_market));
-        require(_market.isFinalized(), "ClaimTradingProceeds.claimTradingProceeds: Market is not finalized");
-
+        if (!_market.isFinalized()) {
+            _market.finalize();
+        }
+        uint256[] memory _outcomeFees = new uint256[](8);
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
             IShareToken _shareToken = _market.getShareToken(_outcome);
             uint256 _numberOfShares = _shareToken.balanceOf(_shareHolder);
@@ -70,24 +74,25 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
 
                 if (_proceeds > 0) {
                     _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));
-                    distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
+                    distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare, _affiliateAddress);
                 }
+                _outcomeFees[_outcome] = _creatorShare.add(_reporterShare);
             }
         }
 
-        profitLoss.recordClaim(_market, _shareHolder);
+        profitLoss.recordClaim(_market, _shareHolder, _outcomeFees);
 
         _market.assertBalances();
 
         return true;
     }
 
-    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private {
+    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare, address _affiliateAddress) private {
         if (_shareHolderShare > 0) {
             require(cash.transfer(_shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
-            _market.recordMarketCreatorFees(_creatorShare, address(0));
+            _market.recordMarketCreatorFees(_creatorShare, _affiliateAddress);
         }
         if (_reporterShare > 0) {
             require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));

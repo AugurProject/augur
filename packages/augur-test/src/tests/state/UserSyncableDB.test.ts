@@ -81,7 +81,7 @@ test('UserSynableDB.sync', async () => {
     highestAvailableBlockNumber
   );
 
-  const tokensTransferredDB = mock.getDatabases()[`db/${db.dbName}`];
+  const tokensTransferredDB = mock.getDatabaseByName(db.dbName);
   const docs = await tokensTransferredDB.allDocs();
 
   expect(docs.total_rows).toEqual(2);
@@ -95,6 +95,7 @@ test('UserSynableDB.sync', async () => {
   marketRepBond = '0x' + marketRepBond.padStart(16, '0');
 
   expect(tokenTransfer).toEqual({
+    name: "TokensTransferred",
     universe: universe.address,
     // This is a transfer of REP tokens.
     token: augur.contracts.getReputationToken().address,

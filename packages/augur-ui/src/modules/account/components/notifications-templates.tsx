@@ -7,7 +7,7 @@ import {
   formatTime,
 } from "modules/common/progress";
 import { SubmitTextButton } from "modules/common/buttons";
-import { DateFormattedObject, MarketData } from "modules/types";
+import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
 
 import Styles from "modules/account/components/notification.styles.less";
 
@@ -21,7 +21,7 @@ interface BaseProps {
   market: MarketData;
   type: string;
   currentTime?: DateFormattedObject;
-  reportingWindowStatsEndTime?: DateFormattedObject;
+  disputingWindowEndTime?: DateFormattedObject;
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
@@ -50,16 +50,15 @@ interface DisputeTemplateProps extends BaseProps {
 
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
   market: MarketData;
-  claimReportingFees: any;
+  claimReportingFees: {
+    unclaimedDai: FormattedNumber;
+    unclaimedRep: FormattedNumber;
+  };
 }
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
   market: MarketData;
   totalProceeds: number | undefined;
-}
-
-interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
-  market: MarketData;
 }
 
 interface TemplateProps extends BaseProps {
@@ -73,7 +72,7 @@ const Template = (props: TemplateProps) => (
       <Counter
         type={props.type}
         market={props.market}
-        reportingWindowStatsEndTime={props.reportingWindowStatsEndTime}
+        disputingWindowEndTime={props.disputingWindowEndTime}
         currentTime={props.currentTime}
       />
 
@@ -116,7 +115,7 @@ interface CounterProps {
   type: string;
   market: MarketData;
   currentTime?: DateFormattedObject;
-  reportingWindowStatsEndTime?: DateFormattedObject;
+  disputingWindowEndTime?: DateFormattedObject;
 }
 
 const Counter = (props: CounterProps) => {
@@ -141,14 +140,14 @@ const Counter = (props: CounterProps) => {
         </div>
       );
     } else {
-      if (props.currentTime && props.reportingWindowStatsEndTime) {
+      if (props.currentTime && props.disputingWindowEndTime) {
         counter = (
           <div className={Styles.Countdown}>
             <MarketProgress
               reportingState={reportingState}
               currentTime={props.currentTime}
-              endTime={endTimeFormatted}
-              reportingWindowEndtime={props.reportingWindowStatsEndTime}
+              endTimeFormatted={endTimeFormatted}
+              reportingWindowEndtime={props.disputingWindowEndTime}
               customLabel={REPORTING_ENDS}
             />
           </div>
@@ -223,11 +222,11 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
   const unclaimedREP = claimReportingFees.unclaimedRep.formattedValue || 0;
-  const unclaimedETH = claimReportingFees.unclaimedEth.formattedValue || 0;
+  const unclaimedDai = claimReportingFees.unclaimedDai.formattedValue || 0;
 
   return (
     <Template
-      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and ${unclaimedETH} ETH of reporting fees to collect.`}
+      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and ${unclaimedDai} DAI of reporting fees to collect.`}
       {...props}
     />
   );
@@ -236,9 +235,13 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
 export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
   const { totalProceeds } = props;
 
+  let messageText = `You have ${totalProceeds} DAI available to be claimed from one market.`;
+  if (props.markets.length > 1) {
+    messageText = `You have ${totalProceeds} DAI available to be claimed from multiple markets.`;
+  }
   return (
     <Template
-      message={`You have ${totalProceeds} ETH available to be claimed from multiple markets.`}
+      message={messageText}
       {...props}
     />
   );

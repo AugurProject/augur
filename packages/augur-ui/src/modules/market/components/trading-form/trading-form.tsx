@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import Wrapper from 'modules/trading/components/wrapper/wrapper';
-import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views';
+import { ACCOUNT_SUMMARY } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
+import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
+import { BigNumber } from 'utils/create-big-number';
 
 interface TradingFormProps {
   availableEth: BigNumber;
   availableDai: BigNumber;
   hasFunds: boolean;
   isLogged: boolean;
-  allowanceAmount: FormattedNumber;
+  allowanceBigNumber: BigNumber;
   isConnectionTrayOpen: boolean;
   market: MarketData;
   marketReviewTradeSeen: boolean;
@@ -31,7 +32,8 @@ interface TradingFormProps {
   toggleConnectionTray: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
+  orderBook: OutcomeOrderBook;
 }
 
 interface TradingFormState {
@@ -79,7 +81,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   render() {
     const {
-      allowanceAmount,
+      allowanceBigNumber,
       hasFunds,
       availableEth,
       availableDai,
@@ -99,6 +101,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
+      orderBook,
     } = this.props;
     const s = this.state;
 
@@ -124,7 +127,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}
-          allowanceAmount={allowanceAmount}
+          allowanceBigNumber={allowanceBigNumber}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
           sortedOutcomes={sortedOutcomes}
@@ -143,23 +146,24 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           marketReviewTradeSeen={marketReviewTradeSeen}
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
+          orderBook={orderBook}
         />
         {initialMessage && (
           <div>
             {initialMessage && <p>{initialMessage}</p>}
             {!isLogged && (
               <PrimaryButton
-                id="login-button"
+                id='login-button'
                 action={() => toggleConnectionTray(!isConnectionTrayOpen)}
-                text="Connect a Wallet"
+                text='Connect a Wallet'
               />
             )}
             {!hasFunds && isLogged && (
-              <Link to={makePath(ACCOUNT_DEPOSIT)}>
+              <Link to={makePath(ACCOUNT_SUMMARY)}>
                 <PrimaryButton
-                  id="add-funds"
+                  id='add-funds'
                   action={() => {}}
-                  text="Add Funds"
+                  text='Add Funds'
                 />
               </Link>
             )}

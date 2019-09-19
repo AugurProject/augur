@@ -6,6 +6,12 @@ import { ContractAPI } from "../libs/contract-api";
 import { Account } from "../constants";
 import { providers } from "ethers";
 import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
+import { API } from "@augurproject/sdk/build/state/getter/API";
+import { PouchDBFactory } from "@augurproject/sdk/build/state/db/AbstractDB";
+import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { EmptyConnector } from "@augurproject/sdk";
+import { BaseConnector } from "@augurproject/sdk/build/connector";
 
 export interface FlashOption {
   name: string;
@@ -32,8 +38,10 @@ export class FlashSession {
   // Configuration
   accounts: Account[];
   user?: ContractAPI;
+  api?: API;
   readonly scripts: { [name: string]: FlashScript } = {};
   log: Logger = console.log;
+  network?: NetworkConfiguration;
 
   // Node miscellanea
   provider?: EthersProvider;
@@ -95,21 +103,35 @@ export class FlashSession {
     return false;
   }
 
+  noAddresses() {
+    if (typeof this.contractAddresses === 'undefined') {
+      this.log(
+        'ERROR: Must first load contract addresses.'
+      );
+      return true;
+    }
+
+    return false;
+  }
+
   usingSdk = false;
   sdkReady = false;
   async ensureUser(
     network?: NetworkConfiguration,
-    wireUpSdk?: boolean
+    wireUpSdk = null,
+    approveCentralAuthority = true
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
-    if (this.user) return this.user;
+    if (this.user && (wireUpSdk === null || wireUpSdk === this.usingSdk)) {
+      return this.user;
+    }
+
     if (wireUpSdk) this.usingSdk = true;
 
-    let connector = null;
-    if (wireUpSdk) connector = new Connectors.SEOConnector();
+    const connector: BaseConnector = wireUpSdk ? new Connectors.SEOConnector() : new EmptyConnector();
 
     this.user = await ContractAPI.userWrapper(
       this.getAccount(),
@@ -119,10 +141,16 @@ export class FlashSession {
     );
 
     if (wireUpSdk) {
-      this.user.augur.connect(network.http, this.getAccount().publicKey);
-      this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
+      network = network || this.network;
+      if (!network) throw Error('Cannot wire up sdk if network is not set.');
+      await this.user.augur.connect(network.http, this.getAccount().publicKey);
+      await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
+      this.api = new API(this.user.augur, this.makeDB());
     }
-    await this.user.approveCentralAuthority();
+
+    if (approveCentralAuthority) {
+      await this.user.approveCentralAuthority();
+    }
 
     return this.user;
   }
@@ -165,5 +193,25 @@ export class FlashSession {
 
   async getNetworkId(provider: EthersProvider): Promise<string> {
     return (await provider.getNetwork()).chainId.toString();
+  }
+
+
+  async makeDB(): Promise<DB> {
+    const listener = {
+      listenForBlockRemoved: () => {},
+      listenForBlockAdded: () => {},
+      listenForEvent: () => {},
+      startBlockStreamListener: () => {},
+    } as unknown as IBlockAndLogStreamerListener;
+
+    return DB.createAndInitializeDB(
+      Number(this.user.augur.networkId),
+      0,
+      0,
+      [this.user.account.publicKey],
+      this.user.augur,
+      PouchDBFactory({adapter: 'memory'}),
+      listener
+    );
   }
 }

@@ -1,18 +1,24 @@
-import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers/build";
-import { Transaction } from "ethereumjs-blockstream";
+import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { TXEventName } from "./constants";
 
 type Address = string;
 type Bytes32 = string;
 
-export interface FormattedEventLog {
+export interface Event {
+  eventName: string;
+}
+
+export interface UserDataSynced extends Event {
+  trackedUsers: string[];
+}
+
+export interface FormattedEventLog extends Event {
   address: Address;
   blockNumber: number;
   logIndex: number;
   transactionHash: Bytes32;
   transactionIndex: number;
   contractName: string;
-  eventName: string;
   blockHash: Bytes32;
   removed: boolean;
 }
@@ -118,7 +124,7 @@ export interface MarketCreated extends FormattedEventLog {
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;
-  feeDivisor: number;
+  feePerCashInAttoCash: number;
   prices: string[];
   marketType: number;
   numTicks: string;
@@ -172,7 +178,7 @@ export interface NewBlock extends FormattedEventLog {
   timestamp: number;
 }
 
-// XXX: TODO - verify eventType and orderType somehow
+// @TODO:: TODO - verify eventType and orderType somehow
 export interface OrderEvent extends FormattedEventLog {
   universe: Address;
   market: Address;

@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/Initializable.sol';
@@ -148,7 +148,7 @@ contract Market is Initializable, Ownable, IMarket {
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         disputeWindow = universe.getOrCreateNextDisputeWindow(true);
         _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _initialReportStake);
-        augur.logInitialReportSubmitted(universe, _reporter, address(this), _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
+        augur.logInitialReportSubmitted(universe, _reporter, address(this), _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description, disputeWindow.getStartTime(), disputeWindow.getEndTime());
     }
 
     function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {
@@ -211,15 +211,15 @@ contract Market is Initializable, Ownable, IMarket {
         universe.updateForkValues();
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators, _overload);
         uint256 _actualAmount = _crowdsourcer.contribute(_contributor, _amount, _overload);
+        uint256 _amountRemainingToFill = _overload ? 0 : _crowdsourcer.getRemainingToFill();
+        augur.logDisputeCrowdsourcerContribution(universe, _contributor, address(this), address(_crowdsourcer), _actualAmount, _description, _payoutNumerators, _crowdsourcer.getStake(), _amountRemainingToFill, getNumParticipants());
         if (!_overload) {
-            uint256 _amountRemainingToFill = _crowdsourcer.getRemainingToFill();
             if (_amountRemainingToFill == 0) {
                 finishedCrowdsourcingDisputeBond(_crowdsourcer);
             } else {
                 require(_amountRemainingToFill >= getInitialReporter().getSize(), "Market.internalContribute: Must totally fill bond or leave initial report amount");
             }
         }
-        augur.logDisputeCrowdsourcerContribution(universe, _contributor, address(this), address(_crowdsourcer), _actualAmount, _description);
     }
 
     function finishedCrowdsourcingDisputeBond(IDisputeCrowdsourcer _crowdsourcer) private {
@@ -235,7 +235,17 @@ contract Market is Initializable, Ownable, IMarket {
             }
             disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
-        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer), disputeWindow.getStartTime(), disputePacingOn);
+        augur.logDisputeCrowdsourcerCompleted(
+            universe,
+            address(this),
+            address(_crowdsourcer),
+            _crowdsourcer.getPayoutNumerators(),
+            disputeWindow.getStartTime(),
+            disputeWindow.getEndTime(),
+            disputePacingOn,
+            getStakeInOutcome(_crowdsourcer.getPayoutDistributionHash()),
+            getParticipantStake(),
+            participants.length);
         if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
@@ -400,7 +410,7 @@ contract Market is Initializable, Ownable, IMarket {
             } else {
                 preemptiveDisputeCrowdsourcer = _crowdsourcer;
             }
-            augur.disputeCrowdsourcerCreated(universe, address(this), address(_crowdsourcer), _payoutNumerators, _size);
+            augur.disputeCrowdsourcerCreated(universe, address(this), address(_crowdsourcer), _payoutNumerators, _size, getNumParticipants());
         }
         return _crowdsourcer;
     }

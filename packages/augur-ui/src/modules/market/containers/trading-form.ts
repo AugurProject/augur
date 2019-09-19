@@ -1,47 +1,68 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import TradingForm from "modules/market/components/trading-form/trading-form";
-import { createBigNumber } from "utils/create-big-number";
-import { windowRef } from "utils/window-ref";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import TradingForm from 'modules/market/components/trading-form/trading-form';
+import { createBigNumber } from 'utils/create-big-number';
+import { windowRef } from 'utils/window-ref';
 import {
   MARKET_REVIEW_TRADE_SEEN,
   MODAL_MARKET_REVIEW_TRADE,
-} from "modules/common/constants";
-import { updateModal } from "modules/modal/actions/update-modal";
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
-import { handleFilledOnly } from "modules/alerts/actions/alerts";
+} from 'modules/common/constants';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   updateTradeCost,
-  updateTradeShares
-} from "modules/trades/actions/update-trade-cost-shares";
-import { placeMarketTrade } from "modules/trades/actions/place-market-trade";
+  updateTradeShares,
+} from 'modules/trades/actions/update-trade-cost-shares';
+import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
 import {
   updateAuthStatus,
-  IS_CONNECTION_TRAY_OPEN
-} from "modules/auth/actions/auth-status";
-import { selectSortedMarketOutcomes } from "modules/markets/selectors/market";
-
+  IS_CONNECTION_TRAY_OPEN,
+} from 'modules/auth/actions/auth-status';
+import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
+import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { LoginAccount } from 'modules/types';
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
 
-  const hasFunds = !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai
+  const hasFunds =
+    !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
+
+  const selectedOutcomeId =
+    ownProps.selectedOutcomeId !== undefined &&
+    ownProps.selectedOutcomeId !== null
+      ? ownProps.selectedOutcomeId
+      : market.defaultSelectedOutcomeId;
+  let outcomeOrderBook = {};
+  if (ownProps.initialLiquidity) {
+    outcomeOrderBook = formatOrderBook(
+      ownProps.market.orderBook[selectedOutcomeId]
+    );
+  }
+
+  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);
+
   return {
     gasPrice: getGasPrice(state),
     availableEth: createBigNumber(state.loginAccount.balances.eth),
     availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
+    orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
-    allowanceAmount: loginAccount.allowanceFormatted,
+    allowanceBigNumber: loginAccount.allowance,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
-    sortedOutcomes: selectSortedMarketOutcomes(ownProps.market.marketType, ownProps.market.outcomesFormatted),
+    sortedOutcomes: selectSortedMarketOutcomes(
+      ownProps.market.marketType,
+      ownProps.market.outcomesFormatted
+    ),
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   toggleConnectionTray: value =>
     dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
-  handleFilledOnly: trade => dispatch(handleFilledOnly(trade)),
+  handleFilledOnly: trade => null,
   updateTradeCost: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
   updateTradeShares: (marketId, outcomeId, order, callback) =>
@@ -70,7 +91,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         callback,
         onComplete,
       })
-    )
+    ),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -87,12 +108,10 @@ const mergeProps = (sP, dP, oP) => {
   };
 };
 
-const TradingFormContainer = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(TradingForm)
-);
+const TradingFormContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(TradingForm);
 
 export default TradingFormContainer;

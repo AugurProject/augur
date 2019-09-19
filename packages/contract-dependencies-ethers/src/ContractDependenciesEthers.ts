@@ -2,13 +2,16 @@ import { Dependencies, AbiFunction, AbiParameter, Transaction, TransactionReceip
 import { ethers } from 'ethers'
 import { BigNumber } from 'bignumber.js';
 import { TransactionRequest, TransactionResponse } from "ethers/providers";
-import { isInstanceOfBigNumber, isInstanceOfEthersBigNumber, isInstanceOfArray } from "./utils";
+import { isInstanceOfBigNumber, isInstanceOfEthersBigNumber, isInstanceOfArray, isObject } from "./utils";
 import { getAddress } from "ethers/utils/address";
 import * as _ from "lodash";
 
 export interface EthersSigner {
   sendTransaction(transaction: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse>;
   getAddress(): Promise<string>;
+  signMessage(message: ethers.utils.Arrayish | string): Promise<string>;
+  // TODO: Review use of this.
+  signDigest(message: ethers.utils.Arrayish | string): Promise<ethers.utils.Signature>;
 }
 
 export interface EthersProvider {
@@ -18,6 +21,7 @@ export interface EthersProvider {
   getBalance(address: string): Promise<ethers.utils.BigNumber>;
   getGasPrice(): Promise<ethers.utils.BigNumber>;
   getTransaction(hash: string): Promise<TransactionResponse>;
+  //sendAsync(payload: JSONRPCRequestPayload): Promise<any>;
 }
 
 export enum TransactionStatus {
@@ -40,13 +44,13 @@ export interface TransactionMetadata {
 
 export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   public readonly provider: EthersProvider;
-  public readonly signer?: EthersSigner;
+  public signer?: EthersSigner;
   public readonly address?: string;
 
-  private readonly abiCoder: ethers.utils.AbiCoder;
+  protected readonly abiCoder: ethers.utils.AbiCoder;
 
-  private transactionDataMetaData: { [data: string]: TransactionMetadata } = {};
-  private transactionStatusCallbacks: { [key: string]: TransactionStatusCallback } = {};
+  protected transactionDataMetaData: { [data: string]: TransactionMetadata } = {};
+  protected transactionStatusCallbacks: { [key: string]: TransactionStatusCallback } = {};
 
   public constructor(provider: EthersProvider, signer?: EthersSigner, address?: string) {
     this.provider = provider;
@@ -54,6 +58,10 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     this.signer = signer;
     this.address = address;
     this.abiCoder = new ethers.utils.AbiCoder();
+  }
+
+  public setSigner(signer: EthersSigner) {
+    this.signer = signer;
   }
 
   public transactionToEthersTransaction(transaction: Transaction<BigNumber>): Transaction<ethers.utils.BigNumber> {
@@ -65,22 +73,37 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     }
   }
 
+  public ethersTransactionToTransaction(transaction: Transaction<ethers.utils.BigNumber>): Transaction<BigNumber> {
+    return {
+      to: transaction.to,
+      from: transaction.from,
+      data: transaction.data,
+      value: transaction.value ? new BigNumber(transaction.value.toString()) : new BigNumber(0)
+    }
+  }
+
   public keccak256(utf8String: string): string {
     return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(utf8String));
   }
 
   public encodeParams(abiFunction: AbiFunction, parameters: Array<any>) {
     const ethersParams = _.map(parameters, (param) => {
-      if (isInstanceOfBigNumber(param)) {
-        return new ethers.utils.BigNumber(param.toFixed());
-      } else if (isInstanceOfArray(param) && param.length > 0 && isInstanceOfBigNumber(param[0])) {
-        return _.map(param, (value) => new ethers.utils.BigNumber(value.toFixed()));
-      }
-      return param;
+      return this.encodeParam(param);
     });
     const txData = this.abiCoder.encode(abiFunction.inputs, ethersParams);
     this.storeTxMetadata(abiFunction, parameters, txData);
     return txData.substr(2);
+  }
+
+  private encodeParam(param: any): any {
+    if (isInstanceOfBigNumber(param)) {
+      return new ethers.utils.BigNumber(param.toFixed());
+    } else if (isInstanceOfArray(param) && param.length > 0) {
+      return _.map(param, (value) => this.encodeParam(value));
+    } else if (isObject(param)) {
+      return _.mapValues(param, (value) => this.encodeParam(value));
+    }
+    return param;
   }
 
   public storeTxMetadata(abiFunction: AbiFunction, parameters: Array<any>, txData: string): void {
@@ -116,7 +139,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     }
 
     if (this.address) return getAddress(this.address);
-    
+
     return undefined;
   }
 
@@ -140,8 +163,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
   public async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
     if (!this.signer) throw new Error("Attempting to sign a transaction while not providing a signer");
-    // TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
-    // TODO: https://github.com/ethers-io/ethers.js/issues/321
+    // @TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
+    // @BODY https://github.com/ethers-io/ethers.js/issues/321
     const tx = this.transactionToEthersTransaction(transaction);
     delete tx.from;
     const txMetadataKey = `0x${transaction.data.substring(10)}`;
@@ -149,10 +172,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     this.onTransactionStatusChanged(txMetadata, TransactionStatus.AWAITING_SIGNING);
     let hash = undefined;
     try {
-      const response = await this.signer.sendTransaction(tx);
-      hash = response.hash;
-      this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, hash);
-      const receipt = await response.wait();
+      const receipt = await this.sendTransaction(tx, txMetadata);
+      hash = receipt.transactionHash;
       const status = receipt.status == 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
       this.onTransactionStatusChanged(txMetadata, status, hash);
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
@@ -163,7 +184,13 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     } finally {
       delete this.transactionDataMetaData[txMetadataKey];
     }
+  }
 
+  public async sendTransaction(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<ethers.providers.TransactionReceipt> {
+    const response = await this.signer.sendTransaction(tx);
+    const hash = response.hash;
+    this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, hash);
+    return await response.wait();
   }
 
   public async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {

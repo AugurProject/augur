@@ -42,8 +42,10 @@ function parse(flash: FlashSession): Args {
     const script = flash.scripts[name];
     const command = commands.addParser(script.name, { description: script.description });
     for (const opt of script.options || []) {
+      const args = [ `--${opt.name}`];
+      if (opt.abbr) args.push(`-${opt.abbr}`);
       command.addArgument(
-        [ `--${opt.name}`],
+        args,
         {
           help: opt.description || "",
           required: opt.required || false,
@@ -71,7 +73,7 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
       //   string: --foo <bar>
       const flag = option.flag || false;
       const abbr = option.abbr ? `-${option.abbr},` : "";
-      const optionValue = `${abbr}--${option.name}${flag ? "" : ` <arg>`}`
+      const optionValue = `${abbr}--${option.name}${flag ? "" : ` <arg>`}`;
       v = v.option(optionValue, option.description);
       if (flag) {
         types.boolean.push(option.name);
@@ -122,16 +124,14 @@ if (require.main === module) {
     const vorpal = makeVorpalCLI(flash);
     flash.setLogger(vorpal.log.bind(vorpal));
     vorpal.show();
+  } else if (args.network === "none") {
+    flash.call(args.command, args).catch(console.error);
   } else {
-    if (args.network === "none") {
-      flash.call(args.command, args).catch(console.error);
-    } else {
-      const networkConfiguration = NetworkConfiguration.create(args.network);
-      flash.provider = flash.makeProvider(networkConfiguration);
-      flash.getNetworkId(flash.provider).then((networkId) => {
-        flash.contractAddresses = Addresses[networkId];
-        return flash.call(args.command, args);
-      }).catch(console.error);
-    }
+    flash.network = NetworkConfiguration.create(args.network);
+    flash.provider = flash.makeProvider(flash.network);
+    flash.getNetworkId(flash.provider).then((networkId) => {
+      flash.contractAddresses = Addresses[networkId];
+      return flash.call(args.command, args);
+    }).catch(console.error);
   }
 }

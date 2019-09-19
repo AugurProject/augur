@@ -1,4 +1,5 @@
 export const abi = require("./abi.json");
+export const abiV1 = require("./abi.v1.json");
 export const Addresses = require("./addresses.json");
 export const Contracts = require("./contracts.json");
 export const UploadBlockNumbers = require("./upload-block-numbers.json");
@@ -40,6 +41,9 @@ export interface ContractAddresses {
     TradingEscapeHatch?: string;
     Time?: string;
     TimeControlled?: string;
+    GnosisSafe?: string;
+    ProxyFactory?: string;
+    ZeroXTradeToken?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

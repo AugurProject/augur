@@ -6,17 +6,9 @@
 // 	The breakpoints encompass:
 // 	Steps (1, 2, etc.) -- Account for large structural view reflows that may need to occur (Ascending in px)
 // 	Sub-Steps (1-1, 2-1, etc.) -- Account for fine styling adjustments between steps (Descending in px)
-
-// 	STEP 1
-// 	Smallest layout @ < 600px
-//		Step
-@step-1: 600px;
-//		Rules
-@breakpoint-1: ~"all and (max-width: @{step-1})";
-
 //	STEP 2
-// 	Medium layout @ > 600px && <= 1200px
 //		Steps
+@step-1: 600px;
 @step-1-0: 2000px;
 @step-1-1: 1319px;
 @step-2: 1200px;
@@ -35,29 +27,10 @@
 //		Rules
 @breakpoint-1-0-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-0})";
 @breakpoint-1-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-1})";
-@breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
-@breakpoint-2-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-0})";
-@breakpoint-2-1: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-1})";
-@breakpoint-2-15: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-15})";
-@breakpoint-2-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-2})"; // Mobile tipping point
-@breakpoint-2-25: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-25})"; // Top bar changes
-@breakpoint-2-3: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-3})";
-@breakpoint-3: ~"all and (min-height: @{step-1}) and (max-height: @{step-3})";
-
-//	STEP 3
-// 	Full layout @ > 1200px
-//		Step
-//			Explicit declaration of step not necessary here
-//		Rules
-@breakpoint-3: ~"all and (min-width: @{step-2})";
 
 // Helper Breakpoints
 // Smallish desktop (up to step 2-0)
 @breakpoint-smallish-desktop: ~"all and (max-width: @{step-2-0})";
-// Small desktop (up to step 2-1)
-@breakpoint-small-desktop: ~"all and (max-width: @{step-2-1})";
-// Very small desktop (up to step 2-15)
-@breakpoint-smaller-desktop: ~"all and (max-width: @{step-2-15})";
 //	Mobile (up to step-2-2)
 @breakpoint-mobile: ~"all and (max-width: @{step-2-2})"; // 900
 // Mobile (up to step-2-25)
@@ -77,3 +50,20 @@
 
 // TODO remove when side nav is removed
 @breakpoint-temp: ~"(min-width: 1281px) and (max-width: 1420px)";
+
+// new breakpoints
+@mobile: 767px;
+@tablet-min: 768px;
+@tablet-max: 1200px;
+@desktop-min: 1201px;
+@desktop-max: 1440px;
+@desktop-large: 1560px;
+
+@breakpoint-mobile-new: ~"all and (max-width: @{mobile})";
+@breakpoint-tablet: ~"all and (min-width: @{tablet-min}) and (max-width: @{tablet-max})";
+@breakpoint-max-tablet: ~"all and (max-width: @{tablet-max})";
+@breakpoint-desktop: ~"all and (min-width: @{desktop-min}) and (max-width: @{desktop-max})";
+@breakpoint-min-desktop-min: ~"all and (min-width: @{desktop-min})";
+@breakpoint-max-desktop-min: ~"all and (max-width: @{desktop-min})";
+@breakpoint-max-desktop: ~"all and (max-width: @{desktop-max})";
+@breakpoint-desktop-large: ~"all and (min-width: @{desktop-large})";

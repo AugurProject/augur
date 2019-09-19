@@ -1,63 +1,95 @@
 @import (reference) '~assets/styles/shared';
 
 .Alert {
-  background-color: @color-primary-light;
+  background-color: fade(@color-primary-text, 90%);
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  padding: @size-16 @size-24;
+  padding: @size-6 @size-8;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-bottom: @size-1;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @size-3;
 
   &:last-of-type {
     border-bottom: 0;
   }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+
+    &:first-of-type {
+      flex: 1;
+    }
+
+    &:last-of-type {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.Timestamp {
+  .text-9;
+
+  color:@color-inactive-text;
 }
 
 .Seen {
-  background-color: @color-tertiary-background;
+  background-color: fade(@color-primary-text, 90%);
+
+  > div {
+    > div:first-of-type > div,
+    > div:nth-of-type(2) > span {
+      color: @color-inactive-text;
+    }
+  }
 }
 
 .Row {
   display: flex;
-}
+  justify-content: space-between;
+  align-items: center;
 
-.Column {
-  display: flex;
-  flex-direction: column;
+  &:not(:first-of-type) {
+    margin-top: @size-2;
+  }
+
+  &:first-of-type {
+    > button {
+      display: flex;
+    }
+  }
+
+  &:last-of-type {
+    margin-top: @size-4;
+  }
 }
 
 .Title {
-  color: @color-secondary-text;
-  flex: 0 1 auto;
-  font-size: @font-size-medium;
-  font-weight: bold;
-  height: @size-16;
-  margin: 0 @size-10 @size-4 0;
+  .text-10;
+
+  color: @color-dark-grey;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: flex 1000ms ease-in;
   white-space: nowrap;
-  width: 17.188rem;
-}
-
-.Title::first-letter {
-  text-transform: capitalize;
+  margin: @size-2 0;
+  max-width: 95%;
 }
 
 .Status {
-  color: @color-secondary-text;
-  font-size: @font-size-extra-small;
-  font-weight: @weight-medium;
-  height: @size-11;
-  margin-bottom: @size-4;
+  .mono-9-bold;
+
+  color: @color-dark-grey;
   text-transform: uppercase;
 }
 
 .EtherLink {
-  color: @color-secondary-text;
-  font-size: @font-size-extra-small;
+  color: @color-primary-text;
+  font-size: @size-10;
   font-weight: 500;
   text-decoration: underline;
 }
@@ -83,27 +115,27 @@
 .Close {
   align-self: baseline;
   margin-left: auto;
-  width: @size-12;
 
-  > svg > g > g {
-    stroke: #F6F6F8;
+  > svg {
+    width: @size-8;
+    height: size-8;
+    > path {
+      fill: @color-inactive-text;
+    }
   }
 }
 
 .Description {
-  flex: 1 0 100%;
-  font-size: @font-size-small;
-  height: @size-14;
-  margin-bottom: @size-4;
+  .text-9;
+
+  color: @color-inactive-text;
   overflow: hidden;
-  padding-right: @size-20;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 17.188rem;
 
   @media @breakpoint-mobile {
     flex: 1 0 100%;
-    font-size: @font-size-small;
+    font-size: @size-12;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -111,7 +143,7 @@
 }
 
 .Time {
-  color: @color-secondary-text;
-  font-size: @font-size-extra-small;
+  color: @color-primary-text;
+  font-size: @size-10;
   margin-right: @size-4;
 }

@@ -18,7 +18,6 @@ const mapStateToProps = state => ({
   availableRep: state.loginAccount.balances.rep,
   meta: getValue(state, "loginAccount.meta"),
   newMarket: state.newMarket,
-  categories: state.categories,
   isMobileSmall: state.appStatus.isMobileSmall,
   currentTimestamp: selectCurrentTimestamp(state),
   gasPrice: getGasPrice(state)
@@ -28,8 +27,8 @@ const mapDispatchToProps = dispatch => ({
   addOrderToNewMarket: data => dispatch(addOrderToNewMarket(data)),
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
-  submitNewMarket: (data, history, cb) =>
-    dispatch(submitNewMarket(data, history, cb)),
+  submitNewMarket: (data, cb) =>
+    dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
     dispatch(estimateSubmitNewMarket(data, callback))
 });

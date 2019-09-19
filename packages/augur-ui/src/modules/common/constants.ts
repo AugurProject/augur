@@ -1,5 +1,7 @@
 import {
   Getters,
+  Logs,
+  MarketReportingState,
 } from '@augurproject/sdk';
 import {
   Edge,
@@ -186,6 +188,37 @@ export const MAX_FEE_10_PERCENT = '0.1';
 export const MAX_FEE_05_PERCENT = '0.05';
 export const MAX_FEE_02_PERCENT = '0.02';
 
+export const feeFilters = [
+  { header: 'All', value: MAX_FEE_100_PERCENT },
+  { header: '0-2%', value: MAX_FEE_02_PERCENT },
+  { header: '0-5%', value: MAX_FEE_05_PERCENT },
+  { header: '0-10%', value: MAX_FEE_10_PERCENT },
+];
+
+// # Valid Market Liquidity Spreads
+export const MAX_SPREAD_ALL_SPREADS = Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
+export const MAX_SPREAD_20_PERCENT = Getters.Markets.MaxLiquiditySpread.TwentyPercent;
+export const MAX_SPREAD_15_PERCENT = Getters.Markets.MaxLiquiditySpread.FifteenPercent;
+export const MAX_SPREAD_10_PERCENT = Getters.Markets.MaxLiquiditySpread.TenPercent;
+export const MAX_SPREAD_RECENTLY_DEPLETED = Getters.Markets.MaxLiquiditySpread.ZeroPercent;
+
+export const spreadFilters = [
+  { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
+  { header: 'Less than 10%', value: MAX_SPREAD_10_PERCENT },
+  { header: 'Less than 15%', value: MAX_SPREAD_15_PERCENT },
+  { header: 'Less than 20%', value: MAX_SPREAD_20_PERCENT },
+  { header: 'Recently Depleted Liquidity', value: MAX_SPREAD_RECENTLY_DEPLETED },
+];
+
+// # Market Invalid Show/Hide
+export const INVALID_SHOW = 'show';
+export const INVALID_HIDE = 'hide';
+
+export const invalidFilters = [
+  { header: 'Hide', value: INVALID_HIDE },
+  { header: 'show', value: INVALID_SHOW },
+];
+
 // # Sorting Options
 export const NEUTRAL = 'neutral';
 export const ASCENDING = 'ascending';
@@ -197,9 +230,27 @@ export enum MARKET_SORT_PARAMS {
   CREATION_TIME = 'creationTime',
   END_DATE = 'endTime',
   RECENTLY_TRADED = 'recentlyTraded',
-  CREATOR_FEE_RATE = 'marketCreatorFeeRate',
   OPEN_INTEREST = 'openInterest',
+  LIQUIDITY = 'liquidity',
+  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
 }
+
+export const SORT_OPTIONS = [
+  { value: MARKET_SORT_PARAMS.LIQUIDITY, header: 'Highest liquidity' },
+  { value: MARKET_SORT_PARAMS.OPEN_INTEREST, header: 'Highest open interest' },
+  { value: MARKET_SORT_PARAMS.VOLUME, header: 'Highest volume' },
+  { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
+  { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
+  { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
+];
+
+export enum MARKET_CARD_FORMATS {
+  COMPACT = 'compact',
+  CLASSIC = 'classic',
+  EXPANDED = 'expanded',
+}
+
+export const SEARCH_FILTER_PLACHOLDER = 'Search markets and categories';
 
 // The user should be able to sort by:
 
@@ -214,16 +265,15 @@ export enum MARKET_SORT_PARAMS {
 // In Reporting (DESIGNATED_REPORTING, OPEN_REPORTING, CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW)
 // Resolved (FINALIZED)
 // TODO: this will come from SDK in the near future
-export enum REPORTING_STATE {
-  PRE_REPORTING = Getters.Markets.MarketReportingState.PreReporting,
-  DESIGNATED_REPORTING = Getters.Markets.MarketReportingState.DesignatedReporting,
-  OPEN_REPORTING = Getters.Markets.MarketReportingState.OpenReporting,
-  CROWDSOURCING_DISPUTE = Getters.Markets.MarketReportingState.CrowdsourcingDispute,
-  AWAITING_NEXT_WINDOW = Getters.Markets.MarketReportingState.AwaitingNextWindow,
-  FINALIZED = Getters.Markets.MarketReportingState.Finalized,
-  FORKING = Getters.Markets.MarketReportingState.Forking,
-  AWAITING_NO_REPORT_MIGRATION = Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
-  AWAITING_FORK_MIGRATION = Getters.Markets.MarketReportingState.AwaitingForkMigration
+export const REPORTING_STATE = {
+  PRE_REPORTING: MarketReportingState.PreReporting,
+  DESIGNATED_REPORTING: MarketReportingState.DesignatedReporting,
+  OPEN_REPORTING: MarketReportingState.OpenReporting,
+  CROWDSOURCING_DISPUTE: MarketReportingState.CrowdsourcingDispute,
+  AWAITING_NEXT_WINDOW: MarketReportingState.AwaitingNextWindow,
+  FINALIZED: MarketReportingState.Finalized,
+  FORKING: MarketReportingState.Forking,
+  AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration
 }
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
@@ -268,6 +318,9 @@ export const COPY_AUTHOR = 'Copy Market Creator ID';
 export const FILTER_SEARCH_PARAM = 'keywords';
 export const TAGS_PARAM_NAME = 'tags';
 export const CATEGORY_PARAM_NAME = 'category';
+export const MAXFEE_PARAM_NAME = 'maxFee';
+export const SPREAD_PARAM_NAME = 'spread';
+export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 
 // # Close Dialog Status
 export const CLOSE_DIALOG_CLOSING = 'CLOSE_DIALOG_CLOSING';
@@ -296,22 +349,20 @@ export const MARKET_FULLY_LOADING = 'MARKET_FULLY_LOADING';
 export const MARKET_FULLY_LOADED = 'MARKET_FULLY_LOADED';
 
 // # Market Outcome Constants
+export const INVALID_OUTCOME_ID = 0;
 export const YES_NO_NO_ID = 1;
 export const YES_NO_NO_OUTCOME_NAME = 'No';
 export const YES_NO_YES_ID = 2;
 export const YES_NO_YES_OUTCOME_NAME = 'Yes';
 export const SCALAR_DOWN_ID = 1;
 export const SCALAR_UP_ID = 2;
-export const YES_NO_INDETERMINATE_OUTCOME_ID = '0.5';
-export const CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID = '0.5';
 export const INDETERMINATE_PLUS_ONE = '0.500000000000000001';
 export const INDETERMINATE_OUTCOME_NAME = 'Indeterminate';
 
 // # Market Types
-export const YES_NO = 'yesNo';
-export const CATEGORICAL = 'categorical';
-export const SCALAR = 'scalar';
-export const COMBINATORIAL = 'combinatorial';
+export const YES_NO = Logs.MarketTypeName.YesNo;
+export const CATEGORICAL = Logs.MarketTypeName.Categorical;
+export const SCALAR = Logs.MarketTypeName.Scalar;
 
 // # New Market Constraint Constants
 export const DESCRIPTION_MIN_LENGTH = 1;
@@ -431,12 +482,13 @@ export const PERIODS = [
 ];
 
 // # Precision Constants
-export const UPPER_FIXED_PRECISION_BOUND = 8;
+export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
+export const MODAL_REPORTING = 'MODAL_REPORTING';
 export const MODAL_CONTENT = 'MODAL_CONTENT';
 export const MODAL_CATEGORIES = 'MODAL_CATEGORIES';
 export const MODAL_MARKET_TYPE = 'MODAL_MARKET_TYPE';
@@ -448,21 +500,21 @@ export const MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET =
   'MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET';
 export const MODAL_CLAIM_FEES = 'MODAL_CLAIM_FEES';
 export const MODAL_PARTICIPATE = 'MODAL_PARTICIPATE';
-export const MODAL_MIGRATE_MARKET = 'MODAL_MIGRATE_MARKET';
 export const MODAL_NETWORK_DISABLED = 'MODAL_NETWORK_DISABLED';
 export const MODAL_DISCLAIMER = 'MODAL_DISCLAIMER';
 export const MODAL_CONFIRM = 'MODAL_CONFIRM';
 export const MODAL_REVIEW = 'MODAL_REVIEW';
 export const MODAL_GAS_PRICE = 'MODAL_GAS_PRICE';
 export const MODAL_REP_FAUCET = 'MODAL_REP_FAUCET';
+export const MODAL_CREATE_MARKET = 'MODAL_CREATE_MARKET';
 export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
 export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
-export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
-export const MODAL_CLAIM_PROCEEDS = 'MODAL_CLAIM_PROCEEDS';
+// export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
+export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_TRADING_OVERLAY = 'MODAL_TRADING_OVERLAY';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
@@ -474,14 +526,20 @@ export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_MARKET_REVIEW_TRADE = 'MODAL_MARKET_REVIEW_TRADE';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
+export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
 export const TX_TRADE_GROUP_ID = '_tradeGroupId';
 export const TX_MARKET_ID = '_market';
 export const TX_AMOUNT = '_amount';
 export const TX_DIRECTION = '_direction';
+export const TX_ORDER_TYPE = '_type';
 export const TX_PRICE = '_price';
 export const TX_OUTCOME_ID = '_outcome';
+export const TX_NUM_SHARES = '_attoshares';
+export const TX_OUTCOMES = '_outcomes';
+export const TX_PRICES = '_prices';
+export const TX_TYPES = '_types';
 // # Alerts
 export const CRITICAL = 'CRITICAL';
 export const INFO = 'INFO';
@@ -491,6 +549,7 @@ export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';
 export const PUBLICCREATEORDER = 'PUBLICCREATEORDER';
+export const PUBLICCREATEORDERS = 'PUBLICCREATEORDERS';
 export const BUYPARTICIPATIONTOKENS = 'BUYPARTICIPATIONTOKENS';
 export const PUBLICFILLBESTORDER = 'PUBLICFILLBESTORDER';
 export const PUBLICFILLBESTORDERWITHLIMIT = 'PUBLICFILLBESTORDERWITHLIMIT';
@@ -558,6 +617,7 @@ export const WITHDRAWINEMERGENCY = 'WITHDRAWINEMERGENCY';
 export const SENDETHER = 'SENDETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
+export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -594,6 +654,11 @@ export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
+// TODO: Get actual gas cost from augur-core
+export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(3000000); // Estimate for categorical market (worst-case gas cost)
+export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
+export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT).div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).toNumber());
+export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
 
 // # Positions
@@ -606,6 +671,7 @@ export const AWAITING_SIGNATURE = 'awaiting signature';
 export const PENDING = 'pending';
 export const SUCCESS = 'success';
 export const FAILED = 'Failed';
+export const FAILURE = 'Failure';
 export const CONFIRMED = 'Confirmed';
 export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';
@@ -683,7 +749,10 @@ export const AVAILABLE_TRADING_BALANCE = 'Available Trading Balance';
 export const TOTAL_FROZEN_FUNDS = 'Total Frozen Funds';
 export const REP_BALANCE = 'REP Balance';
 export const REP_STAKED = 'REP Staked';
-export const TOTAL_ACCOUNT_VALUE_IN_ETH = 'Total Account Value (DAI)';
+export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value (DAI)';
+export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REP Balance ';
+export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
+export const MY_TOTOL_REP_STAKED = 'My Total REP Staked';
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';
@@ -748,7 +817,9 @@ export const TIMEFRAME_OPTIONS = [
 
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
-export const CLAIM_PROCEEDS = 'CLAIM_PROCEEDS';
+export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
+export const CREATE_MARKET = 'CREATE_MARKET';
+
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
 
@@ -759,6 +830,7 @@ export const DESKTOP = '(min-width:1281px) and (max-width: 2000px)';
 export const LARGE_DESKTOP = '(min-width: 2001px)';
 // temp tablet breakpoint until trading pg additional breakpoints are implemented
 export const TEMP_TABLET = '(max-width: 1280px)';
+export const TABLET_MAX = '(max-width: 1200px)';
 
 // Sort variables
 export const END_TIME = 'endTime';
@@ -786,6 +858,8 @@ export const PORTIS_API_KEY = 'b67817cf-8dd0-4116-a0cf-657820ddc019';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 
+export const NON_EXISTENT = 'N/A';
+
 export const YES_NO_OUTCOMES = [
   {
     id: 0,
@@ -802,3 +876,26 @@ export const YES_NO_OUTCOMES = [
     isTradable: true,
   },
 ];
+
+export const SCALAR_OUTCOMES = [
+  {
+    id: 0,
+    description: 'Invalid',
+    isTradable: true,
+  },
+  {
+    id: 2,
+    description: NON_EXISTENT,
+    isTradable: true,
+  },
+];
+
+export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
+export const CATEGORIES_MAX = 5;
+
+export enum PAGINATION_VIEW_OPTIONS {
+  ALL = 'All',
+  TEN = '10',
+  FIFTY = '50',
+  HUNDRED = '100',
+}

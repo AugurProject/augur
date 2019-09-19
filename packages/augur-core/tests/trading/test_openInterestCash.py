@@ -23,7 +23,6 @@ def test_openInterestCash(contractsFixture, augur, universe, cash, market):
 
     depositAmount = 10 * 10**18
     assert cash.faucet(depositAmount)
-    assert cash.approve(augur.address, depositAmount)
 
     with TokenDelta(cash, -depositAmount, account1):
         assert openInterestCash.deposit(depositAmount)
@@ -62,9 +61,7 @@ def test_openInterestCash_payFees(contractsFixture, augur, universe, cash, marke
 
     depositAmount = 10 * 10**18
     assert cash.faucet(depositAmount)
-    assert cash.approve(augur.address, depositAmount)
     assert cash.faucet(depositAmount, sender=account2)
-    assert cash.approve(augur.address, depositAmount, sender=account2)
 
     with TokenDelta(cash, -depositAmount, account1):
         assert openInterestCash.deposit(depositAmount)
@@ -90,3 +87,25 @@ def test_openInterestCash_payFees(contractsFixture, augur, universe, cash, marke
     with TokenDelta(cash, expectedPayout, account1):
         with TokenDelta(cash, expectedFees, disputeWindowAddress):
             assert openInterestCash.withdraw(depositAmount)
+
+def test_completeSets(contractsFixture, augur, universe, cash, market):
+    openInterestCashAddress = universe.openInterestCash()
+    openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
+
+    account1 = contractsFixture.accounts[0]
+
+    depositAmount = 10 * 10**18
+    assert cash.faucet(depositAmount)
+
+    with TokenDelta(cash, -depositAmount, account1):
+        assert openInterestCash.deposit(depositAmount)
+
+    # Now that OI Cash has been deposited we can choose to use it to buy complete sets rather than taking the money out and paying fees
+    numCompleteSets = 10**14
+    initialFeesPaid = openInterestCash.totalAmountFeesPaid()
+    assert openInterestCash.buyCompleteSets(market.address, numCompleteSets)
+
+    for i in range(0, 3):
+        assert contractsFixture.applySignature("ShareToken", market.getShareToken(i)).balanceOf(account1) == numCompleteSets
+
+    assert openInterestCash.totalAmountFeesPaid() == initialFeesPaid + (numCompleteSets * market.getNumTicks())

@@ -4,11 +4,8 @@ import {
   applyMiddleware,
   compose,
   Middleware,
-  ReducersMapObject,
 } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-
-import { helpers } from 'helpers/helpers';
 
 import thunk from 'redux-thunk';
 
@@ -33,21 +30,26 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  if (!state || !state.loginAccount || !state.loginAccount.address) {
+  if (
+    !state ||
+    !state.loginAccount ||
+    !state.loginAccount.address ||
+    !state.authStatus.isLogged ||
+    !state.connection.isConnected
+  ) {
     return;
   }
   const { address } = state.loginAccount;
   const {
     pendingLiquidityOrders,
     favorites,
-    reports,
     alerts,
     readNotifications,
     pendingOrders,
     pendingQueue,
     drafts,
     env,
-    connection,
+    connection
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
@@ -80,7 +82,6 @@ const localStorageMiddleware = store => next => action => {
       JSON.stringify({
         pendingLiquidityOrders,
         favorites: processedFavorites,
-        reports,
         alerts,
         readNotifications,
         pendingOrders,
@@ -123,10 +124,6 @@ if (process.env.NODE_ENV !== 'test') {
     get: store.getState,
     enumerable: true,
   });
-}
-
-if (process.env.NODE_ENV === 'development') {
-  (window as WindowApp).integrationHelpers = helpers(store);
 }
 
 if ((module as any).hot) {

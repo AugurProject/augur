@@ -2,12 +2,10 @@ import { createSelector } from 'reselect';
 import store from 'store';
 import * as constants from 'modules/common/constants';
 import {
-  selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { keyArrayBy } from 'utils/key-by';
 import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import getMarketsPositionsRecentlyTraded from 'modules/portfolio/selectors/select-markets-positions-recently-traded';
@@ -17,14 +15,13 @@ export default function() {
 }
 
 export const marketsFilledOrders = createSelector(
-  selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
   getMarketsPositionsRecentlyTraded,
-  (marketReportState, loginAccountAddress, filledOrders, timestamps) => {
+  (loginAccountAddress, filledOrders, timestamps) => {
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
-      marketReportState.resolved
+      [] // marketReportState.resolved
     );
     const markets = filterMarketsByStatus(marketIds, timestamps).sort(
       (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp

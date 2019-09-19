@@ -1,0 +1,42 @@
+@import (reference) '~assets/styles/shared';
+
+.Reporting {
+	display: flex;
+	padding: 60px @size-40 80px;
+
+	> div:first-of-type {
+		flex: 1;
+		margin-right: @size-20;
+	}
+
+	> div:last-of-type {
+		> button {
+			margin-top: @size-32;
+		}
+	}
+
+	@media @breakpoint-smallish-desktop {
+		padding: 0;
+
+		> div > div:last-of-type {
+			padding: 0 @size-10;
+			
+			> div:first-of-type {
+				margin-top: @size-32;
+				max-width: unset;
+			}
+
+			> div:nth-of-type(2) {
+				margin-top: @size-28;
+			}
+
+			> button {
+				margin-top: @size-24;
+			}
+		}
+
+		> div:first-of-type {
+			margin-right: 0;
+		}
+	}
+}

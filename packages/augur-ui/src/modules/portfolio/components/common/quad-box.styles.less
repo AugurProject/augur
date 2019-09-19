@@ -4,11 +4,9 @@
   background: @color-theme-primary;
   border: 1px solid @color-primary-alternate;
   border-radius: @border-radius-default;
-  color: @color-secondary-text;
+  color: @color-primary-text;
   flex: 1;
-  max-height: 50%;
   min-height: 50%;
-  padding-bottom: @size-24;
 
   @media @breakpoint-mobile-mid {
     background: unset;
@@ -22,6 +20,8 @@
     flex: 1;
     overflow: auto;
     overflow-y: overlay;
+    display: flex;
+    flex-direction: column;
 
     @media @breakpoint-mobile-mid {
       background: unset;
@@ -38,6 +38,17 @@
     > div:last-of-type {
       border-bottom: 0;
     }
+  }
+
+  &.HideToggle {
+    max-height: 43px;
+    min-height: unset;
+    overflow-y: hidden;
+    flex: 0;
+  }
+
+  &.Extend {
+    min-height: calc(100% - 43px);
   }
 }
 

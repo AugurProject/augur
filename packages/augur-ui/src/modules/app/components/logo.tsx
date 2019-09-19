@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { AugurLoadingLogo } from "modules/common/icons";
 import Styles from "modules/app/components/logo.styles";
@@ -53,10 +52,6 @@ const Logo = ({ isLoading }: LogoProps) => (
     <span>AUGUR</span>
   </section>
 );
-
-Logo.propTypes = {
-  isLoading: PropTypes.bool
-};
 
 Logo.defaultProps = {
   isLoading: false

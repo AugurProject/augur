@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 
 import 'ROOT/trading/IOrders.sol';
@@ -319,51 +319,6 @@ contract Orders is IOrders, Initializable {
     function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external returns (bool) {
         require(msg.sender == trade);
         marketOrderData[address(_market)].prices[_outcome] = _price;
-        return true;
-    }
-
-    /**
-     * @notice Set the price of an existing order
-     * @param _orderId The type of order. Either BID==0, or ASK==1
-     * @param _price The price in attoCash. Must be within the market range (1 to numTicks-1) and must be different than the current order price
-     * @param _betterOrderId The id of an order which is better than this one (post price change). Used to reduce gas costs when sorting
-     * @param _worseOrderId The id of an order which is worse than this one (post price change). Used to reduce gas costs when sorting
-     * @return Bool True
-     */
-    function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bool) {
-        Order.Data storage _order = orders[_orderId];
-        IMarket _market = _order.market;
-        require(msg.sender == _order.creator, "Orders.setPrice: Sender is not order creator");
-        require(_order.amount > 0, "Orders.setPrice: Order is filled or canceled");
-        require(_price != 0, "Orders.setPrice: Price cannot be 0");
-        require(_price < _market.getNumTicks(), "Orders.setPrice: Price outside of market range");
-        require(_price != _order.price, "Orders.setPrice: Price must change in setOrderPrice");
-        removeOrderFromList(_orderId);
-        bool _isRefund = true;
-        uint256 _moneyEscrowedDelta = 0;
-        if (_order.moneyEscrowed != 0) {
-            _isRefund = _order.orderType == Order.Types.Bid ? _price < _order.price : _price > _order.price;
-            uint256 _priceDelta = _price < _order.price ? _order.price.sub(_price) : _price.sub(_order.price);
-            uint256 _attoSharesToCoverByTokens = _order.amount.sub(_order.sharesEscrowed);
-            _moneyEscrowedDelta = _attoSharesToCoverByTokens.mul(_priceDelta);
-            if (_isRefund) {
-                _market.getUniverse().withdraw(msg.sender, _moneyEscrowedDelta, address(_market));
-                marketOrderData[address(_market)].totalEscrowed = marketOrderData[address(_market)].totalEscrowed.sub(_moneyEscrowedDelta);
-                _order.moneyEscrowed = _order.moneyEscrowed.sub(_moneyEscrowedDelta);
-            } else {
-                _market.getUniverse().deposit(msg.sender, _moneyEscrowedDelta, address(_market));
-                marketOrderData[address(_market)].totalEscrowed = marketOrderData[address(_market)].totalEscrowed.add(_moneyEscrowedDelta);
-                _order.moneyEscrowed = _order.moneyEscrowed.add(_moneyEscrowedDelta);
-            }
-        }
-        _order.price = _price;
-        insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        _market.assertBalances();
-        augur.logOrderPriceChanged(_market.getUniverse(), _orderId);
-        if (_moneyEscrowedDelta != 0) {
-            int256 _frozenFundDelta = _isRefund ? -int256(_moneyEscrowedDelta) : int256(_moneyEscrowedDelta);
-            profitLoss.recordFrozenFundChange(_market, msg.sender, _order.outcome, _frozenFundDelta);
-        }
         return true;
     }
 

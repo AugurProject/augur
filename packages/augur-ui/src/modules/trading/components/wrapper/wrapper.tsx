@@ -15,7 +15,7 @@ import Styles from 'modules/trading/components/wrapper/wrapper.styles.less';
 import { OrderButton } from 'modules/common/buttons';
 import { formatShares, formatGasCostToEther } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
+import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
 import { formatDai } from "utils/format-number";
 
@@ -30,7 +30,8 @@ function pick(object, keys) {
 }
 
 interface WrapperProps {
-  allowanceAmount: FormattedNumber;
+  orderBook: OutcomeOrderBook;
+  allowanceBigNumber: BigNumber;
   market: MarketData;
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
@@ -230,7 +231,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             {
               ...this.state,
               ...order,
-              orderDaiEstimate: totalCost ? formattedValue.formatted : '',
+              orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
               orderEscrowdEth: '',
               gasCostEst: '',
               trade: trade,
@@ -266,7 +267,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 {
                   decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
                 }
-              ).rounded;
+              ).roundedValue;
 
               const formattedGasCost = formatGasCostToEther(
                 newOrder.gasLimit,
@@ -278,7 +279,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   ...this.state,
                   ...order,
                   orderDaiEstimate: neworderDaiEstimate,
-                  orderEscrowdEth: newOrder.potentialEthLoss.formatted,
+                  orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
                   trade: newOrder,
                   gasCostEst: formattedGasCost,
                 },
@@ -305,7 +306,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       },
       res => {
         if (s.doNotCreateOrders && res.res !== res.sharesToFill) {
-          this.props.handleFilledOnly(res.tradeInProgress);
+          //this.props.handleFilledOnly(res.tradeInProgress);
           // onComplete CB
         }
       }
@@ -351,7 +352,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 ...this.state,
                 ...order,
                 orderQuantity: numShares,
-                orderEscrowdEth: newOrder.potentialEthLoss.formatted,
+                orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
                 trade: newOrder,
                 gasCostEst: formattedGasCost,
               },
@@ -366,7 +367,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
 
   render() {
     const {
-      allowanceAmount,
+      allowanceBigNumber,
       availableEth,
       availableDai,
       market,
@@ -377,7 +378,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       marketReviewTradeModal,
       sortedOutcomes,
       updateLiquidity,
-      initialLiquidity
+      initialLiquidity,
+      orderBook
     } = this.props;
     let { marketType, minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
     if (!minPriceBigNumber) {
@@ -453,6 +455,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              orderBook={orderBook}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
               minPrice={minPriceBigNumber}
@@ -480,7 +483,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           (s.trade.shareCost.value !== 0 ||
             s.trade.totalCost.value !== 0) && (
             <Confirm
-              allowanceAmount={allowanceAmount}
+              allowanceBigNumber={allowanceBigNumber}
               numOutcomes={market.numOutcomes}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
@@ -490,7 +493,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               gasLimit={s.trade.gasLimit}
               availableEth={availableEth}
               availableDai={availableDai}
-              selectedOutcome={selectedOutcome}
+              outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
             />
           )}
@@ -507,8 +510,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             action={e => {
               e.preventDefault();
               if (initialLiquidity) {
-                const orderType = s.selectedNav === BUY ? SELL : BUY;
-                updateLiquidity(selectedOutcome, { ...s, selectedNav: orderType });
+                updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else {
                 if (!marketReviewTradeSeen) {

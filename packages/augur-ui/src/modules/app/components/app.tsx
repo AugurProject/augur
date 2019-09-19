@@ -1,23 +1,17 @@
 // TODO -- this component needs to be broken up
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Helmet } from "react-helmet";
-import classNames from "classnames";
-
-import isWindows from "utils/is-windows";
-
-import { tween } from "shifty";
-
-import Modal from "modules/modal/containers/modal-view";
-import TopBar from "modules/app/containers/top-bar";
-import ForkingAlert from "modules/forking/components/forking-alert";
-import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
-import SideNav from "modules/app/components/side-nav/side-nav";
-import TopNav from "modules/app/components/top-nav/top-nav";
-import Routes from "modules/routes/components/routes/routes";
-import AlertsContainer from "modules/alerts/containers/alerts-view";
+import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
+import classNames from 'classnames';
+import isWindows from 'utils/is-windows';
+import Modal from 'modules/modal/containers/modal-view';
+import TopBar from 'modules/app/containers/top-bar';
+import SideNav from 'modules/app/components/side-nav/side-nav';
+import TopNav from 'modules/app/components/top-nav/top-nav';
+import Routes from 'modules/routes/components/routes/routes';
+import AlertsContainer from 'modules/alerts/containers/alerts-view';
+import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
 import {
   MobileNavHamburgerIcon,
@@ -29,180 +23,109 @@ import {
   NavMarketsIcon,
   NavPortfolioIcon,
   NavReportingIcon
-} from "modules/common/icons";
-import parsePath from "modules/routes/helpers/parse-path";
-import parseQuery from "modules/routes/helpers/parse-query";
-
-import getValue from "utils/get-value";
-
+} from 'modules/common/icons';
+import parsePath from 'modules/routes/helpers/parse-path';
 import {
   MARKETS,
-  ACCOUNT_DEPOSIT,
-  ACCOUNT_WITHDRAW,
-  ACCOUNT_REP_FAUCET,
-  ACCOUNT_UNIVERSES,
+  ACCOUNT_SUMMARY,
   MY_POSITIONS,
   CREATE_MARKET,
-  REPORTING_REPORTS,
-  REPORTING_DISPUTE_MARKETS,
-  REPORTING_REPORT_MARKETS,
-  REPORTING_RESOLVED_MARKETS,
-} from "modules/routes/constants/views";
+  DISPUTING,
+  REPORTING,
+} from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
-  CATEGORY_PARAM_NAME,
   MOBILE_MENU_STATES
-} from "modules/common/constants";
+} from 'modules/common/constants';
 
-import Styles from "modules/app/components/app.styles.less";
-import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
-import ReportingInnerNav from "modules/app/containers/reporting-inner-nav";
-
-const SUB_MENU = "subMenu";
-const MAIN_MENU = "mainMenu";
-
-const navTypes = {
-  [MARKETS]: MarketsInnerNavContainer,
-  [REPORTING_REPORTS]: ReportingInnerNav,
-  [ACCOUNT_DEPOSIT]: AccountInnerNav,
-  [ACCOUNT_WITHDRAW]: AccountInnerNav,
-  [ACCOUNT_REP_FAUCET]: AccountInnerNav,
-  [ACCOUNT_UNIVERSES]: AccountInnerNav,
-  [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
-  [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
-  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav,
-};
+import Styles from 'modules/app/components/app.styles.less';
+import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 
 interface AppProps {
-  blockchain: any;
-  env: any;
-  history: any;
-  initAugur: any;
-  isLogged: any;
-  isMobile: any;
-  location: any;
-  loginAccount: any;
-  modal: any;
-  universe: any;
-  updateIsMobile: any;
-  updateIsMobileSmall: any;
-  updateModal: any;
-  finalizeMarket: any;
-  ethereumNodeHttp: any;
-  ethereumNodeWs: any;
-  useWeb3Transport: any;
-  logout: any;
-  sidebarStatus: any;
-  updateCurrentBasePath: any;
-  updateCurrentInnerNavType: any;
-  updateMobileMenuState: any;
-  updateIsAlertVisible: any;
-  updateSidebarStatus: any;
-  alerts: any;
+  blockchain: Object;
+  env: Object;
+  history: Object;
+  initAugur: Function;
+  isLogged: Boolean;
+  isMobile: Boolean;
+  location: Object;
+  loginAccount: Object;
+  modal: Object;
+  universe: Object;
+  updateIsMobile: Function;
+  updateIsMobileSmall: Function;
+  updateModal: Function;
+  finalizeMarket: Function;
+  ethereumNodeHttp: string;
+  ethereumNodeWs: string;
+  useWeb3Transport: Boolean;
+  logout: Function;
+  sidebarStatus: Object;
+  updateCurrentBasePath: Function;
+  updateCurrentInnerNavType: Function;
+  updateMobileMenuState: Function;
+  updateIsAlertVisible: Function;
+  updateSidebarStatus: Function;
+  alerts: Object;
 }
 
-interface MenuStateItem {
-  scalar?: number;
-  open?: boolean;
-  currentTween?: any | null;
-  locked?: boolean;
-}
-
-interface AppState {
-  mainMenu: MenuStateItem;
-  subMenu: MenuStateItem;
-}
-
-export default class AppView extends Component<AppProps, AppState> {
-  static propTypes = {
-    blockchain: PropTypes.object.isRequired,
-    env: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    initAugur: PropTypes.func.isRequired,
-    isLogged: PropTypes.bool.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired,
-    loginAccount: PropTypes.object.isRequired,
-    modal: PropTypes.object.isRequired,
-    universe: PropTypes.object.isRequired,
-    updateIsMobile: PropTypes.func.isRequired,
-    updateIsMobileSmall: PropTypes.func.isRequired,
-    updateModal: PropTypes.func.isRequired,
-    finalizeMarket: PropTypes.func.isRequired,
-    ethereumNodeHttp: PropTypes.string,
-    ethereumNodeWs: PropTypes.string,
-    useWeb3Transport: PropTypes.bool,
-    logout: PropTypes.func.isRequired,
-    sidebarStatus: PropTypes.object.isRequired,
-    updateCurrentBasePath: PropTypes.func.isRequired,
-    updateCurrentInnerNavType: PropTypes.func.isRequired,
-    updateMobileMenuState: PropTypes.func.isRequired,
-    updateIsAlertVisible: PropTypes.func.isRequired,
-    updateSidebarStatus: PropTypes.func.isRequired,
-    alerts: PropTypes.object.isRequired,
-  };
-
+export default class AppView extends Component<AppProps> {
   static defaultProps = {
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
     useWeb3Transport: false,
   };
 
-  state = {
-    mainMenu: { scalar: 0, open: false, currentTween: null },
-    subMenu: { scalar: 0, open: false, currentTween: null },
-  };
-
   sideNavMenuData = [
     {
-      title: "Markets",
+      title: 'Markets',
       icon: NavMarketsIcon,
       route: MARKETS,
     },
     {
-      title: "Account Summary",
-      iconName: "nav-account-icon",
+      title: 'Account Summary',
+      iconName: 'nav-account-icon',
       icon: NavAccountIcon,
-      route: ACCOUNT_DEPOSIT,
+      route: ACCOUNT_SUMMARY,
       requireLogin: true
     },
     {
-      title: "Portfolio",
-      iconName: "nav-portfolio-icon",
+      title: 'Portfolio',
+      iconName: 'nav-portfolio-icon',
       icon: NavPortfolioIcon,
       route: MY_POSITIONS,
       requireLogin: true,
     },
     {
-      title: "Disputing",
-      iconName: "nav-reporting-icon",
+      title: 'Disputing',
+      iconName: 'nav-reporting-icon',
       icon: NavReportingIcon,
       mobileClick: () =>
         this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
-      route: REPORTING_DISPUTE_MARKETS,
+      route: DISPUTING,
     },
     {
-      title: "Reporting",
-      iconName: "nav-reporting-icon",
+      title: 'Reporting',
+      iconName: 'nav-reporting-icon',
       icon: NavReportingIcon,
       mobileClick: () =>
         this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
-      route: REPORTING_REPORT_MARKETS,
+      route: REPORTING,
     },
     {
-      title: "Create",
-      iconName: "nav-create-icon",
+      title: 'Create',
+      iconName: 'nav-create-icon',
       icon: NavCreateIcon,
       route: CREATE_MARKET,
       requireLogin: true,
       disabled: this.props.universe.isForking,
     },
     {
-      title: "Logout",
-      iconName: "nav-logout-icon",
+      title: 'Logout',
+      iconName: 'nav-logout-icon',
       icon: LogoutIcon,
       mobileClick: () => this.props.logout(),
-      route: ACCOUNT_DEPOSIT,
+      route: MARKETS,
       requireLogin: true,
       onlyForMobile: true,
     },
@@ -242,18 +165,14 @@ export default class AppView extends Component<AppProps, AppState> {
     updateCurrentBasePath(currentPath);
 
     this.changeMenu(currentPath);
-    if (currentPath === MARKETS) {
-      const selectedCategory = parseQuery(location.search)[CATEGORY_PARAM_NAME];
-      if (selectedCategory) this.toggleMenuTween(SUB_MENU, true, undefined);
-    }
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.handleWindowResize);
+    window.addEventListener('resize', this.handleWindowResize);
 
     // Restyle all scrollbars on windows
     if (isWindows()) {
-      document.body.classList.add("App--windowsScrollBars");
+      document.body.classList.add('App--windowsScrollBars');
     }
     this.checkIsMobile();
   }
@@ -277,17 +196,9 @@ export default class AppView extends Component<AppProps, AppState> {
       const lastBasePath = parsePath(location.pathname)[0];
       const nextBasePath = parsePath(nextProps.location.pathname)[0];
 
-      const selectedCategory = parseQuery(nextProps.location.search)[
-        CATEGORY_PARAM_NAME
-      ];
-
       if (lastBasePath !== nextBasePath) {
         updateCurrentBasePath(nextBasePath);
         this.changeMenu(nextBasePath);
-      }
-
-      if (nextBasePath === MARKETS && selectedCategory) {
-        this.toggleMenuTween(SUB_MENU, true, undefined);
       }
     }
   }
@@ -316,60 +227,13 @@ export default class AppView extends Component<AppProps, AppState> {
     }
   };
 
-  changeMenu(nextBasePath: any) {
-    const { isLogged, sidebarStatus, updateCurrentInnerNavType } = this.props;
-    const oldType = sidebarStatus.currentInnerNavType
-      ? navTypes[sidebarStatus.currentBasePath]
-      : sidebarStatus.currentInnerNavType;
-    const newType = navTypes[nextBasePath];
-
-    // Don't show mainMenu/subMenu for Account Summary
-    if (newType === AccountInnerNav) {
-      return this.toggleMenuTween(SUB_MENU, false, () =>
-        this.toggleMenuTween(MAIN_MENU, false, undefined)
-      );
+  changeMenu(nextBasePath: string) {
+    if (nextBasePath === MARKETS) {
+      this.props.updateCurrentInnerNavType(MarketsInnerNavContainer);
     }
-
-    if ((newType === AccountInnerNav && !isLogged) || oldType === newType) {
-      return;
+    else {
+      this.props.updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-
-    const openNewMenu = () => {
-      updateCurrentInnerNavType(newType);
-      if (newType) this.toggleMenuTween(MAIN_MENU, true, undefined);
-    };
-
-    if (!oldType) {
-      openNewMenu();
-      return;
-    }
-
-    const menuExitPromise = new Promise(resolve => {
-      this.toggleMenuTween(MAIN_MENU, false, () => resolve());
-    });
-    const submenuExitPromise = new Promise(resolve => {
-      this.toggleMenuTween(SUB_MENU, false, () => resolve());
-    });
-
-    Promise.all([menuExitPromise, submenuExitPromise]).then(() => {
-      switch (nextBasePath) {
-        case MARKETS:
-        case MY_POSITIONS:
-        case REPORTING_DISPUTE_MARKETS:
-        case REPORTING_REPORT_MARKETS:
-        case REPORTING_RESOLVED_MARKETS:
-          openNewMenu();
-          break;
-        default:
-          updateCurrentInnerNavType(newType);
-          openNewMenu();
-      }
-    });
-  }
-
-  openSubMenu() {
-    const { updateMobileMenuState } = this.props;
-    updateMobileMenuState(MOBILE_MENU_STATES.SUBMENU_OPEN);
   }
 
   handleWindowResize = () => {
@@ -384,14 +248,14 @@ export default class AppView extends Component<AppProps, AppState> {
       (
         window
           .getComputedStyle(document.body)
-          .getPropertyValue("--is-mobile") || ""
-      ).indexOf("true") !== -1;
+          .getPropertyValue('--is-mobile') || ''
+      ).indexOf('true') !== -1;
     const isMobileSmall =
       (
         window
           .getComputedStyle(document.body)
-          .getPropertyValue("--is-mobile-small") || ""
-      ).indexOf("true") !== -1;
+          .getPropertyValue('--is-mobile-small') || ''
+      ).indexOf('true') !== -1;
 
     updateIsMobile(isMobile);
     updateIsMobileSmall(isMobileSmall);
@@ -401,46 +265,6 @@ export default class AppView extends Component<AppProps, AppState> {
     const { isLogged, sidebarStatus, updateIsAlertVisible } = this.props;
     if (isLogged) {
       updateIsAlertVisible(!sidebarStatus.isAlertsVisible);
-    }
-  }
-
-  toggleMenuTween(menuKey: string, forceOpen: boolean, cb: Function | undefined) {
-    const { [menuKey]: key } = this.state;
-    if (getValue(key, "currentTween.stop")) key.currentTween.stop();
-
-    let nowOpen = !key.open;
-    if (typeof forceOpen === "boolean") nowOpen = forceOpen;
-
-    const setMenuState = (newState: MenuStateItem) => {
-      const { [menuKey]: oldKey } = this.state;
-      this.setState({
-        [menuKey]: {
-          ...oldKey,
-          ...newState
-        }
-      });
-    };
-    const alreadyDone =
-      (!nowOpen && key.scalar === 0) || (nowOpen && key.scalar === 1);
-    if (alreadyDone) {
-      if (cb && typeof cb === "function") cb();
-    } else {
-      const baseMenuState = { open: nowOpen };
-      const currentTween = tween({
-        from: { value: key.scalar },
-        to: { value: nowOpen ? 1 : 0 },
-        duration: 500,
-        easing: "easeOutQuad",
-        step: (newState: any) => {
-          setMenuState(
-            Object.assign({}, baseMenuState, { scalar: newState.value })
-          );
-        }
-      }).then(() => {
-        if (cb && typeof cb === "function") cb();
-        setMenuState({ locked: false, currentTween: null });
-      });
-      setMenuState({ currentTween });
     }
   }
 
@@ -463,23 +287,27 @@ export default class AppView extends Component<AppProps, AppState> {
     const { mobileMenuState: menuState } = sidebarStatus;
 
     let icon: any = null;
-    if (menuState === MOBILE_MENU_STATES.CLOSED)
+    if (menuState === MOBILE_MENU_STATES.CLOSED) {
       icon = <MobileNavHamburgerIcon />;
-    else if (menuState === MOBILE_MENU_STATES.SIDEBAR_OPEN)
+    }
+    else if (menuState === MOBILE_MENU_STATES.SIDEBAR_OPEN) {
       icon = <MobileNavCloseIcon />;
-    else if (menuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN)
+    }
+    else if (menuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
       icon = <MobileNavBackIcon />;
+    }
     // remove back icon for markets on mobile
     if (
       sidebarStatus.currentBasePath === MARKETS &&
       menuState !== MOBILE_MENU_STATES.CLOSED
-    )
+    ) {
       icon = <MobileNavCloseIcon />;
+    }
 
     return (
       <button
-        type="button"
-        className={Styles["SideBar__mobile-bars"]}
+        type='button'
+        className={Styles['SideBar__mobile-bars']}
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
@@ -494,57 +322,33 @@ export default class AppView extends Component<AppProps, AppState> {
       isLogged,
       isMobile,
       location,
-      loginAccount,
       modal,
       universe,
-      finalizeMarket,
       sidebarStatus,
       updateMobileMenuState,
       alerts,
     } = this.props;
 
-    const { mainMenu, subMenu } = this.state;
     const { unseenCount } = alerts;
     const currentPath = parsePath(location.pathname)[0];
-    const InnerNav = sidebarStatus.currentInnerNavType;
-    let openSubMenu;
-    if (InnerNav === MarketsInnerNavContainer) {
-      openSubMenu = this.openSubMenu; // eslint-disable-line prefer-destructuring
-    }
-
-    let categoriesMargin;
-    let tagsMargin;
-
-    if (!isMobile) {
-      if (currentPath === CREATE_MARKET && mainMenu.scalar === 1) {
-        // NOTE -- quick patch ahead of larger refactor
-        categoriesMargin = -110;
-      } else {
-        categoriesMargin = -110 + 110 * mainMenu.scalar;
-      }
-
-      tagsMargin = 110 * subMenu.scalar;
-    }
 
     return (
       <main>
         <Helmet
-          defaultTitle="Decentralized Prediction Markets | Augur"
-          titleTemplate="%s | Augur"
+          defaultTitle='Decentralized Prediction Markets | Augur'
+          titleTemplate='%s | Augur'
         />
         {Object.keys(modal).length !== 0 && <Modal />}
         <div
-          className={classNames(Styles.App, {
-            [Styles[`App--blur`]]: Object.keys(modal).length !== 0
+          className={classNames({
+            [Styles['App--blur']]: Object.keys(modal).length !== 0,
           })}
         >
-          <section className={Styles.App__loadingIndicator} />
-
           <section className={Styles.Main}>
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
               onClick={this.mainSectionClickHandler}
-              role="presentation"
+              role='presentation'
             >
               <TopBar />
             </section>
@@ -552,7 +356,7 @@ export default class AppView extends Component<AppProps, AppState> {
             <section
             className={Styles.SideBar}
             onClick={e => this.mainSectionClickHandler(e, false)}
-            role="presentation"
+            role='presentation'
           >
             {this.renderMobileMenuButton(unseenCount)}
 
@@ -581,45 +385,29 @@ export default class AppView extends Component<AppProps, AppState> {
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
             />
+            <ToastsContainer />
             {universe.forkEndTime &&
-              universe.forkEndTime !== "0" &&
+              universe.forkEndTime !== '0' &&
               blockchain &&
               blockchain.currentAugurTimestamp && (
                 <section className={Styles.TopBar}>
-                  <ForkingAlert
-                    location={location}
-                    universe={universe}
-                    currentTime={blockchain.currentAugurTimestamp}
-                    doesUserHaveRep={loginAccount.balances.rep > 0}
-                    marginLeft={tagsMargin}
-                    finalizeMarket={finalizeMarket}
-                  />
                 </section>
               )}
             <section
-              className={Styles.Main__wrap}
-              style={{ marginLeft: categoriesMargin }}
+              className={classNames(Styles.Main__wrap, {
+                [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
+              })}
             >
-              {InnerNav && (
-                <InnerNav
-                  currentBasePath={sidebarStatus.currentBasePath}
-                  isMobile={isMobile}
+             { currentPath === MARKETS ?  <MarketsInnerNavContainer
                   location={location}
                   history={history}
                   mobileMenuState={sidebarStatus.mobileMenuState}
-                  mobileMenuClick={openSubMenu}
-                  subMenuScalar={subMenu.scalar}
-                  openSubMenu={this.openSubMenu}
-                />
-              )}
-              {!InnerNav && <div className="no-nav-placehold" />}
+             /> : <div className='no-nav-placehold' /> }
+
               <section
                 className={Styles.Main__content}
-                style={{
-                  marginLeft: tagsMargin,
-                }}
                 onClick={this.mainSectionClickHandler}
-                role="presentation"
+                role='presentation'
               >
                 <Routes />
               </section>

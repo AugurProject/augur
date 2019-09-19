@@ -19,6 +19,9 @@ export class Contracts {
   time: SomeTime | void;
   legacyReputationToken: ContractInterfaces.LegacyReputationToken;
   simulateTrade: ContractInterfaces.SimulateTrade;
+  gnosisSafe: ContractInterfaces.GnosisSafe;
+  proxyFactory: ContractInterfaces.ProxyFactory;
+  zeroXTradeToken: ContractInterfaces.ZeroXTradeToken;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -38,6 +41,9 @@ export class Contracts {
     this.claimTradingProceeds = new ContractInterfaces.ClaimTradingProceeds(dependencies, addresses.ClaimTradingProceeds);
     this.legacyReputationToken = new ContractInterfaces.LegacyReputationToken(dependencies, addresses.LegacyReputationToken);
     this.simulateTrade = new ContractInterfaces.SimulateTrade(dependencies, addresses.SimulateTrade);
+    this.gnosisSafe = new ContractInterfaces.GnosisSafe(dependencies, addresses.GnosisSafe);
+    this.proxyFactory = new ContractInterfaces.ProxyFactory(dependencies, addresses.ProxyFactory);
+    this.zeroXTradeToken = new ContractInterfaces.ZeroXTradeToken(dependencies, addresses.ZeroXTradeToken);
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
     }
@@ -98,5 +104,9 @@ export class Contracts {
 
   isTimeControlled(contract: SomeTime): contract is ContractInterfaces.TimeControlled {
     return (contract as ContractInterfaces.TimeControlled).setTimestamp !== undefined;
+  }
+
+  gnosisSafeFromAddress(address: string): ContractInterfaces.GnosisSafe {
+    return new ContractInterfaces.GnosisSafe(this.dependencies, address);
   }
 }

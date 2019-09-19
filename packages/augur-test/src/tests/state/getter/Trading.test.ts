@@ -1,11 +1,10 @@
-import { makeDbMock, makeProvider } from "../../../libs";
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from '../../../libs';
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
   MarketReportingState,
-  SECONDS_IN_A_DAY,
-} from '@augurproject/sdk/build/state/getter/Markets';
+} from '@augurproject/sdk/build/constants';
 import {
   MarketTradingHistory,
   Orders,
@@ -13,6 +12,7 @@ import {
 } from '@augurproject/sdk/build/state/getter/Trading';
 import { BigNumber } from 'bignumber.js';
 import { stringTo32ByteHex } from '../../../libs/Utils';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 const mock = makeDbMock();
 
@@ -73,15 +73,15 @@ describe('State API :: Trading :: ', () => {
     );
 
     // Take half the order using the same account
-    const cost = numShares.multipliedBy(78).div(2);
     const orderId1 = await john.getBestOrderId(bid, market1.address, outcome);
     const orderId2 = await john.getBestOrderId(bid, market2.address, outcome);
-    await john.fillOrder(orderId1, cost, numShares.div(2), '42');
-    await john.fillOrder(orderId2, cost, numShares.div(2), '42');
+    await john.fillOrder(orderId1, numShares.div(2), '42');
+    await john.fillOrder(orderId2, numShares.div(2), '42');
 
     // And the rest using another account
-    await mary.fillOrder(orderId1, cost, numShares.div(2), '43');
-    await mary.fillOrder(orderId2, cost, numShares.div(2), '43');
+    await mary.faucet(new BigNumber(1e18)); // faucet enough to cover fills
+    await mary.fillOrder(orderId1, numShares.div(2), '43');
+    await mary.fillOrder(orderId2, numShares.div(2), '43');
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -162,7 +162,6 @@ describe('State API :: Trading :: ', () => {
     );
 
     // Take half the order using the same account
-    const cost = numShares.multipliedBy(78).div(2);
     const orderId = await john.getBestOrderId(bid, market.address, outcome);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -175,7 +174,7 @@ describe('State API :: Trading :: ', () => {
     let order = orders[market.address][0]['0'][orderId];
     await expect(order).not.toBeNull();
 
-    await john.fillOrder(orderId, cost, numShares.div(2), '42');
+    await john.fillOrder(orderId, numShares.div(2), '42');
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -190,29 +189,6 @@ describe('State API :: Trading :: ', () => {
     await expect(order.sharesEscrowed).toEqual('0');
     await expect(order.orderState).toEqual(OrderState.FILLED);
 
-    // Change order Price
-    const newPrice = new BigNumber(25);
-    await john.setOrderPrice(
-      orderId,
-      newPrice,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('')
-    );
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Get orders for the market
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      account: john.account.publicKey,
-      makerTaker: 'either',
-    });
-    await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
-    await expect(orders[market.address][0]['0'][orderId].price).toEqual('0.25');
-    await expect(
-      orders[market.address][0]['0'][orderId].tokensEscrowed
-    ).toEqual('0.000125');
-
     orders = await api.route('getOrders', {
       marketId: market.address,
       account: john.account.publicKey,
@@ -221,12 +197,6 @@ describe('State API :: Trading :: ', () => {
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
     await expect(orders[market.address][0]['0'][orderId]).not.toBeUndefined();
 
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      account: john.account.publicKey,
-      makerTaker: 'taker',
-    });
-    await expect(orders).toEqual({});
 
     // Cancel order
     await john.cancelOrder(orderId);

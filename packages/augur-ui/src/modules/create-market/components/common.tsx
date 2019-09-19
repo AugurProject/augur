@@ -44,6 +44,11 @@ export interface SubheadersProps {
   smallSubheader?: Boolean;
 }
 
+export interface DateTimeHeadersProps extends SubheadersProps {
+  timezoneDateTime: string;
+  timezone: string
+}
+
 export const Subheaders = (props: SubheadersProps) => (
   <div className={Styles.Subheaders}>
     <h1>{props.header}</h1>
@@ -103,6 +108,19 @@ export const LargeSubheaders = (props: SubheadersProps) => (
   </div>
 );
 
+export const DateTimeHeaders = (props: DateTimeHeadersProps) => (
+  <div className={Styles.SmallSubheaders}>
+    <h1>{props.header}</h1>
+    <span>
+      {props.subheader}
+    </span>
+    {props.timezone && <span>
+      {props.timezoneDateTime}
+    </span>
+    }
+  </div>
+);
+
 export const SmallSubheaders = (props: SubheadersProps) => (
   <div className={Styles.SmallSubheaders}>
     <h1>{props.header}</h1>
@@ -113,8 +131,8 @@ export const SmallSubheaders = (props: SubheadersProps) => (
 );
 
 export interface SubheadersTooltipProps {
-  header: string;
-  subheader: string;
+  header: string | Element;
+  subheader: string | Element;
   link?: Boolean;
   href?: string;
   underline?: Boolean;

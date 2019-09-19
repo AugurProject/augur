@@ -1,6 +1,8 @@
 import { utils as ethersUtils } from "ethers";
 import { BigNumber } from "bignumber.js";
 
+export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 export enum ACCOUNT_TYPES {
   U_PORT = "uPort",
   LEDGER = "ledger",
@@ -34,6 +36,7 @@ export enum SubscriptionEventName {
   ParticipationTokensRedeemed = "ParticipationTokensRedeemed",
   ProfitLossChanged = "ProfitLossChanged",
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
+  SDKReady = "SDKReady",
   TimestampSet = "TimestampSet",
   TokenBalanceChanged = "TokenBalanceChanged",
   TokensBurned = "TokensBurned",
@@ -42,6 +45,7 @@ export enum SubscriptionEventName {
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
+  UserDataSynced = "UserDataSynced",
 }
 
 export enum TXEventName {
@@ -125,7 +129,7 @@ export const ORDER_TYPES = {
   ASK: new BigNumber(1),
 };
 
-export const MALFORMED_OUTCOME = "malformed outcome";
+export const MALFORMED_OUTCOME = 'malformed outcome';
 
 export const INVALID_OUTCOME = 0;
 
@@ -137,4 +141,22 @@ export const EULERS_NUMBER = 2.71828182845905;
 
 export const MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI = new BigNumber(10).multipliedBy(10**18); // $10 minimum profit on selling Invalid for the filter to trigger
 
-export const SECONDS_IN_YEAR = new BigNumber(60).multipliedBy(60).multipliedBy(24).multipliedBy(365);
+export const SECONDS_IN_AN_HOUR = new BigNumber(3600, 10);
+
+export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
+
+export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
+
+export const GENESIS = 'Genesis';
+
+export enum MarketReportingState {
+  PreReporting = 'PreReporting',
+  DesignatedReporting = 'DesignatedReporting',
+  OpenReporting = 'OpenReporting',
+  CrowdsourcingDispute = 'CrowdsourcingDispute',
+  AwaitingNextWindow = 'AwaitingNextWindow',
+  AwaitingFinalization = 'AwaitingFinalization',
+  Finalized = 'Finalized',
+  Forking = 'Forking',
+  AwaitingForkMigration = 'AwaitingForkMigration'
+}

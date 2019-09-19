@@ -2,7 +2,6 @@ import { RESET_STATE } from 'modules/app/actions/reset-state';
 import {
   UPDATE_LOGIN_ACCOUNT,
   CLEAR_LOGIN_ACCOUNT,
-  UPDATE_LOGIN_ACCOUNT_BALANCES,
 } from 'modules/account/actions/login-account';
 import { LoginAccount, BaseAction } from 'modules/types';
 
@@ -12,6 +11,15 @@ const DEFAULT_STATE: LoginAccount = {
     rep: 0,
     dai: 0,
   },
+  reporting: {
+    profitLoss: 0,
+    reporting: null,
+    disputing: null,
+    participationTokens: null,
+  },
+  tradingPositionsTotal: {
+    unrealizedRevenue24hChangePercent: "0",
+  }
 };
 
 export default function(
@@ -23,11 +31,6 @@ export default function(
       return {
         ...loginAccount,
         ...(data || {}),
-      };
-    case UPDATE_LOGIN_ACCOUNT_BALANCES:
-      return {
-        ...loginAccount,
-        balances: data,
       };
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

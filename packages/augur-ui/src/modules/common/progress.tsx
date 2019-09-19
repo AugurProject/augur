@@ -1,12 +1,12 @@
-import * as React from "react";
-import Styles from "modules/common/progress.styles.less";
-import * as format from "utils/format-date";
-import classNames from "classnames";
-import { DateFormattedObject } from "modules/types";
-import { REPORTING_STATE } from "modules/common/constants";
+import * as React from 'react';
+import Styles from 'modules/common/progress.styles.less';
+import * as format from 'utils/format-date';
+import classNames from 'classnames';
+import { DateFormattedObject } from 'modules/types';
+import { REPORTING_STATE } from 'modules/common/constants';
 
 export interface CountdownProgressProps {
-  time: DateFormattedObject | null;
+  time?: DateFormattedObject;
   currentTime?: DateFormattedObject;
   label: string;
   countdownBreakpoint?: number;
@@ -29,7 +29,7 @@ export interface TimeProgressBarProps {
 export interface MarketProgressProps {
   reportingState: string;
   currentTime: DateFormattedObject | number;
-  endTime: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
   reportingWindowEndtime: DateFormattedObject | number;
   customLabel?: string;
   alignRight?: Boolean;
@@ -40,52 +40,102 @@ const ThreeDays = 72 * 60 * 60;
 const OneDay = 24 * 60 * 60;
 
 export const formatTime = (time: DateFormattedObject | number) => {
-  if (typeof time !== "object") {
+  if (typeof time !== 'object') {
     return format.convertUnixToFormattedDate(time);
   }
   return time;
 };
 
+const determineProgress = (
+  startTime: number | DateFormattedObject,
+  endTime: number | DateFormattedObject,
+  currentTime: number | DateFormattedObject
+) => {
+  const formattedStartTime: DateFormattedObject = formatTime(startTime);
+  const formattedEndTime: DateFormattedObject = formatTime(endTime);
+  const formattedCurrentTime: DateFormattedObject = formatTime(currentTime);
+
+  const daysRemaining = format.getDaysRemaining(
+    formattedEndTime.timestamp,
+    formattedCurrentTime.timestamp
+  );
+  const totalHours = format.getHoursRemaining(
+    formattedEndTime.timestamp,
+    formattedStartTime.timestamp
+  );
+  const hoursRemaining = format.getHoursMinusDaysRemaining(
+    formattedEndTime.timestamp,
+    formattedCurrentTime.timestamp
+  );
+  const hoursRemainingTotal = format.getHoursRemaining(
+    formattedEndTime.timestamp,
+    formattedCurrentTime.timestamp
+  );
+  const minutesRemaining = format.getMinutesMinusHoursRemaining(
+    formattedEndTime.timestamp,
+    formattedCurrentTime.timestamp
+  );
+  const secondsRemaining = format.getSecondsMinusMinutesRemaining(
+    formattedEndTime.timestamp,
+    formattedCurrentTime.timestamp
+  );
+
+  const percentageToGo = Math.ceil(
+    hoursRemainingTotal > 0 ? (hoursRemainingTotal / totalHours) * 100 : 0
+  );
+  const percentageDone = 100 - percentageToGo;
+
+  return {
+    formattedStartTime,
+    formattedEndTime,
+    formattedCurrentTime,
+    percentageToGo,
+    percentageDone,
+    daysRemaining,
+    totalHours,
+    hoursRemaining,
+    minutesRemaining,
+    secondsRemaining,
+  };
+};
+
 const reportingStateToLabelTime = (
   reportingState: string,
-  endTime: DateFormattedObject,
+  endTimeFormatted: DateFormattedObject,
   reportingEndTime: DateFormattedObject
 ) => {
-  let label: string = "";
-  let time: DateFormattedObject | null = null;
+  let label: string = '';
+  let time: DateFormattedObject = null;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
-      label = "Reporting Begins";
-      time = endTime;
+      label = 'Reporting Begins';
+      time = endTimeFormatted;
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
-      label = "Designated Reporting";
-      time = formatTime(endTime.timestamp + OneDay);
+      label = 'Designated Reporting';
+      time = formatTime(endTimeFormatted.timestamp + OneDay);
       break;
     case REPORTING_STATE.OPEN_REPORTING:
-      label = "Open Reporting";
+      label = 'Open Reporting';
       break;
     case REPORTING_STATE.CROWDSOURCING_DISPUTE:
-      label = "Disputing Ends";
+      label = 'Disputing Ends';
       time = reportingEndTime;
       break;
     case REPORTING_STATE.AWAITING_NEXT_WINDOW:
-      label = "Next Dispute";
+      label = 'Next Dispute';
       time = reportingEndTime;
       break;
     case REPORTING_STATE.FORKING:
-      label = "Forking";
-      time = endTime;
-      break;
-    case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION:
-      label = "Awaiting No Report Migration";
+      label = 'Forking';
+      time = endTimeFormatted;
       break;
     case REPORTING_STATE.AWAITING_FORK_MIGRATION:
-      label = "Awaiting Fork Migration";
+      label = 'Awaiting Fork Migration';
       break;
     case REPORTING_STATE.FINALIZED:
     default:
-      label = "Expired";
+      label = 'Expired';
       break;
   }
 
@@ -96,22 +146,21 @@ export const MarketProgress = (props: MarketProgressProps) => {
   const {
     reportingState,
     currentTime,
-    endTime,
+    endTimeFormatted,
     reportingWindowEndtime,
     customLabel,
     alignRight,
   } = props;
   const currTime = formatTime(currentTime);
-  const marketEndTime = endTime;
   const reportingEndTime = formatTime(reportingWindowEndtime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
-    marketEndTime,
+    endTimeFormatted,
     reportingEndTime
   );
 
   // Don't flash countdown component if we don't have reporting / augur timestamp data on state yet
-  if (!reportingWindowEndtime || !currentTime) {
+  if (reportingWindowEndtime === null || currentTime === null) {
     return null;
   }
 
@@ -135,7 +184,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
     finalColorBreakpoint,
     alignRight,
   } = props;
-  let valueString: string = "";
+  let valueString: string = '';
   let timeLeft: number = 1;
   let countdown: boolean = false;
   const firstBreakpoint = firstColorBreakpoint || ThreeDays;
@@ -162,7 +211,11 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
     timeLeft = time.timestamp - currentTime.timestamp;
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
     valueString = countdown
-      ? `${daysRemaining}:${hoursRemaining >= 10 ? hoursRemaining : "0" + hoursRemaining}:${minutesRemaining >= 10 ? minutesRemaining : "0" + minutesRemaining}:${secondsRemaining >= 10 ? secondsRemaining : "0" + secondsRemaining}`
+      ? `${daysRemaining}:${
+          hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
+        }:${
+          minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
+        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
       : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =
@@ -187,7 +240,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
 export const TimeLabel = (props: TimeLabelProps) => {
   const { label, time } = props;
   let formattedTime: DateFormattedObject = time;
-  if (typeof time !== "object") {
+  if (typeof time !== 'object') {
     formattedTime = format.convertUnixToFormattedDate(time);
   }
   return (
@@ -201,29 +254,13 @@ export const TimeLabel = (props: TimeLabelProps) => {
 
 export const TimeProgressBar = (props: TimeProgressBarProps) => {
   const { startTime, endTime, currentTime } = props;
-  let formattedStartTime: DateFormattedObject | number = startTime;
-  let formattedEndTime: DateFormattedObject = endTime;
-  let formattedCurrentTime: DateFormattedObject | number = currentTime;
-  if (typeof startTime !== "object") {
-    formattedStartTime = format.convertUnixToFormattedDate(startTime);
-  }
-  if (typeof currentTime !== "object") {
-    formattedCurrentTime = format.convertUnixToFormattedDate(currentTime);
-  }
-  const totalHours = format.getHoursRemaining(
-    formattedEndTime.timestamp,
-    formattedStartTime.timestamp
+  const { percentageDone, percentageToGo } = determineProgress(
+    startTime,
+    endTime,
+    currentTime
   );
-  const hoursLeft = format.getHoursRemaining(
-    formattedEndTime.timestamp,
-    formattedCurrentTime.timestamp
-  );
-  const percentageToGo = Math.ceil(
-    hoursLeft > 0 ? (hoursLeft / totalHours) * 100 : 0
-  );
-  const percentageDone = 100 - percentageToGo;
-  const percentDone = { "--percent-done": `${percentageDone}%` };
-  const percentToGo = { "--percent-to-go": `${percentageToGo}%` };
+  const percentDone = { '--percent-done': `${percentageDone}%` };
+  const percentToGo = { '--percent-to-go': `${percentageToGo}%` };
   return (
     <span className={Styles.TimeProgressBar}>
       <span style={percentDone} />
@@ -241,19 +278,19 @@ export const MarketTimeline = (props: TimeProgressBarProps) => {
     return null;
   }
 
-  if (typeof currentTime !== "object") {
+  if (typeof currentTime !== 'object') {
     formattedCurrentTime = format.convertUnixToFormattedDate(currentTime);
   }
   const currentTimestamp = formattedCurrentTime.timestamp;
   const endTimestamp = formattedEndTime.timestamp;
   const hasPassed = currentTimestamp > endTimestamp;
-  const endLabel = hasPassed ? "STARTED" : "STARTS";
+  const endLabel = hasPassed ? 'STARTED' : 'STARTS';
   return (
     <div className={Styles.MarketTimeline}>
       <div
         className={classNames({
           [Styles.reported]: hasPassed,
-          [Styles.open]: !hasPassed
+          [Styles.open]: !hasPassed,
         })}
       >
         <span>Date Created</span>
@@ -262,12 +299,88 @@ export const MarketTimeline = (props: TimeProgressBarProps) => {
       <TimeProgressBar {...props} />
       <div
         className={classNames({
-          [Styles.fade]: hasPassed
+          [Styles.fade]: hasPassed,
         })}
       >
         <TimeLabel time={startTime} />
         <TimeLabel time={endTime} />
       </div>
+    </div>
+  );
+};
+
+const getWindowLabels = (
+  start: DateFormattedObject,
+  end: DateFormattedObject
+) => {
+  const startLabel = `${start.formattedUtcShortDate.substring(
+    0,
+    start.formattedUtcShortDate.indexOf(',')
+  )} ${start.formattedShortTime} (UTC)`;
+  const endLabel = `${end.formattedUtcShortDate.substring(
+    0,
+    end.formattedUtcShortDate.indexOf(',')
+  )} ${end.formattedShortTime} (UTC)`;
+  const dayLabels = format.getFullDaysBetween(start.timestamp, end.timestamp);
+  return {
+    startLabel,
+    endLabel,
+    dayLabels,
+  };
+};
+
+export interface WindowProgressProps {
+  startTime: DateFormattedObject | number;
+  endTime: DateFormattedObject | number;
+  currentTime: DateFormattedObject | number;
+  title: string;
+  description: string;
+  countdownLabel: string;
+}
+
+export const WindowProgress = (props: WindowProgressProps) => {
+  const {
+    startTime,
+    endTime,
+    currentTime,
+    title,
+    description,
+    countdownLabel
+  } = props;
+  const {
+    formattedStartTime,
+    formattedEndTime,
+    daysRemaining,
+    hoursRemaining,
+    minutesRemaining,
+    secondsRemaining,
+  } = determineProgress(startTime, endTime, currentTime);
+  const { startLabel, endLabel, dayLabels } = getWindowLabels(
+    formattedStartTime,
+    formattedEndTime
+  );
+  return (
+    <div className={Styles.WindowProgress}>
+      <h4>{title}</h4>
+      <p>{description}</p>
+      <TimeProgressBar {...props} />
+      <ul>
+        <li>{startLabel}</li>
+        {dayLabels.map(label => (
+          <li key={label}>{label}</li>
+        ))}
+        <li>{endLabel}</li>
+      </ul>
+      <h4>{countdownLabel}</h4>
+      <p>
+        {`${'0' + daysRemaining}d ${
+          hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
+        }h ${
+          minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
+        }m ${
+          secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining
+        }s`}
+      </p>
     </div>
   );
 };

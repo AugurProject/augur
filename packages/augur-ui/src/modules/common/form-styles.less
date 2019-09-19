@@ -13,7 +13,7 @@
 .Form__error {
   .text-16;
 
-  color: @color-error-text;
+  color: @color-error;
   display: inline-block;
   margin-left: 2.32rem;
   margin-right: 1.5rem;
@@ -31,7 +31,7 @@
 .Form__error--even {
   .text-16;
 
-  color: @color-error-text;
+  color: @color-error;
   display: inline-block;
   margin-left: 0;
   margin-right: @size-24;
@@ -75,7 +75,7 @@
 }
 
 .Form__error--field {
-  border-color: @color-error-text;
+  border-color: @color-error;
   border-width: 1px;
 }
 
@@ -116,7 +116,7 @@
     p {
       .text-18;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       display: flex;
       margin: 0;
       text-transform: capitalize;
@@ -128,13 +128,13 @@
       &.text--field-style {
         .text-18;
 
-        color: @color-secondary-text;
+        color: @color-primary-text;
       }
 
       &.error {
         .text-16;
 
-        color: @color-error-text;
+        color: @color-error;
       }
     }
 
@@ -143,14 +143,14 @@
     textarea {
       .text-18;
 
-      background-color: @color-lightergray;
+      background-color: @color-primary-text;
 
       &.error {
-        border-color: @color-error-text;
+        border-color: @color-error;
       }
 
       &::placeholder {
-        color: @color-lightgray;
+        color: @color-secondary-text;
       }
     }
 
@@ -208,7 +208,7 @@ li.field--short {
     > button {
       .text-18;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       cursor: pointer;
       display: block;
       min-height: 1.7rem;
@@ -217,7 +217,7 @@ li.field--short {
       text-align: left;
 
       &::before {
-        border: 1px solid @color-lightgray;
+        border: 1px solid @color-secondary-text;
         border-radius: 100%;
         content: "";
         height: @size-24;
@@ -229,7 +229,7 @@ li.field--short {
       }
 
       &::after {
-        background-color: @color-lightgray;
+        background-color: @color-secondary-text;
         border-radius: 100%;
         content: "";
         display: none;
@@ -255,10 +255,6 @@ li.field--short {
 
   > li {
     > button {
-      &.isInvalidField {
-        color: @color-lighter-purple;
-      }
-
       text-transform: capitalize;
     }
   }
@@ -306,7 +302,7 @@ li.field--short {
     > button {
       .text-12;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       cursor: pointer;
       display: block;
       min-height: 1.7rem;
@@ -315,7 +311,7 @@ li.field--short {
       text-align: left;
 
       &::after {
-        background-color: @color-lightgray;
+        background-color: @color-secondary-text;
         border-radius: 100%;
         content: "";
         display: none;
@@ -335,7 +331,7 @@ li.field--short {
         background-color: transparent;
         border: none;
         border-radius: 0;
-        color: @color-gray;
+        color: @color-inactive-text;
         display: inline-block;
         margin-left: 75%;
       }
@@ -393,12 +389,6 @@ li.field--short {
     }
   }
 
-  .Form__next,
-  .Form__submit {
-    background-color: @color-purple;
-    color: @color-secondary-text;
-  }
-
   .Form__prev.hide-button + .Form__next {
     width: 100%;
   }
@@ -410,7 +400,7 @@ li.field--short {
   }
 
   .Form__error--field {
-    border-color: @color-error-text;
+    border-color: @color-error;
     border-width: 1px;
   }
 

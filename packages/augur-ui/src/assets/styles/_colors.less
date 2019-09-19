@@ -1,45 +1,67 @@
-// COLORS
-// this file should replace the older colors.less ASAP
+// Text
+@color-primary-text: #E9E5F2; // 74 files
+@color-secondary-text: #AFA7C1; // 33 files
+@color-inactive-text: #4E4C57; // 44 files
 
-// Color Pallete (only use these color values)
-@color-purple: #412468;
-@color-modal-veil: rgba(15, 10, 25, 0.9);
-@color-very-lightpurple: #9c90b1;
-@color-lighter-purple: #9b8bf5;
-@color-lightpurple: #553580;
-@color-darkpurple: #372e4b;
-@color-darkpurple-2: #3c3451;
-@color-darkgray: #44415a;
-@color-gray: #736e89;
-@color-gray2: #9592a4;
-@color-border-gray: #5a536b;
-@color-lightgray: #a7a2b2;
-@color-lightgray-2: #ceccd8;
-@color-lightergray: #dbdae1;
-@color-lightergray-2: #d1d1d3;
-@color-lightest-gray: #dfdfdf;
-@color-offwhite: #f0eff6;
-@color-almostblack: #231a3a;
-@color-red: #d0021b;
-@color-pink: #f12a66;
-@color-transparent: transparent;
-// Purpose Colors
-@color-text-light-muted: @color-lightgray;
-@color-text-disabled: @color-offwhite;
-@color-text-dark: @color-darkpurple;
+// UI
+@color-dark-grey: #0E0E0F; // (TBD Name) - 39 files
+@color-table-header: #161518; // 1 file (this one)
+@color-module-background: #1B1A1E; // 1 file (this one)
+@color-page-background: #201E22; // 2 files
 
-@color-disabled: @color-lightest-gray;
+// Market status
+@color-open: #7DFFA8; // 5 files 
+@color-reporting: #F1E700; // 7 files
+@color-resolved: #F12B00; // 5 files
 
-@color-input-background: #f6f6f8;
-@color-input-border-no-focus: #dbdae1;
-@color-input-border: @color-lightpurple;
+// Trades
+@color-positive: #00F1C4; // 13 files
+@color-negative: #FF7D5E; // 15 files
 
-@color-selection-modal-background: #f6f6f8;
+// Interactions:
+@color-primary-action: #09CFE1; // 17 files
+// @color-primary-action-outline: ???;
+@color-secondary-action: #252429; // 5 files
+@color-secondary-action-outline: #3C3B43; // 3 files
 
-@color-extra-darkpurple: #140e1f;
-@color-gray-light-purple: #1a1d23;
-@color-dark-gray2: #45404e;
-@color-medium-gray2: #b5b5b5;
-@color-dark-teal: #0d4555;
+// Other
+@color-error: #FF2727; // 9 files
 
-@color-darker-teal: #0e1e2d;
+// Outcomes:
+@color-tenative-winner: #AEFFF0; // 2 files
+@color-outcome-invalid: #FF7E9D; // 6 files
+@color-outcome-one: #3DDE8D; // 2 files
+@color-outcome-two: #FE367E; // 2 files
+@color-outcome-three: #3E8BFF; // 2 files
+@color-outcome-four: #FCBD43; // 8 files
+@color-outcome-five: #6980E9; // 2 files
+@color-outcome-six: #F59300; // 2 files
+@color-outcome-seven: #09CFE1; // 4 files
+
+//  Chart / Outcome color helpers
+@color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven; 
+ 
+.generate-indexed-color-outcome-classes(@rules) {
+  each(@color-outcome-list, {
+    @newIndex: @index;
+    @rules();
+  });
+} // 2 files
+
+.generate-indexed-color-outcome-alternate-classes(@rules) {
+  each(@color-outcome-list, {
+    @newIndex: @index;
+    @rules();
+  });
+} // 2 files
+//purples -- no answer yet -- TO BE REPLACED SHORTLY
+@color-primary-light: #443B59; // ROCA - 443B59 - 31 files
+@color-primary-alternate: #2B2438; // ROCA - 2B2438 - 20 files
+@color-primary-alternate-two: #665789; // ROCA - 665789 - 8 files
+@color-theme-primary: #211A32; // ROCA - 211A32 - 43 files
+@color-active-hover: #211B2E; // ROCA - 211B2E - 5 files
+@color-tertiary-one: #1A1627; // ROCA - 1A1627 - 7 files
+@color-secondary-background: #120D1B; // ROCA - 120D1B - 3 files
+@color-tertiary-background: #1B1528; // ROCA - 1B1528 - 34 files
+@color-highlight: @color-primary-alternate-two; // ROCA - 665789 - 16 files
+@color-active: #8579A1; // ROCA - 8579A1 - 2 files

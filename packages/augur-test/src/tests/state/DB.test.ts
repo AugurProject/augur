@@ -3,11 +3,10 @@ import { Augur } from '@augurproject/sdk';
 import { makeTestAugur, makeDbMock } from '../../libs';
 import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 
-const mock = makeDbMock();
+let mock = null;
 
 beforeEach(async () => {
-  mock.cancelFail();
-  await mock.wipeDB();
+  mock = makeDbMock();
 });
 
 let augur: Augur;
@@ -35,10 +34,10 @@ test('database failure during trackedUsers.getUsers() call', async () => {
   } catch (e) {
     err = e;
   }
-  expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
+  await expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
   mock.failNext();
     await expect(trackedUsers.getUsers()).rejects.toThrow();
-});
+}, 60000);
 
 test('database failure during sync, followed by another sync', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -56,7 +55,7 @@ test('database failure during sync, followed by another sync', async () => {
     mock.constants.chunkSize,
     mock.constants.blockstreamDelay
   );
-});
+}, 60000);
 
 test('syncing: succeed then fail then succeed again', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -81,4 +80,4 @@ test('syncing: succeed then fail then succeed again', async () => {
     mock.constants.chunkSize,
     mock.constants.blockstreamDelay
   );
-});
+}, 60000);

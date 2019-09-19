@@ -2,7 +2,7 @@
 # Build an image to run oyente
 #
 FROM python:2.7.13
-ARG SOLC_VERSION=v0.5.4
+ARG SOLC_VERSION=v0.5.10
 
 RUN wget --quiet --output-document /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux \
 	&& chmod a+x /usr/local/bin/solc

@@ -1,12 +1,13 @@
 import { connect } from "react-redux";
 
 import Funds from "modules/account/components/funds";
-import { formatEther, formatAttoRep, formatPercent } from "utils/format-number";
+import { formatEther, formatPercent } from "utils/format-number";
 import {
   selectLoginAccount,
   selectAccountFunds,
 } from "modules/auth/selectors/login-account";
 import { AppState } from "store";
+import { selectReportingBalances } from "../selectors/select-reporting-balances";
 
 const mapStateToProps = (state: AppState) => {
   const loginAccount = selectLoginAccount(state);
@@ -15,21 +16,20 @@ const mapStateToProps = (state: AppState) => {
     totalFrozenFunds,
     totalAccountValue,
   } = selectAccountFunds(state);
-  const { reportingWindowStats } = state;
-  const { rep, realizedPLPercent } = loginAccount;
+  const {
+    repTotalAmountStakedFormatted,
+    repBalanceFormatted
+  } = selectReportingBalances(state);
+  const { tradingPositionsTotal } = loginAccount;
 
   return {
-    repStaked:
-      formatAttoRep(reportingWindowStats.stake, {
-        decimals: 4,
-        denomination: " REP",
-      }).formattedValue || 0,
-    repBalance: rep.formatted || "0",
+    repStaked: repTotalAmountStakedFormatted.formatted,
+    repBalance: repBalanceFormatted.formatted,
     totalFrozenFunds: formatEther(totalFrozenFunds).formatted,
     totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance)
       .formatted,
     totalAccountValue: formatEther(totalAccountValue).formatted,
-    realizedPLPercent: formatPercent(realizedPLPercent)
+    realizedPLPercent: formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent)
       .formattedValue,
   };
 };

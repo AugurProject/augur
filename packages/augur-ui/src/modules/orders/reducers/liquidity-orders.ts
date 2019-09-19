@@ -4,15 +4,18 @@ import {
   REMOVE_LIQUIDITY_ORDER,
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS,
-} from "modules/orders/actions/liquidity-management";
-import { LiquidityOrders, LiquidityOrder, BaseAction } from "modules/types";
+  UPDATE_TX_PARAM_HASH_TX_HASH,
+  UPDATE_LIQUIDITY_ORDER_STATUS,
+  DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
+} from 'modules/orders/actions/liquidity-management';
+import { LiquidityOrders, LiquidityOrder, BaseAction } from 'modules/types';
 
 const DEFAULT_STATE: LiquidityOrders = {};
 
 /*
 Example:
 {
-  <marketId>: {
+  <txParamHash>: {
     <outcomeId>: [{ quantity, price, type, estCost }, ...],
     ...
   },
@@ -22,7 +25,7 @@ Example:
 
 export default function(
   pendingLiquidityOrders: LiquidityOrders = DEFAULT_STATE,
-  { type, data }: BaseAction,
+  { type, data }: BaseAction
 ): LiquidityOrders {
   switch (type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:
@@ -30,66 +33,104 @@ export default function(
         ...data.pendingLiquidityOrders,
       };
     case ADD_MARKET_LIQUIDITY_ORDERS: {
-      const { liquidityOrders, marketId } = data;
-      const outcomesFormatted = Object.keys(liquidityOrders);
-      const updatedOrderBook = outcomesFormatted.reduce((acc, outcome) => {
-        acc[outcome] = liquidityOrders[outcome].map((order, index, array) => ({
-          ...array[index],
-          index,
-        }));
-        return acc;
-      }, {});
+      const { liquidityOrders, txParamHash } = data;
+      const updatedOrderBook = Object.keys(liquidityOrders).reduce(
+        (acc, key) => {
+          acc[key] = liquidityOrders[key].map((order, index, array) => ({
+            ...array[index],
+            index,
+          }));
+          return acc;
+        },
+        {}
+      );
       return {
         ...pendingLiquidityOrders,
-        [marketId]: updatedOrderBook,
+        [txParamHash]: updatedOrderBook,
+      };
+    }
+    case DELETE_SUCCESSFUL_LIQUIDITY_ORDER: {
+      const { txParamHash, outcomeId, type, price } = data;
+      if (!pendingLiquidityOrders[txParamHash]) return pendingLiquidityOrders;
+      if (!pendingLiquidityOrders[txParamHash][outcomeId])
+        return pendingLiquidityOrders;
+
+      const outcomeOrderBook = pendingLiquidityOrders[txParamHash][
+        outcomeId
+      ].reduce((p, order: LiquidityOrder) => {
+        if (order.type === type && order.price === price) return p;
+        return [...p, order];
+      }, []);
+      pendingLiquidityOrders[txParamHash][outcomeId] = outcomeOrderBook;
+      if (pendingLiquidityOrders[txParamHash][outcomeId].length == 0) {
+        delete pendingLiquidityOrders[txParamHash][outcomeId];
+      }
+      if (Object.keys(pendingLiquidityOrders[txParamHash]).length == 0) {
+        delete pendingLiquidityOrders[txParamHash];
+      }
+      return pendingLiquidityOrders;
+    }
+    case UPDATE_TX_PARAM_HASH_TX_HASH: {
+      const { txParamHash, txHash } = data;
+      const orderBook = pendingLiquidityOrders[txParamHash];
+      if (!orderBook) return pendingLiquidityOrders;
+      delete pendingLiquidityOrders[txParamHash];
+      return {
+        ...pendingLiquidityOrders,
+        [txHash]: orderBook,
       };
     }
     case CLEAR_ALL_MARKET_ORDERS: {
-      delete pendingLiquidityOrders[data.marketId];
+      delete pendingLiquidityOrders[data.txParamHash];
       return { ...pendingLiquidityOrders };
     }
+    case UPDATE_LIQUIDITY_ORDER_STATUS: {
+      const { txParamHash, outcomeId, type, price, eventName, hash } = data;
+      if (!pendingLiquidityOrders[txParamHash]) return pendingLiquidityOrders;
+      if (!pendingLiquidityOrders[txParamHash][outcomeId])
+        return pendingLiquidityOrders;
+
+      pendingLiquidityOrders[txParamHash][outcomeId].map(order => {
+        if (order.type === type && order.price === price) {
+          order.hash = hash;
+          order.status = eventName;
+        }
+      });
+      return pendingLiquidityOrders;
+    }
     case UPDATE_LIQUIDITY_ORDER: {
-      const { order, updates, marketId, outcomeId } = data;
+      const { order, updates, txParamHash, outcomeId } = data;
       const updatedOrder = {
         ...order,
         ...updates,
       };
-      const updatedOutcomeArray = pendingLiquidityOrders[marketId][
+      const updatedOutcomeArray = pendingLiquidityOrders[txParamHash][
         outcomeId
-      ].map((outcomeOrder) => {
+      ].map(outcomeOrder => {
         if (outcomeOrder.index !== updatedOrder.index) return outcomeOrder;
         return updatedOrder;
       });
-      pendingLiquidityOrders[marketId][outcomeId] = updatedOutcomeArray;
+      pendingLiquidityOrders[txParamHash][outcomeId] = updatedOutcomeArray;
       return { ...pendingLiquidityOrders };
     }
     case REMOVE_LIQUIDITY_ORDER: {
-      // data: marketId, outcomeId, orderId (index)
-      const { marketId, outcomeId, orderId } = data;
-      const outcomesFormatted = Object.keys(pendingLiquidityOrders[marketId]);
-      // if removing this order will clear the order array, delete the outcome/market if no other outcomes
-      if (pendingLiquidityOrders[marketId][outcomeId].length === 1) {
-        if (
-          outcomesFormatted.length === 1 &&
-          outcomesFormatted.includes(outcomeId.toString())
-        ) {
-          // remove market completely as this is the last outcome and it's about to be empty
-          delete pendingLiquidityOrders[marketId];
-          return { ...pendingLiquidityOrders };
-        }
-        // just remove the outcome
-        delete pendingLiquidityOrders[marketId][outcomeId];
-        return { ...pendingLiquidityOrders };
-      }
-      // just remove a single order
-      const updatedOutcomeOrders = pendingLiquidityOrders[marketId][
+      // data: txParamHash, outcomeId, orderId (index)
+      const { txParamHash, outcomeId, orderId } = data;
+      if (!pendingLiquidityOrders[txParamHash]) return pendingLiquidityOrders;
+      if (!pendingLiquidityOrders[txParamHash][outcomeId])
+        return pendingLiquidityOrders;
+      const updatedOutcomeOrders = pendingLiquidityOrders[txParamHash][
         outcomeId
       ].reduce((acc: Array<LiquidityOrder>, order) => {
         if (order.index === orderId) return acc;
         acc.push(order);
         return acc;
       }, []);
-      pendingLiquidityOrders[marketId][outcomeId] = updatedOutcomeOrders;
+      pendingLiquidityOrders[txParamHash][outcomeId] = updatedOutcomeOrders;
+      if (pendingLiquidityOrders[txParamHash][outcomeId].length === 0)
+        delete pendingLiquidityOrders[txParamHash][outcomeId];
+      if (Object.keys(pendingLiquidityOrders[txParamHash]).length === 0)
+        delete pendingLiquidityOrders[txParamHash];
       return { ...pendingLiquidityOrders };
     }
     default:

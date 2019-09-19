@@ -3,9 +3,9 @@ import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
 import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { approveAccount } from "modules/auth/actions/approve-account";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { approveToTrade } from "modules/contracts/actions/contractCalls";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -14,8 +14,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  approveAccount: () =>
-    dispatch(approveAccount())
+  approveAccount: () => approveToTrade()
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

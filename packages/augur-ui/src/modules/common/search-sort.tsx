@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
-import classNames from "classnames";
+import React, { ReactNode } from 'react';
+import classNames from 'classnames';
 
-import { SquareDropdown } from "modules/common/selection";
-import { SearchBar } from "modules/common/search";
-import { NameValuePair } from "modules/portfolio/types";
+import { SquareDropdown } from 'modules/common/selection';
+import { SearchBar } from 'modules/common/search';
+import { NameValuePair } from 'modules/portfolio/types';
 
-import Styles from "modules/common/search-sort.styles";
+import Styles from 'modules/common/search-sort.styles';
 
 export interface SearchSortProps {
   sortByOptions: Array<NameValuePair>;
@@ -14,10 +14,12 @@ export interface SearchSortProps {
   bottomRightBarContent?: ReactNode;
   rightContent?: ReactNode;
   sortByStyles?: Object;
+  checkBox?: ReactNode;
 }
 
 export interface SearchSortState {
   showSortByOptions: Boolean;
+  showCheckbox: boolean;
 }
 
 export class SearchSort extends React.Component<
@@ -25,11 +27,12 @@ export class SearchSort extends React.Component<
   SearchSortState
 > {
   state: SearchSortState = {
-    showSortByOptions: true
+    showSortByOptions: true,
+    showCheckbox: true,
   };
 
   onFocus = (hide: Boolean) => {
-    this.setState({ showSortByOptions: hide });
+    this.setState({ showSortByOptions: hide, showCheckbox: hide });
   };
 
   render() {
@@ -37,39 +40,30 @@ export class SearchSort extends React.Component<
       sortByOptions,
       updateDropdown,
       sortByStyles,
-      onChange
+      onChange,
+      checkBox,
     } = this.props;
 
-    const { showSortByOptions } = this.state;
+    const { showSortByOptions, showCheckbox } = this.state;
+
+    // todo: add checkbox for mobile
 
     return (
-      <>
-        <div className={classNames(Styles.SearchSort, Styles.ShowOnMobile)}>
-          <SearchBar onChange={onChange} />
-          {sortByOptions && (
-            <div className={Styles.Dropdown}>
-              <SquareDropdown
-                options={sortByOptions}
-                onChange={updateDropdown}
-                stretchOutOnMobile
-                sortByStyles={sortByStyles}
-              />
-            </div>
-          )}
-        </div>
-        <div className={classNames(Styles.SearchSort, Styles.HideOnMobile)}>
-          {sortByOptions && (
-            <SquareDropdown
-              className={classNames({ [Styles.Hide]: !showSortByOptions })}
-              options={sortByOptions}
-              onChange={updateDropdown}
-              stretchOutOnMobile
-              sortByStyles={sortByStyles}
-            />
-          )}
-          <SearchBar onFocus={this.onFocus} onChange={onChange} />
-        </div>
-      </>
+      <div
+        className={classNames(Styles.SearchSort, {
+          [Styles.HideDropdown]: sortByOptions && !showSortByOptions,
+        })}
+      >
+        {sortByOptions && (
+          <SquareDropdown
+            defaultValue={sortByOptions[0].value}
+            options={sortByOptions}
+            onChange={updateDropdown}
+            sortByStyles={sortByStyles}
+          />
+        )}
+        <SearchBar onFocus={this.onFocus} onChange={() => onChange} />
+      </div>
     );
   }
 }

@@ -2,7 +2,7 @@ import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
 
 import { CLOSED, LONG, SHORT, ZERO } from "modules/common/constants";
-import { formatEther, formatPercent, formatShares } from "utils/format-number";
+import { formatDai, formatPercent, formatShares } from "utils/format-number";
 
 export const positionSummary = memoize(
   (adjustedPosition, outcome) => {
@@ -20,7 +20,7 @@ export const positionSummary = memoize(
       outcome: outcomeId,
       total,
       totalPercent,
-      unrealizedRevenue,
+      currentValue,
       unrealizedCost,
       unrealizedRevenue24hChangePercent,
     } = adjustedPosition;
@@ -39,9 +39,9 @@ export const positionSummary = memoize(
       outcomeId,
       type,
       quantity: formatShares(quantity),
-      purchasePrice: formatEther(averagePrice),
-      realizedNet: formatEther(realized),
-      unrealizedNet: formatEther(unrealized),
+      purchasePrice: formatDai(averagePrice),
+      realizedNet: formatDai(realized),
+      unrealizedNet: formatDai(unrealized),
       realizedPercent: formatPercent(timesHundred(realizedPercent || ZERO), {
         decimalsRounded: 2,
       }),
@@ -49,10 +49,10 @@ export const positionSummary = memoize(
         timesHundred(unrealizedPercent || ZERO),
         { decimalsRounded: 2 },
       ),
-      totalCost: formatEther(unrealizedCost),
-      totalValue: formatEther(unrealizedRevenue),
-      lastPrice: formatEther(outcome.price),
-      totalReturns: formatEther(total || ZERO),
+      totalCost: formatDai(unrealizedCost),
+      totalValue: formatDai(currentValue),
+      lastPrice: formatDai(outcome.price),
+      totalReturns: formatDai(total || ZERO),
       valueChange: formatPercent(
         timesHundred(unrealizedRevenue24hChangePercent),
         {

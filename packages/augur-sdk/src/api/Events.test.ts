@@ -3,6 +3,7 @@ import { Events } from "./Events";
 import { NetworkId } from "@augurproject/artifacts";
 import { Filter, Log, LogValues, Provider } from "..";
 import { Abi } from "ethereum";
+import { JSONRPCRequestPayload } from "ethereum-types";
 
 function makeProviderMock(opts?: any): Provider {
   const networkId = opts.networkId || "4";
@@ -20,13 +21,16 @@ function makeProviderMock(opts?: any): Provider {
     getBlock: (blockHashOrBlockNumber: BlockTag | string): Promise<Block> => Promise.resolve(block),
     storeAbiData: (abi: Abi, contractName: string): void => { },
     getEventTopic: (contractName: string, eventName: string): string => eventTopic,
+    encodeContractFunction: (contractName: string, functionName: string, funcParams: any[]): string => "0x0",
     parseLogValues: (contractName: string, log: Log): LogValues => logValues,
     getBalance: (address: string) => balance,
+    sendAsync: (payload: JSONRPCRequestPayload) => Promise.resolve(null)
   };
 }
 
 test("get logs", async () => {
   const logs: Log[] = [{
+    name: "fake",
     blockNumber: 19,
     address: "0xthere",
     data: "some data",
@@ -39,6 +43,7 @@ test("get logs", async () => {
     transactionLogIndex: 0,
   }];
   const logValues: LogValues = {
+    name: "joy",
     blockNumber: 12,
     address: "0xthere",
     data: "other data",
@@ -60,6 +65,7 @@ test("get logs", async () => {
   const eventLogs = await events.getLogs(eventName, fromBlock, toBlock);
   expect(eventLogs).toEqual([
     {
+      name: "joy",
       blockNumber: 19,
       address: "0xthere",
       data: "other data",

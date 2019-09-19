@@ -24,10 +24,10 @@ describe('State API :: Market Sorts', () => {
     // Create a market
     const market = await john.createReasonableMarket([stringTo32ByteHex('A'), stringTo32ByteHex('B')]);
 
-    // With no orders on the book the invalidFilter will be undefined
+    // With no orders on the book the invalidFilter will be false
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     let marketData = await (await db).findMarkets({selector: { market: market.address }});
-    await expect(marketData[0].invalidFilter).toEqual(undefined);
+    await expect(marketData[0].invalidFilter).toEqual(false);
 
     // Place a bid order on Invalid
     let bid = new BigNumber(0);
@@ -55,7 +55,6 @@ describe('State API :: Market Sorts', () => {
     await expect(marketData[0].invalidFilter).toEqual(true);
 
   }, 60000);
-
   test(': horizontal liquidity', async () => {
     await john.approveCentralAuthority();
 
@@ -118,5 +117,4 @@ describe('State API :: Market Sorts', () => {
     await expect(marketData[0].liquidity[10]).toEqual("1470000000000000000000");
 
   }, 60000);
-
 });

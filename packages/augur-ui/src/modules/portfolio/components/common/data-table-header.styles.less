@@ -4,16 +4,15 @@
   display: grid;
   flex-direction: row;
   grid-template-columns: repeat(5, 1fr);
-  max-height: @size-32;
   min-height: @size-32;
-  padding: @size-12 2.8rem @size-12 0;
+  padding: @size-10 @size-24 @size-10 0;
   width: 100%;
 
   > li {
-    .mono-10;
+    .mono-9-bold;
 
     align-items: center;
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     display: flex;
     flex-grow: 1;
     padding: 0;
@@ -42,19 +41,14 @@
 
 .FilledOrdersHeader {
   grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
-  padding-bottom: @size-6;
-  padding-top: @size-6;
-
-  &:last-child {
-    margin-right: -@size-8;
-  }
+  padding-bottom: @size-4;
+  padding-top: @size-4;
 }
 
 .PositionHeader {
   background: fade(@color-primary-alternate, 40%);
   grid-template-columns: repeat(8, 1fr);
-  padding-left: @size-24;
-  padding-right: 4rem;
+  padding: @size-3 @size-42 @size-3 @size-16;
 }
 
 .DataTableHeader__extended {
@@ -84,7 +78,7 @@
 
 .OutcomesHeader {
   background-color: @color-theme-primary;
-  border-bottom: 1px solid @color-primary-background;  
+  border-bottom: 1px solid @color-dark-grey;  
   grid-template-columns: 2fr repeat(5, 1fr);
   padding: 0 @size-24;
 }
@@ -92,11 +86,10 @@
 @media @breakpoint-mobile-mid {
   .DataTableHeader {
     grid-template-columns: repeat(3, 1fr);
-    padding-left: @size-16;
-    padding-right: @size-48;
+    padding: @size-10 @size-42 @size-10 @size-12;
 
     > li {
-      color: @color-shadow-text;
+      color: @color-inactive-text;
       font-size: @size-9;
 
       &:first-child {
@@ -105,10 +98,6 @@
 
       &:nth-of-type(2) {
         justify-content: flex-start;
-      }
-
-      &:nth-of-type(3) {
-        justify-content: center;
       }
     }
   }
@@ -151,7 +140,7 @@
 
   .PositionHeader {
     grid-template-columns: repeat(6, 1fr);
-    padding: @size-8 @size-24 @size-8 @size-16;
+    padding: @size-4 @size-12;
 
     > li {
       &:last-child {
@@ -161,7 +150,7 @@
   }
 
   .PositionHeader__extended {
-    border-bottom: 1px solid @color-primary-background;
+    border-bottom: 1px solid @color-dark-grey;
     grid-template-columns: repeat(5, 1fr);
     padding-bottom: @size-6;
     padding-left: @size-16;

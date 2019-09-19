@@ -1,21 +1,21 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
-import OrderMarketRow from "modules/portfolio/components/common/order-market-row";
-import FilledOrder from "modules/portfolio/containers/filled-order";
+import FilterSwitchBox from 'modules/portfolio/containers/filter-switch-box';
+import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
+import FilledOrder from 'modules/portfolio/containers/filled-order';
 
-import FilledOrdersHeader from "modules/portfolio/components/common/filled-orders-header";
-import { MarketData, Order } from "modules/types";
+import FilledOrdersHeader from 'modules/portfolio/components/common/filled-orders-header';
+import { MarketData, Order } from 'modules/types';
 
 const sortByOptions = [
   {
-    label: "View by Most Recently Traded Market",
-    value: "tradedMarket",
+    label: 'Most Recently Traded Market',
+    value: 'tradedMarket',
     comp: null,
   },
   {
-    label: "View by Most Recently Traded Outcome",
-    value: "tradedOutcome",
+    label: 'Most Recently Traded Outcome',
+    value: 'tradedOutcome',
     comp: null,
   },
 ];
@@ -25,13 +25,19 @@ interface FilledOrdersProps {
   filledOrders: Array<Order>;
   marketsObj: MarketData;
   ordersObj: Order;
+  toggle: Function;
+  extend: boolean;
+  hide: boolean;
 }
 
 interface FilledOrdersState {
   viewByMarkets: boolean;
 }
 
-export default class FilledOrders extends Component<FilledOrdersProps, FilledOrdersState> {
+export default class FilledOrders extends Component<
+  FilledOrdersProps,
+  FilledOrdersState
+> {
   constructor(props) {
     super(props);
 
@@ -69,14 +75,14 @@ export default class FilledOrders extends Component<FilledOrdersProps, FilledOrd
     if (!marketView && !orderView) return null;
     return marketView ? (
       <OrderMarketRow
-        key={"filledOrderMarket_" + data.id}
+        key={'filledOrderMarket_' + data.id}
         market={marketsObj[data.id]}
         filledOrders
       />
     ) : (
       // @ts-ignore
       <FilledOrder
-        key={"filledOrder_" + data.id}
+        key={'filledOrder_' + data.id}
         filledOrder={ordersObj[data.id]}
         isSingle
       />
@@ -84,7 +90,7 @@ export default class FilledOrders extends Component<FilledOrdersProps, FilledOrd
   }
 
   render() {
-    const { markets, filledOrders } = this.props;
+    const { markets, filledOrders, toggle, extend, hide } = this.props;
     const { viewByMarkets } = this.state;
 
     return (
@@ -94,12 +100,15 @@ export default class FilledOrders extends Component<FilledOrdersProps, FilledOrd
         filterLabel="filled orders"
         showFilterSearch
         sortByOptions={sortByOptions}
-        sortByStyles={{ minWidth: "13.6875rem" }}
+        sortByStyles={{ minWidth: '13.6875rem' }}
         data={viewByMarkets ? markets : filledOrders}
         filterComp={this.filterComp}
         switchView={this.switchView}
         bottomBarContent={<FilledOrdersHeader />}
         renderRows={this.renderRows}
+        toggle={toggle}
+        extend={extend}
+        hide={hide}
       />
     );
   }

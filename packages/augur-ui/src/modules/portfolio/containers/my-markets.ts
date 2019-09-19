@@ -3,27 +3,29 @@ import { withRouter } from "react-router-dom";
 
 import MyMarkets from "modules/portfolio/components/markets/markets";
 import { selectAuthorOwnedMarkets } from "modules/markets/selectors/user-markets";
-
+import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
-import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
+import { retrySubmitMarket } from "modules/markets/actions/submit-new-market";
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppState) => {
   const createdMarkets = selectAuthorOwnedMarkets(state);
 
   // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
   return {
     isLogged: state.authStatus.isLogged,
     myMarkets: createdMarkets,
-    pendingLiquidityOrders: state.pendingLiquidityOrders,
-    outcomes: marketDisputeOutcomes() || {},
+    outcomes: {}, // marketDisputeOutcomes() || {},
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
+    disputingWindowEndTime: state.universe.disputeWindow.endTime,
   };
 };
 // TOJDO confirm with TOm whats up with this, getBalance Only
 const mapDispatchToProps = (dispatch) => ({
-  collectMarketCreatorFees: (getBalanceOnly, marketId, callback) =>
-    dispatch(collectMarketCreatorFees(getBalanceOnly, marketId, callback)),
+  removePendingMarket: (id) => dispatch(removePendingData(id, CREATE_MARKET)),
+  retrySubmitMarket: (data) => dispatch(retrySubmitMarket(data)),
+  collectMarketCreatorFees: (getBalanceOnly, marketId) =>
+    dispatch(collectMarketCreatorFees(getBalanceOnly, marketId)),
 });
 
 const MyMarketsContainer = withRouter(

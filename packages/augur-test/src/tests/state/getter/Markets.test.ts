@@ -4,18 +4,22 @@ import {
   MarketInfo,
   MarketList,
   MarketOrderBook,
-  MarketReportingState,
-  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { makeDbMock, makeProvider } from "../../../libs";
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { MarketReportingState } from '@augurproject/sdk/build/constants';
+import { makeDbMock, makeProvider } from '../../../libs';
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
-import { ContractInterfaces } from '@augurproject/core';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { getAddress } from 'ethers/utils/address';
 
-const mock = makeDbMock();
+import * as _ from 'lodash';
+import { TestEthersProvider } from '../../../libs/TestEthersProvider';
+import { fork } from '@augurproject/tools';
+
+const CHUNK_SIZE = 100000;
 
 const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
@@ -24,58 +28,61 @@ describe('State API :: Markets :: ', () => {
   let api: API;
   let john: ContractAPI;
   let mary: ContractAPI;
+  let bob: ContractAPI;
+
+  let baseProvider: TestEthersProvider;
+  const markets = {};
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
-    const provider = await makeProvider(seed, ACCOUNTS);
+    baseProvider = await makeProvider(seed, ACCOUNTS);
+    const addresses = baseProvider.getContractAddresses();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-    db = mock.makeDB(john.augur, ACCOUNTS);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], baseProvider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], baseProvider, addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], baseProvider, addresses);
+    db = makeDbMock().makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 120000);
+    await bob.approveCentralAuthority();
 
-  // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts
-  test(':getMarkets', async () => {
-    const universe = john.augur.contracts.universe;
     let endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
     const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const highFeePerCashInAttoCash = new BigNumber(10).pow(18).div(10); // 10% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
     const designatedReporter = john.account.publicKey;
-    const yesNoMarket1 = await john.createYesNoMarket({
+    markets['yesNoMarket1'] = (await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
-    });
-    const yesNoMarket2 = await john.createYesNoMarket({
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
+    })).address;
+    markets['yesNoMarket2'] = (await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
       extraInfo: '{"categories": ["yesNo 2 primary", "yesNo 2 secondary", "yesNo 2 tertiary"], "description": "yesNo description 2", "longDescription": "yesNo longDescription 2"}',
-    });
-    const categoricalMarket1 = await john.createCategoricalMarket({
+    })).address;
+    markets['categoricalMarket1'] = (await john.createCategoricalMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
       extraInfo: '{"categories": ["categorical 1 primary", "categorical 1 secondary", "categorical 1 tertiary"], "description": "categorical description 1", "longDescription": "categorical longDescription 1"}',
-    });
-    const categoricalMarket2 = await john.createCategoricalMarket({
+    })).address;
+    markets['categoricalMarket2'] = (await john.createCategoricalMarket({
       endTime,
       feePerCashInAttoCash: highFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
       extraInfo: '{"categories": ["categorical 2 primary", "categorical 2 secondary", "categorical 2 tertiary"], "description": "categorical description 2", "longDescription": "categorical longDescription 2"}',
-    });
-    const scalarMarket1 = await john.createScalarMarket({
+    })).address;
+    markets['scalarMarket1'] = (await john.createScalarMarket({
       endTime,
       feePerCashInAttoCash: highFeePerCashInAttoCash,
       affiliateFeeDivisor,
@@ -83,9 +90,9 @@ describe('State API :: Markets :: ', () => {
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
       extraInfo: '{"categories": ["scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
-    });
+    })).address;
     endTime = endTime.plus(1);
-    const scalarMarket2 = await john.createScalarMarket({
+    markets['scalarMarket2'] = (await john.createScalarMarket({
       endTime,
       feePerCashInAttoCash: highFeePerCashInAttoCash,
       affiliateFeeDivisor,
@@ -93,11 +100,36 @@ describe('State API :: Markets :: ', () => {
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
       extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
-    });
-    endTime = endTime.minus(1);
+    })).address;
+
+  }, 120000);
+
+  beforeEach(async () => {
+    const provider = await baseProvider.fork();
+    const addresses = baseProvider.getContractAddresses();
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+    db = makeDbMock().makeDB(john.augur, ACCOUNTS);
+    api = new API(john.augur, db);
+    // await john.approveCentralAuthority();
+    // await mary.approveCentralAuthority();
+    // await bob.approveCentralAuthority();
+  });
+
+  // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts
+  test(':getMarkets', async () => {
+    const universe = john.augur.contracts.universe;
+
+    const yesNoMarket1 = john.augur.contracts.marketFromAddress(markets['yesNoMarket1']);
+    const yesNoMarket2 = john.augur.contracts.marketFromAddress(markets['yesNoMarket2']);
+    const categoricalMarket1 = john.augur.contracts.marketFromAddress(markets['categoricalMarket1']);
+    const categoricalMarket2 = john.augur.contracts.marketFromAddress(markets['categoricalMarket2']);
+    const scalarMarket1 = john.augur.contracts.marketFromAddress(markets['scalarMarket1']);
+    const scalarMarket2 = john.augur.contracts.marketFromAddress(markets['scalarMarket2']);
 
     const actualDB = await db;
-    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    await actualDB.sync(john.augur, CHUNK_SIZE, 0);
 
     let marketList: MarketList;
 
@@ -121,47 +153,53 @@ describe('State API :: Markets :: ', () => {
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      sortBy: GetMarketsSortBy.EndTime,
+      sortBy: GetMarketsSortBy.endTime,
       isSortDescending: false,
       offset: 1,
-      limit: 4
+      limit: 4,
     });
-    expect(marketList.markets.length).toEqual(4);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[1].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[3].id).toEqual(scalarMarket1.address);
 
+    expect(marketList.markets.length).toEqual(4);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
     marketList = await api.route('getMarkets', {
       universe: universe.address,
       creator: NULL_ADDRESS,
     });
     expect(marketList).toEqual({
       markets: [],
-      meta: {},
-      filteredOutCount: 0,
-      marketCount: 0,
+      meta: {
+        categories: {},
+        filteredOutCount: 6,
+        marketCount: 0,
+      },
     });
 
     // Test maxEndTime
+    const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
+
     marketList = await api.route('getMarkets', {
       universe: universe.address,
       maxEndTime: endTime.toNumber(),
     });
     expect(marketList).toEqual({
       markets: [],
-      meta: {},
-      filteredOutCount: 0,
-      marketCount: 0,
+      meta: {
+        categories: {},
+        filteredOutCount: 6,
+        marketCount: 0,
+      },
     });
 
     marketList = await api.route('getMarkets', {
@@ -170,12 +208,12 @@ describe('State API :: Markets :: ', () => {
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     // Test designatedReporter
     marketList = await api.route('getMarkets', {
@@ -184,12 +222,12 @@ describe('State API :: Markets :: ', () => {
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
@@ -197,9 +235,11 @@ describe('State API :: Markets :: ', () => {
     });
     expect(marketList).toEqual({
       markets: [],
-      meta: {},
-      filteredOutCount: 0,
-      marketCount: 0,
+      meta: {
+        categories: {},
+        filteredOutCount: 6,
+        marketCount: 0,
+      },
     });
 
     // Test maxFee
@@ -209,9 +249,11 @@ describe('State API :: Markets :: ', () => {
     });
     expect(marketList).toEqual({
       markets: [],
-      meta: {},
-      filteredOutCount: 0,
-      marketCount: 0,
+      meta: {
+        categories: {},
+        filteredOutCount: 6,
+        marketCount: 0,
+      },
     });
 
     marketList = await api.route('getMarkets', {
@@ -220,9 +262,9 @@ describe('State API :: Markets :: ', () => {
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(3);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket2.address);
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
@@ -230,53 +272,28 @@ describe('State API :: Markets :: ', () => {
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     // Test search & categories params
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      search: "scalar description 1",
+      search: 'scalar description 1',
     });
     expect(marketList.markets.length).toEqual(1);
     expect(marketList.markets[0].id).toEqual(scalarMarket1.address);
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      search: ACCOUNTS[0].publicKey,
-      isSortDescending: false,
-    });
-    expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
-
-    marketList = await api.route('getMarkets', {
-      universe: universe.address,
-      search: ACCOUNTS[0].publicKey,
-      isSortDescending: false,
-    });
-    expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
-
-    marketList = await api.route('getMarkets', {
-      universe: universe.address,
+      search: 'scalar',
       categories: [
-        "scalar 2 primary",
-        "scalar 2 secondary",
-        "scalar 2 tertiary",
+        'scalar 2 primary',
+        'scalar 2 secondary',
+        'scalar 2 tertiary',
       ],
     });
     expect(marketList.markets.length).toEqual(1);
@@ -284,34 +301,58 @@ describe('State API :: Markets :: ', () => {
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      search: "scalar description 1",
+      search: ACCOUNTS[0].publicKey,
+      isSortDescending: false,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
       categories: [
-        "scalar 2 primary",
-        "scalar 2 secondary",
-        "scalar 2 tertiary",
+        'scalar 2',
+        'scalar 2',
+        'scalar 2',
+      ],
+    });
+    expect(marketList.markets.length).toEqual(0);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      categories: [
+        'scalar 2 primary',
+        'scalar 2 secondary',
+        'scalar 2 tertiary',
+      ],
+    });
+    expect(marketList.markets.length).toEqual(1);
+    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      search: 'scalar description 1',
+      categories: [
+        'scalar 2 primary',
+        'scalar 2 secondary',
+        'scalar 2 tertiary',
       ],
     });
     expect(marketList).toEqual({
       markets: [],
-      meta: {},
-      filteredOutCount: 0,
-      marketCount: 0,
+      meta: {
+        categories: {},
+        filteredOutCount: 0,
+        marketCount: 0,
+      },
     });
 
-    // Place orders on some markets
-    const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
-    const yesNoOrderId = await john.placeOrder(
-      yesNoMarket1.address,
-      ORDER_TYPES.BID,
-      numShares,
-      price,
-      outcome0,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('42')
-    );
-    await john.cancelOrder(yesNoOrderId);
+    // Place orders Bidding on Invalid on some markets
+    const numShares = new BigNumber(10**18);
+    const price = new BigNumber(50);
     await john.placeOrder(
       yesNoMarket1.address,
       ORDER_TYPES.BID,
@@ -323,21 +364,11 @@ describe('State API :: Markets :: ', () => {
       stringTo32ByteHex('42')
     );
     await john.placeOrder(
-      yesNoMarket1.address,
-      ORDER_TYPES.BID,
-      numShares,
-      price,
-      outcome1,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('42')
-    );
-    await john.placeOrder(
       categoricalMarket1.address,
       ORDER_TYPES.BID,
       numShares,
       price,
-      outcome1,
+      outcome0,
       stringTo32ByteHex(''),
       stringTo32ByteHex(''),
       stringTo32ByteHex('42')
@@ -347,77 +378,113 @@ describe('State API :: Markets :: ', () => {
       ORDER_TYPES.BID,
       numShares,
       price,
-      outcome1,
+      outcome0,
       stringTo32ByteHex(''),
       stringTo32ByteHex(''),
       stringTo32ByteHex('42')
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
-    // Test includeInvalidMarkets
-    // TODO: Figure out why scalarMarket1's order is being set to Invalid instead of outcome 1
+    // Test includeInvalidMarkets & filteredOutCount
     marketList = await api.route('getMarkets', {
       universe: universe.address,
       includeInvalidMarkets: false,
     });
-    // expect(marketList.markets.length).toEqual(5);
-    // expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
-    // expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
-    // expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
-    // expect(marketList.markets[3].id).toEqual(categoricalMarket1.address);
-    // expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets.length).toEqual(4);
-    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
-    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
+
+    expect(marketList.markets.length).toEqual(3);
+    let marketIds = _.map(marketList.markets, 'id');
+    expect(marketIds).toContain(yesNoMarket2.address);
+    expect(marketIds).toContain(categoricalMarket2.address);
+    expect(marketIds).toContain(scalarMarket2.address);
+    expect(marketList.meta.filteredOutCount).toEqual(3);
 
     // Partially fill orders
-    const cost = numShares.multipliedBy(78).div(2);
+    const cost = numShares.multipliedBy(50).div(2);
     const yesNoOrderId1 = await john.getBestOrderId(
       ORDER_TYPES.BID,
       yesNoMarket1.address,
-      outcome1
+      outcome0
     );
     const categoricalOrderId1 = await john.getBestOrderId(
       ORDER_TYPES.BID,
       categoricalMarket1.address,
-      outcome1
+      outcome0
     );
     const scalarOrderId1 = await john.getBestOrderId(
       ORDER_TYPES.BID,
       scalarMarket1.address,
-      outcome1
+      outcome0
     );
-    await john.fillOrder(yesNoOrderId1, cost, numShares.div(2), '42');
-    await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), '43');
-    await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
+    await john.fillOrder(yesNoOrderId1, numShares.div(2), '42', cost);
+    await mary.fillOrder(categoricalOrderId1, numShares.div(2), '43', cost);
+    await mary.fillOrder(scalarOrderId1, numShares.div(2), '43', cost);
 
     // Completely fill orders
-    await john.fillOrder(yesNoOrderId1, cost, numShares.div(2), '42');
-    await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), '43');
-    await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
+    await john.setTimestamp(endTime.minus(15));
+    await john.fillOrder(yesNoOrderId1, numShares.div(2), '42', cost);
+    await john.setTimestamp(endTime.minus(10));
+    await mary.fillOrder(categoricalOrderId1, numShares.div(2), '43', cost);
+    await john.setTimestamp(endTime.minus(5));
+    await mary.fillOrder(scalarOrderId1, numShares.div(2), '43', cost);
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.lastTradedTimestamp,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.lastTradedTimestamp,
+      isSortDescending: false,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[1].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[4].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket1.address);
 
     // Move timestamp to designated reporting phase
     await john.setTimestamp(endTime.plus(1));
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
-    // Test disputeWindow
-    let disputeWindow = await yesNoMarket1.getDisputeWindow_();
+    // Test maxLiquiditySpread & filteredOutCount
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      disputeWindow: disputeWindow,
+      maxLiquiditySpread: '15',
+    });
+
+    expect(marketList.markets.length).toEqual(3);
+    marketIds = _.map(marketList.markets, 'id');
+    expect(marketIds).toContain(categoricalMarket1.address);
+    expect(marketIds).toContain(scalarMarket1.address);
+    expect(marketIds).toContain(yesNoMarket1.address);
+    expect(marketList.meta.filteredOutCount).toEqual(3);
+
+    // Test reportingStates
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      reportingStates: [MarketReportingState.DesignatedReporting],
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
-    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      reportingStates: [MarketReportingState.PreReporting],
+    });
+    expect(marketList.markets).toEqual([]);
 
     await john.setTimestamp(endTime.plus(2));
 
@@ -428,44 +495,154 @@ describe('State API :: Markets :: ', () => {
     ];
     await john.doInitialReport(yesNoMarket1, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Retest disputeWindow
-    disputeWindow = await yesNoMarket1.getDisputeWindow_();
-    marketList = await api.route('getMarkets', {
-      universe: universe.address,
-      disputeWindow,
-    });
-    expect(marketList.markets.length).toEqual(1);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     // Test sortBy
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      sortBy: GetMarketsSortBy.EndTime,
+      sortBy: GetMarketsSortBy.endTime,
     });
     expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
-    expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket1.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[5].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      sortBy: GetMarketsSortBy.EndTime,
+      sortBy: GetMarketsSortBy.endTime,
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
-    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
-    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, & LAST_LIQUIDITY_DEPLETED
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.marketOI,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.volume,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.disputeRound,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.totalRepStakedInMarket,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+
+    // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
+  }, 200000);
+
+  test(':getMarkets userPortfolioAddress', async () => {
+    const universe = john.augur.contracts.universe;
+    const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
+    const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
+    const affiliateFeeDivisor = new BigNumber(0);
+    const designatedReporter = john.account.publicKey;
+    const yesNoMarket1 = await bob.createYesNoMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
+    });
+
+    const yesNoMarket2 = john.augur.contracts.marketFromAddress(markets['yesNoMarket2']);
+    const categoricalMarket1 = john.augur.contracts.marketFromAddress(markets['categoricalMarket1']);
+    const categoricalMarket2 = john.augur.contracts.marketFromAddress(markets['categoricalMarket2']);
+
+    // Report on a market with Bob
+    await john.setTimestamp(endTime.plus(24 * 60 * 60 * 2));
+
+    let payoutSet = [
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+    ];
+    await bob.doInitialReport(yesNoMarket2, payoutSet);
+
+    payoutSet = [
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+      new BigNumber(0),
+    ];
+    // Report on a market with John then dispute that market with Bob
+    await john.doInitialReport(categoricalMarket1, payoutSet);
+
+    payoutSet = [
+      new BigNumber(0),
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+    ];
+    await bob.repFaucet(new BigNumber(1));
+    await bob.contribute(categoricalMarket1, payoutSet, new BigNumber(1));
+
+    // Trade on a market with Bob
+    const bid = new BigNumber(0);
+    const outcome = new BigNumber(0);
+    const numShares = new BigNumber(10000000000000);
+    const price = new BigNumber(22);
+    await bob.placeOrder(
+      categoricalMarket2.address,
+      bid,
+      numShares,
+      price,
+      outcome,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+
+
+    const actualDB = await db;
+    await actualDB.sync(john.augur, CHUNK_SIZE, 0);
+
+    let marketList: MarketList;
+
+    // Test user portfolio filter
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      userPortfolioAddress: getAddress(ACCOUNTS[2].publicKey),
+      isSortDescending: false,
+    });
+    expect(marketList.markets.length).toEqual(4);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
   }, 120000);
 
   test(':getMarketPriceHistory', async () => {
@@ -520,7 +697,8 @@ describe('State API :: Markets :: ', () => {
     );
 
     // Fill orders
-    const cost = numShares.multipliedBy(78).div(10);
+    await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+    await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
     let yesNoOrderId0 = await john.getBestOrderId(
       ORDER_TYPES.BID,
       yesNoMarket.address,
@@ -543,25 +721,21 @@ describe('State API :: Markets :: ', () => {
     );
     await john.fillOrder(
       yesNoOrderId0,
-      cost,
       numShares.div(10).multipliedBy(2),
       '42'
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost,
       numShares.div(10).multipliedBy(3),
       '43'
     );
     await mary.fillOrder(
       categoricalOrderId0,
-      cost,
       numShares.div(10).multipliedBy(2),
       '43'
     );
     await mary.fillOrder(
       categoricalOrderId1,
-      cost,
       numShares.div(10).multipliedBy(4),
       '43'
     );
@@ -591,30 +765,26 @@ describe('State API :: Markets :: ', () => {
     );
     await john.fillOrder(
       yesNoOrderId0,
-      cost,
       numShares.div(10).multipliedBy(4),
       '42'
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost,
       numShares.div(10).multipliedBy(5),
       '43'
     );
     await mary.fillOrder(
       categoricalOrderId0,
-      cost,
       numShares.div(10).multipliedBy(4),
       '43'
     );
     await mary.fillOrder(
       categoricalOrderId1,
-      cost,
       numShares.div(10).multipliedBy(2),
       '43'
     );
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     const yesNoMarketPriceHistory = await api.route('getMarketPriceHistory', {
       marketId: yesNoMarket.address,
@@ -783,6 +953,8 @@ describe('State API :: Markets :: ', () => {
     );
 
     // Fill orders
+    mary.faucet(new BigNumber(1e18)); // faucet enough
+
     const cost0 = numShares
       .multipliedBy(new BigNumber(100).minus(price0))
       .div(10);
@@ -807,15 +979,15 @@ describe('State API :: Markets :: ', () => {
     );
     await mary.fillOrder(
       yesNoOrderId0,
-      cost0,
       numShares.div(10).multipliedBy(5),
-      '42'
+      '42',
+      cost0
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost1,
       numShares.div(10).multipliedBy(7),
-      '43'
+      '43',
+      cost1
     );
 
     // Move time forward 10 minutes
@@ -834,15 +1006,15 @@ describe('State API :: Markets :: ', () => {
     );
     await mary.fillOrder(
       yesNoOrderId0,
-      cost1,
       numShares.div(10).multipliedBy(4),
-      '42'
+      '42',
+      cost1
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost0,
       numShares.div(10).multipliedBy(4),
-      '43'
+      '43',
+      cost0
     );
 
     // Move time forward 30 minutes
@@ -861,15 +1033,15 @@ describe('State API :: Markets :: ', () => {
     );
     await mary.fillOrder(
       yesNoOrderId0,
-      cost0,
       numShares.div(10).multipliedBy(6),
-      '42'
+      '42',
+      cost0
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost1,
       numShares.div(10).multipliedBy(8),
-      '43'
+      '43',
+      cost1
     );
 
     yesNoOrderId0 = await john.getBestOrderId(
@@ -884,15 +1056,15 @@ describe('State API :: Markets :: ', () => {
     );
     await mary.fillOrder(
       yesNoOrderId0,
-      cost1,
       numShares.div(10).multipliedBy(7),
-      '42'
+      '42',
+      cost1
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost1,
       numShares.div(10).multipliedBy(9),
-      '43'
+      '43',
+      cost1
     );
 
     // Move time forward 30 minutes
@@ -911,15 +1083,15 @@ describe('State API :: Markets :: ', () => {
     );
     await mary.fillOrder(
       yesNoOrderId0,
-      cost2,
       numShares.div(10).multipliedBy(6),
-      '42'
+      '42',
+      cost2
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost1,
       numShares.div(10).multipliedBy(5),
-      '43'
+      '43',
+      cost1
     );
 
     yesNoOrderId0 = await john.getBestOrderId(
@@ -934,15 +1106,15 @@ describe('State API :: Markets :: ', () => {
     );
     await mary.fillOrder(
       yesNoOrderId0,
-      cost0,
       numShares.div(10).multipliedBy(7),
-      '42'
+      '42',
+      cost0
     );
     await mary.fillOrder(
       yesNoOrderId1,
-      cost3,
       numShares.div(10).multipliedBy(3),
-      '43'
+      '43',
+      cost3
     );
 
     // Move time forward 60 minutes
@@ -951,7 +1123,7 @@ describe('State API :: Markets :: ', () => {
 
     const endTime = (await john.getTimestamp()).toNumber();
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     let yesNoMarketPriceCandlesticks = await api.route(
       'getMarketPriceCandlesticks',
@@ -1108,16 +1280,21 @@ describe('State API :: Markets :: ', () => {
   }, 120000);
 
   describe(':getMarketOrderBook', () => {
-    const askOrderAddresses = [];
-    const bidOrderAddresses = [];
-
     const numShares = new BigNumber(10000000000000);
     const price = new BigNumber(22);
 
-    let yesNoMarket: ContractInterfaces.Market;
+    let blockProvider: TestEthersProvider;
 
     beforeAll(async () => {
-      yesNoMarket = await john.createReasonableYesNoMarket();
+      blockProvider = await baseProvider.fork();
+      const addresses = blockProvider.getContractAddresses();
+      john = await ContractAPI.userWrapper(ACCOUNTS[0], blockProvider, addresses);
+      mary = await ContractAPI.userWrapper(ACCOUNTS[1], blockProvider, addresses);
+      bob = await ContractAPI.userWrapper(ACCOUNTS[2], blockProvider, addresses);
+      db = makeDbMock().makeDB(john.augur, ACCOUNTS);
+
+      const yesNoMarket = await john.createReasonableYesNoMarket();
+      markets['yesNoMarket'] = yesNoMarket.address;
 
       // Place Dummy orders to be filtered out.
       const scalarMarket = await john.createReasonableScalarMarket();
@@ -1198,8 +1375,18 @@ describe('State API :: Markets :: ', () => {
         createBids(price.minus(priceAdjustment), outcome1),
       ]);
 
-      await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+      await (await db).sync(john.augur, CHUNK_SIZE, 0);
     }, 120000);
+
+    beforeEach(async () => {
+      const provider = await blockProvider.fork();
+      const addresses = blockProvider.getContractAddresses();
+      john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+      mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+      bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+      db = makeDbMock().makeDB(john.augur, ACCOUNTS);
+      api = new API(john.augur, db);
+    });
 
     test('should require marketId', async () => {
       await expect(api.route('getMarketOrderBook', {})).rejects.toThrowError();
@@ -1207,6 +1394,9 @@ describe('State API :: Markets :: ', () => {
 
     describe('outcomeId', () => {
       test('can be a single value', async () => {
+        const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+
+        await (await db).sync(john.augur, CHUNK_SIZE, 0);
         const orderBook = (await api.route('getMarketOrderBook', {
           marketId: yesNoMarket.address,
           outcomeId: outcome0.toNumber(),
@@ -1217,9 +1407,11 @@ describe('State API :: Markets :: ', () => {
             0: expect.objectContaining({}),
           })
         );
-      });
+      }, 100000);
 
       test('can be an array', async () => {
+        const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+        await (await db).sync(john.augur, CHUNK_SIZE, 0);
         const orderBook = (await api.route('getMarketOrderBook', {
           marketId: yesNoMarket.address,
           outcomeId: [outcome0.toNumber(), outcome1.toNumber()],
@@ -1231,9 +1423,11 @@ describe('State API :: Markets :: ', () => {
             1: expect.objectContaining({}),
           })
         );
-      });
+      }, 100000);
 
       test('can be omitted', async () => {
+        const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+        await (await db).sync(john.augur, CHUNK_SIZE, 0);
         const orderBook = (await api.route('getMarketOrderBook', {
           marketId: yesNoMarket.address,
           outcomeId: [outcome0.toNumber(), outcome1.toNumber()],
@@ -1249,6 +1443,8 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should return a complete orderbook for john', async () => {
+      const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+      await (await db).sync(john.augur, CHUNK_SIZE, 0);
       const orderBook = (await api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
       })) as MarketOrderBook;
@@ -1257,7 +1453,7 @@ describe('State API :: Markets :: ', () => {
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {
-            spread: "0",
+            spread: '0',
             asks: [
               {
                 price: '0.22',
@@ -1288,7 +1484,7 @@ describe('State API :: Markets :: ', () => {
             ],
           },
           [outcome1.toString()]: {
-            spread: "0",
+            spread: '0',
             asks: [
               {
                 price: '0.22',
@@ -1323,6 +1519,8 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should return mysize of zero for mary', async () => {
+      const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+      await (await db).sync(john.augur, CHUNK_SIZE, 0);
       const maryApi = new API(mary.augur, db);
       const orderBook = (await maryApi.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
@@ -1332,7 +1530,7 @@ describe('State API :: Markets :: ', () => {
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {
-            spread: "0",
+            spread: '0',
             asks: [
               {
                 mySize: '0',
@@ -1351,7 +1549,7 @@ describe('State API :: Markets :: ', () => {
             ],
           },
           [outcome1.toString()]: {
-            spread: "0",
+            spread: '0',
             asks: [
               {
                 mySize: '0',
@@ -1371,7 +1569,7 @@ describe('State API :: Markets :: ', () => {
           },
         },
       });
-    });
+    }, 100000);
   });
 
   test(':getMarketsInfo', async () => {
@@ -1447,7 +1645,7 @@ describe('State API :: Markets :: ', () => {
     );
 
     // Partially fill orders
-    const cost = numShares.multipliedBy(78).div(2);
+    await mary.faucet(new BigNumber(1e18));
     const yesNoOrderId0 = await john.getBestOrderId(
       ORDER_TYPES.BID,
       yesNoMarket.address,
@@ -1478,19 +1676,19 @@ describe('State API :: Markets :: ', () => {
       scalarMarket.address,
       outcome1
     );
-    await john.fillOrder(yesNoOrderId0, cost, numShares.div(2), '42');
-    await mary.fillOrder(yesNoOrderId1, cost, numShares.div(2), '43');
-    await mary.fillOrder(categoricalOrderId0, cost, numShares.div(2), '43');
-    await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), '43');
-    await mary.fillOrder(scalarOrderId0, cost, numShares.div(2), '43');
-    await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
+    await mary.fillOrder(yesNoOrderId0, numShares.div(2), '42');
+    await mary.fillOrder(yesNoOrderId1, numShares.div(2), '43');
+    await mary.fillOrder(categoricalOrderId0, numShares.div(2), '43');
+    await mary.fillOrder(categoricalOrderId1, numShares.div(2), '43');
+    await mary.fillOrder(scalarOrderId0, numShares.div(2), '43');
+    await mary.fillOrder(scalarOrderId1, numShares.div(2), '43');
 
     // Purchase complete sets
     await mary.buyCompleteSets(yesNoMarket, numShares);
     await mary.buyCompleteSets(categoricalMarket, numShares);
     await mary.buyCompleteSets(scalarMarket, numShares);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     let markets: MarketInfo[] = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1514,7 +1712,7 @@ describe('State API :: Markets :: ', () => {
     let newTime = (await yesNoMarket.getEndTime_()).plus(1);
     await john.setTimestamp(newTime);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     markets = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1538,7 +1736,7 @@ describe('State API :: Markets :: ', () => {
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
     await john.setTimestamp(newTime);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     markets = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1579,7 +1777,7 @@ describe('State API :: Markets :: ', () => {
     ];
     await john.doInitialReport(yesNoMarket, noPayoutSet);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     markets = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1589,25 +1787,22 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets[0].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[1].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[2].reportingState).toBe(
-      MarketReportingState.OpenReporting
-    );
+    let reportingStates = _.map(markets, 'reportingState');
+    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
+    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     // Dispute 10 times
+    mary.repFaucet(new BigNumber(10**18).multipliedBy(1000000));
+    john.repFaucet(new BigNumber(10**18).multipliedBy(1000000));
     for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
       if (disputeRound % 2 !== 0) {
-        await mary.contribute(yesNoMarket, yesPayoutSet, new BigNumber(25000));
+        const market = await mary.getMarketContract(yesNoMarket.address);
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           yesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(yesNoMarket, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(yesNoMarket, noPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
@@ -1618,7 +1813,7 @@ describe('State API :: Markets :: ', () => {
       }
     }
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     markets = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1628,20 +1823,15 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets[0].reportingState).toBe(
-      MarketReportingState.AwaitingNextWindow
-    );
-    expect(markets[1].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[2].reportingState).toBe(
-      MarketReportingState.OpenReporting
-    );
+    reportingStates = _.map(markets, 'reportingState');
+    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
+    expect(reportingStates).toContain(MarketReportingState.AwaitingNextWindow);
+    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
     await john.setTimestamp(newTime);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     markets = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1651,25 +1841,21 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets[0].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[1].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[2].reportingState).toBe(
-      MarketReportingState.OpenReporting
-    );
+    reportingStates = _.map(markets, 'reportingState');
+    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
+    expect(reportingStates).toContain(MarketReportingState.AwaitingFinalization);
+    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     // Continue disputing
     for (let disputeRound = 12; disputeRound <= 19; disputeRound++) {
       if (disputeRound % 2 !== 0) {
-        await mary.contribute(yesNoMarket, yesPayoutSet, new BigNumber(25000));
+        const market = await mary.getMarketContract(yesNoMarket.address);
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           yesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(yesNoMarket, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(yesNoMarket, noPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
@@ -1693,7 +1879,7 @@ describe('State API :: Markets :: ', () => {
     );
     await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     markets = await api.route('getMarketsInfo', {
       marketIds: [
@@ -1703,200 +1889,7 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets).toMatchObject([
-      {
-        author: john.account.publicKey,
-        categories:
-          [' '],
-        consensus: null,
-        cumulativeScale: '1',
-        details: null,
-        finalizationTime: null,
-        marketType: 'yesNo',
-        maxPrice: '1',
-        minPrice: '0',
-        needsMigration: false,
-        numOutcomes: 3,
-        numTicks: '100',
-        openInterest: '0.0015',
-        outcomes: [
-          {
-            description: 'Invalid',
-            id: 0,
-            price: '0.22',
-            volume: '500000000000000',
-          },
-          {
-            description: 'No',
-            id: 1,
-            price: '0.22',
-            volume: '500000000000000',
-          },
-          {
-            description: 'Yes',
-            id: 2,
-            price: null,
-            volume: '0',
-          },
-        ],
-        reportingState: MarketReportingState.Forking,
-        resolutionSource: null,
-        scalarDenomination: null,
-        marketCreatorFeeRate: '0.01',
-        settlementFee: '0.0100000000000001',
-        reportingFeeRate: '0.0000000000000001',
-        tickSize: '0.01',
-        universe: john.augur.contracts.universe.address,
-        volume: '0.001',
-        disputeInfo: {
-          disputePacingOn: true,
-          stakeCompletedTotal: '550000000000000000524288',
-          bondSizeOfNewStake: '1100000000000000001048576',
-          stakes: [
-            {
-              outcome: '1',
-              isInvalid: false,
-              bondSizeCurrent: '349680582682291667',
-              bondSizeTotal: '366666666666666667016192',
-              stakeCurrent: '349680582682291667',
-              stakeRemaining: '0',
-              stakeCompleted: '366666666666666667016192',
-              tentativeWinning: true },
-            {
-              outcome: '2',
-              isInvalid: false,
-              bondSizeCurrent: '699361165364583334',
-              bondSizeTotal: '183333333333333333508096',
-              stakeCurrent: '699361165364583334',
-              stakeRemaining: '0',
-              stakeCompleted: '183333333333333333508096',
-              tentativeWinning: false,
-            },
-          ],
-        },
-      },
-      {
-        author: john.account.publicKey,
-        categories:
-          [' '],
-        consensus: ['100', '0', '0', '0'],
-        cumulativeScale: '1',
-        details: null,
-        marketType: 'categorical',
-        maxPrice: '1',
-        minPrice: '0',
-        needsMigration: false,
-        numOutcomes: 4,
-        numTicks: '100',
-        openInterest: '0.0015',
-        outcomes: [
-          {
-            description: 'Invalid',
-            id: 0,
-            price: '0.22',
-            volume: '500000000000000',
-          },
-          {
-            description:
-              'A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-            id: 1,
-            price: '0.22',
-            volume: '110000000000000',
-          },
-          {
-            description:
-              'B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-            id: 2,
-            price: null,
-            volume: '0',
-          },
-          {
-            description:
-              'C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-            id: 3,
-            price: null,
-            volume: '0',
-          },
-        ],
-        reportingState: MarketReportingState.Finalized,
-        resolutionSource: null,
-        scalarDenomination: null,
-        marketCreatorFeeRate: '0.01',
-        settlementFee: '0.0100000000000001',
-        reportingFeeRate: '0.0000000000000001',
-        tickSize: '0.01',
-        universe: john.augur.contracts.universe.address,
-        volume: '0.00061',
-        disputeInfo: {
-          disputePacingOn: false,
-          stakeCompletedTotal: '349680582682291667',
-          bondSizeOfNewStake: '699361165364583334',
-          stakes: [
-            {
-              outcome: '0',
-              isInvalid: true,
-              bondSizeCurrent: '349680582682291667',
-              bondSizeTotal: '349680582682291667',
-              stakeCurrent: '349680582682291667',
-              stakeRemaining: '0',
-              stakeCompleted: '349680582682291667',
-              tentativeWinning: true,
-            },
-          ],
-        },
-      },
-      {
-        author: john.account.publicKey,
-        categories:
-          [' '],
-        consensus: null,
-        cumulativeScale: '200',
-        details: null,
-        finalizationTime: null,
-        marketType: 'scalar',
-        maxPrice: '250',
-        minPrice: '50',
-        needsMigration: true,
-        numOutcomes: 3,
-        numTicks: '20000',
-        openInterest: '0.3',
-        scalarDenomination: 'scalar denom 1',
-        marketCreatorFeeRate: '0.01',
-        settlementFee: '0.0100000000000001',
-        reportingFeeRate: '0.0000000000000001',
-        outcomes: [
-          {
-            description: 'Invalid',
-            id: 0,
-            price: '50.22',
-            volume: '100000000000000000',
-          },
-          {
-            description: 'scalar denom 1',
-            id: 1,
-            price: '50.22',
-            volume: '110000000000000',
-          },
-          {
-            description: 'scalar denom 1',
-            id: 2,
-            price: null,
-            volume: '0',
-          },
-        ],
-        reportingState: MarketReportingState.AwaitingForkMigration,
-        resolutionSource: null,
-        tickSize: '0.01',
-        universe: john.augur.contracts.universe.address,
-        volume: '0.10011',
-        disputeInfo: {
-          disputePacingOn: false,
-          stakeCompletedTotal: '0',
-          bondSizeOfNewStake: '0',
-          stakes: [],
-        },
-      },
-    ]);
+    // TODO check finalized reporting state
 
     expect(markets[0]).toHaveProperty('creationBlock');
     expect(markets[1]).toHaveProperty('creationBlock');
@@ -1919,7 +1912,43 @@ describe('State API :: Markets :: ', () => {
     expect(markets[2]).toHaveProperty('id');
   }, 180000);
 
+  test(':getMarketsInfo disputeinfo.stakes outcome valid/invalid', async () => {
+    const market = await john.createReasonableYesNoMarket();
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+    let infos = await api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    });
+    expect(infos.length).toEqual(1);
+    let info = infos[0];
+
+    await fork(john, info);
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+    infos = await api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    });
+    expect(infos.length).toEqual(1);
+    info = infos[0];
+
+    expect(info).toHaveProperty('disputeInfo');
+    expect(info.disputeInfo).toHaveProperty('stakes');
+    expect(info.disputeInfo.stakes).toMatchObject([
+      {
+        outcome: '1',
+        isInvalidOutcome: false,
+        isMalformedOutcome: false,
+      },
+      {
+        outcome: '0', // this test was written to verify this specific value
+        isInvalidOutcome: true,
+        isMalformedOutcome: false,
+      },
+    ]);
+  }, 180000);
+
   test(':getCategories', async () => {
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
     const categories = await api.route('getCategories', {
       universe: john.augur.contracts.universe.address,
     });
@@ -1942,7 +1971,6 @@ describe('State API :: Markets :: ', () => {
       'scalar 2 primary',
       'scalar 2 secondary',
       'scalar 2 tertiary',
-      ' ',
     ]);
   }, 120000);
 });

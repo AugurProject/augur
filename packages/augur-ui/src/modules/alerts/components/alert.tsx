@@ -1,109 +1,56 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import moment from "moment";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import classNames from 'classnames';
 
-import { Close } from "modules/common/icons";
-import Styles from "modules/alerts/components/alert.styles.less";
-import { EtherscanLink } from "modules/common/buttons";
+import { Close } from 'modules/common/icons';
+import Styles from 'modules/alerts/components/alert.styles.less';
+import { ViewTransactionDetailsButton } from 'modules/common/buttons';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 interface AlertProps {
   id: string;
+  title: string;
   description?: string;
+  details?: string;
   linkPath?: string | any;
   onClick?: Function;
   removeAlert: Function;
   seen: boolean;
-  timestamp: number;
-  title: string;
+  timestampInMilliseconds: number;
   status: string;
   toggleAlerts: Function;
+  noShow?: boolean;
+  showToast?: boolean;
 }
 
-export default class Alert extends Component<AlertProps> {
-  static propTypes = {
-    description: PropTypes.string,
-    id: PropTypes.string.isRequired,
-    linkPath: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    onClick: PropTypes.func,
-    removeAlert: PropTypes.func.isRequired,
-    seen: PropTypes.bool.isRequired,
-    timestamp: PropTypes.number,
-    title: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    toggleAlerts: PropTypes.func.isRequired
-  };
-
-  alert: any = null;
-
-  static defaultProps = {
-    description: "",
-    linkPath: null,
-    onClick: null,
-    timestamp: 0,
-  };
-
+export default class Alert extends Component<AlertProps, {}> {
   render() {
     const {
       id,
+      details,
       description,
-      linkPath,
-      onClick,
       removeAlert,
       seen,
-      timestamp,
+      timestampInMilliseconds,
       title,
-      toggleAlerts,
-      status
+      noShow,
+      showToast,
     } = this.props;
+
+    if (!title || title === '') return null;
+
+    if (noShow) return null;
     return (
       <article
-        ref={alert => {
-          this.alert = alert;
-        }}
         className={classNames(Styles.Alert, {
-          [Styles.Seen]: seen
+          [Styles.Seen]: seen,
         })}
       >
-        <div className={Styles.Column} style={{ flex: "1" }}>
-          <Link
-            to={linkPath || ""}
-            onClick={e => {
-              e.stopPropagation();
-              if (!linkPath) e.preventDefault();
-              if (linkPath && onClick) toggleAlerts();
-            }}
-          >
-            <div className={Styles.Row}>
-              <div className={Styles.Status}>{status}</div>
-            </div>
-            <div className={Styles.Row}>
-              <span className={Styles.Title}>{title}</span>
-            </div>
-            {description &&
-              description !== "" && (
-                <div className={Styles.Row}>
-                  <span className={Styles.Description}>
-                    {description}
-                  </span>
-                </div>
-              )}
-          </Link>
+        <div>
           <div className={Styles.Row}>
-            <span className={Styles.EtherLink}>
-              <EtherscanLink txhash={id} label="etherscan tx" />
-            </span>
-            <span className={Styles.Time}>
-              &nbsp;— {moment.unix(timestamp).fromNow()}
-            </span>
-          </div>
-        </div>
-        <div
-          className={Styles.Column}
-          style={{ justifyContent: "center" }}
-        >
-          <div className={Styles.Row}>
+            <div className={Styles.Status}>{title}</div>
             <button
               className={Styles.Close}
               onClick={e => {
@@ -112,6 +59,33 @@ export default class Alert extends Component<AlertProps> {
             >
               {Close}
             </button>
+          </div>
+          <div className={Styles.Row}>
+            <span className={Styles.Title}>{description}</span>
+          </div>
+          {description && description !== '' && (
+            <div className={Styles.Row}>
+              <span className={Styles.Description}>{details}</span>
+            </div>
+          )}
+          <div className={Styles.Row}>
+            {!showToast && (
+              <>
+                <span className={Styles.Timestamp}>
+                  {
+                    convertUnixToFormattedDate(timestampInMilliseconds / 1000)
+                      .formattedLocalShortTime
+                  }
+                </span>
+                <span className={Styles.EtherLink}>
+                  <ViewTransactionDetailsButton
+                    light
+                    transactionHash={id}
+                    label="view etherscan"
+                  />
+                </span>
+              </>
+            )}
           </div>
         </div>
       </article>

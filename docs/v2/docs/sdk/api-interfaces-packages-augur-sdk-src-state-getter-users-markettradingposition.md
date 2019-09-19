@@ -38,7 +38,7 @@ sidebar_label: MarketTradingPosition
 
 **● currentValue**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:65](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L65)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:65](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L65)*
 
 ___
 <a id="frozenfunds"></a>
@@ -47,7 +47,7 @@ ___
 
 **● frozenFunds**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:54](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:54](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L54)*
 
 ___
 <a id="marketid"></a>
@@ -56,7 +56,7 @@ ___
 
 **● marketId**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:55](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L55)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:55](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L55)*
 
 ___
 <a id="realized"></a>
@@ -65,7 +65,7 @@ ___
 
 **● realized**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:56](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L56)*
 
 ___
 <a id="realizedcost"></a>
@@ -74,7 +74,7 @@ ___
 
 **● realizedCost**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:60](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L60)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:60](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L60)*
 
 ___
 <a id="realizedpercent"></a>
@@ -83,7 +83,7 @@ ___
 
 **● realizedPercent**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:62](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L62)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:62](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L62)*
 
 ___
 <a id="timestamp"></a>
@@ -92,7 +92,7 @@ ___
 
 **● timestamp**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:53](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L53)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:53](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L53)*
 
 ___
 <a id="total"></a>
@@ -101,7 +101,7 @@ ___
 
 **● total**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:58](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L58)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:58](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L58)*
 
 ___
 <a id="totalcost"></a>
@@ -110,7 +110,7 @@ ___
 
 **● totalCost**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:61](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L61)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:61](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L61)*
 
 ___
 <a id="totalpercent"></a>
@@ -119,7 +119,7 @@ ___
 
 **● totalPercent**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:64](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L64)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:64](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L64)*
 
 ___
 <a id="unrealized"></a>
@@ -128,7 +128,7 @@ ___
 
 **● unrealized**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:57](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L57)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:57](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L57)*
 
 ___
 <a id="unrealizedcost"></a>
@@ -137,7 +137,7 @@ ___
 
 **● unrealizedCost**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:59](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L59)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:59](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L59)*
 
 ___
 <a id="unrealizedpercent"></a>
@@ -146,7 +146,7 @@ ___
 
 **● unrealizedPercent**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:63](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L63)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:63](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L63)*
 
 ___
 

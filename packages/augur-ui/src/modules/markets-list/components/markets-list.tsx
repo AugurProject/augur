@@ -1,21 +1,23 @@
 import React, { Component } from "react";
 
-import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import Paginator from "modules/common/paginator_v1";
-import NullStateMessage from "modules/common/null-state-message";
-import { TYPE_TRADE } from "modules/common/constants";
-import MarketCard from "modules/market-cards/containers/market-card";
-import debounce from "utils/debounce";
-import { MarketData } from "modules/types";
+import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { Pagination } from 'modules/common/pagination';
+import NullStateMessage from 'modules/common/null-state-message';
+import { TYPE_TRADE, MARKET_CARD_FORMATS } from 'modules/common/constants';
+import MarketCard from 'modules/market-cards/containers/market-card';
+import { MarketData } from 'modules/types';
+import { LoadingMarketCard } from 'modules/market-cards/common';
+import { MagnifyingGlass } from 'modules/common/icons';
+import PaginationStyles from 'modules/common/pagination.styles.less';
+import Styles from 'modules/markets-list/components/markets-list-styles.less';
 
-const PAGINATION_COUNT = 10;
 
 interface MarketsListProps {
   testid?: string;
   history: object;
   isLogged: boolean;
-  markets: Array<MarketData>;
-  filteredMarkets: Array<string>;
+  markets: MarketData[];
+  filteredMarkets: string[];
   location: object;
   toggleFavorite: Function;
   loadMarketsInfoIfNotLoaded: Function;
@@ -23,19 +25,21 @@ interface MarketsListProps {
   linkType?: string;
   isMobile: boolean;
   pendingLiquidityOrders?: object;
-  nullMessage?: string;
-  addNullPadding?: boolean;
-  style?: object;
   showDisputingCard?: boolean;
   outcomes?: object;
   showOutstandingReturns?: boolean;
+  marketCount: number;
+  showPagination: boolean;
+  limit: number;
+  offset: number;
+  setOffset: Function;
+  updateLimit: Function;
+  isSearchingMarkets: boolean;
+  marketCardFormat: string;
 }
 
 interface MarketsListState {
-  lowerBound: number;
-  boundedLength: number;
   marketIdsMissingInfo: Array<any>;
-  showPagination: boolean;
 }
 
 export default class MarketsList extends Component<
@@ -46,152 +50,85 @@ export default class MarketsList extends Component<
     testid: null,
     linkType: TYPE_TRADE,
     paginationPageParam: PAGINATION_PARAM_NAME,
-    nullMessage: "No Markets Available",
     pendingLiquidityOrders: {},
-    addNullPadding: false,
-    style: null,
     showDisputingCard: false,
     outcomes: null,
-    showOutstandingReturns: false
+    showOutstandingReturns: false,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      lowerBound: 1,
-      boundedLength: 10,
-      marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
-      showPagination:
-        props.filteredMarkets && props.filteredMarkets.length > PAGINATION_COUNT
-    };
-
-    this.setSegment = this.setSegment.bind(this);
-    this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
-    this.loadMarketsInfoIfNotLoaded = debounce(
-      // @ts-ignore
-      this.loadMarketsInfoIfNotLoaded.bind(this)
-    );
-  }
-
-  componentWillMount() {
-    const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
-    if (loadMarketsInfoIfNotLoaded) {
-      this.loadMarketsInfoIfNotLoaded(filteredMarkets);
-    }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
-    const { lowerBound, boundedLength, marketIdsMissingInfo } = this.state;
-    if (
-      lowerBound !== nextState.lowerBound ||
-      boundedLength !== nextState.boundedLength ||
-      JSON.stringify(filteredMarkets) !==
-        JSON.stringify(nextProps.filteredMarkets)
-    ) {
-      this.setMarketIDsMissingInfo(
-        nextProps.filteredMarkets,
-        nextState.lowerBound,
-        nextState.boundedLength
-      );
-    }
-
-    if (
-      JSON.stringify(marketIdsMissingInfo) !==
-      JSON.stringify(nextState.marketIdsMissingInfo)
-    ) {
-      if (loadMarketsInfoIfNotLoaded) {
-        this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
-      }
-    }
-  }
-
-  setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, boundedLength });
-  }
-
-  setMarketIDsMissingInfo(filteredMarkets, lowerBound, boundedLength) {
-    if (filteredMarkets.length && boundedLength) {
-      const marketIdLength = boundedLength + (lowerBound - 1);
-      const marketIdsMissingInfo = filteredMarkets.slice(
-        lowerBound - 1,
-        marketIdLength
-      );
-      const showPagination = filteredMarkets.length > PAGINATION_COUNT;
-      this.setState({ marketIdsMissingInfo, showPagination });
-    }
-  }
-
-  // debounced call
-  loadMarketsInfoIfNotLoaded(marketIds) {
-    const { loadMarketsInfoIfNotLoaded } = this.props;
-    loadMarketsInfoIfNotLoaded(marketIds || this.state.marketIdsMissingInfo);
-  }
-
-  // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
     const {
       filteredMarkets,
       history,
-      isLogged,
-      isMobile,
       location,
       markets,
-      paginationPageParam,
-      toggleFavorite,
       testid,
-      pendingLiquidityOrders,
-      nullMessage,
-      addNullPadding,
-      style,
-      showDisputingCard,
-      outcomes,
-      linkType,
-      showOutstandingReturns
+      marketCount,
+      showPagination,
+      limit,
+      offset,
+      setOffset,
+      isSearchingMarkets,
+      updateLimit,
+      marketCardFormat,
     } = this.props;
-    const s = this.state;
+    let marketCards = [];
 
-    const marketsLength = (filteredMarkets || []).length;
+    const loadingLimit = limit === 1 ? 10 : limit;
+    if (isSearchingMarkets) {
+      new Array(loadingLimit).fill(null).map((prop, index) => (
+        marketCards.push(
+          <LoadingMarketCard
+            key={index + 'loading'}
+          />)
+      ));
+    } else {
+      filteredMarkets.map((id) => {
+        const market = markets.find(
+          (market: MarketData) => market.id === id
+        );
+        if (market && market.id) {
+          marketCards.push(
+            <MarketCard
+              market={market}
+              condensed={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
+              expandedView={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
+              location={location}
+              history={history}
+              key={`${market.id} - ${market.outcomes}`}
+              loading={isSearchingMarkets}
+            />
+          );
+        }
+      });
+    }
 
     return (
-      <article className="markets-list" data-testid={testid} style={style}>
-        {marketsLength && s.boundedLength ? (
-          [...Array(s.boundedLength)].map((unused, i) => {
-            const id = filteredMarkets[s.lowerBound - 1 + i];
-            const market = markets.find(
-              (market: MarketData) => market.id === id
-            );
-
-            if (market && market.id) {
-              return (
-                <MarketCard
-                  market={market}
-                  condensed={false}
-                  location={location}
-                  history={history}
-                  key={`${market.id} - ${market.outcomes}`}
-                />
-              );
-            }
-
-            return null;
-          })
+      <article className={Styles.MarketsList} data-testid={testid}>
+        {marketCards.length > 0 ? (
+          <>
+          {marketCards}
+          </>
         ) : (
           <NullStateMessage
-            addNullPadding={addNullPadding}
-            message={nullMessage}
+            icon={MagnifyingGlass}
+            message={'No markets found'}
+            subMessage={'Try a different category or filter'}
           />
+
         )}
-        {!!marketsLength && s.showPagination && (
-          <Paginator
-            itemsLength={marketsLength}
-            itemsPerPage={PAGINATION_COUNT}
-            location={location}
-            history={history}
-            setSegment={this.setSegment}
-            pageParam={paginationPageParam}
-          />
+        {showPagination && (
+          <div className={PaginationStyles.PaginationContainer}>
+            <Pagination
+              page={offset}
+              itemCount={marketCount}
+              itemsPerPage={limit}
+              updateLimit={updateLimit}
+              maxLimit={marketCount}
+              action={setOffset}
+              showLimitChanger
+            />
+          </div>
         )}
       </article>
     );

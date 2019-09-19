@@ -7,7 +7,12 @@ html,
 }
 
 body {
-  background: @color-primary-background;
+  background: @color-dark-grey;
+  overflow: hidden;
+
+  // See Issue #3504
+  top: 0px !important;
+  position: initial !important;
 
   @media @breakpoint-mobile {
     --is-mobile: true;
@@ -51,10 +56,6 @@ h6 {
 
 .Main__wrap {
   display: grid;
-
-  /* inner menubar width */
-  grid-template-columns: 6.875rem auto;
-  margin-left: -100px;
   overflow: hidden;
 
   @media @breakpoint-mobile {
@@ -64,21 +65,42 @@ h6 {
   }
 }
 
+.Main__wrapMarkets {
+  grid-template-columns: minmax(auto, 250px) auto;
+
+  @media @breakpoint-mobile {
+    grid-template-columns: none;
+    grid-template-rows: 0 auto;
+    margin-left: 0;
+  }
+}
+
+
 .Main__content {
   height: calc(~"100vh - @{top-bar-height}");
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
+  padding-bottom: @size-64;
 
   @media @breakpoint-mobile {
     height: calc(~"100vh - @{top-bar-height-mobile}");
     width: 100vw;
+    padding-bottom: calc(@top-bar-height-mobile * 2);
+  }
+
+  > section {
+    margin: 0 @size-64;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
   }
 }
 
 .SideBar {
   background: @color-theme-primary;
-  border-right: 0.0625rem solid @color-primary-background;
+  border-right: 0.0625rem solid @color-dark-grey;
 
   @media @breakpoint-mobile {
     padding-top: 0;
@@ -90,14 +112,14 @@ h6 {
   top: 0;
   left: 0;
   background: @color-theme-primary;
-  border-bottom: 1px solid @color-primary-background;
+  border-bottom: 1px solid @color-dark-grey;
   display: none;
   height: @top-bar-height-mobile;
   outline: none;
   padding: 1rem;
   position: absolute;
   width: 3.125rem;
-  z-index: @mask-above;
+  z-index: @mask-modal;
 
   svg {
     height: 100%;
@@ -112,16 +134,6 @@ h6 {
       stroke-width: 1.5;
     }
   }
-}
-
-.App__loadingIndicator {
-  background: @color-lighter-purple;
-  display: none;
-  height: 0.25rem;
-  left: 0;
-  position: absolute;
-  right: 0;
-  z-index: @mask-modal;
 }
 
 svg.SideBar__mobile-bars-unseen {
@@ -143,5 +155,9 @@ svg.SideBar__mobile-bars-unseen {
 
   @media @breakpoint-mobile {
     border-bottom: 1px solid @color-primary-light;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: @mask-modal;
   }
 }

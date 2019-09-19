@@ -1,20 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import * as constants from "modules/common/constants";
-import Styles from "modules/common/labels.styles.less";
-import { ClipLoader } from "react-spinners";
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import * as constants from 'modules/common/constants';
+import Styles from 'modules/common/labels.styles.less';
+import { ClipLoader } from 'react-spinners';
 import {
   MarketIcon,
   InfoIcon,
   CheckCircleIcon,
   HintAlternate,
-  DoubleArrows
-} from "modules/common/icons";
-import { MarketProgress } from "modules/common/progress";
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles.less";
-import { createBigNumber } from "utils/create-big-number";
+  DoubleArrows,
+  LoadingEllipse,
+} from 'modules/common/icons';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { createBigNumber } from 'utils/create-big-number';
 import {
   SELL,
   BOUGHT,
@@ -23,11 +23,12 @@ import {
   SHORT,
   ZERO,
   YES_NO,
-  REPORTING_STATE
-} from "modules/common/constants";
-import { ViewTransactionDetailsButton } from "modules/common/buttons";
-import { formatNumber } from "utils/format-number";
-import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
+  REPORTING_STATE,
+} from 'modules/common/constants';
+import { ViewTransactionDetailsButton } from 'modules/common/buttons';
+import { formatNumber } from 'utils/format-number';
+import { FormattedNumber, SizeTypes, DateFormattedObject } from 'modules/types';
+import { TXEventName } from '@augurproject/sdk';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -40,8 +41,8 @@ export interface MarketStatusProps {
 export interface InReportingLabelProps extends MarketStatusProps {
   reportingState: string;
   disputeInfo: any;
-  endTime: DateFormattedObject;
-  reportingWindowStatsEndTime: number;
+  endTimeFormatted: DateFormattedObject;
+  disputingWindowEndTime: number;
   currentAugurTimestamp: number;
 }
 
@@ -127,6 +128,11 @@ export interface ValueLabelProps {
   showEmptyDash: boolean;
 }
 
+interface SizableValueLabelProps extends ValueLabelProps {
+  size: SizeTypes;
+  highlight?: boolean;
+}
+
 interface HoverValueLabelState {
   hover: boolean;
 }
@@ -144,6 +150,17 @@ export interface TextLabelState {
 
 export interface RepBalanceProps {
   rep: string;
+  alternate?: boolean;
+  larger?: boolean;
+}
+
+export interface MarketStateLabelProps {
+  label: string;
+  count: number;
+  loading: boolean;
+  selected: boolean;
+  handleClick: Function;
+  marketType: string;
 }
 
 interface ButtonObj {
@@ -159,7 +176,6 @@ interface WordTrailProps {
 
 interface CategoryTagTrailProps {
   categories: Array<ButtonObj>;
-  tags: Array<ButtonObj>;
 }
 
 interface ValueDenominationProps {
@@ -192,44 +208,44 @@ export function formatExpandedValue(
   value,
   showDenomination,
   fixedPrecision = false,
-  max = "1000",
-  min = "0.0001"
+  max = '1000',
+  min = '0.0001'
 ) {
   const { fullPrecision, roundedFormatted, denomination, formatted } = value;
   const maxHoverDecimals = 8;
   const minHoverDecimals = 4;
-  const fullWithoutDecimals = fullPrecision.split(".")[0];
+  const fullWithoutDecimals = fullPrecision.split('.')[0];
   const testValue = createBigNumber(fullPrecision);
   const isGreaterThan = testValue.abs().gt(max);
   const isLessThan = testValue.abs().lt(min) && !testValue.eq(ZERO);
-  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : "";
+  let postfix = isGreaterThan || isLessThan ? String.fromCodePoint(0x2026) : '';
   let frontFacingLabel = isGreaterThan ? fullWithoutDecimals : roundedFormatted;
-  const denominationLabel = showDenomination ? `${denomination}` : "";
+  const denominationLabel = showDenomination ? `${denomination}` : '';
 
   let fullValue = fullPrecision;
   if (fixedPrecision) {
-    const decimals = fullValue.toString().split(".")[1];
+    const decimals = fullValue.toString().split('.')[1];
     if (decimals && decimals.length > maxHoverDecimals) {
       const round = formatNumber(fullPrecision, {
         decimals: maxHoverDecimals,
-        decimalsRounded: maxHoverDecimals
+        decimalsRounded: maxHoverDecimals,
       });
       fullValue = round.formatted;
       if (
-        fullValue.split(".")[1] &&
-        fullValue.split(".")[1].length > maxHoverDecimals
+        fullValue.split('.')[1] &&
+        fullValue.split('.')[1].length > maxHoverDecimals
       ) {
         fullValue = round.rounded;
       }
     }
 
-    if (testValue.gte("1000") && fixedPrecision) {
+    if (testValue.gte('1000') && fixedPrecision) {
       frontFacingLabel = testValue.toFixed(minHoverDecimals);
     }
   }
 
   if (fullValue.length === frontFacingLabel.length) {
-    postfix = "";
+    postfix = '';
   }
 
   if (postfix.length && !isGreaterThan) {
@@ -240,9 +256,26 @@ export function formatExpandedValue(
     fullPrecision: fullValue,
     postfix,
     frontFacingLabel,
-    denominationLabel
+    denominationLabel,
   };
 }
+
+export const SizableValueLabel = (props: SizableValueLabelProps) => (
+  <span
+    className={classNames(Styles.SizableValueLabel, {
+      [Styles.Large]: props.size === SizeTypes.LARGE,
+      [Styles.Small]: props.size === SizeTypes.SMALL,
+      [Styles.Highlight]: props.highlight,
+    })}
+  >
+    <ValueLabel
+      value={props.value}
+      keyId={props.keyId}
+      showDenomination={props.showDenomination}
+      showEmptyDash={props.showEmptyDash}
+    />
+  </span>
+);
 
 export const ValueLabel = (props: ValueLabelProps) => {
   if (!props.value || props.value === null)
@@ -257,19 +290,18 @@ export const ValueLabel = (props: ValueLabelProps) => {
     fullPrecision,
     postfix,
     frontFacingLabel,
-    denominationLabel
+    denominationLabel,
   } = expandedValues;
 
   return (
     <span className={Styles.ValueLabel}>
       <label
         data-tip
-        data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${
-          props.keyId
-        }`}
+        data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
         data-iscapture="true"
       >
-        {`${frontFacingLabel}${postfix}${denominationLabel}`}
+        {`${frontFacingLabel}${postfix}`}
+        <span>{denominationLabel}</span>
       </label>
       {postfix.length !== 0 && (
         <ReactTooltip
@@ -293,7 +325,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
   state: TextLabelState = {
     scrollWidth: null,
     clientWidth: null,
-    isDisabled: true
+    isDisabled: true,
   };
 
   measure() {
@@ -302,7 +334,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
     this.setState({
       scrollWidth,
       clientWidth,
-      isDisabled: !(scrollWidth > clientWidth)
+      isDisabled: !(scrollWidth > clientWidth),
     });
   }
 
@@ -329,13 +361,13 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
         <label
           ref={ref => (this.labelRef = ref)}
           data-tip
-          data-for={`${keyId}-${text ? text.replace(/\s+/g, "-") : ""}`}
+          data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
         >
           {text}
         </label>
         {!isDisabled && (
           <ReactTooltip
-            id={`${keyId}-${text.replace(/\s+/g, "-")}`}
+            id={`${keyId}-${text.replace(/\s+/g, '-')}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
@@ -356,7 +388,7 @@ export class HoverValueLabel extends React.Component<
   HoverValueLabelState
 > {
   state: HoverValueLabelState = {
-    hover: false
+    hover: false,
   };
   render() {
     if (!this.props.value || this.props.value === null) return <span />;
@@ -365,15 +397,15 @@ export class HoverValueLabel extends React.Component<
       this.props.value,
       this.props.showDenomination,
       true,
-      "99999"
+      '99999'
     );
     const { fullPrecision, postfix, frontFacingLabel } = expandedValues;
 
-    const frontFacingLabelSplit = frontFacingLabel.toString().split(".");
+    const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
     const firstHalf = frontFacingLabelSplit[0];
     const secondHalf = frontFacingLabelSplit[1];
 
-    const fullPrecisionSplit = fullPrecision.toString().split(".");
+    const fullPrecisionSplit = fullPrecision.toString().split('.');
     const firstHalfFull = fullPrecisionSplit[0];
     const secondHalfFull = fullPrecisionSplit[1];
 
@@ -382,12 +414,12 @@ export class HoverValueLabel extends React.Component<
         className={Styles.HoverValueLabel}
         onMouseEnter={() => {
           this.setState({
-            hover: true
+            hover: true,
           });
         }}
         onMouseLeave={() => {
           this.setState({
-            hover: false
+            hover: false,
           });
         }}
       >
@@ -395,7 +427,7 @@ export class HoverValueLabel extends React.Component<
           <span>
             <span>
               {firstHalfFull}
-              {secondHalfFull && "."}
+              {secondHalfFull && '.'}
             </span>
             <span>{secondHalfFull}</span>
           </span>
@@ -403,7 +435,7 @@ export class HoverValueLabel extends React.Component<
           <span>
             <span>
               {firstHalf}
-              {secondHalf && "."}
+              {secondHalf && '.'}
             </span>
             <span>
               {secondHalf}
@@ -425,12 +457,12 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
           <label
             className={TooltipStyles.TooltipHint}
             data-tip
-            data-for={`tooltip-${props.label.replace(" ", "-")}`}
+            data-for={`tooltip-${props.label.replace(' ', '-')}`}
           >
             {InfoIcon}
           </label>
           <ReactTooltip
-            id={`tooltip-${props.label.replace(" ", "-")}`}
+            id={`tooltip-${props.label.replace(' ', '-')}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="right"
@@ -453,50 +485,40 @@ export const LinearPropertyLabel = ({
   useValueLabel,
   showDenomination,
   accentValue,
-  value
+  value,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
       [Styles.Highlight]: highlight,
       [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
-      [Styles.HighlightFirst]: highlightFirst
+      [Styles.HighlightFirst]: highlightFirst,
     })}
   >
     <span>{label}</span>
     <DashlineNormal />
     {useValueLabel ? (
-      <ValueLabel
-        value={value}
-        showDenomination={showDenomination}
-      />
+      <ValueLabel value={value} showDenomination={showDenomination} />
     ) : (
       <span
         className={classNames({
-          [Styles.isAccented]: accentValue
+          [Styles.isAccented]: accentValue,
         })}
       >
         {value && value.formatted
-          ? `${value.formatted} ${
-              showDenomination ? value.formatted : ""
-            }`
+          ? `${value.formatted} ${showDenomination ? value.formatted : ''}`
           : value}
       </span>
     )}
     {useValueLabel ? (
-      <ValueLabel
-        value={value}
-        showDenomination={showDenomination}
-      />
+      <ValueLabel value={value} showDenomination={showDenomination} />
     ) : (
       <span
         className={classNames({
-          [Styles.isAccented]: accentValue
+          [Styles.isAccented]: accentValue,
         })}
       >
         {value && value.formatted
-          ? `${value.formatted} ${
-              showDenomination ? value.denomination : ""
-            }`
+          ? `${value.formatted} ${showDenomination ? value.denomination : ''}`
           : value}
       </span>
     )}
@@ -510,7 +532,7 @@ export const MarketTypeLabel = (props: MarketTypeProps) => {
 
   return (
     <span className={Styles.MarketTypeLabel}>
-      {props.marketType === YES_NO ? "Yes/No" : props.marketType}
+      {props.marketType === YES_NO ? 'Yes/No' : props.marketType}
     </span>
   );
 };
@@ -541,7 +563,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
         [Styles.MarketStatus_mini]: mini,
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
-        [Styles.MarketStatus_reporting]: reporting
+        [Styles.MarketStatus_reporting]: reporting,
       })}
     >
       {text}
@@ -551,40 +573,35 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 
 export const InReportingLabel = (props: InReportingLabelProps) => {
   const {
-    mini,
-    alternate,
     reportingState,
     disputeInfo,
-    endTime,
-    reportingWindowStatsEndTime,
-    currentAugurTimestamp
+    endTimeFormatted,
+    disputingWindowEndTime,
+    currentAugurTimestamp,
   } = props;
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
     REPORTING_STATE.OPEN_REPORTING,
     REPORTING_STATE.AWAITING_NEXT_WINDOW,
-    REPORTING_STATE.CROWDSOURCING_DISPUTE
+    REPORTING_STATE.CROWDSOURCING_DISPUTE,
   ];
 
   if (!reportingStates.includes(reportingState)) {
     return <MarketStatusLabel {...props} />;
   }
 
-  let reportingCountdown: boolean = false;
   let reportingExtraText: string | null;
   const text: string = constants.IN_REPORTING;
   let customLabel: string | null = null;
 
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
-    reportingCountdown = true;
     customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
   } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW) {
     reportingExtraText = constants.AWAITING_NEXT_DISPUTE;
-    reportingCountdown = true;
   } else if (
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION
@@ -593,59 +610,64 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       disputeInfo && disputeInfo.disputeRound
         ? `${constants.DISPUTE_ROUND} ${disputeInfo.disputeRound}`
         : constants.DISPUTE_ROUND;
-    reportingCountdown = true;
     customLabel = constants.DISPUTE_ENDS;
   } else {
     reportingExtraText = null;
   }
 
   return (
-    <>
-      <span
-        className={classNames(
-          Styles.MarketStatus,
-          Styles.MarketStatus_reporting
-        )}
-      >
-        {text}
-        {reportingExtraText && (
-          <span className={Styles.InReporting_reportingDetails}>
-            {DoubleArrows}
-            {reportingExtraText}
-          </span>
-        )}
-      </span>
-      {reportingCountdown && (
-        <span className={classNames({ [Styles.MarketStatus_mini]: mini })}>
-          <span className={Styles.InReporting_reportingDetails__countdown}>
-            <MarketProgress
-              currentTime={currentAugurTimestamp}
-              reportingState={reportingState}
-              endTime={endTime}
-              reportingWindowEndtime={reportingWindowStatsEndTime}
-              customLabel={customLabel}
-            />
-          </span>
+    <span
+      className={classNames(
+        Styles.MarketStatus,
+        Styles.MarketStatus_reporting
+      )}
+    >
+      {text}
+      {reportingExtraText && (
+        <span className={Styles.InReporting_reportingDetails}>
+          {DoubleArrows}
+          {reportingExtraText}
         </span>
       )}
-    </>
+    </span>
   );
 };
 
-export const PendingLabel = () => (
-  <span className={Styles.PendingLabel} data-tip data-for={"processing"}>
-    Processing <ClipLoader size={8} color="#ffffff" />
-    <ReactTooltip
-      id={"processing"}
-      className={TooltipStyles.Tooltip}
-      effect="solid"
-      place="top"
-      type="light"
-      data-event="mouseover"
-      data-event-off="blur scroll"
-    >
-      You will receive an alert when the transaction has finalized.
-    </ReactTooltip>
+interface PendingLabelProps {
+  status?: string;
+}
+
+export const PendingLabel = (props: PendingLabelProps) => (
+  <span
+    className={classNames(Styles.PendingLabel, {
+      [Styles.Failure]: props.status && props.status === TXEventName.Failure,
+    })}
+    data-tip
+    data-for={'processing'}
+  >
+    {(!props.status ||
+      props.status === TXEventName.Pending ||
+      props.status === TXEventName.AwaitingSigning) && (
+      <>
+        <span>
+          Processing <ClipLoader size={8} color="#ffffff" />
+        </span>
+        <ReactTooltip
+          id={'processing'}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          data-event="mouseover"
+          data-event-off="blur scroll"
+        >
+          You will receive an alert when the transaction has finalized.
+        </ReactTooltip>
+      </>
+    )}
+    {props.status && props.status === TXEventName.Failure && (
+      <span>Failed</span>
+    )}
   </span>
 );
 
@@ -658,13 +680,13 @@ export const MovementIcon = (props: MovementIconProps) => {
     classNames(Styles.MovementLabel_Icon, {
       [Styles.MovementLabel_Icon_small]: size == SizeTypes.SMALL,
       [Styles.MovementLabel_Icon_normal]: size == SizeTypes.NORMAL,
-      [Styles.MovementLabel_Icon_large]: size == SizeTypes.LARGE
+      [Styles.MovementLabel_Icon_large]: size == SizeTypes.LARGE,
     });
 
   const getIconColorStyles: Function = (value: number): string =>
     classNames({
       [Styles.MovementLabel_Icon_positive]: value > 0,
-      [Styles.MovementLabel_Icon_negative]: value < 0
+      [Styles.MovementLabel_Icon_negative]: value < 0,
     });
 
   const iconSize = getIconSizeStyles(props.size);
@@ -678,13 +700,13 @@ export const MovementText = (props: MovementTextProps) => {
     classNames(Styles.MovementLabel_Text, {
       [Styles.MovementLabel_Text_small]: size == SizeTypes.SMALL,
       [Styles.MovementLabel_Text_normal]: size == SizeTypes.NORMAL,
-      [Styles.MovementLabel_Text_large]: size == SizeTypes.LARGE
+      [Styles.MovementLabel_Text_large]: size == SizeTypes.LARGE,
     });
   const getTextColorStyles: Function = (value: number): string =>
     classNames({
       [Styles.MovementLabel_Text_positive]: value > 0,
       [Styles.MovementLabel_Text_negative]: value < 0,
-      [Styles.MovementLabel_Text_neutral]: value === 0
+      [Styles.MovementLabel_Text_neutral]: value === 0,
     });
 
   const textColorStyle = getTextColorStyles(props.value);
@@ -702,7 +724,7 @@ export const MovementText = (props: MovementTextProps) => {
 
   const addPlus: Function = (label: string): string => {
     if (props.value > 0 && props.showPlusMinus) {
-      return "+".concat(label);
+      return '+'.concat(label);
     }
     return label;
   };
@@ -727,7 +749,7 @@ export const MovementText = (props: MovementTextProps) => {
 
   return (
     <div
-      className={`${props.showColors ? textColorStyle : ""} ${textSizeStyle}`}
+      className={`${props.showColors ? textColorStyle : ''} ${textSizeStyle}`}
     >
       {formattedString}
     </div>
@@ -746,8 +768,8 @@ export const MovementLabel = (props: MovementLabelProps) => {
       className={Styles.MovementLabel}
       style={
         showIcon
-          ? { ...props.styles, justifyContent: "space-between" }
-          : { ...props.styles, justifyContent: "flex-end" }
+          ? { ...props.styles, justifyContent: 'space-between' }
+          : { ...props.styles, justifyContent: 'flex-end' }
       }
     >
       {showIcon && props.value !== 0 && (
@@ -770,7 +792,7 @@ export const MovementLabel = (props: MovementLabelProps) => {
 export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
   <span
     className={classNames(Styles.PillLabel, {
-      [Styles.HideOnMobile]: hideOnMobile
+      [Styles.HideOnMobile]: hideOnMobile,
     })}
   >
     {label}
@@ -778,8 +800,13 @@ export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
 );
 
 export const RepBalance = (props: RepBalanceProps) => (
-  <div className={Styles.RepBalance}>
-    <span>my rep balance</span>
+  <div
+    className={classNames(Styles.RepBalance, {
+      [Styles.Alternate]: props.alternate,
+      [Styles.Larger]: props.larger,
+    })}
+  >
+    <span>{constants.TOTAL_ACCOUNT_VALUE_IN_REP}</span>
     <span>{props.rep}</span>
     <span>rep</span>
   </div>
@@ -793,7 +820,7 @@ export const PositionTypeLabel = (props: PositionTypeLabelProps) => {
     <span
       className={classNames(Styles.PositionTypeLabel, {
         [Styles.Sell]: props.type === SHORT || props.type === SELL,
-        [Styles.Closed]: props.type === CLOSED
+        [Styles.Closed]: props.type === CLOSED,
       })}
     >
       {type}
@@ -827,10 +854,7 @@ export const LinearPropertyLabelTooltip = (
   props: LinearPropertyLabelTooltipProps
 ) => (
   <span className={Styles.LinearPropertyLabelTooltip}>
-    <LinearPropertyLabel
-      label={props.label}
-      value={props.value}
-    />
+    <LinearPropertyLabel label={props.label} value={props.value} />
     <div>
       <label
         className={TooltipStyles.TooltipHint}
@@ -883,7 +907,7 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         onClick={e => onClick()}
       >
         <span>{label}</span>
-        <span>{index + 1 !== items.length && "/" }</span>
+        <span>{index !== items.length - 1  && '/'}</span>
       </button>
     ))}
   </div>
@@ -894,25 +918,23 @@ WordTrail.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired
+      onClick: PropTypes.func.isRequired,
     })
   ),
-  children: PropTypes.array
+  children: PropTypes.array,
 };
 
 WordTrail.defaultProps = {
   children: [],
   items: [],
-  typeLabel: "label-type"
+  typeLabel: 'label-type',
 };
 
 export const CategoryTagTrail = ({
   categories,
-  tags
 }: CategoryTagTrailProps) => (
   <div className={Styles.CategoryTagTrail}>
-    <WordTrail items={categories} typeLabel="Category" />
-    {!tags.length && <WordTrail items={tags} typeLabel="Tags" />}
+    <WordTrail items={categories} typeLabel='Category' />
   </div>
 );
 
@@ -920,16 +942,30 @@ CategoryTagTrail.propTypes = {
   categories: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired
+      onClick: PropTypes.func.isRequired,
     })
   ).isRequired,
-  tags: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired
-    })
-  ).isRequired
 };
+
+interface BulkTxLabelProps {
+  count: number;
+  needsApproval: boolean;
+  buttonName: string;
+  className?: string;
+}
+export const BulkTxLabel = ({
+  count,
+  needsApproval,
+  buttonName,
+  className,
+}: BulkTxLabelProps) =>
+  count > 1 || needsApproval ? (
+    <span
+      className={classNames(Styles.BulkTxLabel, className)}
+    >{`${buttonName} requires ${count} transaction${count > 1 ? `s` : ``}${
+      needsApproval ? `, and 1 approval` : ''
+    }`}</span>
+  ) : null;
 
 export const ValueDenomination = ({
   className,
@@ -942,41 +978,31 @@ export const ValueDenomination = ({
   hideDenomination,
   postfix,
   hidePostfix,
-  value
+  value,
 }: ValueDenominationProps) => (
   <span className={Styles[className]}>
-    {prefix &&
-      !hidePrefix && (
-        <span className={Styles.prefix}>{prefix}</span>
-      )}
-    {formatted &&
-      fullPrecision && (
-        <span
-          data-tip={fullPrecision}
-          data-event="click focus"
-          className={`value_${valueClassname}`}
-        >
-          {formatted}
-        </span>
-      )}
-    {formatted &&
-      !fullPrecision && (
-        <span className={`value_${valueClassname}`}>{formatted}</span>
-      )}
-    {denomination &&
-      !hideDenomination && (
-        <span className={Styles.denomination}>
-          {denomination}
-        </span>
-      )}
-    {postfix &&
-      !hidePostfix && (
-        <span className={Styles.postfix}>{postfix}</span>
-      )}
-    {!value &&
-      value !== 0 &&
-      !formatted &&
-      formatted !== "0" && <span>&mdash;</span> // null/undefined state handler
+    {prefix && !hidePrefix && <span className={Styles.prefix}>{prefix}</span>}
+    {formatted && fullPrecision && (
+      <span
+        data-tip={fullPrecision}
+        data-event="click focus"
+        className={`value_${valueClassname}`}
+      >
+        {formatted}
+      </span>
+    )}
+    {formatted && !fullPrecision && (
+      <span className={`value_${valueClassname}`}>{formatted}</span>
+    )}
+    {denomination && !hideDenomination && (
+      <span className={Styles.denomination}>{denomination}</span>
+    )}
+    {postfix && !hidePostfix && (
+      <span className={Styles.postfix}>{postfix}</span>
+    )}
+    {!value && value !== 0 && !formatted && formatted !== '0' && (
+      <span>&mdash;</span>
+    ) // null/undefined state handler
     }
   </span>
 );
@@ -992,7 +1018,7 @@ ValueDenomination.propTypes = {
   hidePostfix: PropTypes.bool,
   prefix: PropTypes.string,
   postfix: PropTypes.string,
-  hideDenomination: PropTypes.bool
+  hideDenomination: PropTypes.bool,
 };
 
 ValueDenomination.defaultProps = {
@@ -1006,5 +1032,30 @@ ValueDenomination.defaultProps = {
   denomination: null,
   hidePrefix: false,
   hidePostfix: false,
-  hideDenomination: false
+  hideDenomination: false,
 };
+
+export const MarketStateLabel = (
+  props: MarketStateLabelProps
+) => (
+  <div
+    onClick={() => props.handleClick()}
+    className={classNames(Styles.MarketLabel, {
+      [Styles.selected]: props.selected,
+      [Styles.loading]: props.loading,
+      [Styles.open]: props.marketType === constants.MARKET_OPEN,
+      [Styles.inReporting]: props.marketType === constants.MARKET_REPORTING,
+      [Styles.resolved]: props.marketType === constants.MARKET_CLOSED,
+    })}
+  >
+    <div>{props.label}</div>
+    {props.selected && !props.loading && (
+      <div>{props.count}</div>
+    )}
+    {props.loading && props.selected && (
+      <div>
+        <span>{LoadingEllipse}</span>
+      </div>
+    )}
+  </div>
+);

@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
@@ -41,6 +41,7 @@ contract IUniverse {
     function getReportingFeeDivisor() public view returns (uint256);
     function getPayoutNumerator(uint256 _outcome) public view returns (uint256);
     function getWinningChildPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function isOpenInterestCash(address) public view returns (bool);
     function isForkingMarket() public view returns (bool);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);
     function isParentOf(IUniverse _shadyChild) public view returns (bool);

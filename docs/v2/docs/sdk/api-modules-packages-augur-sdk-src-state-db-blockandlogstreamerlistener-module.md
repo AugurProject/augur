@@ -35,7 +35,7 @@ sidebar_label: packages/augur-sdk/src/state/db/BlockAndLogStreamerListener
 
 **Ƭ BlockCallback**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:29](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L29)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:29](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L29)*
 
 #### Type declaration
 ▸(block: *`Block`*): `void`
@@ -55,7 +55,7 @@ ___
 
 **Ƭ BlockstreamLogCallbackType**: *[GenericLogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#genericlogcallbacktype)<`string`, [Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)>*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:31](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:31](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L31)*
 
 ___
 <a id="genericlogcallbacktype"></a>
@@ -64,7 +64,7 @@ ___
 
 **Ƭ GenericLogCallbackType**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:27](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:27](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L27)*
 
 #### Type declaration
 ▸(blockIdentifier: *`T`*, logs: *`P`[]*): `void`
@@ -85,7 +85,7 @@ ___
 
 **Ƭ LogCallbackType**: *[GenericLogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#genericlogcallbacktype)<`number`, [ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)>*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:32](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:32](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L32)*
 
 ___
 

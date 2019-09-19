@@ -1,17 +1,18 @@
-import React from "react";
+import React from 'react';
 
-import PositionsHeader from "modules/portfolio/components/common/positions-header";
-import PositionRow from "modules/portfolio/containers/position-row";
-import { PositionData } from "modules/types";
-import classNames from "classnames";
+import PositionsHeader from 'modules/portfolio/components/common/positions-header';
+import PositionRow from 'modules/portfolio/containers/position-row';
+import classNames from 'classnames';
 
-import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style.less";
-import Styles from "modules/portfolio/components/common/market-positions-table.styles.less";
+import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import Styles from 'modules/portfolio/components/common/market-positions-table.styles.less';
+import { Getters } from '@augurproject/sdk';
 
 export interface MarketPositionsTableProps {
-  positions: Array<PositionData>;
+  positions: Getters.Usrs.TradingPosition[];
   extendedView: boolean;
   marketId: string;
+  updateSelectedOrderProperties: Function;
 }
 
 export interface MarketPositionsTableState {
@@ -35,13 +36,14 @@ export class MarketPositionsTable extends React.Component<
       positions,
       marketId,
       extendedView,
+      updateSelectedOrderProperties,
     } = this.props;
     const { showPercent } = this.state;
 
     return (
       <div
         className={classNames(Styles.PositionsTable, {
-          [SharedStyles.Table]: extendedView
+          [SharedStyles.Table]: extendedView,
         })}
       >
         <PositionsHeader
@@ -52,15 +54,14 @@ export class MarketPositionsTable extends React.Component<
         <div>
           {positions.map((position: Position, index: number) => (
             <PositionRow
-              key={
-                "positionRow_" + position.marketId + position.outcomeId
-              }
+              key={'positionRow_' + position.marketId + position.outcomeId}
               position={position}
               showPercent={showPercent}
               extendedView={extendedView}
               isSingle={extendedView}
               showExpandedToggleOnMobile
               isFirst={index === 0}
+              updateSelectedOrderProperties={updateSelectedOrderProperties}
             />
           ))}
         </div>

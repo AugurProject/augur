@@ -10,24 +10,23 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
 import { EnvObject } from 'modules/types';
 import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 export class SDK {
-  public sdk: Augur<Provider> | null = null;
-  public isWeb3Transport: boolean = false;
-  public env: EnvObject = null;
-  public isSubscribed: boolean = false;
-  public networkId: string;
-  public account: string;
+  sdk: Augur<Provider> | null = null;
+  isWeb3Transport = false;
+  env: EnvObject = null;
+  isSubscribed = false;
+  networkId: string;
+  account: string;
   private signerNetworkId: string;
 
-  public async makeApi(
+  async makeApi(
     provider: JsonRpcProvider,
-    account: string = '',
+    account = '',
     signer: EthersSigner,
     env: EnvObject,
     signerNetworkId?: string,
-    isWeb3: boolean = false
+    isWeb3 = false
   ) {
     this.isWeb3Transport = isWeb3;
     this.env = env;
@@ -58,21 +57,29 @@ export class SDK {
     );
   }
 
-  public async destroy() {
+  async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string) {
+    if (this.sdk) {
+      this.sdk.syncUserData(address);
+      if (signer) this.sdk.setSigner(signer);
+      this.signerNetworkId = signerNetworkId;
+    }
+  }
+
+  async destroy() {
     unListenToEvents(this.sdk);
     this.isSubscribed = false;
     if (this.sdk) this.sdk.disconnect();
     this.sdk = null;
   }
 
-  public get(): Augur<Provider> {
+  get(): Augur<Provider> {
     if (this.sdk) {
       return this.sdk;
     }
     throw new Error('API must be initialized before use.');
   }
 
-  public subscribe(dispatch): void {
+  subscribe(dispatch): void {
     if (this.isSubscribed) return;
     try {
       this.isSubscribed = true;
@@ -83,7 +90,7 @@ export class SDK {
     }
   }
 
-  public sameNetwork(): boolean {
+  sameNetwork(): boolean {
     const localNetwork = this.networkId;
     const signerNetworkId = this.signerNetworkId;
 

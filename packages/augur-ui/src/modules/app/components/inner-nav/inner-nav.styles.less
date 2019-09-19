@@ -1,7 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .InnerNav {
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
   position: relative;
 }
 
@@ -28,7 +29,7 @@
   button {
     background: none;
     border: none;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     cursor: pointer;
     display: block;
     font-size: 0.75rem;
@@ -70,7 +71,7 @@
 }
 
 .InnerNav__menu-item--seperator {
-  border-top: 1px solid @color-primary-background;
+  border-top: 1px solid @color-dark-grey;
   display: flex;
   height: 0;
   margin: @size-12 @size-11 0;
@@ -82,14 +83,15 @@
 }
 
 .InnerNav__menu--main {
-  background: @color-theme-primary;
+  background: @color-dark-grey;
+  border-right: 1px solid @color-primary-light;
   position: relative;
   z-index: @mask;
 }
 
 .InnerNav__menu--submenu {
   background: @color-primary-light;
-  border-left: 0.0625rem solid @color-primary-background;
+  border-left: 0.0625rem solid @color-dark-grey;
   left: 0;
   position: absolute;
   top: 0;
@@ -109,58 +111,39 @@
 
 @media @breakpoint-mobile {
   .InnerNav {
-    left: -12.5rem;
+    height: fit-content;
+    left: -100%;
+    margin-bottom: 1rem;
     overflow-x: hidden;
     transition: left 0.2s ease-in-out;
-    width: 12.5rem;
+    width: 100%;
+    z-index: @mask-above;
 
     &.mobileShow {
       left: 0;
+      width: 100%;
 
       > div {
         align-items: center;
         background: @color-theme-primary;
-        border-bottom: 1px solid @color-primary-background;
+        border-bottom: 1px solid @color-dark-grey;
         color: white;
         display: flex;
         flex-flow: row nowrap;
         height: 50px;
         padding: @size-16;
-        position: fixed;
-        width: 200px;
+        width: 100%;
         z-index: @mask-above;
 
         > button {
-          height: @size-24;
-          width: @size-24;
-        }
-
-        > button > svg > path {
-          stroke: @color-secondary-text;
-        }
-
-        > button:first-of-type {
-          display: none;
-          height: @size-24;
-          width: @size-24;
-
-          > svg {
-            transform: rotate(180deg);
-          }
-        }
-
-        > button:last-of-type {
           height: @size-16;
           margin-left: auto;
+          margin-right: @size-16;
           width: @size-16;
         }
 
-        &.SubMenuShow {
-          background: @color-primary-light;
-
-          > button:first-of-type {
-            display: block;
-          }
+        > button > svg > path {
+          stroke: @color-primary-text;
         }
       }
     }
@@ -192,18 +175,22 @@
   .InnerNav__menu-item--selected:hover {
     a,
     button {
-      background: @color-lightpurple;
+      background: @color-primary-light;
     }
   }
 
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
     width: 100%;
     z-index: @above-all-content;
+    -webkit-overflow-scrolling: touch;
   }
 
   .InnerNav__menu--submenu {
-    left: 12.5rem;
+    left: 100%;
     transition: left 0.2s ease-in-out;
     z-index: @mask;
   }

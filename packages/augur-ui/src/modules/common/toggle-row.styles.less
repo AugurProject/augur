@@ -6,9 +6,7 @@
   flex-direction: column;
 
   @media @breakpoint-mobile {
-    border: 1px solid @color-primary-alternate;
-    border-radius: @border-radius-default;
-    margin: @size-2 0;
+    margin-bottom: @size-1;
   }
 
   > div {
@@ -46,12 +44,12 @@ div.RowActive {
   justify-content: flex-start;
 
   > svg > path {
-    stroke: @color-neutral;
+    stroke: @color-inactive-text;
   }
 
   &:hover {
     > svg > path {
-      stroke: @color-secondary-text;
+      stroke: @color-primary-text;
     }
   }
 }
@@ -72,7 +70,7 @@ div.RowActive {
   .Row .Arrow {
     > svg {
       > path {
-        stroke: @color-neutral;
+        stroke: @color-inactive-text;
       }
     }
   }
@@ -80,7 +78,7 @@ div.RowActive {
   .RowActive .Arrow {
     > svg {
       > path {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
     }
   }

@@ -1,7 +1,14 @@
+import { MarketReportingState } from "../../constants";
+
 export type Address = string;
 export type Bytes32 = string;
 export type PayoutNumerators = string[];
 export type Timestamp = string;
+
+export interface GenericEventDBDescription {
+  EventName: string;
+  indexes: string[];
+}
 
 export interface Doc {
   _id: string;
@@ -91,6 +98,7 @@ export interface InitialReporterRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
+  initialReport: Address;
   amountRedeemed: string;
   repReceived: string;
   payoutNumerators: PayoutNumerators;
@@ -111,6 +119,7 @@ export interface MarketCreatedLogExtraInfo {
   description: string;
   longDescription?: string;
   resolutionSource?: string;
+  backupSource?: string;
   _scalarDenomination?: string;
 }
 
@@ -121,7 +130,7 @@ export interface MarketCreatedLog extends Log, Doc, Timestamped {
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;
-  feeDivisor: string;
+  feePerCashInAttoCash: string;
   prices: string[];
   marketType: MarketType;
   numTicks: string;
@@ -148,9 +157,19 @@ export enum MarketType {
 }
 
 export enum MarketTypeName {
-  YesNo = 'yesNo',
-  Categorical = 'categorical',
-  Scalar = 'scalar',
+  YesNo = 'YesNo',
+  Categorical = 'Categorical',
+  Scalar = 'Scalar',
+}
+
+export enum CommonOutcomes {
+  Malformed = 'malformed outcome',
+  Invalid = 'Invalid',
+}
+
+export enum YesNoOutcomes {
+  No = 'No',
+  Yes = 'Yes',
 }
 
 export interface MarketVolumeChangedLog extends Log, Doc {
@@ -221,8 +240,7 @@ export enum OrderType {
 export enum OrderEventType {
   Create = 0,
   Cancel = 1,
-  PriceChanged = 2,
-  Fill = 3,
+  Fill = 2,
 }
 
 export enum OrderState {
@@ -273,6 +291,12 @@ export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   feePayoutShare: string;
 }
 
+export interface ReportingParticipantDisavowedLog extends Log, Doc, Timestamped {
+  universe: Address;
+  market: Address;
+  reportingParticipant: Address;
+}
+
 export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;
@@ -289,11 +313,30 @@ export interface TimestampSetLog extends Log, Doc {
   newTimestamp: Timestamp;
 }
 
+export enum TokenType {
+  ReputationToken,
+  ShareToken,
+  DisputeCrowdsourcer,
+  FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
+  FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
+  ParticipationToken,
+}
+
+export interface TokensMinted extends Log, Doc {
+  universe: Address;
+  token: Address;
+  target: Address;
+  amount: string;
+  tokenType: TokenType;
+  market: Address;
+  totalSupply: string;
+}
+
 export interface TokenBalanceChangedLog extends Log, Doc {
   universe: Address;
   owner: Address;
   token: string;
-  tokenType: string;
+  tokenType: TokenType;
   market: Address;
   balance: string;
 }
@@ -315,6 +358,13 @@ export interface UniverseForkedLog extends Log, Doc {
   forkingMarket: Address;
 }
 
+export interface UniverseCreatedLog extends Log, Doc {
+  parentUniverse: Address;
+  childUniverse: Address;
+  payoutNumerators: string[];
+  creationTimestamp: string;
+}
+
 export interface LiquidityData {
   [spread: number]: number;
 }
@@ -326,7 +376,7 @@ export interface MarketData extends Log, Doc {
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;
-  feeDivisor: string;
+  feePerCashInAttoCash: string;
   prices: string[];
   marketType: MarketType;
   numTicks: string;
@@ -337,4 +387,27 @@ export interface MarketData extends Log, Doc {
   marketOI: string;
   invalidFilter: boolean;
   liquidity: LiquidityData;
+  feeDivisor: number;
+  hasRecentlyDepletedLiquidity: boolean;
+  finalizationBlockNumber: string;
+  finalizationTime: string;
+  winningPayoutNumerators: string[];
+  reportingState: MarketReportingState;
+  tentativeWinningPayoutNumerators: string[];
+  totalRepStakedInMarket: string;
+  disputeRound: string;
+  nextWindowStartTime: string;
+  nextWindowEndTime: string;
+  pacingOn: boolean;
+}
+
+export interface DisputeDoc extends Log, Doc {
+  payoutNumerators: string[];
+  bondSizeCurrent: string; // current round bond size
+  stakeCurrent: string; // current round stake that's been provided by reporters so far
+  stakeRemaining: string; // stake remaining (bond size - stakeCurrent)
+  tentativeWinning: boolean; // outcome is currently tentative winner
+  totalRepStakedInPayout: string; // total REP across all rounds staked in completed bonds for this payout
+  tentativeWinningOnRound: string; // Indicates that on a particular round this was the tentative winning payout
+  disputeRound: string; // number of times the dispute bond has been filled in the reporting process; initial report is round 1
 }

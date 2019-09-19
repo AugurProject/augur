@@ -52,12 +52,11 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
       const marketList = await getMarkets({
         universe: '123456',
       });
-      console.log(marketList)
       expect(marketList).toEqual(['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407']);
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
-      connector.disconnect();
+      await connector.disconnect();
       done();
     }
   );

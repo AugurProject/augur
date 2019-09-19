@@ -27,6 +27,8 @@ import {
   handleTxSuccess,
   handleTxPending,
   handleTxFailure,
+  handleSDKReadyEvent,
+  handleUserDataSyncedEvent,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -39,10 +41,12 @@ import {
 } from '@augurproject/sdk';
 
 const StartUpEvents = {
-  [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
+  'SDKReady': wrapLogHandler(handleSDKReadyEvent),
 };
 
 const EVENTS = {
+  [SubscriptionEventName.UserDataSynced]: wrapLogHandler(handleUserDataSyncedEvent),
+  [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
   [SubscriptionEventName.MarketCreated]: wrapLogHandler(handleMarketCreatedLog),
   [SubscriptionEventName.MarketMigrated]: wrapLogHandler(
     handleMarketMigratedLog

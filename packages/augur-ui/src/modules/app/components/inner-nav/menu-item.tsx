@@ -1,10 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import Styles from "modules/app/components/inner-nav/inner-nav.styles";
+import Styles from "modules/app/components/inner-nav/inner-nav.styles.less";
 
-const MenuItem = ({ isSelected, visible, seperator, children }) => (
+interface MenuItemProps {
+  isSelected: Boolean;
+  visible: Boolean;
+  seperator?: Boolean;
+  children?: Array<React.Component> | null;
+}
+
+const MenuItem = ({ isSelected, visible, seperator, children }: MenuItemProps) => (
   <>
     {seperator && <span className={Styles["InnerNav__menu-item--seperator"]} />}
     <li
@@ -18,13 +24,6 @@ const MenuItem = ({ isSelected, visible, seperator, children }) => (
     </li>
   </>
 );
-
-MenuItem.propTypes = {
-  isSelected: PropTypes.bool.isRequired,
-  visible: PropTypes.bool.isRequired,
-  seperator: PropTypes.bool,
-  children: PropTypes.array
-};
 
 MenuItem.defaultProps = {
   children: null,

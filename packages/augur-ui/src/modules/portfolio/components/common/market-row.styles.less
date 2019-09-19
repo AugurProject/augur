@@ -1,20 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketRow {
-  border-bottom: 2px solid @color-theme-primary;
-
-  &:not(:last-of-type) {
-    margin-bottom: 2px;
-  }
-
-  @media @breakpoint-mobile-mid {
-    border: 1px solid @color-primary-alternate;
-    border-radius: 3px;
-
-    &:not(:last-of-type) {
-      margin-bottom: @size-4;
-    }
-  }
+  border-bottom: 1px solid @color-theme-primary;
 }
 
 .MarketRowContent {
@@ -30,34 +17,58 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: @size-16 0 @size-16 @size-24;
+    padding: @size-16 0 @size-16 @size-16;
 
     &.Show {
-      padding-bottom: @size-24;
+      padding-bottom: @size-10;
       padding-top: @size-8;
     }
 
+    &.Pending {
+      padding-bottom: @size-16;
+      padding-top: @size-20; 
+
+      > span > button {
+        margin-left: @size-4;
+        text-transform: capitalize;
+      }
+    }
+
     > div {
-      padding: 0 0 @size-10;
+      padding: 0 0 @size-8;
     }
 
     > span {
-      .text-12-medium;
+      .text-10;
 
       align-items: center;
-      color: @color-secondary-text;
+      color: @color-primary-text;
       display: flex;
       flex: 1;
-      line-height: @size-16;
+      line-height: @size-10;
       margin-right: @size-16;
+
+      > a {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+
+    > span:nth-of-type(2) {
+      .text-10;
+
+      color: @color-secondary-text;
+      margin-top: @size-4;
     }
   }
 
   > span {
-    .mono-12;
+    .mono-10;
 
     align-items: center;
-    color: @color-tertiary-text;
+    color: @color-primary-text;
     display: flex;
     justify-content: center;
     min-width: min-content;
@@ -70,15 +81,15 @@
 }
 
 .Arrow {
-  margin-left: @size-20;
-  margin-right: @size-24;
+  margin-left: @size-16;
+  margin-right: @size-16;
 }
 
 @media @breakpoint-mobile-mid {
   .MarketRow {
+    border-bottom: 0;
+    
     > div {
-      padding-left: @size-16;
-
       &.Show {
         padding-left: @size-16;
       }
@@ -86,6 +97,12 @@
   }
 
   .Arrow {
-    margin-right: @size-16;
+    margin-right: @size-12;
+  }
+
+  .MarketRowContent {
+    > div {
+      padding: @size-8 0 @size-8 @size-12;
+    }
   }
 }

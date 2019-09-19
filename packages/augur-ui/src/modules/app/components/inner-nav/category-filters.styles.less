@@ -1,0 +1,123 @@
+@import (reference) '~assets/styles/shared';
+
+.CategoryFilters {
+  display: flex;
+  flex-direction: column;
+  margin: @size-32 0 0 0;
+  overflow: auto;
+
+  > .CategoriesGroup:first-of-type {
+    margin: 0 @size-32 @size-24;
+
+    @media @breakpoint-mobile {
+      margin: @size-16;
+    }
+
+    > div {
+      margin: 0;
+      height: @size-14;
+    }
+  }
+
+  > .CategoriesGroup:nth-of-type(2) {
+    margin: 0 @size-32;
+
+    @media @breakpoint-mobile {
+      margin: @size-16;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    margin: @size-16 0;
+  }
+}
+
+.CategoriesGroup {
+  > span {
+    .text-10-bold;
+
+    display: block;
+    color: @color-secondary-text;
+    margin: 0 0 @size-16 0;
+  }
+}
+
+.ShowAll {
+  .mono-12;
+
+  cursor: pointer;
+  color: @color-primary-action;
+  margin: @size-16 0 0 0;
+}
+
+
+.AllCategories {
+  .text-14;
+
+  color: @color-primary-text;
+  text-transform: capitalize;
+  margin: 0 @size-32;
+  user-select: none;
+  cursor: pointer;
+
+  > svg {
+    fill: @color-primary-text;
+    height: @size-10;
+    margin-right: @size-8;
+  }
+
+  @media @breakpoint-mobile {
+    margin: 0 @size-16;
+  }
+}
+
+.SelectedCategories {
+  .text-14;
+
+  color: @color-primary-text;
+  text-transform: capitalize;
+  user-select: none;
+  cursor: pointer;
+
+  > svg {
+    fill: @color-primary-text;
+    height: @size-10;
+    margin-right: @size-8;
+  }
+
+  > div:not(.SelectedCategory):not(.backToCategory) {
+    margin: @size-8 @size-40 0 4.25rem;
+
+    @media @breakpoint-mobile {
+      margin: @size-8 @size-24 0 @size-36;
+    }
+  }
+}
+
+.SelectedCategories > .backToCategory {
+  margin: @size-8 @size-32;
+
+  @media @breakpoint-mobile {
+    margin: @size-8 @size-16;
+  }
+
+  > svg {
+    fill: @color-primary-text;
+    height: @size-10;
+    margin-right: @size-8;
+  }
+}
+
+.SelectedCategory {
+  .text-14-bold;
+
+  margin: @size-8 @size-40 @size-8 3.25rem;
+
+  @media @breakpoint-mobile {
+    margin: @size-8 @size-24;
+  }
+}
+
+.disabled {
+  pointer-events: none;
+}

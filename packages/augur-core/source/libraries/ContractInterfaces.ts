@@ -9,7 +9,11 @@ export class Cash extends c.Cash<BigNumber> {
 }
 export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
+export class GnosisSafe extends c.GnosisSafe<BigNumber> {
+}
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
+}
+export class ProxyFactory extends c.ProxyFactory<BigNumber> {
 }
 export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
 }
@@ -26,6 +30,8 @@ export class TestOrders extends c.TestOrders<BigNumber> {
 export class Time extends c.Time<BigNumber> {
 }
 export class TimeControlled extends c.TimeControlled<BigNumber> {
+}
+export class ZeroXExchange extends c.ZeroXExchange<BigNumber> {
 }
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
 }
@@ -84,6 +90,10 @@ export class ShareToken extends c.ShareToken<BigNumber> {
 export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 }
 export class Trade extends c.Trade<BigNumber> {
+}
+export class ZeroXTradeToken extends c.ZeroXTradeToken<BigNumber> {
+}
+export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {
 }

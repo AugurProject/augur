@@ -136,7 +136,7 @@ export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = {
 export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
-    decimalsRounded: 0,
+    decimalsRounded: 4,
     denomination: " REP",
     positiveSign: false,
     zeroStyled: false,
@@ -226,7 +226,13 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    { blankZero: false, ...opts },
+    {
+      ...opts,
+      decimals: 4,
+      decimalsRounded: 4,
+      blankZero: false,
+      denomination: " REP",
+    },
   );
 }
 
@@ -242,7 +248,12 @@ export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    { blankZero: false, ...opts },
+    {
+      decimals: ETHER_NUMBER_OF_DECIMALS,
+      decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
+      blankZero: false,
+      ...opts
+    },
   );
 }
 
@@ -347,7 +358,7 @@ export function formatNumber(
       o.formatted = addBigUnitPostfix(value, o.formattedValue);
     } else if (formatSigFig) {
       // for numbers smaller than the set number of decimals - ie ones with scientific notation
-      let formatted = value.toFixed(USUAL_NUMBER_DECIMAL_PLACES);
+      let formatted = value.toFixed(decimals || USUAL_NUMBER_DECIMAL_PLACES);
 
       if (formatted === zeroFixed || formatted === "-" + zeroFixed) {
         // if this is equal to zero, try to show significant digits up to 8 digit places

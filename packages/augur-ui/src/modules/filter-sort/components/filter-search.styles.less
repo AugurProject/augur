@@ -2,21 +2,10 @@
 
 .FilterSearch {
   display: flex;
-  flex-flow: row-reverse nowrap;
-  min-width: 15.625rem; // 250px
-
-  @media @breakpoint-mobile {
-    min-width: 12.5rem; //200px
-
-    > label,
-    > div:last-of-type {
-      display: none;
-    }
-  }
 }
 
 .Tooltip {
-  margin: @size-4 @size-16 0 0;
+  margin: @size-4 0 0 @size-16;
   width: @size-12;
 }
 
@@ -24,26 +13,21 @@
   .text-16;
 
   align-items: center;
-  background-color: @color-secondary-text;
-  border-radius: @size-18;
-  color: @color-primary-alternate;
+  background: #1B1528;
+  border: none;
+  border-radius: 6px;
+  color: @color-highlight;
   display: flex;
-  height: 35px;
-  min-width: 250px;
-  padding: @size-5 @size-12;
+  padding: @size-16 0;
   transition: min-width @animation-speed-normal @animation-default-type;
-
-  @media @breakpoint-mobile {
-    margin-right: @size-12;
-    min-width: 75vw;
-    transition: none;
-    width: 100%;
-  }
+  width: 100%;
 
   > svg {
-    height: @size-12;
-    min-width: @size-12;
-    width: @size-12;
+    fill: @color-highlight;
+    height: @size-16;
+    margin-left: @size-16;
+    min-width: @size-16;
+    width: @size-16;
   }
 
   > input {
@@ -52,21 +36,14 @@
     font-size: inherit;
     line-height: normal;
     padding: 0 0 0 @size-8;
+    text-overflow: ellipsis;
 
     &::placeholder {
-      color: @color-alternate-text;
+      color: @color-highlight;
     }
 
     &:focus {
-      .border(false);
-
-      min-width: 400px;
-
-      @media @breakpoint-mobile {
-        max-width: 100%;
-        min-width: auto;
-        width: 100%;
-      }
+      border: none;
     }
   }
 }

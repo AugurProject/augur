@@ -1,16 +1,19 @@
-import { Augur } from "../../Augur";
-import { DB } from "../db/DB";
-import { Router } from "./Router";
+import { Augur } from '../../Augur';
+import { DB } from '../db/DB';
+import { Router } from './Router';
 
 // Getters are evaluated by importing these files in this manner
-import "./Markets";
-import "./Ping";
-import "./Trading";
-import "./Users";
-import "./Accounts";
-import "./status";
-import "./get-account-time-ranged-stats";
-import "./get-platform-activity-stats";
+import './get-account-time-ranged-stats';
+import './get-platform-activity-stats';
+import './Markets';
+import './Ping';
+import './Trading';
+import './Users';
+import './Accounts';
+import './Universe';
+import './Liquidity';
+import './ZeroXOrdersGetters';
+import './status';
 
 export class API {
   db: Promise<DB>;

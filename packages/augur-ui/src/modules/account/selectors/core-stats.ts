@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { formatEther } from "utils/format-number";
+import { formatDai } from "utils/format-number";
 import { selectAccountFunds } from "modules/auth/selectors/login-account";
 
 export const selectOutcomeLastPrice = (marketOutcomeData: any, outcomeId: any) => {
@@ -13,15 +13,15 @@ export const selectCoreStats = createSelector(
     ({
       availableFunds: {
         label: "Available Funds",
-        value: formatEther(accountFunds.totalAvailableTradingBalance).formatted,
+        value: formatDai(accountFunds.totalAvailableTradingBalance).formatted,
       },
       frozenFunds: {
         label: "Frozen Funds",
-        value: formatEther(accountFunds.totalFrozenFunds).formatted,
+        value: formatDai(accountFunds.totalFrozenFunds).formatted,
       },
       totalFunds: {
         label: "Total Funds",
-        value: formatEther(accountFunds.totalAccountValue).formatted,
+        value: formatDai(accountFunds.totalAccountValue).formatted,
       },
       realizedPL: {
         label: "Realized P/L",

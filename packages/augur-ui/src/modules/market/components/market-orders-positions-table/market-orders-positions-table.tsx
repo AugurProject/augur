@@ -8,7 +8,7 @@ import PositionsTable from "modules/market/containers/positions-table";
 import FilledOrdersTable from "modules/market/components/market-orders-positions-table/filled-orders-table";
 import { CancelTextButton } from "modules/common/buttons";
 
-import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
+import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";
 
 const MarketOrdersPositionsTable = ({
   hasPending,
@@ -16,7 +16,8 @@ const MarketOrdersPositionsTable = ({
   market,
   openOrders,
   filledOrders,
-  cancelAllOpenOrders
+  cancelAllOpenOrders,
+  updateSelectedOrderProperties
 }) => (
   <ModuleTabs
     className={Styles.Tabs}
@@ -46,7 +47,7 @@ const MarketOrdersPositionsTable = ({
       />
     </ModulePane>
     <ModulePane label="Positions">
-      <PositionsTable marketId={marketId} extendedView />
+      <PositionsTable marketId={marketId} extendedView updateSelectedOrderProperties={updateSelectedOrderProperties} />
     </ModulePane>
   </ModuleTabs>
 );
@@ -58,7 +59,7 @@ MarketOrdersPositionsTable.propTypes = {
   openOrders: PropTypes.array,
   market: PropTypes.object.isRequired,
   filledOrders: PropTypes.array,
-  cancelAllOpenOrders: PropTypes.func.isRequired
+  cancelAllOpenOrders: PropTypes.func.isRequired,
 };
 
 MarketOrdersPositionsTable.defaultProps = {

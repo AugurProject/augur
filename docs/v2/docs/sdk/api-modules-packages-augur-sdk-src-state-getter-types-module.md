@@ -15,24 +15,34 @@ sidebar_label: packages/augur-sdk/src/state/getter/types
 
 ### Variables
 
-* [SortLimit](api-modules-packages-augur-sdk-src-state-getter-types-module.md#sortlimit)
+* [NULL_ADDRESS](api-modules-packages-augur-sdk-src-state-getter-types-module.md#null_address)
+* [sortOptions](api-modules-packages-augur-sdk-src-state-getter-types-module.md#sortoptions)
 
 ---
 
 ## Variables
 
-<a id="sortlimit"></a>
+<a id="null_address"></a>
 
-### `<Const>` SortLimit
+### `<Const>` NULL_ADDRESS
 
-**● SortLimit**: *`PartialType`<`object`, `object`, `object`, `unknown`>* =  t.partial({
+**● NULL_ADDRESS**: *"0x0000000000000000000000000000000000000000"* = "0x0000000000000000000000000000000000000000"
+
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:3](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/types.ts#L3)*
+
+___
+<a id="sortoptions"></a>
+
+### `<Const>` sortOptions
+
+**● sortOptions**: *`PartialType`<`object`, `object`, `object`, `unknown`>* =  t.partial({
   sortBy: t.string,
   isSortDescending: t.boolean,
   limit: t.number,
   offset: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:3](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L3)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:5](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/types.ts#L5)*
 
 ___
 

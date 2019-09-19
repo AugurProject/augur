@@ -1,7 +1,7 @@
 import {
   ADD_ALERT,
   REMOVE_ALERT,
-  UPDATE_ALERT,
+  UPDATE_EXISTING_ALERT,
   CLEAR_ALERTS
 } from "modules/alerts/actions/alerts";
 import { RESET_STATE } from "modules/app/actions/reset-state";
@@ -19,9 +19,11 @@ const DEFAULT_STATE: Array<Alert> = [];
 
 /**
  * @typedef {Object} Alert
- * @property {string} id - unique identifier
- * @property {string} title - action that occurred, truncated in UI
+ * @property {string} id - hash identifier
+ * @property {string} name - action that occurred, truncated in UI
+ * @property {string} title - title to display, truncated in UI
  * @property {string} description - additional details, truncated in UI
+ * @property {string} details - additional details, truncated in UI
  * @property {Object} timestamp - UTC epoch
  * @property {enum} level - alert level
  * @property {string} [href] - link to more context
@@ -37,38 +39,28 @@ const DEFAULT_STATE: Array<Alert> = [];
  * @returns {Alert[]}
  *
  */
-export default function(alerts = DEFAULT_STATE, { data, type }: BaseAction): Array<Alert> {
+export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction): Array<Alert> {
   switch (type) {
     case ADD_ALERT: {
-      const isDuplicate =
-        alerts.findIndex(
-          alert =>
-            alert.id === data.alert.id && alert.title === data.alert.title
-        ) !== -1;
-
-      if (isDuplicate) return alerts;
-
+      if (!data.alert.name || data.alert.name === "") return alerts;
       return [...alerts, data.alert];
     }
-    case REMOVE_ALERT:
-      return alerts.filter((alert, i) => alert.id !== data.id);
-    case UPDATE_ALERT:
-      return alerts.map((alert, i) => {
-        if (alert.id !== data.id) {
+
+    case UPDATE_EXISTING_ALERT:
+      let updatedAlerts = alerts.map((alert, i) => {
+        if (alert.id !== data.id || data.alert.name.toUpperCase() !== alert.name.toUpperCase()) {
           return alert;
         }
-        // don't except false unless status has changed
-        if (data.alert.status && alert.status !== data.alert.status) {
-          data.alert.seen = data.alert.seen || false;
-        } else if (alert.status === data.alert.status && !data.alert.seen) {
-          data.alert.seen = alert.seen;
-        }
 
-        return {
-          ...alert,
-          ...data.alert
-        };
+        return {...alert, ...data.alert};
       });
+
+      return updatedAlerts;
+
+    case REMOVE_ALERT:
+      let newAlerts = alerts;
+      newAlerts = newAlerts.filter((alert, i) => alert.id !== data.id || data.name.toUpperCase() !== alert.name.toUpperCase())
+      return newAlerts;
 
     case CLEAR_ALERTS:
       return alerts.filter(it => it.level !== data.level);

@@ -9,13 +9,13 @@ import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
 
 import { formatEther, formatShares } from "utils/format-number";
 
-import { SCALAR, BID, BIDS, ASKS } from "modules/common/constants";
+import { SCALAR, BID, BIDS, ASKS, ZERO, ONE } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const { newMarket, loginAccount } = state;
 
   const selectedOutcome = ownProps.selectedOutcome.toString();
-  const orderBook = formatOrderbook(newMarket.orderBook[selectedOutcome] || []);
+  const orderBook = formatOrderBook(newMarket.orderBook[selectedOutcome] || []);
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
     orderBook,
     null,
@@ -26,10 +26,10 @@ const mapStateToProps = (state, ownProps) => {
     marketDepth,
     newMarket.type === SCALAR
       ? createBigNumber(newMarket.scalarSmallNum)
-      : createBigNumber(0),
+      : ZERO,
     newMarket.type === SCALAR
       ? createBigNumber(newMarket.scalarBigNum)
-      : createBigNumber(1),
+      : ONE,
   );
   const hasOrders =
     !!cumulativeOrderBook[BIDS].length || !!cumulativeOrderBook[ASKS].length;
@@ -42,11 +42,11 @@ const mapStateToProps = (state, ownProps) => {
     minPrice:
       newMarket.type === SCALAR
         ? createBigNumber(newMarket.scalarSmallNum)
-        : createBigNumber(0),
+        : ZERO,
     maxPrice:
       newMarket.type === SCALAR
         ? createBigNumber(newMarket.scalarBigNum)
-        : createBigNumber(1),
+        : ONE,
     orderBook: cumulativeOrderBook,
     orderBookKeys,
     marketDepth,
@@ -59,8 +59,8 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps)(MarketOutcomeCharts);
 
-function formatOrderbook(rawOrderbook = []) {
-  return rawOrderbook.reduce(
+function formatOrderBook(rawOrderBook = []) {
+  return rawOrderBook.reduce(
     (p, order) => ({
       ...p,
       [order.type === BID ? BIDS : ASKS]: [

@@ -1,12 +1,12 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import { ALL_MARKETS, END_TIME } from "modules/common/constants";
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import { SwitchLabelsGroup } from "modules/common/switch-labels-group";
-import { NameValuePair, Market, Tab} from "modules/portfolio/types";
-import MarketRow from "modules/portfolio/components/common/market-row";
-import EmptyDisplay from "modules/portfolio/components/common/empty-display";
-import { createTabsInfo } from "modules/portfolio/helpers/create-tabs-info";
+import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
+import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
+import MarketRow from 'modules/portfolio/containers/market-row';
+import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
+import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -27,6 +27,10 @@ export interface FilterBoxProps {
   sortByStyles?: object;
   currentAugurTimestamp: number;
   renderRightContent?: Function;
+  showPending?: Boolean;
+  toggle: Function;
+  hide: boolean;
+  extend: boolean;
 }
 
 interface FilterBoxState {
@@ -42,11 +46,11 @@ export default class FilterBox extends React.Component<
   FilterBoxState
 > {
   state: FilterBoxState = {
-    search: "",
+    search: '',
     selectedTab: ALL_MARKETS,
     tabs: createTabsInfo(this.props.data),
     sortBy: this.props.sortByOptions && this.props.sortByOptions[0].value,
-    filteredData: this.props.data[ALL_MARKETS]
+    filteredData: this.props.data[ALL_MARKETS],
   };
 
   componentDidMount() {
@@ -137,7 +141,6 @@ export default class FilterBox extends React.Component<
     if (valueObj && valueObj.comp) {
       comp = valueObj.comp;
     }
-   
 
     if (valueObj && valueObj.value === END_TIME) {
       comp = (marketA, marketB) => {
@@ -171,12 +174,16 @@ export default class FilterBox extends React.Component<
       dataObj,
       renderToggleContent,
       filterLabel,
-      sortByStyles
+      sortByStyles,
+      showPending,
+      toggle,
+      hide,
+      extend,
     } = this.props;
 
     const { filteredData, search, selectedTab, tabs } = this.state;
 
-    let selectedLabel: any = tabs.find(tab => tab.key === selectedTab );
+    let selectedLabel: any = tabs.find(tab => tab.key === selectedTab);
 
     if (selectedLabel) {
       selectedLabel = selectedLabel.label.toLowerCase();
@@ -192,6 +199,9 @@ export default class FilterBox extends React.Component<
         sortByStyles={sortByStyles}
         updateDropdown={this.updateSortBy}
         bottomRightBarContent={bottomRightContent && bottomRightContent}
+        toggle={toggle}
+        hide={hide}
+        extend={extend}
         bottomBarContent={
           <SwitchLabelsGroup
             tabs={tabs}
@@ -204,20 +214,21 @@ export default class FilterBox extends React.Component<
             {filteredData.length === 0 && (
               <EmptyDisplay
                 selectedTab={
-                  selectedTab !== ALL_MARKETS ? selectedLabel + " " : ""
+                  selectedTab !== ALL_MARKETS ? selectedLabel + ' ' : ''
                 }
                 filterLabel={filterLabel}
                 search={search}
               />
             )}
             {filteredData.length > 0 &&
-              filteredData.map((market: any) =>
+              filteredData.map((market: any, index: string) =>
                 dataObj[market.id] ? (
                   <MarketRow
-                    key={"position_" + market.id}
+                    key={'position_' + market.id + '_' + index}
                     market={dataObj[market.id]}
                     showState={selectedTab === ALL_MARKETS}
                     noToggle={noToggle}
+                    showPending={showPending}
                     toggleContent={
                       renderToggleContent &&
                       renderToggleContent(dataObj[market.id])

@@ -19,8 +19,7 @@ import { XIcon, ExclamationCircle, InfoIcon } from 'modules/common/icons';
 import { formatGasCostToEther, formatShares } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
-import { FormattedNumber, Trade } from 'modules/types';
-import { Getters } from "@augurproject/sdk";
+import { Trade } from 'modules/types';
 
 interface Message {
   header: string;
@@ -29,13 +28,13 @@ interface Message {
 }
 
 interface ConfirmProps {
-  allowanceAmount: FormattedNumber;
+  allowanceBigNumber: BigNumber;
   trade: Trade;
   gasPrice: number;
   gasLimit: number;
   availableEth: BigNumber;
   availableDai: BigNumber;
-  selectedOutcome: Getters.Markets.MarketInfoOutcome;
+  outcomeName: string;
   marketType: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
@@ -65,9 +64,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   componentWillReceiveProps(nextProps) {
     const { trade, gasPrice, availableEth } = this.props;
     if (
-      trade !== nextProps.trade ||
+      (JSON.stringify(trade) !== JSON.stringify(nextProps.trade)) ||
       gasPrice !== nextProps.gasPrice ||
-      availableEth !== nextProps.availableEth
+      !createBigNumber(availableEth).eq(createBigNumber(nextProps.availableEth))
     ) {
       this.setState({
         messages: this.constructMessages(nextProps),
@@ -78,22 +77,49 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   constructMessages(props) {
     const {
       trade,
-      allowanceAmount,
+      allowanceBigNumber,
       gasPrice,
       gasLimit,
       availableEth,
       availableDai,
     } = props || this.props;
 
-    const { totalCost, selfTrade, potentialEthLoss } = trade;
-
+    const {
+      totalCost,
+      selfTrade,
+      potentialDaiLoss,
+      numFills,
+      loopLimit,
+    } = trade;
+    let numTrades = Math.ceil(numFills / loopLimit);
+    let needsApproval = false;
     let messages: Message | null = null;
-    const tradeTotalCost = createBigNumber(totalCost.fullPrecision, 10);
+
     const gasCost = formatGasCostToEther(
       gasLimit,
       { decimalsRounded: 4 },
       gasPrice
     );
+
+    if (
+      allowanceBigNumber && createBigNumber(totalCost.value).gt(allowanceBigNumber)
+    ) {
+      needsApproval = true;
+      messages = {
+        header: 'MULTIPLE TRANSACTIONS',
+        type: WARNING,
+        message: `This trade will take ${numTrades} Transactions and 1 approval.`,
+      };
+
+    }
+
+    if (!isNaN(numTrades) && numTrades > 1) {
+      messages = {
+        header: 'MULTIPLE TRANSACTIONS',
+        type: WARNING,
+        message: `This trade will take ${numTrades} Transactions${needsApproval ? `, and 1 approval.` : ``}`,
+      };
+    }
 
     if (selfTrade) {
       messages = {
@@ -116,7 +142,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       totalCost &&
-      createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
+      createBigNumber(potentialDaiLoss.fullPrecision, 10).gt(
         createBigNumber(availableDai, 10)
       )
     ) {
@@ -124,20 +150,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: 'Insufficient DAI',
         type: ERROR,
         message: 'You do not have enough DAI to place this order',
-      };
-    }
-
-    if (
-      totalCost &&
-      allowanceAmount &&
-      createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
-        createBigNumber(allowanceAmount.fullPrecision, 10)
-      )
-    ) {
-      messages = {
-        header: 'Insufficient Approved Funds',
-        type: ERROR,
-        message: 'You do not have enough approved funds to place this order.',
       };
     }
 
@@ -151,7 +163,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   render() {
     const {
       trade,
-      selectedOutcome,
+      outcomeName,
       marketType,
       maxPrice,
       minPrice,
@@ -161,9 +173,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       limitPrice,
       numShares,
-      numSimFills,
-      potentialEthProfit,
-      potentialEthLoss,
+      potentialDaiProfit,
+      potentialDaiLoss,
       totalCost,
       shareCost,
       side,
@@ -173,7 +184,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     const { messages } = this.state;
 
-    const outcomeName = selectedOutcome.description;
     const greaterLess = side === BUY ? 'greater' : 'less';
     const higherLower = side === BUY ? 'higher' : 'lower';
 
@@ -207,8 +217,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const notProfitable =
       (orderShareProfit && createBigNumber(orderShareProfit.value).lte(0)) ||
       (totalCost.value > 0 &&
-        potentialEthProfit &&
-        potentialEthProfit.value <= 0);
+        potentialDaiProfit &&
+        potentialDaiProfit.value <= 0);
 
     return (
       <section className={Styles.TradingConfirm}>
@@ -244,59 +254,59 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        {(totalCost && totalCost.value !== 0) && (
-            <div className={Styles.TradingConfirm__details}>
-              <div
-                className={classNames(
-                  Styles.TradingConfirm__position__properties,
-                  Styles.TradingConfirm__position__tooltipContainer
-                )}
-              >
-                NEW POSITION
-                <span className={Styles.TradingConfirm__TooltipContainer}>
-                  <label
-                    className={classNames(
-                      TooltipStyles.TooltipHint,
-                      Styles.TradingConfirm__TooltipHint
-                    )}
-                    data-tip
-                    data-for="tooltip--confirm"
-                  >
-                    {InfoIcon}
-                  </label>
-                  <ReactTooltip
-                    id="tooltip--confirm"
-                    className={TooltipStyles.Tooltip}
-                    effect="solid"
-                    place="top"
-                    type="light"
-                  >
-                    <p>{tooltip}</p>
-                  </ReactTooltip>
-                </span>
-              </div>
-              <div className={Styles.TradingConfirm__agg_position}>
-                <span
-                  className={classNames({
-                    [Styles.long]: side === BUY,
-                    [Styles.short]: side === SELL,
-                  })}
+        {totalCost && totalCost.value !== 0 && (
+          <div className={Styles.TradingConfirm__details}>
+            <div
+              className={classNames(
+                Styles.TradingConfirm__position__properties,
+                Styles.TradingConfirm__position__tooltipContainer
+              )}
+            >
+              NEW POSITION
+              <span className={Styles.TradingConfirm__TooltipContainer}>
+                <label
+                  className={classNames(
+                    TooltipStyles.TooltipHint,
+                    Styles.TradingConfirm__TooltipHint
+                  )}
+                  data-tip
+                  data-for="tooltip--confirm"
                 >
-                  {side === BUY ? BUYING : SELLING}
-                </span>
-                <span> {newOrderAmount} </span>
-                Shares @ <span> {limitPrice}</span>
-              </div>
-              <LinearPropertyLabel
-                label="Max Profit"
-                value={`${potentialEthProfit.rounded} DAI`}
-              />
-              <LinearPropertyLabel
-                label="Max Loss"
-                value={`${potentialEthLoss.rounded} DAI`}
-              />
+                  {InfoIcon}
+                </label>
+                <ReactTooltip
+                  id="tooltip--confirm"
+                  className={TooltipStyles.Tooltip}
+                  effect="solid"
+                  place="top"
+                  type="light"
+                >
+                  <p>{tooltip}</p>
+                </ReactTooltip>
+              </span>
             </div>
-          )}
+            <div className={Styles.TradingConfirm__agg_position}>
+              <span
+                className={classNames({
+                  [Styles.long]: side === BUY,
+                  [Styles.short]: side === SELL,
+                })}
+              >
+                {side === BUY ? BUYING : SELLING}
+              </span>
+              <span> {newOrderAmount} </span>
+              Shares @ <span> {limitPrice}</span>
+            </div>
+            <LinearPropertyLabel
+              label="Max Profit"
+              value={`${potentialDaiProfit.formatted} DAI`}
+            />
+            <LinearPropertyLabel
+              label="Max Loss"
+              value={`${potentialDaiLoss.formatted} DAI`}
+            />
+          </div>
+        )}
         {messages && (
           <div
             className={classNames(

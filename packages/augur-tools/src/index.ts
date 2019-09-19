@@ -5,6 +5,7 @@ export {
   UsefulContractObjects,
   makeSigner,
   makeDependencies,
+  makeGnosisDependencies,
 } from "./libs/blockchain";
 import * as blockchain from "./libs/blockchain";
 export { blockchain };
@@ -13,6 +14,7 @@ export {
   makeGanacheProvider,
   loadSeedFile,
   createDbFromSeed,
+  createSeed,
   Seed,
 } from "./libs/ganache";
 

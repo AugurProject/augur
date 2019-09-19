@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
-import MarketRow from "modules/portfolio/components/common/market-row";
+import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
 import { SizeTypes } from "modules/types";
 
@@ -56,7 +56,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
                   showBrackets
                   showIcon
                   showPlusMinus
-                  value={position.valueChange.formatted}
+                  value={position.unrealizedPercent.formatted}
                   size={SizeTypes.SMALL}
                 />
               </div>

@@ -72,7 +72,7 @@ export const loadUserFilledOrders = (
   const { loginAccount, universe } = getState();
   const allOptions = Object.assign(
     {
-      creator: loginAccount.address,
+      account: loginAccount.address,
       universe: universe.id,
       orderState: FILLED,
       ignoreReportingStates: [REPORTING_STATE.FINALIZED]
@@ -80,7 +80,7 @@ export const loadUserFilledOrders = (
     options
   );
   const Augur = augurSdk.get();
-  const userTradingHistory = await Augur.getTradingOrders(allOptions);
+  const userTradingHistory = await Augur.getTradingHistory(allOptions);
   const marketIds = Object.keys(userTradingHistory);
   if (marketIdAggregator) marketIdAggregator(marketIds);
   dispatch(updateUserFilledOrders(loginAccount.address, userTradingHistory));

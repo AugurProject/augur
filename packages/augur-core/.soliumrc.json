@@ -27,6 +27,7 @@
     "function-order": "off",
     "error-reason": "off",
     "linebreak-style": "off",
+    "no-experimental": "off",
     "security/no-low-level-calls": "off",
     "security/no-inline-assembly": "off",
     "security/no-call-value": "off",
@@ -58,6 +59,6 @@
     "security/no-var": "off",
     "security/no-user-defined-modifiers": "off",
     "security/no-void-returns": "off",
-    "security/no-func-overriding": "error"
+    "security/no-func-overriding": "off"
   }
 }

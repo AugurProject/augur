@@ -1,27 +1,26 @@
-import { Augur } from "../Augur";
-import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Controller } from "./Controller";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EventLogDBRouter } from "./db/EventLogDBRouter";
-import { JsonRpcProvider } from "ethers/providers";
-import { PouchDBFactory } from "./db/AbstractDB";
-import { Addresses, UploadBlockNumbers } from "@augurproject/artifacts";
-import { API } from "./getter/API";
-import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
-import { DB } from "./db/DB";
+import { Augur } from '../Augur';
+import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { Controller } from './Controller';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { JsonRpcProvider } from 'ethers/providers';
+import { PouchDBFactory, PouchDBFactoryType } from './db/AbstractDB';
+import { EmptyConnector } from '../connector/empty-connector';
+import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
+import { API } from './getter/API';
+import { DB } from './db/DB';
+import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 
-const settings = require("./settings.json");
+const settings = require('./settings.json');
 
-async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.Configuration.DatabaseConfiguration = {}) {
+async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false,  pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})) {
   const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
-  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, account);
   const networkId = await ethersProvider.getNetworkId();
+  const gnosisRelay = new GnosisRelayAPI(settings.gnosisRelayURLs[networkId]);
+  const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
-  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId]);
-  const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
-  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses[networkId].Augur, augur.events.getEventTopics);
-  const pouchDBFactory = PouchDBFactory(dbArgs);
+  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch);
+  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, Addresses[networkId].Augur, augur.events.getEventTopics, augur.events.parseLogs);
   const db = DB.createAndInitializeDB(
     Number(networkId),
     settings.blockstreamDelay,
@@ -35,8 +34,8 @@ async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.C
   return { augur, blockAndLogStreamerListener, db };
 }
 
-export async function create(ethNodeUrl: string, account?: string, dbArgs: DatabaseConfiguration = {}): Promise<{ api: API, controller: Controller }> {
-  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, dbArgs);
+export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false,  pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})): Promise<{ api: API, controller: Controller }> {
+  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch, pouchDBFactory);
 
   const controller = new Controller(augur, db, blockAndLogStreamerListener);
   const api = new API(augur, db);
@@ -44,8 +43,8 @@ export async function create(ethNodeUrl: string, account?: string, dbArgs: Datab
   return { api, controller };
 }
 
-export async function buildAPI(ethNodeUrl: string, account?: string, dbArgs: DatabaseConfiguration = {}): Promise<API> {
-  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, dbArgs);
+export async function buildAPI(ethNodeUrl: string, account?: string, enableFlexSearch = false,  pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})): Promise<API> {
+  const { augur, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch, pouchDBFactory);
 
   return new API(augur, db);
 }

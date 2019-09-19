@@ -6,13 +6,14 @@ import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
 import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
-import Styles from "modules/create-market/components/create-market-view/create-market-view.styles";
+import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
 
 interface CreateMarketViewProps {
 }
 
 interface CreateMarketViewPState {
   selected: number;
+  page: number;
 }
 
 export default class CreateMarketView extends React.Component<
@@ -46,7 +47,6 @@ export default class CreateMarketView extends React.Component<
 }
 
 CreateMarketView.propTypes = {
-  categories: PropTypes.array.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
   currentTimestamp: PropTypes.number.isRequired,
   gasPrice: PropTypes.number.isRequired,

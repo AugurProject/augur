@@ -8,11 +8,11 @@ import PositionsTable from "modules/market/containers/positions-table";
 import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
-import { MarketData } from "modules/types";
+import { MarketData, SizeTypes } from "modules/types";
 
 const sortByOptions = [
   {
-    label: "Sort by Most Recently Traded",
+    label: "Most Recently Traded",
     value: "recentlyTraded",
     comp(marketA, marketB) {
       return (
@@ -21,7 +21,7 @@ const sortByOptions = [
     }
   },
   {
-    label: "Sort by Current Value",
+    label: "Current Value",
     value: "currentValue",
     comp(marketA, marketB) {
       return (
@@ -31,7 +31,7 @@ const sortByOptions = [
     }
   },
   {
-    label: "Sort by Total Returns",
+    label: "Total Returns",
     value: "totalReturns",
     comp(marketA, marketB) {
       return (
@@ -41,7 +41,7 @@ const sortByOptions = [
     }
   },
   {
-    label: "Sort by Expiring Soonest",
+    label: "Expiring Soonest",
     value: END_TIME,
     comp(marketA, marketB) {
       return marketA.endTime.timestamp - marketB.endTime.timestamp;
@@ -60,6 +60,9 @@ function renderToggleContent(market) {
 
 interface PositionsProps {
   markets: Array<MarketData>;
+  toggle: Function;
+  hide: boolean;
+  extend: boolean;
 }
 
 interface PositionsState {
@@ -94,7 +97,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
           showPercent
           showPlusMinus
           showColors
-          size="small"
+          size={SizeTypes.SMALL}
           value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
         />
       </div>
@@ -102,7 +105,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
   }
 
   render() {
-    const { markets } = this.props;
+    const { markets, toggle, hide, extend } = this.props;
     const { showCurrentValue } = this.state;
 
     return (
@@ -112,6 +115,9 @@ export default class Positions extends Component<PositionsProps, PositionsState>
         sortByOptions={sortByOptions}
         markets={markets}
         filterComp={filterComp}
+        toggle={toggle}
+        hide={hide}
+        extend={extend}
         bottomRightContent={
           <CompactButton
             text={showCurrentValue ? "Current Value" : "Total Returns"}

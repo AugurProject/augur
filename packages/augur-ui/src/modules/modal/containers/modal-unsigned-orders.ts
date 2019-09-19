@@ -1,32 +1,38 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { UnsignedOrders } from "modules/modal/unsigned-orders";
-import { selectMarket } from "modules/markets/selectors/market";
-import { closeModal } from "modules/modal/actions/close-modal";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { UnsignedOrders } from 'modules/modal/unsigned-orders';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { closeModal } from 'modules/modal/actions/close-modal';
 import {
   startOrderSending,
   clearMarketLiquidityOrders,
   removeLiquidityOrder,
   sendLiquidityOrder,
-} from "modules/orders/actions/liquidity-management";
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+} from 'modules/orders/actions/liquidity-management';
+import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
-  CATEGORICAL,
   NEW_ORDER_GAS_ESTIMATE,
-} from "modules/common/constants";
-import { createBigNumber } from "utils/create-big-number";
-import { formatGasCostToEther, formatEther } from "utils/format-number";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { BaseAction } from "modules/types";
+  MAX_BULK_ORDER_COUNT,
+  ZERO,
+} from 'modules/common/constants';
+import { createBigNumber } from 'utils/create-big-number';
+import {
+  formatGasCostToEther,
+  formatEther,
+  formatDai,
+} from 'utils/format-number';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { BaseAction } from 'modules/types';
+import { Getters } from '@augurproject/sdk';
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   return {
     modal: state.modal,
     market,
-    liquidity: state.pendingLiquidityOrders[market.id],
+    liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
   };
@@ -37,30 +43,33 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   startOrderSending: (options: object) => dispatch(startOrderSending(options)),
   clearMarketLiquidityOrders: (marketId: string) =>
     dispatch(clearMarketLiquidityOrders(marketId)),
-  removeLiquidityOrder: (data: BaseAction) => dispatch(removeLiquidityOrder(data)),
+  removeLiquidityOrder: (data: BaseAction) =>
+    dispatch(removeLiquidityOrder(data)),
   sendLiquidityOrder: (data: object) => dispatch(sendLiquidityOrder(data)),
 });
 
 const mergeProps = (sP, dP, oP) => {
   let numberOfTransactions = 0;
-  let totalCost = createBigNumber(0);
+  let totalCost = ZERO;
 
-  sP.market.outcomes.forEach((outcome: any) => {
-    const target =
-      sP.market.marketType === CATEGORICAL ? outcome.name : outcome.id;
+  sP.market.outcomes.forEach((outcome: Getters.Markets.MarketInfoOutcome) => {
     sP.liquidity &&
-      sP.liquidity[target] &&
-      sP.liquidity[target].forEach((order: any, index: number) => {
+      sP.liquidity[outcome.id] &&
+      sP.liquidity[outcome.id].forEach((order: any, index: number) => {
         totalCost = totalCost.plus(order.orderEstimate);
-        numberOfTransactions += numberOfTransactions;
+        numberOfTransactions += 1;
       });
   });
   const gasCost = formatGasCostToEther(
     NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
     { decimalsRounded: 4 },
-    sP.gasPrice,
+    sP.gasPrice
   );
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
+  const needsApproval = bnAllowance.lte(ZERO);
+  const submitAllTxCount = Math.ceil(
+    numberOfTransactions / MAX_BULK_ORDER_COUNT
+  );
   const {
     marketType,
     scalarDenomination,
@@ -69,9 +78,12 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     minPrice,
     maxPrice,
+    transactionHash,
   } = sP.market;
+  // all orders have been created or removed.
+  if (numberOfTransactions === 0) dP.closeModal();
   return {
-    title: "Unsigned Orders",
+    title: 'Unsigned Orders',
     description: [
       "You have unsigned orders pending for this market's initial liquidity:",
     ],
@@ -82,26 +94,30 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     maxPrice,
     minPrice,
+    transactionHash,
+    needsApproval,
+    submitAllTxCount,
     breakdown: [
       {
-        label: "Estimated GAS",
+        label: 'Estimated GAS',
         // @ts-ignore
         value: formatEther(gasCost).full,
       },
       {
-        label: "Total Cost (DAI)",
+        label: 'Total Cost (DAI)',
         // @ts-ignore
-        value: formatEther(totalCost.toFixed()).full,
+        value: formatDai(totalCost.toFixed()).full,
         highlight: true,
       },
     ],
     header: [
-      "outcome",
-      "type",
-      "quantity",
-      "price",
-      "estimated costs (eth)",
-      "",
+      'outcome',
+      'type',
+      'quantity',
+      'price',
+      'estimated costs (dai)',
+      '',
+      '',
     ],
     liquidity: sP.liquidity,
     outcomes: sP.liquidity && Object.keys(sP.liquidity),
@@ -111,13 +127,13 @@ const mergeProps = (sP, dP, oP) => {
     bnAllowance,
     buttons: [
       {
-        text: "Submit All",
+        text: 'Submit All',
         action: () => dP.startOrderSending({ marketId }),
       },
       {
-        text: "Cancel All",
+        text: 'Cancel All',
         action: () => {
-          dP.clearMarketLiquidityOrders(sP.market.id);
+          dP.clearMarketLiquidityOrders(sP.market.transactionHash);
           dP.closeModal();
         },
       },
@@ -135,6 +151,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
-  )(UnsignedOrders),
+    mergeProps
+  )(UnsignedOrders)
 );

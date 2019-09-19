@@ -16,14 +16,8 @@ export {
 
 export {
   default as Reporting
-} from "modules/reporting/components/reporting-view/reporting-view";
+} from "modules/reporting/containers/reporting";
 
 export {
-  default as Report
-} from "modules/reporting/containers/reporting-report";
-
-export {
-  default as Dispute
-} from "modules/reporting/containers/reporting-dispute";
-
-export { default as MigrateRep } from "modules/forking/containers/migrate-rep";
+  default as Disputing
+} from "modules/reporting/containers/disputing";

@@ -138,7 +138,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       const denomination = scalarDenomination ? ` ${scalarDenomination}` : "";
       const warningText =
         (details.length > 0 ? `\n\n` : ``) +
-        `If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toNumber()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toNumber()}${denomination}) should be reported.`;
+        `If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toString()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toString()}${denomination}) should be reported.`;
       details += warningText;
     }
 
@@ -151,12 +151,6 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       }));
 
     const categoriesWithClick = process(market.category) || [];
-    const tagsWithClick = market.id && market.tags.filter(Boolean).map(tag => ({
-      label: tag,
-      onClick: () => {
-        this.gotoFilter("tag", tag);
-      }
-    })) || [];
 
     return (
       <section
@@ -173,7 +167,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       >
         <h1>{description}</h1>
         <div>
-          <WordTrail items={[...categoriesWithClick, ...tagsWithClick]}>
+          <WordTrail items={[...categoriesWithClick]}>
             <button
               className={Styles.BackButton}
               onClick={() => history.goBack()}
@@ -193,7 +187,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                 isFavorite={isFavorite}
                 reportingState={market.reportingState}
                 disputeInfo={market.disputeInfo}
-                endTimeFormatted={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
+                endTimeFormatted={market.endTimeFormatted}
                 isLogged={isLogged}
               />
             )}
@@ -256,7 +250,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                   isFavorite={isFavorite}
                   reportingState={market.reportingState}
                   disputeInfo={market.disputeInfo}
-                  endTimeFormatted={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
+                  endTimeFormatted={market.endTimeFormatted}
                   isLogged={isLogged}
                 />
               )}
@@ -265,9 +259,9 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                 {(market.id || preview) && <CoreProperties market={market} />}
                 <div className={Styles.Time}>
                   <MarketTimeline
-                    startTime={market.creationTime || currentTime}
+                    startTime={market.creationTime || convertUnixToFormattedDate(currentTime)}
                     currentTime={currentTime || 0}
-                    endTime={market.endTimeFormatted}
+                    endTime={convertUnixToFormattedDate(market.endTimeFormatted.timestamp)}
                   />
                 </div>
               </div>

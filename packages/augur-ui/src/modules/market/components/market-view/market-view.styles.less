@@ -121,11 +121,14 @@
 }
 
 .Market__upper {
-  .view();
-
   margin-bottom: 1rem;
   min-height: unset;
   padding: 2rem 2.5rem 0.5rem;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    padding: 0;
+  }
 }
 
 .Market__graphs {
@@ -133,7 +136,7 @@
 }
 
 .Market__details {
-  background-color: @color-secondary-text;
+  background-color: @color-primary-text;
   display: flex;
   justify-content: space-between;
 }
@@ -192,14 +195,22 @@
   }
 }
 
+.MarketView__comments {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  margin: 0rem 22.5625rem;
+}
+
 div.OutcomeNameDisplay {
   .text-12;
 
   align-items: center;
-  background: @color-primary-background;
+  background: @color-dark-grey;
   border: 1px solid @color-primary-alternate;
   border-radius: @border-radius-default;
-  color: @color-secondary-text;
+  color: @color-primary-text;
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
@@ -209,7 +220,7 @@ div.OutcomeNameDisplay {
 
 @media @breakpoint-mobile {
   .OutcomeSelectionArea {
-    background: fade(@color-primary-background, 90%);
+    background: fade(@color-dark-grey, 90%);
     padding: 0 @size-8 @size-16;
     position: absolute;
     width: 100%;
@@ -242,7 +253,7 @@ div.OutcomeNameDisplay {
     > h1 {
       .text-12-bold;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       display: block;
       margin: 0;
       padding: 0.75rem 1rem;
@@ -279,5 +290,11 @@ div.OutcomeNameDisplay {
     font-size: @size-14;
     height: @size-48;
     min-height: @size-48;
+  }
+
+  .MarketView__comments {
+    justify-content: center;
+    margin: 0rem;
+    width: 100%;
   }
 }

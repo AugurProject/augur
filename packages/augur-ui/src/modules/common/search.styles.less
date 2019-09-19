@@ -9,9 +9,8 @@
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
-  height: 40px;
-  padding-left: 1.5rem;
-  transition: background 0.25s ease-in;
+  padding-left: @size-16;
+  transition: none;
   width: auto;
 
   > span {
@@ -34,7 +33,7 @@
   > input {
     background: transparent;
     border: 0;
-    color: @color-tertiary-text;
+    color: @color-primary-text;
     display: none;
     line-height: 1rem;
     padding: 0;
@@ -55,16 +54,6 @@
 
 .Container {
   display: flex;
-
-  > button {
-    .mono-12;
-
-    color: @color-secondary-text;
-    display: none;
-    margin-left: 1rem;
-    margin-right: -0.5rem;
-    text-transform: uppercase;
-  }
 }
 
 .ContainerFocused {
@@ -77,9 +66,11 @@
 }
 
 .isFocused {
-  background: @color-secondary-action;
+  background: @color-dark-grey;
   transition: background 0.25s ease-in;
   width: 100%;
+  margin-left: @size-24;
+  padding: @size-6 @size-12;
 
   > span {
     display: none;
@@ -89,46 +80,55 @@
     display: block;
   }
 
-  > svg {
-    margin-right: 0.75rem;
-  }
-
   > div {
     display: none;
   }
-}
 
-@media @breakpoint-mobile-mid {
-  .SearchBar {
-    flex: 1;
-    justify-content: flex-end;
-    padding-right: 6px;
-    width: 100%;
+  > button {
+    display: flex;
+    > svg {
+      width: @size-10;
+      height: @size-10;
 
-    > div {
-      .mono-12;
-
-      color: @color-primary-alternate-two;
-      display: flex;
-      margin-right: 0.5rem;
+      > path {
+        stroke: @color-inactive-text;
+      }
     }
   }
 
-  .isFocused {
-    > div {
-      display: none;
+  @media @breakpoint-mobile-mid {
+    .SearchBar {
+      flex: 1;
+      justify-content: flex-end;
+      padding-right: 6px;
+      width: 100%;
+
+      > div {
+        .mono-12;
+
+        color: @color-primary-alternate-two;
+        display: flex;
+        margin-right: 0.5rem;
+      }
     }
-  }
 
-  .Container {
-    flex: 1;
-    padding-left: 0.5rem;
-    width: 100%;
-  }
+    .isFocused {
+      margin-left: 0;
 
-  .ContainerFocused {
-    > button {
-      padding-right: 1rem;
+      > div {
+        display: none;
+      }
+    }
+
+    .Container {
+      flex: 1;
+      width: 100%;
+    }
+
+    .ContainerFocused {
+      > button {
+        padding-right: 1rem;
+      }
     }
   }
 }

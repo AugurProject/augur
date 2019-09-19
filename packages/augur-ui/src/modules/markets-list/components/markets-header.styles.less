@@ -2,56 +2,93 @@
 
 .MarketsHeader {
   display: flex;
-  flex-flow: row wrap;
-  padding: 3.5rem @size-32 0;
+  flex-direction: column;
+  padding: @size-16 0 0 0;
 
-  @media @breakpoint-mobile {
-    padding: @size-24 @size-14 @size-8;
+  > div > button {
+    display: none;
   }
 
-  > h1 {
-    .text-36-bold;
+  @media @breakpoint-mobile {
+    padding: @size-20 0 0 0;
 
-    color: @color-secondary-text;
-    flex: 1 0 100%;
-    letter-spacing: 0.125rem;
-    margin-bottom: @size-24;
-    text-transform: capitalize;
-
-    @media @breakpoint-mobile {
-      .text-24-bold;
-
-      margin-bottom: @size-16;
-      order: 1;
+    > div > button {
+      display: flex;
+      margin-left: @size-16;
     }
   }
 
-  > h4 {
-    .text-18-bold;
 
-    color: @color-secondary-text;
+  > div > div > div > div {
+    display: flex;
   }
 
-  > div {
+  > div > div > div > div {
     @media @breakpoint-mobile {
-      order: 3;
-      width: 100%;
+      display: none;
+    }
+  }
 
-      > div,
-      > button,
-      > label {
+  > div:first-of-type {
+    @media @breakpoint-mobile {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+
+    @media @breakpoint-mobile {
+      align-items: center;
+      flex-direction: row;
+      margin-bottom: 0;
+      margin-top: @size-4;
+    }
+
+    > h1 {
+      .text-24-bold;
+
+      color: @color-primary-text;
+      letter-spacing: 0.125rem;
+      margin-bottom: 0;
+      text-transform: capitalize;
+
+      @media @breakpoint-mobile {
+        order: 0;
         margin-bottom: @size-16;
+      }
+    }
+
+    > div {
+      display: flex;
+      align-items: center;
+
+      @media @breakpoint-mobile {
+        flex-direction: column;
       }
     }
   }
 
-  > article {
+  > div > article {
     flex: 1;
+    margin-bottom: @size-16;
+    height: 44px;
 
     @media @breakpoint-mobile {
-      flex-flow: row nowrap;
       margin-bottom: @size-16;
-      order: 2;
+      order: 0;
     }
+  }
+}
+
+.DisableFilters {
+  article,
+  input,
+  > div > div {
+    pointer-events: none;
+    opacity: 1;
   }
 }

@@ -5,59 +5,40 @@
   display: flex;
   flex-flow: row nowrap;
 
-  @media @breakpoint-mobile {
-    flex-flow: row wrap;
-    justify-content: space-between;
-  }
-
   > div {
-    margin-right: @size-16;
-  }
+    min-width: 250px;
+    height: @size-36;
+    background: @color-dark-grey;
+    border-color: @color-primary-light;
 
-  > div:first-of-type {
-    min-width: 6rem;
-  }
+    > button {
+      .text-14-bold;
 
-  > div:nth-of-type(2) {
-    min-width: 7.125rem;
+      color: @color-primary-text;
+      background: @color-dark-grey;
 
-    @media @breakpoint-mobile {
-      min-width: 6.625rem;
-    }
-  }
+      > span {
+        font-weight: bold;
+      }
 
-  > div:nth-of-type(3) {
-    margin-right: 0;
-    min-width: 5.8125rem;
+      > span::before {
+        content: 'Sort By:';
+        font-weight: normal;
+        padding-right: @size-4;
+      }
 
-    @media @breakpoint-mobile {
-      margin-right: @size-12;
-    }
-  }
+      > svg {
+        height: @size-12;
+        width: @size-12;
 
-  > div:last-of-type {
-    height: @size-24;
-    margin: 0 @size-16;
-    width: @size-24;
-
-    @media @breakpoint-mobile {
-      margin: 0 @size-16 @size-16 auto;
-    }
-  }
-
-  > button {
-    display: none;
-
-    @media @breakpoint-mobile {
-      display: flex;
+        > path {
+          stroke: @color-primary-text;
+        }
+      }
     }
   }
 
   > label {
     margin: 0;
-
-    @media @breakpoint-mobile {
-      margin-right: @size-12;
-    }
   }
 }

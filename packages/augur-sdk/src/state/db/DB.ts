@@ -1,12 +1,17 @@
-import { Augur } from "../../Augur";
-import { PouchDBFactoryType } from "./AbstractDB";
-import { SyncableDB } from "./SyncableDB";
-import { SyncStatus } from "./SyncStatus";
-import { TrackedUsers } from "./TrackedUsers";
-import { UserSyncableDB } from "./UserSyncableDB";
-import { DerivedDB } from "./DerivedDB";
-import { MarketDB, MarketFields } from "./MarketDB";
-import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
+import { Augur } from '../../Augur';
+import { augurEmitter } from "../../events";
+import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
+import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
+import { SyncableDB } from './SyncableDB';
+import { SyncStatus } from './SyncStatus';
+import { TrackedUsers } from './TrackedUsers';
+import { UserSyncableDB } from './UserSyncableDB';
+import { DerivedDB } from './DerivedDB';
+import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
+import { DisputeDatabase } from './DisputeDB';
+import { CurrentOrdersDatabase } from './CurrentOrdersDB';
+import { MarketDB } from './MarketDB';
+import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -15,9 +20,12 @@ import {
   DisputeCrowdsourcerCreatedLog,
   DisputeCrowdsourcerRedeemedLog,
   DisputeWindowCreatedLog,
+  GenericEventDBDescription,
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
   MarketCreatedLog,
+  MarketData,
+  DisputeDoc,
   MarketFinalizedLog,
   MarketMigratedLog,
   MarketVolumeChangedLog,
@@ -28,11 +36,12 @@ import {
   ProfitLossChangedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
+  TokensMinted,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
-  MarketData,
-} from "../logs/types";
-import { ExtendedSearchOptions, SearchResults } from "flexsearch";
+  UniverseCreatedLog,
+} from '../logs/types';
+import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -52,40 +61,41 @@ export class DB {
   private networkId: number;
   private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
-  private genericEventNames: string[];
+  private genericEventDBDescriptions: GenericEventDBDescription[];
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
+  private liquidityDatabase: LiquidityDB;
+  private disputeDatabase: DisputeDatabase;
+  private currentOrdersDatabase: CurrentOrdersDatabase;
   private marketDatabase: MarketDB;
+  private zeroXOrders: ZeroXOrders;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
   syncStatus: SyncStatus;
 
-  readonly basicDerivedDBs: DerivedDBConfiguration[] = [
-    {
-      "name": "CurrentOrders",
-      "eventNames": ["OrderEvent"],
-      "idFields": ["orderId"],
-    },
-  ];
-
   // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
   readonly userSpecificDBs: UserSpecificDBConfiguration[] = [
     {
-      "name": "TokensTransferred",
-      "numAdditionalTopics": 3,
-      "userTopicIndicies": [1, 2],
+      'name': 'TokensMinted',
+      'numAdditionalTopics': 3,
+      'userTopicIndicies': [2],
     },
     {
-      "name": "ProfitLossChanged",
-      "numAdditionalTopics": 3,
-      "userTopicIndicies": [2],
+      'name': 'TokensTransferred',
+      'numAdditionalTopics': 3,
+      'userTopicIndicies': [1, 2],
     },
     {
-      "name": "TokenBalanceChanged",
-      "numAdditionalTopics": 2,
-      "userTopicIndicies": [1],
-      "idFields": ["token"],
+      'name': 'ProfitLossChanged',
+      'numAdditionalTopics': 3,
+      'userTopicIndicies': [2],
+    },
+    {
+      'name': 'TokenBalanceChanged',
+      'numAdditionalTopics': 2,
+      'userTopicIndicies': [1],
+      'idFields': ['token'],
     },
   ];
 
@@ -111,7 +121,7 @@ export class DB {
     const dbController = new DB(pouchDBFactory);
 
     dbController.augur = augur;
-    dbController.genericEventNames = augur.genericEventNames;
+    dbController.genericEventDBDescriptions = augur.genericEventDBDescriptions;
 
     return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
   }
@@ -136,16 +146,19 @@ export class DB {
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
-    for (const eventName of this.genericEventNames) {
-      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), []);
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, this.getDatabaseName(genericEventDBDescription.EventName), [], genericEventDBDescription.indexes);
     }
 
-    for (const derivedDBConfiguration of this.basicDerivedDBs) {
-      new DerivedDB(this, networkId, derivedDBConfiguration.name, derivedDBConfiguration.eventNames, derivedDBConfiguration.idFields);
-    }
+    this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
 
     // Custom Derived DBs here
+    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators']);
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId']);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
+
+    // Zero X Orders. Only on if a mesh client has been provided
+    this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
 
     // add passed in tracked users to the tracked uses db
     for (const trackedUser of trackedUsers) {
@@ -163,7 +176,7 @@ export class DB {
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log("Performing rollback of block " + startSyncBlockNumber + " onward");
+      console.log('Performing rollback of block ' + startSyncBlockNumber + ' onward');
       await this.rollback(startSyncBlockNumber);
     }
 
@@ -188,6 +201,10 @@ export class DB {
     this.derivedDatabases[db.dbName] = db;
   }
 
+  notifyLiquidityDBAdded(db: LiquidityDB): void {
+    this.liquidityDatabase = db;
+  }
+
   registerEventListener(eventNames: string | string[], callback: LogCallbackType): void {
     this.blockAndLogStreamerListener.listenForEvent(eventNames, callback);
   }
@@ -203,6 +220,56 @@ export class DB {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
 
+    console.log('Syncing generic log DBs');
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
+      dbSyncPromises.push(
+        this.syncableDatabases[dbName].sync(
+          augur,
+          chunkSize,
+          blockstreamDelay,
+          highestAvailableBlockNumber
+        )
+      );
+    }
+
+    await Promise.all(dbSyncPromises);
+
+    // Derived DBs are synced after generic log DBs complete
+    console.log('Syncing derived DBs');
+
+    // If no meshCLient provided will not exists
+    if (this.zeroXOrders) await this.zeroXOrders.sync();
+
+    await this.disputeDatabase.sync(highestAvailableBlockNumber);
+    await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
+
+    // The Market DB syncs after the derived DBs, as it depends on a derived DB
+    await this.marketDatabase.sync(highestAvailableBlockNumber);
+
+    // Update LiquidityDatabase and set it to update whenever there's a new block
+    await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
+    augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
+
+    augurEmitter.emit(SubscriptionEventName.SDKReady, {
+      eventName: SubscriptionEventName.SDKReady,
+    });
+
+    await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
+  }
+
+  /**
+   * Syncs all UserSyncableDBs. (If a user has been added to this.trackedUsers and
+   * does not have a UserSyncableDB, the UserSyncableDB will be created.)
+   *
+   * @param {Augur} augur Augur object with which to sync
+   * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
+   * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
+   * @param {number} highestAvailableBlockNumber Number of the highest available block
+   */
+  async syncUserData(chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number, augur: Augur): Promise<void> {
+    const dbSyncPromises = [];
+    console.log('Syncing user-specific log DBs');
     for (const trackedUser of await this.trackedUsers.getUsers()) {
       for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
@@ -217,51 +284,53 @@ export class DB {
       }
     }
 
-    console.log(`Syncing generic log DBs`);
-    for (const genericEventName of this.genericEventNames) {
-      const dbName = this.getDatabaseName(genericEventName);
-      dbSyncPromises.push(
-        this.syncableDatabases[dbName].sync(
-          augur,
-          chunkSize,
-          blockstreamDelay,
-          highestAvailableBlockNumber
-        )
-      );
-    }
-
     await Promise.all(dbSyncPromises);
 
-    // Derived DBs are synced after generic log DBs complete
-    console.log(`Syncing derived DBs`);
-    dbSyncPromises = [];
-    for (const derivedDBConfiguration of this.basicDerivedDBs) {
-      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
-      dbSyncPromises.push(this.derivedDatabases[dbName].sync(highestAvailableBlockNumber));
-    }
-
-    await Promise.all(dbSyncPromises).then(() => undefined);
-
-
-    // The Market DB syncs last as it depends on a derived DB
-    return this.marketDatabase.sync(highestAvailableBlockNumber);
+    await this.emitUserDataSynced();
   }
 
-  async fullTextMarketSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
-    return this.marketDatabase.fullTextSearch(query, extendedSearchOptions);
+  async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
+    const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+    if (!(await this.trackedUsers.getUsers()).includes(account)) {
+      await this.trackedUsers.setUserTracked(account);
+      const dbSyncPromises = [];
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, account);
+        if (!this.getSyncableDatabase(dbName)) {
+          // Create DB
+          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, account, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+          dbSyncPromises.push(
+            this.syncableDatabases[dbName].sync(
+              this.augur,
+              chunkSize,
+              blockstreamDelay,
+              highestAvailableBlockNumber
+            )
+          );
+        }
+      }
+    }
+
+    await this.emitUserDataSynced();
+  }
+
+  async emitUserDataSynced(): Promise<void> {
+    augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
+      eventName: SubscriptionEventName.UserDataSynced,
+      trackedUsers: await this.trackedUsers.getUsers(),
+    });
   }
 
   /**
    * Gets the block number at which to begin syncing. (That is, the lowest last-synced
    * block across all event log databases or the upload block number for this network.)
    *
-   *
    * @returns {Promise<number>} Promise to the block number at which to begin syncing.
    */
   async getSyncStartingBlock(): Promise<number> {
     const highestSyncBlocks = [];
-    for (const eventName of this.genericEventNames) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(eventName)));
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(genericEventDBDescription.EventName)));
     }
     for (const trackedUser of await this.trackedUsers.getUsers()) {
       for (const userSpecificEvent of this.userSpecificDBs) {
@@ -280,9 +349,9 @@ export class DB {
    */
   getDatabaseName(eventName: string, trackableUserAddress?: string) {
     if (trackableUserAddress) {
-      return this.networkId + "-" + eventName + "-" + trackableUserAddress;
+      return this.networkId + '-' + eventName + '-' + trackableUserAddress;
     }
-    return this.networkId + "-" + eventName;
+    return this.networkId + '-' + eventName;
   }
 
   /**
@@ -304,6 +373,13 @@ export class DB {
   }
 
   /**
+   * Gets the liquidity database
+   */
+  getLiquidityDatabase(): LiquidityDB {
+    return this.liquidityDatabase;
+  }
+
+  /**
    * Rolls back all blocks from blockNumber onward.
    *
    * @param {number} blockNumber Oldest block number to delete
@@ -311,8 +387,8 @@ export class DB {
   rollback = async (blockNumber: number): Promise<void> => {
     const dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
-    for (const eventName of this.genericEventNames) {
-      const dbName = this.getDatabaseName(eventName);
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
 
@@ -325,11 +401,8 @@ export class DB {
     }
 
     // Perform rollback on derived DBs
-    for (const derivedDBConfiguration of this.basicDerivedDBs) {
-      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
-      dbRollbackPromises.push(this.derivedDatabases[dbName].rollback(blockNumber));
-    }
-
+    dbRollbackPromises.push(this.disputeDatabase.rollback(blockNumber));
+    dbRollbackPromises.push(this.currentOrdersDatabase.rollback(blockNumber));
     dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
 
     // TODO Figure out a way to handle concurrent request limit of 40
@@ -347,14 +420,14 @@ export class DB {
   async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
     const db = this.syncableDatabases[dbName];
     if (!db) {
-      throw new Error("Unknown DB name: " + dbName);
+      throw new Error('Unknown DB name: ' + dbName);
     }
     try {
       await db.addNewBlock(blockLogs[0].blockNumber, blockLogs);
 
       const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName);
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
-        throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
+        throw new Error('Highest sync block is ' + highestSyncBlock + '; newest block number is ' + blockLogs[0].blockNumber);
       }
     } catch (err) {
       throw err;
@@ -391,13 +464,34 @@ export class DB {
   }
 
   /**
+   * Queries a DB to get a row count.
+   *
+   * @param {string} dbName Name of the DB to query
+   * @param {boolean} derived Boolean indicating if this is a derived DB
+   * @param {PouchDB.Find.FindRequest<{}>} Optional request Query object to narrow results
+   * @returns {Promise<number>} Promise to a number of rows
+   */
+  async getNumRowsFromDB(dbName: string, derived: boolean, request?: PouchDB.Find.FindRequest<{}>): Promise<number> {
+    const fullDBName = this.getDatabaseName(dbName);
+    const db: AbstractDB = derived ? this.derivedDatabases[fullDBName] : this.syncableDatabases[fullDBName];
+
+    if (request) {
+      const results = await db.find(request);
+      return results.docs.length;
+    }
+
+    const info = await db.info();
+    return info.doc_count;
+  }
+
+  /**
    * Queries the CompleteSetsPurchased DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<CompleteSetsPurchasedLog>>}
    */
   async findCompleteSetsPurchasedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<CompleteSetsPurchasedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("CompleteSetsPurchased"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('CompleteSetsPurchased'), request);
     return results.docs as unknown as CompleteSetsPurchasedLog[];
   }
 
@@ -408,7 +502,7 @@ export class DB {
    * @returns {Promise<Array<CompleteSetsSoldLog>>}
    */
   async findCompleteSetsSoldLogs(request: PouchDB.Find.FindRequest<{}>): Promise<CompleteSetsSoldLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("CompleteSetsSold"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('CompleteSetsSold'), request);
     return results.docs as unknown as CompleteSetsSoldLog[];
   }
 
@@ -419,7 +513,7 @@ export class DB {
    * @returns {Promise<Array<DisputeCrowdsourcerCompletedLog>>}
    */
   async findDisputeCrowdsourcerCompletedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerCompletedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerCompleted"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerCompleted'), request);
     return results.docs as unknown as DisputeCrowdsourcerCompletedLog[];
   }
 
@@ -430,7 +524,7 @@ export class DB {
    * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
    */
   async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerContributionLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerContribution'), request);
     return results.docs as unknown as DisputeCrowdsourcerContributionLog[];
   }
 
@@ -441,7 +535,7 @@ export class DB {
    * @returns {Promise<Array<DisputeCrowdsourcerCreatedLog>>}
    */
   async findDisputeCrowdsourcerCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerCreated"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerCreated'), request);
     return results.docs as unknown as DisputeCrowdsourcerCreatedLog[];
   }
 
@@ -452,7 +546,7 @@ export class DB {
    * @returns {Promise<Array<DisputeCrowdsourcerRedeemedLog>>}
    */
   async findDisputeCrowdsourcerRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeCrowdsourcerRedeemedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerRedeemed"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeCrowdsourcerRedeemed'), request);
     return results.docs as unknown as DisputeCrowdsourcerRedeemedLog[];
   }
 
@@ -463,7 +557,7 @@ export class DB {
    * @returns {Promise<Array<DisputeWindowCreatedLog>>}
    */
   async findDisputeWindowCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeWindowCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeWindowCreated"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('DisputeWindowCreated'), request);
     return results.docs as unknown as DisputeWindowCreatedLog[];
   }
 
@@ -474,7 +568,7 @@ export class DB {
    * @returns {Promise<Array<InitialReporterRedeemedLog>>}
    */
   async findInitialReporterRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<InitialReporterRedeemedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("InitialReporterRedeemed"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('InitialReporterRedeemed'), request);
     return results.docs as unknown as InitialReporterRedeemedLog[];
   }
 
@@ -485,7 +579,7 @@ export class DB {
    * @returns {Promise<Array<InitialReportSubmittedLog>>}
    */
   async findInitialReportSubmittedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<InitialReportSubmittedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("InitialReportSubmitted"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('InitialReportSubmitted'), request);
     return results.docs as unknown as InitialReportSubmittedLog[];
   }
 
@@ -496,7 +590,7 @@ export class DB {
    * @returns {Promise<Array<MarketCreatedLog>>}
    */
   async findMarketCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketCreatedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("MarketCreated"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('MarketCreated'), request);
     return results.docs as unknown as MarketCreatedLog[];
   }
 
@@ -507,7 +601,7 @@ export class DB {
    * @returns {Promise<Array<MarketFinalizedLog>>}
    */
   async findMarketFinalizedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketFinalizedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("MarketFinalized"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('MarketFinalized'), request);
     return results.docs as unknown as MarketFinalizedLog[];
   }
 
@@ -518,7 +612,7 @@ export class DB {
    * @returns {Promise<Array<MarketMigratedLog>>}
    */
   async findMarketMigratedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketMigratedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("MarketMigrated"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('MarketMigrated'), request);
     return results.docs as unknown as MarketMigratedLog[];
   }
 
@@ -529,7 +623,7 @@ export class DB {
    * @returns {Promise<Array<MarketVolumeChangedLog>>}
    */
   async findMarketVolumeChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketVolumeChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("MarketVolumeChanged"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('MarketVolumeChanged'), request);
     return results.docs as unknown as MarketVolumeChangedLog[];
   }
 
@@ -540,7 +634,7 @@ export class DB {
    * @returns {Promise<Array<MarketOIChangedLog>>}
    */
   async findMarketOIChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<MarketOIChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("MarketOIChanged"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('MarketOIChanged'), request);
     return results.docs as unknown as MarketOIChangedLog[];
   }
 
@@ -551,8 +645,8 @@ export class DB {
    * @returns {Promise<Array<ParsedOrderEventLog>>}
    */
   async findOrderCanceledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector["eventType"] = OrderEventType.Cancel;
-    const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
+    request.selector['eventType'] = OrderEventType.Cancel;
+    const results = await this.findInSyncableDB(this.getDatabaseName('OrderEvent'), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
     return logs;
@@ -565,8 +659,8 @@ export class DB {
    * @returns {Promise<Array<ParsedOrderEventLog>>}
    */
   async findOrderCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector["eventType"] = OrderEventType.Create;
-    const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
+    request.selector['eventType'] = OrderEventType.Create;
+    const results = await this.findInSyncableDB(this.getDatabaseName('OrderEvent'), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
     return logs;
@@ -579,39 +673,25 @@ export class DB {
    * @returns {Promise<Array<ParsedOrderEventLog>>}
    */
   async findOrderFilledLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector["eventType"] = OrderEventType.Fill;
-    const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
+    request.selector['eventType'] = OrderEventType.Fill;
+    const results = await this.findInSyncableDB(this.getDatabaseName('OrderEvent'), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
     return logs;
   }
 
   /**
-   * Queries the OrderEvent DB for PriceChanged events
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<ParsedOrderEventLog>>}
-   */
-  async findOrderPriceChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    request.selector["eventType"] = OrderEventType.PriceChanged;
-    const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
-    const logs = results.docs as unknown as ParsedOrderEventLog[];
-    for (const log of logs) log.timestamp = log.timestamp;
-    return logs;
-  }
-
-  /*
    * Queries the ParticipationTokensRedeemed DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<ParticipationTokensRedeemedLog>>}
    */
   async findParticipationTokensRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParticipationTokensRedeemedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("ParticipationTokensRedeemed"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('ParticipationTokensRedeemed'), request);
     return results.docs as unknown as ParticipationTokensRedeemedLog[];
   }
 
-  /*
+  /**
    * Queries the ProfitLossChanged DB
    *
    * @param {string} the user whose logs are being retreived
@@ -619,7 +699,7 @@ export class DB {
    * @returns {Promise<Array<ProfitLossChangedLog>>}
    */
   async findProfitLossChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<ProfitLossChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("ProfitLossChanged", user), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('ProfitLossChanged', user), request);
     return results.docs as unknown as ProfitLossChangedLog[];
   }
 
@@ -630,11 +710,20 @@ export class DB {
    * @returns {Promise<Array<TimestampSetLog>>}
    */
   async findTimestampSetLogs(request: PouchDB.Find.FindRequest<{}>): Promise<TimestampSetLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("TimestampSet"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('TimestampSet'), request);
     return results.docs as unknown as TimestampSetLog[];
   }
 
-  /*
+  async allUniverseForkedLogs(): Promise<UniverseForkedLog[]> {
+    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs()
+    .then((docs) => {
+      return docs.rows
+      .filter((doc) => !/^_design/.test(doc.id))
+      .map((doc) => doc.doc);
+    }) as unknown as UniverseForkedLog[];
+  }
+
+  /**
    * Queries the TokenBalanceChanged DB
    *
    * @param {string} the user whose logs are being retreived
@@ -642,10 +731,14 @@ export class DB {
    * @returns {Promise<Array<TokenBalanceChangedLog>>}
    */
   async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokenBalanceChangedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("TokenBalanceChanged", user), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('TokenBalanceChanged', user), request);
     return results.docs as unknown as TokenBalanceChangedLog[];
   }
 
+  async findTokensMintedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokensMinted[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName('TokensMinted', user), request);
+    return results.docs as unknown as TokensMinted[];
+  }
 
   /**
    * Queries the TradingProceedsClaimed DB
@@ -654,7 +747,7 @@ export class DB {
    * @returns {Promise<Array<TradingProceedsClaimedLog>>}
    */
   async findTradingProceedsClaimedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<TradingProceedsClaimedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("TradingProceedsClaimed"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('TradingProceedsClaimed'), request);
     return results.docs as unknown as TradingProceedsClaimedLog[];
   }
 
@@ -664,8 +757,19 @@ export class DB {
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<UniverseForkedLog>>}
    */
+  async findUniverseCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseCreatedLog[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseCreated"), request);
+    return results.docs as unknown as UniverseCreatedLog[];
+  }
+
+  /**
+   * Queries the UniverseCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
   async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseForkedLog[]> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
+    const results = await this.findInSyncableDB(this.getDatabaseName('UniverseForked'), request);
     return results.docs as unknown as UniverseForkedLog[];
   }
 
@@ -676,9 +780,34 @@ export class DB {
    * @returns {Promise<Array<ParsedOrderEventLog>>}
    */
   async findCurrentOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ParsedOrderEventLog[]> {
-    const results = await this.findInDerivedDB(this.getDatabaseName("CurrentOrders"), request);
+    const results = await this.findInDerivedDB(this.getDatabaseName('CurrentOrders'), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
+    return logs;
+  }
+
+  /**
+   * Queries the Dispute DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeDoc>>}
+   */
+  async findDisputeDocs(request: PouchDB.Find.FindRequest<{}>): Promise<DisputeDoc[]> {
+    const results = await this.findInDerivedDB(this.getDatabaseName('Dispute'), request);
+    const logs = results.docs as unknown as DisputeDoc[];
+    return logs;
+  }
+
+  /**
+   * Queries the ZeroXOrders DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<StoredOrder>>}
+   */
+  async findZeroXOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<StoredOrder[]> {
+    if (!this.zeroXOrders) throw new Error("ZeroX orders not available as no mesh client was provided");
+    const results = await this.zeroXOrders.find(request);
+    const logs = results.docs as unknown as StoredOrder[];
     return logs;
   }
 
@@ -689,7 +818,53 @@ export class DB {
    * @returns {Promise<Array<MarketData>>}
    */
   async findMarkets(request: PouchDB.Find.FindRequest<{}>): Promise<MarketData[]> {
-    const results = await this.findInDerivedDB(this.getDatabaseName("Markets"), request);
+    const results = await this.findInDerivedDB(this.getDatabaseName('Markets'), request);
     return results.docs as unknown as MarketData[];
+  }
+
+  /**
+   * Queries the Liquidity DB for hourly liquidity of markets
+   *
+   * @param {number} currentTimestamp Timestamp of the latest block
+   * @param {string?} marketIds Array of market IDs to filter by
+   * @returns {Promise<MarketHourlyLiquidity[]>}
+   */
+  async findRecentMarketsLiquidityDocs(currentTimestamp: number, marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
+    const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
+    const mostRecentOnTheHourTimestamp = currentTimestamp - (currentTimestamp % secondsPerHour);
+    const selectorConditions: any[] = [
+      { _id: { $ne: 'lastUpdated' } },
+      { timestamp: { $gte: mostRecentOnTheHourTimestamp - (SECONDS_IN_A_DAY).toNumber() } },
+    ];
+    if (marketIds) {
+      selectorConditions.push(
+        { market: { $in: marketIds } }
+      );
+    }
+    const marketsLiquidity = await this.liquidityDatabase.find({
+      selector: {
+        $and: selectorConditions,
+      },
+    });
+
+    return marketsLiquidity.docs as unknown as MarketHourlyLiquidity[];
+  }
+
+  /**
+   * Queries the Liquidity DB for hourly liquidity of all markets
+   *
+   * @returns {Promise<number|undefined>}
+   */
+  async findLiquidityLastUpdatedTimestamp(): Promise<number|undefined> {
+    const lastUpdatedResults = await this.liquidityDatabase.find({
+      selector: {
+        _id: { $eq: 'lastUpdated' },
+      },
+    });
+    const lastUpdatedDocs = lastUpdatedResults.docs as unknown as LiquidityLastUpdated[];
+    if (lastUpdatedDocs.length > 0) {
+      return lastUpdatedDocs[0].timestamp;
+    }
+    return undefined;
   }
 }

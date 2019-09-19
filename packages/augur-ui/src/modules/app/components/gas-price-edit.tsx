@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import {
@@ -51,13 +50,6 @@ const GasPriceEdit = ({
     </button>
   </div>
 );
-
-GasPriceEdit.propTypes = {
-  updateModal: PropTypes.func.isRequired,
-  userDefinedGasPrice: PropTypes.number.isRequired,
-  gasPriceSpeed: PropTypes.string.isRequired,
-  className: PropTypes.string
-};
 
 GasPriceEdit.defaultProps = {
   className: undefined

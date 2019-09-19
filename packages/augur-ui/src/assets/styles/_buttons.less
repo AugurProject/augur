@@ -1,12 +1,11 @@
 .button {
-  .border;
-
   align-items: center;
+  border: none;
   border-radius: 3px;
-  color: @color-secondary-text;
+  color: @color-primary-text;
   cursor: pointer;
   display: flex;
-  font-size: @font-size-medium;
+  font-size: @size-14;
   font-weight: bold;
   justify-content: center;
   letter-spacing: 0.3px;
@@ -17,13 +16,13 @@
 
   &:disabled,
   &.button--disabled {
-    background-color: @color-disabled;
-    color: @color-text-disabled;
+    background-color: @color-inactive-text;
+    color: @color-inactive-text;
     cursor: default;
   }
 
   &.imperative {
-    background-color: @color-red;
+    background-color: @color-error;
   }
 
   &.navigational {
@@ -31,7 +30,7 @@
   }
 
   &:visited {
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
 
@@ -42,150 +41,36 @@
   color: inherit;
 }
 
-.button--purple {
-  .button;
-
-  background-color: @color-purple;
-  color: @color-secondary-text;
-
-  &:hover {
-    background-color: @color-lightpurple;
-  }
-}
-
-.button--purple--disabled,
-.button--purple:disabled,
-.button--purple:disabled:hover {
-  background-color: @color-lightgray;
-  color: @color-lightergray;
-  cursor: default;
-}
-
-.button--lightpurple {
-  .button;
-
-  background-color: @color-lightpurple;
-  color: @color-secondary-text;
-
-  &:hover {
-    background-color: #6a528a;
-  }
-}
-
-.button--lightpurple--disabled,
-.button--lightpurple:disabled,
-.button--lightpurple:disabled:hover {
-  background-color: @color-lightgray;
-  color: @color-lightergray;
-  cursor: default;
-}
-
 .button--offWhite {
   .button;
 
-  background-color: @color-offwhite;
-  color: @color-extra-darkpurple;
-  font-size: @font-size-medium;
+  background-color: @color-primary-text;
+  color: @color-dark-grey;
+  font-size: @size-14;
   text-transform: capitalize;
 
   &:hover {
-    background-color: @color-secondary-text;
+    background-color: @color-primary-text;
   }
 }
 
 .button--offWhite--disabled,
 .button--offWhite:disabled,
 .button--offWhite:disabled:hover {
-  background-color: @color-lightgray;
-  color: @color-lightergray;
-  cursor: default;
-}
-
-.button--disabled {
-  background-color: @color-disabled;
-  color: @color-text-disabled;
-  cursor: default;
-
-  &:hover {
-    background-color: @color-disabled;
-  }
-}
-
-.button--transparent {
-  .button;
-
-  background-color: @color-transparent;
-  border: solid 1px @color-purple;
-  border-radius: 32px;
-  color: @color-purple;
-  line-height: unset;
-  min-height: unset;
-  min-width: unset;
-  padding: 8px 24px;
-  text-transform: none;
-
-  &:hover,
-  &:visited:hover {
-    background-color: @color-lightpurple;
-    color: @color-secondary-text;
-  }
-
-  &:disabled,
-  &:disabled:hover {
-    background-color: transparent;
-    border: 1px solid @color-lightgray;
-    color: @color-lightgray;
-    cursor: default;
-  }
-
-  &:visited {
-    color: @color-purple;
-  }
-}
-
-.button--transparent--disabled,
-.button--transparent:disabled,
-.button--transparent:disabled:hover {
-  background-color: transparent;
-  border: 1px solid @color-lightgray;
-  color: @color-lightgray;
-  cursor: default;
-}
-
-.button--white--short {
-  .button;
-
   background-color: @color-secondary-text;
-  color: @color-text-dark;
-
-  &:hover {
-    background-color: @color-lightpurple;
-    color: @color-secondary-text;
-  }
-
-  &:disabled,
-  &:disabled:hover {
-    background-color: @color-lightgray;
-    color: @color-lightergray;
-    cursor: auto;
-  }
-}
-
-.button--white {
-  .button--white--short;
-
-  padding: 1.1em 2em;
+  color: @color-primary-text;
+  cursor: default;
 }
 
 .button--gray {
   .button;
 
-  background-color: @color-transparent;
-  border: 2px solid @color-gray;
-  color: @color-gray;
+  background-color: transparent;
+  border: 2px solid @color-inactive-text;
+  color: @color-inactive-text;
 
   &:hover {
-    background-color: @color-lightgray;
+    background-color: @color-secondary-text;
     border: 2px solid black;
     color: black;
   }
@@ -194,86 +79,24 @@
 .button--gray--disabled,
 .button--gray:disabled,
 .button--gray:disabled:hover {
-  background-color: @color-lightgray;
-  color: @color-lightergray;
+  background-color: @color-secondary-text;
+  color: @color-primary-text;
   cursor: default;
-}
-
-.button--mediumgray {
-  .button--transparent;
-
-  background-color: @color-transparent;
-  border: 1px solid @color-primary-light;
-  color: @color-alternate-text;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 10px;
-  font-weight: 400;
-  padding: 4px 12px;
-
-  &:hover {
-    background-color: @color-highlight;
-    border: 1px solid @color-highlight;
-    color: @color-secondary-text;
-  }
-}
-
-.button--mediumgray--disabled,
-.button--mediumgray:disabled,
-.button--mediumgray:disabled:hover {
-  .button--mediumgray;
-
-  background-color: @color-primary-alternate !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  color: @color-secondary-text;
-  cursor: default;
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 500 !important;
-  padding: 4px 12px;
-}
-
-.button--transparent--rounded {
-  border: 2px solid @color-primary-alternate;
-  border-radius: 100px;
-  box-sizing: border-box;
-  color: @color-secondary-text;
-  cursor: pointer;
-  font-size: @font-size-small;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  margin-right: 0.5rem;
-  padding: 0.25rem 1rem;
-
-  &:hover {
-    border: 2px solid #42404b;
-  }
-}
-
-.button--whiteRound {
-  .button--mediumgray();
-
-  background-color: white;
-  color: @color-gray-light-purple;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 10px;
-  font-weight: 400;
 }
 
 .button--bright {
   background: @color-outcome-seven;
   border-radius: 3px;
-  color: @color-extra-darkpurple;
+  color: @color-dark-grey;
   font-family: @roboto;
-  font-size: @font-size-medium;
+  font-size: @size-14;
   font-weight: 700;
   padding: 0.75rem 1.5rem;
 
   &:hover {
-    background: @color-primary-button-background-hover;
+    background: fade(@color-primary-action, 90%);
     border: 0;
-    color: @color-extra-darkpurple;
+    color: @color-dark-grey;
   }
 
   &:disabled {

@@ -7,19 +7,17 @@ import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helper
 const mapStateToProps = (state, { location }) => {
   const {
     selectedCategoryName,
-    selectedTagNames,
     keywords,
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   return {
     category: selectedCategoryName,
-    tags: selectedTagNames,
     keywords,
   };
 };
 
 const FilterSearchContainer = withRouter(
-  connect(mapStateToProps)(FilterSearch),
+  connect(mapStateToProps)(FilterSearch)
 ) as any;
 
 export default FilterSearchContainer;

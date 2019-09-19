@@ -12,21 +12,21 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 
 const sortByOptions = [
   {
-    label: "Sort by Most Recently Added",
+    label: "Most Recently Added",
     value: "recentlyTraded",
     comp(marketA, marketB) {
       return marketB.favoriteAddedData - marketA.favoriteAddedData;
     }
   },
   {
-    label: "Sort by Market Creation",
+    label: "Market Creation",
     value: "marketCreation",
     comp(marketA, marketB) {
       return marketB.creationTime.timestamp - marketA.creationTime.timestamp;
     }
   },
   {
-    label: "Sort by Expiring Soonest",
+    label: "Expiring Soonest",
     value: END_TIME,
     comp(marketA, marketB) {
       return marketA.endTime.timestamp - marketB.endTime.timestamp;
@@ -43,14 +43,14 @@ function filterComp(input, market) {
 interface FavoritesProps {
   markets: Array<MarketData>;
   currentAugurTimestamp: number;
-  reportingWindowStatsEndTime: number;
+  disputingWindowEndTime: number;
   toggleFavorite: Function;
 }
 
 export default class Favorites extends Component<FavoritesProps> {
   static defaultProps = {
     currentAugurTimestamp: 0,
-    reportingWindowStatsEndTime: 0,
+    disputingWindowEndTime: 0,
   };
 
   constructor(props) {
@@ -62,19 +62,17 @@ export default class Favorites extends Component<FavoritesProps> {
   renderRightContent(market) {
     const {
       currentAugurTimestamp,
-      reportingWindowStatsEndTime,
+      disputingWindowEndTime,
       toggleFavorite,
     } = this.props;
-
-    const endTimeFix = market.endTimeFormatted || convertUnixToFormattedDate(market.endTime);
 
     return (
       <div className={Styles.MultiColumn}>
         <MarketProgress
           reportingState={market.reportingState}
           currentTime={currentAugurTimestamp}
-          endTime={endTimeFix}
-          reportingWindowEndtime={reportingWindowStatsEndTime}
+          endTimeFormatted={market.endTimeFormatted}
+          reportingWindowEndtime={disputingWindowEndTime}
           alignRight
         />
         <FavoritesButton

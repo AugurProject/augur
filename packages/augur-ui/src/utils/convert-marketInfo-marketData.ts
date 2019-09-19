@@ -1,7 +1,6 @@
 import {
   calculatePayoutNumeratorsValue,
-  MarketInfo,
-  MarketInfoOutcome,
+  Getters,
 } from '@augurproject/sdk';
 import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
@@ -12,10 +11,11 @@ import {
   CATEGORICAL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-import { formatPercent, formatDai, formatNone, formatNumber } from './format-number';
+import { formatPercent, formatDai, formatNone, formatNumber, formatAttoRep } from './format-number';
 import { createBigNumber } from './create-big-number';
+import { keyBy } from './key-by';
 
-export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
+export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.MarketInfo) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
@@ -28,6 +28,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
     marketStatus: getMarketStatus(marketInfo.reportingState),
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
+    categories: marketInfo.categories,
     finalizationTimeFormatted: marketInfo.finalizationTime ? convertUnixToFormattedDate(marketInfo.finalizationTime) : null,
     consensusFormatted: processConsensus(marketInfo),
     defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),
@@ -36,6 +37,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
       decimals: 4,
       decimalsRounded: 4,
     }),
+    noShowBondAmountFormatted: formatAttoRep(marketInfo.noShowBondAmount),
     marketCreatorFeeRatePercent: formatPercent(creatorFee * 100, {
       positiveSign: false,
       decimals: 4,
@@ -79,7 +81,7 @@ function getMarketStatus(reportingState: string) {
   return marketStatus;
 }
 
-function processOutcomes(market: MarketInfo): OutcomeFormatted[] {
+function processOutcomes(market: Getters.Markets.MarketInfo): OutcomeFormatted[] {
   return market.outcomes.map(outcome => ({
       ...outcome,
       marketId: market.id,
@@ -104,13 +106,13 @@ function processOutcomes(market: MarketInfo): OutcomeFormatted[] {
     }));
 };
 
-function isTradableOutcome(outcome: MarketInfoOutcome, marketType: string) {
+function isTradableOutcome(outcome: Getters.Markets.MarketInfoOutcome, marketType: string) {
   if (marketType === CATEGORICAL) return true;
   if (outcome.id === 1) return false; // Don't trade No and scalar's outcome 1 in the UI
   return true;
 }
 
-function processConsensus(market: MarketInfo): Consensus | null {
+function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null {
   if (market.consensus === null) return null;
   //   - formatted reported outcome
   //   - the percentage of correct reports (for binaries only)
@@ -131,4 +133,8 @@ function processConsensus(market: MarketInfo): Consensus | null {
     if (marketOutcome) outcomeName = marketOutcome.description;
   }
   return { payout: market.consensus, winningOutcome, outcomeName };
+}
+
+export const keyMarketInfoCollectionByMarketId = (marketInfos: Getters.Markets.MarketInfo[]) => {
+  return keyBy(marketInfos, 'id');
 }

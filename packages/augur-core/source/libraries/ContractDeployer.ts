@@ -19,7 +19,8 @@ import {
     ClaimTradingProceeds,
     Cash,
     ProfitLoss,
-    SimulateTrade
+    SimulateTrade,
+    ZeroXTradeToken
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -99,9 +100,29 @@ Deploying to: ${networkConfiguration.networkName}
             await this.augur!.registerContract(stringTo32ByteHex("DaiJoin"), this.configuration.joinAddress);
             contract = await this.contracts.get("DaiJoin");
             contract.address = this.configuration.joinAddress;
+
+            // Proxy Factory
+            contract = await this.contracts.get("ProxyFactory");
+            contract.address = this.configuration.proxyFactoryAddress;
+
+            // Gnosis Safe
+            contract = await this.contracts.get("GnosisSafe");
+            contract.address = this.configuration.gnosisSafeAddress;
+
+            // 0x Exchange
+            console.log(`Registering 0x Exchange Contract at ${this.configuration.zeroXExchange}`);
+            await this.augur!.registerContract(stringTo32ByteHex("ZeroXExchange"), this.configuration.zeroXExchange);
+            contract = await this.contracts.get("ZeroXExchange");
+            contract.address = this.configuration.zeroXExchange;
         } else {
             console.log(`Uploading Test Dai Contracts`);
             await this.uploadTestDaiContracts();
+
+            console.log(`Uploading Gnosis Contracts`);
+            await this.uploadGnosisContracts();
+
+            console.log(`Uploading 0x Contracts`);
+            await this.upload0xContracts();
         }
 
         await this.initializeAllContracts();
@@ -204,6 +225,19 @@ Deploying to: ${networkConfiguration.networkName}
         await cash.initialize(this.augur!.address);
     }
 
+    private async uploadGnosisContracts(): Promise<void> {
+        const proxyFactoryContract = await this.contracts.get("ProxyFactory");
+        proxyFactoryContract.address = await this.construct(proxyFactoryContract, []);
+
+        const gnosisSafeContract = await this.contracts.get("GnosisSafe");
+        gnosisSafeContract.address = await this.construct(gnosisSafeContract, []);
+    }
+
+    private async upload0xContracts(): Promise<void> {
+        const zeroXExchangeContract = await this.contracts.get("ZeroXExchange");
+        zeroXExchangeContract.address = await this.construct(zeroXExchangeContract, []);
+    }
+
     public async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get("LegacyReputationToken");
         contract.address = await this.construct(contract, []);
@@ -229,6 +263,8 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
         if (contractName === 'TestNetReputationToken') return;
+        if (contractName === 'ProxyFactory') return;
+        if (contractName === 'GnosisSafe') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
@@ -297,6 +333,10 @@ Deploying to: ${networkConfiguration.networkName}
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
         promises.push(simulateTrade.initialize(this.augur!.address));
 
+        const zeroXTradeTokenContract = await this.getContractAddress("ZeroXTradeToken");
+        const zeroXTradeToken = new ZeroXTradeToken(this.dependencies, zeroXTradeTokenContract);
+        promises.push(zeroXTradeToken.initialize(this.augur!.address));
+
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
             const time = new TimeControlled(this.dependencies, timeContract);
@@ -309,21 +349,21 @@ Deploying to: ${networkConfiguration.networkName}
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
         await legacyReputationToken.initializeERC1820(this.augur!.address);
-        await legacyReputationToken.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(11000000)));
+        await legacyReputationToken.faucet(new BigNumber(1));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
-        if (!legacyBalance || legacyBalance == new BigNumber(0)) {
+        if (!legacyBalance || legacyBalance.isEqualTo(0)) {
             throw new Error("Faucet call to Legacy REP failed");
         }
     }
 
     public async initializeCash(): Promise<void> {
         const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
-        await cash.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(1000)));
+        await cash.faucet(new BigNumber(1));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await cash.balanceOf_(defaultAddress);
-        if (!legacyBalance || legacyBalance == new BigNumber(0)) {
-            throw new Error("Faucet call to Legacy REP failed");
+        if (!legacyBalance || legacyBalance.isEqualTo(0)) {
+            throw new Error("Faucet call to Cash failed");
         }
     }
 
@@ -331,7 +371,7 @@ Deploying to: ${networkConfiguration.networkName}
       console.log('Resetting Timestamp for false time...');
       const time = new TimeControlled(this.dependencies, this.getContractAddress("TimeControlled"));
       const currentTimestamp = await time.getTimestamp_();
-      time.setTimestamp(currentTimestamp);
+      await time.setTimestamp(currentTimestamp);
     }
 
     private async createGenesisUniverse(): Promise<Universe> {
@@ -372,6 +412,8 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.contracts.get('Cash').address!;
+        mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
+        mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
         for (let contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;

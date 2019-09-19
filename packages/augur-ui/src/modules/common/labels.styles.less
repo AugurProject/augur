@@ -16,11 +16,34 @@
     color: inherit;
     cursor: inherit;
     margin: 0;
+
+    > span {
+      color: @color-secondary-text;
+    }
+  }
+}
+
+.SizableValueLabel {
+  &.Large {
+    .mono-14-bold
+  }
+
+  &.Small {
+    .mono-11
+  }
+
+  &.Highlight {
+    color: @color-primary-text;
   }
 }
 
 .TextLabel {
   color: inherit;
+  font-size: @size-12;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: @size-12;
+  text-transform: capitalize;
   z-index: @default-z-index;
 
   > label {
@@ -69,7 +92,7 @@
     .text-10;
 
     align-items: center;
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     display: flex;
     flex-flow: row nowrap;
     text-transform: uppercase;
@@ -92,7 +115,7 @@
         }
 
         > path {
-          fill: @color-neutral;
+          fill: @color-inactive-text;
         }
       }
     }
@@ -101,7 +124,7 @@
   > span:last-of-type {
     .mono-14;
 
-    color: @color-tertiary-text;
+    color: @color-primary-text;
 
     @media @breakpoint-mobile {
       .mono-12;
@@ -174,7 +197,7 @@
     .mono-10;
 
     align-items: center;
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     flex-flow: row nowrap;
     line-height: @size-16;
     text-transform: uppercase;
@@ -192,20 +215,19 @@
     min-width: 0.625rem;
 
     > line {
-      stroke: fade(@color-secondary-text, 40%);
+      stroke: fade(@color-primary-text, 40%);
     }
   }
 
   > span:nth-of-type(2),
   > span:last-of-type {
-    .mono-12;
+    .mono-9;
 
-    color: @color-secondary-text;
-    line-height: @size-16;
+    color: @color-primary-text;
     padding-left: @size-8;
 
     &.isAccented {
-      color: @color-error-text;
+      color: @color-error;
     }
   }
 
@@ -218,9 +240,9 @@
 
   &.HighlightFirst {
     > span:first-of-type {
-      .mono-10;
+      .mono-9-bold;
 
-      color: @color-shadow-text;
+      color: @color-inactive-text;
     }
   }
 
@@ -228,7 +250,7 @@
     > span:first-of-type {
       .mono-10;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     > span:nth-of-type(2),
@@ -237,7 +259,7 @@
     > span:last-of-type > label {
       .mono-12-bold;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
   }
 
@@ -256,7 +278,7 @@
       > span:last-of-type {
         .mono-10;
 
-        color: @color-tertiary-text;
+        color: @color-primary-text;
       }
     }
 
@@ -268,7 +290,7 @@
     > span:last-of-type {
       .mono-10;
 
-      color: @color-tertiary-text;
+      color: @color-primary-text;
     }
 
     > span:nth-of-type(2) {
@@ -294,6 +316,26 @@ div.LinearPropertyViewTransaction {
   max-width: 175px;
   width: fit-content;
 
+  &.Alternate {
+    > span:first-of-type {
+      .mono-10;
+
+      color: @color-secondary-text;
+    }
+
+    > span:nth-of-type(2) {
+      .mono-default;
+
+      color: @color-primary-text;
+    }
+
+    > span:last-of-type {
+      .mono-default;
+
+      color: @color-secondary-text;
+    }
+  }
+
   @media @breakpoint-mobile {
     max-width: 150px;
   }
@@ -301,7 +343,7 @@ div.LinearPropertyViewTransaction {
   > span {
     .mono-14-medium;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     flex: 0 auto;
     text-transform: uppercase;
 
@@ -313,7 +355,7 @@ div.LinearPropertyViewTransaction {
   > span:first-of-type {
     .text-12;
 
-    color: @color-neutral;
+    color: @color-inactive-text;
     flex: 1 100%;
     font-weight: @weight-medium;
     margin-bottom: @size-4;
@@ -334,17 +376,25 @@ div.LinearPropertyViewTransaction {
       .text-10;
     }
   }
+
+  &.Larger {
+    > span:nth-of-type(2) {
+      .mono-24;
+
+    }
+  }
 }
 
 .MarketTypeLabel {
   .mono-9;
 
-  background: fade(@color-tertiary-info-text, 30%);
-  border: 1px solid transparent;
+  background: fade(@color-secondary-text, 30%);
   border-radius: @border-radius-default;
-  color: @color-secondary-text;
-  padding: @size-2;
+  border: 1px solid transparent;
+  color: @color-primary-text;
   line-height: @size-11;
+  max-width: fit-content;
+  padding: @size-2;
   text-transform: uppercase;
 }
 
@@ -352,16 +402,12 @@ div.LinearPropertyViewTransaction {
   .mono-9;
 
   border: 1px solid transparent;
-  color: @color-secondary-text;
+  color: @color-primary-text;
   line-height: @size-11;
   padding: @size-2;
   position: relative;
   border-radius: @border-radius-default;
   text-transform: uppercase;
-
-  @media @breakpoint-mobile {
-    .text-10-bold;
-  }
 }
 
 .MarketStatus_open {
@@ -370,8 +416,8 @@ div.LinearPropertyViewTransaction {
 }
 
 .MarketStatus_reporting {
-  background: fade(@color-in-reporting, 15%);
-  color: @color-in-reporting;
+  background: fade(@color-reporting, 15%);
+  color: @color-reporting;
 }
 
 .MarketStatus_resolved {
@@ -386,7 +432,7 @@ div.LinearPropertyViewTransaction {
     margin: 0 @size-4;
 
     > path {
-      fill: @color-in-reporting;
+      fill: @color-reporting;
     }
   }
 }
@@ -396,7 +442,7 @@ div.LinearPropertyViewTransaction {
     > span:first-of-type {
       .mono-10;
 
-      color: @color-shadow-text;
+      color: @color-inactive-text;
       line-height: normal;
       text-align: center;
       text-transform: uppercase;
@@ -405,7 +451,7 @@ div.LinearPropertyViewTransaction {
     > span:last-of-type {
       .mono-12;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       line-height: normal;
     }
   }
@@ -424,21 +470,32 @@ div.LinearPropertyViewTransaction {
 }
 
 .PendingLabel {
-  .mono-10;
+  > span {
+    .mono-9;
 
-  align-items: center;
-  background: @color-primary-light;
-  border-radius: @border-radius-rounded;
-  color: @color-secondary-text;
-  display: flex;
-  flex-flow: row nowrap;
-  height: @size-16;
-  line-height: @size-10;
-  padding: 1px 0.375rem;
+    align-items: center;
+    background: @color-primary-light;
+    border-radius: @border-radius-rounded;
+    color: @color-primary-text;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-16;
+    line-height: @size-10;
+    padding: 1px 0.375rem;
+    text-transform: uppercase;
 
-  > div {
-    border-width: 1px;
-    margin-left: 0.3125rem;
+    > div {
+      border-width: 1px;
+      margin-left: 0.3125rem;
+    }
+  }
+
+  &.Failure {
+    > span {
+      .mono-10-medium;
+
+      background: @color-error;
+    }
   }
 }
 
@@ -448,20 +505,20 @@ div.LinearPropertyViewTransaction {
   background: fade(@color-open, 40%);
 
   > svg {
-    fill: @color-secondary-text;
+    fill: @color-primary-text;
     height: @size-10;
     margin-left: 0.3125rem;
     width: @size-10;
 
     > path {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
     }
   }
 }
 
 .MovementLabel {
   align-items: center;
-  color: @color-tertiary-text;
+  color: @color-primary-text;
   display: flex;
   justify-content: flex-end;
 }
@@ -472,7 +529,7 @@ div.LinearPropertyViewTransaction {
   }
 
   &_normal {
-    .mono-11;
+    .mono-9;
   }
 
   &_large {
@@ -573,7 +630,9 @@ div.LinearPropertyViewTransaction {
   min-width: 0;
 
   > button {
-    .overflow-ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &:not(:first-of-type)::before {
       margin: 0 @size-4;
@@ -588,7 +647,7 @@ div.LinearPropertyViewTransaction {
 .WordTrailButton {
   .mono-10;
 
-  color: @color-tertiary-info-text;
+  color: @color-secondary-text;
   text-transform: uppercase;
   white-space: nowrap;
 
@@ -619,4 +678,71 @@ div.LinearPropertyViewTransaction {
 
 .prefix {
   margin-right: @size-5;
+}
+
+.BulkTxLabel {
+  .mono-9;
+
+  color: @color-secondary-text;
+}
+
+.MarketLabel {
+  .text-14;
+
+  align-items: center;
+  color: @color-inactive-text;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  padding-bottom: @size-12;
+
+  > div:nth-child(even) {
+    margin: 0 0 0 @size-4;
+  }
+
+  &.loading {
+    pointer-events: none;
+
+    > div:last-of-type {
+      > span svg {
+        animation: spin 2s linear infinite;
+
+        path {
+          stroke: @color-inactive-text;
+        }
+      }
+    }
+  }
+
+  &.selected {
+    color: @color-primary-text;
+    border-bottom: 1px solid @color-primary-text;
+
+    &.open {
+      border-color: @color-open;
+    }
+
+    &.inReporting {
+      border-color: @color-reporting;
+    }
+
+    &.resolved {
+      border-color: @color-resolved;
+    }
+
+    > div:nth-child(even) {
+      font-weight: bold;
+      margin: 0 0 0 @size-8;
+    }
+
+    > div:last-of-type {
+      > span svg path {
+        stroke: @color-primary-text;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 }

@@ -24,6 +24,7 @@ import {
   updateIsAlertVisible,
   updateSidebarStatus
 } from "modules/app/actions/update-sidebar-status";
+import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 
 const mapStateToProps = state => ({
   blockchain: state.blockchain,
@@ -55,7 +56,8 @@ const mapDispatchToProps = dispatch => ({
   updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
   updateIsAlertVisible: data => dispatch(updateIsAlertVisible(data)),
-  updateSidebarStatus: data => dispatch(updateSidebarStatus(data))
+  updateSidebarStatus: data => dispatch(updateSidebarStatus(data)),
+  updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
 });
 
 const AppContainer = compose(

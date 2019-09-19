@@ -1,56 +1,69 @@
-// This is a modified version of FlexSearch's index.d.ts
-// It includes additional signatures for the `add` and `search`
-// functions, and changes some return types to SearchResults<T>[].
+// This is a modified version of FlexSearch's index.d.ts.
+// It modifies the return types for the `search` function, adds
+// return types for the `add` & `where` functions, and adds
+// the `sort` property to the SearchOptions interface.
+// Ideally, it can be removed in the future, once FlexSearch's
+// TypeScript definitions are more complete.
 
 declare module "flexsearch" {
   interface Index<T> {
-    //TODO: Chaining
     readonly id: string;
     readonly index: string;
     readonly length: number;
 
     init();
     init(options: CreateOptions);
-    add(id: number, o: T);
+    info();
     add(o: T): void;
-    search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>[]) => void): void;
-    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>[]>;
-    search(options: ExtendedSearchOptions, callback: (results: SearchResults<T>[]) => void): void;
-    search(options: ExtendedSearchOptions): Promise<SearchResults<T>[]>;
-    search(options: ExtendedSearchOptions[]): Promise<SearchResults<T>[]>;
+    add(id: number, o: string): this; // Added return type for Augur
+
+    // Result without pagination -> T[]
+    // (Return types modified for Augur)
+    search(query: string, options: number | SearchOptions, callback: (results: Array<SearchResults<T>>) => void): void;
+    search(query: string, options?: number | SearchOptions): Promise<Array<SearchResults<T>>>;
+    search(options: SearchOptions & {query: string}, callback: (results: Array<SearchResults<T>>) => void): void;
+    search(options: SearchOptions & {query: string}): Promise<Array<SearchResults<T>>>;
+
+    // Result with pagination -> SearchResults<T>
+    search(query: string, options: number | SearchOptions & { page?: boolean | Cursor}, callback: (results: Array<SearchResults<T>>) => void): void;
+    search(query: string, options?: number | SearchOptions & { page?: boolean | Cursor}): Promise<Array<SearchResults<T>>>;
+    search(options: SearchOptions & {query: string, page?: boolean | Cursor}, callback: (results: Array<SearchResults<T>>) => void): void;
+    search(options: SearchOptions & {query: string, page?: boolean | Cursor}): Promise<Array<SearchResults<T>>>;
+
+
     update(id: number, o: T);
     remove(id: number);
     clear();
     destroy();
-    addMatcher(matcher: Matcher);
-    where(whereFn: (o: T) => boolean): SearchResult<T>[];
-    where(whereObj: {[key: string]: string});
+    addMatcher(matcher: Matcher): this;
+
+    where(whereFn: (o: T) => boolean): T[];
+    where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<T>>>; // Added return type for Augur
     encode(str: string): string;
     export(): string;
     import(exported: string);
   }
 
-  interface ExtendedSearchOptions extends SearchOptions {
-    query: string;
-  }
-
   interface SearchOptions {
-      limit?: number,
-      suggest?: boolean,
-      where?: {[key: string]: string},
-      field?: string[],
-      bool?: "and" | "or" | "not"
-      page?: boolean | Cursor;
-      //TODO: Sorting
+    limit?: number,
+    suggest?: boolean,
+    where?: {[key: string]: string},
+    field?: string | string[],
+    bool?: "and" | "or" | "not"
+    sort?: (a, b)=>boolean | string; // Added property for Augur
   }
 
   interface SearchResults<T> {
-      page?: Cursor,
-      next?: Cursor,
-      result: SearchResult[]
+    page?: Cursor,
+    next?: Cursor,
+    result: T[]
   }
 
-  type SearchResult = number;
+  interface Document {
+      id: string;
+      field: any;
+  }
+
 
   export type CreateOptions = {
     profile?: IndexProfile;
@@ -64,8 +77,9 @@ declare module "flexsearch" {
     threshold?: false | number;
     resolution?: number;
     stemmer?: Stemmer | string | false;
-    filter?: FilterFn | string | false;
+    filter?: FilterFn | string | false;
     rtl?: boolean;
+    doc?: Document;
   };
 
 //   limit	number	Sets the limit of results.
@@ -86,7 +100,7 @@ declare module "flexsearch" {
   type Cursor = string;
 
   export default class FlexSearch {
-    static create(options?: CreateOptions): Index;
+    static create<T>(options?: CreateOptions): Index<T>;
     static registerMatcher(matcher: Matcher);
     static registerEncoder(name: string, encoder: EncoderFn);
     static registerLanguage(lang: string, options: { stemmer?: Stemmer; filter?: string[] });

@@ -33,7 +33,7 @@ sidebar_label: packages/augur-sdk/src/state/db/MarketDB
 
 **● flexSearch**: *`any`* =  require('flexsearch')
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:22](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L22)*
 
 ___
 
