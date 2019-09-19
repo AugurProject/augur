@@ -21,7 +21,9 @@ const getLoginAccountPositionsMarkets = createSelector(
   selectAccountPositionsState,
   selectMarketInfosState,
   (positions, markets) => {
-    console.log('selectLoginAccountClaimablePositions -> getLoginAccountPositionsMarkets');
+    console.log(
+      'selectLoginAccountClaimablePositions -> getLoginAccountPositionsMarkets'
+    );
     return Object.keys(positions).reduce(
       (p, marketId) => {
         if (!Object.keys(markets).includes(marketId)) return p;
@@ -52,12 +54,10 @@ const getLoginAccountPositionsMarkets = createSelector(
             },
             positions: {
               ...p.positions,
-              [market.id]: [
-                {
-                  unclaimedProfit,
-                  unclaimedProceeds,
-                },
-              ],
+              [market.id]: {
+                unclaimedProfit,
+                unclaimedProceeds,
+              },
             },
           };
           return result;

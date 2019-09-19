@@ -198,6 +198,13 @@ export async function isFinalized(marketId: string) {
   return status;
 }
 
+export async function finalizeMarket(marketId: string) {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(marketId);
+  if (!market) return false; // TODO: prob should throw error if market not found
+  return market.finalize();
+}
+
 export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
@@ -220,12 +227,20 @@ export async function getCreateMarketBreakdown() {
   return { validityBondFormatted, noShowFormatted };
 }
 
-export async function buyParticipationTokensEstimateGas(universeId: string, disputeWindow: string, amount: string) {
+export async function buyParticipationTokensEstimateGas(
+  universeId: string,
+  disputeWindow: string,
+  amount: string
+) {
   // TODO: get gas estimation for buying participation tokens
-  return "100000000"
+  return '100000000';
 }
 
-export async function buyParticipationTokens(universeId: string, disputeWindow: string, amount: string) {
+export async function buyParticipationTokens(
+  universeId: string,
+  disputeWindow: string,
+  amount: string
+) {
   const { contracts } = augurSdk.get();
   // TODO: call new method on universe contract when it becomes available.
   const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
@@ -252,7 +267,11 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
   const amount = convertDisplayValuetoAttoValue(
     new BigNumber(report.amount || '0')
   );
-  return await market.doInitialReport(payoutNumerators, report.description, amount);
+  return await market.doInitialReport(
+    payoutNumerators,
+    report.description,
+    amount
+  );
 }
 
 export async function addRepToTentativeWinningOutcome(
@@ -295,7 +314,7 @@ function getPayoutNumerators(inputs: doReportDisputeAddStake) {
     inputs.numOutcomes,
     inputs.marketType,
     inputs.outcomeId,
-    inputs.isInvalid,
+    inputs.isInvalid
   );
 }
 
@@ -600,9 +619,17 @@ export async function claimMarketsProceeds(
 ) {
   const augur = augurSdk.get();
 
-  return augur.contracts.claimTradingProceeds.claimMarketsProceeds(
-    markets,
-    shareHolder,
-    affiliateAddress
-  );
+  if (markets.length > 1) {
+    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+      markets,
+      shareHolder,
+      affiliateAddress
+    );
+  } else {
+    augur.contracts.claimTradingProceeds.claimTradingProceeds(
+      markets[0],
+      shareHolder,
+      affiliateAddress
+    );
+  }
 }
