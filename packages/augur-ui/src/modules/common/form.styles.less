@@ -36,7 +36,7 @@
       width: @size-10;
 
       > line {
-        stroke: @color-tertiary-info-text;
+        stroke: @color-secondary-text;
       }
     }
 
@@ -104,7 +104,7 @@
   > h5 {
     .text-14;
 
-    color: @color-alternate-info-text;
+    color: @color-primary-text;
   }
 
   > h5,
@@ -119,15 +119,15 @@
   }
 
   &:disabled {
-    border: 1px solid @color-shadow-text;
+    border: 1px solid @color-inactive-text;
 
     > svg > circle {
-      stroke: @color-shadow-text;
+      stroke: @color-inactive-text;
     }
 
     > h5,
     > p {
-      color: @color-shadow-text;
+      color: @color-inactive-text;
     }
   }
 }
@@ -148,7 +148,7 @@
     padding: 0 @size-12;
 
     &.Selected {
-      color: @color-alternate-info-text;
+      color: @color-primary-text;
     }
   }
 
@@ -193,7 +193,7 @@
     }
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: @color-primary-text;
     }
   }
 
@@ -233,7 +233,7 @@
     }
 
     > circle {
-      fill: @color-alternate-info-text;
+      fill: @color-primary-text;
     }
   }
 
@@ -252,11 +252,11 @@
   height: auto;
 
   &.Checked {
-    border: 1px solid @color-faded-bright;
+    border: 1px solid @color-negative;
 
     > svg {
       > circle:last-of-type {
-        fill: @color-faded-bright;
+        fill: @color-negative;
       }
     }
   }
@@ -278,7 +278,7 @@
     > span:first-of-type {
       .text-14-medium;
 
-      color: @color-alternate-info-text;
+      color: @color-primary-text;
       display: flex;
       margin-bottom: @size-12;
       margin-top: @size-16;
@@ -346,7 +346,7 @@
   > p {
     .text-14;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     grid-column: 2;
     grid-row: 4;
     width: 236px;
@@ -381,7 +381,7 @@
   > span:first-of-type {
     .text-14-medium;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     margin-bottom: @size-8;
   }
 
@@ -390,7 +390,7 @@
   > section > span:nth-of-type(2) {
     .text-12;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     margin-bottom: @size-12;
   }
 
@@ -421,7 +421,7 @@
     margin-top: @size-20;
 
     &:nth-of-type(2) {
-      color: @color-tertiary-info-text;
+      color: @color-secondary-text;
       margin-top: @size-16;
     }
   }
@@ -514,7 +514,7 @@
       width: @size-16;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: @color-inactive-text;
       }
     }
   }
@@ -557,7 +557,7 @@
   > p {
     .text-14;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     line-height: @size-18;
     margin: @size-12 @size-12 0;
     text-align: center;
@@ -579,7 +579,7 @@
       height: @size-48;
 
       > path {
-        stroke: @color-alternate-info-text;
+        stroke: @color-primary-text;
       }
 
       @media @breakpoint-mobile-mid {
@@ -650,7 +650,7 @@
       width: @size-11;
 
       > path {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
     }
   }
@@ -703,7 +703,7 @@
       background-color: @color-secondary-action;
       border-radius: @border-radius-default;
       border: 1px solid @color-primary-light;
-      color: @color-secondary-text;
+      color: @color-primary-text;
       height: 44px;
       min-width: 150px;
 
@@ -722,18 +722,18 @@
 
       &:disabled {
         background-color: @color-secondary-action;
-        border: 1px solid @color-shadow-text;
-        color: @color-shadow-text;
+        border: 1px solid @color-inactive-text;
+        color: @color-inactive-text;
         opacity: 0.5;
 
         &::placeholder {
-          color: @color-shadow-text;
+          color: @color-inactive-text;
         }
       }
     }
 
     > div.AutoCompleteList {
-      background-color: @color-secondary-text;
+      background-color: @color-primary-text;
       border-radius: @border-radius-default;
       display: none;
       position: absolute;
@@ -782,7 +782,7 @@
     > .Inner {
       .text-14;
 
-      color: @color-tertiary-info-text;
+      color: @color-secondary-text;
     }
 
     > .Trailing {
@@ -851,7 +851,7 @@
         min-width: @size-12;
 
         > path {
-          stroke: @color-secondary-text;
+          stroke: @color-primary-text;
         }
       }
 
@@ -861,7 +861,7 @@
     }
 
     > button[class*="SelectedLabel"] {
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     &:hover {
@@ -872,8 +872,8 @@
 
     &.disabled {
       background-color: @color-secondary-action;
-      border: 1px solid @color-shadow-text;
-      color: @color-shadow-text;
+      border: 1px solid @color-inactive-text;
+      color: @color-inactive-text;
       opacity: 0.5;
     }
 
@@ -886,7 +886,7 @@
 div.FormDropdownActive {
   > button {
     background-color: transparent;
-    color: @color-secondary-text;
+    color: @color-primary-text;
 
     &:hover {
       background-color: transparent;
@@ -896,18 +896,18 @@ div.FormDropdownActive {
   &:hover {
     background-color: @color-secondary-action;
     border: 1px solid @color-primary-light;
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
 
 .Input {
-  background-color: @color-secondary-text;
-  border: @size-1 solid @color-alternate-info-text;
+  background-color: @color-primary-text;
+  border: @size-1 solid @color-primary-text;
   display: flex;
 
   button,
   .input-value-comparison {
-    background-color: @color-secondary-text;
+    background-color: @color-primary-text;
     font-weight: @weight-medium;
   }
 
@@ -918,7 +918,7 @@ div.FormDropdownActive {
   }
 
   input::placeholder {
-    color: @color-alternate-info-text;
+    color: @color-primary-text;
   }
 
   input:focus {
@@ -946,7 +946,7 @@ div.FormDropdownActive {
     width: @size-16;
 
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: @color-inactive-text;
     }
 
     @media @breakpoint-mobile-mid {
@@ -966,17 +966,17 @@ div.FormDropdownActive {
 .Max {
   .text-10-medium;
 
-  color: @color-neutral;
+  color: @color-inactive-text;
   padding: 0 @size-16;
   text-transform: capitalize;
 }
 
 .MaxDark {
-  background-color: @color-alternate-info-text !important;
+  background-color: @color-primary-text !important;
 }
 
 .Incremental {
-  background-color: @color-secondary-text;
+  background-color: @color-primary-text;
   border: @size-1 solid transparent;
   display: flex;
 
@@ -992,7 +992,7 @@ div.FormDropdownActive {
 
   button,
   .ValueComparison {
-    background-color: @color-secondary-text;
+    background-color: @color-primary-text;
   }
 
   input {
@@ -1002,7 +1002,7 @@ div.FormDropdownActive {
   }
 
   input::placeholder {
-    color: @color-alternate-info-text;
+    color: @color-primary-text;
   }
 
   input:focus {
@@ -1034,7 +1034,7 @@ div.FormDropdownActive {
     padding: 0 @size-4;
 
     &:active {
-      background-color: @color-shadow-text;
+      background-color: @color-inactive-text;
     }
   }
 }
@@ -1044,10 +1044,10 @@ div.FormDropdownActive {
 }
 
 .LightBorder {
-  border: @size-1 solid @color-tertiary-info-text;
+  border: @size-1 solid @color-secondary-text;
 
   &:focus-within {
-    border: @size-1 solid @color-tertiary-info-text;
+    border: @size-1 solid @color-secondary-text;
   }
 }
 
@@ -1124,7 +1124,7 @@ div.FormDropdownActive {
     }
 
     .DayPicker__horizontal_2 {
-      background-color: @color-secondary-text;
+      background-color: @color-primary-text;
       border-radius: 0;
       box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
       font-size: @size-12;
@@ -1144,14 +1144,14 @@ div.FormDropdownActive {
       background-color: @color-secondary-action;
       border: 1px solid @color-primary-light;
       border-radius: @border-radius-default;
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     .DateInput_input.DateInput_input_1 {
       .text-14;
 
       background-color: @color-secondary-action;
-      color: @color-secondary-text;
+      color: @color-primary-text;
       border: 1px solid @color-primary-light;
 
     }
@@ -1170,7 +1170,7 @@ div.FormDropdownActive {
       .text-14;
 
       background: none;
-      color: @color-secondary-text;
+      color: @color-primary-text;
 
       &.DateInput_displayText__hasInput {
         color: inherit;
@@ -1212,7 +1212,7 @@ div.FormDropdownActive {
 
         > rect,
         > path {
-          stroke: @color-neutral;
+          stroke: @color-inactive-text;
         }
 
         &:hover {
@@ -1232,7 +1232,7 @@ div.FormDropdownActive {
 
         > rect,
         > path {
-          stroke: @color-neutral;
+          stroke: @color-inactive-text;
         }
 
         &:hover {
@@ -1254,7 +1254,7 @@ div.FormDropdownActive {
         width: @size-20;
 
         > path {
-          fill: @color-tertiary-info-text;
+          fill: @color-secondary-text;
         }
       }
     }
@@ -1262,7 +1262,7 @@ div.FormDropdownActive {
     .DayPicker_weekHeader_li_1 {
       .mono-11;
 
-      color: @color-alternate-text;
+      color: @color-inactive-text;
       text-transform: capitalize;
     }
 
@@ -1270,8 +1270,8 @@ div.FormDropdownActive {
       .mono-default;
 
       background: none;
-      border: 1px solid @color-tertiary-text;
-      color: @color-shadow-text;
+      border: 1px solid @color-primary-text;
+      color: @color-inactive-text;
 
       &.CalendarDay__selected_2:hover {
         background: @color-primary-light;
@@ -1279,29 +1279,29 @@ div.FormDropdownActive {
 
       &.CalendarDay__selected {
         background: @color-primary-alternate-two;
-        color: @color-secondary-text;
+        color: @color-primary-text;
 
         &:hover {
           background: @color-primary-alternate-two;
-          border: 1px solid @color-tertiary-text;
-          color: @color-secondary-text;
+          border: 1px solid @color-primary-text;
+          color: @color-primary-text;
         }
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
       &:hover {
         background: fade(@color-primary-alternate-two, 10%);
-        border: 1px solid @color-tertiary-text;
-        color: @color-disabled-text-secondary;
+        border: 1px solid @color-primary-text;
+        color: @color-inactive-text;
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
         background: fade(@color-primary-alternate-two, 10%);
-        border: 1px solid @color-tertiary-text;
+        border: 1px solid @color-primary-text;
       }
 
       &:hover {
-        color: @color-shadow-text;
+        color: @color-inactive-text;
       }
     }
 
@@ -1312,8 +1312,8 @@ div.FormDropdownActive {
 }
 
 .InputDropdown {
-  background-color: @color-secondary-text;
-  color: @color-tertiary-info-text;
+  background-color: @color-primary-text;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   padding: @size-8 @size-16;
@@ -1341,7 +1341,7 @@ div.FormDropdownActive {
   > div {
     .text-18;
 
-    background-color: @color-secondary-text;
+    background-color: @color-primary-text;
     box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
     color: @color-theme-primary;
     display: none;
@@ -1369,7 +1369,7 @@ div.FormDropdownActive {
 
       &:hover,
       &.active {
-        background-color: @color-alternate-info-text;
+        background-color: @color-primary-text;
       }
     }
   }
@@ -1390,7 +1390,7 @@ div.FormDropdownActive {
       height: @size-16;
 
       polyline {
-        stroke: @color-tertiary-info-text;
+        stroke: @color-secondary-text;
       }
     }
   }
@@ -1420,7 +1420,7 @@ div.FormDropdownActive {
     background-color: @color-secondary-action;
     border-radius: @border-radius-default;
     border: 1px solid @color-primary-light;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     display: flex;
     height: 44px;
     padding: @size-12;
@@ -1436,13 +1436,13 @@ div.FormDropdownActive {
       width: @size-20;
 
       > path {
-        fill: @color-tertiary-info-text;
+        fill: @color-secondary-text;
       }
     }
   }
 
   > div {
-    background: @color-secondary-text;
+    background: @color-primary-text;
     border: 1px solid @color-primary-light;
     color: @color-primary-background;
     display: flex;
@@ -1484,11 +1484,11 @@ div.FormDropdownActive {
     z-index: @above-all-content-above;
 
     > path:first-of-type {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
     }
 
     > path:last-of-type {
-      stroke: @color-alternate-info-text;
+      stroke: @color-primary-text;
       fill: transparent;
     }
   }
@@ -1509,9 +1509,9 @@ div.FormDropdownActive {
   > input {
     .mono-14;
 
-    background-color: @color-secondary-text;
-    border: 1px solid @color-tertiary-text;
-    color: @color-shadow-text;
+    background-color: @color-primary-text;
+    border: 1px solid @color-primary-text;
+    color: @color-inactive-text;
     height: @size-40;
     margin: @size-14 0;
     padding: @size-4;
@@ -1519,7 +1519,7 @@ div.FormDropdownActive {
     width: @size-40;
 
     &:hover {
-      border: 1px solid @color-neutral;
+      border: 1px solid @color-inactive-text;
     }
 
     &:focus {
@@ -1527,9 +1527,9 @@ div.FormDropdownActive {
     }
 
     &:disabled {
-      background-color: @color-secondary-text;
-      border: 1px solid @color-tertiary-text;
-      color: @color-shadow-text;
+      background-color: @color-primary-text;
+      border: 1px solid @color-primary-text;
+      color: @color-inactive-text;
     }
   }
 
@@ -1545,7 +1545,7 @@ div.FormDropdownActive {
       width: @size-16;
 
       > path {
-        fill: @color-neutral;
+        fill: @color-inactive-text;
       }
     }
 
@@ -1562,7 +1562,7 @@ div.FormDropdownActive {
 }
 
 .ErrorLabel {
-  background: @color-error-fade;
+  background: fade(@color-error, 20%);
   border-radius: @border-radius-default;
   border: 1px solid @color-error;
   border-left-width: @size-4;
@@ -1574,10 +1574,10 @@ div.FormDropdownActive {
     margin-right: @size-6;
     width: @size-12;
     height: @size-12;
-    background: @color-error-fade;
+    background: fade(@color-error, 20%);
 
     > circle {
-      fill: @color-error-fade;
+      fill: fade(@color-error, 20%);
       opacity: 1;
       stroke: @color-error;
     }
@@ -1598,7 +1598,7 @@ div.FormDropdownActive {
     > span:first-of-type {
       .mono-10-bold;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       text-transform: uppercase;
       margin-bottom: @size-9;
     }
@@ -1606,7 +1606,7 @@ div.FormDropdownActive {
     > span:last-of-type {
       .text-11;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
   }
 
@@ -1627,7 +1627,7 @@ div.FormDropdownActive {
       > span:last-of-type {
         .text-12;
 
-        color: @color-tertiary-info-text;
+        color: @color-secondary-text;
       }
     }
   }
@@ -1663,14 +1663,14 @@ div.error > div > div > div > div > input {
   > span:first-of-type {
     .text-14;
 
-    color: @color-alternate-info-text;
+    color: @color-primary-text;
   }
 
   > span:last-of-type {
     .text-10;
 
-    color: @color-alternate-info-text;
-    background: @color-tertiary-info-text;
+    color: @color-primary-text;
+    background: @color-secondary-text;
     border-radius: 4px;
     display: flex;
     justify-content: center;
@@ -1701,7 +1701,7 @@ div.error > div > div > div > div > input {
 }
 
 .CategoryRow:hover span:first-of-type {
-  color: @color-secondary-text;
+  color: @color-primary-text;
 }
 
 @keyframes spin {

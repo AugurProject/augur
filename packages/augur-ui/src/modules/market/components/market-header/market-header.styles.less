@@ -2,13 +2,13 @@
 @import (reference) "~modules/market/components/market-view/market-view.styles";
 
 .MarketHeader {
-  color: @color-tertiary-info-text;
+  color: @color-secondary-text;
   display: flex;
   flex: 1;
   flex-direction: column;
 
   &.Collapsed {
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -113,7 +113,7 @@
   text-transform: capitalize;
 
   span {
-    color: @color-alternate-text;
+    color: @color-inactive-text;
   }
 
   svg {
@@ -122,26 +122,26 @@
     margin-right: @size-20;
 
     rect {
-      fill: @color-alternate-text;
+      fill: @color-inactive-text;
     }
 
     path {
-      stroke: @color-alternate-text;
+      stroke: @color-inactive-text;
     }
   }
 
   &:hover {
     span {
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     svg {
       rect {
-        fill: @color-secondary-text;
+        fill: @color-primary-text;
       }
 
       path {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
     }
   }
@@ -169,7 +169,7 @@
     > h1 {
       .text-24-bold;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       flex-grow: 1;
     }
 
@@ -189,7 +189,7 @@
   h4 {
     .mono-10;
 
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     display: block;
     padding-bottom: 2px;
     padding-right: @size-8;
@@ -202,7 +202,7 @@
   > label {
     .text-12;
 
-    color: @color-tertiary-text;
+    color: @color-primary-text;
 
     @media @breakpoint-mobile-small {
       display: block;
@@ -214,7 +214,7 @@
   > button {
     .text-12;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     cursor: pointer;
     margin-top: @size-12;
     text-transform: uppercase;
@@ -224,7 +224,7 @@
       margin-right: @size-8;
 
       polyline {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
         stroke-width: 3;
       }
     }
@@ -271,7 +271,7 @@
       .text-18-bold;
 
       display: flex;
-      color: @color-secondary-text;
+      color: @color-primary-text;
       margin: 0 @size-8 @size-24;
     }
 

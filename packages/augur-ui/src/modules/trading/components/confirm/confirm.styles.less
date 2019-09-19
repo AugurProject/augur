@@ -23,7 +23,7 @@
 
   > svg {
     > line {
-      stroke: fade(@color-secondary-text, 40%);
+      stroke: fade(@color-primary-text, 40%);
     }
   }
 }
@@ -36,7 +36,7 @@
 .TradingConfirm__position__properties {
   .text-10-bold;
 
-  color: @color-tertiary-text;
+  color: @color-primary-text;
   display: flex;
   flex-direction: row;
   margin-bottom: @size-8;
@@ -49,7 +49,7 @@
 }
 
 .TradingConfirm__agg_position {
-  color: @color-secondary-text;
+  color: @color-primary-text;
   font-size: @size-11;
   padding-bottom: 0.1875rem;
 
@@ -82,7 +82,7 @@
     }
 
     > path {
-      fill: @color-neutral;
+      fill: @color-inactive-text;
     }
   }
 }
@@ -103,14 +103,14 @@
   right: @size-16;
 
   &.error {
-    background: fade(@color-error-fade, 90%);
+    background: fade(@color-error, 20%);
     border: 1px solid @color-error;
   }
 
   div:first-child {
     .mono-10-bold;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     padding-bottom: @size-4;
     text-transform: uppercase;
 
@@ -123,7 +123,7 @@
         fill: none;
 
         > path {
-          stroke: @color-secondary-text;
+          stroke: @color-primary-text;
         }
       }
     }
@@ -145,7 +145,7 @@
   div:last-child {
     .text-11;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
 
@@ -191,14 +191,14 @@
 
   .TradingConfirm__details > li > span,
   .TradingConfirm__details > li > span:first-child {
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
   }
 
   .TradingConfirm__header {
     padding: @size-24 @size-32 @size-24;
 
     > h2 {
-      color: @color-secondary-text;
+      color: @color-primary-text;
 
       &.order__buy {
         color: @color-positive;
@@ -244,6 +244,6 @@
 
   .TradingConfirm__details > li > span,
   .TradingConfirm__details > li > span:first-child {
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
