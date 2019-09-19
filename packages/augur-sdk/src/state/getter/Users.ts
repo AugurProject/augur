@@ -377,10 +377,10 @@ export class Users {
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
 
-    const marketsResponse = await db.findMarketCreatedLogs({
+    const marketsData = await db.findMarkets({
       selector: { market: { $in: marketIds } },
     });
-    const markets = _.keyBy(marketsResponse, 'market');
+    const markets = _.keyBy(marketsData, 'market');
 
     const marketFinalizedRequest = {
       selector: {
@@ -473,9 +473,6 @@ export class Users {
     );
 
     // Set unclaimedProceeds & unclaimedProfit
-    const marketsData = await db.findMarkets({
-      selector: { market: { $in: marketIds } },
-    });
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
