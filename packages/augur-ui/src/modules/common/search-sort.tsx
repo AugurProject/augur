@@ -46,40 +46,24 @@ export class SearchSort extends React.Component<
 
     const { showSortByOptions, showCheckbox } = this.state;
 
+    // todo: add checkbox for mobile
+
     return (
-      <>
-        <div className={classNames(Styles.SearchSort, Styles.ShowOnMobile)}>
-          {showCheckbox && checkBox}
-          <SearchBar onFocus={this.onFocus} onChange={onChange} />
-          {sortByOptions && (
-            <div className={Styles.Dropdown}>
-              <SquareDropdown
-                defaultValue={sortByOptions[0].value}
-                options={sortByOptions}
-                onChange={updateDropdown}
-                stretchOutOnMobile
-                sortByStyles={sortByStyles}
-              />
-            </div>
-          )}
-        </div>
-        <div
-          className={classNames(Styles.SearchSort, Styles.HideOnMobile, {
-            [Styles.HideDropdown]: sortByOptions && !showSortByOptions,
-          })}
-        >
-          {sortByOptions && (
-            <SquareDropdown
-              defaultValue={sortByOptions[0].value}
-              options={sortByOptions}
-              onChange={updateDropdown}
-              stretchOutOnMobile
-              sortByStyles={sortByStyles}
-            />
-          )}
-          <SearchBar onFocus={this.onFocus} onChange={onChange} />
-        </div>
-      </>
+      <div
+        className={classNames(Styles.SearchSort, {
+          [Styles.HideDropdown]: sortByOptions && !showSortByOptions,
+        })}
+      >
+        {sortByOptions && (
+          <SquareDropdown
+            defaultValue={sortByOptions[0].value}
+            options={sortByOptions}
+            onChange={updateDropdown}
+            sortByStyles={sortByStyles}
+          />
+        )}
+        <SearchBar onFocus={this.onFocus} onChange={() => onChange} />
+      </div>
     );
   }
 }

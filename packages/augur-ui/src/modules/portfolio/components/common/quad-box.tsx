@@ -42,7 +42,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
     rightContent={
       (props.showFilterSearch && (
         <SearchSort
-          sortByOptions={!props.switchHeaders && props.sortByOptions}
+          sortByOptions={props.sortByOptions}
           updateDropdown={props.updateDropdown}
           sortByStyles={props.sortByStyles}
           onChange={props.onSearchChange}
@@ -50,17 +50,6 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
         />
       )) ||
       props.rightContent
-    }
-    mostRightContent={
-      props.switchHeaders && (
-        <SquareDropdown
-          defaultValue={props.sortByOptions[0].value}
-          options={props.sortByOptions}
-          onChange={props.updateDropdown}
-          stretchOutOnMobile
-          sortByStyles={props.sortByStyles}
-        />
-      )
     }
     showToggle={Boolean(props.toggle)}
     toggle={props.toggle}
