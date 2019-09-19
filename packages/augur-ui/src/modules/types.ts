@@ -601,3 +601,13 @@ export interface PriceTimeSeriesData {
   volume: number;
   shareVolume: number;
 }
+
+export interface MarketClaimablePositions {
+  markets: MarketData[];
+  positions: {
+    [marketId: string]: {
+      unclaimedProfit: string;
+      unclaimedProceeds: string;
+    };
+  };
+}
