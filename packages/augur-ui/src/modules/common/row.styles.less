@@ -89,7 +89,7 @@
 }
 
 .SingleRow {
-  padding: 0.5rem 1.75rem 0.5rem 1rem;
+  padding: @size-4 @size-24 @size-4 @size-16;
 }
 
 .BottomBorder {
@@ -160,12 +160,6 @@
 
 .Row3_a {
   grid-template-columns: repeat(6, 1fr);
-
-  > li {
-    &:first-child {
-      padding-left: 0.5rem;
-    }
-  }
 }
 
 .Row4Parent {
@@ -279,7 +273,7 @@
   }
 
   .SingleRow {
-    border: 1px solid @color-primary-alternate;
+    border-bottom: 1px solid @color-primary-alternate;
     border-radius: @border-radius-default;
     padding-bottom: @size-12;
     padding-left: @size-16;

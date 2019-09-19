@@ -42,8 +42,8 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <li>{trade.timestamp.formattedShort}</li>
             <li>
               <ViewTransactionDetailsButton
-                label={'VIEW'}
-                dark
+                label={'VIEW etherscan tx'}
+                light
                 transactionHash={trade.transactionHash}
               />
             </li>
