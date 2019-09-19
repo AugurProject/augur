@@ -3,7 +3,7 @@
 .AlertsView {
   background-color: transparent;
   border-top: 0;
-  color: @color-secondary-text;
+  color: @color-primary-text;
   display: flex;
   flex-direction: column;
   max-height: 470px;
@@ -34,7 +34,7 @@
 }
 
 .dark {
-  background-color: @color-contrast-dark;
+  background-color: @color-dark-grey;
 }
 
 .parent {
@@ -81,7 +81,7 @@
   .text-16;
 
   align-self: center;
-  color: @color-tertiary-info-text;
+  color: @color-secondary-text;
   margin-top: @size-8;
   padding: @size-30;
   text-align: center;
@@ -91,32 +91,29 @@
 .dismissContainer {
   align-items: flex-end;
 
-  background: @color-contrast-background-theme;
+  background: @color-primary-text;
   border-radius: @size-3;
-  justify-content: center;
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
-  justify-content: center;
-  padding: @size-3;
+  padding: @size-6 @size-12;
 
   > button {
-    .mono-9; 
+    .mono-9;
 
     align-self: flex-end;
-    color: @color-tertiary-info-text;
-    cursor: pointer;
-    display: inline;
-    text-transform: uppercase;
-    background: @color-tertiary-background-theme;
-    display: flex;
-    flex: 1;
-    padding: @size-4;
+    background: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
     border-radius: @size-3;
+    color: @color-secondary-text;
+    cursor: pointer;
+    display: flex;
     justify-content: center;
+    padding: @size-4;
+    text-transform: uppercase;
 
     &:hover {
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     &:focus {
