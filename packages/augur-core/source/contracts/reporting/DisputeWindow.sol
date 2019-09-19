@@ -119,18 +119,16 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         uint256 _cashBalance = cash.balanceOf(address(this));
 
         // Burn tokens and send back REP
+        uint256 _supply = totalSupply();
         burn(_account, _attoParticipationTokens);
         require(getReputationToken().transfer(_account, _attoParticipationTokens));
 
-        if (_cashBalance == 0) {
-            return true;
+        uint256 _feePayoutShare = 0;
+        if (_cashBalance != 0) {
+            // Pay out fees
+            _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
+            cash.transfer(_account, _feePayoutShare);
         }
-
-        uint256 _supply = totalSupply();
-
-        // Pay out fees
-        uint256 _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
-        cash.transfer(_account, _feePayoutShare);
 
         augur.logParticipationTokensRedeemed(universe, _account, _attoParticipationTokens, _feePayoutShare);
         return true;
