@@ -5221,6 +5221,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public buyParticipationTokens_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"buyParticipationTokens","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
 	public granularity_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"granularity","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -5381,6 +5388,25 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public trustedBuy = async (buyer: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_buyer","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"trustedBuy","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [buyer, attotokens], 'trustedBuy', options.sender)
+	}
+	
+	public trustedBuy_estimateGas = async (buyer: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_buyer","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"trustedBuy","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [buyer, attotokens], 'trustedBuy', options.sender)
+	}
+
+	public trustedBuy_ = async (buyer: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_buyer","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"trustedBuy","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [buyer, attotokens], options.sender)
+		return <boolean>result[0]
 	}
 
 	public noHooksTransfer = async (recipient: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -10181,6 +10207,32 @@ export class ZeroXTradeToken<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_type","type":"uint8"},{"name":"_attoshares","type":"uint256"},{"name":"_price","type":"uint256"},{"name":"_market","type":"address"},{"name":"_outcome","type":"uint8"},{"name":"_kycToken","type":"address"},{"name":"_expirationTimeSeconds","type":"uint256"},{"name":"_salt","type":"uint256"}],"name":"createZeroXOrder","outputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"}],"name":"_zeroXOrder","type":"tuple"},{"name":"_orderHash","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [type, attoshares, price, market, outcome, kycToken, expirationTimeSeconds, salt], options.sender)
 		return <{_zeroXOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string }, _orderHash: string}>result
+	}
+}
+
+
+export class BuyParticipationTokens<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public buyParticipationTokens = async (universe: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"buyParticipationTokens","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [universe, attotokens], 'buyParticipationTokens', options.sender)
+	}
+	
+	public buyParticipationTokens_estimateGas = async (universe: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"buyParticipationTokens","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [universe, attotokens], 'buyParticipationTokens', options.sender)
+	}
+
+	public buyParticipationTokens_ = async (universe: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"buyParticipationTokens","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [universe, attotokens], options.sender)
+		return <boolean>result[0]
 	}
 }
 
