@@ -794,7 +794,6 @@ export const MARKET_IN_DISPUTE = 'marketsInDispute';
 export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
-export const PROCEEDS_TO_CLAIM_ON_HOLD = 'proceedsToClaimOnHold';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -804,7 +803,6 @@ export const NOTIFICATION_TYPES = {
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
-  [PROCEEDS_TO_CLAIM_ON_HOLD]: PROCEEDS_TO_CLAIM_ON_HOLD,
 };
 
 // Account View - Timeframe selection options

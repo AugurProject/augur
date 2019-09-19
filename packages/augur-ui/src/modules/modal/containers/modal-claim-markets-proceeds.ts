@@ -38,8 +38,6 @@ const mapStateToProps = (state: AppState) => {
   const accountMarketClaimablePositions: MarketClaimablePositions =  selectLoginAccountClaimablePositions(
     state
   );
-  let totalUnclaimedProceeds: BigNumber = ZERO; // BigNumber @type required
-  let totalUnclaimedProfit: BigNumber = ZERO;
   let claimableMarkets = [];
   if (
     accountMarketClaimablePositions.markets &&
@@ -53,18 +51,13 @@ const mapStateToProps = (state: AppState) => {
             pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
             pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
 
-          totalUnclaimedProceeds = totalUnclaimedProceeds.plus(
-            claimablePosition.unclaimedProceeds
-          );
-          totalUnclaimedProfit = totalUnclaimedProfit.plus(
-            claimablePosition.unclaimedProfit
-          );
           const unclaimedProceeds = formatDai(
             claimablePosition.unclaimedProceeds
           );
           const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
 
           return {
+            marketId,
             title: market.description,
             status: pending && pending.status,
             properties: [
@@ -87,8 +80,8 @@ const mapStateToProps = (state: AppState) => {
     gasCost,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     claimableMarkets,
-    totalUnclaimedProceeds,
-    totalUnclaimedProfit
+    totalUnclaimedProfit: accountMarketClaimablePositions.totals.totalUnclaimedProfit,
+    totalUnclaimedProceeds: accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
   };
 };
 

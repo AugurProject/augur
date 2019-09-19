@@ -10,16 +10,18 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
 import { MarketClaimablePositions } from 'modules/types';
 
-export const selectLoginAccountClaimablePositions  = (state): MarketClaimablePositions => {
-  console.log("selectLoginAccountClaimablePositions")
+export const selectLoginAccountClaimablePositions = (
+  state
+): MarketClaimablePositions => {
   return getLoginAccountPositionsMarkets(state);
-}
+};
 
 // need to add marketInfos in case positions load before markets
 const getLoginAccountPositionsMarkets = createSelector(
   selectAccountPositionsState,
   selectMarketInfosState,
   (positions, markets) => {
+    console.log('selectLoginAccountClaimablePositions -> getLoginAccountPositionsMarkets');
     return Object.keys(positions).reduce(
       (p, marketId) => {
         if (!Object.keys(markets).includes(marketId)) return p;
@@ -40,12 +42,20 @@ const getLoginAccountPositionsMarkets = createSelector(
           if (market === null) return p;
           const result = {
             markets: [...p.markets, market],
+            totals: {
+              totalUnclaimedProfit: p.totals.totalUnclaimedProfit.plus(
+                unclaimedProfit
+              ),
+              totalUnclaimedProceeds: p.totals.totalUnclaimedProceeds.plus(
+                unclaimedProceeds
+              ),
+            },
             positions: {
               ...p.positions,
               [market.id]: [
                 {
                   unclaimedProfit,
-                  unclaimedProceeds
+                  unclaimedProceeds,
                 },
               ],
             },
@@ -56,6 +66,10 @@ const getLoginAccountPositionsMarkets = createSelector(
       },
       {
         markets: [],
+        totals: {
+          totalUnclaimedProfit: ZERO,
+          totalUnclaimedProceeds: ZERO,
+        },
         positions: {},
       }
     );

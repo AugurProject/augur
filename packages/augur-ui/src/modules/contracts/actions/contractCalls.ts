@@ -596,8 +596,8 @@ export async function simulateTradeGasLimit(
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
-  affiliateAddress: string
-): Promise<ContractInterfaces.Event[]> {
+  affiliateAddress: string = NULL_ADDRESS
+) {
   const augur = augurSdk.get();
 
   return augur.contracts.claimTradingProceeds.claimMarketsProceeds(

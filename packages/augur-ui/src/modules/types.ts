@@ -604,6 +604,10 @@ export interface PriceTimeSeriesData {
 
 export interface MarketClaimablePositions {
   markets: MarketData[];
+  totals: {
+    totalUnclaimedProfit: BigNumber,
+    totalUnclaimedProceeds: BigNumber
+  }
   positions: {
     [marketId: string]: {
       unclaimedProfit: string;
