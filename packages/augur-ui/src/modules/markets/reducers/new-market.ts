@@ -72,8 +72,8 @@ export const DEFAULT_STATE: NewMarket = {
   maxPrice: "1",
   minPriceBigNumber: ZERO,
   maxPriceBigNumber: ONE,
-  initialLiquidityDai: ZERO,
-  initialLiquidityGas: ZERO
+  initialLiquidityDai: "0",
+  initialLiquidityGas: "0"
 };
 
 export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: BaseAction): NewMarket {

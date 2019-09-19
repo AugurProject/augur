@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, ZERO } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -16,6 +16,7 @@ import {
   convertDisplayValuetoAttoValue,
   convertDisplayPriceToOnChainPrice,
   marketNameToType,
+  Logs,
 } from '@augurproject/sdk';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import logError from 'utils/log-error';
@@ -84,7 +85,9 @@ export default class Visibility extends Component<
     const validations = DEFAULT_VALIDATIONS;
     let validationMessage = '';
 
-    validations.hasLiquidity = newMarket.initialLiquidityDai.toString() !== '0';
+    validations.hasLiquidity = !createBigNumber(
+      newMarket.initialLiquidityDai
+    ).eq(ZERO);
 
     if (!validations.hasLiquidity) {
       validationMessage = VALIDATION_TIPS.liquidity();
@@ -125,23 +128,25 @@ export default class Visibility extends Component<
     return { validations, validationMessage };
   }
 
-  calculateParams(newMarket) {
+  calculateParams(newMarket: NewMarket) {
     const {
       marketType,
-      outcomesFormatted,
+      outcomes,
       tickSize,
-      maxPriceBigNumber,
-      minPriceBigNumber,
+      maxPrice,
+      minPrice,
       orderBook,
       settlementFee,
     } = newMarket;
     const tickSizeBigNumber = createBigNumber(tickSize);
     const numTicks = tickSizeToNumTickWithDisplayPrices(
       tickSizeBigNumber,
-      minPriceBigNumber,
-      maxPriceBigNumber
+      createBigNumber(minPrice),
+      createBigNumber(maxPrice)
     );
-    const marketTypeNumber = marketNameToType(marketType);
+    const marketTypeNumber = marketNameToType(
+      marketType as Logs.MarketTypeName
+    );
     let formattedOrderBook = {};
 
     Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
@@ -150,8 +155,8 @@ export default class Visibility extends Component<
         const formattedOrder = {
           price: convertDisplayPriceToOnChainPrice(
             createBigNumber(order.price),
-            minPriceBigNumber,
-            tickSizeBigNumber
+            createBigNumber(minPrice),
+            createBigNumber(tickSize)
           ).toFixed(),
           amount: convertDisplayValuetoAttoValue(
             createBigNumber(order.quantity)
@@ -168,7 +173,7 @@ export default class Visibility extends Component<
     return {
       orderBook: formattedOrderBook,
       numTicks: numTicks.toFixed(),
-      numOutcomes: outcomesFormatted.length,
+      numOutcomes: outcomes.length,
       marketType: marketTypeNumber,
       marketFeeDivisor: `${settlementFee}`,
       reportingFeeDivisor: '0',
@@ -212,8 +217,8 @@ export default class Visibility extends Component<
   componentDidUpdate(prevProps) {
     const { newMarket } = this.props;
     if (
-      prevProps.newMarket.initialLiquidityDai.comparedTo(
-        newMarket.initialLiquidityDai
+      createBigNumber(prevProps.newMarket.initialLiquidityDai).comparedTo(
+        createBigNumber(newMarket.initialLiquidityDai)
       ) !== 0
     ) {
       this.getRanking();

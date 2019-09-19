@@ -203,7 +203,7 @@ export function optionsBlank(): FormattedNumberOptions {
     bigUnitPostfix: false,
   };
 }
-export function sumAndformatGasCostToEther(gases: Array<string>, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
+export function sumAndformatGasCostToEther(gases: (NumStrBigNumber)[], opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
   const summedGas = gases.reduce(
     (p, g) => createBigNumber(unfix(g, "number")).plus(p),
     ZERO,
@@ -216,7 +216,7 @@ export function sumAndformatGasCostToEther(gases: Array<string>, opts: Formatted
   return formatGasCost(estimatedGasCost, opts).value;
 }
 
-export function formatGasCostToEther(num: string, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
+export function formatGasCostToEther(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
   return sumAndformatGasCostToEther([num], opts, gasPrice);
 }
 
