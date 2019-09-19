@@ -130,7 +130,7 @@ export const loadMarketsByFilter = (
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
-    maxLiquiditySpread: filterOptions.maxLiquiditySpread,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.GetMaxLiquiditySpread,
     ...sort,
   };
 
