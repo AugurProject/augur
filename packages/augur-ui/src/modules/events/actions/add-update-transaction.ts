@@ -21,7 +21,9 @@ import {
   APPROVE,
   DOINITIALREPORT,
   ZERO,
-  PREFILLEDSTAKE
+  PREFILLEDSTAKE,
+  PUBLICFILLBESTORDER,
+  PUBLICFILLORDER
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
@@ -67,7 +69,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         timestamp: blockchain.currentAugurTimestamp * 1000,
         name: methodCall,
       }));
-    } else if (hash && eventName === TXEventName.Success && methodCall && methodCall !== "" && methodCall !== CANCELORDER) {
+    } else if (hash && eventName === TXEventName.Success && methodCall && methodCall !== "" && methodCall !== CANCELORDER && methodCall !== PUBLICFILLORDER) {
       dispatch(updateAlert(hash, {
         params: transaction.params,
         status: TXEventName.Success,
