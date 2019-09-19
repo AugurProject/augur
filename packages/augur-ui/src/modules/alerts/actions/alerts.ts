@@ -1,7 +1,6 @@
 import store, { AppState } from 'store';
-import * as constants from 'modules/common/constants';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import makePath from 'modules/routes/helpers/make-path';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -16,6 +15,12 @@ import {
   CREATEYESNOMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
+  PUBLICFILLORDER,
+  INFO,
+  PUBLICFILLBESTORDER,
+  PUBLICFILLBESTORDERWITHLIMIT,
+  PUBLICTRADE,
+  PUBLICTRADEWITHLIMIT,
 } from 'modules/common/constants';
 
 export const ADD_ALERT = 'ADD_ALERT';
@@ -33,7 +38,7 @@ export function addAlert(alert: any) {
           data: {
             alert: {
               seen: false,
-              level: constants.INFO,
+              level: INFO,
               networkId: getNetworkId(),
               universe: universe.id,
               ...alert,
@@ -42,15 +47,19 @@ export function addAlert(alert: any) {
         };
         return fullAlert;
       };
-      dispatch(setAlertText(alert, callback));
+      try {
+        dispatch(setAlertText(alert, callback));
+      } catch (error) {
+        callback(error, null);
+      }
     }
   };
 }
 
-export function removeAlert(id: string) {
+export function removeAlert(id: string, name: string) {
   return {
     type: REMOVE_ALERT,
-    data: { id },
+    data: { id, name },
   };
 }
 
@@ -66,7 +75,11 @@ export function updateExistingAlert(id, alert) {
       };
       return fullAlert;
     };
-    return dispatch(setAlertText(alert, callback));
+    try {
+      return dispatch(setAlertText(alert, callback));
+    } catch (error) {
+      return callback(error, null);
+    }
   };
 }
 
@@ -74,8 +87,9 @@ export function updateAlert(id: string, alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
     alert.id = id;
     if (alert) {
-      const { alerts } = store.getState() as AppState;
-      if (alert.name === DOINITIALREPORT) {
+      const { alerts, loginAccount } = store.getState() as AppState;
+      const alertName = alert.name.toUpperCase();
+      if (alertName === DOINITIALREPORT) {
         dispatch(
           updateAlert(id, {
             ...alert,
@@ -86,6 +100,79 @@ export function updateAlert(id: string, alert: any) {
             name: CONTRIBUTE,
           })
         );
+      } else if (
+        alertName === PUBLICFILLORDER ||
+        alertName === PUBLICFILLBESTORDERWITHLIMIT ||
+        alertName === PUBLICFILLBESTORDER
+      ) {
+        // if fill log comes in first
+        if (
+          alert.params.orderCreator.toUpperCase() !==
+          loginAccount.address.toUpperCase()
+        ) {
+          // filler
+          const foundOpenOrder = alerts.find(
+            findAlert =>
+              (findAlert.name.toUpperCase() === PUBLICTRADE ||
+                findAlert.name.toUpperCase() === PUBLICTRADEWITHLIMIT) &&
+              findAlert.id === id
+          );
+          if (foundOpenOrder) {
+            const amountFilled = new BigNumber(alert.params.amountFilled);
+            const orderAmount = new BigNumber(
+              foundOpenOrder.params._amount || foundOpenOrder.params.amount
+            );
+
+            if (amountFilled.lt(orderAmount)) {
+              // if part of order is unfilled, update placed order
+              dispatch(
+                updateExistingAlert(foundOpenOrder.id, {
+                  ...foundOpenOrder,
+                  params: {
+                    ...foundOpenOrder.params,
+                    _amount: orderAmount.minus(amountFilled),
+                  },
+                })
+              );
+            } else {
+              // if full order was filled, then delete placed order
+              dispatch(removeAlert(foundOpenOrder.id, foundOpenOrder.name));
+            }
+          }
+        }
+      } else if (
+        alertName === PUBLICTRADE ||
+        alertName === PUBLICTRADEWITHLIMIT
+      ) {
+        // if order placed log comes in first
+        const foundFilledOrder = alerts.find(
+          findAlert =>
+            (findAlert.name.toUpperCase() === PUBLICFILLORDER ||
+              findAlert.name.toUpperCase() === PUBLICFILLBESTORDERWITHLIMIT ||
+              findAlert.name.toUpperCase() === PUBLICFILLBESTORDER) &&
+            findAlert.id === id
+        );
+        if (foundFilledOrder) {
+          if (
+            foundFilledOrder.params.orderCreator.toUpperCase() !==
+            loginAccount.address.toUpperCase()
+          ) {
+            const amountFilled = new BigNumber(
+              foundFilledOrder.params.amountFilled
+            );
+            const orderAmount = new BigNumber(
+              alert.params._amount || alert.params.amount
+            );
+
+            if (amountFilled.lt(orderAmount)) {
+              // if part of order is unfilled, update placed order
+              alert.params._amount = orderAmount.minus(amountFilled);
+            } else {
+              // if full order was filled, then no need to add the placed order
+              return;
+            }
+          }
+        }
       }
       const foundAlert = alerts.find(findAlert => {
         if (
@@ -93,9 +180,9 @@ export function updateAlert(id: string, alert: any) {
           findAlert.name.toUpperCase() === CREATEMARKET
         ) {
           return (
-            alert.name.toUpperCase() === CREATEYESNOMARKET ||
-            alert.name.toUpperCase() === CREATESCALARMARKET ||
-            alert.name.toUpperCase() === CREATECATEGORICALMARKET ||
+            alertName === CREATEYESNOMARKET ||
+            alertName === CREATESCALARMARKET ||
+            alertName === CREATECATEGORICALMARKET ||
             findAlert.name.toUpperCase() === CREATEYESNOMARKET ||
             findAlert.name.toUpperCase() === CREATESCALARMARKET ||
             findAlert.name.toUpperCase() === CREATECATEGORICALMARKET
@@ -107,7 +194,7 @@ export function updateAlert(id: string, alert: any) {
         );
       });
       if (foundAlert) {
-        dispatch(removeAlert(id));
+        dispatch(removeAlert(id, alert.name));
         dispatch(
           addAlert({
             ...foundAlert,
@@ -127,7 +214,7 @@ export function updateAlert(id: string, alert: any) {
 }
 // We clear by 'alert level'.
 // This will not surface in the UI just yet.
-export function clearAlerts(alertLevel = constants.INFO) {
+export function clearAlerts(alertLevel = INFO) {
   return {
     type: CLEAR_ALERTS,
     data: {
