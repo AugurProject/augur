@@ -1,5 +1,5 @@
 import React from "react";
-import { ExpandIcon, CollapseIcon } from "modules/common/icons";
+import { TwoArrowsOutline } from "modules/common/icons";
 
 import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
 import Styles from "modules/market-charts/components/order-header/order-header.styles.less";
@@ -25,7 +25,7 @@ const OrderHeader = ({
       onClick={toggle}
     >
       {title}
-      {toggle && <span>{extended ? ExpandIcon : CollapseIcon}</span>}
+      {toggle && <span>{TwoArrowsOutline}</span>}
     </button>
     {!hide && (
       <div>

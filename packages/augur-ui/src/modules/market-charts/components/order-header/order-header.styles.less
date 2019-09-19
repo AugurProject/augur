@@ -8,22 +8,13 @@
   > button {
     > span {
       margin-top: -1px;
+      
       > svg {
-        width: @size-20;
-        height: @size-28;
-
-        > rect,
-        > path,
-        > line {
-          stroke: @color-neutral-secondary;
-        }
-
-        > g {
-          > rect,
-          > path,
-          > line {
-            stroke: @color-neutral-secondary;
-          }
+        width: @size-12;
+        height: @size-16;
+    
+        > path {
+          fill: @color-tertiary-info-text;
         }
       }
     }
@@ -33,18 +24,8 @@
 
       > span {
         > svg {
-          > rect,
-          > path,
-          > line {
-            stroke: @color-secondary-text;
-          }
-
-          > g {
-            > rect,
-            > path,
-            > line {
-              stroke: @color-secondary-text;
-            }
+          > path {
+            fill: @color-secondary-text;
           }
         }
       }
@@ -59,7 +40,7 @@
     background-color: @color-theme-primary;
     display: flex;
     height: 100%;
-    padding: @size-9 @size-24 @size-9 @size-10;
+    padding: @size-9 @size-16 @size-9 @size-40;
 
     > div:first-of-type {
       justify-content: flex-start;
@@ -71,7 +52,7 @@
     }
 
     > div {
-      .mono-10;
+      .mono-9-bold;
 
       color: @color-neutral;
       display: flex;
