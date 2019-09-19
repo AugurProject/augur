@@ -50,7 +50,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP, dP, oP) => {
   let numberOfTransactions = 0;
-  let totalCost = createBigNumber(0);
+  let totalCost = ZERO;
 
   sP.market.outcomes.forEach((outcome: Getters.Markets.MarketInfoOutcome) => {
     sP.liquidity &&
