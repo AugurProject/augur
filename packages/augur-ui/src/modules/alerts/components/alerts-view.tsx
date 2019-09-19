@@ -88,6 +88,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
                   key={`${i}-${alert.id}-${alert.title}`}
                   removeAlert={() => removeAlert(alert.id)}
                   toggleAlerts={toggleAlerts}
+                  timestampInMilliseconds={alert.timestamp}
                   {...alert}
                 />
               ))}
