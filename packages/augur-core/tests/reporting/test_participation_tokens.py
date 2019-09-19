@@ -43,3 +43,33 @@ def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
         with TokenDelta(cash, totalFees * 1 / 4, kitchenSinkFixture.accounts[1], "Redeeming didn't give fees"):
             with TokenDelta(disputeWindow, -100, kitchenSinkFixture.accounts[1], "Redeeming didn't burn PTs"):
                 assert disputeWindow.redeem(kitchenSinkFixture.accounts[1])
+
+def test_participation_tokens_convenience(kitchenSinkFixture, universe, market, cash):
+    reputationToken = kitchenSinkFixture.applySignature("ReputationToken", universe.getReputationToken())
+    buyParticipationTokens = kitchenSinkFixture.contracts["BuyParticipationTokens"]
+
+    # Fast forward time until the new dispute window starts and we can buy some tokens
+    assert reputationToken.transfer(kitchenSinkFixture.accounts[1], 100)
+    with TokenDelta(reputationToken, -300, kitchenSinkFixture.accounts[0], "Buying disnt take REP"):
+        assert buyParticipationTokens.buyParticipationTokens(universe.address, 300)
+    with TokenDelta(reputationToken, -100, kitchenSinkFixture.accounts[1], "Buying disnt take REP"):
+        assert buyParticipationTokens.buyParticipationTokens(universe.address, 100, sender = kitchenSinkFixture.accounts[1])
+
+    disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", universe.getOrCreateCurrentDisputeWindow(False))
+
+    # We can't redeem until the window is over
+    with raises(TransactionFailed):
+        disputeWindow.redeem(kitchenSinkFixture.accounts[0])
+
+    # Fast forward time until the new dispute window is over and we can redeem
+    kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+
+    totalFees = cash.balanceOf(disputeWindow.address)
+
+    with TokenDelta(reputationToken, 300, kitchenSinkFixture.accounts[0], "Redeeming didn't refund REP"):
+        with TokenDelta(disputeWindow, -300, kitchenSinkFixture.accounts[0], "Redeeming didn't burn PTs"):
+            assert disputeWindow.redeem(kitchenSinkFixture.accounts[0])
+
+    with TokenDelta(reputationToken, 100, kitchenSinkFixture.accounts[1], "Redeeming didn't refund REP"):
+        with TokenDelta(disputeWindow, -100, kitchenSinkFixture.accounts[1], "Redeeming didn't burn PTs"):
+            assert disputeWindow.redeem(kitchenSinkFixture.accounts[1])

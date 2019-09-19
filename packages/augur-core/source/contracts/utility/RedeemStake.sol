@@ -6,7 +6,7 @@ import 'ROOT/reporting/IReportingParticipant.sol';
 
 /**
  * @title Redeem Stake
- * @notice A Utility contract with no state for redeeming many redeemable bonds or tokens into the ystsem in on TX
+ * @notice A Utility contract with no state for redeeming many redeemable bonds or tokens into the system in on TX
  */
 contract RedeemStake {
 
