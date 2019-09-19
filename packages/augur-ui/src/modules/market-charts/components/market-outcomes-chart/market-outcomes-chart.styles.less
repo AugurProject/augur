@@ -16,15 +16,15 @@
       g.highcharts-axis-labels > text > tspan {
         .mono-12;
 
-        color: @color-secondary-text;
-        fill: @color-secondary-text;
+        color: @color-primary-text;
+        fill: @color-primary-text;
       }
 
       .highcharts-yaxis-labels,
       .highcharts-label {
         .mono-12;
 
-        fill: @color-secondary-text;
+        fill: @color-primary-text;
       }
 
       .highcharts-no-data {
@@ -42,7 +42,7 @@
 
       .highcharts-tick,
       .highcharts-axis-line {
-        stroke: fade(@color-secondary-text, 40%);
+        stroke: fade(@color-primary-text, 40%);
       }
 
       .highcharts-xaxis-grid,
@@ -55,7 +55,7 @@
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: fade(@color-secondary-text, 40%);
+          stroke: fade(@color-primary-text, 40%);
         }
       }
 
@@ -64,12 +64,12 @@
       }
 
       .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
 
       .highcharts-crosshair-label {
         background-color: @color-theme-primary;
-        color: @color-secondary-text;
+        color: @color-primary-text;
         font-size: @size-10;
         z-index: @above-all-content;
       }
@@ -177,24 +177,24 @@
       .highcharts-line-series.highcharts-color-7 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-7.highcharts-tracker > path:nth-child(2),
       .highcharts-line-series.highcharts-color-7 {
-        fill: @color-outcome-eight;
-        stroke: @color-outcome-eight;
+        fill: @color-outcome-invalid;
+        stroke: @color-outcome-invalid;
       }
 
       .highcharts-line-series.highcharts-halo.highcharts-color-7,
       .highcharts-line-series.highcharts-color-7 > path.highcharts-graph {
-        stroke: @color-outcome-eight;
+        stroke: @color-outcome-invalid;
       }
 
       text.highcharts-title tspan {
         .mono-10;
 
-        fill: @color-secondary-text;
+        fill: @color-primary-text;
       }
     }
   }
 }
 
 .MarketOutcomeChartsHighcharts__yLabels {
-  color: @color-secondary-text;
+  color: @color-primary-text;
 }

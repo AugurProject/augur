@@ -31,7 +31,7 @@
 .Label {
   .mono-11;
 
-  color: @color-shadow-text;
+  color: @color-inactive-text;
   padding-bottom: @size-10;
   text-transform: uppercase;
   white-space: nowrap;
@@ -50,12 +50,12 @@
   }
 
   &.active {
-    color: @color-secondary-text;
+    color: @color-primary-text;
     position: relative;
 
     > span {
       &::after {
-        background-color: @color-secondary-text;
+        background-color: @color-primary-text;
         border-radius: 0.1875rem;
         bottom: 0;
         content: '';
@@ -105,7 +105,7 @@
   &.active {
     > span {
       &::after {
-        background: @color-in-reporting;
+        background: @color-reporting;
       }
     }
   }

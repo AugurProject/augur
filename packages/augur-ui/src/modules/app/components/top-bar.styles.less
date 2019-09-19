@@ -14,7 +14,7 @@
 
   // AUGUR LOGO
   > div:first-of-type {
-    border-right: 1px solid @color-primary-background;
+    border-right: 1px solid @color-dark-grey;
     padding: 0 @size-20 0 @size-16;
 
     @media @breakpoint-mobile {
@@ -33,7 +33,7 @@
     @media @breakpoint-mobile {
       width: 100%;
       justify-content: flex-end;
-      border-right: 1px solid @color-primary-background;
+      border-right: 1px solid @color-dark-grey;
     }
   }
 
@@ -105,7 +105,7 @@
       > span {
         .mono-9-bold;
 
-        color: @color-tertiary-info-text;
+        color: @color-secondary-text;
       }
 
       > svg {
@@ -116,7 +116,7 @@
       > span:last-of-type {
           .text-10;
 
-          color: @color-alternate-info-text;
+          color: @color-primary-text;
       }
 
       > span:nth-of-type(2)::before,
@@ -137,7 +137,7 @@
           > span:first-of-type {
             .mono-9-bold;
 
-            color: @color-tertiary-info-text;
+            color: @color-secondary-text;
           }
 
           > svg {
@@ -151,7 +151,7 @@
   // P/I
   > div:last-of-type {
     align-items: center;
-    border: 1px solid @color-primary-background;
+    border: 1px solid @color-dark-grey;
     border-bottom: 0;
     border-top: 0;
     display: flex;
@@ -163,7 +163,7 @@
     > span {
       .mono-9-bold;
 
-      color: @color-tertiary-info-text;
+      color: @color-secondary-text;
       margin-bottom: 2px;
       text-transform: uppercase;
       white-space: nowrap;
@@ -180,7 +180,7 @@
 }
 
 .alerts {
-  color: @color-secondary-text;
+  color: @color-primary-text;
   cursor: pointer;
   display: flex;
   height: 100%;
@@ -224,13 +224,13 @@ div.tooltip {
   > h4 {
     .text-10;
 
-    color: @color-neutral;
+    color: @color-inactive-text;
     line-height: normal;
     margin-bottom: 2px;
   }
 
   > p {
-    color: @color-secondary-text;
+    color: @color-primary-text;
     font-size: @size-12;
     line-height: normal;
     margin-bottom: @size-8;

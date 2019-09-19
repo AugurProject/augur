@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import OpenOrder from "modules/portfolio/containers/open-order";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
 
-import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
+import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";
 
 const OpenOrdersTable = ({ openOrders }) => (
   <div className={Styles.Table}>

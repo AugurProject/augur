@@ -22,7 +22,7 @@ interface AlertProps {
   status: string;
   toggleAlerts: Function;
   noShow?: boolean;
-  toast?: boolean;
+  showToast?: boolean;
 }
 
 export default class Alert extends Component<AlertProps, {}> {
@@ -36,7 +36,7 @@ export default class Alert extends Component<AlertProps, {}> {
       timestampInMilliseconds,
       title,
       noShow,
-      toast,
+      showToast,
     } = this.props;
 
     if (!title || title === '') return null;
@@ -69,7 +69,7 @@ export default class Alert extends Component<AlertProps, {}> {
             </div>
           )}
           <div className={Styles.Row}>
-            {!toast && (
+            {!showToast && (
               <>
                 <span className={Styles.Timestamp}>
                   {

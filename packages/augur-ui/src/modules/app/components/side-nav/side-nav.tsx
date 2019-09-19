@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 
 import makePath from "modules/routes/helpers/make-path";
 import ConnectAccount from "modules/auth/containers/connect-account";
@@ -10,15 +9,20 @@ import GasPriceEdit from "modules/app/containers/gas-price-edit";
 import { MARKETS } from "modules/routes/constants/views";
 import Styles from "modules/app/components/side-nav/side-nav.styles.less";
 
-export default class SideNav extends Component {
-  static propTypes = {
-    defaultMobileClick: PropTypes.func.isRequired,
-    isLogged: PropTypes.bool.isRequired,
-    menuData: PropTypes.array.isRequired,
-    mobileShow: PropTypes.bool.isRequired,
-    currentBasePath: PropTypes.string,
-  };
+interface SideNavProps {
+  defaultMobileClick: Function;
+  isLogged: Boolean;
+  menuData: Array<Object>;
+  mobileShow: Boolean;
+  currentBasePath?: string;
+};
 
+interface SideNavState {
+  selectedItem: null | Object;
+  selectedKey: null | string;
+}
+
+export default class SideNav extends Component<SideNavProps, SideNavState> {
   static defaultProps = {
     currentBasePath: null,
   };
