@@ -12,10 +12,8 @@ export default class ModuleTabs extends Component {
     children: PropTypes.arrayOf(ModulePane).isRequired,
     fillWidth: PropTypes.bool,
     fillForMobile: PropTypes.bool,
-    fillForOnlyMobile: PropTypes.bool,
     noBorder: PropTypes.bool,
     id: PropTypes.string,
-    borderBetween: PropTypes.bool,
     leftButton: PropTypes.element,
     scrollOver: PropTypes.bool
   };
@@ -25,10 +23,8 @@ export default class ModuleTabs extends Component {
     className: "",
     fillWidth: false,
     fillForMobile: false,
-    fillForOnlyMobile: false,
     id: "id",
     noBorder: false,
-    borderBetween: false,
     leftButton: null,
     scrollOver: false
   };
@@ -75,8 +71,6 @@ export default class ModuleTabs extends Component {
                   this.state.selected === index && this.props.fillWidth,
                 [Styles.ActiveNoBorder]:
                   this.state.selected === index && this.props.noBorder,
-                [Styles.ActiveBorderBetween]:
-                  this.state.selected === index && this.props.borderBetween,
                 [Styles.IsNew]: child.props && child.props.isNew,
               })}
             >
@@ -95,10 +89,7 @@ export default class ModuleTabs extends Component {
             [Styles.Fill]: this.props.fillWidth,
             [Styles.FillWidth]:
               this.props.fillWidth || this.props.fillForMobile,
-            [Styles.FillWidthMobile]:
-              this.props.fillForOnlyMobile,
-            [Styles.NoBorder]: this.props.noBorder,
-            [Styles.BorderBetween]: this.props.borderBetween
+            [Styles.NoBorder]: this.props.noBorder
           })}
         >
           {this.props.children.map(labels.bind(this))}
