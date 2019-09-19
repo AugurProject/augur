@@ -472,36 +472,49 @@ export class Users {
       }
     );
 
+    const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
+      params.account,
+      {
+        selector: {
+          market: { $in: marketIds },
+        },
+      }
+    );
+    // Create mapping for market/outcome balances
+    const marketOutcomeBalances = {};
+    for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
+      if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
+        marketOutcomeBalances[tokenBalanceChangedLog.market] = {};
+      }
+      marketOutcomeBalances[tokenBalanceChangedLog.market][new BigNumber(tokenBalanceChangedLog.outcome).toNumber()] = tokenBalanceChangedLog.balance;
+    }
+
     // Set unclaimedProceeds & unclaimedProfit
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
       if (marketData.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
         if (marketData.tentativeWinningPayoutNumerators) {
-          const outcome = marketData.tentativeWinningPayoutNumerators.findIndex((item: string) => Number(item) > 0);
-          const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
-            params.account,
-            {
-              selector: {
-                market: marketData.market,
-                outcome: `0x0${outcome}`,
-              },
-            }
-          );
-          if (tokenBalanceChangedLogs.length > 0) {
-            const lastTokenBalanceChanged = tokenBalanceChangedLogs[tokenBalanceChangedLogs.length - 1];
-            const numShares = new BigNumber(lastTokenBalanceChanged.balance);
-            const reportingFeeDivisor = marketData.feeDivisor;
-            const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
-            const unclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[outcome])
-              .minus(marketData.feePerCashInAttoCash)
-              .minus(reportingFee);
+          for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
+            if (marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator] !== '0x00' && marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]) {
+              const numShares = new BigNumber(marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]);
+              const reportingFeeDivisor = marketData.feeDivisor;
+              const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
+              const unclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator])
+                .minus(marketData.feePerCashInAttoCash)
+                .minus(reportingFee);
 
-            marketTradingPositions[marketData.market].unclaimedProceeds = unclaimedProceeds.dividedBy(QUINTILLION).toFixed(2);
-            marketTradingPositions[marketData.market].unclaimedProfit = unclaimedProceeds.dividedBy(QUINTILLION).minus(marketTradingPositions[marketData.market].unrealizedCost).toFixed(2);
+              marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).plus(unclaimedProceeds).toString();
+              marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(unclaimedProceeds).minus(new BigNumber(marketTradingPositions[marketData.market].unrealizedCost).times(QUINTILLION)).toString();
+            }
           }
         }
       }
+    }
+    // Format unclaimedProceeds & unclaimedProfit to Dai with 2 decimal places
+    for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).dividedBy(QUINTILLION).toFixed(2);
+      marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(marketTradingPositions[marketData.market].unclaimedProfit).dividedBy(QUINTILLION).toFixed(2);
     }
 
     // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
