@@ -275,7 +275,7 @@ jobs:
           if [ $err = 1 ]
           then
               echo >&2 "Contract changes detected"
-              echo >&2 "make sure core changes are reflected in contracts.json"
+              echo >&2 "Please rebuild augur-core and commit the generated files:"
               echo >&2 "yarn workspace @augurproject/core build"
               exit 1
           fi
