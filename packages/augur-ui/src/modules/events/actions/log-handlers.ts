@@ -48,15 +48,18 @@ const handleAlert = (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  dispatch(
-
-    updateAlert(log.transactionHash, {
-      params: log,
-      status: TXEventName.Success,
-      timestamp: blockchain.currentAugurTimestamp * 1000,
-      name: name,
-    })
-  );
+  try {
+    dispatch(
+      updateAlert(log.transactionHash, {
+        params: log,
+        status: TXEventName.Success,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        name: name,
+      })
+    );
+  } catch (e) {
+    console.error('alert could not be created', e);
+  }
 };
 
 const loadUserPositionsAndBalances = (marketId: string) => (
@@ -432,7 +435,6 @@ export const handleDisputeCrowdsourcerContributionLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-
     handleAlert(log, CONTRIBUTE, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
