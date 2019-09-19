@@ -211,14 +211,14 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
       <span>Make tentative winner</span>
       <span>
         {props.fullBond && props.fullBond.formatted}
-        <span>/ {props.stake && props.stake.bondSizeTotal.formatted} REP</span>
+        <span>/ {props.stake && props.stake.bondSizeCurrent.formatted} REP</span>
       </span>
     </div>
     <ReportingPercent
       firstPercent={props.stake.preFilledStake}
       secondPercent={props.stake.stakeCurrent}
       thirdPercent={formatRep(props.inputtedStake)}
-      total={props.stake.bondSizeTotal}
+      total={props.stake.bondSizeCurrent}
     />
   </div>
 );

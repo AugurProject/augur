@@ -368,7 +368,7 @@ export function nearestCompletelyFillingOrder(
     }
   }
   if (closestIndex !== -1) {
-    let cost = createBigNumber(0);
+    let cost = ZERO;
     const type = items[closestIndex][4];
     for (let i = closestIndex; items[i] && items[i][4] === type; i--) {
       const scaledPrice = createBigNumber(items[i][1]).minus(marketMin);

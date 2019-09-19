@@ -9,11 +9,14 @@
 }
 
 .Side {
-  &:extend(.caps--small);
-
   flex: 1 1;
+  font-size: @size-12;
+  font-weight: 400;
   height: auto;
   justify-content: flex-end;
+  letter-spacing: 0.3px;
+  line-height: @size-12;
+  text-transform: capitalize;
   position: relative;
 
   > div {

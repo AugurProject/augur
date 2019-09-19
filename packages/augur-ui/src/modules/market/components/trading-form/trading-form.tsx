@@ -8,6 +8,7 @@ import Styles from 'modules/market/components/trading-form/trading-form.styles.l
 
 import { PrimaryButton } from 'modules/common/buttons';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
+import { BigNumber } from 'utils/create-big-number';
 
 interface TradingFormProps {
   availableEth: BigNumber;
