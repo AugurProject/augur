@@ -1,12 +1,12 @@
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from 'bignumber.js';
 import {
   CommonOutcomes,
   MarketCreatedLog,
   MarketType,
   MarketTypeName,
   YesNoOutcomes
-} from "./state/logs/types";
-import { toAscii } from "./state/utils/utils";
+} from './state/logs/types';
+import { toAscii } from './state/utils/utils';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -118,7 +118,7 @@ export function logError(
 export interface PayoutNumeratorValue {
   malformed?: boolean;
   invalid?: boolean;
-  outcome?: string;
+  outcome: string|null;
 }
 
 export function calculatePayoutNumeratorsValue(
@@ -130,11 +130,11 @@ export function calculatePayoutNumeratorsValue(
 ): PayoutNumeratorValue {
   if (marketType === MarketTypeName.Scalar) {
     if (!isWellFormedScalar(payout)) {
-      return { malformed: true };
+      return { outcome: null, malformed: true };
     }
 
     if (Number(payout[0]) > 0) {
-      return { invalid: true };
+      return { outcome: '0', invalid: true };
     }
 
     const longPayout = new BigNumber(payout[1]);
@@ -149,17 +149,17 @@ export function calculatePayoutNumeratorsValue(
   } else {
     switch(marketType) {
       case MarketTypeName.Categorical:
-        if (!isWellFormedCategorical(payout)) return { malformed: true };
+        if (!isWellFormedCategorical(payout)) return { outcome: null, malformed: true };
         break;
       case MarketTypeName.YesNo:
-        if (!isWellFormedYesNo(payout)) return { malformed: true };
+        if (!isWellFormedYesNo(payout)) return { outcome: null, malformed: true };
         break;
-      default: return { malformed: true }; // bad market type
+      default: return { outcome: null, malformed: true }; // bad market type
     }
 
     const outcome = payout.findIndex((item: string) => Number(item) > 0);
     if (outcome === 0) {
-      return { invalid: true };
+      return { outcome: '0', invalid: true };
     } else {
       return { outcome: String(outcome) };
     }
