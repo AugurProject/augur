@@ -10260,6 +10260,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "buyParticipationTokens",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "granularity",
 			"outputs": [
 				{
@@ -10495,6 +10509,29 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_buyer",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedBuy",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -20305,6 +20342,31 @@
 			],
 			"name": "URI",
 			"type": "event"
+		}
+	],
+	"BuyParticipationTokens": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "buyParticipationTokens",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
 		}
 	],
 	"Formulas": [
