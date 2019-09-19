@@ -8,7 +8,6 @@ import {
   Address,
   DisputeDoc,
   MarketData,
-  MarketType,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog
@@ -22,7 +21,6 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
   marketTypeToName,
-  numTicksToTickSizeWithDisplayPrices
 } from '../../index';
 import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
