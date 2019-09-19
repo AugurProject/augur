@@ -22,7 +22,7 @@
 .TradeHistoryTable {
   > ul:first-of-type {
     background-color: fade(@color-primary-alternate, 70%);
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     display: flex;
     font-size: @size-10;
     justify-content: center;
@@ -56,7 +56,7 @@
     .mono-11;
 
     background-color: @color-tertiary-background;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     display: flex;
     padding-bottom: @size-4;
     position: relative;
@@ -80,7 +80,7 @@
       }
 
       &:nth-child(2) {
-        color: @color-tertiary-text;
+        color: @color-primary-text;
         flex: 1;
         justify-content: right;
         padding-left: @size-10;
@@ -93,7 +93,7 @@
       }
 
       &:last-child {
-        color: @color-tertiary-text;
+        color: @color-primary-text;
         opacity: 0.8;
         padding-right: @size-24;
         text-align: right;
