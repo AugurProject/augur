@@ -15,11 +15,12 @@ import {
   WORST_CASE_FILL,
 } from '../../constants';
 import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
+import { MarketCreatedDoc } from './SyncableFlexSearch';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
-import { QUINTILLION } from '../../utils';
+import { QUINTILLION, padHex } from '../../utils';
 import { Block } from "ethereumjs-blockstream";
 
 
@@ -40,6 +41,14 @@ export class MarketDB extends DerivedDB {
   protected augur: Augur;
   private readonly events = new Subscriptions(augurEmitter);
   readonly liquiditySpreads = [10, 15, 20, 100];
+  private readonly docProcessMap = {
+    'MarketCreated': this.processMarketCreated,
+    'InitialReportSubmitted': this.processInitialReportSubmitted,
+    'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted,
+    'MarketFinalized': this.processMarketFinalized,
+    'MarketVolumeChanged': this.processMarketVolumeChanged,
+    'MarketOIChanged': this.processMarketOIChanged,
+  };
 
   constructor(db: DB, networkId: number, augur: Augur) {
     super(db, networkId, 'Markets', [
@@ -48,7 +57,7 @@ export class MarketDB extends DerivedDB {
       'MarketOIChanged',
       'InitialReportSubmitted',
       'DisputeCrowdsourcerCompleted',
-      'MarketFinalized',
+      'MarketFinalized'
     ], ['market']);
 
     this.augur = augur;
@@ -63,6 +72,16 @@ export class MarketDB extends DerivedDB {
     await this.syncOrderBooks(true);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
+    await this.syncFTS();
+  }
+
+  syncFTS = async (): Promise<void> => {
+    if (Augur.syncableFlexSearch) {
+      const marketDocs = await this.allDocs();
+      let marketCreatedDocs: any[] = marketDocs.rows ? marketDocs.rows.map(row => row.doc) : [];
+      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
+      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+    }
   }
 
   syncOrderBooks = async (syncing: boolean): Promise<void> => {
@@ -134,7 +153,7 @@ export class MarketDB extends DerivedDB {
     };
 
     for (const spread of this.liquiditySpreads) {
-      marketOrderBookData.liquidity[spread] = (await this.augur.liquidity.getLiquidityForSpread({
+      const liquidity = await this.augur.liquidity.getLiquidityForSpread({
         orderBook,
         numTicks,
         marketType: marketData.marketType,
@@ -142,7 +161,8 @@ export class MarketDB extends DerivedDB {
         feePerCashInAttoCash,
         numOutcomes,
         spread,
-      })).toFixed();
+      });
+      marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, "0");
     }
 
     return marketOrderBookData;
@@ -151,6 +171,7 @@ export class MarketDB extends DerivedDB {
   async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
     const currentOrdersResponse = await this.stateDB.findCurrentOrderLogs({
       selector : {
+        market: marketData.market,
         amount: { $gt: '0x00' },
         eventType: { $ne: 1 },
       },
@@ -208,19 +229,17 @@ export class MarketDB extends DerivedDB {
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {
-    if (log.name === 'MarketCreated') {
-      return this.processMarketCreated(log);
-    } else if (log.name === 'InitialReportSubmitted') {
-      return this.processInitialReportSubmitted(log);
-    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
-      return this.processDisputeCrowdsourcerCompleted(log);
-    } else if (log.name === 'MarketFinalized') {
-      return this.processMarketFinalized(log);
+    const processFunc = this.docProcessMap[log.name];
+    if (processFunc) {
+      return processFunc(log);
     }
     return log;
   }
 
   private processMarketCreated(log: ParsedLog): ParsedLog {
+    if (Augur.syncableFlexSearch) {
+      Augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketCreatedDoc]);
+    }
     log['reportingState'] = MarketReportingState.PreReporting;
     log['invalidFilter'] = false;
     log['marketOI'] = '0x00';
@@ -228,13 +247,21 @@ export class MarketDB extends DerivedDB {
     log['disputeRound'] = '0x00';
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = false;
+    log['liquidity'] = {
+      0: "000000000000000000000000000000",
+      10: "000000000000000000000000000000",
+      15: "000000000000000000000000000000",
+      20: "000000000000000000000000000000",
+      100: "000000000000000000000000000000"
+    }
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
+    log['lastTradedTimestamp'] = 0;
     return log;
   }
 
   private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.CrowdsourcingDispute;
-    log['totalRepStakedInMarket'] = log['amountStaked']
+    log['totalRepStakedInMarket'] = padHex(log['amountStaked']);
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
     log['disputeRound'] = '0x1';
     return log;
@@ -244,6 +271,7 @@ export class MarketDB extends DerivedDB {
     const pacingOn: boolean = log['pacingOn'];
     log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['totalRepStakedInMarket'] = padHex(log['totalRepStakedInMarket']);
     return log;
   }
 
@@ -251,6 +279,16 @@ export class MarketDB extends DerivedDB {
     log['reportingState'] = MarketReportingState.Finalized;
     log['finalizationBlockNumber'] = log['blockNumber'];
     log['finalizationTime'] = log['timestamp'];
+    return log;
+  }
+
+  private processMarketVolumeChanged(log: ParsedLog): ParsedLog {
+    log['volume'] = padHex(log['volume']);
+    return log;
+  }
+
+  private processMarketOIChanged(log: ParsedLog): ParsedLog {
+    log['marketOI'] = padHex(log['marketOI']);
     return log;
   }
 
