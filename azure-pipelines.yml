@@ -290,7 +290,7 @@ jobs:
     - TestAndLint
     - Augur_build_docker_image
     - PreFlightCheck
-    - Contract_Changes_and_no_Compile_check
+#   - Contract_Changes_and_no_Compile_check
     condition: |
       and
       (
