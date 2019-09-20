@@ -3,7 +3,6 @@ import { DB } from '../db/DB';
 import { Router } from './Router';
 
 // Getters are evaluated by importing these files in this manner
-import './get-account-time-ranged-stats';
 import './get-platform-activity-stats';
 import './Markets';
 import './Ping';

@@ -1,13 +1,13 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   MarketInfo,
-  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { makeDbMock, makeProvider } from "../../../libs";
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from '../../../libs';
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build';
 
 const mock = makeDbMock();
 const outcome0 = new BigNumber(0);
@@ -145,54 +145,55 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Fill orders
+    await mary.faucet(new BigNumber(1e18));
     const cost = numShares.times(78).div(10);
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -299,8 +300,8 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await winningReportingParticipant.redeem(john.account.publicKey);
 
     // Claim trading proceeds
-    await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
-      johnYesNoMarket.address,
+    await john.claimTradingProceeds(
+      johnYesNoMarket,
       john.account.publicKey
     );
 
@@ -465,51 +466,51 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     // Fill orders
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -605,8 +606,8 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await winningReportingParticipant.redeem(john.account.publicKey);
 
     // Claim trading proceeds
-    await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
-      johnYesNoMarket2.address,
+    await john.claimTradingProceeds(
+      johnYesNoMarket2,
       john.account.publicKey
     );
 
