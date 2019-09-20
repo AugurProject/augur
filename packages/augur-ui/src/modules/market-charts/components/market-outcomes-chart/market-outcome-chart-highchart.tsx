@@ -159,7 +159,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
   }
 
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     const {
       bucketedPriceTimeSeries,
       daysPassed,

@@ -109,7 +109,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
   }
 
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     const { selectedOrderProperties } = this.props;
 
     if (
