@@ -23,14 +23,14 @@ export default class Disputing extends Component<DisputingProps> {
     super(props);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { isConnected, loadDisputeWindow } = this.props;
     if (isConnected) {
       loadDisputeWindow();
     }
   }
 
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     const { isConnected, loadDisputeWindow } = this.props;
     if (nextProps.isConnected !== isConnected) {
       loadDisputeWindow();

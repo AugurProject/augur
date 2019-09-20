@@ -8,28 +8,28 @@ from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
 from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 
 # Market Methods
-MARKET_CREATION =               2409638
-MARKET_FINALIZATION =           948446
-INITIAL_REPORT =                554349
-FIRST_CONTRIBUTE =              830811
-FIRST_COMPLETED_CONTRIBUTE =    582390
-LAST_COMPLETED_CONTRIBUTE =     1445403
-FORKING_CONTRIBUTE =            984817
+MARKET_CREATION =               2348005
+MARKET_FINALIZATION =           690779
+INITIAL_REPORT =                574552
+FIRST_CONTRIBUTE =              592142
+FIRST_COMPLETED_CONTRIBUTE =    630577
+LAST_COMPLETED_CONTRIBUTE =     1295764
+FORKING_CONTRIBUTE =            698226
 
 # Redemption
-REPORTING_WINDOW_CREATE =           305421
-INITIAL_REPORT_REDEMPTION =         98937
-CROWDSOURCER_REDEMPTION =           93908
-PARTICIPATION_TOKEN_REDEMPTION =    93162
+REPORTING_WINDOW_CREATE =           326017
+INITIAL_REPORT_REDEMPTION =         97795
+CROWDSOURCER_REDEMPTION =           80210
+PARTICIPATION_TOKEN_REDEMPTION =    76306
 
 # Trading
-CREATE_ORDER =      481755
-FILL_ORDER =        808067
-CLAIM_PROCEEDS =    667419
-CLAIM_PROCEEDS_CATEGORICAL_MARKET = 700000 # TODO: Get actual gas cost
+CREATE_ORDER =      520101
+FILL_ORDER =        785922
+CLAIM_PROCEEDS =    794379
+CLAIM_PROCEEDS_CATEGORICAL_MARKET = 1121349
 
 # Other
-UNIVERSE_CREATE =   7752505
+UNIVERSE_CREATE =   6780628
 
 pytestmark = mark.skip(reason="Just for testing gas cost")
 
@@ -78,25 +78,25 @@ def test_orderCreation(hints, localFixture, categoricalMarket):
 
     for i in range(39, 43):
         localFixture.contracts["Cash"].faucet(fix(1, i))
-        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     localFixture.contracts["Cash"].faucet(fix(1, 44))
-    worseOrderId = createOrder.publicCreateOrder(BID, fix(1), 44, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    worseOrderId = createOrder.publicCreateOrder(BID, fix(1), 44, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
     localFixture.contracts["Cash"].faucet(fix(1, 46))
-    betterOrderId = createOrder.publicCreateOrder(BID, fix(1), 46, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    betterOrderId = createOrder.publicCreateOrder(BID, fix(1), 46, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     for i in range(47, 80):
         localFixture.contracts["Cash"].faucet(fix(1, i))
-        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+        createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     if not hints:
         with PrintGasUsed(localFixture, "CreateOrder:publicCreateOrder NO Hints", CREATE_ORDER):
             localFixture.contracts["Cash"].faucet(fix(1, 45))
-            orderID = createOrder.publicCreateOrder(BID, fix(1), 45, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+            orderID = createOrder.publicCreateOrder(BID, fix(1), 45, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
     else:
         with PrintGasUsed(localFixture, "CreateOrder:publicCreateOrder HINTS", CREATE_ORDER):
             localFixture.contracts["Cash"].faucet(fix(1, 45))
-            orderID = createOrder.publicCreateOrder(BID, fix(1), 45, categoricalMarket.address, 1, betterOrderId, worseOrderId, "7", False, nullAddress)
+            orderID = createOrder.publicCreateOrder(BID, fix(1), 45, categoricalMarket.address, 1, betterOrderId, worseOrderId, "7", nullAddress)
 
 def test_orderFilling(localFixture, market):
     createOrder = localFixture.contracts['CreateOrder']
@@ -108,11 +108,11 @@ def test_orderFilling(localFixture, market):
 
     # create order
     localFixture.contracts["Cash"].faucet(creatorCost, sender = localFixture.accounts[1])
-    orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = localFixture.accounts[1])
+    orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = localFixture.accounts[1])
 
     with PrintGasUsed(localFixture, "FillOrder:publicFillOrder", FILL_ORDER):
         localFixture.contracts["Cash"].faucet(fillerCost, sender = localFixture.accounts[2])
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[2])
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[2])
 
 def test_winningShareRedmption(localFixture, cash, market):
     claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
@@ -123,15 +123,14 @@ def test_winningShareRedmption(localFixture, cash, market):
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds", CLAIM_PROCEEDS):
         claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
-# Comment this test out for now
-# def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categoricalmarket):
-#     claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
+def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categorical8Market):
+    claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
 
-#     acquireLongShares(localFixture, cash, market, 7, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
-#     finalizeMarket(localFixture, market, [0, 0, 0, 0, 0, 0, 0, 0, market.getNumTicks()])
+    acquireLongShares(localFixture, cash, categorical8Market, 7, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
+    finalizeMarket(localFixture, categorical8Market, [0, 0, 0, 0, 0, 0, 0, categorical8Market.getNumTicks()])
 
-#     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds categorical market", CLAIM_PROCEEDS_CATEGORICAL_MARKET):
-#         claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+    with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds categorical market", CLAIM_PROCEEDS_CATEGORICAL_MARKET):
+        claimTradingProceeds.claimTradingProceeds(categorical8Market.address, localFixture.accounts[1], nullAddress)
 
 def test_initial_report(localFixture, universe, cash, market):
     proceedToDesignatedReporting(localFixture, market)
@@ -212,6 +211,10 @@ def market(localFixture, kitchenSinkSnapshot):
 @fixture
 def categoricalMarket(localFixture, kitchenSinkSnapshot):
     return localFixture.applySignature(None, kitchenSinkSnapshot['categoricalMarket'].address, kitchenSinkSnapshot['categoricalMarket'].abi)
+
+@fixture
+def categorical8Market(localFixture, kitchenSinkSnapshot):
+    return localFixture.applySignature(None, kitchenSinkSnapshot['categorical8Market'].address, kitchenSinkSnapshot['categorical8Market'].abi)
 
 @fixture
 def scalarMarket(localFixture, kitchenSinkSnapshot):

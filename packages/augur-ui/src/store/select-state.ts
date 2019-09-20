@@ -16,7 +16,7 @@ export const selectLoginAccountReportingState = (
 ): Getters.Accounts.AccountReportingHistory => state.loginAccount.reporting;
 export const selectReportingListState = (
   state: AppState
-): ReportingList => state.reportingList;
+): ReportingList => state.reportingListState;
 export const selectLoginAccountBalancesState = (
   state: AppState
 ): AccountBalances => state.loginAccount.balances;

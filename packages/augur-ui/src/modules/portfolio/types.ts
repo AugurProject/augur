@@ -32,7 +32,7 @@ export interface Outcome {
 export interface Market {
   marketId: string;
   description: string;
-  outcomes: Array<Outcome>;
+  outcomes: Outcome[];
 }
 
 export interface Tab {

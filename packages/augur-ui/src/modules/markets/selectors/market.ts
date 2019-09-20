@@ -3,7 +3,6 @@ import {
   YES_NO,
   SCALAR,
   INVALID_OUTCOME_ID,
-  SCALAR_DOWN_ID,
 } from 'modules/common/constants';
 import store, { AppState } from 'store';
 import { selectMarketInfosState } from 'store/select-state';
@@ -52,11 +51,11 @@ export const selectSortedMarketOutcomes = (marketType, outcomes) => {
   const sortedOutcomes = [...outcomes];
 
   if (marketType === YES_NO) {
-    return sortedOutcomes.filter(outcome => outcome.isTradable).reverse();
+    return sortedOutcomes.reverse();
   } else {
     // Move invalid to the end
     sortedOutcomes.push(sortedOutcomes.shift());
-    return sortedOutcomes.filter(outcome => outcome.isTradable);
+    return sortedOutcomes;
   }
 };
 
@@ -65,48 +64,65 @@ export const selectSortedDisputingOutcomes = (
   outcomes: OutcomeFormatted[],
   stakes: Getters.Markets.StakeDetails[] | null
 ): OutcomeFormatted[] => {
-  const sorted = stakes
-    ? stakes
-        .sort((a, b) => {
-          if (a.tentativeWinning) return -1;
-          if (
-            createBigNumber(a.stakeCurrent).gt(createBigNumber(b.stakeCurrent))
-          )
-            return 1;
-          if (
-            createBigNumber(b.stakeCurrent).gt(createBigNumber(a.stakeCurrent))
-          )
-            return -1;
-          return 0;
-        })
-        .map(s => createBigNumber(s.outcome))
-    : [];
-  if (marketType === SCALAR) {
-    const filteredSortedOutcomes = [
-      outcomes.find(o => (o.id = INVALID_OUTCOME_ID)),
-    ];
-    const genericScalarOutcome = outcomes.find(o => (o.id = SCALAR_DOWN_ID));
-    if (sorted.length === 0) return filteredSortedOutcomes;
-    const result = sorted.reduce(
-      (p, s) => [...p, { ...genericScalarOutcome, id: s }],
-      []
-    );
-    return result;
-  }
+  if (!stakes || stakes.length === 0)
+    return selectSortedMarketOutcomes(marketType, outcomes);
 
-  if (stakes.length > 0) {
-    const stakedOutcomes: OutcomeFormatted[] = sorted.map(id =>
-      outcomes.find(o => createBigNumber(o.id).eq(createBigNumber(id)))
-    );
+  const sortedStakes = sortStakes(stakes);
+  if (marketType === SCALAR)
+    buildScalarDisputingOutcomes(outcomes, sortedStakes);
+  return buildYesNoCategoricalDisputingOutcomes(outcomes, sortedStakes);
+};
 
-    return outcomes.reduce(
-      (p, outcome) =>
-        p.find(s => createBigNumber(s.id).eq(createBigNumber(outcome.id)))
-          ? p
-          : [...p, outcome],
-      stakedOutcomes
-    );
-  }
+const sortStakes = (stakes: Getters.Markets.StakeDetails[]) => {
+  const winning = stakes.filter(s => s.tentativeWinning);
+  const nonWinning = stakes.filter(s => !s.tentativeWinning);
+  const sortedOutcomes = nonWinning.sort((a, b) => {
+    if (createBigNumber(a.stakeCurrent).gt(createBigNumber(b.stakeCurrent)))
+      return 1;
+    if (createBigNumber(b.stakeCurrent).gt(createBigNumber(a.stakeCurrent)))
+      return -1;
+    return 0;
+  });
+  return [...winning, ...sortedOutcomes];
+};
 
-  return selectSortedMarketOutcomes(marketType, outcomes);
+const buildScalarDisputingOutcomes = (
+  outcomes: OutcomeFormatted[],
+  sortedStakes: Getters.Markets.StakeDetails[]
+) => {
+  // always add invalid
+  const invalidOutcome = outcomes[INVALID_OUTCOME_ID];
+  const denom = invalidOutcome.description;
+
+  if (sortedStakes.length === 0) return [invalidOutcome];
+
+  const results = sortedStakes.map(s =>
+    s.isInvalidOutcome
+      ? invalidOutcome
+      : { // only need id and description properties for disputing card
+          id: s.outcome,
+          description: denom,
+        }
+  );
+  return results.find(o => o.id === INVALID_OUTCOME_ID)
+    ? results
+    : [...results, invalidOutcome];
+};
+
+const buildYesNoCategoricalDisputingOutcomes = (
+  outcomes: OutcomeFormatted[],
+  sortedStakes: Getters.Markets.StakeDetails[]
+) => {
+  const stakedOutcomes: OutcomeFormatted[] = sortedStakes.map(stake =>
+    outcomes.find(o => createBigNumber(o.id).eq(createBigNumber(stake.outcome)))
+  ).filter(o => !!o);
+
+  const result = outcomes.reduce(
+    (p, outcome) =>
+      p.find(s => createBigNumber(s.id).eq(createBigNumber(outcome.id)))
+        ? p
+        : [...p, outcome],
+    stakedOutcomes
+  );
+  return result;
 };
