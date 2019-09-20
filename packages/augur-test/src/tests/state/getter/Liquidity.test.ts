@@ -55,7 +55,13 @@ describe('State API :: Liquidity', () => {
     // With no orders on the book the liquidity scores won't exist
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     let marketData = await (await db).findMarkets({selector: { market: market.address }});
-    await expect(marketData[0].liquidity).toEqual(undefined);
+    await expect(marketData[0].liquidity).toEqual({
+        "0": "000000000000000000000000000000",
+        "10": "000000000000000000000000000000",
+        "100": "000000000000000000000000000000",
+        "15": "000000000000000000000000000000",
+        "20": "000000000000000000000000000000",
+    });
 
     // Place a Bid on A and an Ask on A
     const bid = new BigNumber(0);
@@ -72,7 +78,7 @@ describe('State API :: Liquidity', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     marketData = await (await db).findMarkets({selector: { market: market.address }});
 
-    await expect(marketData[0].liquidity[10]).toEqual("102000000000000000000");
+    await expect(marketData[0].liquidity[10]).toEqual("000000000102000000000000000000");
 
     // Request with 1 market and no liquidity. Doesnt Rank. 2 Markets total
 

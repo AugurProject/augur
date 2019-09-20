@@ -21,7 +21,7 @@ export class Contracts {
   simulateTrade: ContractInterfaces.SimulateTrade;
   gnosisSafe: ContractInterfaces.GnosisSafe;
   proxyFactory: ContractInterfaces.ProxyFactory;
-  zeroXTradeToken: ContractInterfaces.ZeroXTradeToken;
+  ZeroXTrade: ContractInterfaces.ZeroXTrade;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -43,7 +43,7 @@ export class Contracts {
     this.simulateTrade = new ContractInterfaces.SimulateTrade(dependencies, addresses.SimulateTrade);
     this.gnosisSafe = new ContractInterfaces.GnosisSafe(dependencies, addresses.GnosisSafe);
     this.proxyFactory = new ContractInterfaces.ProxyFactory(dependencies, addresses.ProxyFactory);
-    this.zeroXTradeToken = new ContractInterfaces.ZeroXTradeToken(dependencies, addresses.ZeroXTradeToken);
+    this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(dependencies, addresses.ZeroXTrade);
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
     }

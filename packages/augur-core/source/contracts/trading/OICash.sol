@@ -87,7 +87,6 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
         return true;
     }
 
-
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {
     }
 
