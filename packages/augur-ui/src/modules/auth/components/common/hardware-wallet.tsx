@@ -87,7 +87,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  public componentWillUpdate(nextProps: HardwareWalletProps, nextState: HardwareWalletState) {
+  public UNSAFE_componentWillUpdate(nextProps: HardwareWalletProps, nextState: HardwareWalletState) {
     const { isLoading, isClicked, showAdvanced } = this.props;
     if (
       nextState.walletAddresses !== this.state.walletAddresses &&

@@ -1,12 +1,13 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import MyMarkets from "modules/portfolio/components/markets/markets";
-import { selectAuthorOwnedMarkets } from "modules/markets/selectors/user-markets";
+import MyMarkets from 'modules/portfolio/components/markets/markets';
+import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets';
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { CREATE_MARKET } from 'modules/common/constants';
-import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
-import { retrySubmitMarket } from "modules/markets/actions/submit-new-market";
+import { collectMarketCreatorFees } from 'modules/markets/actions/market-creator-fees-management';
+import { retrySubmitMarket } from 'modules/markets/actions/submit-new-market';
+import { AppState } from 'store';
 
 const mapStateToProps = (state: AppState) => {
   const createdMarkets = selectAuthorOwnedMarkets(state);
@@ -21,9 +22,9 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 // TOJDO confirm with TOm whats up with this, getBalance Only
-const mapDispatchToProps = (dispatch) => ({
-  removePendingMarket: (id) => dispatch(removePendingData(id, CREATE_MARKET)),
-  retrySubmitMarket: (data) => dispatch(retrySubmitMarket(data)),
+const mapDispatchToProps = dispatch => ({
+  removePendingMarket: id => dispatch(removePendingData(id, CREATE_MARKET)),
+  retrySubmitMarket: data => dispatch(retrySubmitMarket(data)),
   collectMarketCreatorFees: (getBalanceOnly, marketId) =>
     dispatch(collectMarketCreatorFees(getBalanceOnly, marketId)),
 });
@@ -31,8 +32,8 @@ const mapDispatchToProps = (dispatch) => ({
 const MyMarketsContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-  )(MyMarkets),
+    mapDispatchToProps
+  )(MyMarkets)
 );
 
 export default MyMarketsContainer;
