@@ -123,14 +123,14 @@ def test_winningShareRedmption(localFixture, cash, market):
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds", CLAIM_PROCEEDS):
         claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
-def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categoricalmarket):
+def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categorical8Market):
     claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
 
-    acquireLongShares(localFixture, cash, market, 7, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
-    finalizeMarket(localFixture, market, [0, 0, 0, 0, 0, 0, 0, 0, market.getNumTicks()])
+    acquireLongShares(localFixture, cash, categorical8Market, 7, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
+    finalizeMarket(localFixture, categorical8Market, [0, 0, 0, 0, 0, 0, 0, categorical8Market.getNumTicks()])
 
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds categorical market", CLAIM_PROCEEDS_CATEGORICAL_MARKET):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+        claimTradingProceeds.claimTradingProceeds(categorical8Market.address, localFixture.accounts[1], nullAddress)
 
 def test_initial_report(localFixture, universe, cash, market):
     proceedToDesignatedReporting(localFixture, market)
@@ -211,6 +211,10 @@ def market(localFixture, kitchenSinkSnapshot):
 @fixture
 def categoricalMarket(localFixture, kitchenSinkSnapshot):
     return localFixture.applySignature(None, kitchenSinkSnapshot['categoricalMarket'].address, kitchenSinkSnapshot['categoricalMarket'].abi)
+
+@fixture
+def categorical8Market(localFixture, kitchenSinkSnapshot):
+    return localFixture.applySignature(None, kitchenSinkSnapshot['categorical8Market'].address, kitchenSinkSnapshot['categorical8Market'].abi)
 
 @fixture
 def scalarMarket(localFixture, kitchenSinkSnapshot):

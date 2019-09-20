@@ -472,6 +472,7 @@ export class Users {
       }
     );
 
+    // Create mapping for market/outcome balances
     const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
       params.account,
       {
@@ -480,7 +481,6 @@ export class Users {
         },
       }
     );
-    // Create mapping for market/outcome balances
     const marketOutcomeBalances = {};
     for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
       if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
@@ -488,7 +488,6 @@ export class Users {
       }
       marketOutcomeBalances[tokenBalanceChangedLog.market][new BigNumber(tokenBalanceChangedLog.outcome).toNumber()] = tokenBalanceChangedLog.balance;
     }
-
     // Set unclaimedProceeds & unclaimedProfit
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';

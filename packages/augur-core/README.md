@@ -15,7 +15,7 @@ yarn deploy:local
 
 ## Installation
 
-You need system-wide installations of Python 3.6+, Node.js 10+, and [Solidity 0.5.10](https://github.com/ethereum/solidity/releases/tag/v0.5.10).  (Or Docker; see below.)  Install the dependencies:
+You need system-wide installations of Python 3.6, Node.js 10+, and [Solidity 0.5.10](https://github.com/ethereum/solidity/releases/tag/v0.5.10).  (Or Docker; see below.)  Install the dependencies:
 
 ```bash
 yarn
@@ -28,6 +28,7 @@ Note: on macOS, you'll need to use [virtualenv](https://python-guide-pt-br.readt
 python3 -m venv venv
 source venv/bin/activate
 python3 -m pip install -r requirements.txt
+python3 -m pip install pytest
 ```
 
 ## Deployment
