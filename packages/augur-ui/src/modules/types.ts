@@ -82,7 +82,6 @@ export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   marketId: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
-  isTradable: boolean;
   volumeFormatted: FormattedNumber;
 }
 
@@ -326,8 +325,10 @@ export interface NewMarket {
   affiliateFee: number;
   orderBook: { [outcome: number]: LiquidityOrder[] };
   orderBookSorted: { [outcome: number]: LiquidityOrder[] };
-  initialLiquidityDai: any; // TODO: big number type
-  initialLiquidityGas: any; // TODO: big number type
+  minPriceBigNumber: BigNumber;
+  maxPriceBigNumber: BigNumber;
+  initialLiquidityDai: BigNumber;
+  initialLiquidityGas: BigNumber;
   creationError: string;
   offsetName: string;
   offset: number;

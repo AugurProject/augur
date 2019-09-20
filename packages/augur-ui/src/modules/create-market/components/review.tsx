@@ -78,11 +78,11 @@ export default class Review extends React.Component<
     ),
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.calculateMarketCreationCosts();
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
     const { newMarket, gasPrice } = this.props;
     if (
       newMarket.initialLiquidityDai !== nextProps.newMarket.initialLiquidityDai

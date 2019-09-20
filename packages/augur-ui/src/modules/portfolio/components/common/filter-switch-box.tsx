@@ -40,7 +40,7 @@ export default class FilterSwitchBox extends React.Component<
     view: false,
   };
 
-  componentWillUpdate(
+  UNSAFE_componentWillUpdate(
     { data }: FilterBoxProps,
     { search, view }: FilterBoxState
   ) {
