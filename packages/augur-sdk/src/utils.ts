@@ -141,27 +141,23 @@ export function calculatePayoutNumeratorsValue(
       new BigNumber(displayMinPrice, 10)
     );
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
-    const onChainPrice = longPayout
+    const displayPrice = longPayout
       .times(priceRange)
       .dividedBy(new BigNumber(numTicks, 10))
       .plus(new BigNumber(displayMinPrice, 10));
 
-    return {
-      outcome: convertOnChainPriceToDisplayPrice(
-        onChainPrice,
-        new BigNumber(displayMinPrice),
-        new BigNumber(numTicks)
-      ).toString(),
-    };
+    return { outcome: displayPrice.toString(10) };
   } else {
     switch (marketType) {
       case MarketTypeName.Categorical:
-        if (!isWellFormedCategorical(payout))
+        if (!isWellFormedCategorical(payout)) {
           return { outcome: null, malformed: true };
+        }
         break;
       case MarketTypeName.YesNo:
-        if (!isWellFormedYesNo(payout))
+        if (!isWellFormedYesNo(payout)) {
           return { outcome: null, malformed: true };
+        }
         break;
       default:
         return { outcome: null, malformed: true }; // bad market type
