@@ -622,3 +622,17 @@ export interface PriceTimeSeriesData {
   volume: number;
   shareVolume: number;
 }
+
+export interface MarketClaimablePositions {
+  markets: MarketData[];
+  totals: {
+    totalUnclaimedProfit: BigNumber,
+    totalUnclaimedProceeds: BigNumber
+  }
+  positions: {
+    [marketId: string]: {
+      unclaimedProfit: string;
+      unclaimedProceeds: string;
+    };
+  };
+}

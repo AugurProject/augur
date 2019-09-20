@@ -1,8 +1,4 @@
-import {
-  Getters,
-  Logs,
-  MarketReportingState,
-} from '@augurproject/sdk';
+import { Getters, Logs, MarketReportingState } from '@augurproject/sdk';
 import {
   Edge,
   Fortmatic,
@@ -196,18 +192,26 @@ export const feeFilters = [
 ];
 
 // # Valid Market Liquidity Spreads
-export const MAX_SPREAD_ALL_SPREADS = Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
-export const MAX_SPREAD_20_PERCENT = Getters.Markets.MaxLiquiditySpread.TwentyPercent;
-export const MAX_SPREAD_15_PERCENT = Getters.Markets.MaxLiquiditySpread.FifteenPercent;
-export const MAX_SPREAD_10_PERCENT = Getters.Markets.MaxLiquiditySpread.TenPercent;
-export const MAX_SPREAD_RECENTLY_DEPLETED = Getters.Markets.MaxLiquiditySpread.ZeroPercent;
+export const MAX_SPREAD_ALL_SPREADS =
+  Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
+export const MAX_SPREAD_20_PERCENT =
+  Getters.Markets.MaxLiquiditySpread.TwentyPercent;
+export const MAX_SPREAD_15_PERCENT =
+  Getters.Markets.MaxLiquiditySpread.FifteenPercent;
+export const MAX_SPREAD_10_PERCENT =
+  Getters.Markets.MaxLiquiditySpread.TenPercent;
+export const MAX_SPREAD_RECENTLY_DEPLETED =
+  Getters.Markets.MaxLiquiditySpread.ZeroPercent;
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
   { header: 'Less than 10%', value: MAX_SPREAD_10_PERCENT },
   { header: 'Less than 15%', value: MAX_SPREAD_15_PERCENT },
   { header: 'Less than 20%', value: MAX_SPREAD_20_PERCENT },
-  { header: 'Recently Depleted Liquidity', value: MAX_SPREAD_RECENTLY_DEPLETED },
+  {
+    header: 'Recently Depleted Liquidity',
+    value: MAX_SPREAD_RECENTLY_DEPLETED,
+  },
 ];
 
 // # Market Invalid Show/Hide
@@ -273,8 +277,8 @@ export const REPORTING_STATE = {
   AWAITING_NEXT_WINDOW: MarketReportingState.AwaitingNextWindow,
   FINALIZED: MarketReportingState.Finalized,
   FORKING: MarketReportingState.Forking,
-  AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration
-}
+  AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration,
+};
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
 export const CONTRACT_INTERVAL = {
@@ -654,10 +658,13 @@ export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
-// TODO: Get actual gas cost from augur-core
-export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(3000000); // Estimate for categorical market (worst-case gas cost)
+export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
-export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT).div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).toNumber());
+export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
+  createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
+    .div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
+    .toNumber()
+);
 export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
 
@@ -786,7 +793,6 @@ export const MARKET_IN_DISPUTE = 'marketsInDispute';
 export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
-export const PROCEEDS_TO_CLAIM_ON_HOLD = 'proceedsToClaimOnHold';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -796,7 +802,6 @@ export const NOTIFICATION_TYPES = {
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
-  [PROCEEDS_TO_CLAIM_ON_HOLD]: PROCEEDS_TO_CLAIM_ON_HOLD,
 };
 
 // Account View - Timeframe selection options
@@ -886,7 +891,13 @@ export const SCALAR_OUTCOMES = [
   },
 ];
 
-export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
+export const POPULAR_CATEGORIES = [
+  'sports',
+  'politics',
+  'entertainment',
+  'finance',
+  'crypto',
+];
 export const CATEGORIES_MAX = 5;
 
 export enum PAGINATION_VIEW_OPTIONS {

@@ -22,6 +22,7 @@ import {
   convertOnChainPriceToDisplayPrice,
 } from '../../index';
 import { sortOptions } from './types';
+import { MarketReportingState } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -90,8 +91,8 @@ export interface MarketTradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
-  totalUnclaimedProceeds?: string;
-  totalUnclaimedProfit?: string;
+  unclaimedProceeds?: string; // Unclaimed trading proceeds after market creator fee & reporting fee have been subtracted
+  unclaimedProfit?: string; // unclaimedProceeds - unrealizedCost
 }
 
 export interface TradingPosition {
@@ -112,8 +113,6 @@ export interface TradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
-  totalUnclaimedProceeds?: string;
-  totalUnclaimedProfit?: string;
 }
 
 export interface UserTradingPositions {
@@ -378,10 +377,10 @@ export class Users {
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
 
-    const marketsResponse = await db.findMarketCreatedLogs({
+    const marketsData = await db.findMarkets({
       selector: { market: { $in: marketIds } },
     });
-    const markets = _.keyBy(marketsResponse, 'market');
+    const markets = _.keyBy(marketsData, 'market');
 
     const marketFinalizedRequest = {
       selector: {
@@ -472,6 +471,50 @@ export class Users {
         return sumTradingPositions(tradingPositions);
       }
     );
+
+    // Create mapping for market/outcome balances
+    const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
+      params.account,
+      {
+        selector: {
+          market: { $in: marketIds },
+        },
+      }
+    );
+    const marketOutcomeBalances = {};
+    for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
+      if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
+        marketOutcomeBalances[tokenBalanceChangedLog.market] = {};
+      }
+      marketOutcomeBalances[tokenBalanceChangedLog.market][new BigNumber(tokenBalanceChangedLog.outcome).toNumber()] = tokenBalanceChangedLog.balance;
+    }
+    // Set unclaimedProceeds & unclaimedProfit
+    for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].unclaimedProceeds = '0';
+      marketTradingPositions[marketData.market].unclaimedProfit = '0';
+      if (marketData.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
+        if (marketData.tentativeWinningPayoutNumerators) {
+          for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
+            if (marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator] !== '0x00' && marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]) {
+              const numShares = new BigNumber(marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]);
+              const reportingFeeDivisor = marketData.feeDivisor;
+              const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
+              const unclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator])
+                .minus(marketData.feePerCashInAttoCash)
+                .minus(reportingFee);
+
+              marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).plus(unclaimedProceeds).toString();
+              marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(unclaimedProceeds).minus(new BigNumber(marketTradingPositions[marketData.market].unrealizedCost).times(QUINTILLION)).toString();
+            }
+          }
+        }
+      }
+    }
+    // Format unclaimedProceeds & unclaimedProfit to Dai with 2 decimal places
+    for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).dividedBy(QUINTILLION).toFixed(2);
+      marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(marketTradingPositions[marketData.market].unclaimedProfit).dividedBy(QUINTILLION).toFixed(2);
+    }
 
     // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
     const allProfitLossResults = _.flatten(
@@ -755,8 +798,6 @@ export function sumTradingPositions(
       unrealizedPercent: '0',
       totalPercent: '0',
       currentValue: '0',
-      // totalUnclaimedProceeds: '15',
-      // totalUnclaimedProfit: '10',
     } as MarketTradingPosition
   );
 

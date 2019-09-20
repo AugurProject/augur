@@ -634,6 +634,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
 
     yesNoMarket = fixture.createReasonableYesNoMarket(universe)
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
+    categorical8Market = fixture.createReasonableCategoricalMarket(universe, 7)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
@@ -649,6 +650,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['augur'] = augur
     snapshot['yesNoMarket'] = yesNoMarket
     snapshot['categoricalMarket'] = categoricalMarket
+    snapshot['categorical8Market'] = categorical8Market
     snapshot['scalarMarket'] = scalarMarket
     snapshot['reputationToken'] = fixture.applySignature('ReputationToken', universe.getReputationToken())
     snapshot['tokensFail'] = tokensFail

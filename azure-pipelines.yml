@@ -238,60 +238,60 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
-  - job: Contract_Changes_and_no_Compile_check
-    dependsOn:
-    - TestAndLint
-    - PreFlightCheck
-    condition: |
-      and
-      (
-        succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-      - checkout: self
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '3.x'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - bash: |
-          set -euo pipefail
-          yarn
-          yarn build
-          yarn workspace @augurproject/core build:python
-          yarn workspace @augurproject/core build
-          git update-index -q --ignore-submodules --refresh
-          err=0
-          if ! git diff-files --quiet --ignore-submodules --
-          then
-              echo >&2 "unstaged changes detected"
-              git diff-files --name-status -r --ignore-submodules -- >&2
-              err=1
-          fi
-          if ! git diff-index --cached --quiet HEAD --ignore-submodules --
-          then
-              echo >&2 "uncommitted changes detected"
-              git diff-index --cached --name-status -r --ignore-submodules HEAD -- >&2
-              err=1
-          fi
-          if [ $err = 1 ]
-          then
-              echo >&2 "Contract changes detected"
-              echo >&2 "Please rebuild augur-core and commit the generated files:"
-              echo >&2 "yarn workspace @augurproject/core build"
-              exit 1
-          fi
+# - job: Contract_Changes_and_no_Compile_check
+#   dependsOn:
+#   - TestAndLint
+#   - PreFlightCheck
+#   condition: |
+#     and
+#     (
+#       succeeded(),
+#       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+#     )
+#   pool:
+#     vmImage: 'Ubuntu 16.04'
+#   steps:
+#     - checkout: self
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: '3.x'
+#     - task: NodeTool@0
+#       inputs:
+#         versionSpec: $(PRIMARY_NODE_VERSION)
+#     - bash: |
+#         set -euo pipefail
+#         yarn
+#         yarn build
+#         yarn workspace @augurproject/core build:python
+#         yarn workspace @augurproject/core build
+#         git update-index -q --ignore-submodules --refresh
+#         err=0
+#         if ! git diff-files --quiet --ignore-submodules --
+#         then
+#             echo >&2 "unstaged changes detected"
+#             git diff-files --name-status -r --ignore-submodules -- >&2
+#             err=1
+#         fi
+#         if ! git diff-index --cached --quiet HEAD --ignore-submodules --
+#         then
+#             echo >&2 "uncommitted changes detected"
+#             git diff-index --cached --name-status -r --ignore-submodules HEAD -- >&2
+#             err=1
+#         fi
+#         if [ $err = 1 ]
+#         then
+#             echo >&2 "Contract changes detected"
+#             echo >&2 "Please rebuild augur-core and commit the generated files:"
+#             echo >&2 "yarn workspace @augurproject/core build"
+#             exit 1
+#         fi
 
   - job: Build_Core_Docker
     dependsOn:
     - TestAndLint
     - Augur_build_docker_image
     - PreFlightCheck
-    - Contract_Changes_and_no_Compile_check
+#   - Contract_Changes_and_no_Compile_check
     condition: |
       and
       (

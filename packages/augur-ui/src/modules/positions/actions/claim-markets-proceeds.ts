@@ -1,6 +1,6 @@
 import logError from 'utils/log-error';
 // Note: the returns: "null" is due to this geth bug: https://github.com/ethereum/go-ethereum/issues/16999. By including this and a hardcoded gas estimate we bypass any eth_call usage and avoid sprurious failures
-import { MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT } from 'modules/common/constants';
+import { MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT, NULL_ADDRESS } from 'modules/common/constants';
 import { claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'store';
 import { NodeStyleCallback } from 'modules/types';
@@ -25,7 +25,7 @@ export const startClaimingMarketsProceeds = (
 
   try {
     // TODO: Pass affiliate address to claimMarketsProceeds
-    groups.map(group => claimMarketsProceeds(group, loginAccount.address, ''));
+    groups.map(group => claimMarketsProceeds(group, loginAccount.address, NULL_ADDRESS));
   } catch (e) {
     console.error(e);
   }
