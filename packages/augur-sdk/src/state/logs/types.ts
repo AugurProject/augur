@@ -350,7 +350,6 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
   outcome: string;
   numShares: string;
   numPayoutTokens: string;
-  finalTokenBalance: string;
   fees: string;
 }
 
