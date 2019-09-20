@@ -12,7 +12,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
 export interface ReportingListProps {
-  markets: Array<MarketData>;
+  markets: MarketData[];
   title: string;
   showLoggedOut?: boolean;
   loggedOutMessage?: string;

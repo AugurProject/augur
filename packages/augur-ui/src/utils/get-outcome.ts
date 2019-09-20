@@ -3,12 +3,15 @@ import {
   CATEGORICAL,
   YES_NO_YES_OUTCOME_NAME,
   YES_NO_YES_ID,
+  YES_NO_NO_OUTCOME_NAME,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
+import { INVALID_OUTCOME } from 'modules/create-market/constants';
 
-export const getOutcomeName = (
+const getOutcomeName = (
   market: MarketData,
   outcomeId: number,
+  isInvalid: boolean = false,
   alwaysReturnYesForBinaryMarket: boolean = true
 ): string => {
   // default to handle app loading
@@ -20,7 +23,7 @@ export const getOutcomeName = (
   switch (marketType) {
     case YES_NO: {
       if (!alwaysReturnYesForBinaryMarket && outcomeId === YES_NO_YES_ID) {
-        return 'No';
+        return YES_NO_NO_OUTCOME_NAME;
       }
       return YES_NO_YES_OUTCOME_NAME;
     }
@@ -31,7 +34,7 @@ export const getOutcomeName = (
       return description || 'N/A';
     }
     default: {
-      return market.scalarDenomination || 'N/A';
+      return isInvalid ? INVALID_OUTCOME : market.scalarDenomination || 'N/A';
     }
   }
 };
@@ -39,6 +42,7 @@ export const getOutcomeName = (
 export const getOutcomeNameWithOutcome = (
   market: MarketData,
   outcomeId: string,
+  isInvalid: boolean = false,
   alwaysReturnYesForBinaryMarket: boolean = true
 ): string => {
   if (!outcomeId || outcomeId === undefined)
@@ -47,5 +51,5 @@ export const getOutcomeNameWithOutcome = (
   if (isNaN(id)) {
     throw new Error(`${id} is not a valid outcome id`);
   }
-  return getOutcomeName(market, id, alwaysReturnYesForBinaryMarket);
+  return getOutcomeName(market, id, isInvalid, alwaysReturnYesForBinaryMarket);
 };
