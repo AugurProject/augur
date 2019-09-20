@@ -869,7 +869,6 @@ export const YES_NO_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
-    isTradable: true,
   },
   {
     id: 1,
@@ -878,7 +877,6 @@ export const YES_NO_OUTCOMES = [
   {
     id: 2,
     description: 'Yes',
-    isTradable: true,
   },
 ];
 
@@ -886,12 +884,10 @@ export const SCALAR_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
-    isTradable: true,
   },
   {
     id: 2,
     description: NON_EXISTENT,
-    isTradable: true,
   },
 ];
 

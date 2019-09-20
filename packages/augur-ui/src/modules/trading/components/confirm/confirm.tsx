@@ -61,7 +61,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { trade, gasPrice, availableEth } = this.props;
     if (
       (JSON.stringify(trade) !== JSON.stringify(nextProps.trade)) ||

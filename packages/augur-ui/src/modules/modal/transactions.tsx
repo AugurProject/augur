@@ -176,7 +176,7 @@ export class Transactions extends React.Component<
   public tableHeaderRef: any = null;
   public tableBodyRef: any = null;
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     this.triggerSearch();
   }
 
