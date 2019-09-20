@@ -261,8 +261,8 @@ jobs:
       - bash: |
           set -euo pipefail
           yarn
-           python3 -m pip install -r requirements.txt
           yarn build
+          yarn workspace @augurproject/core build:python
           yarn workspace @augurproject/core build
           git update-index -q --ignore-submodules --refresh
           err=0
