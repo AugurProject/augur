@@ -52,7 +52,7 @@ export default class MarketTradeHistory extends Component {
               <div className={Styles.TradeHistoryTable} key={index}>
                 <ul>
                   <li>{groupedTradeHistoryVolume[date]} Shares</li>
-                  <li>|</li>
+                  <li>—</li>
                   <li>{date}</li>
                 </ul>
                 {groupedTradeHistory[date].map((priceTime, indexJ) => (

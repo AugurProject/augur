@@ -22,8 +22,7 @@ const MarketOrdersPositionsTable = ({
   <ModuleTabs
     className={Styles.Tabs}
     selected={0}
-    fillForOnlyMobile
-    borderBetween
+    fillForMobile
   >
     <ModulePane label="Open Orders">
       <OpenOrdersTable
