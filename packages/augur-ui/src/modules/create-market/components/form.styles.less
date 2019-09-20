@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .Form {
-	color: @color-secondary-text;
+	color: @color-primary-text;
 	display: flex;
     align-items: center;
     flex-direction: column;
@@ -38,6 +38,7 @@
         right: 0;
         top: 0;
         z-index: @mask-modal;
+        padding-bottom: 0;
 
     	> div {
             border-left: @size-10 solid @color-theme-primary;
@@ -48,16 +49,17 @@
             flex: 1;
             width: 100%;
             align-items: center;
+            overflow-y: auto;
 
             > span {
                 .text-22-medium;
 
-                color: @color-secondary-text;
+                color: @color-primary-text;
                 margin: @size-24 0 @size-6;
             }
 
             > section {
-                background: @color-primary-background;
+                background: @color-dark-grey;
                 width: 100%;
                 margin-top: 0;
             }

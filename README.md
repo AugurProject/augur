@@ -31,6 +31,16 @@
 
 <p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"> <img width="200" src="https://augur.net/dist/images/meta_logo.png"> </a></p>
 
+## Installation
+
+Clone Augur's Monorepo.
+
+* `git clone https://github.com/AugurProject/augur.git`
+
+Then, install the packages using Yarn.
+
+* `yarn`
+
 ## Repository Typescript build commands
 
 NOTE: Run `yarn` at the base of the repository to install dependencies before running any of the following.
@@ -43,25 +53,35 @@ NOTE: Run `yarn` at the base of the repository to install dependencies before ru
 |  `yarn clean`         |  Remove everything that isn't currently being tracked by git (node_modules, build aretifacts, etc.) |
 
 ## UI development
-Run the following 4 commands, each in a separate terminal session from the root of the project.
 
-`yarn; yarn build:watch`
+Run the following command:
 
-or alternatively using docker-compose:
+* `yarn build:watch`
 
-`docker-compose -f support/gitstart/gitstart.yml up`
+Or alternatively using docker-compose:
 
-### docker images available
- * `yarn workspace @augurproject/tools docker:geth:pop-15`
-   - 15 second block times, real time, has contracts and canned market data
- * `yarn workspace @augurproject/tools docker:geth:pop`
-   - 5 second block times, fake time, use flash scripts to move time manually. has contracts and canned market data
- * `yarn workspace @augurproject/tools docker:geth:pop-normal-time`
-   - 5 second block times, real time, has contracts and canned market data
- * `yarn workspace @augurproject/tools docker:geth`
-   - 5 second block times, no contracts uploaded, use `dp` to upload contracts ...
+* `docker-compose -f support/gitstart/gitstart.yml up`
 
-`yarn workspace @augurproject/ui dev`
+On a different terminal window, you can either run *with* the variable ETHEREUM_NETWORK set to "kovan", that is one of the [testnets of the Ethereum Network](https://docs.ethhub.io/using-ethereum/test-networks/), or *without* this variable, in which case it will search for data in your localhost/127.0.0.1. As of right now, "kovan" is the only testnet supported.
+
+Running on localhost:
+
+* `yarn workspace @augurproject/ui dev`
+
+Running on the "kovan" testnet
+
+* `ETHEREUM_NETWORK=kovan yarn workspace @augurproject/ui dev`
+
+<span style="color: #999; font-size: .9em;">*Running the workspace currently shows quite a few warnings regarding source mappings. We will fix this as soon as possible.*</span>
+
+### Docker images available
+
+| Command                               | Purpose       |
+| -------------                         | ------------- |
+|  `yarn docker:geth:pop-15`            |  15 second block times, real time, has contracts and canned market data. |
+|  `yarn docker:geth:pop`               |  5 second block times, fake time, use flash scripts to move time . |
+|  `yarn docker:geth:pop-normal-time`   |  5 second block times, real time, has contracts and canned market data. |
+|  `yarn docker:geth`                   |  5 second block times, no contracts uploaded, use `dp` to upload . |
 
 ## 100% Open Source
 

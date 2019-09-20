@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import NullStateMessage from "modules/common/null-state-message";
@@ -12,7 +11,7 @@ import ToggleHeightStyles from "utils/toggle-height.styles.less";
 
 interface AlertsViewProps {
   alerts: Array<any>;
-  updateAlert: Function;
+  updateExistingAlert: Function;
   removeAlert: Function;
   clearAlerts: Function;
   toggleAlerts: Function;
@@ -20,23 +19,14 @@ interface AlertsViewProps {
 }
 
 export default class AlertsView extends Component<AlertsViewProps> {
-  static propTypes = {
-    alerts: PropTypes.array.isRequired,
-    updateAlert: PropTypes.func.isRequired,
-    removeAlert: PropTypes.func.isRequired,
-    clearAlerts: PropTypes.func.isRequired,
-    toggleAlerts: PropTypes.func.isRequired,
-    alertsVisible: PropTypes.bool.isRequired
-  };
-
   alertsContainer: any = null;
   alerts: any = null;
 
   componentWillUpdate(nextProps: AlertsViewProps) {
     if (this.props.alertsVisible && !nextProps.alertsVisible) {
-      const { updateAlert, alerts } = this.props;
+      const { updateExistingAlert, alerts } = this.props;
       alerts.forEach(alert => {
-        updateAlert(alert.id, { seen: true });
+        updateExistingAlert(alert.id, { ...alert, seen: true });
       });
     }
   }
@@ -86,7 +76,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
               {alerts.map((alert, i) => (
                 <Alert
                   key={`${i}-${alert.id}-${alert.title}`}
-                  removeAlert={() => removeAlert(alert.id)}
+                  removeAlert={() => removeAlert(alert.id, alert.name)}
                   toggleAlerts={toggleAlerts}
                   timestampInMilliseconds={alert.timestamp}
                   {...alert}
