@@ -54,7 +54,8 @@ export const selectSortedMarketOutcomes = (marketType, outcomes) => {
     return sortedOutcomes.reverse();
   } else {
     // Move invalid to the end
-    return sortedOutcomes.push(sortedOutcomes.shift());
+    sortedOutcomes.push(sortedOutcomes.shift());
+    return sortedOutcomes;
   }
 };
 
