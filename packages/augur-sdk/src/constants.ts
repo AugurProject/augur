@@ -122,7 +122,7 @@ export const WORST_CASE_FILL = {
   8: new BigNumber("2365994", 10),
 };
 
-export const CLAIM_GAS_COST = new BigNumber(667419);
+export const CLAIM_GAS_COST = new BigNumber(794379);
 
 export const ORDER_TYPES = {
   BID: new BigNumber(0),
