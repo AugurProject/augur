@@ -21,9 +21,6 @@ const getLoginAccountPositionsMarkets = createSelector(
   selectAccountPositionsState,
   selectMarketInfosState,
   (positions, markets) => {
-    console.log(
-      'selectLoginAccountClaimablePositions -> getLoginAccountPositionsMarkets'
-    );
     return Object.keys(positions).reduce(
       (p, marketId) => {
         if (!Object.keys(markets).includes(marketId)) return p;
