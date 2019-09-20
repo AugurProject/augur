@@ -18,12 +18,11 @@
       }
 
       > button {
-        .text-16;
+        .mono-11-bold;
 
-        padding: @size-14 @size-48;
+        padding: @size-12 @size-16;
         position: relative;
         white-space: nowrap;
-        width: 100%;
       }
     }
   }
@@ -32,9 +31,7 @@
     > ul {
       > li {
         > button {
-          .text-9-bold;
-
-          padding: @size-18 @size-16;
+          .text-11-bold;
         }
       }
     }
@@ -46,7 +43,6 @@
 }
 
 .ActiveTab {
-  background-color: @color-theme-primary;
   color: white !important;
 
   .IsNew::before {
@@ -109,7 +105,6 @@
     align-content: center;
     align-items: center;
     display: flex;
-    flex-grow: 1;
     justify-content: center;
 
     > button {
@@ -161,30 +156,6 @@
 
 .NoBorder::-webkit-scrollbar {
   display: none;
-}
-
-.BorderBetween {
-  > li {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-
-    > button {
-      flex: 1;
-      margin: @size-8 0;
-      padding: @size-6 @size-8;
-    }
-
-    &:not(:first-child) {
-      > button {
-        border-left: 1px solid fade(@color-primary-alternate, 50%);
-      }
-    }
-  }
-}
-
-.ActiveBorderBetween {
-  border-left: 0;
 }
 
 .ActiveNoBorder {
