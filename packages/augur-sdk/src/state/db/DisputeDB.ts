@@ -1,3 +1,4 @@
+import { DB } from './DB';
 import { DerivedDB } from './DerivedDB';
 import { ParsedLog } from '@augurproject/types';
 
@@ -6,43 +7,60 @@ import { ParsedLog } from '@augurproject/types';
  */
 export class DisputeDatabase extends DerivedDB {
 
-    protected processDoc(log: ParsedLog): ParsedLog {
-        if (log.name === 'InitialReportSubmitted') {
-            return this.processInitialReportSubmitted(log);
-        } else if (log.name === 'DisputeCrowdsourcerCompleted') {
-            return this.processDisputeCrowdsourcerCompleted(log);
-        } else if (log.name === 'InitialDisputeCrowdsourcerContribution') {
-            return this.processDisputeCrowdsourcerContribution(log);
-        } else if (log.name === 'DisputeCrowdsourcerCompleted') {
-            return this.processDisputeCrowdsourcerCompleted(log);
-        }
-        return log;
-      }
-    
-      private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
-        log['stakeCurrent'] = '0x0';
-        log['stakeRemaining'] = '0x0';
-        log['tentativeWinningOnRound'] = '0x1';
-        log['totalRepStakedInPayout'] = log['amountStaked'];
-        return log;
-      }
+  constructor(
+    db: DB,
+    networkId: number,
+    name: string,
+    mergeEventNames: string[],
+    idFields: string[]
+  ) {
+    super(db, networkId, name, mergeEventNames, idFields);
 
-      private processDisputeCrowdsourcerCreated(log: ParsedLog): ParsedLog {
-        log['bondSizeCurrent'] = log['size'];
-        log['stakeCurrent'] = '0x0';
-        log['stakeRemaining'] = '0x0';
-        return log;
-      }
+    this.db.createIndex({
+      index: {
+        ddoc: "marketIndex",
+        fields: ["market"],
+      },
+    });
+  }
 
-      private processDisputeCrowdsourcerContribution(log: ParsedLog): ParsedLog {
-        log['stakeCurrent'] = log['currentStake']
-        return log;
-      }
-    
-      private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
-        log['stakeCurrent'] = '0x0';
-        log['stakeRemaining'] = '0x0';
-        log['tentativeWinningOnRound'] = log['disputeRound'];
-        return log;
-      }
+  protected processDoc(log: ParsedLog): ParsedLog {
+    if (log.name === 'InitialReportSubmitted') {
+        return this.processInitialReportSubmitted(log);
+    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
+        return this.processDisputeCrowdsourcerCompleted(log);
+    } else if (log.name === 'InitialDisputeCrowdsourcerContribution') {
+        return this.processDisputeCrowdsourcerContribution(log);
+    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
+        return this.processDisputeCrowdsourcerCompleted(log);
+    }
+    return log;
+  }
+
+  private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
+    log['stakeCurrent'] = '0x0';
+    log['stakeRemaining'] = '0x0';
+    log['tentativeWinningOnRound'] = '0x1';
+    log['totalRepStakedInPayout'] = log['amountStaked'];
+    return log;
+  }
+
+  private processDisputeCrowdsourcerCreated(log: ParsedLog): ParsedLog {
+    log['bondSizeCurrent'] = log['size'];
+    log['stakeCurrent'] = '0x0';
+    log['stakeRemaining'] = '0x0';
+    return log;
+  }
+
+  private processDisputeCrowdsourcerContribution(log: ParsedLog): ParsedLog {
+    log['stakeCurrent'] = log['currentStake']
+    return log;
+  }
+
+  private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
+    log['stakeCurrent'] = '0x0';
+    log['stakeRemaining'] = '0x0';
+    log['tentativeWinningOnRound'] = log['disputeRound'];
+    return log;
+  }
 }

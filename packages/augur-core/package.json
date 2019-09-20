@@ -9,6 +9,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "lint": "solium --dir source --reporter=gcc",
+    "build:python": "python3 -m pip install -r requirements.txt",
     "build:source": "tsc -b",
     "build:contracts": "node -r ts-node/register source/deployment/compileContracts.ts && npm run build:documentation",
     "build:interfaces": "node -r ts-node/register source/tools/generateContractInterfaces.ts",

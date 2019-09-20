@@ -13,7 +13,7 @@ import { SignedOrder } from '@0x/types';
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load. We can do this on demand if the full sync above is too slow
 
 export interface OrderData {
-  market: string;
+  token: string;
   price: string;
   outcome: string;
   orderType: string;
@@ -107,7 +107,7 @@ export class ZeroXOrders extends AbstractDB {
 
   processOrder(order: OrderInfo): BaseDocument {
     const _id = order.orderHash;
-    const augurOrderData = this.parseAssetData(order.signedOrder.takerAssetData);
+    const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     const savedOrder = Object.assign({ _id, signedOrder: order.signedOrder, amount: order.fillableTakerAssetAmount }, augurOrderData);
     return savedOrder;
   }
@@ -115,11 +115,11 @@ export class ZeroXOrders extends AbstractDB {
   parseAssetData(assetData: string): OrderData {
     const data = assetData.substr(2); // remove the 0x
     return {
-      market: getAddress(`0x${data.substr(96, 40)}`),
-      price: `0x${data.substr(136, 64)}`,
-      outcome: `0x${data.substr(200, 64)}`,
-      orderType: `0x${data.substr(264, 64)}`,
-      kycToken: getAddress(`0x${data.substr(352, 40)}`),
+      token: getAddress(`0x${data.substr(32, 40)}`),
+      price: `0x${data.substr(392, 60)}`,
+      outcome: `0x${data.substr(452, 2)}`,
+      orderType: `0x${data.substr(454, 2)}`,
+      kycToken: getAddress(`0x${data.substr(288, 40)}`),
     }
   }
 }

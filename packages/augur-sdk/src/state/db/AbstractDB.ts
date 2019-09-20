@@ -27,6 +27,7 @@ export abstract class AbstractDB {
   db: PouchDB.Database;
   protected networkId: number;
   readonly dbName: string;
+  public numIndexes: number = 0;
 
   protected constructor(networkId: number, dbName: string, dbFactory: PouchDBFactoryType) {
     this.networkId = networkId;
@@ -40,6 +41,11 @@ export abstract class AbstractDB {
 
   async info(): Promise<PouchDB.Core.DatabaseInfo> {
     return await this.db.info();
+  }
+
+  async createIndex(createOptions: PouchDB.Find.CreateIndexOptions): Promise<void> {
+    await this.db.createIndex(createOptions);
+    this.numIndexes += 1;
   }
 
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {
