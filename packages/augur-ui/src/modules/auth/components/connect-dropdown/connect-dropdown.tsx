@@ -61,7 +61,7 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
     this.showError = this.showError.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (nextProps.isLogged !== this.props.isLogged) {
       this.clearState();
     }

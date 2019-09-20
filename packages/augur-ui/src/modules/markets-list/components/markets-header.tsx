@@ -36,11 +36,11 @@ export default class MarketsHeader extends Component<
     this.setHeaderTitle = this.setHeaderTitle.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.setHeaderTitle(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { location, selectedCategory, search } = this.props;
     if (
       location !== nextProps.location ||

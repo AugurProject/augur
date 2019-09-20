@@ -102,7 +102,7 @@ export default class MarketsView extends Component<
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.isSearching && !this.props.isSearching) {
       this.componentWrapper.scrollIntoView({
         behavior: 'smooth',

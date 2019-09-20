@@ -66,7 +66,7 @@ export default class MarketsListFilters extends React.Component<
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.location.search !== nextProps.location.search) {
       const filterOptionsFromQuery = parseQuery(nextProps.location.search);
       this.setState({

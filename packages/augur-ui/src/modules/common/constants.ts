@@ -671,6 +671,7 @@ export const AWAITING_SIGNATURE = 'awaiting signature';
 export const PENDING = 'pending';
 export const SUCCESS = 'success';
 export const FAILED = 'Failed';
+export const FAILURE = 'Failure';
 export const CONFIRMED = 'Confirmed';
 export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';
@@ -863,7 +864,6 @@ export const YES_NO_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
-    isTradable: true,
   },
   {
     id: 1,
@@ -872,7 +872,6 @@ export const YES_NO_OUTCOMES = [
   {
     id: 2,
     description: 'Yes',
-    isTradable: true,
   },
 ];
 
@@ -880,12 +879,10 @@ export const SCALAR_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
-    isTradable: true,
   },
   {
     id: 2,
     description: NON_EXISTENT,
-    isTradable: true,
   },
 ];
 

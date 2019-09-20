@@ -20,12 +20,12 @@
 }
 
 .MarketOutcomeDepth__depth-hover-title {
-  color: @color-secondary-text;
+  color: @color-primary-text;
   margin-right: 0.3em;
 }
 
 .MarketOutcomeDepth__depth-hover-value {
-  color: @color-tertiary-info-text;
+  color: @color-secondary-text;
   width: 5em;
 }
 
@@ -42,10 +42,10 @@
   :global {
     .hovered_tooltip_div {
       background-color: @color-tertiary-background;
-      border: 1px solid @color-secondary-text;
+      border: 1px solid @color-primary-text;
       border-radius: @border-radius-default 0 0 @border-radius-default;
       border-right-width: 2px;
-      color: @color-secondary-text;
+      color: @color-primary-text;
       display: flex;
       flex: 1 113px;
       flex-flow: row nowrap;
@@ -113,7 +113,7 @@
       > div {
         .mono-10;
 
-        color: @color-secondary-text;
+        color: @color-primary-text;
         flex: 1;
         font-weight: bold;
         line-height: @size-12;
@@ -142,7 +142,7 @@
 
     #depth_range_bounds {
       .bounding-box {
-        fill: @color-secondary-text;
+        fill: @color-primary-text;
         opacity: 0.05;
       }
     }
@@ -150,7 +150,7 @@
     .bounding-line,
     .tick-line,
     .tick-line--midpoint {
-      stroke: @color-secondary-text;
+      stroke: @color-primary-text;
     }
 
     .bounding-line:first-of-type {
@@ -168,12 +168,12 @@
     }
 
     .tick-line {
-      color: @color-secondary-text;
+      color: @color-primary-text;
       stroke-width: 1px;
     }
 
     .tick-value {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
       font-size: @size-12;
       font-weight: 400;
       letter-spacing: 0.3px;
@@ -185,19 +185,19 @@
     .tick-value-denomination {
       .mono-12;
 
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
       text-align: center;
     }
 
     .tick-value-midpoint-text {
       .mono-10;
 
-      fill: @color-shadow-text;
+      fill: @color-inactive-text;
       text-align: center;
     }
 
     .tick > text {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
     }
 
     .depth-line-bids {
@@ -243,13 +243,13 @@
     }
 
     .line .crosshairDot {
-      fill: @color-secondary-text;
-      stroke: @color-secondary-text;
+      fill: @color-primary-text;
+      stroke: @color-primary-text;
     }
 
     .line .crosshairDotOutline {
       fill: none;
-      stroke: @color-secondary-text;
+      stroke: @color-primary-text;
     }
 
     .line .crosshair-bids {
@@ -276,13 +276,13 @@
       }
 
       text {
-        fill: @color-secondary-text;
+        fill: @color-primary-text;
       }
     }
 
     #depth-x-axis {
       line {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
         transform: translateX(-0.03125rem);
       }
 

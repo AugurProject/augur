@@ -6,7 +6,7 @@ import MarketOutcomesListOutcome from "modules/market/containers/market-outcome"
 import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display";
 
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
-import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style.less";
+import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.styles.less";
 import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles.less";
 import { OutcomeFormatted } from "modules/types";
 
@@ -58,7 +58,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomesFormatted.filter(o => o.isTradable).map(outcome => (
+          {outcomesFormatted.map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               marketId={marketId}

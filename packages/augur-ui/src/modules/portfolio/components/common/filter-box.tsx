@@ -62,7 +62,7 @@ export default class FilterBox extends React.Component<
     this.setState({ filteredData });
   }
 
-  componentWillUpdate({ data }) {
+  UNSAFE_componentWillUpdate({ data }) {
     const { selectedTab, search } = this.state;
     if (
       JSON.stringify(data[selectedTab]) !==
