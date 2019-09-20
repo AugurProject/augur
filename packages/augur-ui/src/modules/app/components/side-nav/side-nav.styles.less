@@ -11,7 +11,7 @@
 }
 
 .SideNav__nav {
-  border: 0.0625rem solid @color-primary-background;
+  border: 0.0625rem solid @color-dark-grey;
   border-left: none;
   border-right: none;
   list-style: none;
@@ -19,7 +19,7 @@
   padding: 0;
 
   > li {
-    border-bottom: 0.0625rem solid @color-primary-background;
+    border-bottom: 0.0625rem solid @color-dark-grey;
 
     &:last-child { border: none; }
   }
@@ -31,12 +31,12 @@
     > a,
     > button {
       span {
-        color: @color-gray;
+        color: @color-inactive-text;
       }
 
       svg {
         g {
-          stroke: @color-gray;
+          stroke: @color-inactive-text;
         }
       }
     }
@@ -66,7 +66,7 @@
     &:last-child { border: none; }
 
     > span {
-      color: @color-secondary-text;
+      color: @color-primary-text;
       display: block;
       font-size: 0.6875rem;
       font-weight: 400;
@@ -142,10 +142,10 @@
   }
 
   .SideNav__stat-label {
-    color: @color-lightergray;
+    color: @color-primary-text;
     display: flex;
     flex-direction: row;
-    font-size: @font-size-extra-small;
+    font-size: @size-10;
     font-weight: 400;
     max-width: 100%;
     overflow: hidden;
@@ -154,11 +154,11 @@
   }
 
   .SideNav__stat-value {
-    color: @color-secondary-text;
+    color: @color-primary-text;
     display: flex;
     flex-direction: row;
     flex-grow: 1;
-    font-size: @font-size-medium;
+    font-size: @size-14;
     font-weight: 700;
     justify-content: flex-end;
   }
@@ -170,7 +170,7 @@
   .SideNav__stat-unit {
     align-items: flex-end;
     display: flex;
-    font-size: @font-size-extra-small;
+    font-size: @size-10;
     margin-bottom: 2px;
     margin-left: 0.25rem;
   }

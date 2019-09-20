@@ -182,7 +182,7 @@ export interface OrderBooks {
 }
 
 export interface OutcomeOrderBook {
-  spread: string | null;
+  spread: string | BigNumber | null;
   bids: Getters.Markets.MarketOrderBookOrder[];
   asks: Getters.Markets.MarketOrderBookOrder[];
 }

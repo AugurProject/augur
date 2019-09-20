@@ -1,23 +1,37 @@
 // Redesigned Borders, Border Radius, Box Shadow, and Dash Lines values
-
+//arrangements
+@default-behind: -1;
+@default-z-index: 1;
+//	Above Content
+@above-all-content: 10;
+@above-all-content-above: 11;
+@above-all-content-top-layer: 12;
+//	View Chrome
+@mask: 20;
+@mask-above: 30;
+// Modal
+@mask-modal: 100;
+//top bar height
+@top-bar-height: 3.5rem;
+@top-bar-height-mobile: 4.5rem;
+@charts-min-height: 12.5rem;
 // cursors
 @button-cursor: pointer;
 @button-cursor-disabled: not-allowed;
 
 // default measurements
-@button-height-default: 2.5rem; // 40px
+@button-height-default: @size-40; // 40px
 @button-height-orders: 3.5rem; // 56px
-@button-padding-orders: 1.25rem 5.875rem; // 20px x 94px
+@button-padding-orders: @size-20 5.875rem; // 20px x 94px
 
 // borders
 @border-default: 1px solid transparent;
 
 // border radius
-@border-radius-default: 3px;
-@border-radius-rounded: 0.375rem;
-@border-radius-extra-rounded: 0.5rem;
+@border-radius-default: @size-3;
+@border-radius-rounded: @size-6;
+@border-radius-extra-rounded: @size-8;
 @border-radius-full-round: 6.25rem; // 100px
-
 // box shadows
 
 // dash lines
@@ -26,7 +40,7 @@
 
 .default-dashline {
   fill: none;
-  stroke: @color-secondary-text;
+  stroke: @color-primary-text;
 }
 
 .dashline-normal {

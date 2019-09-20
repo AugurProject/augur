@@ -29,7 +29,7 @@
   button {
     background: none;
     border: none;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     cursor: pointer;
     display: block;
     font-size: 0.75rem;
@@ -71,7 +71,7 @@
 }
 
 .InnerNav__menu-item--seperator {
-  border-top: 1px solid @color-primary-background;
+  border-top: 1px solid @color-dark-grey;
   display: flex;
   height: 0;
   margin: @size-12 @size-11 0;
@@ -83,7 +83,7 @@
 }
 
 .InnerNav__menu--main {
-  background: @color-primary-background;
+  background: @color-dark-grey;
   border-right: 1px solid @color-primary-light;
   position: relative;
   z-index: @mask;
@@ -91,7 +91,7 @@
 
 .InnerNav__menu--submenu {
   background: @color-primary-light;
-  border-left: 0.0625rem solid @color-primary-background;
+  border-left: 0.0625rem solid @color-dark-grey;
   left: 0;
   position: absolute;
   top: 0;
@@ -126,7 +126,7 @@
       > div {
         align-items: center;
         background: @color-theme-primary;
-        border-bottom: 1px solid @color-primary-background;
+        border-bottom: 1px solid @color-dark-grey;
         color: white;
         display: flex;
         flex-flow: row nowrap;
@@ -143,7 +143,7 @@
         }
 
         > button > svg > path {
-          stroke: @color-secondary-text;
+          stroke: @color-primary-text;
         }
       }
     }
@@ -175,7 +175,7 @@
   .InnerNav__menu-item--selected:hover {
     a,
     button {
-      background: @color-lightpurple;
+      background: @color-primary-light;
     }
   }
 

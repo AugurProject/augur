@@ -7,7 +7,7 @@ html,
 }
 
 body {
-  background: @color-primary-background;
+  background: @color-dark-grey;
   overflow: hidden;
 
   // See Issue #3504
@@ -100,7 +100,7 @@ h6 {
 
 .SideBar {
   background: @color-theme-primary;
-  border-right: 0.0625rem solid @color-primary-background;
+  border-right: 0.0625rem solid @color-dark-grey;
 
   @media @breakpoint-mobile {
     padding-top: 0;
@@ -112,7 +112,7 @@ h6 {
   top: 0;
   left: 0;
   background: @color-theme-primary;
-  border-bottom: 1px solid @color-primary-background;
+  border-bottom: 1px solid @color-dark-grey;
   display: none;
   height: @top-bar-height-mobile;
   outline: none;
@@ -134,16 +134,6 @@ h6 {
       stroke-width: 1.5;
     }
   }
-}
-
-.App__loadingIndicator {
-  background: @color-lighter-purple;
-  display: none;
-  height: 0.25rem;
-  left: 0;
-  position: absolute;
-  right: 0;
-  z-index: @mask-modal;
 }
 
 svg.SideBar__mobile-bars-unseen {

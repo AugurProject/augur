@@ -6,13 +6,12 @@ import { Getter } from './Router';
 import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
 import {
   Address,
+  DisputeDoc,
   MarketData,
-  MarketType,
-  MarketTypeName,
   OrderEventType,
   OrderType,
-  ParsedOrderEventLog,
-} from "../logs/types";
+  ParsedOrderEventLog
+} from '../logs/types';
 import { sortOptions } from './types';
 import { MarketReportingState } from '../../constants';
 import {
@@ -21,6 +20,7 @@ import {
   QUINTILLION,
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
+  marketTypeToName,
 } from '../../index';
 import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
@@ -35,7 +35,15 @@ export enum GetMarketsSortBy {
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
   disputeRound = 'disputeRound',
-  totalRepStakedInMarket = 'totalRepStakedInMarket'
+  totalRepStakedInMarket = 'totalRepStakedInMarket',
+}
+
+const MaxLiquiditySpreadValue  = {
+  '100': null,
+  '20': null,
+  '15': null,
+  '10': null,
+  '0': null,
 }
 
 // Valid market liquidity spreads
@@ -48,6 +56,7 @@ export enum MaxLiquiditySpread {
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
+export const GetMaxLiquiditySpread = t.keyof(MaxLiquiditySpreadValue);
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -60,13 +69,7 @@ const getMarketsParamsSpecific = t.intersection([
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    maxLiquiditySpread: t.keyof({
-      '100': null,
-      '20': null,
-      '15': null,
-      '10': null,
-      '0': null,
-    }),
+    maxLiquiditySpread: GetMaxLiquiditySpread,
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
@@ -158,7 +161,7 @@ export interface DisputeInfo {
 }
 
 export interface StakeDetails {
-  outcome: string;
+  outcome: string|null;
   bondSizeCurrent: string; // current dispute round bond size
   stakeCurrent: string; // will be pre-filled stake if tentative winning is true
   stakeRemaining: string; // bondSizeCurrent - stakeCurrent
@@ -205,6 +208,7 @@ export interface OutcomeOrderBook {
     bids: MarketOrderBookOrder[];
     asks: MarketOrderBookOrder[];
   };
+  spread?: null; // set to null if order book is empty
 }
 
 export interface MarketOrderBook {
@@ -297,7 +301,7 @@ export class Markets {
           const numTicks = new BigNumber(marketDoc.numTicks);
           const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
           const partialCandlestick = {
-            startTimestamp: parseInt(startTimestamp, 10),
+            startTimestamp: Number(startTimestamp),
             start: convertOnChainPriceToDisplayPrice(
               new BigNumber(
                 _.minBy(trades, tradeLog => {
@@ -457,21 +461,21 @@ export class Markets {
       const profitLossLogs = await db.findProfitLossChangedLogs(params.userPortfolioAddress, { selector: { universe: params.universe }});
       const stakeLogs = await db.findDisputeCrowdsourcerContributionLogs({ selector: {
         universe: params.universe,
-        reporter: params.userPortfolioAddress
+        reporter: params.userPortfolioAddress,
       }});
       const initialReportLogs = await db.findInitialReportSubmittedLogs({ selector: {
         universe: params.universe,
-        reporter: params.userPortfolioAddress
+        reporter: params.userPortfolioAddress,
       }});
-      const profitLossMarketIds = _.map(profitLossLogs, "market");
-      const stakeMarketIds = _.map(stakeLogs, "market");
-      const initialReportMarketIds = _.map(initialReportLogs, "market");
+      const profitLossMarketIds = _.map(profitLossLogs, 'market');
+      const stakeMarketIds = _.map(stakeLogs, 'market');
+      const initialReportMarketIds = _.map(initialReportLogs, 'market');
       const userMarketIds = profitLossMarketIds.concat(stakeMarketIds, initialReportMarketIds);
       request.selector = Object.assign(request.selector, {
         $or: [
           { market: { $in: userMarketIds } },
           { marketCreator: params.userPortfolioAddress },
-        ]
+        ],
       });
     }
 
@@ -511,13 +515,13 @@ export class Markets {
 
     // TODO rearrange filters and search such that this only gets the number of markets given the search and "non-filter" filters
     // TODO Really this data should come in a standalone request. This data (number filtered out) requires 2 extra distinct queries which we could do after the actual markets are returned. The UI element which uses this is at the bottom of the results if any exist so in a normal case the user wont see it till they scroll for a while.
-    const numMarketDocs = (await db.getNumRowsFromDB("Markets", true)) - 1;
-    const numMarketDocsAfterFilters = await db.getNumRowsFromDB("Markets", true, request);
+    const numMarketDocs = (await db.getNumRowsFromDB('Markets', true)) - 1;
+    const numMarketDocsAfterFilters = await db.getNumRowsFromDB('Markets', true, request);
 
     // TODO: Add the sort and pagination params to the request at this point. We want to get the full filtered row count in the query above
 
-    let marketData = await db.findMarkets(request);
-    let marketDataById = _.keyBy(marketData, "market");
+    const marketData = await db.findMarkets(request);
+    const marketDataById = _.keyBy(marketData, 'market');
 
     // Sort search results by categories
     // @TODO Use actual type instead of any[] below
@@ -757,14 +761,7 @@ export class Markets {
         finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
       }
 
-      let marketType: string;
-      if (marketData.marketType === MarketType.YesNo) {
-        marketType = MarketTypeName.YesNo;
-      } else if (marketData.marketType === MarketType.Categorical) {
-        marketType = MarketTypeName.Categorical;
-      } else {
-        marketType = MarketTypeName.Scalar;
-      }
+      const marketType = marketTypeToName(marketData.marketType);
 
       let categories:string[] = [];
       let description = null;
@@ -796,7 +793,7 @@ export class Markets {
       ).dividedBy(QUINTILLION);
       const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
       // TODO: find this value from logs.
-      const noShowBondAmount = "999999000000000000000";
+      const noShowBondAmount = '999999000000000000000';
 
       // TODO: Create a derived DB for market / outcome indexed data to get last price
       const outcomes = await getMarketOutcomes(
@@ -805,7 +802,7 @@ export class Markets {
         scalarDenomination,
         tickSize,
         minPrice,
-        orderFilledLogs,
+        orderFilledLogs
       );
 
       const totalRepStakedInMarket = new BigNumber(marketData.totalRepStakedInMarket || '0x0', 16);
@@ -819,7 +816,7 @@ export class Markets {
         stakeCompletedTotal: totalRepStakedInMarket.toFixed(),
         bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
         stakes: await getStakes(augur, db, marketData),
-      }
+      };
 
       return {
         id: marketData.market,
@@ -835,7 +832,7 @@ export class Markets {
         author: marketData.marketCreator,
         designatedReporter: marketData.designatedReporter,
         creationBlock: marketData.blockNumber,
-        creationTime: parseInt(marketData.timestamp, 10),
+        creationTime: Number(marketData.timestamp),
         categories,
         volume: new BigNumber(marketData.volume || 0).dividedBy(QUINTILLION).toString(),
         openInterest: new BigNumber(marketData.marketOI || 0).dividedBy(QUINTILLION).toString(),
@@ -962,7 +959,7 @@ async function getMarketOutcomes(
           ).toString(10)
           : null,
       description: 'Invalid',
-      volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[0]).toString(10) : '0'
+      volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[0]).toString(10) : '0',
     });
     outcomes.push({
       id: 1,
@@ -1019,7 +1016,7 @@ async function getMarketOutcomes(
             ).toString(10)
             : null,
         description: Buffer.from(outcomeDescription, 'hex').toString(),
-        volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[i + 1]).toString(10) : '0'
+        volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[i + 1]).toString(10) : '0',
       });
     }
   }
@@ -1044,32 +1041,34 @@ async function getStakes(
   db: DB,
   market: MarketData
 ): Promise<StakeDetails[]> {
-  const disputeRecords = await db.findDisputeDocs({selector: { market: { $eq: market.market } }})
-  return await formatStakeDetails(db, market, disputeRecords);
+  const disputeRecords = await db.findDisputeDocs({selector: { market: { $eq: market.market } }});
+  return formatStakeDetails(db, market, disputeRecords);
 }
 
-async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: any[]): Promise<StakeDetails[]> {
+async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc[]): Promise<StakeDetails[]> {
   const formattedStakeDetails: StakeDetails[] = [];
 
   for (let i = 0; i < stakeDetails.length; i++) {
     const outcomeDetails = stakeDetails[i];
     const outcomeValue = getOutcomeValue(market, outcomeDetails.payoutNumerators);
     if (outcomeDetails.disputeRound < market.disputeRound) {
-      const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16).multipliedBy(2).minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
+      const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
+        .multipliedBy(2)
+        .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
-        isInvalidOutcome: outcomeValue.invalid,
-        isMalformedOutcome: outcomeValue.malformed,
+        isInvalidOutcome: outcomeValue.invalid || false,
+        isMalformedOutcome: outcomeValue.malformed || false,
         bondSizeCurrent,
-        stakeCurrent: "0",
+        stakeCurrent: '0',
         stakeRemaining: bondSizeCurrent,
         tentativeWinning: false,
       };
     } else {
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
-        isInvalidOutcome: outcomeValue.invalid,
-        isMalformedOutcome: outcomeValue.malformed,
+        isInvalidOutcome: outcomeValue.invalid || false,
+        isMalformedOutcome: outcomeValue.malformed || false,
         bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
@@ -1085,21 +1084,14 @@ function getOutcomeValue(market: MarketData, payoutNumerators: string[]): Payout
   const minPrice = new BigNumber(market['prices'][0]);
   const numTicks = new BigNumber(market['numTicks']);
   const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-  let marketType: string;
-  if (market['marketType'] === MarketType.YesNo) {
-    marketType = MarketTypeName.YesNo;
-  } else if (market['marketType'] === MarketType.Categorical) {
-    marketType = MarketTypeName.Categorical;
-  } else {
-    marketType = MarketTypeName.Scalar;
-  }
+  const marketType = marketTypeToName(market.marketType);
   return calculatePayoutNumeratorsValue(
     convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
     convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
     numTicks.toString(),
     marketType,
     payoutNumerators
-  )
+  );
 }
 
 function getMarketsMeta(
@@ -1275,7 +1267,7 @@ async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResu
  */
 export async function getLiquidityOrderBook(augur: Augur, db: DB, marketId: string): Promise<OrderBook> {
   // TODO Remove any below by making Markets.getMarketOrderBook return a consistent type when the order book is empty
-  const marketOrderBook: any = await Markets.getMarketOrderBook(augur, db, { marketId });
+  const marketOrderBook: MarketOrderBook = await Markets.getMarketOrderBook(augur, db, { marketId });
   const orderBook: OrderBook = {};
 
   // `marketOrderBook.orderBook.spread` will be set to null if order book is empty

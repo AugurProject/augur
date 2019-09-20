@@ -7,7 +7,7 @@
     > li {
       .text-16;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       display: flex;
       flex-flow: column nowrap;
       width: 100%;
@@ -34,13 +34,13 @@
         font-size: @size-12;
 
         > label {
-          color: @color-secondary-text;
+          color: @color-primary-text;
           padding: @size-7 0 0 @size-32;
         }
       }
 
       > label {
-        color: @color-shadow-text;
+        color: @color-inactive-text;
         margin-bottom: 0;
         padding-bottom: @size-4;
         width: 100%;
@@ -48,7 +48,7 @@
         &.smallLabel {
           .text-10;
 
-          color: @color-secondary-text;
+          color: @color-primary-text;
           padding-top: @size-8;
           text-transform: none;
 
@@ -63,11 +63,11 @@
             }
 
             > rect {
-              fill: @color-neutral;
+              fill: @color-inactive-text;
             }
 
             > path {
-              fill: @color-neutral;
+              fill: @color-inactive-text;
             }
           }
         }
@@ -97,13 +97,13 @@
 }
 
 .TradingForm__error_message_container {
-  background: @color-error-message-bright-fade;
-  border: 1px solid @color-error-text;
+  background: fade(@color-error, 20%);
+  border: 1px solid @color-error;
   border-radius: 3px;
   box-sizing: border-box;
   display: block;
-  font-size: @font-size-small;
-  line-height: @font-size-medium;
+  font-size: @size-12;
+  line-height: @size-14;
   margin: @size-16;
   padding: @size-13 @size-8;
 }
@@ -111,7 +111,7 @@
 .TradingForm__error_message {
   .mono-10-bold;
 
-  color: @color-secondary-text;
+  color: @color-primary-text;
   margin-bottom: @size-4;
   text-transform: uppercase;
   white-space: nowrap;
@@ -126,17 +126,17 @@
     width: @size-12;
 
     > circle {
-      fill: @color-error-message-fade;
+      fill: fade(@color-error, 20%);
       opacity: 0.5;
-      stroke: @color-error-text;
+      stroke: @color-error;
     }
 
     > rect {
-      fill: @color-error-text;
+      fill: @color-error;
     }
 
     > path {
-      fill: @color-error-text;
+      fill: @color-error;
     }
   }
 
@@ -166,7 +166,7 @@
   > span {
     .mono-11;
 
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     text-transform: uppercase;
   }
 }
@@ -180,32 +180,32 @@
 
 .TradingForm__input__container {
   align-items: center;
-  background-color: @color-secondary-action;
+  background-color: @color-dark-grey;
   border: 1px solid @color-primary-alternate;
   display: flex;
   flex-direction: row;
   font-family: @roboto-mono;
 
   > input[type="number"] {
-    background-color: @color-secondary-action;
+    background-color: @color-dark-grey;
     border-width: 0;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     font-family: @roboto-mono;
-    font-size: @font-size-medium;
+    font-size: @size-14;
 
     &::placeholder {
-      color: fade(@color-secondary-text, 20%);
+      color: fade(@color-primary-text, 20%);
       font-family: @roboto-mono;
-      font-size: @font-size-medium;
+      font-size: @size-14;
     }
   }
 
   &.error {
-    border: 1px solid fade(@color-error-text, 50%);
+    border: 1px solid fade(@color-error, 50%);
 
     &:focus-within,
     &:focus {
-      border: 1px solid fade(@color-error-text, 50%);
+      border: 1px solid fade(@color-error, 50%);
     }
   }
 
@@ -214,7 +214,7 @@
 
     background: @color-tertiary-background;
     border-left: 1px solid @color-primary-alternate;
-    color: @color-tertiary-text;
+    color: @color-primary-text;
     min-width: 4.28rem;
     overflow: hidden;
     padding: @size-10 @size-12;
@@ -232,15 +232,15 @@
     }
 
     &.error {
-      background: @color-error-message-bright-fade;
+      background: fade(@color-error, 20%);
       border-left: 0;
       opacity: 0.5;
     }
   }
 
   > label {
-    color: @color-neutral;
-    font-size: @font-size-small;
+    color: @color-inactive-text;
+    font-size: @size-12;
   }
 
   &:focus-within {
@@ -251,7 +251,7 @@
       border-left: 0;
 
       &.error {
-        background: @color-error-message-bright-fade;
+        background: fade(@color-error, 20%);
         opacity: 0.5;
       }
     }
@@ -262,27 +262,9 @@
   }
 }
 
-.TradingForm__form-body > li.TradingForm__button--review {
-  justify-content: flex-end;
-
-  > button {
-    &:extend(.button--purple all);
-  }
-}
-
-.TradingForm__form-body > li.TradingForm__button__yes_no--review {
-  > label {
-    justify-content: flex-start;
-  }
-
-  > button {
-    &:extend(.button--purple all);
-  }
-}
-
 @media @breakpoint-mobile {
   .Outcome {
-    background: @color-extra-darkpurple;
+    background: @color-dark-grey;
     margin-bottom: @size-24;
     margin-top: @size-16;
     padding-bottom: 0;
@@ -300,78 +282,6 @@
       &::placeholder {
         font-size: @size-12;
       }
-    }
-  }
-
-  .TradingForm__form-body {
-    display: flex;
-    flex-flow: row wrap;
-
-    > li {
-      flex: 1;
-
-      &:nth-of-type(1),
-      &:nth-of-type(2),
-      &:nth-of-type(3) {
-        > label {
-          .mono-9;
-        }
-      }
-
-      &:nth-of-type(2) {
-        margin: 0 0 0 @size-8;
-      }
-
-      &:nth-of-type(3) {
-        flex: 2 100%;
-        margin-top: @size-8;
-
-        > label {
-          .text-10;
-        }
-      }
-
-      &:nth-of-type(4) {
-        > label {
-          .text-12;
-
-          padding: 2px 0 0 @size-32;
-        }
-      }
-
-      > input[type="number"] {
-        background-color: @color-lightergray;
-        font-size: @size-12;
-      }
-
-      > label {
-        &.smallLabel {
-          .text-10;
-
-          > svg {
-            height: @size-16;
-            width: @size-16;
-          }
-        }
-      }
-    }
-  }
-
-  .TradingForm__form-body > li.TradingForm__button--review,
-  .TradingForm__form-body > li.TradingForm__button__yes_no--review {
-    justify-content: flex-end;
-
-    > label {
-      display: none;
-    }
-
-    > button {
-      border-radius: 0;
-      bottom: 0;
-      left: 0;
-      padding: @size-16 0;
-      position: fixed;
-      width: 100%;
     }
   }
 

@@ -1,6 +1,7 @@
 import {
   Getters,
-  MarketReportingState
+  Logs,
+  MarketReportingState,
 } from '@augurproject/sdk';
 import {
   Edge,
@@ -359,10 +360,9 @@ export const INDETERMINATE_PLUS_ONE = '0.500000000000000001';
 export const INDETERMINATE_OUTCOME_NAME = 'Indeterminate';
 
 // # Market Types
-export const YES_NO = 'yesNo';
-export const CATEGORICAL = 'categorical';
-export const SCALAR = 'scalar';
-export const COMBINATORIAL = 'combinatorial';
+export const YES_NO = Logs.MarketTypeName.YesNo;
+export const CATEGORICAL = Logs.MarketTypeName.Categorical;
+export const SCALAR = Logs.MarketTypeName.Scalar;
 
 // # New Market Constraint Constants
 export const DESCRIPTION_MIN_LENGTH = 1;
@@ -671,6 +671,7 @@ export const AWAITING_SIGNATURE = 'awaiting signature';
 export const PENDING = 'pending';
 export const SUCCESS = 'success';
 export const FAILED = 'Failed';
+export const FAILURE = 'Failure';
 export const CONFIRMED = 'Confirmed';
 export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';

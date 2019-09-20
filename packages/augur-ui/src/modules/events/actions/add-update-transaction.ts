@@ -21,10 +21,12 @@ import {
   APPROVE,
   DOINITIALREPORT,
   ZERO,
-  PREFILLEDSTAKE
+  PREFILLEDSTAKE,
+  PUBLICFILLBESTORDER,
+  PUBLICFILLORDER
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
-import { convertTransactionOrderToUIOrder } from './transaction-conversions';
+import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
 import {
   addPendingOrder,
   updatePendingOrderStatus,
@@ -59,7 +61,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const methodCall = transaction.name.toUpperCase();
     const { blockchain, alerts } = getState();
 
-    if (eventName === TXEventName.Failure) {
+    if (hash && eventName === TXEventName.Failure) {
       dispatch(addAlert({
         id: hash ? hash : generateTxParameterId(transaction.params),
         params: transaction.params,
@@ -67,7 +69,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         timestamp: blockchain.currentAugurTimestamp * 1000,
         name: methodCall,
       }));
-    } else if (hash && eventName === TXEventName.Success && methodCall && methodCall !== "" && methodCall !== CANCELORDER) {
+    } else if (hash && eventName === TXEventName.Success && methodCall && methodCall !== "" && methodCall !== CANCELORDER && methodCall !== PUBLICFILLORDER) {
       dispatch(updateAlert(hash, {
         params: transaction.params,
         status: TXEventName.Success,

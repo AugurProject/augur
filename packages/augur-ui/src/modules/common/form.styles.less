@@ -36,7 +36,7 @@
       width: @size-10;
 
       > line {
-        stroke: @color-tertiary-info-text;
+        stroke: @color-secondary-text;
       }
     }
 
@@ -104,7 +104,7 @@
   > h5 {
     .text-14;
 
-    color: @color-alternate-info-text;
+    color: @color-primary-text;
   }
 
   > h5,
@@ -119,15 +119,15 @@
   }
 
   &:disabled {
-    border: 1px solid @color-shadow-text;
+    border: 1px solid @color-inactive-text;
 
     > svg > circle {
-      stroke: @color-shadow-text;
+      stroke: @color-inactive-text;
     }
 
     > h5,
     > p {
-      color: @color-shadow-text;
+      color: @color-inactive-text;
     }
   }
 }
@@ -148,7 +148,7 @@
     padding: 0 @size-12;
 
     &.Selected {
-      color: @color-alternate-info-text;
+      color: @color-primary-text;
     }
   }
 
@@ -193,7 +193,7 @@
     }
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: @color-primary-text;
     }
   }
 
@@ -233,7 +233,7 @@
     }
 
     > circle {
-      fill: @color-alternate-info-text;
+      fill: @color-primary-text;
     }
   }
 
@@ -252,11 +252,11 @@
   height: auto;
 
   &.Checked {
-    border: 1px solid @color-faded-bright;
+    border: 1px solid @color-negative;
 
     > svg {
       > circle:last-of-type {
-        fill: @color-faded-bright;
+        fill: @color-negative;
       }
     }
   }
@@ -278,7 +278,7 @@
     > span:first-of-type {
       .text-14-medium;
 
-      color: @color-alternate-info-text;
+      color: @color-primary-text;
       display: flex;
       margin-bottom: @size-12;
       margin-top: @size-16;
@@ -287,7 +287,7 @@
 
   &.Invalid {
     > h5 {
-      color: @color-invalid;
+      color: @color-outcome-invalid;
     }
   }
 
@@ -346,7 +346,7 @@
   > p {
     .text-14;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     grid-column: 2;
     grid-row: 4;
     width: 236px;
@@ -381,7 +381,7 @@
   > span:first-of-type {
     .text-14-medium;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     margin-bottom: @size-8;
   }
 
@@ -390,7 +390,7 @@
   > section > span:nth-of-type(2) {
     .text-12;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     margin-bottom: @size-12;
   }
 
@@ -421,7 +421,7 @@
     margin-top: @size-20;
 
     &:nth-of-type(2) {
-      color: @color-tertiary-info-text;
+      color: @color-secondary-text;
       margin-top: @size-16;
     }
   }
@@ -436,8 +436,8 @@
 }
 
 .RadioBarError {
-  background: @color-secondary-action;
-  border: 1px solid @color-error-text;
+  background: @color-dark-grey;
+  border: 1px solid @color-error;
 }
 
 .RadioCardGroup {
@@ -474,11 +474,11 @@
 
   cursor: pointer;
   display: grid;
-  grid-template-rows: @size-20 64px 44px 50px 38px;
+  grid-template-rows: @size-20 64px 44px 64px 38px;
   grid-template-columns: 100%;
-  max-height: 216px;
+  max-height: 230px;
   max-width: 210px;
-  min-height: 216px;
+  min-height: 230px;
   min-width: 210px;
 
   @media @breakpoint-mobile-mid {
@@ -514,7 +514,7 @@
       width: @size-16;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: @color-inactive-text;
       }
     }
   }
@@ -557,7 +557,7 @@
   > p {
     .text-14;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     line-height: @size-18;
     margin: @size-12 @size-12 0;
     text-align: center;
@@ -579,7 +579,7 @@
       height: @size-48;
 
       > path {
-        stroke: @color-alternate-info-text;
+        stroke: @color-primary-text;
       }
 
       @media @breakpoint-mobile-mid {
@@ -650,7 +650,7 @@
       width: @size-11;
 
       > path {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
     }
   }
@@ -700,10 +700,10 @@
     > textarea {
       .text-14;
 
-      background-color: @color-secondary-action;
+      background-color: @color-dark-grey;
       border-radius: @border-radius-default;
       border: 1px solid @color-primary-light;
-      color: @color-secondary-text;
+      color: @color-primary-text;
       height: 44px;
       min-width: 150px;
 
@@ -721,19 +721,19 @@
       }
 
       &:disabled {
-        background-color: @color-extra-darkpurple;
-        border: 1px solid @color-shadow-text;
-        color: @color-shadow-text;
+        background-color: @color-dark-grey;
+        border: 1px solid @color-inactive-text;
+        color: @color-inactive-text;
         opacity: 0.5;
 
         &::placeholder {
-          color: @color-shadow-text;
+          color: @color-inactive-text;
         }
       }
     }
 
     > div.AutoCompleteList {
-      background-color: @color-secondary-text;
+      background-color: @color-primary-text;
       border-radius: @border-radius-default;
       display: none;
       position: absolute;
@@ -752,7 +752,7 @@
       > button {
         .text-10;
 
-        color: @color-primary-background;
+        color: @color-dark-grey;
         height: 2rem;
         line-height: @size-12;
         padding: @size-10 @size-12;
@@ -782,7 +782,7 @@
     > .Inner {
       .text-14;
 
-      color: @color-tertiary-info-text;
+      color: @color-secondary-text;
     }
 
     > .Trailing {
@@ -818,7 +818,7 @@
 .ErrorText {
   .text-12;
 
-  color: @color-error-text;
+  color: @color-error;
   margin-top: @size-4;
 }
 
@@ -829,7 +829,7 @@
   > div {
     .text-14;
 
-    background-color: @color-secondary-action;
+    background-color: @color-dark-grey;
     border-radius: @border-radius-default;
     border: 1px solid @color-primary-light;
     min-width: 210px;
@@ -851,7 +851,7 @@
         min-width: @size-12;
 
         > path {
-          stroke: @color-secondary-text;
+          stroke: @color-primary-text;
         }
       }
 
@@ -861,24 +861,24 @@
     }
 
     > button[class*="SelectedLabel"] {
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     &:hover {
-      background-color: @color-secondary-action;
+      background-color: @color-dark-grey;
       border: 1px solid @color-highlight;
       cursor: pointer;
     }
 
     &.disabled {
-      background-color: @color-extra-darkpurple;
-      border: 1px solid @color-shadow-text;
-      color: @color-shadow-text;
+      background-color: @color-dark-grey;
+      border: 1px solid @color-inactive-text;
+      color: @color-inactive-text;
       opacity: 0.5;
     }
 
     &.error {
-      border: 1px solid fade(@color-error-text, 50%);
+      border: 1px solid fade(@color-error, 50%);
     }
   }
 }
@@ -886,7 +886,7 @@
 div.FormDropdownActive {
   > button {
     background-color: transparent;
-    color: @color-secondary-text;
+    color: @color-primary-text;
 
     &:hover {
       background-color: transparent;
@@ -894,41 +894,39 @@ div.FormDropdownActive {
   }
 
   &:hover {
-    background-color: @color-secondary-action;
+    background-color: @color-dark-grey;
     border: 1px solid @color-primary-light;
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
 
 .Input {
-  .border(true, @border-all, @color-input-border-no-focus, 1px);
-
-  background-color: @color-input-background;
+  background-color: @color-primary-text;
+  border: @size-1 solid @color-primary-text;
   display: flex;
 
   button,
   .input-value-comparison {
-    background-color: @color-input-background;
+    background-color: @color-primary-text;
     font-weight: @weight-medium;
   }
 
   input {
-    .border(true, @border-all, @color-transparent, 1px);
-
+    border: @size-1 solid transparent;
     display: flex;
     flex: 1;
   }
 
   input::placeholder {
-    color: @color-input-border-no-focus;
+    color: @color-primary-text;
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, 1px);
+    border: @size-1 solid transparent;
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, 1px);
+    border: @size-1 solid @color-primary-light;
   }
 
   .box {
@@ -942,13 +940,13 @@ div.FormDropdownActive {
   }
 
   .close {
-    background-color: @color-transparent;
+    background-color: transparent;
     height: @size-16;
     line-height: @size-16;
     width: @size-16;
 
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: @color-inactive-text;
     }
 
     @media @breakpoint-mobile-mid {
@@ -961,26 +959,25 @@ div.FormDropdownActive {
 
 .noFocus {
   &:focus-within {
-    .border(true, @border-all, @color-transparent, 1px);
+    border: @size-1 solid transparent;
   }
 }
 
 .Max {
   .text-10-medium;
 
-  color: @color-neutral;
+  color: @color-inactive-text;
   padding: 0 @size-16;
   text-transform: capitalize;
 }
 
 .MaxDark {
-  background-color: @color-lightergray !important;
+  background-color: @color-primary-text !important;
 }
 
 .Incremental {
-  .border(true, @border-all, @color-transparent, 1px);
-
-  background-color: @color-input-background;
+  background-color: @color-primary-text;
+  border: @size-1 solid transparent;
   display: flex;
 
   .box {
@@ -995,26 +992,25 @@ div.FormDropdownActive {
 
   button,
   .ValueComparison {
-    background-color: @color-input-background;
+    background-color: @color-primary-text;
   }
 
   input {
-    .border(true, @border-all, @color-transparent, 1px);
-
+    border: @size-1 solid transparent;
     display: flex;
     flex: 1 auto;
   }
 
   input::placeholder {
-    color: @color-input-border-no-focus;
+    color: @color-primary-text;
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, 1px);
+    border: @size-1 solid transparent;
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, 1px);
+    border: @size-1 solid @color-primary-light;
   }
 
   input[type='number'] {
@@ -1029,8 +1025,6 @@ div.FormDropdownActive {
 }
 
 .ValueIncrementers {
-  // .border(true, @border-left);
-
   display: flex;
   flex-direction: column;
 
@@ -1040,20 +1034,20 @@ div.FormDropdownActive {
     padding: 0 @size-4;
 
     &:active {
-      background-color: @color-gray;
+      background-color: @color-inactive-text;
     }
   }
 }
 
 .FocusBorder {
-  .border(true, @border-all, @color-input-border, @border-width-2);
+  border: @size-2 solid @color-primary-light;
 }
 
 .LightBorder {
-  .border(true, @border-all, @color-lightgray, 1px);
+  border: @size-1 solid @color-secondary-text;
 
   &:focus-within {
-    .border(true, @border-all, @color-lightgray, 1px);
+    border: @size-1 solid @color-secondary-text;
   }
 }
 
@@ -1130,7 +1124,7 @@ div.FormDropdownActive {
     }
 
     .DayPicker__horizontal_2 {
-      background-color: @color-input-background;
+      background-color: @color-primary-text;
       border-radius: 0;
       box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
       font-size: @size-12;
@@ -1147,17 +1141,17 @@ div.FormDropdownActive {
     .SingleDatePickerInput_1 {
       .mono-12;
 
-      background-color: @color-secondary-action;
+      background-color: @color-dark-grey;
       border: 1px solid @color-primary-light;
       border-radius: @border-radius-default;
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     .DateInput_input.DateInput_input_1 {
       .text-14;
 
-      background-color: @color-secondary-action;
-      color: @color-secondary-text;
+      background-color: @color-dark-grey;
+      color: @color-primary-text;
       border: 1px solid @color-primary-light;
 
     }
@@ -1176,7 +1170,7 @@ div.FormDropdownActive {
       .text-14;
 
       background: none;
-      color: @color-secondary-text;
+      color: @color-primary-text;
 
       &.DateInput_displayText__hasInput {
         color: inherit;
@@ -1196,7 +1190,7 @@ div.FormDropdownActive {
     .CalendarMonth_caption_1 {
       .text-14-medium;
 
-      color: @color-primary-background;
+      color: @color-dark-grey;
       padding-bottom: @size-40;
       padding-top: 33px;
       text-transform: capitalize;
@@ -1218,7 +1212,7 @@ div.FormDropdownActive {
 
         > rect,
         > path {
-          stroke: @color-neutral;
+          stroke: @color-inactive-text;
         }
 
         &:hover {
@@ -1238,7 +1232,7 @@ div.FormDropdownActive {
 
         > rect,
         > path {
-          stroke: @color-neutral;
+          stroke: @color-inactive-text;
         }
 
         &:hover {
@@ -1260,7 +1254,7 @@ div.FormDropdownActive {
         width: @size-20;
 
         > path {
-          fill: @color-tertiary-info-text;
+          fill: @color-secondary-text;
         }
       }
     }
@@ -1268,7 +1262,7 @@ div.FormDropdownActive {
     .DayPicker_weekHeader_li_1 {
       .mono-11;
 
-      color: @color-alternate-text;
+      color: @color-inactive-text;
       text-transform: capitalize;
     }
 
@@ -1276,8 +1270,8 @@ div.FormDropdownActive {
       .mono-default;
 
       background: none;
-      border: 1px solid @color-tertiary-text;
-      color: @color-shadow-text;
+      border: 1px solid @color-primary-text;
+      color: @color-inactive-text;
 
       &.CalendarDay__selected_2:hover {
         background: @color-primary-light;
@@ -1285,29 +1279,29 @@ div.FormDropdownActive {
 
       &.CalendarDay__selected {
         background: @color-primary-alternate-two;
-        color: @color-secondary-text;
+        color: @color-primary-text;
 
         &:hover {
           background: @color-primary-alternate-two;
-          border: 1px solid @color-tertiary-text;
-          color: @color-secondary-text;
+          border: 1px solid @color-primary-text;
+          color: @color-primary-text;
         }
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
       &:hover {
         background: fade(@color-primary-alternate-two, 10%);
-        border: 1px solid @color-tertiary-text;
-        color: @color-disabled-text-secondary;
+        border: 1px solid @color-primary-text;
+        color: @color-inactive-text;
       }
 
       &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
         background: fade(@color-primary-alternate-two, 10%);
-        border: 1px solid @color-tertiary-text;
+        border: 1px solid @color-primary-text;
       }
 
       &:hover {
-        color: @color-shadow-text;
+        color: @color-inactive-text;
       }
     }
 
@@ -1318,8 +1312,8 @@ div.FormDropdownActive {
 }
 
 .InputDropdown {
-  background-color: @color-input-background;
-  color: @color-lightgray;
+  background-color: @color-primary-text;
+  color: @color-secondary-text;
   cursor: pointer;
   display: flex;
   padding: @size-8 @size-16;
@@ -1340,16 +1334,16 @@ div.FormDropdownActive {
     width: 100%;
 
     &.selected {
-      color: @color-darkpurple;
+      color: @color-theme-primary;
     }
   }
 
   > div {
     .text-18;
 
-    background-color: @color-secondary-text;
+    background-color: @color-primary-text;
     box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
-    color: @color-darkpurple;
+    color: @color-theme-primary;
     display: none;
     line-height: @size-24;
     max-height: 10rem;
@@ -1375,7 +1369,7 @@ div.FormDropdownActive {
 
       &:hover,
       &.active {
-        background-color: @color-lightergray;
+        background-color: @color-primary-text;
       }
     }
   }
@@ -1385,7 +1379,7 @@ div.FormDropdownActive {
     width: 100%;
 
     &.selected {
-      color: @color-darkpurple;
+      color: @color-theme-primary;
     }
   }
 
@@ -1396,7 +1390,7 @@ div.FormDropdownActive {
       height: @size-16;
 
       polyline {
-        stroke: @color-lightgray;
+        stroke: @color-secondary-text;
       }
     }
   }
@@ -1423,10 +1417,10 @@ div.FormDropdownActive {
     .text-14;
 
     align-items: center;
-    background-color: @color-secondary-action;
+    background-color: @color-dark-grey;
     border-radius: @border-radius-default;
     border: 1px solid @color-primary-light;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     display: flex;
     height: 44px;
     padding: @size-12;
@@ -1442,15 +1436,15 @@ div.FormDropdownActive {
       width: @size-20;
 
       > path {
-        fill: @color-tertiary-info-text;
+        fill: @color-secondary-text;
       }
     }
   }
 
   > div {
-    background: @color-secondary-text;
+    background: @color-primary-text;
     border: 1px solid @color-primary-light;
-    color: @color-primary-background;
+    color: @color-dark-grey;
     display: flex;
     left: 0;
     margin-top: @size-24;
@@ -1475,7 +1469,7 @@ div.FormDropdownActive {
       .text-16-medium;
 
       align-items: center;
-      color: @color-primary-dark;
+      color: @color-secondary-action;
       display: flex;
       margin-top: @size-24;
     }
@@ -1490,11 +1484,11 @@ div.FormDropdownActive {
     z-index: @above-all-content-above;
 
     > path:first-of-type {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
     }
 
     > path:last-of-type {
-      stroke: @color-alternate-info-text;
+      stroke: @color-primary-text;
       fill: transparent;
     }
   }
@@ -1508,16 +1502,16 @@ div.FormDropdownActive {
   > span {
     .text-11;
 
-    color: @color-primary-background;
+    color: @color-dark-grey;
     margin-bottom: @size-14;
   }
 
   > input {
     .mono-14;
 
-    background-color: @color-secondary-text;
-    border: 1px solid @color-tertiary-text;
-    color: @color-shadow-text;
+    background-color: @color-primary-text;
+    border: 1px solid @color-primary-text;
+    color: @color-inactive-text;
     height: @size-40;
     margin: @size-14 0;
     padding: @size-4;
@@ -1525,17 +1519,17 @@ div.FormDropdownActive {
     width: @size-40;
 
     &:hover {
-      border: 1px solid @color-neutral;
+      border: 1px solid @color-inactive-text;
     }
 
     &:focus {
-      border: 1px solid @color-primary-background;
+      border: 1px solid @color-dark-grey;
     }
 
     &:disabled {
-      background-color: @color-secondary-text;
-      border: 1px solid @color-tertiary-text;
-      color: @color-shadow-text;
+      background-color: @color-primary-text;
+      border: 1px solid @color-primary-text;
+      color: @color-inactive-text;
     }
   }
 
@@ -1551,13 +1545,13 @@ div.FormDropdownActive {
       width: @size-16;
 
       > path {
-        fill: @color-neutral;
+        fill: @color-inactive-text;
       }
     }
 
     &:hover {
       > svg > path {
-        fill: @color-primary-background;
+        fill: @color-dark-grey;
       }
     }
   }
@@ -1568,9 +1562,9 @@ div.FormDropdownActive {
 }
 
 .ErrorLabel {
-  background: @color-error-fade;
+  background: fade(@color-error, 20%);
   border-radius: @border-radius-default;
-  border: 1px solid @color-error-text;
+  border: 1px solid @color-error;
   border-left-width: @size-4;
   display: flex;
   padding: @size-12;
@@ -1580,20 +1574,20 @@ div.FormDropdownActive {
     margin-right: @size-6;
     width: @size-12;
     height: @size-12;
-    background: @color-error-fade;
+    background: fade(@color-error, 20%);
 
     > circle {
-      fill: @color-error-fade;
+      fill: fade(@color-error, 20%);
       opacity: 1;
-      stroke: @color-error-text;
+      stroke: @color-error;
     }
 
     > rect {
-      fill: @color-error-text;
+      fill: @color-error;
     }
 
     > path {
-      fill: @color-error-text;
+      fill: @color-error;
     }
   }
 
@@ -1604,7 +1598,7 @@ div.FormDropdownActive {
     > span:first-of-type {
       .mono-10-bold;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
       text-transform: uppercase;
       margin-bottom: @size-9;
     }
@@ -1612,7 +1606,7 @@ div.FormDropdownActive {
     > span:last-of-type {
       .text-11;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
   }
 
@@ -1633,7 +1627,7 @@ div.FormDropdownActive {
       > span:last-of-type {
         .text-12;
 
-        color: @color-tertiary-info-text;
+        color: @color-secondary-text;
       }
     }
   }
@@ -1642,11 +1636,11 @@ div.FormDropdownActive {
 textarea.error,
 input.error,
 button.error {
-  border: 1px solid fade(@color-error-text, 50%) !important;
+  border: 1px solid fade(@color-error, 50%) !important;
 }
 
 div.error > div > div > div > div > input {
-  border: 1px solid fade(@color-error-text, 50%) !important;
+  border: 1px solid fade(@color-error, 50%) !important;
 }
 
 .Timezones {
@@ -1669,14 +1663,14 @@ div.error > div > div > div > div > input {
   > span:first-of-type {
     .text-14;
 
-    color: @color-alternate-info-text;
+    color: @color-primary-text;
   }
 
   > span:last-of-type {
     .text-10;
 
-    color: @color-alternate-info-text;
-    background: @color-tertiary-info-text;
+    color: @color-primary-text;
+    background: @color-secondary-text;
     border-radius: 4px;
     display: flex;
     justify-content: center;
@@ -1707,7 +1701,7 @@ div.error > div > div > div > div > input {
 }
 
 .CategoryRow:hover span:first-of-type {
-  color: @color-secondary-text;
+  color: @color-primary-text;
 }
 
 @keyframes spin {
