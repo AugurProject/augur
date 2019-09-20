@@ -16,7 +16,7 @@ export const loadMarketsInfo = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  if (!marketIds || marketIds !== undefined || marketIds.length === 0) {
+  if (!marketIds || marketIds === undefined || marketIds.length === 0) {
     return callback(null, []);
   }
   const augur = augurSdk.get();
@@ -56,11 +56,4 @@ export const loadMarketsInfoIfNotLoaded = (
 
   if (marketIdsToLoad.length === 0) return callback(null);
   dispatch(loadMarketsInfo(marketIdsToLoad, callback));
-};
-
-export const loadMarketsDisputeInfo = (
-  marketIds: Array<string>,
-  callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>): void => {
-  dispatch(loadMarketsInfo(marketIds, callback));
 };
