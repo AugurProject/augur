@@ -647,13 +647,13 @@ describe('State API :: Markets :: ', () => {
     marketList = await api.route('getMarkets', {
       universe: universe.address,
       userPortfolioAddress: getAddress(ACCOUNTS[2].publicKey),
-      isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(4);
-    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
-    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
+    let marketIds = _.map(marketList.markets, "id")
+    expect(marketIds).toContain(categoricalMarket1.address);
+    expect(marketIds).toContain(categoricalMarket2.address);
+    expect(marketIds).toContain(yesNoMarket1.address);
+    expect(marketIds).toContain(yesNoMarket2.address);
   }, 120000);
 
   test(':getMarketPriceHistory', async () => {
