@@ -99,18 +99,11 @@ function processOutcomes(market: Getters.Markets.MarketInfo): OutcomeFormatted[]
             positiveSign: false,
           })
         : formatNone(),
-        isTradable: isTradableOutcome(outcome, market.marketType),
         volumeFormatted: formatDai(outcome.volume, {
           positiveSign: false,
         }),
     }));
 };
-
-function isTradableOutcome(outcome: Getters.Markets.MarketInfoOutcome, marketType: string) {
-  if (marketType === CATEGORICAL) return true;
-  if (outcome.id === 1) return false; // Don't trade No and scalar's outcome 1 in the UI
-  return true;
-}
 
 function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null {
   if (market.consensus === null) return null;
