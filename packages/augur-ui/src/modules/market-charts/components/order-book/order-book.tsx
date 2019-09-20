@@ -121,10 +121,12 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 })
               }
             >
-              <div
-                className={classNames({ [Styles.Neg]: type === ASKS })}
-                style={{ right: order.quantityScale + '%' }}
-              />
+              <div>
+                  <div
+                    className={classNames({ [Styles.Neg]: type === ASKS })}
+                    style={{ right: order.quantityScale + '%' }}
+                  />
+                </div>
               <div
                 className={classNames({
                   [Styles.Ask]: type === ASKS,
