@@ -498,7 +498,7 @@ describe('State API :: Markets :: ', () => {
     // Move timestamp to designated reporting phase
     await john.setTimestamp(endTime.plus(1));
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
 
     // Test reportingStates
     marketList = await api.route('getMarkets', {
@@ -575,7 +575,6 @@ describe('State API :: Markets :: ', () => {
     // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
   }, 200000);
 
-  /*
   test(':getMarkets userPortfolioAddress', async () => {
     const universe = john.augur.contracts.universe;
     const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
@@ -1985,5 +1984,4 @@ describe('State API :: Markets :: ', () => {
       'scalar 2 tertiary',
     ]);
   }, 120000);
-  */
 });

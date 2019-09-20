@@ -506,7 +506,7 @@ export class DB {
 
     if (request) {
       const results = await db.find(request);
-      return results.docs.length - numIndexes;
+      return results.docs.length;
     }
 
     const info = await db.info();
