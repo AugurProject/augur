@@ -74,7 +74,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.defaultValue !== nextProps.defaultValue) {
       this.setState({
         selected: nextProps.options.find(o => o.value === nextProps.defaultValue),

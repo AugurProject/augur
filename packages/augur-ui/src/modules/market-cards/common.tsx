@@ -7,6 +7,7 @@ import {
   YES_NO,
   REPORTING_STATE,
   ZERO,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -76,7 +77,8 @@ export interface DisputeOutcomeProps {
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
   const stakeCurrent = props.stake && formatAttoRep(props.stake.stakeCurrent);
-  const bondSizeCurrent = props.stake && formatAttoRep(props.stake.bondSizeCurrent);
+  const bondSizeCurrent =
+    props.stake && formatAttoRep(props.stake.bondSizeCurrent);
 
   return (
     <div
@@ -187,13 +189,15 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const inDispute =
     props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
-  let outcomesShow = props.outcomes.filter(
-    outcome => inDispute || outcome.isTradable
+  let outcomesCopy = props.outcomes.slice(0);
+  const removedInvalid = outcomesCopy.splice(0, 1)[0];
+  outcomesCopy.splice(2, 0, removedInvalid);
+  const sortedStakeOutcomes = selectSortedDisputingOutcomes(
+    props.marketType,
+    props.outcomes,
+    props.stakes
   );
-  const removedInvalid = outcomesShow.splice(0, 1)[0];
-  outcomesShow.splice(2, 0, removedInvalid);
-  const sortedStakeOutcomes = selectSortedDisputingOutcomes(props.marketType, props.outcomes, props.stakes);
-  outcomesShow = inDispute ? sortedStakeOutcomes : outcomesShow;
+  const outcomesShow = inDispute ? sortedStakeOutcomes : outcomesCopy;
   return (
     <div
       className={classNames(Styles.OutcomeGroup, {
@@ -325,15 +329,12 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
         <div>
           <span>other outcomes</span>
           <div>
-            {outcomes.map(
-              (outcome, index) =>
-                outcome.isTradable && (
-                  <span>
-                    {outcome.description}
-                    {index + 1 !== outcomes.length && <span>|</span>}
-                  </span>
-                )
-            )}
+            {outcomes.map((outcome, index) => (
+              <span>
+                {outcome.description}
+                {index + 1 !== outcomes.length && <span>|</span>}
+              </span>
+            ))}
           </div>
         </div>
       )}

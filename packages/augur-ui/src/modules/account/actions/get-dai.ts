@@ -12,7 +12,6 @@ export default function(callback: NodeStyleCallback = logError) {
       console.log("error could not get dai", err);
       logError(new Error("get-Dai"));
     });
-    // TODO: this will change when pending tx exists
     dispatch(updateAssets());
     callback(null);
   };

@@ -59,7 +59,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     this.clearCandleInfoAndPlotViz = this.clearCandleInfoAndPlotViz.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {
       priceTimeSeries,
       selectedPeriod,
