@@ -35,28 +35,28 @@
     "@augurproject/sdk": "10.0.0-alpha.1",
     "@augurproject/tools": "10.0.0-alpha.1",
     "contract-dependencies-ethers": "10.0.0-alpha.1",
-    "ethers": "4.0.24",
-    "levelup": "4.0.1",
-    "memdown": "4.0.0"
+    "ethers": "4.0.37",
+    "levelup": "4.2.0",
+    "memdown": "4.1.0"
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",
-    "@types/jest": "24.0.4",
-    "@types/jest-environment-puppeteer": "4.0.0",
-    "@types/node": "10.12.29",
-    "@types/supertest": "2.0.7",
-    "ganache-core": "2.6.1",
-    "jest": "24.1.0",
+    "@types/jest": "24.0.18",
+    "@types/jest-environment-puppeteer": "4.3.1",
+    "@types/node": "10.14.18",
+    "@types/supertest": "2.0.8",
+    "ganache-core": "2.8.0",
+    "jest": "24.9.0",
     "jest-puppeteer": "4.3.0",
     "pouchdb-adapter-memory": "7.1.1",
-    "puppeteer": "1.18.1",
+    "puppeteer": "1.20.0",
     "supertest": "4.0.2",
     "ts-jest": "23.10.5",
-    "ts-node": "8.0.3",
-    "tsconfig-paths": "3.7.0"
+    "ts-node": "8.4.1",
+    "tsconfig-paths": "3.9.0"
   },
   "resolutions": {
     "**/sha3": "2.0.1",
-    "**/memdown": "4.0.0"
+    "**/memdown": "4.1.0"
   }
 }

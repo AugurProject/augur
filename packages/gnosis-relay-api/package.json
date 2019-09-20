@@ -33,16 +33,16 @@
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",
-    "@types/jest": "24.0.4",
-    "@types/node": "10.12.29",
-    "@types/supertest": "2.0.7",
-    "ethers": "4.0.24",
-    "ganache-core": "2.5.0",
-    "jest": "24.1.0",
+    "@types/jest": "24.0.18",
+    "@types/node": "10.14.18",
+    "@types/supertest": "2.0.8",
+    "ethers": "4.0.37",
+    "ganache-core": "2.8.0",
+    "jest": "24.9.0",
     "supertest": "4.0.2",
     "ts-jest": "23.10.5",
-    "ts-node": "8.0.3",
-    "tsconfig-paths": "3.7.0"
+    "ts-node": "8.4.1",
+    "tsconfig-paths": "3.9.0"
   },
   "buildDependencies": [
     "typescript"
