@@ -83,7 +83,7 @@ const localStorageMiddleware = store => next => action => {
         pendingLiquidityOrders,
         favorites: processedFavorites,
         alerts,
-//        readNotifications,
+        readNotifications,
         pendingOrders,
         pendingQueue,
         drafts,
