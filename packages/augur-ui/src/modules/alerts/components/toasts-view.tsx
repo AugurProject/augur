@@ -1,20 +1,14 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
 
-import NullStateMessage from "modules/common/null-state-message";
 import Alert from "modules/alerts/components/alert";
 
-import { Close } from "modules/common/icons";
-
 import Styles from "modules/alerts/components/toasts-view.styles.less";
-import ToggleHeightStyles from "utils/toggle-height.styles.less";
 
 interface ToastsViewProps {
   toasts: Array<any>;
   removeAlert: Function;
   toggleAlerts: Function;
-  updateAlert: Function;
+  updateExistingAlert: Function;
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
@@ -22,7 +16,12 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
   componentDidMount() {
     this.timeout = setInterval(() => {
       if (this.props.toasts.length > 0) {
-        this.props.updateAlert(this.props.toasts[0].id, { toast: false });
+        const newToast = { 
+          name: this.props.toasts[0].name, 
+          toast: false,
+        };
+        console.log(newToast);
+        this.props.updateExistingAlert(this.props.toasts[0].id, newToast);
       }
     }, 3000);
   }
@@ -42,10 +41,10 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
           {toasts.map((toast, i) => (
               <Alert
                   key={`${toast.id}-${toast.title}`}
-                  removeAlert={() => removeAlert(toast.id)}
+                  removeAlert={() => removeAlert(toast.id, toast.name)}
                   toggleAlerts={toggleAlerts}
                   noShow={i !== 0}
-                  toast={true}
+                  showToast={true}
                   {...toast}
               />
           ))}
