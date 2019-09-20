@@ -2,7 +2,7 @@
 
 .TradingForm {
   > ul {
-  padding: @size-12 @size-16 0;
+  padding: @size-12 @size-12 0;
 
     > li {
       .text-16;
@@ -17,25 +17,30 @@
       }
 
       &:not(:last-child) {
-        margin-bottom: @size-8;
+        margin-bottom: @size-12;
 
         > label {
-          .mono-10;
+          .mono-9-bold;
 
           text-transform: uppercase;
         }
       }
 
-      &:last-child,
-      &:nth-last-child(1) {
+      &:last-child {
         align-items: center;
         border: none;
         flex-direction: row;
         font-size: @size-12;
+        min-height: @size-16;
 
         > label {
+          .mono-9-bold;
+
           color: @color-primary-text;
-          padding: @size-7 0 0 @size-32;
+          margin-bottom: 0;
+          padding: 0;
+          margin-left: @size-22;
+          margin-top: @size-1;
         }
       }
 
@@ -46,7 +51,7 @@
         width: 100%;
 
         &.smallLabel {
-          .text-10;
+          .mono-9;
 
           color: @color-primary-text;
           padding-top: @size-8;
@@ -57,24 +62,28 @@
             width: @size-12;
 
             > circle {
-              fill: @color-theme-primary;
               opacity: 1;
-              stroke: @color-highlight;
+              stroke: @color-primary-text;
             }
 
             > rect {
-              fill: @color-inactive-text;
+              fill: @color-primary-text;
             }
 
             > path {
-              fill: @color-inactive-text;
+              fill: @color-primary-text;
             }
+          }
+
+          > span > span {
+            .mono-9-bold;
           }
         }
 
         &:last-child,
         &:nth-last-child(2) {
           align-items: center;
+          text-transform: uppercase;
           border: none;
           display: flex;
 
@@ -85,15 +94,6 @@
       }
     }
   }
-}
-
-.TradingForm__button__clear {
-  .mono-12;
-
-  color: @color-primary-action;
-  display: inline-block;
-  padding: @size-4 @size-12;
-  text-transform: uppercase;
 }
 
 .TradingForm__error_message_container {
@@ -146,7 +146,7 @@
 }
 
 .Outcome {
-  padding: @size-8 @size-16 0;
+  padding: @size-12 @size-12 0;
 }
 
 .HideOnMobile {
@@ -174,29 +174,29 @@
 .TradingForm__input {
   display: flex;
   flex-grow: 1;
-  padding: @size-7 @size-16;
+  padding: @size-10 @size-12;
   width: auto;
+  border-radius: @size-3;
+  line-height: normal;
 }
 
 .TradingForm__input__container {
+  .mono-11;
+
   align-items: center;
   background-color: @color-dark-grey;
   border: 1px solid @color-primary-alternate;
   display: flex;
   flex-direction: row;
-  font-family: @roboto-mono;
+  border-radius: @size-3;
 
   > input[type="number"] {
     background-color: @color-dark-grey;
     border-width: 0;
     color: @color-primary-text;
-    font-family: @roboto-mono;
-    font-size: @size-14;
 
     &::placeholder {
       color: fade(@color-primary-text, 20%);
-      font-family: @roboto-mono;
-      font-size: @size-14;
     }
   }
 
@@ -210,15 +210,13 @@
   }
 
   > span {
-    .text-12;
+    .mono-9;
 
-    background: @color-tertiary-background;
-    border-left: 1px solid @color-primary-alternate;
-    color: @color-primary-text;
+    color: @color-secondary-text;
     min-width: 4.28rem;
     overflow: hidden;
     padding: @size-10 @size-12;
-    text-align: center;
+    text-align: right;
     text-overflow: ellipsis;
     text-transform: uppercase;
     white-space: nowrap;
@@ -230,12 +228,6 @@
     &.isScalar_largeText {
       font-size: @size-11;
     }
-
-    &.error {
-      background: fade(@color-error, 20%);
-      border-left: 0;
-      opacity: 0.5;
-    }
   }
 
   > label {
@@ -245,16 +237,6 @@
 
   &:focus-within {
     border: 1px solid @color-highlight;
-
-    > span {
-      background: @color-highlight;
-      border-left: 0;
-
-      &.error {
-        background: fade(@color-error, 20%);
-        opacity: 0.5;
-      }
-    }
 
     > input {
       border: 0;

@@ -9,9 +9,8 @@
     align-items: flex-end;
     display: flex;
     flex-grow: 1;
-    margin-bottom: @size-8;
-    margin-top: @size-12;
-    padding: 0 @size-16;
+    margin-bottom: @size-12;
+    padding: 0 @size-12;
 
     > button {
       .mono-14-bold;
@@ -28,22 +27,34 @@
   }
 }
 
+.Buy > li {
+  &.active {
+    color: @color-positive;
+
+    &:hover {
+      color: @color-positive;
+    }
+  }
+}
+
+.Sell > li {
+  &.active {
+    color: @color-negative;
+    &:hover {
+      color: @color-negative;
+    }
+  }
+}
+
 .Buy,
 .Sell {
   background-color: @color-tertiary-background;
-  border-bottom: 1px solid @color-tertiary-one;
   color: @color-inactive-text;
   display: flex;
 
   > li {
     color: @color-secondary-text;
     text-align: center;
-    width: 50%;
-
-    &.active {
-      background-color: @color-theme-primary;
-      color: @color-primary-text;
-    }
 
     &:hover {
       color: @color-primary-text;
@@ -55,42 +66,22 @@
     }
 
     > button {
-      .mono-12;
+      .mono-11-bold;
 
       align-items: center;
       display: flex;
       flex-direction: column;
-      height: 56px;
-      padding: @size-18 0;
+      padding: @size-8 0;
       position: relative;
       text-transform: uppercase;
-      width: 100%;
+    }
 
-      > span {
-        border-radius: 100px;
-        bottom: @size-14;
-        margin-top: @size-4;
-        position: absolute;
-        transform: matrix(1, 0, 0, -1, 0, 0);
-        width: 5rem;
-
-        &.notActive {
-          display: none;
-        }
+    &:first-of-type {
+      > button {
+        margin-left: @size-16;
+        margin-right: @size-24;
       }
     }
-  }
-}
-
-.Buy {
-  > li > button > span {
-    border-bottom: 1px solid @color-positive;
-  }
-}
-
-.Sell {
-  > li > button > span {
-    border-bottom: 1px solid @color-negative;
   }
 }
 
