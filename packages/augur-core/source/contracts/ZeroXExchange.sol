@@ -5,7 +5,7 @@ import 'ROOT/external/IExchange.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/external/IWallet.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/libraries/token/IERC20.sol';
+import 'ROOT/libraries/token/IERC1155.sol';
 
 
 contract ZeroXExchange is IExchange, ReentrancyGuard {
@@ -54,7 +54,8 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
-    bytes4 constant ERC20_PROXY_ID = 0xf47261b0;
+    // ERC1155Assets(address,uint256[],uint256[],bytes)
+    bytes4 constant public ERC1155_PROXY_ID = 0xa7cb5fb7;
 
     mapping (bytes32 => bool) public transactions;
     address public currentContextAddress;
@@ -1306,59 +1307,118 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         );
     }
 
-    /// @dev Internal version of `transferFrom`.
-    /// @param assetData Encoded byte array.
-    /// @param from Address to transfer asset from.
-    /// @param to Address to transfer asset to.
-    /// @param amount Amount of asset to transfer.
+    /// @dev Transfers batch of ERC1155 assets. Either succeeds or throws.
+    /// @param assetData Byte array encoded with ERC1155 token address, array of ids, array of values, and callback data.
+    /// @param from Address to transfer assets from.
+    /// @param to Address to transfer assets to.
+    /// @param amount Amount that will be multiplied with each element of `assetData.values` to scale the
+    ///        values that will be transferred.
     function transferFromInternal(
         bytes memory assetData,
         address from,
         address to,
         uint256 amount
     )
-        internal
+        private
     {
-        // Decode asset data.
-        (
-            bytes4 proxyId,
-            address token
-        ) = decodeERC20AssetData(assetData);
+        // Decode params from `assetData`
+        (address erc1155TokenAddress, uint256[] memory ids, uint256[] memory values, bytes memory data) = abi.decode(sliceDestructive(assetData, 4, assetData.length), (address, uint256[], uint256[], bytes));
 
-        require(
-            proxyId == ERC20_PROXY_ID,
-            "WRONG_PROXY_ID"
-        );
+        // Scale values up by `amount`
+        uint256 length = values.length;
+        uint256[] memory scaledValues = new uint256[](length);
+        for (uint256 i = 0; i != length; i++) {
+            // We write the scaled values to an unused location in memory in order
+            // to avoid copying over `ids` or `data`. This is possible if they are
+            // identical to `values` and the offsets for each are pointing to the 
+            // same location in the ABI encoded calldata.
+            scaledValues[i] = values[i].mul(amount);
+        }
 
-        // Transfer tokens.
-        bool success = IERC20(token).transferFrom(from, to, amount);
-        require(
-            success,
-            "TRANSFER FAILED"
+        // Execute `safeBatchTransferFrom` call
+        // Either succeeds or throws
+        IERC1155(erc1155TokenAddress).safeBatchTransferFrom(
+            from,
+            to,
+            ids,
+            scaledValues,
+            data
         );
     }
 
-    /// @dev Decode ERC-20 asset data from the format described in the AssetProxy contract specification.
-    /// @param assetData AssetProxy-compliant asset data describing an ERC-20 asset.
-    /// @return The ERC-20 AssetProxy identifier, and the address of the ERC-20
-    /// contract hosting this asset.
-    function decodeERC20AssetData(bytes memory assetData)
+    /// @dev Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
+    /// @param assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
+    /// @return The ERC-1155 AssetProxy identifier, the address of the ERC-1155
+    /// contract hosting the assets, an array of the identifiers of the
+    /// assets to be traded, an array of asset amounts to be traded, and
+    /// callback data.  Each element of the arrays corresponds to the
+    /// same-indexed element of the other array.  Return values specified as
+    /// `memory` are returned as pointers to locations within the memory of
+    /// the input parameter `assetData`.
+    function decodeERC1155AssetData(bytes memory assetData)
         public
         pure
         returns (
             bytes4 assetProxyId,
-            address tokenAddress
+            address tokenAddress,
+            uint256[] memory tokenIds,
+            uint256[] memory tokenValues,
+            bytes memory callbackData
         )
     {
         assetProxyId = readBytes4(assetData, 0);
 
         require(
-            assetProxyId == ERC20_PROXY_ID,
+            assetProxyId == ERC1155_PROXY_ID,
             "WRONG_PROXY_ID"
         );
 
-        tokenAddress = readAddress(assetData, 16);
-        return (assetProxyId, tokenAddress);
+        assembly {
+            // Skip selector and length to get to the first parameter:
+            assetData := add(assetData, 36)
+            // Read the value of the first parameter:
+            tokenAddress := mload(assetData)
+            // Point to the next parameter's data:
+            tokenIds := add(assetData, mload(add(assetData, 32)))
+            // Point to the next parameter's data:
+            tokenValues := add(assetData, mload(add(assetData, 64)))
+            // Point to the next parameter's data:
+            callbackData := add(assetData, mload(add(assetData, 96)))
+        }
+
+        return (
+            assetProxyId,
+            tokenAddress,
+            tokenIds,
+            tokenValues,
+            callbackData
+        );
+    }
+
+    function sliceDestructive(
+        bytes memory b,
+        uint256 from,
+        uint256 to
+    )
+        public
+        pure
+        returns (bytes memory result)
+    {
+        require(
+            from <= to,
+            "FROM_LESS_THAN_TO_REQUIRED"
+        );
+        require(
+            to <= b.length,
+            "TO_LESS_THAN_LENGTH_REQUIRED"
+        );
+        
+        // Create a new bytes structure around [from, to) in-place.
+        assembly {
+            result := add(b, from)
+            mstore(result, sub(to, from))
+        }
+        return result;
     }
 
     /// @dev Reads an unpadded bytes4 value from a position in a byte array.
