@@ -109,7 +109,7 @@ class Form extends Component<FromProps, FormState> {
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, nextProps);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, nextProps);
     this.updateTestProperty(this.INPUT_TYPES.EST_DAI, nextProps);

@@ -24,8 +24,6 @@
     background-color: fade(@color-primary-alternate, 70%);
     color: @color-inactive-text;
     display: flex;
-    font-size: @size-10;
-    justify-content: center;
     width: 100%;
     top: 0;
     z-index: @above-all-content;
@@ -37,34 +35,39 @@
       text-align: right;
 
       &:first-child {
-        padding-left: @size-32;
+        .mono-9-bold;
+
+        padding-left: @size-16;
         text-align: left;
         text-transform: uppercase;
       }
 
       &:nth-of-type(2) {
-        margin: 0 @size-8;
+        .mono-9;
+
+        margin: 0 @size-4;
       }
 
       &:last-child {
+        .mono-9;
+        
         padding-right: @size-24;
       }
     }
   }
 
   > ul:not(:first-of-type) {
-    .mono-11;
+    .mono-9;
 
     background-color: @color-tertiary-background;
     color: @color-primary-text;
     display: flex;
-    padding-bottom: @size-4;
     position: relative;
     width: 100%;
 
     > li {
-      padding-bottom: @size-4;
-      padding-top: @size-4;
+      padding-bottom: @size-6;
+      padding-top: @size-6;
 
       &:first-of-type {
         background-color: @color-positive;
@@ -77,6 +80,7 @@
 
       &:first-child {
         text-align: left;
+        margin-bottom: 1px;
       }
 
       &:nth-child(2) {
@@ -95,7 +99,7 @@
       &:last-child {
         color: @color-primary-text;
         opacity: 0.8;
-        padding-right: @size-24;
+        padding-right: @size-16;
         text-align: right;
       }
     }
@@ -121,11 +125,11 @@
 .Up {
   border-bottom-color: fade(@color-positive, 50%);
   border-width: 0 3.5px @size-6;
-  top: -0.65rem;
+  top: -@size-8;
 }
 
 .Down {
   border-top-color: fade(@color-negative, 50%);
   border-width: @size-6 3.5px 0;
-  top: @size-12;
+  top: @size-9
 }

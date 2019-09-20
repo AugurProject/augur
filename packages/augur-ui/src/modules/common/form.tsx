@@ -842,7 +842,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     selected: this.props.defaultSelected || null,
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.defaultSelected !== this.props.defaultSelected) {
       this.onChange(nextProps.defaultSelected);
     }
@@ -1204,7 +1204,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  componentWillReceiveProps(nextProps: TextInputProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: TextInputProps) {
     const { value } = this.props;
     if (value !== nextProps.value) {
       this.setState({ value: nextProps.value });
@@ -1447,7 +1447,7 @@ class IndividualTimeSelector extends React.Component<
     value: this.props.value,
   };
 
-  componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
     const { value } = this.props;
     if (value !== nextProps.value) {
       this.setState({ value: nextProps.value });
@@ -1728,14 +1728,14 @@ export class Input extends Component<InputProps, InputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { value } = this.props;
     if (value !== nextProps.value) {
       this.setState({ value: nextProps.value });
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (
       nextProps.canToggleVisibility &&
       !nextState.value &&

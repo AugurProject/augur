@@ -89,7 +89,7 @@ export default class MarketOutcomeDepth extends Component<
     });
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     const {
       hoveredPrice,
       marketDepth,

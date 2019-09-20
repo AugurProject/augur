@@ -118,7 +118,7 @@ export default class MarketView extends Component<
     this.showMarketDisclaimer = this.showMarketDisclaimer.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {
       isConnected,
       loadFullMarket,
@@ -139,7 +139,7 @@ export default class MarketView extends Component<
     }
   }
 
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     const {
       isConnected,
       marketId,

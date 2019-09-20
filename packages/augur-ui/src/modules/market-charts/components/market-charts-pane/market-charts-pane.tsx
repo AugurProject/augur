@@ -104,7 +104,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
             </ModulePane>
           </ModuleTabs>
         ) : (
-          <ModuleTabs selected={preview ? 2 : 0} borderBetween>
+          <ModuleTabs selected={preview ? 2 : 0}>
             <ModulePane label="Price History">
               {!preview && 
                 <MarketOutcomesChart
