@@ -52,11 +52,10 @@ export const selectSortedMarketOutcomes = (marketType, outcomes) => {
   const sortedOutcomes = [...outcomes];
 
   if (marketType === YES_NO) {
-    return sortedOutcomes.filter(outcome => outcome.isTradable).reverse();
+    return sortedOutcomes.reverse();
   } else {
     // Move invalid to the end
-    sortedOutcomes.push(sortedOutcomes.shift());
-    return sortedOutcomes.filter(outcome => outcome.isTradable);
+    return sortedOutcomes.push(sortedOutcomes.shift());
   }
 };
 

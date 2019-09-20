@@ -404,12 +404,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         outcomesFormatted = value.map((outcome, index) => ({
           description: outcome,
           id: index + 1,
-          isTradable: true,
         }));
         outcomesFormatted.unshift({
           id: 0,
           description: 'Invalid',
-          isTradable: true,
         });
       } else if (newMarket.marketType === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
@@ -424,7 +422,6 @@ export default class Form extends React.Component<FormProps, FormState> {
         outcomesFormatted = newMarket.outcomes.map((outcome, index) => ({
           description: outcome,
           id: index,
-          isTradable: true,
         }));
       } else if (value === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;

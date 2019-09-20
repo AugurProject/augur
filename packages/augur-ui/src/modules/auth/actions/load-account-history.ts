@@ -23,12 +23,11 @@ function loadTransactions(
   appState: AppState,
   callback: NodeStyleCallback
 ) {
+  dispatch(loadCreateMarketHistory()); // uses getMarkets so marketInfo objects are already returned
   const options = {};
   const promises = [];
   promises.push(
-    new Promise(resolve =>
-      dispatch(loadUserFilledOrders(options, resolve))
-    )
+    new Promise(resolve => dispatch(loadUserFilledOrders(options, resolve)))
   );
 
   promises.push(
@@ -38,21 +37,11 @@ function loadTransactions(
   );
 
   promises.push(
-    new Promise(resolve =>
-      dispatch(loadAccountOpenOrders(options, resolve))
-    )
+    new Promise(resolve => dispatch(loadAccountOpenOrders(options, resolve)))
   );
 
   promises.push(
-    new Promise(resolve =>
-      dispatch(loadCreateMarketHistory(options, resolve))
-    )
-  );
-
-  promises.push(
-    new Promise(resolve =>
-      dispatch(loadAccountReportingHistory(resolve))
-    )
+    new Promise(resolve => dispatch(loadAccountReportingHistory(resolve)))
   );
 
   Promise.all(promises).then((marketIds: string[][]) => {
@@ -68,8 +57,10 @@ function loadTransactions(
     );
 
     // dispatch(getWinningBalance(uniqMarketIds));
-    dispatch(loadMarketsInfoIfNotLoaded(uniqMarketIds, () => {
-      callback(null);
-    }));
+    dispatch(
+      loadMarketsInfoIfNotLoaded(uniqMarketIds, () => {
+        callback(null);
+      })
+    );
   });
 }

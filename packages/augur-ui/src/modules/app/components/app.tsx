@@ -2,7 +2,6 @@
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import classNames from 'classnames';
 import isWindows from 'utils/is-windows';
@@ -43,62 +42,34 @@ import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 
 interface AppProps {
-  blockchain: any;
-  env: any;
-  history: any;
-  initAugur: any;
-  isLogged: any;
-  isMobile: any;
-  location: any;
-  loginAccount: any;
-  modal: any;
-  universe: any;
-  updateIsMobile: any;
-  updateIsMobileSmall: any;
-  updateModal: any;
-  finalizeMarket: any;
-  ethereumNodeHttp: any;
-  ethereumNodeWs: any;
-  useWeb3Transport: any;
-  logout: any;
-  sidebarStatus: any;
-  updateCurrentBasePath: any;
-  updateCurrentInnerNavType: any;
-  updateMobileMenuState: any;
-  updateIsAlertVisible: any;
-  updateSidebarStatus: any;
-  alerts: any;
+  blockchain: Object;
+  env: Object;
+  history: Object;
+  initAugur: Function;
+  isLogged: Boolean;
+  isMobile: Boolean;
+  location: Object;
+  loginAccount: Object;
+  modal: Object;
+  universe: Object;
+  updateIsMobile: Function;
+  updateIsMobileSmall: Function;
+  updateModal: Function;
+  finalizeMarket: Function;
+  ethereumNodeHttp: string;
+  ethereumNodeWs: string;
+  useWeb3Transport: Boolean;
+  logout: Function;
+  sidebarStatus: Object;
+  updateCurrentBasePath: Function;
+  updateCurrentInnerNavType: Function;
+  updateMobileMenuState: Function;
+  updateIsAlertVisible: Function;
+  updateSidebarStatus: Function;
+  alerts: Object;
 }
 
 export default class AppView extends Component<AppProps> {
-  static propTypes = {
-    blockchain: PropTypes.object.isRequired,
-    env: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    initAugur: PropTypes.func.isRequired,
-    isLogged: PropTypes.bool.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired,
-    loginAccount: PropTypes.object.isRequired,
-    modal: PropTypes.object.isRequired,
-    universe: PropTypes.object.isRequired,
-    updateIsMobile: PropTypes.func.isRequired,
-    updateIsMobileSmall: PropTypes.func.isRequired,
-    updateModal: PropTypes.func.isRequired,
-    finalizeMarket: PropTypes.func.isRequired,
-    ethereumNodeHttp: PropTypes.string,
-    ethereumNodeWs: PropTypes.string,
-    useWeb3Transport: PropTypes.bool,
-    logout: PropTypes.func.isRequired,
-    sidebarStatus: PropTypes.object.isRequired,
-    updateCurrentBasePath: PropTypes.func.isRequired,
-    updateCurrentInnerNavType: PropTypes.func.isRequired,
-    updateMobileMenuState: PropTypes.func.isRequired,
-    updateIsAlertVisible: PropTypes.func.isRequired,
-    updateSidebarStatus: PropTypes.func.isRequired,
-    alerts: PropTypes.object.isRequired,
-  };
-
   static defaultProps = {
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
@@ -160,7 +131,7 @@ export default class AppView extends Component<AppProps> {
     },
   ];
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {
       env,
       ethereumNodeHttp,
@@ -206,7 +177,7 @@ export default class AppView extends Component<AppProps> {
     this.checkIsMobile();
   }
 
-  componentWillReceiveProps(nextProps: AppProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: AppProps) {
     const {
       isMobile,
       location,

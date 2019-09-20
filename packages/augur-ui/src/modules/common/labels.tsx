@@ -892,7 +892,7 @@ export const LinearPropertyViewTransaction = (
       value=""
       highlightFirst={props.highlightFirst}
     />
-    <ViewTransactionDetailsButton transactionHash={props.transactionHash} />
+    <ViewTransactionDetailsButton light transactionHash={props.transactionHash} />
   </div>
 );
 

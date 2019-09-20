@@ -24,7 +24,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
         // failOnHint: true, // (default: false), if true will stop the build if unused code/files are found.
         patterns: ["src/**/*.(js|jsx|css|less|ts|tsx)"],
         exclude: [
-          "**./*.styles.less.d.ts",
+          "**/*.d.ts",
           "**/*.(stories|spec).(js|jsx)",
           "**/*.test.js", // certain test files (executed by `yarn test`) live in the src/ dir and so DeadCodePlugin interprets them as dead even though they're not
           "**/__mocks__/**", // DeadCodePlugin interprets __mocks__/* files as dead because these files aren't used explicitly, they are part of mocking magic during `yarn test`
