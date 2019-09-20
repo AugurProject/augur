@@ -23,25 +23,8 @@ const rules = [
     ]
   },
   {
-    test: /\.js$/,
-    use: ["source-map-loader"],
-    enforce: "pre"
-  },
-  {
     test: /npm-cli|node-hid/,
     loader: "null-loader"
-  },
-  {
-    test: /\.less$/,
-    enforce: "pre",
-    loader: "import-glob-loader"
-  },
-  {
-    test: /\.html$/,
-    loader: "html-loader",
-    query: {
-      minimize: true
-    }
   },
   {
     test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
