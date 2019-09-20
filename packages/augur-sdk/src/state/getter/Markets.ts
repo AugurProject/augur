@@ -450,7 +450,20 @@ export class Markets {
         marketCreator: params.creator,
         designatedReporter: params.designatedReporter,
       },
+      sort: undefined,
+      limit: undefined,
+      offset: undefined
     };
+
+    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories);
+    const numMarketDocs = marketsFTSResults.length;
+
+    if (params.search || params.categories) {
+      const marketIds = _.map(marketsFTSResults, "market");
+      request.selector = Object.assign(request.selector, {
+        market: { $in: marketIds },
+      });
+    }
 
     if (params.maxEndTime) {
       request.selector = Object.assign(request.selector, {
@@ -504,7 +517,7 @@ export class Markets {
         });
       } else if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
         request.selector = Object.assign(request.selector, {
-          [`liquidity.${params.maxLiquiditySpread}`]: { $gt: 0 },
+          [`liquidity.${params.maxLiquiditySpread}`]: { $gt: "000000000000000000000000000000" },
         });
       }
     }
@@ -515,88 +528,45 @@ export class Markets {
       });
     }
 
-    // TODO rearrange filters and search such that this only gets the number of markets given the search and "non-filter" filters
-    // TODO Really this data should come in a standalone request. This data (number filtered out) requires 2 extra distinct queries which we could do after the actual markets are returned. The UI element which uses this is at the bottom of the results if any exist so in a normal case the user wont see it till they scroll for a while.
-    const numMarketDocs = (await db.getNumRowsFromDB('Markets', true)) - 1;
-    const numMarketDocsAfterFilters = await db.getNumRowsFromDB('Markets', true, request);
-
-    // TODO: Add the sort and pagination params to the request at this point. We want to get the full filtered row count in the query above
-
-    const marketData = await db.findMarkets(request);
-    const marketDataById = _.keyBy(marketData, 'market');
-
-    // Sort search results by categories
-    // @TODO Use actual type instead of any[] below
-    // TODO Either find a way to search in the standard query or do this first and simply pass in the marketIds to the original query. This will let us do all pagination and sorting in the base query.
-    let marketsResults: any[]  = _.sortBy(
-      await getMarketsSearchResults(params.universe, params.search, params.categories),
-      ['category1', 'category2', 'category3']
-    );
-
-    // Normalize categories
-    marketsResults.map(result => {
-      result.category1 = result.category1.toLowerCase();
-      result.category2 = result.category2.toLowerCase();
-      result.category3 = result.category3.toLowerCase();
-    });
-
-    // Create intersection array of marketsResults & marketDocs
-    // TODO see above about optimization so we dont have to do in memeory merge handling and sorting
-    for (let i = marketsResults.length - 1; i >= 0; i--) {
-      if (marketDataById[marketsResults[i].market]) {
-        marketsResults[i] = Object.assign(marketsResults[i], marketDataById[marketsResults[i].market]);
-      } else {
-        marketsResults.splice(i, 1);
+    if (params.sortBy) {
+      // PouchDB requires that any sort param be specified in the selector and that the sort field be the first in the index field list
+      let sortBy: string = params.sortBy;
+      if (params.sortBy === "liquidity") {
+        sortBy = `liquidity.${params.maxLiquiditySpread}`;
+      }
+      // liquidity 0 is actually a euphamism for no liquidity. No reason to sort in that case
+      if (sortBy !== "liquidity.0") {
+        if (request.selector[sortBy] === undefined) {
+          request.selector = Object.assign(request.selector, {
+            [sortBy]: { $gte: null },
+          });
+          request['use_index'] = sortBy;
+        }
+        request.sort = [{[sortBy]: params.isSortDescending ? "desc" : "asc"}];
       }
     }
 
-    // Set `lastTradedTimestamp` properties as needed for later sorting
-    // TODO put in derived DB
-    if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
-      marketsResults = await setLastTradedTimestamp(db, marketsResults);
+    // Placed here intentionally so that we base the filter count off of the conditions above and then only the fee, liquidity, and invalid filters.
+    let marketData = await db.findMarkets(request);
+    const finalMarketIds = _.map(marketData, "market");
+    let filteredMarketsFTSResults = _.filter(marketsFTSResults, (marketFields) => { return finalMarketIds[marketFields["market"]] });
+
+    // TODO: We would normally add the pagination params to the request at this point because we want to get the full filtered row counts in the queries above. If we refactor those into another getter we can just initialize the request with these and apply them
+    // request.limit = params.limit;
+    // request.offset = params.offset;
+    // NOTE: This data _could_ come in a standalone request which would let us do in query pagination. Should investigate if we need that as noted above in the TODO
+    const filteredOutCount = numMarketDocs - marketData.length;
+    const categories = getMarketsCategoriesMeta(filteredMarketsFTSResults);
+    const meta = {
+      filteredOutCount,
+      categories,
+      marketCount: marketData.length
     }
 
-    const filteredOutCount = numMarketDocs - numMarketDocsAfterFilters;
-    const meta = getMarketsMeta(marketsResults, filteredOutCount);
-
-    // Sort & limit markets
-    // TODO sort and limit in the standard query of the derived DB once we refactor how the FTS is done as noted above. Part of this may involve transforming these values in log processing in the derived DB into sort-friendly formats. For BNs padded hex or for numbers actual JS numbers
-    const orderBy = params.isSortDescending ? 'desc' : 'asc';
-    if (params.sortBy === GetMarketsSortBy.liquidity) {
-      marketsResults = marketsResults.sort((x, y) => {
-        const result = compareStringsAsBigNumbers(x.liquidity, y.liquidity, orderBy);
-        return result === 0
-          ? compareStringsAsBigNumbers(x.marketOI, y.marketOI, orderBy)
-          : result;
-        }
-      );
-    } else if (params.sortBy === GetMarketsSortBy.marketOI || params.sortBy === GetMarketsSortBy.volume) {
-      marketsResults = marketsResults.sort((x, y) => {
-        return compareStringsAsBigNumbers(x[params.sortBy], y[params.sortBy], orderBy);
-        }
-      );
-    } else {
-      marketsResults = _.orderBy(marketsResults, [params.sortBy], [orderBy]);
-    }
-    marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
+    marketData = marketData.slice(params.offset, params.offset + params.limit);
 
     // Get markets info to return
-    // TODO this should just take the market data (and any data available from calls in this function) and format it instead of doing additional queries
-    const marketsInfo = await Markets.getMarketsInfo(
-      augur,
-      db,
-      { marketIds: marketsResults.map(marketInfo => marketInfo.market) }
-    );
-    // Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
-    const filteredMarketsDetailsOrder = {};
-    for (let i = 0; i < marketsResults.length; i++) {
-      filteredMarketsDetailsOrder[marketsResults[i].market] = i;
-    }
-    marketsInfo.sort(
-      (a, b) => {
-        return filteredMarketsDetailsOrder[a.id] - filteredMarketsDetailsOrder[b.id];
-      }
-    );
+    const marketsInfo = await getMarketsInfo(db, marketData, reportingFeeDivisor);
 
     return {
       markets: marketsInfo,
@@ -724,146 +694,10 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsInfoParams>
   ): Promise<MarketInfo[]> {
-    const [reportingFeeDivisor, marketLogs, ...result] = await Promise.all([
-      augur.contracts.universe.getOrCacheReportingFeeDivisor_(),
-      db.findMarkets({
-        selector: { market: { $in: params.marketIds } },
-      }),
-      db.findOrderFilledLogs({
-        selector: { market: { $in: params.marketIds } },
-      }).then((result) => result.reverse()),
-    ]);
+    const markets = await db.findMarkets({ selector: { market: { $in: params.marketIds } }});
+    const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
-    const processFn = (allTheLogs) => async (marketData: MarketData):Promise<MarketInfo> => {
-      const [
-        orderFilledLogs,
-      ] = allTheLogs.map((outterLogs) => outterLogs.filter((innerLogs) => innerLogs.market === marketData.market));
-
-      const minPrice = new BigNumber(marketData.prices[0]);
-      const maxPrice = new BigNumber(marketData.prices[1]);
-      const numTicks = new BigNumber(marketData.numTicks);
-      const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const displayMinPrice = minPrice.dividedBy(QUINTILLION);
-      const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
-      const cumulativeScale = displayMaxPrice.minus(displayMinPrice);
-
-      const reportingState = marketData.reportingState;
-      const universeForking = false; // TODO get from initialization
-      const needsMigration = reportingState !== MarketReportingState.Finalized && universeForking; // TODO: also check if the market is the forking market
-
-      let consensus = null;
-      let finalizationBlockNumber = null;
-      let finalizationTime = null;
-      if (marketData.winningPayoutNumerators) {
-        consensus = [];
-        for (let i = 0; i < marketData.winningPayoutNumerators.length; i++) {
-          consensus[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
-        }
-        finalizationBlockNumber =  marketData.finalizationBlockNumber;
-        finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
-      }
-
-      const marketType = marketTypeToName(marketData.marketType);
-
-      let categories:string[] = [];
-      let description = null;
-      let details = null;
-      let resolutionSource = null;
-      let backupSource = null;
-      let scalarDenomination = null;
-      if (marketData.extraInfo) {
-        const extraInfo = JSON.parse(marketData.extraInfo);
-        categories = extraInfo.categories ? extraInfo.categories : [];
-        description = extraInfo.description ? extraInfo.description : null;
-        details = extraInfo.longDescription
-          ? extraInfo.longDescription
-          : null;
-        resolutionSource = extraInfo.resolutionSource
-          ? extraInfo.resolutionSource
-          : null;
-        backupSource = extraInfo.backupSource ? extraInfo.backupSource : null;
-        scalarDenomination = extraInfo._scalarDenomination
-          ? extraInfo._scalarDenomination
-          : null;
-      }
-      const marketCreatorFeeRate = new BigNumber(
-        marketData.feePerCashInAttoCash
-      ).dividedBy(QUINTILLION);
-
-      const reportingFeeRate = new BigNumber(
-        reportingFeeDivisor
-      ).dividedBy(QUINTILLION);
-      const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
-      // TODO: find this value from logs.
-      const noShowBondAmount = '999999000000000000000';
-
-      // TODO: Create a derived DB for market / outcome indexed data to get last price
-      const outcomes = await getMarketOutcomes(
-        db,
-        marketData,
-        scalarDenomination,
-        tickSize,
-        minPrice,
-        orderFilledLogs
-      );
-
-      const totalRepStakedInMarket = new BigNumber(marketData.totalRepStakedInMarket || '0x0', 16);
-      const disputeInfo =  {
-        disputeWindow: {
-          disputeRound: new BigNumber(marketData.disputeRound || '0x0', 16).toFixed(),
-          startTime: marketData.nextWindowStartTime ? new BigNumber(marketData.nextWindowStartTime, 16).toNumber() : null,
-          endTime: marketData.nextWindowEndTime ? new BigNumber(marketData.nextWindowEndTime, 16).toNumber() : null,
-        },
-        disputePacingOn: marketData.pacingOn ? marketData.pacingOn : false,
-        stakeCompletedTotal: totalRepStakedInMarket.toFixed(),
-        bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
-        stakes: await getStakes(augur, db, marketData),
-      };
-
-      return {
-        id: marketData.market,
-        universe: marketData.universe,
-        marketType,
-        numOutcomes:
-        marketData.outcomes.length > 0
-            ? marketData.outcomes.length + 1
-            : 3,
-        minPrice: displayMinPrice.toString(10),
-        maxPrice: displayMaxPrice.toString(10),
-        cumulativeScale: cumulativeScale.toString(10),
-        author: marketData.marketCreator,
-        designatedReporter: marketData.designatedReporter,
-        creationBlock: marketData.blockNumber,
-        creationTime: Number(marketData.timestamp),
-        categories,
-        volume: new BigNumber(marketData.volume || 0).dividedBy(QUINTILLION).toString(),
-        openInterest: new BigNumber(marketData.marketOI || 0).dividedBy(QUINTILLION).toString(),
-        reportingState,
-        needsMigration,
-        endTime: new BigNumber(marketData.endTime).toNumber(),
-        finalizationBlockNumber,
-        finalizationTime,
-        description,
-        scalarDenomination,
-        marketCreatorFeeRate: marketCreatorFeeRate.toString(10),
-        settlementFee: settlementFee.toString(10),
-        reportingFeeRate: reportingFeeRate.toString(10),
-        noShowBondAmount,
-        details,
-        resolutionSource,
-        backupSource,
-        numTicks: numTicks.toString(10),
-        tickSize: tickSize.toString(10),
-        consensus,
-        transactionHash: marketData.transactionHash,
-        outcomes,
-        disputeInfo,
-      };
-    };
-
-    return Promise.all(
-      marketLogs.map(processFn(result))
-    );
+    return await getMarketsInfo(db, markets, reportingFeeDivisor);
   }
 
   @Getter('getCategoriesParams')
@@ -923,27 +757,15 @@ function filterOrderFilledLogs(
   return filteredOrderFilledLogs;
 }
 
-function compareStringsAsBigNumbers(string1: string, string2: string, orderBy: string): number {
-  if (orderBy === 'asc') {
-    return (new BigNumber(string1).gt(string2))
-      ? 1
-      : (new BigNumber(string1).lt(string2) ? -1 : 0);
-  } else {
-    return (new BigNumber(string1).lt(string2))
-      ? 1
-      : (new BigNumber(string1).gt(string2) ? -1 : 0);
-  }
-}
-
 // TODO use getOutcomeDescriptionFromOutcome for Markets.getMarketOutcomes
-async function getMarketOutcomes(
+function getMarketOutcomes(
   db: DB,
   marketData: MarketData,
   scalarDenomination: string,
   tickSize: BigNumber,
   minPrice: BigNumber,
   parsedOrderEventLogs: ParsedOrderEventLog[]
-): Promise<MarketInfoOutcome[]> {
+): MarketInfoOutcome[] {
   const outcomes: MarketInfoOutcome[] = [];
   const denomination = scalarDenomination ? scalarDenomination : 'N/A';
   if (marketData.outcomes.length === 0) {
@@ -1038,16 +860,149 @@ function getPeriodStartTime(
   );
 }
 
-async function getStakes(
-  augur: Augur,
+async function getMarketsInfo(
   db: DB,
-  market: MarketData
-): Promise<StakeDetails[]> {
-  const disputeRecords = await db.findDisputeDocs({selector: { market: { $eq: market.market } }});
-  return formatStakeDetails(db, market, disputeRecords);
+  markets: MarketData[],
+  reportingFeeDivisor: BigNumber
+): Promise<MarketInfo[]> {
+  const marketIds = _.map(markets, "market");
+  // TODO add marketIndex to this DB and specify here through use_index
+  const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: { $in: marketIds } }});
+  let disputeDocs = await db.findDisputeDocs({
+    selector: { market: { $in: marketIds }},
+    use_index: "marketIndex"
+  });
+  const disputeDocsByMarket = _.groupBy(disputeDocs, "market");
+  const orderFilledLogsByMarket = _.groupBy(orderFilledLogs, "market");
+
+  return _.map(markets, (marketData) => {
+    const orderFilledLogs = orderFilledLogsByMarket[marketData.market] || [];
+
+    const minPrice = new BigNumber(marketData.prices[0]);
+    const maxPrice = new BigNumber(marketData.prices[1]);
+    const numTicks = new BigNumber(marketData.numTicks);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const displayMinPrice = minPrice.dividedBy(QUINTILLION);
+    const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
+    const cumulativeScale = displayMaxPrice.minus(displayMinPrice);
+
+    const reportingState = marketData.reportingState;
+    const universeForking = false; // TODO get from initialization
+    const needsMigration = reportingState !== MarketReportingState.Finalized && universeForking; // TODO: also check if the market is the forking market
+
+    let consensus = null;
+    let finalizationBlockNumber = null;
+    let finalizationTime = null;
+    if (marketData.winningPayoutNumerators) {
+      consensus = [];
+      for (let i = 0; i < marketData.winningPayoutNumerators.length; i++) {
+        consensus[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
+      }
+      finalizationBlockNumber =  marketData.finalizationBlockNumber;
+      finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
+    }
+
+    const marketType = marketTypeToName(marketData.marketType);
+
+    let categories:string[] = [];
+    let description = null;
+    let details = null;
+    let resolutionSource = null;
+    let backupSource = null;
+    let scalarDenomination = null;
+    if (marketData.extraInfo) {
+      const extraInfo = JSON.parse(marketData.extraInfo);
+      categories = extraInfo.categories ? extraInfo.categories : [];
+      description = extraInfo.description ? extraInfo.description : null;
+      details = extraInfo.longDescription
+        ? extraInfo.longDescription
+        : null;
+      resolutionSource = extraInfo.resolutionSource
+        ? extraInfo.resolutionSource
+        : null;
+      backupSource = extraInfo.backupSource ? extraInfo.backupSource : null;
+      scalarDenomination = extraInfo._scalarDenomination
+        ? extraInfo._scalarDenomination
+        : null;
+    }
+    const marketCreatorFeeRate = new BigNumber(
+      marketData.feePerCashInAttoCash
+    ).dividedBy(QUINTILLION);
+
+    const reportingFeeRate = new BigNumber(
+      reportingFeeDivisor
+    ).dividedBy(QUINTILLION);
+    const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
+    // TODO: find this value from logs.
+    const noShowBondAmount = '999999000000000000000';
+
+    // TODO: Create a derived DB for market / outcome indexed data to get last price
+    // Also use this DB to populate the "lastTradedTimestamp" field on the market derived DB to use for sorting
+    const outcomes = getMarketOutcomes(
+      db,
+      marketData,
+      scalarDenomination,
+      tickSize,
+      minPrice,
+      orderFilledLogs
+    );
+
+    const totalRepStakedInMarket = new BigNumber(marketData.totalRepStakedInMarket || '0x0', 16);
+    const disputeInfo =  {
+      disputeWindow: {
+        disputeRound: new BigNumber(marketData.disputeRound || '0x0', 16).toFixed(),
+        startTime: marketData.nextWindowStartTime ? new BigNumber(marketData.nextWindowStartTime, 16).toNumber() : null,
+        endTime: marketData.nextWindowEndTime ? new BigNumber(marketData.nextWindowEndTime, 16).toNumber() : null,
+      },
+      disputePacingOn: marketData.pacingOn ? marketData.pacingOn : false,
+      stakeCompletedTotal: totalRepStakedInMarket.toFixed(),
+      bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
+      stakes: formatStakeDetails(db, marketData, disputeDocsByMarket[marketData.market] || []),
+    };
+
+    return {
+      id: marketData.market,
+      universe: marketData.universe,
+      marketType,
+      numOutcomes:
+      marketData.outcomes.length > 0
+          ? marketData.outcomes.length + 1
+          : 3,
+      minPrice: displayMinPrice.toString(10),
+      maxPrice: displayMaxPrice.toString(10),
+      cumulativeScale: cumulativeScale.toString(10),
+      author: marketData.marketCreator,
+      designatedReporter: marketData.designatedReporter,
+      creationBlock: marketData.blockNumber,
+      creationTime: Number(marketData.timestamp),
+      categories,
+      volume: new BigNumber(marketData.volume || 0).dividedBy(QUINTILLION).toString(),
+      openInterest: new BigNumber(marketData.marketOI || 0).dividedBy(QUINTILLION).toString(),
+      reportingState,
+      needsMigration,
+      endTime: new BigNumber(marketData.endTime).toNumber(),
+      finalizationBlockNumber,
+      finalizationTime,
+      description,
+      scalarDenomination,
+      marketCreatorFeeRate: marketCreatorFeeRate.toString(10),
+      settlementFee: settlementFee.toString(10),
+      reportingFeeRate: reportingFeeRate.toString(10),
+      noShowBondAmount,
+      details,
+      resolutionSource,
+      backupSource,
+      numTicks: numTicks.toString(10),
+      tickSize: tickSize.toString(10),
+      consensus,
+      transactionHash: marketData.transactionHash,
+      outcomes,
+      disputeInfo,
+    };
+  });
 }
 
-async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc[]): Promise<StakeDetails[]> {
+function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc[]): StakeDetails[] {
   const formattedStakeDetails: StakeDetails[] = [];
 
   for (let i = 0; i < stakeDetails.length; i++) {
@@ -1096,10 +1051,9 @@ function getOutcomeValue(market: MarketData, payoutNumerators: string[]): Payout
   );
 }
 
-function getMarketsMeta(
+function getMarketsCategoriesMeta(
   marketsResults: any[],
-  filteredOutCount: number
-): MarketListMeta {
+): MarketListMetaCategories {
   const categories = {};
   for (let i = 0; i < marketsResults.length; i++) {
     const marketsResult = marketsResults[i];
@@ -1127,14 +1081,9 @@ function getMarketsMeta(
       };
     }
   }
-  return {
-    categories,
-    filteredOutCount,
-    marketCount: marketsResults.length,
-  };
+  return categories;
 }
 
-// @TODO Fix the return type. For some reason, FlexSearch is returning a different type than Array<SearchResults<MarketFields>>
 async function getMarketsSearchResults(
   universe: string,
   query: string,
@@ -1148,44 +1097,6 @@ async function getMarketsSearchResults(
     return Augur.syncableFlexSearch.search(query, { where: whereObj });
   }
   return Augur.syncableFlexSearch.where(whereObj);
-}
-
-/**
- * Sets the `lastTradedTimestamp` property for all markets in `marketsResults`.
- *
- * @param {DB} db Database object to use for getting `lastTradedTimestamp` info
- * @param {any[]} marketsResults Array of market objects to add `lastTradedTimestamp` to
- */
-async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
-  // Create market ID => marketsResults index mapping
-  const keyedMarkets = {};
-  for (let i = 0; i < marketsResults.length; i++) {
-    keyedMarkets[marketsResults[i].market] = i;
-  }
-
-  const orderFilledLogs = await db.findOrderFilledLogs({
-    selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
-    fields: ['market', 'timestamp'],
-  });
-
-  // Assign lastTradedTimestamp value to each market in marketsResults
-  for (let i = 0; i < orderFilledLogs.length; i++) {
-    const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
-    if (
-      !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
-      currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
-    ) {
-      marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
-    }
-  }
-
-  // For any markets with no trading, set the lastTradedTimestamp to 0
-  for (let i = 0; i < marketsResults.length; i++) {
-    if (!marketsResults[i][GetMarketsSortBy.lastTradedTimestamp]) {
-      marketsResults[i][GetMarketsSortBy.lastTradedTimestamp] = 0;
-    }
-  }
-  return marketsResults;
 }
 
 /**

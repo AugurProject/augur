@@ -42,6 +42,7 @@ import {
   UniverseCreatedLog,
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
+import { GetMarketsSortBy, MaxLiquiditySpread } from '../getter/Markets';
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -157,6 +158,9 @@ export class DB {
     this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId']);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
+    // Create Indexes
+    await this.generateIndexes();
+
     // Zero X Orders. Only on if a mesh client has been provided
     this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
 
@@ -207,6 +211,30 @@ export class DB {
 
   registerEventListener(eventNames: string | string[], callback: LogCallbackType): void {
     this.blockAndLogStreamerListener.listenForEvent(eventNames, callback);
+  }
+
+  async generateIndexes(): Promise<void> {
+    // Generate the market DB sort indexes. These likely could be improved to include additional fields somehow
+    for (let field in GetMarketsSortBy) {
+      if (field === "liquidity") {
+        for (let liquiditySpreadKey in MaxLiquiditySpread) {
+          const liquiditySpread = MaxLiquiditySpread[liquiditySpreadKey];
+          await this.marketDatabase.createIndex({
+            index: {
+              fields: [`liquidity.${liquiditySpread}`],
+              ddoc: `liquidity.${liquiditySpread}`
+            }
+          });
+        }
+      } else {
+        await this.marketDatabase.createIndex({
+          index: {
+            fields: [field],
+            ddoc: field
+          }
+        });
+      }
+    }
   }
 
   /**
@@ -474,14 +502,15 @@ export class DB {
   async getNumRowsFromDB(dbName: string, derived: boolean, request?: PouchDB.Find.FindRequest<{}>): Promise<number> {
     const fullDBName = this.getDatabaseName(dbName);
     const db: AbstractDB = derived ? this.derivedDatabases[fullDBName] : this.syncableDatabases[fullDBName];
+    let numIndexes = db.numIndexes;
 
     if (request) {
       const results = await db.find(request);
-      return results.docs.length;
+      return results.docs.length - numIndexes;
     }
 
     const info = await db.info();
-    return info.doc_count;
+    return info.doc_count - numIndexes;
   }
 
   /**

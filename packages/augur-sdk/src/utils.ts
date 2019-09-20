@@ -10,6 +10,10 @@ import { toAscii } from './state/utils/utils';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
+export function padHex(hexString: string): string {
+  return `0x${hexString.substr(2).padStart(64, "0")}`;
+}
+
 export function numTicksToTickSize(
   numTicks: BigNumber,
   minPrice: BigNumber,
