@@ -31,7 +31,7 @@ export default class ErrorContainer extends Component {
     this.showError = this.showError.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (
       this.props.error !== nextProps.error &&
       nextProps.isSelected &&
