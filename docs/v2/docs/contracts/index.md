@@ -942,17 +942,11 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code></a></li><li><a href="#IDisputeWindow.trustedBuy(address,uint256)"><code class="function-signature">trustedBuy(address _buyer, uint256 _attotokens)</code></a></li><li><a href="#IDisputeWindow.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IDisputeWindow.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IDisputeWindow.getStartTime()"><code class="function-signature">getStartTime()</code></a></li><li><a href="#IDisputeWindow.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IDisputeWindow.getWindowId()"><code class="function-signature">getWindowId()</code></a></li><li><a href="#IDisputeWindow.isActive()"><code class="function-signature">isActive()</code></a></li><li><a href="#IDisputeWindow.isOver()"><code class="function-signature">isOver()</code></a></li><li><a href="#IDisputeWindow.onMarketFinalized()"><code class="function-signature">onMarketFinalized()</code></a></li><li><a href="#IDisputeWindow.redeem(address)"><code class="function-signature">redeem(address _account)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li class="inherited"><a href="#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code></a></li><li><a href="#IDisputeWindow.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IDisputeWindow.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IDisputeWindow.getStartTime()"><code class="function-signature">getStartTime()</code></a></li><li><a href="#IDisputeWindow.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IDisputeWindow.getWindowId()"><code class="function-signature">getWindowId()</code></a></li><li><a href="#IDisputeWindow.isActive()"><code class="function-signature">isActive()</code></a></li><li><a href="#IDisputeWindow.isOver()"><code class="function-signature">isOver()</code></a></li><li><a href="#IDisputeWindow.onMarketFinalized()"><code class="function-signature">onMarketFinalized()</code></a></li><li><a href="#IDisputeWindow.redeem(address)"><code class="function-signature">redeem(address _account)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li class="inherited"><a href="#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.trustedBuy(address,uint256)"></a><code class="function-signature">trustedBuy(address _buyer, uint256 _attotokens) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1134,7 +1128,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#IMarket.derivePayoutDistributionHash(uint256[])"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators)</code></a></li><li><a href="#IMarket.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IMarket.getDisputeWindow()"><code class="function-signature">getDisputeWindow()</code></a></li><li><a href="#IMarket.getNumberOfOutcomes()"><code class="function-signature">getNumberOfOutcomes()</code></a></li><li><a href="#IMarket.getNumTicks()"><code class="function-signature">getNumTicks()</code></a></li><li><a href="#IMarket.getShareToken(uint256)"><code class="function-signature">getShareToken(uint256 _outcome)</code></a></li><li><a href="#IMarket.getMarketCreatorSettlementFeeDivisor()"><code class="function-signature">getMarketCreatorSettlementFeeDivisor()</code></a></li><li><a href="#IMarket.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IMarket.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IMarket.getWinningPayoutDistributionHash()"><code class="function-signature">getWinningPayoutDistributionHash()</code></a></li><li><a href="#IMarket.getWinningPayoutNumerator(uint256)"><code class="function-signature">getWinningPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IMarket.getWinningReportingParticipant()"><code class="function-signature">getWinningReportingParticipant()</code></a></li><li><a href="#IMarket.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IMarket.getFinalizationTime()"><code class="function-signature">getFinalizationTime()</code></a></li><li><a href="#IMarket.getInitialReporter()"><code class="function-signature">getInitialReporter()</code></a></li><li><a href="#IMarket.getDesignatedReportingEndTime()"><code class="function-signature">getDesignatedReportingEndTime()</code></a></li><li><a href="#IMarket.getValidityBondAttoCash()"><code class="function-signature">getValidityBondAttoCash()</code></a></li><li><a href="#IMarket.deriveMarketCreatorFeeAmount(uint256)"><code class="function-signature">deriveMarketCreatorFeeAmount(uint256 _amount)</code></a></li><li><a href="#IMarket.recordMarketCreatorFees(uint256,address)"><code class="function-signature">recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress)</code></a></li><li><a href="#IMarket.isContainerForShareToken(contract IShareToken)"><code class="function-signature">isContainerForShareToken(contract IShareToken _shadyTarget)</code></a></li><li><a href="#IMarket.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IMarket.isInvalid()"><code class="function-signature">isInvalid()</code></a></li><li><a href="#IMarket.finalize()"><code class="function-signature">finalize()</code></a></li><li><a href="#IMarket.designatedReporterWasCorrect()"><code class="function-signature">designatedReporterWasCorrect()</code></a></li><li><a href="#IMarket.designatedReporterShowed()"><code class="function-signature">designatedReporterShowed()</code></a></li><li><a href="#IMarket.isFinalized()"><code class="function-signature">isFinalized()</code></a></li><li><a href="#IMarket.assertBalances()"><code class="function-signature">assertBalances()</code></a></li><li class="inherited"><a href="#IOwnable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#IOwnable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#IMarket.derivePayoutDistributionHash(uint256[])"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators)</code></a></li><li><a href="#IMarket.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IMarket.getZeroXTradeToken()"><code class="function-signature">getZeroXTradeToken()</code></a></li><li><a href="#IMarket.getDisputeWindow()"><code class="function-signature">getDisputeWindow()</code></a></li><li><a href="#IMarket.getNumberOfOutcomes()"><code class="function-signature">getNumberOfOutcomes()</code></a></li><li><a href="#IMarket.getNumTicks()"><code class="function-signature">getNumTicks()</code></a></li><li><a href="#IMarket.getShareToken(uint256)"><code class="function-signature">getShareToken(uint256 _outcome)</code></a></li><li><a href="#IMarket.getMarketCreatorSettlementFeeDivisor()"><code class="function-signature">getMarketCreatorSettlementFeeDivisor()</code></a></li><li><a href="#IMarket.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IMarket.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IMarket.getWinningPayoutDistributionHash()"><code class="function-signature">getWinningPayoutDistributionHash()</code></a></li><li><a href="#IMarket.getWinningPayoutNumerator(uint256)"><code class="function-signature">getWinningPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IMarket.getWinningReportingParticipant()"><code class="function-signature">getWinningReportingParticipant()</code></a></li><li><a href="#IMarket.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IMarket.getFinalizationTime()"><code class="function-signature">getFinalizationTime()</code></a></li><li><a href="#IMarket.getInitialReporter()"><code class="function-signature">getInitialReporter()</code></a></li><li><a href="#IMarket.getDesignatedReportingEndTime()"><code class="function-signature">getDesignatedReportingEndTime()</code></a></li><li><a href="#IMarket.getValidityBondAttoCash()"><code class="function-signature">getValidityBondAttoCash()</code></a></li><li><a href="#IMarket.deriveMarketCreatorFeeAmount(uint256)"><code class="function-signature">deriveMarketCreatorFeeAmount(uint256 _amount)</code></a></li><li><a href="#IMarket.recordMarketCreatorFees(uint256,address)"><code class="function-signature">recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress)</code></a></li><li><a href="#IMarket.isContainerForShareToken(contract IShareToken)"><code class="function-signature">isContainerForShareToken(contract IShareToken _shadyTarget)</code></a></li><li><a href="#IMarket.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IMarket.isInvalid()"><code class="function-signature">isInvalid()</code></a></li><li><a href="#IMarket.finalize()"><code class="function-signature">finalize()</code></a></li><li><a href="#IMarket.designatedReporterWasCorrect()"><code class="function-signature">designatedReporterWasCorrect()</code></a></li><li><a href="#IMarket.designatedReporterShowed()"><code class="function-signature">designatedReporterShowed()</code></a></li><li><a href="#IMarket.isFinalized()"><code class="function-signature">isFinalized()</code></a></li><li><a href="#IMarket.assertBalances()"><code class="function-signature">assertBalances()</code></a></li><li class="inherited"><a href="#IOwnable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#IOwnable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
 
 
 
@@ -1151,6 +1145,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="IMarket.getUniverse()"></a><code class="function-signature">getUniverse() <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarket.getZeroXTradeToken()"></a><code class="function-signature">getZeroXTradeToken() <span class="return-arrow">→</span> <span class="return-type">contract IZeroXTradeToken</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2065,6 +2065,34 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="IV2ReputationToken.mintForUniverse(uint256,address)"></a><code class="function-signature">mintForUniverse(uint256 _amountToMint, address _target) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IZeroXTradeToken`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IZeroXTradeToken.initialize(address,address)"><code class="function-signature">initialize(address _augur, address _market)</code></a></li><li><a href="#IZeroXTradeToken.setTransferFromAllowed(bool)"><code class="function-signature">setTransferFromAllowed(bool _isAllowed)</code></a></li><li><a href="#IZeroXTradeToken.getMarket()"><code class="function-signature">getMarket()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IZeroXTradeToken.initialize(address,address)"></a><code class="function-signature">initialize(address _augur, address _market)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IZeroXTradeToken.setTransferFromAllowed(bool)"></a><code class="function-signature">setTransferFromAllowed(bool _isAllowed)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IZeroXTradeToken.getMarket()"></a><code class="function-signature">getMarket() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -4769,6 +4797,94 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
+### `IERC1155`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#IERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li><a href="#IERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li><a href="#IERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li><a href="#IERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#IERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li><a href="#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li><a href="#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li><a href="#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"></a><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"></a><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.setApprovalForAll(address,bool)"></a><code class="function-signature">setApprovalForAll(address operator, bool approved)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.isApprovedForAll(address,address)"></a><code class="function-signature">isApprovedForAll(address owner, address operator) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.balanceOf(address,uint256)"></a><code class="function-signature">balanceOf(address owner, uint256 id) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.balanceOfBatch(address[],uint256[])"></a><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.TransferSingle(address,address,address,uint256,uint256)"></a><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code><span class="function-visibility"></span></h4>
+
+Either TransferSingle or TransferBatch MUST emit when tokens are transferred,
+      including zero value transfers as well as minting or burning.
+ Operator will always be msg.sender.
+ Either event from address `0x0` signifies a minting operation.
+ An event to address `0x0` signifies a burning or melting operation.
+ The total value transferred from address 0x0 minus the total value transferred to 0x0 may
+ be used by clients and exchanges to be added to the &quot;circulating supply&quot; for a given token ID.
+ To define a token ID with no initial balance, the contract SHOULD emit the TransferSingle event
+ from `0x0` to `0x0`, with the token creator as `_operator`.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"></a><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code><span class="function-visibility"></span></h4>
+
+Either TransferSingle or TransferBatch MUST emit when tokens are transferred,
+      including zero value transfers as well as minting or burning.
+Operator will always be msg.sender.
+ Either event from address `0x0` signifies a minting operation.
+ An event to address `0x0` signifies a burning or melting operation.
+ The total value transferred from address 0x0 minus the total value transferred to 0x0 may
+ be used by clients and exchanges to be added to the &quot;circulating supply&quot; for a given token ID.
+ To define multiple token IDs with no initial balance, this SHOULD emit the TransferBatch event
+ from `0x0` to `0x0`, with the token creator as `_operator`.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.ApprovalForAll(address,address,bool)"></a><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code><span class="function-visibility"></span></h4>
+
+MUST emit when an approval is updated.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155.URI(string,uint256)"></a><code class="function-signature">URI(string value, uint256 id)</code><span class="function-visibility"></span></h4>
+
+MUST emit when the URI is updated for a token ID.
+ URIs are defined in RFC 3986.
+ The URI MUST point a JSON file that conforms to the &quot;ERC-1155 Metadata JSON Schema&quot;.
+
+
+
 ### `IExchange`
 
 
@@ -4842,7 +4958,7 @@ Verifies that a signature is valid.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXExchange.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#ZeroXExchange.addFillResults(struct IExchange.FillResults,struct IExchange.FillResults)"><code class="function-signature">addFillResults(struct IExchange.FillResults totalFillResults, struct IExchange.FillResults singleFillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.abiEncodeFillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">abiEncodeFillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.fillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)"><code class="function-signature">executeTransaction(uint256 salt, address signerAddress, bytes data, bytes signature)</code></a></li><li><a href="#ZeroXExchange.updateFilledState(struct IExchange.Order,address,bytes32,uint256,struct IExchange.FillResults)"><code class="function-signature">updateFilledState(struct IExchange.Order, address, bytes32 orderHash, uint256 orderTakerAssetFilledAmount, struct IExchange.FillResults fillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderInternal(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderInternal(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.assertValidFill(struct IExchange.Order,struct IExchange.OrderInfo,uint256,uint256,uint256)"><code class="function-signature">assertValidFill(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, uint256 takerAssetFillAmount, uint256 takerAssetFilledAmount, uint256 makerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.calculateFillResults(struct IExchange.Order,uint256)"><code class="function-signature">calculateFillResults(struct IExchange.Order order, uint256 takerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.hashZeroExTransaction(uint256,address,bytes)"><code class="function-signature">hashZeroExTransaction(uint256 salt, address signerAddress, bytes data)</code></a></li><li><a href="#ZeroXExchange.getOrderInfo(struct IExchange.Order)"><code class="function-signature">getOrderInfo(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.getOrderHash(struct IExchange.Order)"><code class="function-signature">getOrderHash(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashOrder(struct IExchange.Order)"><code class="function-signature">hashOrder(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashEIP712Message(bytes32)"><code class="function-signature">hashEIP712Message(bytes32 hashStruct)</code></a></li><li><a href="#ZeroXExchange.getCurrentContextAddress()"><code class="function-signature">getCurrentContextAddress()</code></a></li><li><a href="#ZeroXExchange.assertFillableOrder(struct IExchange.Order,struct IExchange.OrderInfo,address,bytes)"><code class="function-signature">assertFillableOrder(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, address takerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.safeGetPartialAmountFloor(uint256,uint256,uint256)"><code class="function-signature">safeGetPartialAmountFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.isRoundingErrorFloor(uint256,uint256,uint256)"><code class="function-signature">isRoundingErrorFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.dispatchTransferFrom(bytes,address,address,uint256)"><code class="function-signature">dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.isValidSignature(bytes32,address,bytes)"><code class="function-signature">isValidSignature(bytes32 hash, address signerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li><li><a href="#ZeroXExchange.readBytes32(bytes,uint256)"><code class="function-signature">readBytes32(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.isValidWalletSignature(bytes32,address,bytes)"><code class="function-signature">isValidWalletSignature(bytes32 hash, address walletAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.transferFrom(bytes,address,address,uint256)"><code class="function-signature">transferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.transferFromInternal(bytes,address,address,uint256)"><code class="function-signature">transferFromInternal(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.decodeERC20AssetData(bytes)"><code class="function-signature">decodeERC20AssetData(bytes assetData)</code></a></li><li><a href="#ZeroXExchange.readBytes4(bytes,uint256)"><code class="function-signature">readBytes4(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.readAddress(bytes,uint256)"><code class="function-signature">readAddress(bytes b, uint256 index)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXExchange.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#ZeroXExchange.addFillResults(struct IExchange.FillResults,struct IExchange.FillResults)"><code class="function-signature">addFillResults(struct IExchange.FillResults totalFillResults, struct IExchange.FillResults singleFillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.abiEncodeFillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">abiEncodeFillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.fillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)"><code class="function-signature">executeTransaction(uint256 salt, address signerAddress, bytes data, bytes signature)</code></a></li><li><a href="#ZeroXExchange.updateFilledState(struct IExchange.Order,address,bytes32,uint256,struct IExchange.FillResults)"><code class="function-signature">updateFilledState(struct IExchange.Order, address, bytes32 orderHash, uint256 orderTakerAssetFilledAmount, struct IExchange.FillResults fillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderInternal(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderInternal(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.assertValidFill(struct IExchange.Order,struct IExchange.OrderInfo,uint256,uint256,uint256)"><code class="function-signature">assertValidFill(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, uint256 takerAssetFillAmount, uint256 takerAssetFilledAmount, uint256 makerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.calculateFillResults(struct IExchange.Order,uint256)"><code class="function-signature">calculateFillResults(struct IExchange.Order order, uint256 takerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.hashZeroExTransaction(uint256,address,bytes)"><code class="function-signature">hashZeroExTransaction(uint256 salt, address signerAddress, bytes data)</code></a></li><li><a href="#ZeroXExchange.getOrderInfo(struct IExchange.Order)"><code class="function-signature">getOrderInfo(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.getOrderHash(struct IExchange.Order)"><code class="function-signature">getOrderHash(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashOrder(struct IExchange.Order)"><code class="function-signature">hashOrder(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashEIP712Message(bytes32)"><code class="function-signature">hashEIP712Message(bytes32 hashStruct)</code></a></li><li><a href="#ZeroXExchange.getCurrentContextAddress()"><code class="function-signature">getCurrentContextAddress()</code></a></li><li><a href="#ZeroXExchange.assertFillableOrder(struct IExchange.Order,struct IExchange.OrderInfo,address,bytes)"><code class="function-signature">assertFillableOrder(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, address takerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.safeGetPartialAmountFloor(uint256,uint256,uint256)"><code class="function-signature">safeGetPartialAmountFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.isRoundingErrorFloor(uint256,uint256,uint256)"><code class="function-signature">isRoundingErrorFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.dispatchTransferFrom(bytes,address,address,uint256)"><code class="function-signature">dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.isValidSignature(bytes32,address,bytes)"><code class="function-signature">isValidSignature(bytes32 hash, address signerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li><li><a href="#ZeroXExchange.readBytes32(bytes,uint256)"><code class="function-signature">readBytes32(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.isValidWalletSignature(bytes32,address,bytes)"><code class="function-signature">isValidWalletSignature(bytes32 hash, address walletAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.transferFrom(bytes,address,address,uint256)"><code class="function-signature">transferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li><a href="#ZeroXExchange.sliceDestructive(bytes,uint256,uint256)"><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#ZeroXExchange.readBytes4(bytes,uint256)"><code class="function-signature">readBytes4(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.readAddress(bytes,uint256)"><code class="function-signature">readAddress(bytes b, uint256 index)</code></a></li></ul></div>
 
 
 
@@ -5081,22 +5197,23 @@ Transfers assets. Either succeeds or throws.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.transferFromInternal(bytes,address,address,uint256)"></a><code class="function-signature">transferFromInternal(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.decodeERC1155AssetData(bytes)"></a><code class="function-signature">decodeERC1155AssetData(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address,uint256[],uint256[],bytes</span></code><span class="function-visibility">public</span></h4>
 
-Internal version of [`transferFrom`](.#ZeroXExchange.transferFrom(bytes,address,address,uint256)).
- @param assetData Encoded byte array.
- @param from Address to transfer asset from.
- @param to Address to transfer asset to.
- @param amount Amount of asset to transfer.
+Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
+ @param assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
+ @return The ERC-1155 AssetProxy identifier, the address of the ERC-1155
+ contract hosting the assets, an array of the identifiers of the
+ assets to be traded, an array of asset amounts to be traded, and
+ callback data.  Each element of the arrays corresponds to the
+ same-indexed element of the other array.  Return values specified as
+ `memory` are returned as pointers to locations within the memory of
+ the input parameter `assetData`.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.decodeERC20AssetData(bytes)"></a><code class="function-signature">decodeERC20AssetData(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.sliceDestructive(bytes,uint256,uint256)"></a><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
 
-Decode ERC-20 asset data from the format described in the AssetProxy contract specification.
- @param assetData AssetProxy-compliant asset data describing an ERC-20 asset.
- @return The ERC-20 AssetProxy identifier, and the address of the ERC-20
- contract hosting this asset.
+
 
 
 

@@ -14,7 +14,7 @@ import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 import "ROOT/external/IExchange.sol";
-import "ROOT/trading/IZeroXTradeToken.sol";
+import "ROOT/trading/IZeroXTrade.sol";
 
 
 /**
@@ -45,7 +45,7 @@ contract SimulateTrade is Initializable {
 
     IAugur public augur;
     IOrders public orders;
-    IZeroXTradeToken zeroXTradeToken;
+    IZeroXTrade ZeroXTrade;
 
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant GAS_BUFFER = 50000;
@@ -54,7 +54,7 @@ contract SimulateTrade is Initializable {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
-        zeroXTradeToken = IZeroXTradeToken(augur.lookup("ZeroXTradeToken"));
+        ZeroXTrade = IZeroXTrade(augur.lookup("ZeroXTrade"));
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
@@ -82,7 +82,7 @@ contract SimulateTrade is Initializable {
     }
 
     function createFromSignedOrders(IExchange.Order memory _order, uint256 _amount, address _sender) internal view returns (SimulationData memory) {
-        IZeroXTradeToken.AugurOrderData memory _augurOrderData = zeroXTradeToken.parseAssetData(_order.takerAssetData);
+        IZeroXTrade.AugurOrderData memory _augurOrderData = ZeroXTrade.parseOrderData(_order);
         Order.Types _type = Order.Types(_augurOrderData.orderType);
         Order.TradeDirections _direction = _type == Order.Types.Bid ? Order.TradeDirections.Short : Order.TradeDirections.Long;
         IMarket _market = IMarket(_augurOrderData.marketAddress);
@@ -177,7 +177,7 @@ contract SimulateTrade is Initializable {
             if (_orderIndex >= _orders.length) {
                 break;
             }
-            IZeroXTradeToken.AugurOrderData memory _augurOrderData = zeroXTradeToken.parseAssetData(_orders[_orderIndex].takerAssetData);
+            IZeroXTrade.AugurOrderData memory _augurOrderData = ZeroXTrade.parseOrderData(_orders[_orderIndex]);
             _simulationData.orderAmount = _orders[_orderIndex].makerAssetAmount;
             _simulationData.orderPrice = _augurOrderData.price;
             _simulationData.orderCreator = _orders[_orderIndex].makerAddress;
