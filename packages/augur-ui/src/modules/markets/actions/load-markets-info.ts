@@ -57,10 +57,3 @@ export const loadMarketsInfoIfNotLoaded = (
   if (marketIdsToLoad.length === 0) return callback(null);
   dispatch(loadMarketsInfo(marketIdsToLoad, callback));
 };
-
-export const loadMarketsDisputeInfo = (
-  marketIds: Array<string>,
-  callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>): void => {
-  dispatch(loadMarketsInfo(marketIds, callback));
-};

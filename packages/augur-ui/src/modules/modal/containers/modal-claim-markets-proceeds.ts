@@ -35,7 +35,7 @@ const mapStateToProps = (state: AppState) => {
     getGasPrice(state)
   );
   const pendingQueue = state.pendingQueue || [];
-  const accountMarketClaimablePositions: MarketClaimablePositions =  selectLoginAccountClaimablePositions(
+  const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
   let claimableMarkets = [];
@@ -46,42 +46,46 @@ const mapStateToProps = (state: AppState) => {
     claimableMarkets = accountMarketClaimablePositions.markets.map(
       (market: MarketData) => {
         const marketId = market.id;
-        const claimablePosition = accountMarketClaimablePositions.positions[marketId]
-          const pending =
-            pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
-            pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
+        const claimablePosition =
+          accountMarketClaimablePositions.positions[marketId];
+        const pending =
+          pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
+          pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
 
-          const unclaimedProceeds = formatDai(
-            claimablePosition.unclaimedProceeds
-          );
-          const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
+        const unclaimedProceeds = formatDai(
+          claimablePosition.unclaimedProceeds
+        );
+        const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
 
-          return {
-            marketId,
-            title: market.description,
-            status: pending && pending.status,
-            properties: [
-              {
-                label: 'Proceeds',
-                value: unclaimedProceeds.full,
-              },
-              {
-                label: 'Profit',
-                value: unclaimedProfit.full,
-              },
-            ],
-            text: 'Claim Proceeds',
-            action: () => () => {},
-          };
-        });
+        return {
+          marketId,
+          title: market.description,
+          status: pending && pending.status,
+          properties: [
+            {
+              label: 'Proceeds',
+              value: unclaimedProceeds.full,
+            },
+            {
+              label: 'Profit',
+              value: unclaimedProfit.full,
+            },
+          ],
+          text: 'Claim Proceeds',
+          action: null,
+        };
       }
+    );
+  }
   return {
     modal: state.modal,
     gasCost,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     claimableMarkets,
-    totalUnclaimedProfit: accountMarketClaimablePositions.totals.totalUnclaimedProfit,
-    totalUnclaimedProceeds: accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
+    totalUnclaimedProfit:
+      accountMarketClaimablePositions.totals.totalUnclaimedProfit,
+    totalUnclaimedProceeds:
+      accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
   };
 };
 
@@ -94,8 +98,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-
-  const claimableMarkets = sP.claimableMarkets;
+  const markets = sP.claimableMarkets;
+  const claimableMarkets = markets.map(m => ({
+    ...m,
+    action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
+  }));
 
   const totalGas = formatEther(
     createBigNumber(sP.gasCost).times(claimableMarkets.length)
@@ -114,16 +121,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       {
         preText: 'You currently have a total of',
         boldText: totalUnclaimedProceedsFormatted.formatted,
-        postText: `to be claimed in the following market${multiMarket}:`,
       },
     ],
     rows: claimableMarkets,
     submitAllTxCount,
     breakdown: [
-      {
-        label: 'Estimated Gas',
-        value: totalGas.full,
-      },
       {
         label: 'Total Proceeds',
         value: totalUnclaimedProceedsFormatted.formatted,
@@ -131,6 +133,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       {
         label: 'Total Profit',
         value: totalUnclaimedProfitFormatted.formatted,
+      },
+      {
+        label: 'Estimated Gas',
+        value: totalGas.full,
       },
     ],
     closeAction: () => {
@@ -146,7 +152,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         disabled: claimableMarkets.find(market => market.status === 'pending'),
         action: () => {
           dP.closeModal();
-          dP.startClaimingMarketsProceeds(claimableMarkets.map(m => m.marketId), sP.modal.cb);
+          dP.startClaimingMarketsProceeds(
+            claimableMarkets.map(m => m.marketId),
+            sP.modal.cb
+          );
         },
       },
     ],
