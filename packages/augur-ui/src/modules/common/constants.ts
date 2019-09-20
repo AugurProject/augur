@@ -275,6 +275,7 @@ export const REPORTING_STATE = {
   OPEN_REPORTING: MarketReportingState.OpenReporting,
   CROWDSOURCING_DISPUTE: MarketReportingState.CrowdsourcingDispute,
   AWAITING_NEXT_WINDOW: MarketReportingState.AwaitingNextWindow,
+  AWAITING_FINALIZATION: MarketReportingState.AwaitingFinalization,
   FINALIZED: MarketReportingState.Finalized,
   FORKING: MarketReportingState.Forking,
   AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration,
