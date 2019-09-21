@@ -1,16 +1,4 @@
 import logError from "utils/log-error";
-import { sumAndformatGasCostToEther } from "utils/format-number";
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
-import {
-  CLAIM_STAKE_FEES,
-  PENDING,
-  SUCCESS,
-  UNIVERSE_ID
-} from "modules/common/constants";
-import {
-  addPendingData,
-  removePendingData
-} from "modules/pending-queue/actions/pending-queue-management";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
@@ -30,10 +18,6 @@ export function redeemStake(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { universe } = getState();
-    const universeId = universe.id || UNIVERSE_ID;
-    const gasPrice = getGasPrice(getState());
-
     const {
       reportingParticipants,
       disputeWindows,
