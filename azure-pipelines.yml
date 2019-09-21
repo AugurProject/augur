@@ -134,7 +134,7 @@ jobs:
 
   - job: ContractSanityCheck
     dependsOn:
-    - TestAndLint
+#   - TestAndLint
     - PreFlightCheck
     condition: |
       and
