@@ -111,7 +111,8 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
+          yarn workspace @augurproject/ui build:kovan
+          bash <(curl -s https://peek.run/ci)
         displayName: ui build
         condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
@@ -125,48 +126,6 @@ jobs:
         inputs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
-
-  - job: FeaturePeek
-    dependsOn:
-    - TestAndLint
-    condition: |
-      and
-      (
-        succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master')
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - bash: |
-          set -euo pipefail
-          yarn build
-        displayName: yarn build
-      - bash: |
-          set -euo pipefail
-          yarn workspace @augurproject/ui build:kovan
-        displayName: ui build
-      - bash: |
-          set -euo pipefail
-          bash <(curl -s https://peek.run/ci)
-        displayName: trigger FeaturePeek
 
   - job: Augur_build_docker_image
     dependsOn:
