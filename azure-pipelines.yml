@@ -114,9 +114,12 @@ jobs:
       - bash: |
           set -euo pipefail
           yarn workspace @augurproject/ui build:kovan
-          bash <(curl -s https://peek.run/ci)
         displayName: ui build
-        condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
+      - bash: |
+          set -euo pipefail
+          bash <(curl -s https://peek.run/ci)
+        displayName: feature peek
+        condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
       - bash: |
           set -euo pipefail
           export NODE_OPTIONS="--max-old-space-size=6144"
