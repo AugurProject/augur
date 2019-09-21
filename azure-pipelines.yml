@@ -63,78 +63,78 @@ jobs:
         displayName: check git for changes
         name: setVars
 
-# - job: TestAndLint
-#   dependsOn:
-#   - PreFlightCheck
-#   condition: |
-#     and
-#     (
-#       succeeded(),
-#       or
-#       (
-#         ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-#         ne(variables['Build.SourceBranch'], 'refs/tags')
-#       )
-#     )
-#   variables:
-#     JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
-#     JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
-#     JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
-#     JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
-#     USE_NORMAL_TIME: false
-#     PRODUCTION: false
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   strategy:
-#     matrix:
-#       node_10_x:
-#         node_version: $(PRIMARY_NODE_VERSION)
-#   steps:
-#     - checkout: self
-#     - task: NodeTool@0
-#       inputs:
-#         versionSpec: $(node_version)
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - script: |
-#         yarn install --frozen-lockfile
-#       displayName: Install Dependencies
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - bash: |
-#         set -euo pipefail
-#         yarn build
-#       displayName: yarn build
-#     - bash: |
-#         set -euo pipefail
-#         yarn workspace @augurproject/ui build:kovan
-#       displayName: ui build
-#     - bash: |
-#         set -euo pipefail
-#         bash <(curl -s https://peek.run/ci)
-#       displayName: feature peek
-#       condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
-#     - bash: |
-#         set -euo pipefail
-#         export NODE_OPTIONS="--max-old-space-size=6144"
-#         yarn test --runInBand --ci --reporters=default --reporters=jest-junit
-#       displayName: yarn test
-#       condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
-#     - task: PublishTestResults@2
-#       condition: succeededOrFailed()
-#       inputs:
-#         testRunner: JUnit
-#         testResultsFiles: '**/junit.xml'
+  - job: TestAndLint
+    dependsOn:
+    - PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+          ne(variables['Build.SourceBranch'], 'refs/tags')
+        )
+      )
+    variables:
+      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
+      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+      JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
+      USE_NORMAL_TIME: false
+      PRODUCTION: false
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    strategy:
+      matrix:
+        node_10_x:
+          node_version: $(PRIMARY_NODE_VERSION)
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build:kovan
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
+          bash <(curl -s https://peek.run/ci)
+        displayName: feature peek
+        condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
+      - bash: |
+          set -euo pipefail
+          export NODE_OPTIONS="--max-old-space-size=6144"
+          yarn test --runInBand --ci --reporters=default --reporters=jest-junit
+        displayName: yarn test
+        condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
 
   - job: ContractSanityCheck
     dependsOn:
-#   - TestAndLint
+    - TestAndLint
     - PreFlightCheck
     condition: |
       and
