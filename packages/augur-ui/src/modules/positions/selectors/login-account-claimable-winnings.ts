@@ -9,6 +9,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
 import { MarketClaimablePositions } from 'modules/types';
+import { formatDai } from 'utils/format-number';
 
 export const selectLoginAccountClaimablePositions = (
   state
@@ -53,7 +54,9 @@ const getLoginAccountPositionsMarkets = createSelector(
               ...p.positions,
               [market.id]: {
                 unclaimedProfit,
+                unclaimedProfitFormatted: formatDai(unclaimedProfit),
                 unclaimedProceeds,
+                unclaimedProceedsFormatted: formatDai(unclaimedProceeds),
               },
             },
           };

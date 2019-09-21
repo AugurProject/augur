@@ -29,42 +29,26 @@ import {
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { claimMarketsProceedsEstimateGas } from 'modules/contracts/actions/contractCalls';
 
-const mapStateToProps = async (state: AppState) => {
+const mapStateToProps = (state: AppState) => {
   const gasPrice = getGasPrice(state);
   const accountAddreess = state.loginAccount.address;
   const pendingQueue = state.pendingQueue || [];
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
-  let totalGas = ZERO;
   let claimableMarkets = [];
   if (
     accountMarketClaimablePositions.markets &&
     accountMarketClaimablePositions.markets.length > 0
   ) {
-    claimableMarkets = await accountMarketClaimablePositions.markets.map(
-      async (market: MarketData) => {
+    claimableMarkets = accountMarketClaimablePositions.markets.map(
+      (market: MarketData) => {
         const marketId = market.id;
         const claimablePosition =
           accountMarketClaimablePositions.positions[marketId];
         const pending =
           pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
           pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
-
-        const unclaimedProceeds = formatDai(
-          claimablePosition.unclaimedProceeds
-        );
-        const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
-        const claimGas = await claimMarketsProceedsEstimateGas(
-          [marketId],
-          accountAddreess
-        );
-        totalGas = totalGas.plus(createBigNumber(claimGas));
-        const gasCost = formatGasCostToEther(
-          claimGas,
-          { decimalsRounded: 4 },
-          gasPrice
-        );
         return {
           marketId,
           title: market.description,
@@ -72,15 +56,11 @@ const mapStateToProps = async (state: AppState) => {
           properties: [
             {
               label: 'Proceeds',
-              value: unclaimedProceeds.formatted,
+              value: claimablePosition.unclaimedProceedsFormatted.formatted,
             },
             {
               label: 'Profit',
-              value: unclaimedProfit.formatted,
-            },
-            {
-              label: 'Transaction Cost',
-              value: gasCost,
+              value: claimablePosition.unclaimedProfitFormatted.formatted,
             },
           ],
           text: 'Claim Proceeds',
@@ -89,14 +69,11 @@ const mapStateToProps = async (state: AppState) => {
       }
     );
   }
-  const totalGasCost = formatGasCostToEther(
-    totalGas,
-    { decimalsRounded: 4 },
-    gasPrice
-  );
+
   return {
+    accountAddreess,
+    gasPrice,
     modal: state.modal,
-    totalGasCost,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     claimableMarkets,
     totalUnclaimedProfit:
@@ -115,12 +92,35 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const markets = sP.claimableMarkets;
-  if (!markets) return { buttons: [] };
-  const claimableMarkets = markets.map(m => ({
-    ...m,
-    action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
-  }));
+  const { claimableMarkets: markets, accountAddreess, gasPrice } = sP;
+  let totalGas = ZERO;
+  const claimableMarkets = markets.map(async m => {
+    const claimGas = await claimMarketsProceedsEstimateGas(
+      [m.marketId],
+      accountAddreess
+    );
+    totalGas = totalGas.plus(createBigNumber(claimGas));
+    const gasCost = formatGasCostToEther(
+      claimGas,
+      { decimalsRounded: 4 },
+      gasPrice
+    );
+
+    return {
+      ...m,
+      properties: [
+        ...m.properties,
+        { label: 'Transaction Fee', value: gasCost },
+      ],
+      action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
+    };
+  });
+
+  const totalGasCost = formatGasCostToEther(
+    totalGas,
+    { decimalsRounded: 4 },
+    gasPrice
+  );
 
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
@@ -151,7 +151,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
       {
         label: 'Transaction Fee',
-        value: sP.totalGasCost,
+        value: totalGasCost,
       },
     ],
     closeAction: () => {

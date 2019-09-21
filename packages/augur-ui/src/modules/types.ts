@@ -632,7 +632,9 @@ export interface MarketClaimablePositions {
   positions: {
     [marketId: string]: {
       unclaimedProfit: string;
+      unclaimedProfitFormatted: FormattedNumber;
       unclaimedProceeds: string;
+      unclaimedProceedsFormatted: FormattedNumber;
     };
   };
 }
