@@ -165,9 +165,21 @@ jobs:
           md5sum -c solc.md5 && \
           sudo chmod a+x /usr/local/bin/solc
         displayName: install solc
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
       - bash: |
           set -euo pipefail
-          yarn install --frozen-lockfile
           yarn build
           source venv/bin/activate
           yarn workspace @augurproject/core build
