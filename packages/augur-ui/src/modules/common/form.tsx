@@ -940,17 +940,21 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
 
     if (scalar) {
       stake = {
-        preFilledStake: formatRep("0"),
-        bondSizeCurrent: formatRep("1"),
-        bondSizeCurrent: formatRep("1"),
-      }
+        outcome: null,
+        stakeCurrent: '0',
+        bondSizeCurrent: '1',
+        stakeRemaining: '1',
+        isInvalidOutcome: false,
+        isMalformedOutcome: false,
+        tentativeWinning: false,
+      };
     }
 
     const initialReporterStake = formatNumber("100");
     const reportingGasFee = formatNumber("100");
     const inputtedStake = !checked || disputeStake === "" || isNaN(parseFloat(disputeStake)) ? "0" : disputeStake;
-    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.stakeCurrent.value).plus(createBigNumber(inputtedStake)));
-
+    if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
+    const fullBond = stake && inputtedStake ? formatRep(createBigNumber(stake.stakeCurrent).plus(createBigNumber(inputtedStake))) : formatRep(0);
 
     return (
       <div
@@ -972,7 +976,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
               {stake && stake.tentativeWinning &&
-                <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
+                <Subheaders header="pre-filled stake" subheader={preFilledStake}/>
               }
               {checked &&
 
@@ -985,7 +989,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   changeStake={updateDisputeStake}
                   minPrice={minPrice}
                   maxPrice={maxPrice}
-                  stakeRemaining={stake && stake.bondSizeCurrent.value}
+                  stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
                 />

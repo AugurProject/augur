@@ -170,11 +170,13 @@ export default class ModalReporting extends Component<
         );
         if (!stake) {
           stake = {
-            tentativeWinning: false,
-            bondSizeCurrent: '0',
+            outcome: outcome.id.toString(),
             bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
-            preFilledStake: '0',
             stakeCurrent: '0',
+            stakeRemaining: disputeInfo.bondSizeOfNewStake,
+            isInvalidOutcome: false,
+            isMalformedOutcome: false,
+            tentativeWinning: false,
           };
         }
         return {
@@ -182,12 +184,12 @@ export default class ModalReporting extends Component<
           value: outcome.id,
           checked: s.checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
+          preFilledStake: formatAttoRep('0').formatted,
           stake: {
             ...stake,
-            stakeCurrent: formatAttoRep(stake.stakeCurrent),
-            preFilledStake: formatAttoRep(stake.preFilledStake),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent).formatted,
+            stakeCurrent: formatAttoRep(stake.stakeCurrent).formatted,
+            stakeRemaining: formatAttoRep(stake.stakeRemaining).formatted,
           },
         };
       });
@@ -199,12 +201,12 @@ export default class ModalReporting extends Component<
           value: stake.outcome,
           checked: s.checked === stake.outcome.toString(),
           isInvalid: stake.outcome === "0",
-
+          preFilledStake: formatAttoRep('0').formatted,
           stake: {
             ...stake,
-            preFilledStake: formatAttoRep(stake.preFilledStake),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent).formatted,
+            stakeCurrent: formatAttoRep(stake.stakeCurrent).formatted,
+            stakeRemaining: formatAttoRep(stake.stakeRemaining).formatted,
           },
         })
       })

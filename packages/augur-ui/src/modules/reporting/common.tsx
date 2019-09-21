@@ -32,6 +32,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
+import { Getters } from '@augurproject/sdk/build';
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -201,7 +202,7 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
 
 export interface DisputingButtonViewProps {
   fullBond: FormattedNumber;
-  stake: string;
+  stake: Getters.Markets.StakeDetails;
   inputtedStake: number;
 }
 
@@ -211,14 +212,14 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
       <span>Make tentative winner</span>
       <span>
         {props.fullBond && props.fullBond.formatted}
-        <span>/ {props.stake && props.stake.bondSizeCurrent.formatted} REP</span>
+        <span>/ {props.stake && props.stake.bondSizeCurrent} REP</span>
       </span>
     </div>
     <ReportingPercent
-      firstPercent={props.stake.preFilledStake}
-      secondPercent={props.stake.stakeCurrent}
+      firstPercent={formatRep(createBigNumber(props.stake.stakeCurrent).toNumber())}
+      secondPercent={formatRep(createBigNumber(props.stake.stakeCurrent).toNumber())}
       thirdPercent={formatRep(props.inputtedStake)}
-      total={props.stake.bondSizeCurrent}
+      total={formatRep(createBigNumber(props.stake.bondSizeCurrent).toNumber())}
     />
   </div>
 );
@@ -254,7 +255,7 @@ export interface DisputingBondsViewProps {
   minPrice?: string;
   maxPrice?: string;
   userAvailableRep: number;
-  stakeRemaining?: number;
+  stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
 }
@@ -358,9 +359,9 @@ DisputingBondsViewProps,
         />
         {!tentativeWinning &&
           <section>
-            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining.toString())} text={'MIN'} />
+            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining)} text={'MIN'} />
             |
-            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining.toString())} text={'FILL DISPUTE BOND'} />
+            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining)} text={'FILL DISPUTE BOND'} />
           </section>
         }
         <span>Review</span>
