@@ -612,24 +612,29 @@ export async function simulateTradeGasLimit(
   return Augur.simulateTradeGasLimit(params);
 }
 
+export async function claimMarketsProceedsGasEstimation(
+  markets: string[],
+  shareHolder: string,
+  affiliateAddress: string = NULL_ADDRESS
+): Promise<BigNumber> {
+  const augur = augurSdk.get();
+  const gas = await augur.contracts.claimTradingProceeds.claimMarketsProceeds_estimateGas(
+    markets,
+    shareHolder,
+    affiliateAddress
+  );
+  return gas;
+}
+
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
   affiliateAddress: string = NULL_ADDRESS
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
-      markets,
-      shareHolder,
-      affiliateAddress
-    );
-  } else {
-    augur.contracts.claimTradingProceeds.claimTradingProceeds(
-      markets[0],
-      shareHolder,
-      affiliateAddress
-    );
-  }
+  augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+    markets,
+    shareHolder,
+    affiliateAddress
+  );
 }

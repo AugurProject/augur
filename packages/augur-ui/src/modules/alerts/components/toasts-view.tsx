@@ -12,12 +12,14 @@ interface ToastsViewProps {
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
+  timeout: NodeJS.Timeout;
 
   componentDidMount() {
+    // TODO: don't start a timer if there are no toasts
     this.timeout = setInterval(() => {
       if (this.props.toasts.length > 0) {
-        const newToast = { 
-          name: this.props.toasts[0].name, 
+        const newToast = {
+          name: this.props.toasts[0].name,
           toast: false,
         };
         console.log(newToast);
