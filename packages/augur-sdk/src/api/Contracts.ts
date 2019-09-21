@@ -22,6 +22,8 @@ export class Contracts {
   gnosisSafe: ContractInterfaces.GnosisSafe;
   proxyFactory: ContractInterfaces.ProxyFactory;
   ZeroXTrade: ContractInterfaces.ZeroXTrade;
+  buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
+  redeemStake: ContractInterfaces.RedeemStake;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -44,6 +46,9 @@ export class Contracts {
     this.gnosisSafe = new ContractInterfaces.GnosisSafe(dependencies, addresses.GnosisSafe);
     this.proxyFactory = new ContractInterfaces.ProxyFactory(dependencies, addresses.ProxyFactory);
     this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(dependencies, addresses.ZeroXTrade);
+    this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(dependencies, addresses.BuyParticipationTokens);
+    this.redeemStake = new ContractInterfaces.RedeemStake(dependencies, addresses.RedeemStake);
+
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
     }
