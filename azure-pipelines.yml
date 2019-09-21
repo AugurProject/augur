@@ -292,178 +292,177 @@ jobs:
           fi
         displayName: integration: $(TESTS)
 
-  - job: Docker_populated_geth_images
-    dependsOn:
-    - TestAugurCore
-    - DockerGethDev
-    condition: |
-      or
-      (
-        in(dependencies.TestAugurCore.result, 'Succeeded'),
-        in(dependencies.DockerGethDev.result, 'Succeeded')
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    timeoutInMinutes: 240
-    strategy:
-      matrix:
-        dev-pop-geth-v2:
-          IMAGE_NAME: augurproject/dev-pop-geth-v2
-          NETWORK_ID: 102
-          NORMAL_TIME: false
-        dev-pop-normtime-geth-v2:
-          IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
-          NETWORK_ID: 103
-          NORMAL_TIME: true
-        dev-pop-geth-15-v2:
-          IMAGE_NAME: augurproject/dev-pop-geth-15-v2
-          NETWORK_ID: 104
-          NORMAL_TIME: false
-    steps:
-      - checkout: self
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - script: |
-          set -exuo pipefail
-          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-          sudo systemctl status docker
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
-          docker images
-          yarn
+# - job: Docker_populated_geth_images
+#   dependsOn:
+#   - TestAugurCore
+#   - DockerGethDev
+#   condition: |
+#     or
+#     (
+#       in(dependencies.TestAugurCore.result, 'Succeeded'),
+#       in(dependencies.DockerGethDev.result, 'Succeeded')
+#     )
+#   pool:
+#     vmImage: 'Ubuntu 16.04'
+#   timeoutInMinutes: 240
+#   strategy:
+#     matrix:
+#       dev-pop-geth-v2:
+#         IMAGE_NAME: augurproject/dev-pop-geth-v2
+#         NETWORK_ID: 102
+#         NORMAL_TIME: false
+#       dev-pop-normtime-geth-v2:
+#         IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
+#         NETWORK_ID: 103
+#         NORMAL_TIME: true
+#       dev-pop-geth-15-v2:
+#         IMAGE_NAME: augurproject/dev-pop-geth-15-v2
+#         NETWORK_ID: 104
+#         NORMAL_TIME: false
+#   steps:
+#     - checkout: self
+#     - task: Docker@1
+#       displayName: docker login
+#       inputs:
+#         command: login
+#         containerRegistryType: Container Registry
+#         dockerRegistryEndpoint: dockerhub-augurproject
+#     - script: |
+#         set -exuo pipefail
+#         sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
+#         sudo systemctl status docker
+#         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+#         docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+#         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+#         docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
+#         docker images
+#         yarn
+#         # replaces @augurproject/tools docker:build
+#         docker pull augurproject/dev-node-geth:$(GETH_VERSION)
+#         docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
+#         MONO_ROOT=../../
+#         CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
+#         # Build and copy to merge with current address.json/upload-block-numbers.json
+#         cd packages/augur-tools
+#         docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) $MONO_ROOT
+#         ./scripts/copy-docker-files.sh $(IMAGE_NAME)
+#         docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
+#         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+#             docker push augurproject/augur-core:monorepo
+#         fi
+#         docker push $(IMAGE_NAME):$CONTRACT_SHA
+#       displayName: 'build and push $(IMAGE_NAME) image'
+#     - task: Docker@1
+#       displayName: docker logout
+#       inputs:
+#         command: logout
+#         containerRegistryType: Container Registry
+#         dockerRegistryEndpoint: dockerhub-augurproject
 
-          # replaces @augurproject/tools docker:build
-          docker pull augurproject/dev-node-geth:$(GETH_VERSION)
-          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
-          MONO_ROOT=../../
-          CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-          # Build and copy to merge with current address.json/upload-block-numbers.json
-          cd packages/augur-tools
-          docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) $MONO_ROOT
-          ./scripts/copy-docker-files.sh $(IMAGE_NAME)
-          docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
+# - job: publish_augur_ui_docker_image
+#   dependsOn:
+#   - Augur_build_docker_image
+#   condition: |
+#     and
+#     (
+#         succeeded(),
+#         eq(variables['Build.SourceBranch'], 'refs/heads/master')
+#     )
+#   pool:
+#     vmImage: 'Ubuntu 16.04'
+#   steps:
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: '3.x'
+#     - task: Docker@1
+#       displayName: docker login
+#       inputs:
+#         command: login
+#         containerRegistryType: Container Registry
+#         dockerRegistryEndpoint: dockerhub-augurproject
+#     - script: |
+#         set -euo pipefail
+#         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+#         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+#         # when we get deploy going we will swap these commands out for
+#         # docker:release
+#         yarn workspace @augurproject/ui docker:release kovan
+#         docker push augurproject/augur-ui:kovan
+#         #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
+#       displayName: 'publish docker images on merge to master'
+#       env:
+#         AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+#         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+#     - task: Docker@1
+#       displayName: docker logout
+#       inputs:
+#         command: logout
+#         containerRegistryType: Container Registry
+#         dockerRegistryEndpoint: dockerhub-augurproject
 
+# - job: tag_build
+#   displayName: build tag
+#   dependsOn: PreFlightCheck
+#   condition: |
+#     and
+#     (
+#       succeeded(),
+#       startsWith(variables['build.sourceBranch'], 'refs/tags/v')
+#     )
+#   pool:
+#     vmImage: 'Ubuntu-16.04'
+#   steps:
+#     - checkout: self
+#     - task: NodeTool@0
+#       inputs:
+#         versionSpec: $(PRIMARY_NODE_VERSION)
+#     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+#       inputs:
+#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+#         vstsFeed: npmPackages
+#     - script: |
+#         yarn install
+#       displayName: Install Dependencies
+#     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+#       inputs:
+#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+#         vstsFeed: npmPackages
+#     - bash: |
+#         set -euo pipefail
+#         yarn build
+#       displayName: yarn build
+#     - bash: |
+#         set -euo pipefail
+#         yarn workspace @augurproject/ui build
+#         ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
+#       displayName: ui build
+#     - bash: |
+#         set -euo pipefail
+#         sudo apt update
+#         sudo apt install golang-go -y
+#         curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
+#         sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
+#       displayName: install ipfs
+#     - bash: |
+#         set -euo pipefail
+#         ipfs init > /dev/null 2>&1
+#         ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
+#       displayName: ipfs hash of build dir
+#     - task: CopyFiles@2
+#       inputs:
+#         #sourceFolder: # Optional
+#         contents: |
+#           augur.zip
+#           augur_ipfs_hash.txt
+#         targetFolder: $(Build.ArtifactStagingDirectory)
+#         cleanTargetFolder: true
+#         #overWrite: false # Optional
+#         #flattenFolders: false # Optional
+#         #preserveTimestamp: false # Optional
 
-          if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-              docker push augurproject/augur-core:monorepo
-          fi
-          docker push $(IMAGE_NAME):$CONTRACT_SHA
-        displayName: 'build and push $(IMAGE_NAME) image'
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-
-  - job: publish_augur_ui_docker_image
-    dependsOn:
-    - Augur_build_docker_image
-    condition: |
-      and
-      (
-          succeeded(),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '3.x'
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - script: |
-          set -euo pipefail
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          # when we get deploy going we will swap these commands out for
-          # docker:release
-          yarn workspace @augurproject/ui docker:release kovan
-          docker push augurproject/augur-ui:kovan
-          #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
-        displayName: 'publish docker images on merge to master'
-        env:
-          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
-          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-
-  - job: tag_build
-    displayName: build tag
-    dependsOn: PreFlightCheck
-    condition: |
-      and
-      (
-        succeeded(),
-        startsWith(variables['build.sourceBranch'], 'refs/tags/v')
-      )
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - bash: |
-          set -euo pipefail
-          yarn build
-        displayName: yarn build
-      - bash: |
-          set -euo pipefail
-          yarn workspace @augurproject/ui build
-          ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
-        displayName: ui build
-      - bash: |
-          set -euo pipefail
-          sudo apt update
-          sudo apt install golang-go -y
-          curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
-          sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
-        displayName: install ipfs
-      - bash: |
-          set -euo pipefail
-          ipfs init > /dev/null 2>&1
-          ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
-        displayName: ipfs hash of build dir
-      - task: CopyFiles@2
-        inputs:
-          #sourceFolder: # Optional
-          contents: |
-            augur.zip
-            augur_ipfs_hash.txt
-          targetFolder: $(Build.ArtifactStagingDirectory)
-          cleanTargetFolder: true
-          #overWrite: false # Optional
-          #flattenFolders: false # Optional
-          #preserveTimestamp: false # Optional
+# use below for github release (not test yet
 #     - task: GitHubRelease@1
 #       displayName: 'GitHub release (create)'
 #       inputs:
