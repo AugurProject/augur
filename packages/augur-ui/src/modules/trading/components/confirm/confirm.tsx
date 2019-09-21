@@ -64,7 +64,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { trade, gasPrice, availableEth } = this.props;
     if (
-      (JSON.stringify(trade) !== JSON.stringify(nextProps.trade)) ||
+      JSON.stringify(trade) !== JSON.stringify(nextProps.trade) ||
       gasPrice !== nextProps.gasPrice ||
       !createBigNumber(availableEth).eq(createBigNumber(nextProps.availableEth))
     ) {
@@ -102,7 +102,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     );
 
     if (
-      allowanceBigNumber && createBigNumber(totalCost.value).gt(allowanceBigNumber)
+      allowanceBigNumber &&
+      createBigNumber(totalCost.value).gt(allowanceBigNumber)
     ) {
       needsApproval = true;
       messages = {
@@ -110,14 +111,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         type: WARNING,
         message: `This trade will take ${numTrades} Transactions and 1 approval.`,
       };
-
     }
 
     if (!isNaN(numTrades) && numTrades > 1) {
       messages = {
         header: 'MULTIPLE TRANSACTIONS',
         type: WARNING,
-        message: `This trade will take ${numTrades} Transactions${needsApproval ? `, and 1 approval.` : ``}`,
+        message: `This trade will take ${numTrades} Transactions${
+          needsApproval ? `, and 1 approval.` : ``
+        }`,
       };
     }
 
@@ -222,26 +224,22 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     return (
       <section className={Styles.TradingConfirm}>
-        {((shareCost && shareCost.value !== 0) ||
-          (totalCost && totalCost.value !== 0)) && (
-          <div className={Styles.TrandingConfirm__topBorder} />
-        )}
         {shareCost && shareCost.value !== 0 && (
           <div className={Styles.TradingConfirm__details}>
             <div className={Styles.TradingConfirm__position__properties}>
               CLOSING POSITION
             </div>
-            <div className={Styles.TradingConfirm__agg_position}>
-              <span
-                className={classNames({
-                  [Styles.long]: side === BUY,
-                  [Styles.short]: side === SELL,
-                })}
-              >
+            <div
+              className={classNames(Styles.TradingConfirm__agg_position, {
+                [Styles.long]: side === BUY,
+                [Styles.short]: side === SELL,
+              })}
+            >
+              <span>
                 {side !== BUY ? SELLING_OUT : BUYING_BACK}
+                <span>{shareCost.fullPrecision}</span>
+                Shares @<span>{limitPrice}</span>
               </span>
-              <span> {shareCost.fullPrecision} </span>
-              Shares @ <span> {limitPrice}</span>
             </div>
             <LinearPropertyLabel
               label="Estimated Fee"
@@ -285,17 +283,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 </ReactTooltip>
               </span>
             </div>
-            <div className={Styles.TradingConfirm__agg_position}>
-              <span
-                className={classNames({
-                  [Styles.long]: side === BUY,
-                  [Styles.short]: side === SELL,
-                })}
-              >
+            <div
+              className={classNames(Styles.TradingConfirm__agg_position, {
+                [Styles.long]: side === BUY,
+                [Styles.short]: side === SELL,
+              })}
+            >
+              <span>
                 {side === BUY ? BUYING : SELLING}
+                <span>{newOrderAmount}</span>
+                Shares @<span>{limitPrice}</span>
               </span>
-              <span> {newOrderAmount} </span>
-              Shares @ <span> {limitPrice}</span>
             </div>
             <LinearPropertyLabel
               label="Max Profit"

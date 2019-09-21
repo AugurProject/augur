@@ -20,7 +20,7 @@ import {
     Cash,
     ProfitLoss,
     SimulateTrade,
-    ZeroXTradeToken
+    ZeroXTrade,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -166,6 +166,8 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.contracts.get('Cash').address!;
+        mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
+        mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -333,9 +335,9 @@ Deploying to: ${networkConfiguration.networkName}
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
         promises.push(simulateTrade.initialize(this.augur!.address));
 
-        const zeroXTradeTokenContract = await this.getContractAddress("ZeroXTradeToken");
-        const zeroXTradeToken = new ZeroXTradeToken(this.dependencies, zeroXTradeTokenContract);
-        promises.push(zeroXTradeToken.initialize(this.augur!.address));
+        const ZeroXTradeContract = await this.getContractAddress("ZeroXTrade");
+        const zeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
+        promises.push(zeroXTrade.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");

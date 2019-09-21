@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Button {
-  .text-14-bold;
+  .mono-12-bold;
 
   border: @border-default;
   border-radius: @border-radius-default;
@@ -73,17 +73,17 @@
 .BuyOrderButton {
   .Button;
 
-  background: fade(@color-positive, 40%);
+  background: fade(@color-positive, 10%);
   border-color: @color-positive;
-  color: @color-primary-text;
-  height: @button-height-orders;
-  max-height: @button-height-orders;
+  color: @color-positive;
+  height: @button-height-default;
+  max-height: @button-height-default;
   padding: @button-padding-orders;
 
   &:disabled {
-    background: fade(@color-positive, 20%);
+    background: fade(@color-positive, 5%);
     border-color: fade(@color-positive, 10%);
-    color: fade(@color-primary-text, 20%);
+    color: fade(@color-positive, 20%);
   }
 
   &:hover:enabled {
@@ -94,17 +94,17 @@
 .SellOrderButton {
   .Button;
 
-  background: fade(@color-negative, 40%);
+  background: fade(@color-negative, 10%);
   border-color: @color-negative;
-  color: @color-primary-text;
-  height: @button-height-orders;
-  max-height: @button-height-orders;
+  color: @color-negative;
+  height: @button-height-default;
+  max-height: @button-height-default;
   padding: @button-padding-orders;
 
   &:disabled {
-    background: fade(@color-negative, 20%);
+    background: fade(@color-negative, 5%);
     border-color: fade(@color-negative, 10%);
-    color: fade(@color-primary-text, 20%);
+    color: fade(@color-negative, 20%);
   }
 
   &:hover:enabled {

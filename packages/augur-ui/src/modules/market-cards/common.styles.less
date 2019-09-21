@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Outcome {
-	background: @color-theme-primary;
-	border: 1px solid @color-primary-alternate;
+	background: @color-table-header;
+	border: 1px solid @color-dark-grey;
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
@@ -10,8 +10,8 @@
 
 	> div:first-of-type {
 		margin-bottom: @size-8;
-	    justify-content: space-between;
-	    display: flex;
+		justify-content: space-between;
+		display: flex;
 
 		> span:first-of-type {
 			.text-12-bold;
@@ -47,7 +47,7 @@
 	});
 
 	&:hover {
-		border: 1px solid @color-primary-light;
+		border: 1px solid @color-primary-text;
 
 		> div:first-of-type > span:first-of-type {
 			text-decoration: underline
@@ -146,8 +146,8 @@
 }
 
 .ScalarOutcome {
-	background: @color-theme-primary;
-	border: 1px solid @color-primary-alternate;
+	background: @color-table-header;
+	border: 1px solid @color-dark-grey;
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
@@ -168,17 +168,17 @@
 			bottom: @size-5;
 
 			&::before {
-	            background-color: @color-outcome-invalid;
-	            border-radius: 50%;
-	            content: "";
-	            height: @size-6;
-	            left: 0;
-	            margin: auto;
-	            position: absolute;
-	            right: 0;
-	            top: 100%;
+				background-color: @color-outcome-invalid;
+				border-radius: 50%;
+				content: "";
+				height: @size-6;
+				left: 0;
+				margin: auto;
+				position: absolute;
+				right: 0;
+				top: 100%;
 				width: @size-6;
-          	}
+			}
 		}
 	}
 
@@ -233,15 +233,15 @@
 
 	&.Dispute {
 		grid-template-columns: repeat(2, 1fr);
-	    grid-column: 2;
+		grid-column: 2;
 
-	    > div:first-of-type {
+		> div:first-of-type {
 			grid-column: unset;
 		}
 	}
 
     @media @breakpoint-mobile-mid {
-		grid-template-columns: repeat(1, 1fr);
+			grid-template-columns: repeat(1, 1fr);
     }
 }
 

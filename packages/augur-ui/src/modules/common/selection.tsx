@@ -24,6 +24,7 @@ export interface DropdownProps {
   highlight?: boolean;
   stretchOut?: boolean;
   activeClassName?: string;
+  showColor?: boolean;
 }
 
 interface DropdownState {
@@ -144,6 +145,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       activeClassName,
       staticLabel,
       id,
+      showColor
     } = this.props;
     const { selected, showList, isDisabled } = this.state;
 
@@ -157,6 +159,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           [Styles.isOpen]: showList,
           [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,
+          [Styles.showColor]: showColor,
+          [`${Styles[`showColor-${selected.value + 1}`]}`]: selected && showColor
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
@@ -173,7 +177,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           })}
         >
           <span ref={ref => (this.labelRef = ref)}>{selected ? selected.label : staticLabel}</span>
-          {large ? TwoArrows : ThickChevron}
+          {ThickChevron}
         </button>
         <div
           className={classNames(Styles.list, {
@@ -258,7 +262,7 @@ export class StaticLabelDropdown extends Dropdown {
         <button>
           {staticLabel}
           &nbsp;
-          <b>{selected.label}</b> {large ? TwoArrows : Chevron}
+          <b>{selected.label}</b> {Chevron}
         </button>
         <div
           className={classNames({
