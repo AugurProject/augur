@@ -192,6 +192,7 @@ jobs:
           then
               echo >&2 "unstaged changes detected"
               git diff-files --name-status -r --ignore-submodules -- >&2
+              git diff
               err=1
           fi
           if ! git diff-index --cached --quiet HEAD --ignore-submodules --
