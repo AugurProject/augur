@@ -400,6 +400,7 @@ export interface MarketData extends Log, Doc {
   nextWindowStartTime: string;
   nextWindowEndTime: string;
   pacingOn: boolean;
+  noShowBond: string;
 }
 
 export interface DisputeDoc extends Log, Doc {

@@ -931,8 +931,7 @@ async function getMarketsInfo(
       reportingFeeDivisor
     ).dividedBy(QUINTILLION);
     const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
-    // TODO: find this value from logs.
-    const noShowBondAmount = '999999000000000000000';
+    const noShowBondAmount = new BigNumber(marketData.noShowBond).toFixed();
 
     // TODO: Create a derived DB for market / outcome indexed data to get last price
     // Also use this DB to populate the "lastTradedTimestamp" field on the market derived DB to use for sorting

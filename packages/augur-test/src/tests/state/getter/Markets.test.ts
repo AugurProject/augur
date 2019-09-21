@@ -1743,6 +1743,9 @@ describe('State API :: Markets :: ', () => {
       MarketReportingState.DesignatedReporting
     );
 
+    const expectedRepBond = await john.getRepBond();
+    expect(markets[0].noShowBondAmount).toEqual(expectedRepBond.toFixed());
+
     // Skip to open reporting
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
     await john.setTimestamp(newTime);
