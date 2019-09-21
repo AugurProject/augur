@@ -7,9 +7,6 @@ ENV PATH="/augur/node_modules/.bin:${PATH}"
 ENV PATH="/usr/bin:${PATH}"
 ENV PATH="/augur/venv/bin:${PATH}"
 
-# install "virtualenv", since the vast majority of users of this image will want it
-RUN python3 -m pip install --no-cache-dir virtualenv
-
 WORKDIR /augur
 COPY packages/augur-core/requirements.txt /augur/
 RUN python3 -m venv /augur/venv && \
