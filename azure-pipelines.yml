@@ -5,6 +5,8 @@ variables:
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
     PRIMARY_NODE_VERSION: 10.16.x
     GETH_VERSION: v1.8.27
+    SOLC_VERSION: v0.5.10
+    SOLC_MD5: be02011efd6c6afd27cda02871bd70b3
 
 trigger:
   batch: false
@@ -127,77 +129,7 @@ jobs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
 
-  - job: Augur_build_docker_image
-    dependsOn:
-    - TestAndLint
-    - PreFlightCheck
-    condition: |
-      or
-      (
-        and
-        (
-          succeeded(),
-          or
-          (
-            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-          )
-        ),
-        eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-      - checkout: self
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '3.x'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - bash: |
-          set -euo pipefail
-          yarn build
-        displayName: yarn build
-      - bash: |
-          set -euo pipefail
-          yarn docker:build:augur
-          docker images
-          docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-      - bash: |
-          set -euo pipefail
-          docker images
-          docker push augurproject/augur-build:latest
-        displayName: docker push latest
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-
-  - job: Contract_Changes_and_no_Compile_check
+  - job: TestCore
     dependsOn:
     - TestAndLint
     - PreFlightCheck
@@ -219,9 +151,25 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - bash: |
           set -euo pipefail
-          yarn
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
+        displayName: Python3 requirements
+      - bash: |
+          set -euo pipefail
+          echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
+          curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
+          md5sum -b -c solc.md5 && \
+          chmod a+x /usr/local/bin/solc
+        displayName: install solc
+      - bash: |
+          set -euo pipefail
+          yarn install --frozen-lockfile
           yarn build
           yarn workspace @augurproject/core build
+        displayName: compile contracts
+      - bash: |
+          set -euo pipefail
           git update-index -q --ignore-submodules --refresh
           err=0
           if ! git diff-files --quiet --ignore-submodules --
@@ -243,6 +191,7 @@ jobs:
               echo >&2 "yarn workspace @augurproject/core build"
               exit 1
           fi
+        displayName: check for contract changes
 
   - job: Build_Core_Docker
     dependsOn:
