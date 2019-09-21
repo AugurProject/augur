@@ -32,6 +32,7 @@ import {
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
+  CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { ContractInterfaces } from '@augurproject/core';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
@@ -612,6 +613,25 @@ export async function simulateTradeGasLimit(
   return Augur.simulateTradeGasLimit(params);
 }
 
+export async function claimMarketsProceedsEstimateGas(
+  markets: string[],
+  shareHolder: string,
+  affiliateAddress: string = NULL_ADDRESS,
+): Promise<BigNumber> {
+  const augur = augurSdk.get();
+  let gas = CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE
+  try {
+    gas = await augur.contracts.claimTradingProceeds.claimMarketsProceeds_estimateGas(
+      markets,
+      shareHolder,
+      affiliateAddress
+    );
+  } catch (e) {
+    console.log("couldn't get gas estimate", e)
+  }
+  return gas;
+}
+
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
@@ -619,17 +639,9 @@ export async function claimMarketsProceeds(
 ) {
   const augur = augurSdk.get();
 
-  if (markets.length > 1) {
-    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
-      markets,
-      shareHolder,
-      affiliateAddress
-    );
-  } else {
-    augur.contracts.claimTradingProceeds.claimTradingProceeds(
-      markets[0],
-      shareHolder,
-      affiliateAddress
-    );
-  }
+  augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+    markets,
+    shareHolder,
+    affiliateAddress
+  );
 }
