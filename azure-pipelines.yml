@@ -193,10 +193,52 @@ jobs:
           fi
         displayName: check for contract changes
 
-  - job: Test_Augur_Core
+  - job: DockerGethDev
+    dependsOn:
+    - PreFlightCheck
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    condition: |
+      and
+      (
+        succeeded(),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
+      )
+    steps:
+      - checkout: self
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - script: |
+          set -exuo pipefail
+          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
+          sudo systemctl status docker
+          cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
+          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
+          docker push augurproject/dev-node-geth:$(GETH_VERSION)
+          docker push augurproject/dev-node-geth:latest
+        displayName: 'build and push dev-node-geth image'
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+
+
+  - job: TestAugurCore
     dependsOn:
     - ContractSanityCheck
-    condition: succeeded()
+    - DockerGethDev
+    condition: |
+      and
+      (
+        in(dependencies.ContractSanityCheck.result, 'Succeeded'),
+        in(dependencies.DockerGethDev.result, 'Succeeded', 'Skipped')
+      )
     pool:
       vmImage: 'Ubuntu 16.04'
     timeoutInMinutes: 120
@@ -250,50 +292,15 @@ jobs:
           fi
         displayName: integration: $(TESTS)
 
-  - job: Docker_geth_dev
-    dependsOn:
-    - PreFlightCheck
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    condition: |
-      and
-      (
-        succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
-      )
-    steps:
-      - checkout: self
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - script: |
-          set -exuo pipefail
-          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-          sudo systemctl status docker
-          cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
-          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
-          docker push augurproject/dev-node-geth:$(GETH_VERSION)
-          docker push augurproject/dev-node-geth:latest
-        displayName: 'build and push dev-node-geth image'
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-
   - job: Docker_populated_geth_images
     dependsOn:
-    - Test_Augur_Core
-    - Docker_geth_dev
+    - TestAugurCore
+    - DockerGethDev
     condition: |
       or
       (
-        in(dependencies.Test_Augur_Core.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded')
+        in(dependencies.TestAugurCore.result, 'Succeeded'),
+        in(dependencies.DockerGethDev.result, 'Succeeded')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
