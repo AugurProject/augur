@@ -169,6 +169,7 @@ jobs:
           set -euo pipefail
           yarn install --frozen-lockfile
           yarn build
+          source venv/bin/activate
           yarn workspace @augurproject/core build
         displayName: compile contracts
       - bash: |
