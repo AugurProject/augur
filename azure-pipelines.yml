@@ -195,20 +195,8 @@ jobs:
 
   - job: Test_Augur_Core
     dependsOn:
-    - TestAndLint
-    - Build_Core_Docker
-    - PreFlightCheck
-    condition: |
-      and
-      (
-        succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-        )
-      )
+    - ContractSanityCheck
+    condition: succeeded()
     pool:
       vmImage: 'Ubuntu 16.04'
     timeoutInMinutes: 120
@@ -223,14 +211,6 @@ jobs:
           TESTS: tests/fuzzy
         unit:
           TESTS: tests/unit
-#       trading_and_libs_subfork:
-#         TESTS: tests/test*.py tests/libraries tests/trading --subFork
-#       reporting_subfork:
-#         TESTS: tests/reporting --subFork
-#       fuzzy_subfork:
-#         TESTS: tests/fuzzy --subFork
-#       unit_subfork:
-#         TESTS: tests/unit --subFork
         geth_integration:
           TESTS: integration:geth
         parity_integration:
@@ -247,31 +227,28 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - bash: |
           set -euo pipefail
-          which node
-          node --version
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker pull $CORE_IMAGE_BUILD
-          docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
-          docker images
           echo "tests: $(TESTS)"
           if [[ "$(TESTS)" == "integration:geth" ]]; then
-            yarn workspace @augurproject/core docker:run:test:integration:geth;
+            docker run -p 47624:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:latest
+            yarn workspace @augurproject/core test:integration
+            docker stop geth
           elif [[ "$(TESTS)" == "integration:parity" ]]; then
-            yarn workspace @augurproject/core docker:run:test:integration:parity;
+            docker run -p 47621:8180 -p 47622:8545 -p 47623:8546 --name parity --detach augurproject/dev-node-parity:latest
+            yarn workspace @augurproject/core test:integration
+            docker stop parity
           elif [[ "$(TESTS)" == "security:mythril" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
           elif [[ "$(TESTS)" == "security:maian" ]]; then
-            yarn workspace @augurproject/core docker:run:test:security:maian;
+            docker run -v `pwd`/contracts:/augur/packages/augur-core/output/contracts/ cryptomental/maian-augur-ci python /scripts/test_runner.py
           elif [[ "$(TESTS)" == "security:smt" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:smt;
           elif [[ "$(TESTS)" == "security:oyente" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            (cd packages/augur-core &&  yarn docker:run:test:unit -- $(TESTS))
+            yarn workspace @augurproject/core test:unit $(TESTS)
           fi
-        displayName: integration tests
+        displayName: integration: $(TESTS)
 
   - job: Docker_geth_dev
     dependsOn:
