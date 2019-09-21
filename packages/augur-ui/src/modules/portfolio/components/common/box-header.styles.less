@@ -3,7 +3,8 @@
 .BoxHeader {
   > div:first-of-type {
     align-items: center;
-    border-bottom: 1px solid @color-secondary-background;
+    background: @color-dark-grey;
+    border-bottom: 1px solid @color-dark-grey;
     display: flex;
     flex-direction: row;
     padding: @size-8 @size-10 @size-8 @size-16;
@@ -26,11 +27,13 @@
   }
 
   > div:nth-of-type(2) {
+    border-bottom: 1px solid @color-dark-grey;
     align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     padding: 0 @size-16 0;
+    height: @size-32;
   }
 
   &.ExtraTitlePadding {
@@ -108,7 +111,7 @@
     height: @size-22;
 
     > path {
-      fill: @color-tertiary-info-text;
+      fill: @color-secondary-text;
     }
   }
 }

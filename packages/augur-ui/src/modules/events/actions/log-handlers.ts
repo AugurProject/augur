@@ -40,6 +40,15 @@ import {
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
+import {
+  isOnReportingPage,
+  isOnDisputingPage,
+} from 'modules/trades/helpers/is-on-page';
+import {
+  reloadReportingPage,
+  reloadDisputingPage,
+} from 'modules/reporting/actions/update-reporting-list';
+import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 
 const handleAlert = (
   log: any,
@@ -48,15 +57,18 @@ const handleAlert = (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  dispatch(
-
-    updateAlert(log.transactionHash, {
-      params: log,
-      status: TXEventName.Success,
-      timestamp: blockchain.currentAugurTimestamp * 1000,
-      name: name,
-    })
-  );
+try {
+    dispatch(
+      updateAlert(log.transactionHash, {
+        params: log,
+        status: TXEventName.Success,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        name: name,
+      })
+    );
+  } catch (e) {
+    console.error('alert could not be created', e);
+  }
 };
 
 const loadUserPositionsAndBalances = (marketId: string) => (
@@ -155,9 +167,7 @@ export const handleMarketCreatedLog = (log: any) => (
   }
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, dispatch, getState);
-    // TODO: could tell that logged in user can create liquidity orders
-    // My Market? start kicking off liquidity orders
-    // if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
+    dispatch(loadCreateMarketHistory());
   }
 };
 
@@ -304,6 +314,7 @@ export const handleInitialReportSubmittedLog = (
     handleAlert(log, DOINITIALREPORT, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
+  if (isOnReportingPage()) dispatch(reloadReportingPage());
 };
 
 export const handleInitialReporterRedeemedLog = (
@@ -330,6 +341,7 @@ export const handleInitialReporterTransferredLog = (log: any) => (
   if (isUserDataUpdate) {
     dispatch(loadAccountReportingHistory());
   }
+  if (isOnReportingPage()) dispatch(reloadReportingPage());
 };
 // ---- ------------ ----- //
 
@@ -421,6 +433,7 @@ export const handleDisputeCrowdsourcerCreatedLog = (
   log: Logs.DisputeCrowdsourcerCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleDisputeCrowdsourcerContributionLog = (
@@ -432,10 +445,10 @@ export const handleDisputeCrowdsourcerContributionLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-
     handleAlert(log, CONTRIBUTE, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleDisputeCrowdsourcerCompletedLog = (
@@ -443,6 +456,7 @@ export const handleDisputeCrowdsourcerCompletedLog = (
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
   handleAlert(log, CONTRIBUTE, dispatch, getState);
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (

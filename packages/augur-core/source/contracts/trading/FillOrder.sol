@@ -417,7 +417,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     IAugur public augur;
     IOrders public orders;
     IProfitLoss public profitLoss;
-    address public zeroXTradeToken;
+    address public ZeroXTrade;
     address public trade;
 
     mapping (address => uint256) public marketVolume;
@@ -429,7 +429,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         orders = IOrders(augur.lookup("Orders"));
         trade = augur.lookup("Trade");
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        zeroXTradeToken = augur.lookup("ZeroXTradeToken");
+        ZeroXTrade = augur.lookup("ZeroXTrade");
     }
 
     /**
@@ -454,7 +454,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     }
 
     function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) external returns (uint256) {
-        require(msg.sender == zeroXTradeToken);
+        require(msg.sender == ZeroXTrade);
         Trade.OrderData memory _orderData = Trade.createOrderData(_market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
         Trade.Data memory _tradeData = Trade.createWithData(augur, _orderData, _filler, _amount, _affiliateAddress);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);

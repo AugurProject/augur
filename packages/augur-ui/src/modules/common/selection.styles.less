@@ -3,7 +3,6 @@
 .Dropdown {
   border: 1px solid @color-highlight;
   border-radius: @border-radius-default;
-  box-sizing: border-box;
   cursor: pointer;
   display: flex;
   position: relative;
@@ -17,7 +16,7 @@
     align-items: center;
     background: @color-theme-primary;
     border-radius: @border-radius-default;
-    color: @color-secondary-text;
+    color: @color-primary-text;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -30,21 +29,21 @@
 
     > svg > path {
       fill: none;
-      stroke: @color-neutral;
+      stroke: @color-inactive-text;
     }
 
     &:hover {
-      background: fade(@color-highlight, 30%);
+      background: fade(@color-theme-primary, 50%);
       outline: none;
 
       > svg > path {
-        stroke: @color-secondary-text;
+        stroke: @color-primary-text;
       }
     }
   }
 
   > div:first-of-type {
-    background-color: @color-secondary-text;
+    background-color: @color-primary-text;
     border-radius: @border-radius-default;
     display: none;
     max-height: 256px;
@@ -58,7 +57,7 @@
     }
 
     > button {
-      color: @color-primary-background;
+      color: @color-dark-grey;
       position: relative;
       text-align: left;
       transition: background-color 0.15s ease;
@@ -85,30 +84,36 @@
 }
 
 .SelectedLabel {
-  color: @color-secondary-text;
+  color: @color-primary-text;
 }
 
 .Large {
   .Dropdown;
 
   border-color: @color-primary-alternate;
-  height: 2.5rem;
+  height: @size-32;
 
   > button {
-    .text-14-medium;
+    .mono-11-bold;
 
-    background: @color-secondary-action;
-    padding: 0 @size-16;
+    background: @color-dark-grey;
+    padding: 0 @size-12;
 
     > svg {
-      flex: 0 0 1.25rem;
-      height: 1.25rem;
-      margin-left: 0.5rem;
-      width: 1.25rem;
+      height: @size-6;
+      margin-left: @size-8;
+      width: @size-10;
 
       > path {
-        stroke-width: 0.125rem;
+        fill: @color-primary-text;
       }
+    }
+
+    > span {
+      padding: @size-6 0;
+      border-right: 1px solid @color-primary-alternate;
+      flex: 1;
+      display: flex;
     }
   }
 
@@ -152,7 +157,7 @@
       width: @size-10;
 
       > path {
-        fill: #E9E5F2;
+        fill: @color-primary-text;
       }
     }
     
@@ -210,7 +215,7 @@
     background: fade(@color-highlight, 30%);
 
     > svg > path {
-      stroke: @color-secondary-text;
+      stroke: @color-primary-text;
     }
   }
 }
@@ -229,6 +234,33 @@
   }
 }
 
+.showColor {
+  position: relative;
+
+  &::before {
+    width: @size-2;
+    content: '';
+    position: absolute;
+    top: @size-1;
+    left: @size-1;
+    bottom: @size-1;
+    border-top-left-radius: @size-3;
+    border-bottom-left-radius: @size-3;
+  }
+
+  .generate-indexed-color-outcome-classes({
+    &.showColor-@{newIndex} {
+      &::before {
+        background-color: @value;
+      };
+    }
+  });
+}
+
+
+
+  
+
 .PillSelection {
   align-items: center;
   display: flex;
@@ -237,7 +269,7 @@
 
   > li {
     background: transparent;
-    border: 1px solid fade(@color-primary-alternate-two, 20%);
+    border: 1px solid fade(@color-highlight, 20%);
     border-right: 0;
     box-sizing: border-box;
     display: flex;
@@ -264,7 +296,7 @@
       > button {
         .mono-10;
 
-        color: @color-secondary-text;
+        color: @color-primary-text;
         line-height: @size-14;
       }
     }
@@ -276,7 +308,7 @@
 
     &:last-of-type {
       border-bottom-right-radius: @border-radius-full-round;
-      border-right: 1px solid fade(@color-primary-alternate-two, 20%);
+      border-right: 1px solid fade(@color-highlight, 20%);
       border-top-right-radius: @border-radius-full-round;
     }
 
@@ -284,7 +316,7 @@
       .mono-10;
 
       background: transparent;
-      color: @color-primary-alternate-two;
+      color: @color-highlight;
       line-height: normal;
       padding: @size-10 @size-12;
     }
@@ -296,7 +328,7 @@
   position: relative;
 
   > button > svg {
-    fill: @color-shadow-text;
+    fill: @color-inactive-text;
     height: @size-16;
     margin-top: 0.1875rem;
     width: @size-10;
@@ -309,14 +341,14 @@
   > button:hover,
   > button:active {
     > svg {
-      fill: @color-secondary-text;
+      fill: @color-primary-text;
     }
   }
 }
 
 .MenuOpen {
   > button > svg {
-    fill: @color-secondary-text;
+    fill: @color-primary-text;
   }
 }
 
@@ -324,9 +356,9 @@
   .text-12-bold;
 
   align-items: flex-start;
-  background: @color-secondary-text;
+  background: @color-primary-text;
   border-radius: @border-radius-default;
-  color: @color-primary-background;
+  color: @color-dark-grey;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -350,7 +382,7 @@
   }
 
   > div:hover {
-    color: @color-shadow-text;
+    color: @color-inactive-text;
     opacity: 0.75;
   }
 

@@ -1,9 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketCard {
-	background: @color-secondary-action;
+	background: @color-module-background;
 	border-radius: @border-radius-default;
-	border: 1px solid @color-primary-light;
+	border: 1px solid @color-dark-grey;
 	display: flex;
 	margin: @size-4 0;
   display: grid;
@@ -20,7 +20,7 @@
 	> div:last-of-type,
 	> span,
 	> button:last-of-type {
-		border-left: 1px solid @color-primary-background;
+		border-left: 1px solid @color-dark-grey;
 		padding-left: @size-16;
 	}
 
@@ -49,7 +49,7 @@
 	> span {
 		.text-16-medium;
 
-		color: @color-alternate-info-text;
+		color: @color-primary-text;
 		grid-column: 2;
 		padding-bottom: @size-16;
 		padding-top: @size-4;
@@ -99,9 +99,9 @@
 
 		> div:last-of-type {
 			> div > div > svg {
-				fill: @color-shadow-text;
+				fill: @color-inactive-text;
 				stroke-width: 0.5;
-				stroke: @color-shadow-text;
+				stroke: @color-inactive-text;
 				height: @size-16;
 				margin-right: @size-16;
 				width: @size-16;
@@ -125,7 +125,7 @@
 		.mono-10;
 
 		align-self: flex-start;
-		color: @color-secondary-text;
+		color: @color-primary-text;
 		display: flex;
 		padding-bottom: @size-16;
 		text-transform: uppercase;

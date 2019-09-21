@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Outcome {
-	background: @color-theme-primary;
-	border: 1px solid @color-primary-alternate;
+	background: @color-table-header;
+	border: 1px solid @color-dark-grey;
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
@@ -10,29 +10,29 @@
 
 	> div:first-of-type {
 		margin-bottom: @size-8;
-	    justify-content: space-between;
-	    display: flex;
+		justify-content: space-between;
+		display: flex;
 
 		> span:first-of-type {
 			.text-12-bold;
 
-			color: @color-alternate-info-text;
+			color: @color-primary-text;
 		}
 
 		> span:last-of-type {
 			.mono-12;
 
-			color: @color-tertiary-info-text;
+			color: @color-secondary-text;
 		}
 	}
 
 	&.invalid {
 		> div:first-of-type > span:first-of-type {
-			color: @color-invalid;
+			color: @color-outcome-invalid;
 		}
 
 		> div:last-of-type > span {
-    		background: fade(@color-invalid, 50);
+    		background: fade(@color-outcome-invalid, 50);
     	}
 	}
 
@@ -47,7 +47,7 @@
 	});
 
 	&:hover {
-		border: 1px solid @color-primary-light;
+		border: 1px solid @color-primary-text;
 
 		> div:first-of-type > span:first-of-type {
 			text-decoration: underline
@@ -65,13 +65,13 @@
 	> span:first-of-type {
 		.text-12-bold;
 
-		color: @color-alternate-info-text;
+		color: @color-primary-text;
 	}
 
 	> span:nth-of-type(2) {
 		.mono-10;
 
-		color: @color-neutral-affirmative;
+		color: @color-tenative-winner;
 		margin-bottom: @size-6;
 		margin-top: @size-4;
 		text-transform: uppercase;
@@ -91,7 +91,7 @@
 			> span:first-of-type {
 				.mono-10;
 
-				color: @color-tertiary-info-text;
+				color: @color-secondary-text;
 				margin-bottom: @size-2;
 				text-transform: uppercase;
 			}
@@ -99,10 +99,10 @@
 			> span:nth-of-type(2) {
 				.mono-10;
 
-				color: @color-alternate-info-text;
+				color: @color-primary-text;
 
 				> span {
-					color: @color-tertiary-info-text;
+					color: @color-secondary-text;
 					margin-left: @size-5;
 				}
 			}
@@ -119,20 +119,20 @@
 		margin-top: @size-10;
 
 		> span {
-			background: fade(@color-faded-bright, 50);
+			background: fade(@color-negative, 50);
 			border-radius: @size-4;
 		}
 	}
 
 	&.invalid {
 		> span:first-of-type {
-			color: @color-invalid;
+			color: @color-outcome-invalid;
 		}
 	}
 }
 
 .Percent {
-	background: fade(@color-secondary-action, 50);
+	background: fade(@color-dark-grey, 50);
 	height: @size-4;
 
 	> span {
@@ -141,13 +141,13 @@
 	}
 
 	&.invalid {
-		background-color: fade(@color-invalid, 50);
+		background-color: fade(@color-outcome-invalid, 50);
 	}
 }
 
 .ScalarOutcome {
-	background: @color-theme-primary;
-	border: 1px solid @color-primary-alternate;
+	background: @color-table-header;
+	border: 1px solid @color-dark-grey;
 	border-radius: @border-radius-default;
 	display: flex;
 	flex-direction: column;
@@ -156,11 +156,11 @@
 	> div:first-of-type {
 		.mono-11-bold;
 
-		background: @color-secondary-action;
+		background: @color-dark-grey;
 		border-radius: @size-4;
 		height: @size-4;
 		margin-bottom: @size-3;
-		color: @color-invalid-primary;
+		color: @color-outcome-invalid;
 		position: relative;
 
 		> span {
@@ -168,24 +168,24 @@
 			bottom: @size-5;
 
 			&::before {
-	            background-color: @color-invalid-primary;
-	            border-radius: 50%;
-	            content: "";
-	            height: @size-6;
-	            left: 0;
-	            margin: auto;
-	            position: absolute;
-	            right: 0;
-	            top: 100%;
+				background-color: @color-outcome-invalid;
+				border-radius: 50%;
+				content: "";
+				height: @size-6;
+				left: 0;
+				margin: auto;
+				position: absolute;
+				right: 0;
+				top: 100%;
 				width: @size-6;
-          	}
+			}
 		}
 	}
 
 	> div:last-of-type {
 		.mono-10;
 
-		color: @color-tertiary-info-text;
+		color: @color-secondary-text;
 		display: flex;
     	justify-content: space-between;
 		
@@ -233,15 +233,15 @@
 
 	&.Dispute {
 		grid-template-columns: repeat(2, 1fr);
-	    grid-column: 2;
+		grid-column: 2;
 
-	    > div:first-of-type {
+		> div:first-of-type {
 			grid-column: unset;
 		}
 	}
 
     @media @breakpoint-mobile-mid {
-		grid-template-columns: repeat(1, 1fr);
+			grid-template-columns: repeat(1, 1fr);
     }
 }
 
@@ -254,7 +254,7 @@
 	> span:first-of-type {
 		.mono-10;
 
-		color: @color-tertiary-info-text;
+		color: @color-secondary-text;
 		display: flex;
 		flex: 1;
 	}
@@ -262,7 +262,7 @@
 	> span:last-of-type {
 		.mono-10;
 
-		color: @color-secondary-text;
+		color: @color-primary-text;
 	}
 
 	@media @breakpoint-mobile-mid{
@@ -292,11 +292,11 @@
 		height: @size-16;
 
 		> mask {
-			fill: @color-secondary-text;
+			fill: @color-primary-text;
 		}
 
 		> rect {
-			stroke: @color-secondary-text;
+			stroke: @color-primary-text;
 		}
 	}
 }
@@ -326,7 +326,7 @@
 	> span:last-of-type {
 		.text-18-bold;
 
-		color: @color-alternate-info-text;
+		color: @color-primary-text;
 	}
 
 	> div {
@@ -338,7 +338,7 @@
 			.mono-10;
 
 			margin-bottom: @size-4;
-			color: @color-tertiary-info-text;
+			color: @color-secondary-text;
 			text-transform: uppercase;
 		}
 
@@ -348,12 +348,12 @@
 			> span {
 				.text-12-bold;
 
-				color: @color-alternate-info-text;
+				color: @color-primary-text;
 
 				> span {
 					.text-12;
 
-					color: @color-tertiary-info-text;
+					color: @color-secondary-text;
 					margin: 0 @size-3;
 				}
 			}

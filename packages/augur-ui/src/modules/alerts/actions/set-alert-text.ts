@@ -6,17 +6,14 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import {
-  formatRep,
-  formatShares,
-  formatDai,
-} from 'utils/format-number';
+import { formatRep, formatShares, formatDai } from 'utils/format-number';
 import {
   calculatePayoutNumeratorsValue,
   TXEventName,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   convertPayoutNumeratorsToStrings,
+  MALFORMED_OUTCOME,
 } from '@augurproject/sdk';
 import {
   BUY,
@@ -37,23 +34,27 @@ import {
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
   APPROVE,
+  BUY_INDEX,
+  SELL_INDEX,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { isSameAddress } from 'utils/isSameAddress';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 function getInfo(params: any, status: string, marketInfo: MarketData) {
-  const outcome = params.outcome || params._outcome;
+  const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
-  let orderType = params.orderType === 0 ? BUY : SELL;
+  let orderType = params.orderType === BUY_INDEX ? BUY : SELL;
 
   if (status === TXEventName.Failure) {
-    orderType = params._direction.toNumber() === 0 ? BUY : SELL;
+    orderType =
+      new BigNumber(params._direction).toNumber() === BUY_INDEX ? BUY : SELL;
   }
 
   const price = convertOnChainPriceToDisplayPrice(
@@ -109,6 +110,7 @@ export default function setAlertText(alert: any, callback: Function) {
                 : getOutcomeNameWithOutcome(
                     marketInfo,
                     alert.params.outcomeId,
+                    false,
                     false
                   );
             alert.details = `${toCapitalizeCase(orderType)}  ${
@@ -152,14 +154,48 @@ export default function setAlertText(alert: any, callback: Function) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
+            const { loginAccount, userOpenOrders } = getState() as AppState;
+            let originalQuantity = convertOnChainAmountToDisplayAmount(
+              createBigNumber(alert.params.amountFilled),
+              createBigNumber(marketInfo.tickSize)
+            );
+            let updatedOrderType = alert.params.orderType;
+            if (
+              alert.params.orderCreator.toUpperCase() ===
+              loginAccount.address.toUpperCase()
+            ) {
+              // creator
+              const orders = userOpenOrders[alert.params.market];
+              const outcome = new BigNumber(alert.params.outcome).toString();
+              const foundOrder =
+                orders[outcome] &&
+                orders[outcome][alert.params.orderType] &&
+                orders[outcome][alert.params.orderType][alert.params.orderId];
+              if (foundOrder) {
+                originalQuantity = createBigNumber(
+                  foundOrder.originalFullPrecisionAmount
+                );
+              }
+            } else {
+              // filler
+              updatedOrderType =
+                alert.params.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
+            }
             alert.description = marketInfo.description;
+            const params = {
+              ...alert.params,
+              orderType: updatedOrderType,
+              amount: alert.params.amountFilled,
+            };
             const { orderType, amount, price, outcomeDescription } = getInfo(
-              alert.params,
+              params,
               alert.status,
               marketInfo
             );
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
+            } of ${
+              formatShares(originalQuantity).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             alert.toast = true;
           })
@@ -174,25 +210,36 @@ export default function setAlertText(alert: any, callback: Function) {
         if (alert.params.preFilled && !alert.params._additionalStake) {
           break;
         }
+        const payoutNums = convertPayoutNumeratorsToStrings(
+          alert.params._payoutNumerators || alert.params.payoutNumerators
+        );
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            const outcome = calculatePayoutNumeratorsValue(
+            const payoutNumeratorResultObject = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params._payoutNumerators
-                ? convertPayoutNumeratorsToStrings(
-                    alert.params._payoutNumerators
-                  )
-                : alert.params.payoutNumerators
+              payoutNums
             );
             const outcomeDescription =
-              outcome === null
+              !!payoutNumeratorResultObject.invalid
                 ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
+                : getOutcomeNameWithOutcome(
+                    marketInfo,
+                    payoutNumeratorResultObject.outcome,
+                    false
+                  );
+            payoutNumeratorResultObject.malformed
+              ? MALFORMED_OUTCOME
+              : getOutcomeNameWithOutcome(
+                  marketInfo,
+                  payoutNumeratorResultObject.outcome,
+                  payoutNumeratorResultObject.invalid,
+                  false
+                );
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
@@ -212,7 +259,7 @@ export default function setAlertText(alert: any, callback: Function) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            const outcome = calculatePayoutNumeratorsValue(
+            const payoutNumeratorResultObject = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
               marketInfo.numTicks,
@@ -220,10 +267,14 @@ export default function setAlertText(alert: any, callback: Function) {
               alert.params.payoutNumerators ||
                 convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
             );
-            const outcomeDescription =
-              outcome === null
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
+            const outcomeDescription = payoutNumeratorResultObject.malformed
+              ? MALFORMED_OUTCOME
+              : getOutcomeNameWithOutcome(
+                  marketInfo,
+                  payoutNumeratorResultObject.outcome,
+                  payoutNumeratorResultObject.invalid,
+                  false
+                );
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
           })

@@ -2,7 +2,6 @@
 
 .OrderBook {
   background-color: @color-tertiary-background;
-  border-bottom: @size-8 solid @color-theme-primary;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -35,19 +34,19 @@
 
     > button {
       display: flex;
-      padding: 4.5px @size-24 4.5px @size-10;
+      padding: @size-4 @size-16 @size-4 @size-10;
       position: relative;
       width: 100%;
 
       &::before {
         background-color: @color-positive;
         bottom: 0;
-        content: "";
+        content: '';
         display: block;
-        height: 20px;
+        height: @size-18;
         left: 0;
         position: absolute;
-        top: 50%;
+        top: 55%;
         transform: translate(-50%, -50%);
         width: 1px;
       }
@@ -66,18 +65,32 @@
         }
       }
 
-      > div:first-of-type {
-        background-color: @color-positive;
-        bottom: 1px;
-        cursor: pointer;
-        left: 0;
-        opacity: 0.1;
-        pointer-events: none;
-        position: absolute;
-        top: 1px;
+      > div:not(:first-of-type) {
+        z-index: @above-all-content;
+      }
 
-        &.Neg {
-          background-color: @color-negative;
+      > div:first-of-type {
+        max-width: @size-38;
+        width: @size-38;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        > div {
+          background-color: fade(@color-positive, 50%);
+          bottom: 0;
+          cursor: pointer;
+          left: 0;
+          pointer-events: none;
+          position: absolute;
+          top: 1px;
+          z-index: @default-z-index;
+
+          &.Neg {
+            background-color: fade(@color-negative, 50%);
+          }
         }
       }
     }
@@ -89,7 +102,7 @@
 
   align-items: center;
   align-self: center;
-  color: @color-neutral;
+  color: @color-inactive-text;
   display: flex;
   justify-content: center;
 }
@@ -100,17 +113,18 @@
 
 .AskHead {
   .Ask {
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
 
 .BidHead {
   .Bid {
-    color: @color-secondary-text;
+    color: @color-primary-text;
   }
 }
 
-.Ask, .Bid {
+.Ask,
+.Bid {
   &:nth-of-type(2) {
     justify-content: flex-start;
   }
@@ -121,13 +135,14 @@
 }
 
 .Ask {
-  .mono-11;
+  .mono-9;
 
-  color: @color-tertiary-text;
+  color: @color-primary-text;
   display: flex;
   flex: 1;
   justify-content: flex-end;
   overflow: hidden;
+  line-height: @size-11;
 
   &:nth-child(3) {
     color: @color-negative;
@@ -135,13 +150,14 @@
 }
 
 .Bid {
-  .mono-11;
+  .mono-9;
 
-  color: @color-tertiary-text;
+  color: @color-primary-text;
   display: flex;
   flex: 1;
   justify-content: flex-end;
   overflow: hidden;
+  line-height: @size-11;
 
   &:nth-child(3) {
     color: @color-positive;
@@ -149,16 +165,16 @@
 }
 
 .NoSize {
-  color: @color-alternate-text
+  color: @color-inactive-text;
 }
 
 .Midmarket {
-  .mono-10;
+  .mono-9-bold;
 
   background-color: fade(@color-primary-alternate, 70%);
-  color: @color-neutral;
+  color: @color-inactive-text;
   margin: 1px 0;
-  padding: @size-10 @size-12;
+  padding: @size-6 @size-12;
   text-transform: uppercase;
 
   > div {

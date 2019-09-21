@@ -4,7 +4,7 @@
   .mono-10;
 
   align-items: baseline;
-  color: @color-shadow-text;
+  color: @color-inactive-text;
   display: flex;
   flex-flow: column nowrap;
   line-height: @size-14;
@@ -13,7 +13,7 @@
   @media @breakpoint-mobile {
     .mono-9;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
   }
 
   > span:first-of-type {
@@ -23,7 +23,7 @@
   > span:last-of-type {
     .mono-12;
 
-    color: @color-secondary-text;
+    color: @color-primary-text;
     line-height: @size-16;
     text-align: left;
     width: 100%;
@@ -35,7 +35,7 @@
 
   &.FirstBreakpoint {
     > span:last-of-type {
-      color: @color-in-reporting;
+      color: @color-reporting;
     }
   }
 
@@ -47,7 +47,7 @@
 
   &.Finished {
     > span:last-of-type {
-      color: @color-alternate-text;
+      color: @color-inactive-text;
     }
   }
 
@@ -59,7 +59,7 @@
 }
 
 .TimeLabel {
-  color: @color-secondary-text;
+  color: @color-primary-text;
   display: flex;
   flex-flow: column nowrap;
   height: 2.875rem;
@@ -68,7 +68,7 @@
   > span:first-of-type {
     .mono-12;
 
-    color: @color-neutral;
+    color: @color-inactive-text;
     text-transform: capitalize;
   }
 
@@ -104,7 +104,7 @@
   }
 
   > span:last-of-type {
-    background: @color-shadow-text;
+    background: @color-inactive-text;
     height: 1px;
     position: relative;
     top: 0;
@@ -143,7 +143,7 @@
     > span > span {
       .mono-10;
 
-      color: @color-secondary-text;
+      color: @color-primary-text;
     }
 
     > span:last-of-type {
@@ -154,15 +154,15 @@
   > div.fade:last-of-type {
     > span:first-of-type {
       > span {
-        color: @color-shadow-text;
+        color: @color-inactive-text;
       }
     }
   }
 }
 
 .WindowProgress {
-  background: @color-secondary-action;
-  border: 1px solid @color-primary-light;
+  background: @color-module-background;
+  border: 1px solid @color-dark-grey;
   border-radius: @border-radius-default;
   height: 214px;
   padding: @size-24;
@@ -178,11 +178,11 @@
   }
 
   > span {
-    border: 1px solid @color-primary-light;
+    border: 1px solid @color-dark-grey;
     height: @size-12;
 
     > span:first-of-type {
-      background: @color-in-reporting;
+      background: @color-reporting;
       height: @size-10;
       position: relative;
       top: 0;
@@ -190,7 +190,7 @@
     }
   
     > span:last-of-type {
-      background: transparent;
+      background: @color-dark-grey;
       height: @size-10;
       position: relative;
       top: 0;
@@ -219,13 +219,13 @@
   > h4 {
     .mono-10;
 
-    color: @color-tertiary-info-text;
+    color: @color-secondary-text;
     text-align: center;
     margin: auto;
     text-transform: uppercase;
 
     &:first-of-type {
-      color: @color-alternate-info-text;
+      color: @color-primary-text;
       text-align: left;
 
       @media @breakpoint-max-desktop-min {
@@ -237,13 +237,13 @@
   > p {
     .mono-10;
 
-    color: @color-in-reporting;
+    color: @color-reporting;
     text-align: center;
 
     &:first-of-type {
       .text-12;
       
-      color: @color-tertiary-info-text;
+      color: @color-secondary-text;
       text-align: left;
     }
 
@@ -277,13 +277,13 @@
     > li {
       .mono-9;
 
-      color: @color-alternate-info-text;
+      color: @color-primary-text;
       text-align: center;
       width: fit-content;
 
       &:before {
         content: '';
-        border-left: 1px solid @color-primary-alternate;
+        border-left: 1px solid @color-dark-grey;
         height: @size-8;
         position: relative;
         bottom: @size-12;
@@ -313,7 +313,7 @@
           content: '';
           position: relative;
           height: @size-8;
-          border-right: 1px solid @color-primary-alternate;
+          border-right: 1px solid @color-dark-grey;
           bottom: 102%;
         }
       }
@@ -345,18 +345,18 @@
 .reported {
   .mono-10;
 
-  color: @color-shadow-text;
+  color: @color-inactive-text;
   text-transform: uppercase;
 }
 
 .open {
-  color: @color-shadow-text;
+  color: @color-inactive-text;
 }
 
 .reported {
   color: @color-primary-action;
 
   > div:first-of-type {
-    color: @color-shadow-text;
+    color: @color-inactive-text;
   }
 }

@@ -40,7 +40,6 @@ export const ZeroXOrdersParams = t.partial({
   orderType: t.string,
   account: t.string,
   orderState: t.string,
-  ignoreReportingStates: t.array(t.string),
   matchPrice: t.string,
   ignoreOrders: t.array(t.string),
 });
@@ -60,11 +59,14 @@ export class ZeroXOrdersGetters {
       throw new Error("'getOrders' requires 'marketId' param be provided");
     }
 
-    const outcome = params.outcome ? `0x000000000000000000000000000000000000000000000000000000000000000${params.outcome.toString()}` : undefined;
-    const orderType = params.orderType ? `0x000000000000000000000000000000000000000000000000000000000000000${params.orderType}` : undefined;
+    const market = augur.contracts.marketFromAddress(params.marketId);
+    const token = await market.getZeroXTradeToken_();
+
+    const outcome = params.outcome ? `0x0${params.outcome.toString()}` : undefined;
+    const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
     const request = {
       selector: {
-        market: params.marketId,
+        token,
         outcome,
         orderType,
       },
@@ -85,17 +87,12 @@ export class ZeroXOrdersGetters {
       });
     }
 
-    const marketIds = _.map(currentOrdersResponse, 'market');
-    const markets = await filterMarketsByReportingState(
-      marketIds,
-      db,
-      params.ignoreReportingStates,
-    );
+    const marketResults = await db.findMarkets({ selector: { market: params.marketId }});
+    if (marketResults.length < 1) return {};
+    const marketDoc = marketResults[0];
 
     return currentOrdersResponse.reduce(
       (orders: ZeroXOrders, order: StoredOrder) => {
-        const marketDoc = markets[order.market];
-        if (!marketDoc) return orders;
         const orderId = order["_id"];
         if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId)) return orders;
         const minPrice = new BigNumber(marketDoc.prices[0]);
@@ -115,16 +112,15 @@ export class ZeroXOrdersGetters {
           minPrice,
           tickSize
         ).toString(10);
-        const market = order.market;
         const outcome = new BigNumber(order.outcome).toNumber();
         const orderType = new BigNumber(order.orderType).toNumber();
         let orderState = OrderState.OPEN;
-        if (!orders[market]) orders[market] = {};
-        if (!orders[market][outcome]) orders[market][outcome] = {};
-        if (!orders[market][outcome][orderType]) {
-          orders[market][outcome][orderType] = {};
+        if (!orders[params.marketId]) orders[params.marketId] = {};
+        if (!orders[params.marketId][outcome]) orders[params.marketId][outcome] = {};
+        if (!orders[params.marketId][outcome][orderType]) {
+          orders[params.marketId][outcome][orderType] = {};
         }
-        orders[market][outcome][orderType][orderId] = {
+        orders[params.marketId][outcome][orderType][orderId] = {
           owner: order.signedOrder.makerAddress,
           orderState,
           orderId,

@@ -339,6 +339,7 @@ export interface TokenBalanceChangedLog extends Log, Doc {
   tokenType: TokenType;
   market: Address;
   balance: string;
+  outcome: string;
 }
 
 export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {

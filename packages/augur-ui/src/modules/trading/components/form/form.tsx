@@ -18,6 +18,7 @@ import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { Getters } from "@augurproject/sdk";
+import { CancelTextButton } from 'modules/common/buttons';
 
 interface FromProps {
   market: MarketData;
@@ -109,7 +110,7 @@ class Form extends Component<FromProps, FormState> {
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, nextProps);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, nextProps);
     this.updateTestProperty(this.INPUT_TYPES.EST_DAI, nextProps);
@@ -594,6 +595,7 @@ class Form extends Component<FromProps, FormState> {
               value: outcome.id,
             }))}
             large
+            showColor
           />
         </div>
         <ul>
@@ -722,7 +724,7 @@ class Form extends Component<FromProps, FormState> {
             {orderEscrowdEth && (
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
-                {` Max cost of ${orderEscrowdEth} DAI will be escrowed`}
+                <span>Max cost of <span>{orderEscrowdEth} DAI </span> will be escrowed</span>
               </label>
             )}
           </li>
@@ -746,12 +748,7 @@ class Form extends Component<FromProps, FormState> {
                 <label htmlFor="tr__input--do-no-create-orders">
                   Fill Orders Only
                 </label>
-                <button
-                  className={Styles.TradingForm__button__clear}
-                  onClick={() => this.clearOrderFormProperties()}
-                >
-                  Clear
-                </button>
+                <CancelTextButton text="clear" action={() => this.clearOrderFormProperties()} />
               </>
             }
           </li>

@@ -13,16 +13,18 @@ export const disputingMarkets = state => selectDisputingMarkets(state);
 const selectDisputingMarkets = createSelector(
   selectMarketInfosState,
   selectReportingListState,
-  (marketInfos, reportingList) => {
+  (marketInfos, reportingListState) => {
     return {
       [REPORTING_STATE.CROWDSOURCING_DISPUTE]:
-        (reportingList[REPORTING_STATE.CROWDSOURCING_DISPUTE] || []).map(id =>
-          selectMarket(id)
-        ) || [],
+        (
+          (reportingListState[REPORTING_STATE.CROWDSOURCING_DISPUTE] || {})
+            .marketIds || []
+        ).map(id => selectMarket(id)) || [],
       [REPORTING_STATE.AWAITING_NEXT_WINDOW]:
-        (reportingList[REPORTING_STATE.AWAITING_NEXT_WINDOW] || []).map(id =>
-          selectMarket(id)
-        ) || [],
+        (
+          (reportingListState[REPORTING_STATE.AWAITING_NEXT_WINDOW] || {})
+            .marketIds || []
+        ).map(id => selectMarket(id)) || [],
     };
   }
 );
@@ -36,5 +38,7 @@ export const selectReportingMarkets = createSelector(
   selectMarketInfosState,
   selectReportingStateMarketIds,
   (marketInfos, specificReportingList) =>
-    (specificReportingList || []).map(id => selectMarket(id) || [])
+    ((specificReportingList || {}).marketIds || []).map(
+      id => selectMarket(id) || []
+    )
 );

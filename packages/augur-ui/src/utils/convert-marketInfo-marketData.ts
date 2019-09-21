@@ -13,6 +13,7 @@ import {
 import { convertUnixToFormattedDate } from './format-date';
 import { formatPercent, formatDai, formatNone, formatNumber, formatAttoRep } from './format-number';
 import { createBigNumber } from './create-big-number';
+import { keyBy } from './key-by';
 
 export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.MarketInfo) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
@@ -98,18 +99,11 @@ function processOutcomes(market: Getters.Markets.MarketInfo): OutcomeFormatted[]
             positiveSign: false,
           })
         : formatNone(),
-        isTradable: isTradableOutcome(outcome, market.marketType),
         volumeFormatted: formatDai(outcome.volume, {
           positiveSign: false,
         }),
     }));
 };
-
-function isTradableOutcome(outcome: Getters.Markets.MarketInfoOutcome, marketType: string) {
-  if (marketType === CATEGORICAL) return true;
-  if (outcome.id === 1) return false; // Don't trade No and scalar's outcome 1 in the UI
-  return true;
-}
 
 function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null {
   if (market.consensus === null) return null;
@@ -127,9 +121,13 @@ function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null 
     );
     // for scalars, we will just use the winningOutcome for display
     const marketOutcome = market.outcomes.find(
-      outcome => outcome.id === Number(winningOutcome.outcome)
+      outcome => outcome.id === parseInt(winningOutcome, 10)
     );
     if (marketOutcome) outcomeName = marketOutcome.description;
   }
   return { payout: market.consensus, winningOutcome, outcomeName };
+}
+
+export const keyMarketInfoCollectionByMarketId = (marketInfos: Getters.Markets.MarketInfo[]) => {
+  return keyBy(marketInfos, 'id');
 }

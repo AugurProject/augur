@@ -16,7 +16,7 @@
   > span {
     .mono-10;
 
-    color: @color-primary-alternate-two;
+    color: @color-highlight;
     margin-right: 0.25rem;
     white-space: nowrap;
   }
@@ -26,14 +26,14 @@
     width: 1rem;
 
     > g {
-      fill: @color-primary-alternate-two;
+      fill: @color-highlight;
     }
   }
 
   > input {
     background: transparent;
     border: 0;
-    color: @color-tertiary-text;
+    color: @color-primary-text;
     display: none;
     line-height: 1rem;
     padding: 0;
@@ -43,7 +43,7 @@
     }
 
     &::placeholder {
-      color: @color-primary-alternate-two;
+      color: @color-highlight;
     }
   }
 
@@ -66,7 +66,7 @@
 }
 
 .isFocused {
-  background: @color-secondary-action;
+  background: @color-dark-grey;
   transition: background 0.25s ease-in;
   width: 100%;
   margin-left: @size-24;
@@ -91,7 +91,7 @@
       height: @size-10;
 
       > path {
-        stroke: @color-highlight-fade;
+        stroke: @color-inactive-text;
       }
     }
   }
@@ -106,7 +106,7 @@
       > div {
         .mono-12;
 
-        color: @color-primary-alternate-two;
+        color: @color-highlight;
         display: flex;
         margin-right: 0.5rem;
       }

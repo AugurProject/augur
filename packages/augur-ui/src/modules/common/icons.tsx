@@ -99,39 +99,6 @@ export const FilledCheckbox = (
   </svg>
 );
 
-export const CollapseIcon = (
-  <svg viewBox="0 0 20 30" fill="none">
-    <rect x="1" y="1" width="18" height="28" rx="1" strokeLinecap="round" />
-    <path d="M13 9L10 6L7 9" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M10 6.5L10 13.5" strokeLinecap="round" />
-    <path d="M13 21L10 24L7 21" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M10 23.5L10 16.5" strokeLinecap="round" />
-  </svg>
-);
-
-export const ExpandIcon = (
-  <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
-    <g opacity="0.87">
-      <rect x="1" y="12" width="18" height="4" rx="1" strokeLinecap="round" />
-      <path d="M13 6L10 9L7 6" strokeLinecap="round" strokeLinejoin="round" />
-      <line
-        x1="0.5"
-        y1="-0.5"
-        x2="7.5"
-        y2="-0.5"
-        transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 9.5 8)"
-        strokeLinecap="round"
-      />
-      <path
-        d="M13 22L10 19L7 22"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <line x1="10" y1="20.5" x2="10" y2="27.5" strokeLinecap="round" />
-    </g>
-  </svg>
-);
-
 export const ViewIcon = (
   <svg viewBox="0 0 10 10">
     <path d="M8.75 8.75V9.25H9.25V8.75H8.75ZM1.25 8.75H0.75V9.25H1.25V8.75ZM1.25 1.25V0.75H0.75V1.25H1.25ZM8.75 1.25H9.25V0.75H8.75V1.25ZM8.25 5C8.25 5.27614 8.47386 5.5 8.75 5.5C9.02614 5.5 9.25 5.27614 9.25 5H8.25ZM5 0.75C4.72386 0.75 4.5 0.973858 4.5 1.25C4.5 1.52614 4.72386 1.75 5 1.75V0.75ZM9.25 7.1875C9.25 6.91136 9.02614 6.6875 8.75 6.6875C8.47386 6.6875 8.25 6.91136 8.25 7.1875H9.25ZM2.8125 1.75C3.08864 1.75 3.3125 1.52614 3.3125 1.25C3.3125 0.973858 3.08864 0.75 2.8125 0.75V1.75ZM8.75 8.25H1.25V9.25H8.75V8.25ZM1.75 8.75V1.25H0.75V8.75H1.75ZM8.25 1.25V5H9.25V1.25H8.25ZM5 1.75H8.75V0.75H5V1.75ZM8.25 7.1875V8.75H9.25V7.1875H8.25ZM1.25 1.75H2.8125V0.75H1.25V1.75Z" />
@@ -531,18 +498,6 @@ export const nextIcon = (
         </g>
       </g>
     </g>
-  </svg>
-);
-// PaginationArrow: is for the legacy arrow for pagination, need to refactor out old paginaton.
-export const PaginationArrow = (
-  <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
-    <path
-      d="M5 9L1 5L5 1"
-      strokeWidth="2"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
   </svg>
 );
 
@@ -1097,46 +1052,6 @@ export const ChevronDown = p => (
 export const ThickChevron = (
   <svg viewBox="0 0 10 6" fill="none">
     <path d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L5 3.58579L8.29289 0.292893C8.68342 -0.0976311 9.31658 -0.0976311 9.70711 0.292893C10.0976 0.683417 10.0976 1.31658 9.70711 1.70711L5.70711 5.70711C5.31658 6.09763 4.68342 6.09763 4.29289 5.70711L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z"/>
-  </svg>
-);
-// TODO: Chevron Left and Right are only used in create-market-form-time -- refactor.
-export const ChevronLeft = (
-  <svg viewBox="0 0 16 16">
-    <g
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <g stroke="#231A3A">
-        <polyline
-          transform="translate(11.156854, 7.863961) rotate(-135.000000) translate(-11.156854, -7.863961) "
-          points="6.65685425 3.36396103 15.6568542 3.36396103 15.6568542 12.363961"
-        />
-      </g>
-    </g>
-  </svg>
-);
-
-export const ChevronRight = (
-  <svg viewBox="0 0 9 14">
-    <g
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      opacity=".54"
-      strokeLinejoin="round"
-    >
-      <g stroke="#231A3A">
-        <g>
-          <g>
-            <path d="M1.16 13.228l6.363-6.364L1.16.5" />
-          </g>
-        </g>
-      </g>
-    </g>
   </svg>
 );
 

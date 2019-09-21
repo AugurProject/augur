@@ -33,6 +33,8 @@ import {
   formatAttoRep,
 } from 'utils/format-number';
 import store from 'store';
+import { MarketClaimablePositions } from 'modules/types';
+import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -225,27 +227,8 @@ export const selectNotifications = createSelector(
       });
     }
 
-    const { accountPositions } = store.getState();
-    const claimableMarketInfo = Object.keys(accountPositions).reduce((claimableMarketInfo, marketId) => {
-      if (
-        accountPositions[marketId] &&
-        createBigNumber(
-          accountPositions[marketId].tradingPositionsPerMarket
-            .totalUnclaimedProceeds
-        ).gt(0)
-      ) {
-        claimableMarketInfo.totalDai = claimableMarketInfo.totalDai.plus(
-          createBigNumber(
-            accountPositions[marketId].tradingPositionsPerMarket
-              .totalUnclaimedProceeds
-          )
-        );
-        claimableMarketInfo.marketIds.push(marketId);
-      }
-      return claimableMarketInfo;
-    }, {marketIds: [], totalDai: ZERO});
-
-    if (createBigNumber(claimableMarketInfo.totalDai).gt(ZERO) && claimableMarketInfo.marketIds.length > 0) {
+    const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(store.getState());
+    if (accountMarketClaimablePositions.markets.length > 0) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.proceedsToClaim,
         isImportant: false,
@@ -253,8 +236,8 @@ export const selectNotifications = createSelector(
         title: PROCEEDS_TO_CLAIM_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
-        markets: claimableMarketInfo.marketIds,
-        totalProceeds: claimableMarketInfo.totalDai.toString(),
+        markets: accountMarketClaimablePositions.markets,
+        totalProceeds: accountMarketClaimablePositions.totals.totalUnclaimedProceeds.toString(),
         id: NOTIFICATION_TYPES.proceedsToClaim,
       });
     }
