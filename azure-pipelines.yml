@@ -159,9 +159,9 @@ jobs:
           python -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
         displayName: Python3 requirements
       - bash: |
-          set -euo pipefail
+          set -exuo pipefail
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
-          curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
+          sudo curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
           md5sum -b -c solc.md5 && \
           chmod a+x /usr/local/bin/solc
         displayName: install solc
