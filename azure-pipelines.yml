@@ -163,7 +163,7 @@ jobs:
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
           sudo curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
           md5sum -c solc.md5 && \
-          chmod a+x /usr/local/bin/solc
+          sudo chmod a+x /usr/local/bin/solc
         displayName: install solc
       - bash: |
           set -euo pipefail
