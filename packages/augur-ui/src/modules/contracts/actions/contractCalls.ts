@@ -33,6 +33,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
 } from 'modules/common/constants';
+import { ContractInterfaces } from '@augurproject/core';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
@@ -231,17 +232,7 @@ export async function buyParticipationTokensEstimateGas(
   disputeWindow: string,
   amount: string
 ) {
-  const { contracts } = augurSdk.get();
-  const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
-
   // TODO: get gas estimation for buying participation tokens
-  // when new participation token contract is available
-
-  const gas = await contracts.buyParticipationTokens_estimateGas(
-    universeId,
-    attoAmount
-  );
-
   return '100000000';
 }
 
@@ -621,17 +612,24 @@ export async function simulateTradeGasLimit(
   return Augur.simulateTradeGasLimit(params);
 }
 
-export async function claimMarketsProceedsGasLimit() {}
-
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
   affiliateAddress: string = NULL_ADDRESS
 ) {
   const augur = augurSdk.get();
-  augur.contracts.claimTradingProceeds.claimMarketsProceeds(
-    markets,
-    shareHolder,
-    affiliateAddress
-  );
+
+  if (markets.length > 1) {
+    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+      markets,
+      shareHolder,
+      affiliateAddress
+    );
+  } else {
+    augur.contracts.claimTradingProceeds.claimTradingProceeds(
+      markets[0],
+      shareHolder,
+      affiliateAddress
+    );
+  }
 }
