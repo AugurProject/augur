@@ -290,7 +290,7 @@ jobs:
           else
             yarn workspace @augurproject/core test:unit $(TESTS)
           fi
-        displayName: integration: $(TESTS)
+        displayName: integration tests
 
 # - job: Docker_populated_geth_images
 #   dependsOn:
