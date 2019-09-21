@@ -136,7 +136,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
       {
         label: 'Estimated Gas',
-        value: totalGas.full,
+        value: totalGas,
       },
     ],
     closeAction: () => {
