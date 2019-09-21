@@ -100,7 +100,7 @@ jobs:
 #         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
 #         vstsFeed: npmPackages
 #     - script: |
-#         yarn install
+#         yarn install --frozen-lockfile
 #       displayName: Install Dependencies
 #     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
 #       inputs:
