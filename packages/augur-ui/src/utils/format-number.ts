@@ -213,7 +213,7 @@ export function sumAndformatGasCostToEther(gases: NumStrBigNumber[], opts: Forma
     createBigNumber(gasPrice),
   );
 
-  return formatGasCost(estimatedGasCost, opts).value;
+  return formatGasCost(estimatedGasCost, opts).formatted;
 }
 
 export function formatGasCostToEther(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank(), gasPrice: NumStrBigNumber): string {
@@ -259,8 +259,8 @@ export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions
 
 export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
-    decimals: 0,
-    decimalsRounded: 0,
+    decimals: 4,
+    decimalsRounded: 4,
     denomination: " GWEI",
     positiveSign: false,
     zeroStyled: false,

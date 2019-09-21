@@ -613,19 +613,21 @@ export async function simulateTradeGasLimit(
   return Augur.simulateTradeGasLimit(params);
 }
 
-export async function claimMarketsProceedsEstimateGas(
+export function claimMarketsProceedsEstimateGas(
   markets: string[],
   shareHolder: string,
   affiliateAddress: string = NULL_ADDRESS,
-): Promise<BigNumber> {
+): BigNumber {
   const augur = augurSdk.get();
   let gas = CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE
   try {
+    /* TOOD: this call is failing, need to investigate
     gas = await augur.contracts.claimTradingProceeds.claimMarketsProceeds_estimateGas(
       markets,
       shareHolder,
       affiliateAddress
     );
+    */
   } catch (e) {
     console.log("couldn't get gas estimate", e)
   }

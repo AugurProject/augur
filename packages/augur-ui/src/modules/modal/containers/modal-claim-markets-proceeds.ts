@@ -36,6 +36,7 @@ const mapStateToProps = (state: AppState) => {
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
+  let totalGas = ZERO;
   let claimableMarkets = [];
   if (
     accountMarketClaimablePositions.markets &&
@@ -49,6 +50,17 @@ const mapStateToProps = (state: AppState) => {
         const pending =
           pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
           pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
+
+        const claimGas = claimMarketsProceedsEstimateGas(
+          [marketId],
+          accountAddreess
+        );
+        totalGas = totalGas.plus(createBigNumber(claimGas));
+        const gasCost = formatGasCostToEther(
+          claimGas,
+          { decimals: 4 },
+          gasPrice
+        );
         return {
           marketId,
           title: market.description,
@@ -62,6 +74,10 @@ const mapStateToProps = (state: AppState) => {
               label: 'Profit',
               value: claimablePosition.unclaimedProfitFormatted.formatted,
             },
+            {
+              label: 'Transaction Cost',
+              value: gasCost,
+            },
           ],
           text: 'Claim Proceeds',
           action: null,
@@ -69,11 +85,14 @@ const mapStateToProps = (state: AppState) => {
       }
     );
   }
-
+  const totalGasCost = formatGasCostToEther(
+    totalGas,
+    { decimals: 4 },
+    gasPrice
+  );
   return {
-    accountAddreess,
-    gasPrice,
     modal: state.modal,
+    totalGasCost,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     claimableMarkets,
     totalUnclaimedProfit:
@@ -92,35 +111,12 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const { claimableMarkets: markets, accountAddreess, gasPrice } = sP;
-  let totalGas = ZERO;
-  const claimableMarkets = markets.map(async m => {
-    const claimGas = await claimMarketsProceedsEstimateGas(
-      [m.marketId],
-      accountAddreess
-    );
-    totalGas = totalGas.plus(createBigNumber(claimGas));
-    const gasCost = formatGasCostToEther(
-      claimGas,
-      { decimalsRounded: 4 },
-      gasPrice
-    );
-
-    return {
-      ...m,
-      properties: [
-        ...m.properties,
-        { label: 'Transaction Fee', value: gasCost },
-      ],
-      action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
-    };
-  });
-
-  const totalGasCost = formatGasCostToEther(
-    totalGas,
-    { decimalsRounded: 4 },
-    gasPrice
-  );
+  const markets = sP.claimableMarkets;
+  if (!markets) return { buttons: [] };
+  const claimableMarkets = markets.map(m => ({
+    ...m,
+    action: () => dP.startClaimingMarketsProceeds([m.marketId], () => {}),
+  }));
 
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
@@ -151,7 +147,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
       {
         label: 'Transaction Fee',
-        value: totalGasCost,
+        value: sP.totalGasCost,
       },
     ],
     closeAction: () => {
