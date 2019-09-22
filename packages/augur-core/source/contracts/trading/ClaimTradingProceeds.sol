@@ -100,7 +100,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
     }
 
     function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private {
-        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens), _fees);
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _fees);
     }
 
     function divideUpWinnings(IMarket _market, uint256 _outcome, uint256 _numberOfShares) public returns (uint256 _proceeds, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) {

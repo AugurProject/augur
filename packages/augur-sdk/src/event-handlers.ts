@@ -270,7 +270,6 @@ export interface TradingProceedsClaimed extends FormattedEventLog {
   outcome: string;
   numShares: string;
   numPayoutTokens: string;
-  finalTokenBalance: string;
   fees: string;
   timestamp: string;
 }

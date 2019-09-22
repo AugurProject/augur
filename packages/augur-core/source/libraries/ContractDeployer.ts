@@ -20,7 +20,7 @@ import {
     Cash,
     ProfitLoss,
     SimulateTrade,
-    ZeroXTrade
+    ZeroXTrade,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -166,6 +166,8 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.contracts.get('Cash').address!;
+        mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
+        mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
