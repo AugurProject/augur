@@ -229,22 +229,48 @@ export async function getCreateMarketBreakdown() {
 
 export async function buyParticipationTokensEstimateGas(
   universeId: string,
-  disputeWindow: string,
   amount: string
 ) {
-  // TODO: get gas estimation for buying participation tokens
-  return '100000000';
+  const { contracts } = augurSdk.get();
+  const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
+  return contracts.buyParticipationTokens.buyParticipationTokens_estimateGas(
+    universeId,
+    attoAmount
+  );
 }
 
 export async function buyParticipationTokens(
   universeId: string,
-  disputeWindow: string,
   amount: string
 ) {
   const { contracts } = augurSdk.get();
-  // TODO: call new method on universe contract when it becomes available.
   const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
-  return contracts.disputeWindowFromAddress(disputeWindow).buy(attoAmount);
+  return contracts.buyParticipationTokens.buyParticipationTokens(
+    universeId,
+    attoAmount
+  );
+}
+
+export async function redeemUserStakesEstimateGas(
+  reportingParticipantsContracts: string[],
+  disputeWindows: string[]
+) {
+  const { contracts } = augurSdk.get();
+  return contracts.redeemStake.redeemStake_estimateGas(
+    reportingParticipantsContracts,
+    disputeWindows
+  );
+}
+
+export async function redeemUserStakes(
+  reportingParticipantsContracts: string[],
+  disputeWindows: string[]
+) {
+  const { contracts } = augurSdk.get();
+  return contracts.redeemStake.redeemStake(
+    reportingParticipantsContracts,
+    disputeWindows
+  );
 }
 
 export interface doReportDisputeAddStake {
