@@ -940,7 +940,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
 
     if (scalar) {
       stake = {
-        outcome: null,
+        outcome: scalarOutcome,
         stakeCurrent: '0',
         bondSizeCurrent: '1',
         stakeRemaining: '1',
