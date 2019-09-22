@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WorkerPlugin = require('worker-plugin');
 
 const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -15,13 +16,6 @@ const PATHS = {
 
 // COMMON CONFIG
 const rules = [
-  {
-    test: /\.worker\.[jt]s$/,
-    use: [
-      "worker-loader",
-      "babel-loader"
-    ]
-  },
   {
     test: /npm-cli|node-hid/,
     loader: "null-loader"
@@ -123,6 +117,7 @@ module.exports = {
     rules: rules
   },
   plugins: [
+    new WorkerPlugin(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
