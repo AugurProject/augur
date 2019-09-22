@@ -126,10 +126,6 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(PATHS.APP, "splash.css"),
-        to: path.resolve(PATHS.BUILD, "assets/styles")
-      },
-      {
         from: path.resolve(PATHS.APP, "config/manifest.json"),
         to: path.resolve(PATHS.BUILD, "config")
       },
