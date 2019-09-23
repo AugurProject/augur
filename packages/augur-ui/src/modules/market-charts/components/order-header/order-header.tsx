@@ -1,8 +1,7 @@
 import React from "react";
-import { TwoArrowsOutline } from "modules/common/icons";
 
-import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
 import Styles from "modules/market-charts/components/order-header/order-header.styles.less";
+import { ToggleExtendButton } from "modules/common/buttons";
 
 interface OrderHeaderProps {
   title: string;
@@ -20,13 +19,10 @@ const OrderHeader = ({
   hide
 }: OrderHeaderProps) => (
   <section className={Styles.OrderHeader}>
-    <button
-      className={StylesHeader.Heading}
-      onClick={toggle}
-    >
+    <span>
       {title}
-      {toggle && <span>{TwoArrowsOutline}</span>}
-    </button>
+      <ToggleExtendButton toggle={toggle} />
+    </span>
     {!hide && (
       <div>
         <div>

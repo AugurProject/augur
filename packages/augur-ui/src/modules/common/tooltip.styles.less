@@ -3,7 +3,7 @@
 div.Tooltip {
   .text-10;
 
-  background-color: @color-primary-alternate;
+  background-color: @color-primary-text;
   border: 1px solid transparent;
   border-radius: @border-radius-default;
   box-shadow: 0 -2px @size-4 0 rgba(0, 0, 0, 0.5);
@@ -41,8 +41,8 @@ div.Tooltip {
     max-width: @size-16;
 
     > circle {
-      fill: @color-tertiary-one;
-      stroke: @color-primary-alternate;
+      fill: @color-secondary-action;
+      stroke: @color-secondary-action-outline;
     }
 
     > path {
@@ -64,7 +64,7 @@ div.Tooltip {
       margin-bottom: -@size-14;
 
       &::after {
-        border-top: @size-8 solid @color-primary-alternate;
+        border-top: @size-8 solid @color-secondary-action-outline;
         bottom: -@size-8;
       }
 
@@ -78,7 +78,7 @@ div.Tooltip {
         border: 0 solid transparent;
         border-left: 0 solid transparent;
         border-right: 0 solid transparent;
-        border-top-color: @color-primary-light;
+        border-top-color: @color-secondary-action-outline;
         bottom: -@size-22;
         content: '';
         display: block;
@@ -96,7 +96,7 @@ div.Tooltip {
       margin-top: -@size-14;
 
       &::after {
-        border-bottom-color: @color-primary-alternate;
+        border-bottom-color: @color-secondary-action-outline;
         top: -@size-8;
       }
 
@@ -108,7 +108,7 @@ div.Tooltip {
 
       &::before {
         border: 0 solid transparent;
-        border-bottom-color: @color-primary-light;
+        border-bottom-color: @color-secondary-action-outline;
         border-left: 0 solid transparent;
         border-right: 0 solid transparent;
         bottom: 100%;
@@ -128,7 +128,7 @@ div.Tooltip {
       margin-top: -@size-8;
 
       &::after {
-        border-left-color: @color-primary-alternate;
+        border-left-color: @color-secondary-action-outline;
         right: -@size-8;
       }
 
@@ -141,7 +141,7 @@ div.Tooltip {
       &::before {
         border: 0 solid transparent;
         border-bottom: 0 solid transparent;
-        border-left-color: @color-primary-light;
+        border-left-color: @color-secondary-action-outline;
         border-top: 0 solid transparent;
         bottom: unset;
         content: '';
@@ -160,7 +160,7 @@ div.Tooltip {
       margin-top: -@size-8;
 
       &::after {
-        border-right-color: @color-primary-alternate;
+        border-right-color: @color-secondary-action-outline;
         left: -@size-8;
       }
 
@@ -173,7 +173,7 @@ div.Tooltip {
       &::before {
         border: 0 solid transparent;
         border-bottom: 0 solid transparent;
-        border-right-color: @color-primary-light;
+        border-right-color: @color-secondary-action-outline;
         border-top: 0 solid transparent;
         bottom: unset;
         content: '';
