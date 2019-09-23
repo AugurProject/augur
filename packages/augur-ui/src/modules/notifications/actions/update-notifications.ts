@@ -4,12 +4,12 @@ export const UPDATE_READ_NOTIFICATIONS = 'UPDATE_READ_NOTIFICATIONS';
 
 export interface UpdateReadNotificationsAction {
   type: typeof UPDATE_READ_NOTIFICATIONS;
-  data: { notification: Notification };
+  data: { notifications: Notification[] };
 }
 
 export const updateReadNotifications = (
-  notification: Notification
+  notifications: Notification[]
 ): UpdateReadNotificationsAction => ({
   type: UPDATE_READ_NOTIFICATIONS,
-  data: { notification },
+  data: { notifications },
 });
