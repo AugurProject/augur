@@ -159,7 +159,6 @@ export const loadNextWindowDisputingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.AwaitingNextWindow],
     ...filterOptions,
   };
