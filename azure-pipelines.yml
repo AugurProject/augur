@@ -290,6 +290,7 @@ jobs:
           vstsFeed: npmPackages
       - script: |
           yarn install --frozen-lockfile
+          yarn build
         displayName: Install Dependencies
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
         inputs:
