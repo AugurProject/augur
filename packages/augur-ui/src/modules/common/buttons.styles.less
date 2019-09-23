@@ -92,9 +92,12 @@
 }
 
 .ToggleExtendButton {    
+  display: flex;
+  margin-left: 4px;
+
   > svg {
     width: @size-12;
-    height: @size-16;
+    height: @size-15;
 
     > path {
       fill: @color-secondary-text;
@@ -104,11 +107,9 @@
   &:hover {
     cursor: pointer;
 
-    > span {
-      > svg {
-        > path {
-          fill: @color-secondary-text;
-        }
+    > svg {
+      > path {
+        fill: @color-primary-text;
       }
     }
   }

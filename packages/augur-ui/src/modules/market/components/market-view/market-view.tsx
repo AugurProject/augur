@@ -63,6 +63,9 @@ interface DefaultOrderPropertiesMap {
   [outcomeId: number]: DefaultOrderProperties;
 }
 interface MarketViewState {
+  extendOutcomesList: boolean;
+  extendCharts: boolean;
+  extendOrders: boolean;
   extendOrderBook: boolean;
   extendTradeHistory: boolean;
   selectedOrderProperties: DefaultOrderProperties;
@@ -93,6 +96,9 @@ export default class MarketView extends Component<
     this.state = {
       extendOrderBook: false,
       extendTradeHistory: false,
+      extendOutcomesList: false,
+      extendCharts: false,
+      extendOrders: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
       selectedOutcomeId: props.market
         ? props.market.defaultSelectedOutcomeId
@@ -116,6 +122,7 @@ export default class MarketView extends Component<
       this
     );
     this.showMarketDisclaimer = this.showMarketDisclaimer.bind(this);
+    this.toggleMiddleColumn = this.toggleMiddleColumn.bind(this);
   }
 
   UNSAFE_componentWillMount() {
@@ -245,6 +252,18 @@ export default class MarketView extends Component<
     });
   }
 
+  toggleMiddleColumn(show: string, hide1: string, hide2: string) {
+    if (!this.state[show] && (this.state[hide1] || this.state[hide2])) {
+      this.setState({ [show]: false, [hide1]: false, [hide2]: false });
+    } else {
+      this.setState({
+        [show]: !this.state[show],
+        [hide1]: false,
+        [hide2]: false,
+      });
+    }
+  }
+
   render() {
     const {
       isMarketLoading,
@@ -262,6 +281,9 @@ export default class MarketView extends Component<
       extendOrderBook,
       extendTradeHistory,
       selectedOrderProperties,
+      extendOutcomesList,
+      extendCharts,
+      extendOrders
     } = this.state;
     if (isMarketLoading) {
       return (
@@ -485,34 +507,35 @@ export default class MarketView extends Component<
                         </div>
                       </div>
                       <div className={Styles.MarketView__innerSecondColumn}>
-                        <div
-                          className={Styles.MarketView__component}
-                        >
+                      <div className={classNames(Styles.MarketView__component, {[Styles.Hide]: extendCharts || extendOrders} )}>
                           <MarketOutcomesList
                             marketId={marketId}
+                            toggle={() => this.toggleMiddleColumn('extendOutcomesList', 'extendCharts', 'extendOrders')}
                             market={market}
                             preview={preview}
                             selectedOutcomeId={outcomeId}
                             updateSelectedOutcome={this.updateSelectedOutcome}
                           />
                         </div>
-                        <div className={Styles.MarketView__component}>
+                        <div className={classNames(Styles.MarketView__component, {[Styles.Hide]: extendOutcomesList || extendOrders} )}>
                           <MarketChartsPane
                             marketId={marketId}
                             selectedOutcomeId={outcomeId}
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
+                            toggle={() => this.toggleMiddleColumn('extendCharts', 'extendOutcomesList', 'extendOrders')}
                             market={preview && market}
                             preview={preview}
                           />
                         </div>
-                        <div className={classNames(Styles.MarketView__component)}>
+                        <div className={classNames(Styles.MarketView__component, {[Styles.Hide]: extendOutcomesList || extendCharts} )}>
                           <MarketOrdersPositionsTable
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
                             marketId={marketId}
+                            toggle={() => this.toggleMiddleColumn('extendOrders', 'extendOutcomesList', 'extendCharts')}
                             market={preview && market}
                             preview={preview}
                           />

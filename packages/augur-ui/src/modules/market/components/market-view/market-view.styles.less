@@ -119,7 +119,7 @@
     margin-bottom: @size-4;
   }
 
-  > div::nth-of-type(2) {
+  > div:nth-of-type(2) {
     margin-bottom: @size-4;
   }
 }
@@ -199,6 +199,11 @@
   flex-grow: 1;
   justify-content: center;
   margin: 0rem 22.5625rem;
+}
+
+.Hide {
+  max-height: @size-32;
+  overflow-y: hidden;
 }
 
 div.OutcomeNameDisplay {
