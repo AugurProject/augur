@@ -1,6 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
-.OutcomesList {}
+.OutcomesList {
+  
+}
 
 .Heading {
   .mono-11-bold;
@@ -14,6 +16,7 @@
   min-height: @size-32;
   padding: @size-8 @size-12 @size-8 @size-16;
   width: 100%;
+  text-transform: uppercase;
 
   > span {
     display: flex;
@@ -25,6 +28,8 @@
     background: @color-theme-primary;
     border-radius: @border-radius-default;
     color: @color-primary-text;
+    border-left: 1px solid @color-dark-grey;  
+    border-right: 1px solid @color-dark-grey;  
   }
 
   .Heading {
