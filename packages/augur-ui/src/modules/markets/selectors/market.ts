@@ -3,6 +3,7 @@ import {
   YES_NO,
   SCALAR,
   INVALID_OUTCOME_ID,
+  SCALAR_DOWN_ID,
 } from 'modules/common/constants';
 import store, { AppState } from 'store';
 import { selectMarketInfosState } from 'store/select-state';
@@ -68,8 +69,7 @@ export const selectSortedDisputingOutcomes = (
     return selectSortedMarketOutcomes(marketType, outcomes);
 
   const sortedStakes = sortStakes(stakes);
-  if (marketType === SCALAR)
-    buildScalarDisputingOutcomes(outcomes, sortedStakes);
+  if (marketType === SCALAR) return buildScalarDisputingOutcomes(outcomes, sortedStakes);
   return buildYesNoCategoricalDisputingOutcomes(outcomes, sortedStakes);
 };
 
@@ -92,7 +92,7 @@ const buildScalarDisputingOutcomes = (
 ) => {
   // always add invalid
   const invalidOutcome = outcomes[INVALID_OUTCOME_ID];
-  const denom = invalidOutcome.description;
+  const denom = outcomes[SCALAR_DOWN_ID].description; // get denomination
 
   if (sortedStakes.length === 0) return [invalidOutcome];
 
