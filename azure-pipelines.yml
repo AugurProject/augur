@@ -289,9 +289,6 @@ jobs:
           source venv/bin/activate && \
           python3 -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
           python3 -m pip install pytest
-        displayName: Python3 requirements
-      - bash: |
-          set -euo pipefail
           echo "tests: $(TESTS)"
           if [[ "$(TESTS)" == "integration:geth" ]]; then
             docker run -p 47624:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:latest
