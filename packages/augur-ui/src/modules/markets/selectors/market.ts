@@ -1,4 +1,4 @@
-import { formatDai, formatNumber } from 'utils/format-number';
+import { formatDai, formatNumber, formatAttoDai } from 'utils/format-number';
 import {
   YES_NO,
   SCALAR,
@@ -102,9 +102,9 @@ const buildScalarDisputingOutcomes = (
     s.isInvalidOutcome
       ? invalidOutcome
       : ({
-          // only need id and description properties for disputing card but using OutcomeFormatted in components
+          // description is displayed as outcome in dispute form
           id: Number(s.outcome),
-          description: denom,
+          description: `${formatAttoDai(s.outcome).formatted} ${denom}`,
           marketId,
           lastPricePercent: null,
           lastPrice: null,
