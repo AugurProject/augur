@@ -10,6 +10,7 @@ import {
   formatAttoEth,
   formatEther,
   formatRep,
+  formatAttoDai,
 } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { Proceeds } from "modules/modal/proceeds";
@@ -49,19 +50,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const markets: Array<ActionRowsProps> = [];
   const claimableMarkets: any = [];
   let unclaimedRep = createBigNumber(
-    sP.reportingFees.unclaimedRep.fullPrecision,
+    sP.modal.unclaimedRep.fullPrecision,
   );
-  let unclaimedEth = createBigNumber(
-    sP.reportingFees.unclaimedEth.fullPrecision,
+  let unclaimedDai = createBigNumber(
+    sP.modal.unclaimedDai.fullPrecision,
   );
   marketIdsToTest.forEach((marketObj) => {
     const market = selectMarket(marketObj.marketId);
-    const ethFees = formatAttoEth(marketObj.unclaimedEthFees, {
-      decimals: 4,
-      decimalsRounded: 4,
-      zeroStyled: false,
-    });
-    const total = createBigNumber(ethFees.fullPrecision);
+    const daiFees = formatAttoDai(marketObj.unclaimedDaiFees);
+    const total = createBigNumber(daiFees.fullPrecision);
 
     if (market) {
       const marketRep = formatAttoRep(marketObj.unclaimedRepTotal, {
@@ -79,8 +76,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         unclaimedRep = unclaimedRep.minus(
           createBigNumber(marketRep.fullPrecision)
         );
-        unclaimedEth = unclaimedEth.minus(
-          createBigNumber(ethFees.fullPrecision)
+        unclaimedDai = unclaimedDai.minus(
+          createBigNumber(daiFees.fullPrecision)
         );
       }
 
@@ -96,7 +93,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: "Reporting Fees",
-            value: `${ethFees.formatted || 0} DAI`
+            value: `${daiFees.formatted || 0} DAI`
           },
           {
             label: "est gas cost",
@@ -129,7 +126,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   let feeWindowsPending = false;
   if (sP.disputeWindows.length > 0) {
     const totalMinusGas = createBigNumber(
-      sP.reportingFees.unclaimedParticipationTokenEthFees.fullPrecision
+      sP.reportingFees.unclaimedParticipationTokenDaiFees.fullPrecision
     )
       .minus(createBigNumber(sP.reportingFees.gasCosts[CLAIM_FEE_WINDOWS]))
       .abs();
@@ -144,9 +141,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           sP.reportingFees.participationTokenRepStaked.fullPrecision
         )
       );
-      unclaimedEth = unclaimedEth.minus(
+      unclaimedDai = unclaimedDai.minus(
         createBigNumber(
-          sP.reportingFees.unclaimedParticipationTokenEthFees.fullPrecision
+          sP.reportingFees.unclaimedParticipationTokenDaiFees.fullPrecision
         )
       );
     }
@@ -166,7 +163,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         {
           label: "Reporting Fees",
           value: `${
-            sP.reportingFees.unclaimedParticipationTokenEthFees.formatted
+            sP.reportingFees.unclaimedParticipationTokenDaiFees.formatted
           } ETH`
         },
         {
@@ -200,7 +197,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: "Total Fees",
-            value: `${formatEther(unclaimedEth.toNumber()).full}`
+            value: `${formatEther(unclaimedDai.toNumber()).full}`
           },
           {
             label: "Total Gas Cost (ETH)",
@@ -219,7 +216,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
       {
         preText: " and",
-        boldText: `${sP.reportingFees.unclaimedEth.full} ETH`,
+        boldText: `${sP.reportingFees.unclaimedDai.full} ETH`,
         postText: "of reporting fees to collect from the following markets:"
       }
     ],
