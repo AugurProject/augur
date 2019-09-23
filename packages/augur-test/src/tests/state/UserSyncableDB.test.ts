@@ -142,6 +142,5 @@ test('props', async () => {
       [0]
     );
   }
-
-  expect(createDB).toThrowError('invalid address (arg="address", value="artistotle", version=4.0.24)');
+  expect(createDB).toThrowError(/^invalid address/);
 });

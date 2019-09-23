@@ -34,7 +34,7 @@ test('database failure during trackedUsers.getUsers() call', async () => {
   } catch (e) {
     err = e;
   }
-  await expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
+  await expect(err.message).toMatch(/^invalid address/);
   mock.failNext();
     await expect(trackedUsers.getUsers()).rejects.toThrow();
 }, 60000);
