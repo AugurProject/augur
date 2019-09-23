@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderBook {
-  background-color: @color-tertiary-background;
+  background-color: @color-module-background;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -58,7 +58,7 @@
       }
 
       &.Hover {
-        background-color: @color-theme-primary;
+        background-color: @color-primary-action;
 
         &::before {
           width: @size-6;
@@ -108,7 +108,7 @@
 }
 
 .EncompassedHover {
-  background-color: @color-theme-primary;
+  background-color: @color-primary-action;
 }
 
 .AskHead {
@@ -171,7 +171,7 @@
 .Midmarket {
   .mono-9-bold;
 
-  background-color: fade(@color-primary-alternate, 70%);
+  background-color: fade(@color-dark-grey, 70%);
   color: @color-inactive-text;
   margin: 1px 0;
   padding: @size-6 @size-12;

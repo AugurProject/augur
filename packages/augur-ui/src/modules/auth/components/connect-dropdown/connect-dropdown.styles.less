@@ -19,7 +19,7 @@
   z-index: @default-z-index;
 
   &:hover {
-    background-color: @color-theme-primary;
+    background-color: @color-dark-grey;
   }
 
   &:focus {
@@ -35,12 +35,12 @@
   padding-right: @size-24;
 
   &:hover {
-    background-color: @color-primary-light;
+    background-color: @color-module-background;
   }
 }
 
 .ConnectDropdown__itemSelected {
-  background-color: @color-tertiary-background;
+  background-color: @color-dark-grey;
 }
 
 .ConnectDropdown__itemHardwareSelected {
@@ -55,7 +55,7 @@
 }
 
 .ConnectDropdown__hardwareContent {
-  background-color: @color-tertiary-background;
+  background-color: @color-module-background;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   height: 0;
@@ -75,8 +75,8 @@
   margin-right: @size-14;
 
   &:hover {
-    border-bottom: 0.5px dotted white;
-    color: white;
+    border-bottom: 0.5px dotted @color-primary-text;
+    color: @color-primary-text;
   }
 }
 
