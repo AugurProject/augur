@@ -311,12 +311,15 @@ jobs:
           python3 -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
           python3 -m pip install pytest
           echo "tests: $(TESTS)"
+          export ETHEREUM_HTTP=http://localhost:8545
+          export ETHEREUM_GAS_PRICE_IN_NANOETH=1
+          export ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
           if [[ "$(TESTS)" == "integration:geth" ]]; then
-            docker run -p 47624:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:latest
+            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:latest
             yarn workspace @augurproject/core test:integration
             docker stop geth
           elif [[ "$(TESTS)" == "integration:parity" ]]; then
-            docker run -p 47621:8180 -p 47622:8545 -p 47623:8546 --name parity --detach augurproject/dev-node-parity:latest
+            docker run -p 8180:8180 -p 8545:8545 -p 47623:8546 --name parity --detach augurproject/dev-node-parity:latest
             yarn workspace @augurproject/core test:integration
             docker stop parity
           elif [[ "$(TESTS)" == "security:mythril" ]]; then
