@@ -1,9 +1,10 @@
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatNumber } from 'utils/format-number';
 import {
   YES_NO,
   SCALAR,
   INVALID_OUTCOME_ID,
   SCALAR_DOWN_ID,
+  ZERO,
 } from 'modules/common/constants';
 import store, { AppState } from 'store';
 import { selectMarketInfosState } from 'store/select-state';
@@ -69,7 +70,8 @@ export const selectSortedDisputingOutcomes = (
     return selectSortedMarketOutcomes(marketType, outcomes);
 
   const sortedStakes = sortStakes(stakes);
-  if (marketType === SCALAR) return buildScalarDisputingOutcomes(outcomes, sortedStakes);
+  if (marketType === SCALAR)
+    return buildScalarDisputingOutcomes(outcomes, sortedStakes);
   return buildYesNoCategoricalDisputingOutcomes(outcomes, sortedStakes);
 };
 
@@ -92,17 +94,24 @@ const buildScalarDisputingOutcomes = (
 ) => {
   // always add invalid
   const invalidOutcome = outcomes[INVALID_OUTCOME_ID];
-  const denom = outcomes[SCALAR_DOWN_ID].description; // get denomination
+  const { marketId, description: denom } = outcomes[SCALAR_DOWN_ID]; // get denomination
 
   if (sortedStakes.length === 0) return [invalidOutcome];
 
   const results = sortedStakes.map(s =>
     s.isInvalidOutcome
       ? invalidOutcome
-      : { // only need id and description properties for disputing card
-          id: s.outcome,
+      : ({
+          // only need id and description properties for disputing card but using OutcomeFormatted in components
+          id: Number(s.outcome),
           description: denom,
-        }
+          marketId,
+          lastPricePercent: null,
+          lastPrice: null,
+          volumeFormatted: formatNumber(ZERO),
+          price: null,
+          volume: '0'
+        } as OutcomeFormatted)
   );
   return results.find(o => o.id === INVALID_OUTCOME_ID)
     ? results
@@ -113,9 +122,13 @@ const buildYesNoCategoricalDisputingOutcomes = (
   outcomes: OutcomeFormatted[],
   sortedStakes: Getters.Markets.StakeDetails[]
 ) => {
-  const stakedOutcomes: OutcomeFormatted[] = sortedStakes.map(stake =>
-    outcomes.find(o => createBigNumber(o.id).eq(createBigNumber(stake.outcome)))
-  ).filter(o => !!o);
+  const stakedOutcomes: OutcomeFormatted[] = sortedStakes
+    .map(stake =>
+      outcomes.find(o =>
+        createBigNumber(o.id).eq(createBigNumber(stake.outcome))
+      )
+    )
+    .filter(o => !!o);
 
   const result = outcomes.reduce(
     (p, outcome) =>
