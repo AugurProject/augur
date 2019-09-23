@@ -279,7 +279,7 @@ jobs:
       - checkout: self
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.x'
+          versionSpec: '3.6'
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
