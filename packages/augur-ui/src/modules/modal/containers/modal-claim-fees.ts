@@ -35,7 +35,7 @@ const mapStateToProps = (state: AppState) => ({
   ),
   pendingQueue: state.pendingQueue || [],
   reportingFees: "0",
-  feeWindows: "0",
+  disputeWindows: "0",
   nonforkedMarkets: [],
 });
 
@@ -117,7 +117,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
             market => market.marketId === marketObj.marketId
           );
           const RedeemStakeOptions = {
-            feeWindows: [],
+            disputeWindows: [],
             nonforkedMarkets: [sP.nonforkedMarkets[marketIndex]],
             pendingId: sP.nonforkedMarkets[marketIndex].marketId
           };
@@ -127,7 +127,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   });
   let feeWindowsPending = false;
-  if (sP.feeWindows.length > 0) {
+  if (sP.disputeWindows.length > 0) {
     const totalMinusGas = createBigNumber(
       sP.reportingFees.unclaimedParticipationTokenEthFees.fullPrecision
     )
@@ -182,7 +182,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       ],
       action: () => {
         const RedeemStakeOptions = {
-          feeWindows: sP.feeWindows,
+          disputeWindows: sP.disputeWindows,
           nonforkedMarkets: [],
           pendingId: CLAIM_FEE_WINDOWS
         };
@@ -237,7 +237,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         disabled: markets.find(market => market.status === "pending"),
         action: () => {
           const RedeemStakeOptions = {
-            feeWindows: feeWindowsPending ? [] : sP.reportingFees.feeWindows,
+            disputeWindows: feeWindowsPending ? [] : sP.reportingFees.disputeWindows,
             nonforkedMarkets: claimableMarkets,
             onSent: () => {
               if (sP.modal.cb) {
