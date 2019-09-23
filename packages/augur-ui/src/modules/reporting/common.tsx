@@ -24,7 +24,7 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
-import { formatRep } from 'utils/format-number';
+import { formatRep, formatAttoRep, formatEther } from 'utils/format-number';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
 import { InfoIcon } from 'modules/common/icons';
@@ -59,7 +59,12 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
   );
 
   return (
-    <div className={classNames(Styles.ReportingPercent, {[Styles.Round]: firstPercent === 0 && secondPercent === 0, [Styles.RoundSecond]: firstPercent === 0})}>
+    <div
+      className={classNames(Styles.ReportingPercent, {
+        [Styles.Round]: firstPercent === 0 && secondPercent === 0,
+        [Styles.RoundSecond]: firstPercent === 0,
+      })}
+    >
       <span style={{ width: `${firstPercent > 100 ? 100 : firstPercent}%` }} />
       <span
         style={{ width: `${secondPercent > 100 ? 100 : secondPercent}%` }}
@@ -76,7 +81,9 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         My Existing Stake
         <p>{props.firstPercent.formattedValue} REP</p>
       </ReactTooltip>
-      {thirdPercent > 100 ? 100 : thirdPercent > 0 && <span style={{ width: `${thirdPercent}%` }} />}
+      {thirdPercent > 100
+        ? 100
+        : thirdPercent > 0 && <span style={{ width: `${thirdPercent}%` }} />}
     </div>
   );
 };
@@ -145,11 +152,7 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
   render() {
     const s = this.state;
 
-    const {
-      preFilledStake,
-      stakeError,
-      threshold
-    } = this.props;
+    const { preFilledStake, stakeError, threshold } = this.props;
 
     return (
       <div className={Styles.PreFilledStake}>
@@ -213,7 +216,9 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
       <span>Make tentative winner</span>
       <span>
         {props.fullBond && props.fullBond.formatted}
-        <span>/ {props.bondSizeCurrent && props.bondSizeCurrent.formatted} REP</span>
+        <span>
+          / {props.bondSizeCurrent && props.bondSizeCurrent.formatted} REP
+        </span>
       </span>
     </div>
     <ReportingPercent
@@ -274,30 +279,31 @@ export class DisputingBondsView extends Component<
 > {
   state: DisputingBondsViewState = {
     disabled: true,
-    scalarError: "",
-    stakeError: "",
+    scalarError: '',
+    stakeError: '',
   };
 
   changeRange = (range: string) => {
-    const {
-      minPrice,
-      maxPrice,
-      changeRange,
-      stakeValue
-    } = this.props;
+    const { minPrice, maxPrice, changeRange, stakeValue } = this.props;
 
-    if (createBigNumber(range).lt(createBigNumber(minPrice)) || createBigNumber(range).gt(createBigNumber(maxPrice))) {
-      this.setState({scalarError: "Input value not between scalar market range", disabled: true});
-    } else if (isNaN(range) || range === "") {
-      this.setState({scalarError: "Enter a valid number", disabled: true});
+    if (
+      createBigNumber(range).lt(createBigNumber(minPrice)) ||
+      createBigNumber(range).gt(createBigNumber(maxPrice))
+    ) {
+      this.setState({
+        scalarError: 'Input value not between scalar market range',
+        disabled: true,
+      });
+    } else if (isNaN(range) || range === '') {
+      this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
-      this.setState({scalarError: ""});
-      if (this.state.stakeError === "" && stakeValue !== "") {
-        this.setState({disabled: false});
+      this.setState({ scalarError: '' });
+      if (this.state.stakeError === '' && stakeValue !== '') {
+        this.setState({ disabled: false });
       }
     }
     changeRange(range);
-  }
+  };
 
   changeStake = (stake: string) => {
     const {
@@ -309,20 +315,33 @@ export class DisputingBondsView extends Component<
       tentativeWinning,
     } = this.props;
 
-    if (isNaN(stake) || stake === "") {
-      this.setState({stakeError: "Enter a valid number", disabled: true});
+    if (isNaN(stake) || stake === '') {
+      this.setState({ stakeError: 'Enter a valid number', disabled: true });
     } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
-      this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
-    } else if (!tentativeWinning && stakeRemaining && createBigNumber(stakeRemaining).lt(createBigNumber(stake))) {
-      this.setState({stakeError: "Value is bigger than needed stake", disabled: true});
+      this.setState({
+        stakeError: 'Value is bigger than REP balance',
+        disabled: true,
+      });
+    } else if (
+      !tentativeWinning &&
+      stakeRemaining &&
+      createBigNumber(stakeRemaining).lt(createBigNumber(stake))
+    ) {
+      this.setState({
+        stakeError: 'Value is bigger than needed stake',
+        disabled: true,
+      });
     } else {
-      this.setState({stakeError: ""});
-      if (this.state.scalarError === "" && ((scalar && rangeValue !== "") || !scalar)) {
-        this.setState({disabled: false});
+      this.setState({ stakeError: '' });
+      if (
+        this.state.scalarError === '' &&
+        ((scalar && rangeValue !== '') || !scalar)
+      ) {
+        this.setState({ disabled: false });
       }
     }
     changeStake(stake);
-  }
+  };
 
   render() {
     const {
@@ -333,7 +352,7 @@ export class DisputingBondsView extends Component<
       userAvailableRep,
       stakeRemaining,
       tentativeWinning,
-      reportAction
+      reportAction,
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
@@ -359,13 +378,21 @@ export class DisputingBondsView extends Component<
           errorMessage={stakeError}
           innerLabel="REP"
         />
-        {!tentativeWinning &&
+        {!tentativeWinning && (
           <section>
-            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining)} text={'MIN'} />
+            <CancelTextButton
+              noIcon
+              action={() => this.changeStake(stakeRemaining)}
+              text={'MIN'}
+            />
             |
-            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining)} text={'FILL DISPUTE BOND'} />
+            <CancelTextButton
+              noIcon
+              action={() => this.changeStake(stakeRemaining)}
+              text={'FILL DISPUTE BOND'}
+            />
           </section>
-        }
+        )}
         <span>Review</span>
         <LinearPropertyLabel
           key="disputeRoundStake"
@@ -377,7 +404,11 @@ export class DisputingBondsView extends Component<
           label="Estimated Gas Fee"
           value={'0.0000 ETH'}
         />
-        <PrimaryButton text="Confirm" action={reportAction} disabled={disabled} />
+        <PrimaryButton
+          text="Confirm"
+          action={reportAction}
+          disabled={disabled}
+        />
       </div>
     );
   }
@@ -388,7 +419,7 @@ export interface ReportingBondsViewProps {
   rangeValue: string;
   changeRange: Function;
   scalarDenomination: string;
-  initialReporterStake: FormattedNumber;
+  initialReporterStake: string;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
   preFilledStake?: string;
@@ -398,6 +429,7 @@ export interface ReportingBondsViewProps {
   minPrice?: string;
   maxPrice?: string;
   userAvailableRep: number;
+  isOpenReporting?: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -414,54 +446,62 @@ export class ReportingBondsView extends Component<
   state: ReportingBondsViewState = {
     showInput: false,
     disabled: this.props.scalar ? true : false,
-    scalarError: "",
-    stakeError: "",
+    scalarError: '',
+    stakeError: '',
   };
 
   toggleInput = () => {
     this.setState({ showInput: !this.state.showInput });
-  }
+  };
 
   changeRange = (range: string) => {
-    const {
-      minPrice,
-      maxPrice,
-      changeRange
-    } = this.props;
+    const { minPrice, maxPrice, changeRange } = this.props;
 
-    if (createBigNumber(range).lt(createBigNumber(minPrice)) || createBigNumber(range).gt(createBigNumber(maxPrice))) {
-      this.setState({scalarError: "Input value not between scalar market range", disabled: true});
-    } else if (isNaN(range) || range === "") {
-      this.setState({scalarError: "Enter a valid number", disabled: true});
+    if (
+      createBigNumber(range).lt(createBigNumber(minPrice)) ||
+      createBigNumber(range).gt(createBigNumber(maxPrice))
+    ) {
+      this.setState({
+        scalarError: 'Input value not between scalar market range',
+        disabled: true,
+      });
+    } else if (isNaN(range) || range === '') {
+      this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
-      this.setState({scalarError: ""});
-      if (this.state.stakeError === "") {
-        this.setState({disabled: false});
+      this.setState({ scalarError: '' });
+      if (this.state.stakeError === '') {
+        this.setState({ disabled: false });
       }
     }
     changeRange(range);
-  }
+  };
 
   updatePreFilledStake = (stake: string) => {
     const {
       updatePreFilledStake,
       scalar,
       rangeValue,
-      userAvailableRep
+      userAvailableRep,
     } = this.props;
 
     if (isNaN(stake)) {
-      this.setState({stakeError: "Enter a valid number", disabled: true});
+      this.setState({ stakeError: 'Enter a valid number', disabled: true });
     } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
-      this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
+      this.setState({
+        stakeError: 'Value is bigger than REP balance',
+        disabled: true,
+      });
     } else {
-      this.setState({stakeError: ""});
-      if (this.state.scalarError === "" && ((scalar && rangeValue !== "") || !scalar)) {
-        this.setState({disabled: false});
+      this.setState({ stakeError: '' });
+      if (
+        this.state.scalarError === '' &&
+        ((scalar && rangeValue !== '') || !scalar)
+      ) {
+        this.setState({ disabled: false });
       }
     }
     updatePreFilledStake(stake);
-  }
+  };
 
   render() {
     const {
@@ -475,11 +515,12 @@ export class ReportingBondsView extends Component<
       preFilledStake,
       updatePreFilledStake,
       userAvailableRep,
+      isOpenReporting,
     } = this.props;
 
     const { showInput, disabled, scalarError, stakeError } = this.state;
 
-    const preFilled = formatRep(preFilledStake || '0');
+    const preFilled = preFilledStake || '0';
 
     return (
       <div
@@ -495,11 +536,20 @@ export class ReportingBondsView extends Component<
             scalarError={scalarError}
           />
         )}
-        <span>Review Initial Reporting Stake</span>
+        {isOpenReporting && (
+          <>
+            <span>Review Initial Reporting</span>
+            <LinearPropertyLabel
+              key="initial"
+              label="open reporter winning Stake"
+              value={`${formatAttoRep(initialReporterStake).formatted} REP`}
+            />
+          </>
+        )}
         <LinearPropertyLabel
-          key="initial"
-          label="initial reporter stake"
-          value={initialReporterStake}
+          key="totalEstimatedGasFee"
+          label="Transaction Fee"
+          value={reportingGasFee}
         />
         <PreFilledStake
           showInput={showInput}
@@ -512,21 +562,27 @@ export class ReportingBondsView extends Component<
         {showInput && (
           <div>
             <span>Totals</span>
-            <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
+            <span>
+              Sum total of Initial Reporter Stake and Pre-Filled Stake
+            </span>
             <LinearPropertyLabel
               key="totalRep"
               label="Total rep"
-              value={formatRep(createBigNumber(preFilled).plus(createBigNumber(initialReporterStake))).formatted}
-            />
-            <LinearPropertyLabel
-              key="totalEstimatedGasFee"
-              label="Total Estimated Gas Fee"
-              value={reportingGasFee}
+              value={
+                formatAttoRep(
+                  createBigNumber(preFilled).plus(
+                    createBigNumber(initialReporterStake)
+                  )
+                ).formatted
+              }
             />
           </div>
         )}
-        <PrimaryButton text="Confirm" disabled={disabled} action={ () => reportAction()} />
-
+        <PrimaryButton
+          text="Confirm"
+          disabled={disabled}
+          action={() => reportAction()}
+        />
       </div>
     );
   }

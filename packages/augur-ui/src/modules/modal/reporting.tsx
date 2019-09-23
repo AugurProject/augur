@@ -6,7 +6,7 @@ import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import { RadioBarGroup } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR, INVALID_OUTCOME_ID } from 'modules/common/constants';
+import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
@@ -157,11 +157,12 @@ export default class ModalReporting extends Component<
       maxPrice,
       outcomesFormatted,
       disputeInfo,
-      noShowBondAmountFormatted, // this will be on MarketData once added to MarketInfo object
+      noShowBondAmount,
+      reportingState,
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
-
+    const isOpenReporting = reportingState === REPORTING_STATE.OPEN_REPORTING;
     let radioButtons = outcomesFormatted
       .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
       .map(outcome => {
@@ -267,6 +268,8 @@ export default class ModalReporting extends Component<
               reportAction={this.reportingAction}
               updateScalarOutcome={this.updateScalarOutcome}
               scalarOutcome={s.scalarOutcome}
+              initialReporterStake={noShowBondAmount}
+              isOpenReporting={isOpenReporting}
             />
           </div>
         </main>

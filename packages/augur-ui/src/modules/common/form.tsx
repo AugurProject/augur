@@ -244,6 +244,8 @@ interface RadioGroupProps {
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  initialReporterStake?: string;
+  isOpenReporting: boolean;
 }
 
 interface RadioGroupState {
@@ -290,6 +292,8 @@ interface ReportingRadioBarProps {
   reportAction: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  initialReporterStake: string;
+  isOpenReporting?: boolean;
 }
 
 interface RadioTwoLineBarProps {
@@ -715,6 +719,8 @@ interface ReportingRadioGroupProps {
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  initialReporterStake?: string;
+  isOpenReporting?: boolean;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -734,6 +740,8 @@ export const ReportingRadioBarGroup = ({
   updateDisputeStake,
   scalarOutcome,
   updateScalarOutcome,
+  initialReporterStake,
+  isOpenReporting,
 }: ReportingRadioGroupProps) => {
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(
@@ -764,6 +772,7 @@ export const ReportingRadioBarGroup = ({
               onChange(selected.toString());
             }}
             reportAction={reportAction}
+            initialReporterStake={initialReporterStake}
           />
         </section>
       )}
@@ -796,6 +805,8 @@ export const ReportingRadioBarGroup = ({
             onChange(selected.toString());
           }}
           reportAction={reportAction}
+          initialReporterStake={initialReporterStake}
+          isOpenReporting={isOpenReporting}
         />
       )}
       {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
@@ -814,6 +825,8 @@ export const ReportingRadioBarGroup = ({
           updatePreFilledStake={updatePreFilledStake}
           disputeStake={disputeStake}
           updateDisputeStake={updateDisputeStake}
+          initialReporterStake={initialReporterStake}
+          isOpenReporting={isOpenReporting}
         />
       ))}
       {((!isReporting && tentativeWinning && tentativeWinning.value !== invalid.value) || isReporting) &&
@@ -838,6 +851,7 @@ export const ReportingRadioBarGroup = ({
             onChange={selected => {
               onChange(selected.toString());
             }}
+            initialReporterStake={initialReporterStake}
           />
         </>
       }
@@ -880,6 +894,8 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       updateDisputeStake,
       updateScalarOutcome,
       scalarOutcome,
+      initialReporterStake,
+      isOpenReporting,
     } = this.props;
     const { selected } = this.state;
 
@@ -903,6 +919,8 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             updateDisputeStake={updateDisputeStake}
             updateScalarOutcome={updateScalarOutcome}
             scalarOutcome={scalarOutcome}
+            initialReporterStake={initialReporterStake}
+            isOpenReporting={isOpenReporting}
           />
         )}
         {!reporting &&
@@ -938,6 +956,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       scalarDenomination,
       expandable,
       isReporting,
+      isOpenReporting,
       preFilledStake,
       updatePreFilledStake,
       disputeStake,
@@ -945,6 +964,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       reportAction,
       scalarOutcome,
       updateScalarOutcome,
+      initialReporterStake
     } = this.props;
 
     let { stake } = this.props;
@@ -969,7 +989,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       }
     }
 
-    const initialReporterStake = formatNumber('100');
     const reportingGasFee = formatNumber('100');
     const inputtedStake = !checked || disputeStake === '' || isNaN(parseFloat(disputeStake)) ? formatAttoRep('0') : formatAttoRep(disputeStake);
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
@@ -1020,6 +1039,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               scalar={scalar}
               minPrice={minPrice}
               maxPrice={maxPrice}
+              isOpenReporting={isOpenReporting}
               rangeValue={scalarOutcome}
               changeRange={updateScalarOutcome}
               scalarDenomination={scalarDenomination}
