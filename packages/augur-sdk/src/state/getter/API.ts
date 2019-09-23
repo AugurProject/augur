@@ -3,7 +3,6 @@ import { DB } from '../db/DB';
 import { Router } from './Router';
 
 // Getters are evaluated by importing these files in this manner
-import './get-platform-activity-stats';
 import './Markets';
 import './Ping';
 import './Trading';
@@ -13,6 +12,7 @@ import './Universe';
 import './Liquidity';
 import './ZeroXOrdersGetters';
 import './status';
+import './Platform';
 
 export class API {
   db: Promise<DB>;
