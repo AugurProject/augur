@@ -42,8 +42,7 @@
     "version": "npm run build:mainnet"
   },
   "dependencies": {
-    "@0xproject/order-utils": "1.0.7",
-    "@0xproject/utils": "2.0.2",
+    "@0x/order-utils": "8.4.0",
     "@augurproject/sdk": "10.0.0-alpha.1",
     "@babel/polyfill": "7.6.0",
     "@ledgerhq/hw-app-eth": "4.70.0",
