@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .TopNav {
-  background: @color-tertiary-background;
+  background: @color-table-header;
   display: flex;
   flex-flow: column nowrap;
 
@@ -12,10 +12,7 @@
   > ul {
     display: flex;
     align-items: center;
-    border: 1px solid @color-primary-light;
-    border-left: none;
-    border-right: none;
-    border-top: none;
+    border-bottom: 1px solid @color-dark-grey;
 
     > li {
       width: auto;
@@ -58,7 +55,7 @@
       }
     }
 
-    .CreatetButton {
+    .CreateButton {
       border-bottom: none;
       margin-left: @size-24;
       text-transform: uppercase;
