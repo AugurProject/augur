@@ -22,7 +22,7 @@ const NUM_LOADING_CARDS = 5;
 const DEFAULT_PAGE = 1;
 const TAB_CURRENT = 'current';
 const TAB_AWAITING = 'awaiting';
-const SORT_REP_STAKED = 'repStaked';
+const SORT_REP_STAKED = 'totalRepStakedInMarket';
 const SORT_DISPUTE_ROUND = 'disputeRound';
 const DEFAULT_PAGINATION = {
   limit: ITEMS_PER_SECTION,
@@ -54,8 +54,6 @@ interface MarketsInDisputeState {
   showPagination: boolean;
   marketCount: number;
   isLoadingMarkets: boolean;
-  sortByDisputeRounds: boolean;
-  sortByRepAmount: boolean;
   filterByMyPortfolio: boolean;
 }
 
@@ -98,8 +96,6 @@ export default class MarketsInDispute extends Component<
       showPagination: false,
       offset: DEFAULT_PAGE,
       limit: ITEMS_PER_SECTION,
-      sortByDisputeRounds: false,
-      sortByRepAmount: true,
       filterByMyPortfolio: false,
     };
   }
@@ -111,8 +107,7 @@ export default class MarketsInDispute extends Component<
     const { isConnected, markets } = this.props;
     const {
       filterByMyPortfolio,
-      sortByRepAmount,
-      sortByDisputeRounds,
+      sortBy,
       selectedTab,
       search,
       offset,
@@ -120,8 +115,7 @@ export default class MarketsInDispute extends Component<
     if (
       isConnected !== prevProps.isConnected ||
       filterByMyPortfolio !== prevState.filterByMyPortfolio ||
-      sortByRepAmount !== prevState.sortByRepAmount ||
-      sortByDisputeRounds !== prevState.sortByDisputeRounds ||
+      sortBy !== prevState.sortBy ||
       search !== prevState.search ||
       offset !== prevState.offset ||
       selectedTab !== prevState.selectedTab
@@ -182,16 +176,14 @@ export default class MarketsInDispute extends Component<
       limit,
       offset,
       filterByMyPortfolio,
-      sortByRepAmount,
-      sortByDisputeRounds,
+      sortBy,
       search,
     } = this.state;
 
     let filterOptions = {
       limit,
       offset,
-      sortByRepAmount,
-      sortByDisputeRounds,
+      sortBy,
       search,
     };
     if (filterByMyPortfolio) {
