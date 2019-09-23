@@ -23,10 +23,12 @@ import {
   ALL,
   CLAIM_FEE_WINDOWS,
   CLAIM_STAKE_FEES,
+  ZERO,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MarketData } from 'modules/types';
+import { QUINTILLION } from '@augurproject/sdk/src';
 
 interface MarketReportContracts {
   marketId: string;
@@ -38,9 +40,29 @@ interface MarketReportContracts {
 const mapStateToProps = (state: AppState, ownProps) => {
   const accountReporting = state.loginAccount.reporting;
   // accum totalAmount rep per marketId
+  const disputingContracts = accountReporting.disputing.contracts;
+  const uniqueMarketIds = Array.from(new Set(disputingContracts.map(contract => contract.marketId)));
+  const marketReportContracts = uniqueMarketIds.map(marketId => {
+    let marketReportContract = {
+      marketId,
+      marketObject: selectMarket(marketId),
+      contracts: [],
+      totalAmount: ZERO
+    };
+    disputingContracts.forEach(contract => {
+      if (contract.marketId === marketId) {
+        marketReportContract = {
+          ...marketReportContract,
+          contracts: [...marketReportContract.contracts, contract.address],
+          totalAmount: marketReportContract.totalAmount.plus(createBigNumber(contract.amount))
+        };
+      }
+    });
+    return marketReportContract;
+  });
   // filter out markets that are not in `AWAITING_FINALIZATION` or `FINALIZED`
   // look for REPORTING_STATE constants
-  const reportingMarkets: MarketReportContracts[] = [];
+  const reportingMarkets: MarketReportContracts[] = marketReportContracts;
   // const market = selectMarket(marketId);
 
   return {
