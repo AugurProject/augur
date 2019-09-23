@@ -72,7 +72,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-left: 0.75rem;
+  margin-left: @size-4;
   max-width: 20.3125rem;
   min-height: 100vh;
   min-width: 20.3125rem;
@@ -100,17 +100,11 @@
   flex-grow: 1;
 }
 
-.MarketView__secondRow {
-  display: flex;
-  flex-direction: row;
-  margin-top: 0.75rem;
-}
-
 .MarketView__innerFirstColumn {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-right: 0.75rem;
+  margin-right: @size-4;
   max-width: 325px;
   min-width: 325px;
 }
@@ -119,6 +113,15 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  > div:first-of-type {
+    flex-grow: unset;
+    margin-bottom: @size-4;
+  }
+
+  > div:nth-of-type(2) {
+    margin-bottom: @size-4;
+  }
 }
 
 .Market__upper {
@@ -154,7 +157,7 @@
   display: flex;
   flex-direction: column;
   height: 50vh;
-  margin-bottom: 0.75rem;
+  margin-bottom: @size-4;
 }
 
 .MarketView__hide {
@@ -177,11 +180,6 @@
   transition: max-height 0.2s ease;
 }
 
-.MarketView__outcomesList {
-  flex-grow: unset;
-  margin-bottom: 12px;
-}
-
 .MarketView__priceHistoryChart {
   background-color: @color-module-background;
 
@@ -201,6 +199,11 @@
   flex-grow: 1;
   justify-content: center;
   margin: 0rem 22.5625rem;
+}
+
+.Hide {
+  max-height: @size-32;
+  overflow-y: hidden;
 }
 
 div.OutcomeNameDisplay {
