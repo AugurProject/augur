@@ -202,8 +202,9 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
 
 export interface DisputingButtonViewProps {
   fullBond: FormattedNumber;
-  stake: Getters.Markets.StakeDetails;
-  inputtedStake: number;
+  stakeCurrent: FormattedNumber;
+  bondSizeCurrent: FormattedNumber;
+  inputtedStake: FormattedNumber;
 }
 
 export const DisputingButtonView = (props: DisputingButtonViewProps) => (
@@ -212,14 +213,14 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
       <span>Make tentative winner</span>
       <span>
         {props.fullBond && props.fullBond.formatted}
-        <span>/ {props.stake && props.stake.bondSizeCurrent} REP</span>
+        <span>/ {props.bondSizeCurrent && props.bondSizeCurrent.formatted} REP</span>
       </span>
     </div>
     <ReportingPercent
-      firstPercent={formatRep(createBigNumber(props.stake.stakeCurrent).toNumber())}
-      secondPercent={formatRep(createBigNumber(props.stake.stakeCurrent).toNumber())}
-      thirdPercent={formatRep(props.inputtedStake)}
-      total={formatRep(createBigNumber(props.stake.bondSizeCurrent).toNumber())}
+      firstPercent={props.stakeCurrent}
+      secondPercent={props.stakeCurrent}
+      thirdPercent={props.inputtedStake}
+      total={props.bondSizeCurrent}
     />
   </div>
 );
@@ -244,6 +245,7 @@ export const ScalarOutcomeView = (props: ScalarOutcomeViewProps) => (
 );
 
 export interface DisputingBondsViewProps {
+  disputeInfo: Getters.Markets.DisputeInfo;
   scalar?: boolean;
   rangeValue: string;
   changeRange: Function;
@@ -267,7 +269,7 @@ interface DisputingBondsViewState {
 }
 
 export class DisputingBondsView extends Component<
-DisputingBondsViewProps,
+  DisputingBondsViewProps,
   DisputingBondsViewState
 > {
   state: DisputingBondsViewState = {

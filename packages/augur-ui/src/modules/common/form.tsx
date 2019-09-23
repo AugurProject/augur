@@ -28,7 +28,7 @@ import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
-import { formatRep, formatNumber } from "utils/format-number";
+import { formatAttoRep, formatRep, formatNumber } from 'utils/format-number';
 import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
 import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
 
@@ -82,7 +82,7 @@ interface TextInputProps {
   value?: string;
   trailingLabel?: string;
   innerLabel?: string;
-  autoCompleteList?: Array<SortedGroup>;
+  autoCompleteList?: SortedGroup[];
   onAutoCompleteListSelected?: Function;
 }
 
@@ -94,8 +94,8 @@ interface TextInputState {
 interface InputDropdownProps {
   onChange: Function;
   default: string;
-  options: Array<string>;
-  isMobileSmall?: Boolean;
+  options: string[];
+  isMobileSmall?: boolean;
   label: string;
   className?: string;
   onKeyPress?: Function;
@@ -104,8 +104,8 @@ interface InputDropdownProps {
 interface InputDropdownState {
   label: string;
   value: string;
-  showList: Boolean;
-  selected: Boolean;
+  showList: boolean;
+  selected: boolean;
 }
 
 interface FormDropdownProps {
@@ -113,12 +113,12 @@ interface FormDropdownProps {
   onChange: any;
   className?: string;
   defaultValue?: string | number;
-  options: Array<NameValuePair>;
+  options: NameValuePair[];
   staticLabel?: string;
-  disabled?: Boolean;
-  error?: Boolean;
-  errorMessage?: String;
-  openTop?: Boolean;
+  disabled?: boolean;
+  error?: boolean;
+  errorMessage?: string;
+  openTop?: boolean;
 }
 
 export const FormDropdown = (props: FormDropdownProps) => (
@@ -146,8 +146,8 @@ interface TimezoneDropdownProps {
   id?: string;
   onChange: any;
   className?: string;
-  autoCompleteList?: Array<SortedGroup>;
-  disabled?: Boolean;
+  autoCompleteList?: SortedGroup[];
+  disabled?: boolean;
   timestamp?: number;
   timezone: string;
 }
@@ -194,7 +194,7 @@ export class TimezoneDropdown extends Component<
 interface ErrorProps {
   header?: string;
   subheader?: string;
-  alternate?: Boolean;
+  alternate?: boolean;
 }
 
 export const Error = (props: ErrorProps) => (
@@ -224,13 +224,14 @@ interface RadioCardProps {
 interface RadioGroupProps {
   onChange: Function;
   radioButtons:
-    | Array<RadioCardProps>
-    | Array<RadioBarProps>
-    | Array<RadioTwoLineBarProps>
-    | Array<ReportingRadioBarProps>;
+    | RadioCardProps[]
+    | RadioBarProps[]
+    | RadioTwoLineBarProps[]
+    | ReportingRadioBarProps[];
   defaultSelected?: string | null;
-  children?: Array<any>;
+  children?: any[];
   reporting?: boolean;
+  disputeInfo?: Getters.Markets.DisputeInfo;
   marketType?: string;
   minPrice?: string;
   maxPrice?: string;
@@ -268,6 +269,7 @@ interface RadioBarProps {
 }
 
 interface ReportingRadioBarProps {
+  disputeInfo: Getters.Markets.DisputeInfo;
   header: string;
   value: string;
   onChange?: Function;
@@ -325,8 +327,8 @@ interface DropdownInputGroupProps {
   defaultValue?: string;
   staticLabel?: string;
   onChangeDropdown: Function;
-  autoCompleteList?: Array<SortedGroup>;
-  options: Array<NameValuePair>;
+  autoCompleteList?: SortedGroup[];
+  options: NameValuePair[];
   errorMessage?: string;
   value: string;
   placeholder?: string;
@@ -336,9 +338,9 @@ interface DropdownInputGroupProps {
   showDropdown: boolean;
 }
 
-const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
-  let result = [];
-  let item = justStrings ? '' : { value: '' };
+const defaultMultiSelect = (amount: number, justStrings = false) => {
+  const result = [];
+  const item = justStrings ? '' : { value: '' };
   for (let i = 1; i <= amount; i++) {
     result.push(item);
   }
@@ -346,9 +348,9 @@ const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
 };
 
 export const createGroups = (
-  groups: Array<SortedGroup>,
-  values: Array<String>,
-  selected: Array<String>
+  groups: SortedGroup[],
+  values: string[],
+  selected: string[]
 ) => {
   const primaryOptions = createOptions(groups);
   const primarySubgroup = findSubgroup(groups, values[0]);
@@ -405,7 +407,7 @@ export const determineVisible = (
 export const getNewValues = (
   value: string,
   position: number,
-  values: Array<string>
+  values: string[]
 ) => {
   const updatedValues = [...values];
   updatedValues[position] = value;
@@ -415,7 +417,7 @@ export const getNewValues = (
 export const getNewSelected = (
   selection: string,
   position: number,
-  selected: Array<string>
+  selected: string[]
 ) => {
   const updatedSelected = [...selected];
   updatedSelected[position] = selection;
@@ -423,7 +425,7 @@ export const getNewSelected = (
 };
 
 export const createOptions = (sortedGroup: SortedGroup) => {
-  let options = sortedGroup.map(({ label, value }) => ({ label, value }));
+  const options = sortedGroup.map(({ label, value }) => ({ label, value }));
   return options;
 };
 
@@ -487,12 +489,12 @@ export const DropdownInputGroup = ({
 );
 
 interface CategorySingleSelectProps {
-  options: Array<NameValuePair>;
-  autoCompleteList?: Array<NameValuePair>;
+  options: NameValuePair[];
+  autoCompleteList?: NameValuePair[];
   initialSelected?: string;
   initialValue?: string;
   updateSelection: Function;
-  errorMessage?: Array<string>;
+  errorMessage?: string[];
   staticLabel?: string;
   errorMessage?: string;
   placeholder?: string;
@@ -688,7 +690,7 @@ export const CheckboxBar = ({
       [Styles.RadioBarError]: error,
       [Styles.CheckboxBarChecked]: checked,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     {checked ? FilledCheckbox : EmptyCheckbox}
@@ -697,8 +699,9 @@ export const CheckboxBar = ({
 );
 
 interface ReportingRadioGroupProps {
+  disputeInfo: Getters.Markets.DisputeInfo;
   marketType: string;
-  radioButtons: Array<ReportingRadioBarProps>;
+  radioButtons: ReportingRadioBarProps[];
   selected: string | null;
   onChange: Function;
   minPrice?: string;
@@ -715,6 +718,7 @@ interface ReportingRadioGroupProps {
 }
 
 export const ReportingRadioBarGroup = ({
+  disputeInfo,
   marketType,
   radioButtons,
   selected,
@@ -746,6 +750,7 @@ export const ReportingRadioBarGroup = ({
             be correct.
           </span>
           <ReportingRadioBar
+            disputeInfo={disputeInfo}
             expandable
             {...tentativeWinning}
             preFilledStake={preFilledStake}
@@ -770,7 +775,8 @@ export const ReportingRadioBarGroup = ({
       </span>
       {marketType === SCALAR && (
         <ReportingRadioBar
-          header=""
+          disputeInfo={disputeInfo}
+          header=''
           value={'1'}
           checked={'1' === selected}
           stake={null}
@@ -794,6 +800,7 @@ export const ReportingRadioBarGroup = ({
       )}
       {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
         <ReportingRadioBar
+          disputeInfo={disputeInfo}
           key={index + radio.value}
           expandable
           {...radio}
@@ -813,10 +820,11 @@ export const ReportingRadioBarGroup = ({
         <>
           <span>
             {isReporting
-              ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+              ? 'Select Invalid if you believe this market\'s outcome was ambiguous or unverifiable.'
               : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
           </span>
           <ReportingRadioBar
+            disputeInfo={disputeInfo}
             expandable
             {...invalid}
             isInvalid
@@ -864,6 +872,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       maxPrice,
       scalarDenomination,
       isReporting,
+      disputeInfo,
       reportAction,
       preFilledStake,
       updatePreFilledStake,
@@ -878,6 +887,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       <div className={Styles.RadioBarGroup}>
         {reporting && (
           <ReportingRadioBarGroup
+            disputeInfo={disputeInfo}
             marketType={marketType}
             radioButtons={radioButtons}
             minPrice={minPrice}
@@ -915,6 +925,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
+      disputeInfo,
       header,
       onChange,
       checked,
@@ -939,22 +950,30 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     let { stake } = this.props;
 
     if (scalar) {
-      stake = {
-        outcome: scalarOutcome,
-        stakeCurrent: '0',
-        bondSizeCurrent: '1',
-        stakeRemaining: '1',
-        isInvalidOutcome: false,
-        isMalformedOutcome: false,
-        tentativeWinning: false,
-      };
+      for (const index in disputeInfo.stakes) {
+        if (disputeInfo.stakes[index].outcome === scalarOutcome) {
+          stake = disputeInfo.stakes[index];
+        }
+      }
+      // Set default values if outcome has not received stake
+      if (!stake) {
+        stake = {
+          outcome: scalarOutcome,
+          stakeCurrent: '0',
+          bondSizeCurrent: createBigNumber(disputeInfo.bondSizeOfNewStake).toString(),
+          stakeRemaining: createBigNumber(disputeInfo.bondSizeOfNewStake).toString(),
+          isInvalidOutcome: false,
+          isMalformedOutcome: false,
+          tentativeWinning: false,
+        };
+      }
     }
 
-    const initialReporterStake = formatNumber("100");
-    const reportingGasFee = formatNumber("100");
-    const inputtedStake = !checked || disputeStake === "" || isNaN(parseFloat(disputeStake)) ? "0" : disputeStake;
+    const initialReporterStake = formatNumber('100');
+    const reportingGasFee = formatNumber('100');
+    const inputtedStake = !checked || disputeStake === '' || isNaN(parseFloat(disputeStake)) ? formatAttoRep('0') : formatAttoRep(disputeStake);
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
-    const fullBond = stake && inputtedStake ? formatRep(createBigNumber(stake.stakeCurrent).plus(createBigNumber(inputtedStake))) : formatRep(0);
+    const fullBond = stake && inputtedStake ? formatRep(createBigNumber(stake.stakeCurrent).plus(inputtedStake.fullPrecision)) : formatRep('0');
 
     return (
       <div
@@ -964,7 +983,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.Scalar]: scalar,
           [Styles.Checked]: checked,
         })}
-        role="button"
+        role='button'
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
@@ -973,10 +992,10 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           {!isReporting && // for disputing or for scalar
             <>
               {((stake && !stake.tentativeWinning) || scalar) &&
-                <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
+                <DisputingButtonView stakeCurrent={formatAttoRep(stake.stakeCurrent)} bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)} inputtedStake={inputtedStake} fullBond={fullBond} />
               }
               {stake && stake.tentativeWinning &&
-                <Subheaders header="pre-filled stake" subheader={preFilledStake}/>
+                <Subheaders header='pre-filled stake' subheader={preFilledStake}/>
               }
               {checked &&
 
@@ -1041,7 +1060,7 @@ export const RadioBar = ({
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     {checked ? FilledRadio : EmptyRadio}
@@ -1111,7 +1130,7 @@ export const RadioTwoLineBar = ({
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     {checked ? FilledRadio : EmptyRadio}
@@ -1164,7 +1183,7 @@ const RadioCard = ({
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     <div>{CheckMark}</div>
@@ -1175,8 +1194,8 @@ const RadioCard = ({
 );
 
 interface LocationDisplayProps {
-  currentStep: Number;
-  pages: Array<Object>;
+  currentStep: number;
+  pages: Array<{}>;
 }
 
 export const LocationDisplay = ({
@@ -1324,7 +1343,7 @@ interface TimeSelectorProps {
   meridiem: string;
   onFocusChange: Function;
   onDateChange: Function;
-  focused?: Boolean;
+  focused?: boolean;
   errorMessage?: string;
 }
 
@@ -1398,7 +1417,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
             {Arrow}
             <div>
               <IndividualTimeSelector
-                label="Hours"
+                label='Hours'
                 min={1}
                 max={12}
                 onChange={this.onChangeHours}
@@ -1406,7 +1425,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
               />
               <span>:</span>
               <IndividualTimeSelector
-                label="Minutes"
+                label='Minutes'
                 showLeadingZero
                 min={0}
                 max={59}
@@ -1414,7 +1433,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
                 value={minute !== null ? minute : '12'}
               />
               <IndividualTimeSelector
-                label="AM/PM"
+                label='AM/PM'
                 hasOptions
                 onChange={this.onChangeAM}
                 value={meridiem || 'AM'}
@@ -1429,14 +1448,14 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
 }
 
 interface IndividualTimeSelectorProps {
-  hasOptions?: Boolean;
+  hasOptions?: boolean;
   label: string;
-  min?: Number;
-  max?: Number;
+  min?: number;
+  max?: number;
   onChange: Function;
-  showColon?: Boolean;
+  showColon?: boolean;
   value: any;
-  showLeadingZero?: Boolean;
+  showLeadingZero?: boolean;
 }
 
 interface IndividualTimeSelectorState {
@@ -1481,7 +1500,7 @@ class IndividualTimeSelector extends React.Component<
   };
 
   increment = () => {
-    let value = this.state.value;
+    const value = this.state.value;
     if (!this.props.hasOptions) {
       const newValue = parseFloat(value) + 1;
       this.onChange(newValue);
@@ -1491,7 +1510,7 @@ class IndividualTimeSelector extends React.Component<
   };
 
   decrement = () => {
-    let value = this.state.value;
+    const value = this.state.value;
     if (!this.props.hasOptions) {
       const newValue = parseFloat(value) - 1;
       this.onChange(newValue);
@@ -1509,7 +1528,7 @@ class IndividualTimeSelector extends React.Component<
         <button onClick={this.increment}>{Chevron}</button>
         {hasOptions && (
           <input
-            type="text"
+            type='text'
             onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
             disabled
@@ -1517,10 +1536,10 @@ class IndividualTimeSelector extends React.Component<
         )}
         {!hasOptions && (
           <input
-            type="number"
+            type='number'
             min={min}
             max={max}
-            step="1"
+            step='1'
             onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
           />
@@ -1542,7 +1561,7 @@ export const Checkbox = ({
     className={classNames(Styles.Checkbox, {
       [Styles.CheckboxSmall]: smallOnDesktop,
     })}
-    role="button"
+    role='button'
     onClick={e => {
       e.preventDefault();
       onClick(e);
@@ -1550,13 +1569,13 @@ export const Checkbox = ({
   >
     <input
       id={id}
-      type="checkbox"
+      type='checkbox'
       checked={isChecked}
       disabled={disabled}
       onChange={e => {}}
     />
     <span
-      role="button"
+      role='button'
       tabIndex={0}
       onClick={e => {}}
       className={classNames({
@@ -1572,7 +1591,6 @@ Checkbox.propTypes = {
   id: PropTypes.string.isRequired,
   isChecked: PropTypes.bool.isRequired,
   disabled: PropTypes.bool,
-  // value: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
   small: PropTypes.bool,
   smallOnDesktop: PropTypes.bool,
@@ -1605,7 +1623,7 @@ export const DatePicker = (props: DatePickerProps) => (
       numberOfMonths={props.numberOfMonths}
       navPrev={props.navPrev || OutlineChevron}
       navNext={props.navNext || OutlineChevron}
-      weekDayFormat="ddd"
+      weekDayFormat='ddd'
       customInputIcon={Calendar}
       readOnly={true}
     />
@@ -1623,32 +1641,32 @@ interface InputProps {
   value: any;
   max?: any;
   min?: any;
-  isMultiline?: Boolean;
-  isClearable?: Boolean;
+  isMultiline?: boolean;
+  isClearable?: boolean;
   onChange: Function;
   updateValue?: Function;
   onBlur?: Function;
-  isIncrementable?: Boolean;
+  isIncrementable?: boolean;
   incrementAmount?: number;
-  canToggleVisibility?: Boolean;
-  shouldMatchValue?: Boolean;
+  canToggleVisibility?: boolean;
+  shouldMatchValue?: boolean;
   comparisonValue?: string;
-  isSearch?: Boolean;
+  isSearch?: boolean;
   placeholder?: string;
-  maxButton?: Boolean;
+  maxButton?: boolean;
   onMaxButtonClick?: Function;
-  noFocus?: Boolean;
-  isLoading?: Boolean;
+  noFocus?: boolean;
+  isLoading?: boolean;
   onFocus?: Function;
-  lightBorder?: Boolean;
-  darkMaxBtn?: Boolean;
+  lightBorder?: boolean;
+  darkMaxBtn?: boolean;
   style?: any;
 }
 
 interface InputState {
   value: any;
-  isHiddenContentVisible: Boolean;
-  focused: Boolean;
+  isHiddenContentVisible: boolean;
+  focused: boolean;
 }
 
 export class Input extends Component<InputProps, InputState> {
@@ -1864,7 +1882,7 @@ export class Input extends Component<InputProps, InputState> {
         {isMultiline && (
           <textarea
             {...p}
-            className="box"
+            className='box'
             value={value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
@@ -1875,8 +1893,8 @@ export class Input extends Component<InputProps, InputState> {
         {isSearch && (
           <div style={{ marginRight: '8px' }}>
             <PulseLoader
-              color="#553580"
-              sizeUnit="px"
+              color='#553580'
+              sizeUnit='px'
               size={6}
               loading={isLoading}
             />
@@ -1885,7 +1903,7 @@ export class Input extends Component<InputProps, InputState> {
 
         {isClearable && !isMultiline && !!value && (
           <button
-            type="button"
+            type='button'
             className={Styles.close}
             onClick={this.handleClear}
           >
@@ -1895,22 +1913,22 @@ export class Input extends Component<InputProps, InputState> {
 
         {canToggleVisibility && value && (
           <button
-            type="button"
-            className="button--text-only"
+            type='button'
+            className='button--text-only'
             onClick={this.handleToggleVisibility}
             tabIndex={-1}
           >
             {isHiddenContentVisible ? (
-              <i className="fa fa-eye-slash" />
+              <i className='fa fa-eye-slash' />
             ) : (
-              <i className="fa fa-eye" />
+              <i className='fa fa-eye' />
             )}
           </button>
         )}
 
         {maxButton && (
           <button
-            type="button"
+            type='button'
             className={classNames(Styles.Max, {
               [Styles.MaxDark]: darkMaxBtn,
             })}
@@ -1921,11 +1939,11 @@ export class Input extends Component<InputProps, InputState> {
         )}
 
         {shouldMatchValue && value && (
-          <div className="input-value-comparison">
+          <div className='input-value-comparison'>
             {value === comparisonValue ? (
-              <i className="fa fa-check-circle input-does-match" />
+              <i className='fa fa-check-circle input-does-match' />
             ) : (
-              <i className="fa fa-times-circle input-does-not-match" />
+              <i className='fa fa-times-circle input-does-not-match' />
             )}
           </div>
         )}
@@ -1933,7 +1951,7 @@ export class Input extends Component<InputProps, InputState> {
         {isIncrementable && (
           <div className={Styles.ValueIncrementers}>
             <button
-              type="button"
+              type='button'
               tabIndex={-1}
               className={classNames(Styles.IncrementValue, 'unstyled')}
               onClick={e => {
@@ -1960,12 +1978,12 @@ export class Input extends Component<InputProps, InputState> {
                 }
               }}
             >
-              <i className="fa fa-angle-up" />
+              <i className='fa fa-angle-up' />
             </button>
             <button
-              type="button"
+              type='button'
               tabIndex={-1}
-              className="decrement-value unstyled"
+              className='decrement-value unstyled'
               onClick={e => {
                 e.currentTarget.blur();
 
@@ -1990,7 +2008,7 @@ export class Input extends Component<InputProps, InputState> {
                 }
               }}
             >
-              <i className="fa fa-angle-down" />
+              <i className='fa fa-angle-down' />
             </button>
           </div>
         )}
@@ -2132,7 +2150,7 @@ export class InputDropdown extends Component<
           ))}
         </select>
         <span>
-          <ChevronFlip pointDown={!showList} stroke="white" />
+          <ChevronFlip pointDown={!showList} stroke='white' />
         </span>
       </div>
     );
