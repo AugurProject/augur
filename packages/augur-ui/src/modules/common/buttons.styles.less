@@ -91,6 +91,33 @@
   }
 }
 
+.ToggleExtendButton {    
+  > svg {
+    width: @size-12;
+    height: @size-16;
+
+    > path {
+      fill: @color-secondary-text;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    > span {
+      > svg {
+        > path {
+          fill: @color-secondary-text;
+        }
+      }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
 .SellOrderButton {
   .Button;
 

@@ -486,10 +486,7 @@ export default class MarketView extends Component<
                       </div>
                       <div className={Styles.MarketView__innerSecondColumn}>
                         <div
-                          className={classNames(
-                            Styles.MarketView__component,
-                            Styles.MarketView__outcomesList
-                          )}
+                          className={Styles.MarketView__component}
                         >
                           <MarketOutcomesList
                             marketId={marketId}
@@ -510,18 +507,16 @@ export default class MarketView extends Component<
                             preview={preview}
                           />
                         </div>
-                      </div>
-                    </div>
-                    <div className={Styles.MarketView__secondRow}>
-                      <div className={classNames(Styles.MarketView__component)}>
-                        <MarketOrdersPositionsTable
-                          updateSelectedOrderProperties={
-                            this.updateSelectedOrderProperties
-                          }
-                          marketId={marketId}
-                          market={preview && market}
-                          preview={preview}
-                        />
+                        <div className={classNames(Styles.MarketView__component)}>
+                          <MarketOrdersPositionsTable
+                            updateSelectedOrderProperties={
+                              this.updateSelectedOrderProperties
+                            }
+                            marketId={marketId}
+                            market={preview && market}
+                            preview={preview}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
