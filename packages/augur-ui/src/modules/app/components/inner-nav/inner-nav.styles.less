@@ -22,7 +22,7 @@
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 
   *:hover {
-    background: @color-primary-light;
+    background: @color-secondary-action-outline;
   }
 
   a,
@@ -67,7 +67,7 @@
 }
 
 .InnerNav__menu-item--selected {
-  background: @color-primary-light;
+  background: @color-secondary-action-outline;
 }
 
 .InnerNav__menu-item--seperator {
@@ -84,13 +84,13 @@
 
 .InnerNav__menu--main {
   background: @color-dark-grey;
-  border-right: 1px solid @color-primary-light;
+  border-right: 1px solid @color-module-background;
   position: relative;
   z-index: @mask;
 }
 
 .InnerNav__menu--submenu {
-  background: @color-primary-light;
+  background: @color-module-background;
   border-left: 0.0625rem solid @color-dark-grey;
   left: 0;
   position: absolute;
@@ -100,12 +100,12 @@
 
   > .InnerNav__menu-item {
     *:hover {
-      background: @color-theme-primary;
+      background: @color-secondary-action-outline;
     }
   }
 
   > .InnerNav__menu-item--selected {
-    background: @color-theme-primary;
+    background: @color-secondary-action-outline;
   }
 }
 
@@ -125,7 +125,7 @@
 
       > div {
         align-items: center;
-        background: @color-theme-primary;
+        background: @color-module-background;
         border-bottom: 1px solid @color-dark-grey;
         color: white;
         display: flex;
@@ -175,7 +175,7 @@
   .InnerNav__menu-item--selected:hover {
     a,
     button {
-      background: @color-primary-light;
+      background: @color-secondary-action-outline;
     }
   }
 

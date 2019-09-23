@@ -2,7 +2,7 @@
 
 .SideNav {
   display: none;
-  background: @color-theme-primary;
+  background: @color-dark-grey;
   flex-flow: column nowrap;
 
   @media @breakpoint-mobile {
@@ -55,11 +55,11 @@
     width: 100%;
 
     &.selected {
-      background: @color-primary-light;
+      background: @color-module-background;
     }
 
     &:hover {
-      background: @color-primary-light;
+      background: @color-module-background;
       cursor: pointer;
     }
 
@@ -101,7 +101,7 @@
 }
 
 .SideNav__item--selected {
-  background: @color-primary-light;
+  background: @color-table-header;
 }
 
 .SideNav__container {
@@ -137,7 +137,7 @@
   }
 
   .SideNav__nav__separator {
-    background: @color-tertiary-background;
+    background: @color-module-background;
     height: 0.0625rem;
   }
 
