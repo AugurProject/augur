@@ -4,7 +4,6 @@ import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import MarketCard from 'modules/market-cards/containers/market-card';
-import { createBigNumber } from 'utils/create-big-number';
 import { Checkbox } from 'modules/common/form';
 
 import PaginationStyles from 'modules/common/pagination.styles.less';
@@ -12,7 +11,6 @@ import Styles from 'modules/reporting/components/markets-in-dispute.styles.less'
 
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk/src';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 import { REPORTING_STATE } from 'modules/common/constants';
