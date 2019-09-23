@@ -3,37 +3,14 @@
 .OrderHeader {
   display: flex;
   flex-direction: column;
-  min-height: fit-content;
 
-  > button {
-    > span {
-      margin-top: -1px;
-      
-      > svg {
-        width: @size-12;
-        height: @size-16;
-    
-        > path {
-          fill: @color-secondary-text;
-        }
-      }
-    }
+  > span {
+    .mono-11-bold;
 
-    &:hover {
-      cursor: pointer;
-
-      > span {
-        > svg {
-          > path {
-            fill: @color-secondary-text;
-          }
-        }
-      }
-    }
-
-    @media @breakpoint-mobile {
-      display: none;
-    }
+    padding: @size-8 @size-12 @size-8 @size-16;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
   }
 
   > div {
