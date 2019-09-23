@@ -143,7 +143,6 @@ export const FavoritesButton = (props: FavoritesButtonProps) => (
     })}
     disabled={props.disabled}
     title={props.title}
-    style={props.hideText ? { marginRight: '0.5rem' } : undefined}
   >
     {StarIcon}{' '}
     {!props.hideText &&

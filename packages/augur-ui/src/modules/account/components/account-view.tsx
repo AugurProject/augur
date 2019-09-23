@@ -51,7 +51,7 @@ const AccountView = (props: AccountViewProps) => (
             </ModulePane>
           </ModuleTabs>
         ) : (
-          <section className={Styles.AccountView}>
+          <div className={Styles.AccountView}>
             <div>
               <Media query={TABLET}>
                 {(matches) =>
@@ -113,7 +113,7 @@ const AccountView = (props: AccountViewProps) => (
               </Media>
             </div>
             <TermsAndConditions />
-          </section>
+          </div>
         )
       }
     </Media>
