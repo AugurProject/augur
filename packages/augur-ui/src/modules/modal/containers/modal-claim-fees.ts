@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   formatGasCostToEther,
@@ -26,10 +26,23 @@ import {
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { MarketData } from 'modules/types';
+
+interface MarketReportContracts {
+  marketId: string;
+  marketObject: MarketData;
+  contracts: string[];
+  totalAmount: BigNumber;
+}
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const accountReporting = state.loginAccount.reporting;
-  // need to accum marketIds
+  // accum totalAmount rep per marketId
+  // filter out markets that are not in `AWAITING_FINALIZATION` or `FINALIZED`
+  // look for REPORTING_STATE constants
+  const reportingMarkets: MarketReportContracts[] = [];
+  // const market = selectMarket(marketId);
+
   return {
     modal: state.modal,
     gasCost: formatGasCostToEther(
@@ -41,6 +54,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     totalUnclaimedDaiFormatted: ownProps.unclaimedDai,
     totalUnclaimedRepFormatted: ownProps.unclaimedRep,
     accountReporting,
+    reportingMarkets,
   };
 };
 
@@ -52,8 +66,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const totalUnclaimedDaiFormatted = sP.totalUnclaimedDaiFormatted;
   const totalUnclaimedRepFormatted = sP.totalUnclaimedRepFormatted;
-  const marketIdsToTest = sP.nonforkedMarkets;
-  const markets: ActionRowsProps[] = [];
+  const marketIdsToTest = sP.reportingMarkets;
+  const modalRows: ActionRowsProps[] = [];
   const claimableMarkets: any = [];
   let unclaimedRep = createBigNumber(sP.modal.unclaimedRep.fullPrecision);
   let unclaimedDai = createBigNumber(sP.modal.unclaimedDai.fullPrecision);
@@ -83,7 +97,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         );
       }
 
-      markets.push({
+      modalRows.push({
         title: market.description,
         text: 'Claim Proceeds',
         status: pending && pending.status,
@@ -145,7 +159,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       );
     }
 
-    markets.push({
+    modalRows.push({
       title: 'Reedeem all participation tokens',
       text: 'Claim',
       status: feeWindowsPending,
@@ -157,7 +171,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         },
         {
           label: 'Reporting Fees',
-          value: `${sP.reportingFees.unclaimedParticipationTokenDaiFees.formatted} ETH`,
+          value: `${sP.reportingFees.unclaimedParticipationTokenDaiFees.formatted} DAI`,
         },
         {
           label: 'Est Gas cost',
@@ -173,8 +187,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: () => {
         const RedeemStakeOptions = {
           disputeWindows: sP.disputeWindows,
-          nonforkedMarkets: [],
-          pendingId: CLAIM_FEE_WINDOWS,
+          reportingParticipants: [],
         };
         dP.redeemStake(RedeemStakeOptions);
       },
@@ -182,7 +195,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   }
 
   const breakdown =
-    markets.length > 1
+    modalRows.length > 1
       ? [
           {
             label: 'Total REP',
@@ -213,7 +226,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         postText: 'of reporting fees to collect from the following markets:',
       },
     ],
-    rows: markets,
+    rows: modalRows,
     breakdown,
     closeAction: () => {
       if (sP.modal.cb) {
@@ -224,7 +237,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     buttons: [
       {
         text: 'Claim All',
-        disabled: markets.find(market => market.status === 'pending'),
+        disabled: modalRows.find(market => market.status === 'pending'),
         action: () => {
           const RedeemStakeOptions = {
             disputeWindows: feeWindowsPending

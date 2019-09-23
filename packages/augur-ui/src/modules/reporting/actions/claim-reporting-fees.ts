@@ -1,6 +1,6 @@
 import logError from "utils/log-error";
 import { AppState } from "store";
-import { NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback, ClaimReportingOptions } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { redeemUserStakes, redeemUserStakesEstimateGas } from "modules/contracts/actions/contractCalls";
@@ -11,7 +11,7 @@ export const CROWDSOURCER_BATCH_SIZE = 4;
 export const DISPUTE_WINDOW_BATCH_SIZE = 10;
 
 export function redeemStake(
-  options: any,
+  options: ClaimReportingOptions,
   callback: NodeStyleCallback = logError
 ): ThunkAction<any, any, any, any> {
   return (
