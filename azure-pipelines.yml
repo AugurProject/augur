@@ -262,6 +262,7 @@ jobs:
 #         set -euo pipefail
 #         yarn
 #         yarn build
+#         yarn workspace @augurproject/core build:python
 #         yarn workspace @augurproject/core build
 #         git update-index -q --ignore-submodules --refresh
 #         err=0

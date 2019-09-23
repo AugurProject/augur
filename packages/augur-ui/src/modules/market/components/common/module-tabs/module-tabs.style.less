@@ -5,16 +5,16 @@
   overflow-x: auto;
 
   > ul {
-    border-bottom: 1px solid @color-tertiary-one;
+    border-bottom: 1px solid @color-dark-grey;
     display: flex;
     flex: 1;
     width: @size-40;
 
     > li {
-      color: rgba(255, 255, 255, 0.4);
+      color: @color-secondary-text;
 
       &:hover {
-        color: white;
+        color: @color-primary-text;
       }
 
       > button {
@@ -23,6 +23,7 @@
         padding: @size-12 @size-16;
         position: relative;
         white-space: nowrap;
+        text-transform: uppercase;
       }
     }
   }
@@ -43,7 +44,7 @@
 }
 
 .ActiveTab {
-  color: white !important;
+  color: @color-primary-text !important;
 
   .IsNew::before {
     background: @color-outcome-four;
@@ -97,7 +98,7 @@
 }
 
 .FillWidth {
-  background-color: @color-tertiary-background;
+  background-color: @color-module-background;
 
   > li {
     .text-14;
@@ -135,7 +136,7 @@
 }
 
 .ActiveSpanFill {
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid @color-primary-text;
 }
 
 .NoBorder {

@@ -51,7 +51,7 @@ export class Liquidity {
         numOutcomes: params.numOutcomes,
         spread: params.spread,
     });
-    const totalMarkets = (await db.getNumRowsFromDB("Markets", true)); // Includes this market. Would otherwise have to -1 to remove the meta row
+    const totalMarkets = (await db.getNumRowsFromDB("Markets", true)) + 1; // + 1 to include this uncreated hypothetical market being ranked
     if (liquidityScore.isZero()) {
         return {
             marketRank: 0,

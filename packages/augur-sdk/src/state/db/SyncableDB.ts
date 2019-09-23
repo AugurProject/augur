@@ -38,7 +38,7 @@ export class SyncableDB extends AbstractDB {
     this.idFields = idFields;
 
     for(const item of [...this.idFields, ...indexes, 'blockNumber']) {
-      this.db.createIndex({
+      this.createIndex({
         index: {
           fields: [item],
         },
@@ -75,13 +75,6 @@ export class SyncableDB extends AbstractDB {
 
     this.syncing = false;
     await this.syncStatus.updateSyncingToFalse(this.dbName);
-
-    if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
-      const marketCreatedRawDocs = await this.allDocs();
-      let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
-      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
-      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
-    }
 
     // TODO Make any other external calls as needed (such as pushing user's balance to UI)
   }

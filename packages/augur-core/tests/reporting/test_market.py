@@ -15,6 +15,7 @@ def test_market_creation(contractsFixture, universe, market):
         "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
         "marketCreator": account0,
         "designatedReporter": account0,
+        "noShowBond": universe.getOrCacheMarketRepBond(),
     }
 
     with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):

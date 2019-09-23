@@ -1,53 +1,14 @@
 import logError from "utils/log-error";
-import { sumAndformatGasCostToEther } from "utils/format-number";
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
-import {
-  CLAIM_STAKE_FEES,
-  PENDING,
-  SUCCESS,
-  UNIVERSE_ID
-} from "modules/common/constants";
-import {
-  addPendingData,
-  removePendingData
-} from "modules/pending-queue/actions/pending-queue-management";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
+import { redeemUserStakes, redeemUserStakesEstimateGas } from "modules/contracts/actions/contractCalls";
 
 export const CLAIM_FEES_GAS_COST = 3000000;
 export const CLAIM_WINDOW_GAS_COST = 210000;
 export const CROWDSOURCER_BATCH_SIZE = 4;
-export const FEE_WINDOW_BATCH_SIZE = 10;
-
-export function claimReportingFeesForkedMarket(
-  options: any,
-  callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> {
-  return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
-    // const { loginAccount } = getState();
-    // const payload = {
-    //   ...options,
-    //   meta: loginAccount.meta,
-    //   redeemer: loginAccount.address
-    // };
-
-    // TODO: address this call durring the forking redesign
-    /*
-    reporting.claimReportingFeesForkedMarket(
-      payload,
-      (err: any, result: any) => {
-        if (err) return callback(err);
-        callback(null, result);
-      }
-    );
-    */
-  };
-}
+export const DISPUTE_WINDOW_BATCH_SIZE = 10;
 
 export function redeemStake(
   options: any,
@@ -57,91 +18,44 @@ export function redeemStake(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount, universe } = getState();
-    const universeId = universe.id || UNIVERSE_ID;
-    const gasPrice = getGasPrice(getState());
-
     const {
-      pendingId,
-      onSent,
-      onSuccess,
-      onFailed,
-      nonforkedMarkets,
-      feeWindows,
+      reportingParticipants,
+      disputeWindows,
       estimateGas
     } = options;
 
-    const reportingParticipants: Array<string> = [];
-    nonforkedMarkets.forEach((nonforkedMarket: any) => {
-      if (nonforkedMarket.initialReporter) {
-        reportingParticipants.push(nonforkedMarket.initialReporter);
-      }
-      nonforkedMarket.crowdsourcers.forEach((crowdsourcer: string) => {
-        reportingParticipants.push(crowdsourcer);
-      });
-    });
-
-    const promises: Array<any> = [];
-
-    batchContractIds(feeWindows, reportingParticipants).map(batch =>
-      promises.push(
-        new Promise((resolve, reject) =>
-          runPayload({
-            ...batch,
-            pendingId,
-            loginAccount,
-            universeId,
-            estimateGas,
-            gasPrice,
-            onSent,
-            dispatch,
-            onSuccess: resolve,
-            onFailed: reject
-          })
-        )
-      )
+    batchContractIds(disputeWindows, reportingParticipants).map(batch =>
+      runPayload(batch.disputeWindows, batch.reportingParticipants, callback, estimateGas)
     );
-
-    Promise.all(promises)
-      .then((gasCosts = [], failed = []) => {
-        onSuccess &&
-          onSuccess(
-            sumAndformatGasCostToEther(
-              gasCosts,
-              { decimalsRounded: 4 },
-              gasPrice.toString()
-            )
-          );
-        onFailed && failed.forEach((m: any) => onFailed(m));
-        callback(null);
-      })
-      .catch((e) => {
-        callback(e);
-      });
   };
 
+  interface Batch {
+    disputeWindows: string[],
+    reportingParticipants: string[]
+  }
+
   function batchContractIds(
-    feeWindows: Array<any>,
-    reportingParticipants: Array<string>
+    disputeWindows: string[],
+    reportingParticipants: string[]
   ) {
-    const batches: Array<any> = [];
-    const feeWindowBatchSize = Math.ceil(
-      feeWindows.length / FEE_WINDOW_BATCH_SIZE
+    let batches: Batch[];
+    const disputeWindowBatchSize = Math.ceil(
+      disputeWindows.length / DISPUTE_WINDOW_BATCH_SIZE
     );
     const crowdsourcerBatchSize = Math.ceil(
       reportingParticipants.length / CROWDSOURCER_BATCH_SIZE
     );
 
-    // max case, assuming FEE_WINDOW_BATCH_SIZE number of fee windows and CROWDSOURCER_BATCH_SIZE number of crowdsourcers can run in one tx.
-    if (feeWindowBatchSize < 2 && crowdsourcerBatchSize < 2)
-      return [{ feeWindows, reportingParticipants }];
+    // max case, assuming DISPUTE_WINDOW_BATCH_SIZE number of fee windows and CROWDSOURCER_BATCH_SIZE number of crowdsourcers can run in one tx.
+    if (disputeWindowBatchSize < 2 && crowdsourcerBatchSize < 2)
+      return [{ disputeWindows, reportingParticipants }];
 
-    // fee windows
-    for (let i = 0; i < feeWindowBatchSize; i++) {
+    // dispute windows
+    for (let i = 0; i < disputeWindowBatchSize; i++) {
       batches.push({
-        feeWindows: feeWindows.slice(
-          i * FEE_WINDOW_BATCH_SIZE,
-          i * FEE_WINDOW_BATCH_SIZE + FEE_WINDOW_BATCH_SIZE
+        disputeWindows: disputeWindows.slice(
+          i * DISPUTE_WINDOW_BATCH_SIZE,
+          i * DISPUTE_WINDOW_BATCH_SIZE + DISPUTE_WINDOW_BATCH_SIZE
         ),
         reportingParticipants: []
       });
@@ -149,7 +63,7 @@ export function redeemStake(
 
     for (let i = 0; i < crowdsourcerBatchSize; i++) {
       batches.push({
-        feeWindows: [],
+        disputeWindows: [],
         reportingParticipants: reportingParticipants.slice(
           i * CROWDSOURCER_BATCH_SIZE,
           i * CROWDSOURCER_BATCH_SIZE + CROWDSOURCER_BATCH_SIZE
@@ -160,47 +74,12 @@ export function redeemStake(
     return batches;
   }
 
-  function runPayload(options: any) {
-    const {
-      feeWindows = [],
-      reportingParticipants = [],
-      onSent,
-      onSuccess,
-      pendingId,
-      dispatch,
-      onFailed,
-      universeId,
-      loginAccount,
-      estimateGas
-    } = options;
-    // TODO: allow users to redeem their stake as part of claiming reporting fees
-    // handle this as part of the reporting redesign
-    /*
-    api.Universe.redeemStake({
-      meta: loginAccount.meta,
-      tx: {
-        to: universeId,
-        estimateGas: !!options.estimateGas
-      },
-      _feeWindows: feeWindows,
-      _reportingParticipants: reportingParticipants,
-      onSent: () => {
-        pendingId &&
-          dispatch(addPendingData(pendingId, CLAIM_STAKE_FEES, PENDING));
-        onSent && onSent();
-      },
-      onSuccess: gas => {
-        if (!!estimateGas && onSuccess) onSuccess(gas);
-        pendingId &&
-          dispatch(addPendingData(pendingId, CLAIM_STAKE_FEES, SUCCESS));
-        onSuccess && onSuccess();
-      },
-      onFailed: () => {
-        if (!!estimateGas && onFailed) onFailed(0);
-        pendingId && dispatch(removePendingData(pendingId, CLAIM_STAKE_FEES));
-        onFailed && onFailed();
-      }
-    });
-    */
+  async function runPayload(disputeWindows: string[], reportingParticipants: string[], callback: Function, estimateGas: boolean) {
+
+    if(estimateGas) {
+      const gas = await redeemUserStakesEstimateGas(reportingParticipants, disputeWindows);
+      if (callback) callback(null, gas);
+    }
+    redeemUserStakes(reportingParticipants, disputeWindows);
   }
 }

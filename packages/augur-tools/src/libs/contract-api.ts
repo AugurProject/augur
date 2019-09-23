@@ -69,9 +69,13 @@ export class ContractAPI {
     return this.augur.createScalarMarket(params);
   }
 
+  async getRepBond(): Promise<BigNumber> {
+    return await this.augur.contracts.universe.getOrCacheMarketRepBond_();
+  }
+
   async marketFauceting() {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
-    const repBond = await this.augur.contracts.universe.getOrCacheMarketRepBond_();
+    const repBond = await this.getRepBond();
     await this.faucet(marketCreationFee);
     await this.repFaucet(repBond);
   }
