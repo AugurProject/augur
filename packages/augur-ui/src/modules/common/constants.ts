@@ -236,7 +236,8 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
-  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
+  DISPUTE_ROUND = 'disputeRound',
+  TOTAL_REP_STAKED_IN_MARKET = 'totalRepStakedInMarket',
 }
 
 export const SORT_OPTIONS = [
@@ -246,6 +247,8 @@ export const SORT_OPTIONS = [
   { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
   { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
   { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
+  { value: MARKET_SORT_PARAMS.DISPUTE_ROUND, header: 'Dispute Round' },
+  { value: MARKET_SORT_PARAMS.TOTAL_REP_STAKED_IN_MARKET, header: 'REP Staked in Market' },
 ];
 
 export enum MARKET_CARD_FORMATS {
