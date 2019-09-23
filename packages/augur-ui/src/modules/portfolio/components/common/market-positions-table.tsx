@@ -68,7 +68,6 @@ export class MarketPositionsTable extends React.Component<
         {extendedView && positions.length === 0 && (
           <div className={SharedStyles.Empty} />
         )}
-        {extendedView && <div className={SharedStyles.Footer} />}
       </div>
     );
   }
