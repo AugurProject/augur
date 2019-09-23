@@ -156,7 +156,7 @@ jobs:
           set -euo pipefail
           python3 -m venv venv && \
           source venv/bin/activate && \
-          python -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
+          python3 -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
         displayName: Python3 requirements
       - bash: |
           set -exuo pipefail
@@ -245,7 +245,6 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
-
   - job: TestAugurCore
     dependsOn:
     - ContractSanityCheck
@@ -284,6 +283,13 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
+      - bash: |
+          set -euo pipefail
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python3 -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
+          python3 -m pip install pytest
+        displayName: Python3 requirements
       - bash: |
           set -euo pipefail
           echo "tests: $(TESTS)"
