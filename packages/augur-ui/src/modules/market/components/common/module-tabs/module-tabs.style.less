@@ -3,6 +3,7 @@
 .Headers {
   display: flex;
   overflow-x: auto;
+  margin-right: @size-12;
 
   > ul {
     border-bottom: 1px solid @color-dark-grey;
@@ -20,7 +21,7 @@
       > button {
         .mono-11-bold;
 
-        padding: @size-12 @size-16;
+        padding: @size-8 @size-16;
         position: relative;
         white-space: nowrap;
         text-transform: uppercase;
@@ -33,6 +34,8 @@
       > li {
         > button {
           .text-11-bold;
+
+          padding: @size-12 @size-16;
         }
       }
     }
@@ -73,7 +76,6 @@
   display: flex;
   flex: 1 auto;
   flex-flow: column nowrap;
-  height: 100%;
 
   @media @breakpoint-mobile {
     height: fit-content;
@@ -98,8 +100,6 @@
 }
 
 .FillWidth {
-  background-color: @color-module-background;
-
   > li {
     .text-14;
 

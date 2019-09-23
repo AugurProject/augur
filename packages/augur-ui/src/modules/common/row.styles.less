@@ -41,15 +41,6 @@
       }
     }
 
-    &:last-of-type {
-      position: relative;
-
-      > span {
-        position: absolute;
-        right: -2px;
-      }
-    }
-
     &:not(:first-child) {
       justify-content: flex-end;
     }
@@ -164,6 +155,10 @@
 
 .Row4Parent {
   padding: 0;
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
 }
 
 .DarkRow {
@@ -176,7 +171,7 @@
 
 .Row4 {
   grid-template-columns: 2fr repeat(5, 1fr);
-  padding: 0.5rem 1.75rem 0.5rem 1.5rem;
+  padding: @size-5 @size-24 @size-5 @size-16;
   position: relative;
 
   > li {
@@ -188,12 +183,6 @@
         color: @color-secondary-text;
         display: inline-block;
         margin-left: 0.5rem;
-      }
-    }
-
-    &:last-child {
-      > span:first-of-type {
-        right: -0.75rem;
       }
     }
   }
@@ -365,6 +354,7 @@
 
     > li {
       &:last-of-type {
+        position: relative;
         > span {
           display: flex;
         }
