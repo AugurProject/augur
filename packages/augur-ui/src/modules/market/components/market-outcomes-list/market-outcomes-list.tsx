@@ -9,6 +9,7 @@ import Styles from 'modules/market/components/market-outcomes-list/market-outcom
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
 import { OutcomeFormatted } from 'modules/types';
+import { ToggleExtendButton } from 'modules/common/buttons';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -20,6 +21,7 @@ interface MarketOutcomesListProps {
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
   popUp: boolean;
+  toggle: Function;
 }
 
 export default class MarketOutcomesList extends Component<
@@ -44,11 +46,17 @@ export default class MarketOutcomesList extends Component<
       maxPriceBigNumber,
       popUp,
       marketId,
+      toggle
     } = this.props;
 
     return (
       <section className={Styles.OutcomesList}>
-        {!popUp && <h3 className={Styles.Heading}>Outcomes</h3>}
+        {!popUp && (
+          <h3 className={Styles.Heading}>
+            Outcomes
+            <ToggleExtendButton toggle={toggle} />
+          </h3>
+        )}
         <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
           <ul
             className={classNames(
@@ -57,14 +65,10 @@ export default class MarketOutcomesList extends Component<
             )}
           >
             <li>Outcome</li>
-            <li>
-              Bid Qty
-            </li>
+            <li>Bid Qty</li>
             <li>Best Bid</li>
             <li>Best Ask</li>
-            <li>
-              Ask Qty
-            </li>
+            <li>Ask Qty</li>
             <li>Last</li>
           </ul>
           {outcomesFormatted.map(outcome => (
