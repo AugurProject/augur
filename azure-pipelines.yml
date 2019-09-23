@@ -297,6 +297,13 @@ jobs:
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
       - bash: |
+          set -exuo pipefail
+          echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
+          sudo curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
+          md5sum -c solc.md5 && \
+          sudo chmod a+x /usr/local/bin/solc
+        displayName: install solc
+      - bash: |
           set -euo pipefail
           python3 -m venv venv && \
           source venv/bin/activate && \
