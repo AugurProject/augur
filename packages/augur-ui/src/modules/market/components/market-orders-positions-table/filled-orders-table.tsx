@@ -21,7 +21,6 @@ const FilledOrdersTable = ({ filledOrders, scalarDenomination }) => (
         ))}
       </div>
     </div>
-    <div className={Styles.Footer} />
   </>
 );
 
