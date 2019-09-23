@@ -4,10 +4,8 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { PlatformActivityStatsResult } from '@augurproject/sdk/build/state/getter/Platform';
-import { NULL_ADDRESS } from '@augurproject/tools/build/constants';
 import { fork } from '@augurproject/tools';
 
 const mock = makeDbMock();
@@ -71,37 +69,10 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await john.buyCompleteSets(yesNoMarket, numberOfCompleteSets);
     await john.sellCompleteSets(yesNoMarket, numberOfCompleteSets);
 
-    // Move time to open reporting
-    // let newTime = (await yesNoMarket.getEndTime_()).plus(
-    //   SECONDS_IN_A_DAY.times(7)
-    // );
-    // await john.setTimestamp(newTime);
-    // Submit initial report
-    const noPayoutSet = [
-      new BigNumber(0),
-      new BigNumber(100),
-      new BigNumber(0),
-    ];
-    // await john.doInitialReport(yesNoMarket, noPayoutSet);
-
-    // Move time to dispute window start time
-    // let disputeWindowAddress = await yesNoMarket.getDisputeWindow_();
-    // let disputeWindow = await john.augur.contracts.disputeWindowFromAddress(
-    //   disputeWindowAddress
-    // );
-    // newTime = new BigNumber(await disputeWindow.getStartTime_()).plus(1);
-    // await john.setTimestamp(newTime);
-    //
-    // // Purchase participation tokens
-    // await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
-    //
-    // console.log('BETTY')
-    // // await dispute(john, yesNoMarket);
-
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     const markets = await api.route('getMarketsInfo', { marketIds: [yesNoMarket.address]});
     await fork(john, markets[0]);
-    let stats = await getPlatformActivityStats(john, db, api, universe);
+    const stats = await getPlatformActivityStats(john, db, api, universe);
     expect(stats).toEqual({
       activeUsers: 2,
       amountStaked: '4650537188053131103515648',
@@ -111,130 +82,6 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       openInterest: '2040000000000000',
       volume: '6093000000000000',
     });
-
-    // console.log('BETTY')
-    // // Move time forward by 2 weeks
-    // newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
-    // console.log('BETTY')
-    // await john.setTimestamp(newTime);
-    //
-    // console.log('BETTY')
-    // // Claim initial reporter
-    // let initialReporter = await john.getInitialReporter(yesNoMarket);
-    // console.log('BETTY')
-    // await initialReporter.redeem(john.account.publicKey);
-    // console.log('BETTY')
-    // // Claim winning crowdsourcers
-    // let winningReportingParticipant = await john.getWinningReportingParticipant(
-    //   yesNoMarket
-    // );
-    // await winningReportingParticipant.redeem(john.account.publicKey);
-    // await john.claimTradingProceeds(yesNoMarket);
-    //
-    // console.log('BETTY')
-    // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    // let stats = await getPlatformActivityStats(john, db, api, universe);
-    // expect(stats).toMatchObject({
-    //   marketsCreated: 3,
-    //   numberOfTrades: 3,
-    // });
-    //
-    // // Test endTime and startTime
-    // let errorMessage = '';
-    // try {
-    //   await getPlatformActivityStats(john, db, api, universe, 123456, 12);
-    // } catch (error) {
-    //   errorMessage = error.message;
-    // }
-    // expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
-    //
-    // console.log('BETTY')
-    // // Create markets with multiple users again
-    // const yesNoMarket2 = await john.createReasonableYesNoMarket();
-    // const categoricalMarket2 = await john.createReasonableMarket([
-    //   stringTo32ByteHex('A'),
-    //   stringTo32ByteHex('B'),
-    //   stringTo32ByteHex('C'),
-    // ]);
-    // const scalarMarket2 = await john.createReasonableScalarMarket();
-    //
-    // // Trade
-    // await placeOrders(john, yesNoMarket2, numShares, price);
-    // await placeOrders(john, categoricalMarket2, numShares, price);
-    // await placeOrders(john, scalarMarket2, numShares, price);
-    // await fillOrders(mary, yesNoMarket2, numShares, cost);
-    // await fillOrders(mary, categoricalMarket2, numShares, cost);
-    // await fillOrders(mary, scalarMarket2, numShares, cost);
-    //
-    // console.log('BETTY')
-    // // Cancel an order
-    // await john.cancelOrder(
-    //   await john.getBestOrderId(bid, scalarMarket2.address, outcome2)
-    // );
-    //
-    // // Purchase & sell complete sets
-    // numberOfCompleteSets = new BigNumber(1);
-    // await john.buyCompleteSets(yesNoMarket2, numberOfCompleteSets);
-    // await john.sellCompleteSets(yesNoMarket2, numberOfCompleteSets);
-    //
-    // // Move time to open reporting
-    // newTime = (await yesNoMarket2.getEndTime_()).plus(
-    //   SECONDS_IN_A_DAY.times(7)
-    // );
-    // await john.setTimestamp(newTime);
-    //
-    // console.log('BETTY')
-    // await john.doInitialReport(yesNoMarket2, noPayoutSet);
-    //
-    // console.log('BETTY')
-    // // Move time to dispute window start time
-    // disputeWindowAddress = await yesNoMarket2.getDisputeWindow_();
-    // disputeWindow = await john.augur.contracts.disputeWindowFromAddress(
-    //   disputeWindowAddress
-    // );
-    // newTime = new BigNumber(await disputeWindow.getStartTime_()).plus(1);
-    // await john.setTimestamp(newTime);
-    //
-    // // Purchase participation tokens
-    // await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
-    // console.log('BETTY')
-    // await dispute(john, yesNoMarket2);
-    //
-    // console.log('BETTY')
-    // // Move time forward by 2 weeks
-    // newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
-    // await john.setTimestamp(newTime);
-    //
-    // // Finalize markets & redeem crowdsourcer funds
-    // await yesNoMarket2.finalize();
-    //
-    // console.log('BETTY')
-    // // Transfer cash to dispute window (so participation tokens can be redeemed -- normally this would come from fees)
-    // await john.augur.contracts.cash.transfer(
-    //   disputeWindow.address,
-    //   new BigNumber(1)
-    // );
-    //
-    // // Redeem participation tokens
-    // await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
-    // // Claim initial reporter
-    // initialReporter = await john.getInitialReporter(yesNoMarket2);
-    // await initialReporter.redeem(john.account.publicKey);
-    //
-    // // Claim winning crowdsourcers
-    // winningReportingParticipant = await john.getWinningReportingParticipant(
-    //   yesNoMarket2
-    // );
-    // await winningReportingParticipant.redeem(john.account.publicKey);
-    //
-    // await john.claimTradingProceeds(yesNoMarket2);
-    //
-    // console.log('BETTY')
-    // stats = await getPlatformActivityStats(john, db, api, universe);
-    // expect(stats).toMatchObject({
-    //   marketsCreated: 6,
-    //   numberOfTrades: 3,
-    // });
   }, 200000);
 });
 
