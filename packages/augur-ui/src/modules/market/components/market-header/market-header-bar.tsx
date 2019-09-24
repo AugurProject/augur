@@ -7,6 +7,7 @@ import { MARKET_OPEN, COPY_MARKET_ID, COPY_AUTHOR } from "modules/common/constan
 import Clipboard from "clipboard";
 import { DotSelection } from "modules/common/selection";
 import { DateFormattedObject } from "modules/types";
+import { Getters } from "@augurproject/sdk";
 
 export interface MarketHeaderBarProps {
   addToFavorites: Function;
@@ -16,7 +17,7 @@ export interface MarketHeaderBarProps {
   isLogged: boolean;
   isFavorite: boolean;
   reportingState: string;
-  disputeInfo: any;
+  disputeInfo: Getters.Markets.DisputeInfo;
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
@@ -38,7 +39,6 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
       disputeInfo,
       endTimeFormatted,
       currentAugurTimestamp,
-      disputingWindowEndTime,
     } = this.props;
 
     return (
@@ -49,7 +49,6 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
           disputeInfo={disputeInfo}
           endTimeFormatted={endTimeFormatted}
           currentAugurTimestamp={currentAugurTimestamp}
-          disputingWindowEndTime={disputingWindowEndTime}
         />
 
         {addToFavorites && (
