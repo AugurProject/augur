@@ -302,10 +302,10 @@ export const MARKET_CLOSED = 'closed';
 export const IN_REPORTING = 'In-reporting';
 export const WAITING_ON_REPORTER = 'Waiting on reporter';
 export const OPEN_REPORTING = 'Open reporting';
-export const AWAITING_NEXT_DISPUTE = 'Awaiting next dispute';
-export const DISPUTE_ROUND = 'Dispute round';
-export const REPORTING_ENDS = 'Reporting Ends';
-export const DISPUTE_ENDS = 'Dispute Ends';
+export const FAST_DISPUTE = 'Fast dispute';
+export const SLOW_DISPUTE = 'Slow dispute';
+export const REPORTING_ENDS = 'Reporting ends';
+export const DISPUTE_ENDS = 'Dispute ends';
 
 // # Market Status Messages
 export const MARKET_STATUS_MESSAGES = {

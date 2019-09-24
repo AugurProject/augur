@@ -173,7 +173,6 @@ export const loadCurrentlyDisputingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
   };

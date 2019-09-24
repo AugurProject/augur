@@ -116,7 +116,6 @@ interface CounterProps {
   type: string;
   market: MarketData;
   currentTime?: DateFormattedObject;
-  disputingWindowEndTime?: DateFormattedObject;
 }
 
 const Counter = (props: CounterProps) => {
@@ -141,14 +140,14 @@ const Counter = (props: CounterProps) => {
         </div>
       );
     } else {
-      if (props.currentTime && props.disputingWindowEndTime) {
+      if (props.currentTime && props.market.disputeInfo.disputeWindow.endTime) {
         counter = (
           <div className={Styles.Countdown}>
             <MarketProgress
               reportingState={reportingState}
               currentTime={props.currentTime}
               endTimeFormatted={endTimeFormatted}
-              reportingWindowEndtime={props.disputingWindowEndTime}
+              reportingWindowEndTime={props.market.disputeInfo.disputeWindow.endTime}
               customLabel={REPORTING_ENDS}
             />
           </div>

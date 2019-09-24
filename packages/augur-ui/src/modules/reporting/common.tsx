@@ -546,7 +546,6 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const {
     market,
     currentAugurTimestamp,
-    disputingWindowEndTime,
     showReportingModal,
     isLogged,
   } = props;
@@ -556,7 +555,6 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const {
     id,
     description,
-    marketStatus,
     reportingState,
     disputeInfo,
     endTimeFormatted,
@@ -567,12 +565,10 @@ export const ReportingCard = (props: ReportingCardProps) => {
   return (
     <div className={Styles.ReportingCard}>
       <InReportingLabel
-        marketStatus={marketStatus}
         reportingState={reportingState}
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
-        disputingWindowEndTime={disputingWindowEndTime}
       />
       <MarketLink id={id}>{description}</MarketLink>
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
@@ -580,7 +576,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingState={reportingState}
           currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
-          reportingWindowEndtime={disputingWindowEndTime}
+          reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
