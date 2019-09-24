@@ -22,7 +22,7 @@
   background-color: @color-module-background;
   bottom: 0;
   color: @color-primary-text;
-  height: 100vh;
+  height: calc(~"100vh - @{multi-top-bar-height}");
   left: 0;
   min-height: 800px;
   position: absolute;
@@ -60,6 +60,7 @@
   flex-grow: 1;
   margin: @size-4;
   margin-top: 0;
+  min-height: calc(~"100vh - @{multi-top-bar-height}");
 }
 
 .MarketView__firstColumn {
@@ -74,7 +75,6 @@
   flex-grow: 1;
   margin-left: @size-4;
   max-width: 20.3125rem;
-  min-height: 100vh;
   min-width: 20.3125rem;
 }
 
@@ -155,7 +155,6 @@
 .MarketView__orders {
   display: flex;
   flex-direction: column;
-  height: 50vh;
   margin-bottom: @size-4;
 }
 
@@ -165,12 +164,7 @@
 }
 
 .MarketView__show {
-  height: calc(~"100vh - 2rem") !important;
   max-height: 100% !important;
-}
-
-.MarketView__history {
-  height: 50vh;
 }
 
 .MarketView__history,
