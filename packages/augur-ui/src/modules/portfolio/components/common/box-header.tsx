@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/common/box-header.styles.less';
 import { TwoArrowsOutline } from 'modules/common/icons';
+import { ToggleExtendButton } from 'modules/common/buttons';
 
 export interface BoxHeaderProps {
   title: string;
@@ -68,16 +69,9 @@ const BoxHeader = (props: BoxHeaderProps) => (
         <div>
           {props.rightContent}
           {props.mostRightContent}
-          {props.showToggle && (
-            <button
-              className={Styles.Toggle}
-              onClick={() => {
-                props.toggle();
-              }}
-            >
-              {TwoArrowsOutline}
-            </button>
-          )}
+          {props.showToggle &&
+            <ToggleExtendButton toggle={props.toggle} />
+          }
         </div>
       </div>
       {props.bottomBarContent && (

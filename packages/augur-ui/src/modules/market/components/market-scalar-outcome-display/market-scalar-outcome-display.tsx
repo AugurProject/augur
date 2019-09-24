@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 import getValue from 'utils/get-value';
 import CustomPropTypes from 'utils/custom-prop-types';

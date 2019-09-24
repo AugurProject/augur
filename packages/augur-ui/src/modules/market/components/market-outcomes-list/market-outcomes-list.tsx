@@ -1,14 +1,15 @@
-import React, { Component } from "react";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import classNames from 'classnames';
 
-import { SCALAR } from "modules/common/constants";
-import MarketOutcomesListOutcome from "modules/market/containers/market-outcome";
-import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display";
+import { SCALAR } from 'modules/common/constants';
+import MarketOutcomesListOutcome from 'modules/market/containers/market-outcome';
 
-import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
-import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.styles.less";
-import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles.less";
-import { OutcomeFormatted } from "modules/types";
+import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
+import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
+import { OutcomeFormatted } from 'modules/types';
+import { ToggleExtendButton } from 'modules/common/buttons';
+import { BigNumber } from 'utils/create-big-number';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -20,9 +21,12 @@ interface MarketOutcomesListProps {
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
   popUp: boolean;
+  toggle: Function;
 }
 
-export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
+export default class MarketOutcomesList extends Component<
+  MarketOutcomesListProps
+> {
   static defaultProps = {
     selectedOutcomeId: 2,
     scalarDenomination: null,
@@ -42,15 +46,24 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
       maxPriceBigNumber,
       popUp,
       marketId,
+      toggle
     } = this.props;
 
     return (
       <section className={Styles.OutcomesList}>
         {!popUp && (
-          <h3 className={Styles.Heading}>Outcomes</h3>
+          <h3 className={Styles.Heading}>
+            Outcomes
+            <ToggleExtendButton toggle={toggle} />
+          </h3>
         )}
         <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
-          <ul className={classNames(HeaderStyles.DataTableHeader, HeaderStyles.OutcomesHeader)}>
+          <ul
+            className={classNames(
+              HeaderStyles.DataTableHeader,
+              HeaderStyles.OutcomesHeader
+            )}
+          >
             <li>Outcome</li>
             <li>Bid Qty</li>
             <li>Best Bid</li>
@@ -58,7 +71,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomesFormatted.map(outcome => (
+          {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               marketId={marketId}
@@ -66,21 +79,10 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
               selectedOutcomeId={selectedOutcomeId}
               updateSelectedOutcome={updateSelectedOutcome}
               marketType={marketType}
-              scalarDenomination={
-                marketType === SCALAR && scalarDenomination
-              }
+              scalarDenomination={marketType === SCALAR && scalarDenomination}
             />
-          ))
-          }
+          ))}
         </div>
-        {marketType === SCALAR && (
-          <MarketScalarOutcomeDisplay
-            scalarDenomination={scalarDenomination}
-            min={minPriceBigNumber}
-            max={maxPriceBigNumber}
-            outcomes={outcomesFormatted}
-          />
-        )}
       </section>
     );
   }

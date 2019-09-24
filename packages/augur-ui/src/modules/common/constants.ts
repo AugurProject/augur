@@ -236,7 +236,6 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
-  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
 }
 
 export const SORT_OPTIONS = [
