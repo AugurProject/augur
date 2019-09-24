@@ -7,10 +7,15 @@ import { InputErrorIcon } from 'modules/common/icons';
 import { Input, TextInput } from 'modules/common/form';
 import ModalReview from 'modules/modal/components/modal-review';
 import Styles from 'modules/modal/components/common/common.styles.less';
-import { formatRep, formatGasCostToEther } from 'utils/format-number';
+import { formatRep, formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
 import { BUY_PARTICIPATION_TOKENS_GAS_LIMIT } from 'modules/common/constants';
 import ModalActions from './common/modal-actions';
-import { Title, DescriptionMessage, AlertMessageProps } from '../common';
+import {
+  Title,
+  DescriptionMessage,
+  AlertMessageProps,
+  Breakdown,
+} from '../common';
 
 interface ModalParticipateProps {
   rep: string;
@@ -119,47 +124,48 @@ export default class ModalParticipate extends Component<
   render() {
     const { closeModal, gasPrice, messages, title } = this.props;
     const { errors, isValid, quantity, gasEstimate } = this.state;
-    const invalidWithErrors = !isValid && errors.length > 0;
     const formattedQuantity = formatRep(quantity || 0);
-    const formattedGas = formatGasCostToEther(
-      gasEstimate,
-      { decimalsRounded: 4 },
-      gasPrice
+    const formattedGas = formatEtherEstimate(
+      formatGasCostToEther(
+        gasEstimate,
+        { decimalsRounded: 4 },
+        gasPrice
+      )
     );
     const items = [
       {
-        label: 'Purchase',
-        value: 'Participation Tokens',
-        denomination: '',
-      },
-      {
         label: 'quantity',
-        value: formattedQuantity.fullPrecision,
+        value: formattedQuantity,
         denomination: '',
       },
       {
         label: 'price',
-        value: formattedQuantity.fullPrecision,
+        value: formattedQuantity,
         denomination: 'REP',
+        showDenomination: true,
       },
       {
         label: 'gas',
         value: formattedGas,
         denomination: 'ETH',
+        showDenomination: true,
       },
     ];
 
     return (
       <section className={Styles.ModalContainer}>
         <Title title={title} closeAction={() => closeModal()} />
-        <DescriptionMessage messages={messages} />
-        <TextInput
-          placeholder={'0.0000'}
-          value={quantity}
-          onChange={value => this.updateQuantity(value)}
-          errorMessage={errors[0]}
-          innerLabel="REP"
-        />
+        <div className={Styles.ModalParticipation}>
+          <DescriptionMessage messages={messages} />
+          <TextInput
+            placeholder={'0.0000'}
+            value={quantity}
+            onChange={value => this.updateQuantity(value)}
+            errorMessage={errors[0]}
+            innerLabel="REP"
+          />
+          <Breakdown rows={items} />
+        </div>
         <ModalActions
           buttons={[
             {

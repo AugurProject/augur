@@ -66,7 +66,7 @@ export interface CallToActionProps {
 }
 
 export interface BreakdownProps {
-  rows: Array<LinearPropertyLabelProps>;
+  rows: LinearPropertyLabelProps[];
   title?: string;
   short?: boolean;
   reverse?: boolean;
