@@ -17,7 +17,7 @@ export default (
 ): Notification[] => {
   switch (action.type) {
     case UPDATE_READ_NOTIFICATIONS:
-      return [...notifications, action.data.notification];
+      return [...notifications, ...action.data.notifications];
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;

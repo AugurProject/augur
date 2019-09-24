@@ -350,7 +350,6 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
   outcome: string;
   numShares: string;
   numPayoutTokens: string;
-  finalTokenBalance: string;
   fees: string;
 }
 
@@ -400,6 +399,7 @@ export interface MarketData extends Log, Doc {
   nextWindowStartTime: string;
   nextWindowEndTime: string;
   pacingOn: boolean;
+  noShowBond: string;
 }
 
 export interface DisputeDoc extends Log, Doc {

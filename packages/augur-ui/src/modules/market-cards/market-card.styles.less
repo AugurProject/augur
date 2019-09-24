@@ -1,9 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketCard {
-	background: @color-dark-grey;
+	background: @color-module-background;
 	border-radius: @border-radius-default;
-	border: 1px solid @color-primary-light;
+	border: 1px solid @color-dark-grey;
 	display: flex;
 	margin: @size-4 0;
   display: grid;
@@ -142,11 +142,11 @@
 
 	@keyframes colorchange {
 	  0% {
-	    background-color: fade(@color-primary-light, 80)
+	    background-color: fade(@color-primary-text, 80)
 	  }
 
 	  100% {
-	    background-color: fade(@color-primary-light, 100)
+	    background-color: fade(@color-primary-text, 100)
 	  }
 	}
 
@@ -162,7 +162,7 @@
 			animation: colorchange 0.5s infinite;
 			animation-direction: alternate-reverse;
 
-			background: @color-theme-primary;
+			background: @color-primary-text;
 			height: @size-12;
 		}
 

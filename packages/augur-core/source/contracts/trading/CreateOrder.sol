@@ -21,7 +21,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
     IAugur public augur;
     address public trade;
-    address public zeroXTradeToken;
+    address public ZeroXTrade;
     IProfitLoss public profitLoss;
 
 
@@ -30,7 +30,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         augur = _augur;
         trade = augur.lookup("Trade");
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        zeroXTradeToken = augur.lookup("ZeroXTradeToken");
+        ZeroXTrade = augur.lookup("ZeroXTrade");
     }
 
     /**
@@ -55,7 +55,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
     function createOrder(address _creator, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, IERC20 _kycToken) external nonReentrant returns (bytes32) {
         require(augur.isKnownMarket(_market));
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(_creator) > 0, "Createorder.createOrder: KYC token failure");
-        require(msg.sender == zeroXTradeToken || msg.sender == trade || msg.sender == address(this));
+        require(msg.sender == ZeroXTrade || msg.sender == trade || msg.sender == address(this));
         Order.Data memory _orderData = Order.create(augur, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _kycToken);
         Order.escrowFunds(_orderData);
         require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0, "Createorder.createOrder: Order duplication in same block");

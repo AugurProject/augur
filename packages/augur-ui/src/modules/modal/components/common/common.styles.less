@@ -25,12 +25,12 @@
 }
 
 .ModalContainer {
-  background: @color-tertiary-background;
-  border: 2px solid @color-primary-alternate;
-  border-radius: 5px;
+  background: @color-module-background;
+  border: @size-1 solid @color-dark-grey;
+  border-radius: @size-5;
   color: @color-primary-text;
   max-width: 35rem;
-  padding: 1.5rem 0;
+  padding: @size-24 0;
   position: relative;
   text-align: center;
   width: 100%;
@@ -45,7 +45,7 @@
     font-size: @size-22;
     font-weight: 500;
     line-height: 1.75rem;
-    margin: 0.5rem 0 1.5rem;
+    margin: @size-8 0 @size-24;
     text-align: center;
   }
 
@@ -54,7 +54,7 @@
     font-size: @size-14;
     font-weight: 600;
     line-height: @size-18;
-    margin: 0 7rem 0.5rem;
+    margin: 0 7rem @size-8;
     text-align: left;
     width: auto;
   }
@@ -68,7 +68,7 @@
     padding: 0 4rem;
 
     &:last-of-type {
-      margin-bottom: 1.5rem;
+      margin-bottom: @size-24;
     }
 
     > button {
@@ -82,14 +82,14 @@
   }
 
   form.ModalTightForm > p.Error {
-    margin: 0 7rem 1.5rem;
+    margin: 0 7rem @size-24;
     padding: 0;
   }
 
   form.ModalTightForm > div {
     font-size: @size-14;
     line-height: @size-16;
-    margin: 0 7rem 1.5rem;
+    margin: 0 7rem @size-24;
     width: auto;
 
     > input {
@@ -104,16 +104,16 @@
   }
 
   form.ModalTightForm > div.ErrorField {
-    margin-bottom: 0.5rem;
+    margin-bottom: @size-8;
   }
 
   form.ModalTightForm > div:last-of-type {
-    margin: 0.5rem 0 0;
+    margin: @size-8 0 0;
   }
 }
 
 .ModalForm {
-  background: @color-tertiary-background;
+  background: @color-module-background;
   color: @color-primary-text;
   max-width: 35rem;
   text-align: left;
@@ -129,12 +129,12 @@
     font-size: @size-22;
     font-weight: 500;
     line-height: 1.75rem;
-    margin: 0.5rem 0 1.5rem;
+    margin: @size-8 0 @size-24;
     text-align: center;
   }
 
   p.Error {
-    margin: 0 4rem 1.5rem;
+    margin: 0 4rem @size-24;
   }
 
   label {
@@ -142,7 +142,7 @@
     font-size: @size-14;
     font-weight: 600;
     line-height: @size-18;
-    margin: 0 4rem 0.5rem;
+    margin: 0 4rem @size-8;
     text-align: left;
     text-transform: capitalize;
     width: auto;
@@ -151,7 +151,7 @@
   div {
     font-size: @size-14;
     line-height: @size-16;
-    margin: 0 4rem 1.5rem;
+    margin: 0 4rem @size-24;
     width: auto;
 
     > input {
@@ -166,17 +166,17 @@
   }
 
   div:last-of-type {
-    margin: 0.5rem 0 0;
+    margin: @size-8 0 0;
   }
 }
 
 .TightModalContainer {
-  background: @color-tertiary-background;
-  border: 2px solid @color-primary-alternate;
-  border-radius: 5px;
+  background: @color-module-background;
+  border: @size-1 solid @color-dark-grey;
+  border-radius: @size-5;
   color: @color-primary-text;
   max-width: 20rem;
-  padding: 1.5rem 0;
+  padding: @size-24 0;
   position: relative;
   text-align: center;
   width: 100%;
@@ -190,7 +190,7 @@
     font-size: @size-22;
     font-weight: 500;
     line-height: 1.75rem;
-    margin: 0.5rem 0 1.5rem;
+    margin: @size-8 0 @size-24;
     text-align: center;
   }
 
@@ -199,8 +199,8 @@
     font-size: @size-16;
     font-weight: 500;
     line-height: @size-18;
-    margin: 1.5rem 0 0;
-    padding: 0 1.5rem;
+    margin: @size-24 0 0;
+    padding: 0 @size-24;
     text-align: left;
   }
 
@@ -209,8 +209,8 @@
     font-size: @size-12;
     font-weight: 400;
     line-height: @size-18;
-    margin: 0 0 1rem;
-    padding: 0 1.5rem;
+    margin: 0 0 @size-16;
+    padding: 0 @size-24;
     text-align: left;
   }
 
@@ -239,7 +239,7 @@
 div.ErrorField,
 div.ErrorField:focus-within,
 div.ErrorField:focus {
-  border: @size-2 solid @color-error;
+  border: @size-1 solid @color-error;
   margin-bottom: @size-8;
 }
 
@@ -274,8 +274,8 @@ div.ErrorField:focus {
   background-color: @color-dark-grey;
   color: @color-primary-text;
   list-style: none;
-  margin: 0 2rem 1.5rem;
-  padding: 1rem 0;
+  margin: 0 @size-32 @size-24;
+  padding: @size-16 0;
 
   > li {
     align-items: baseline;
@@ -283,13 +283,13 @@ div.ErrorField:focus {
     flex-flow: row nowrap;
     font-size: @size-14;
     line-height: @size-16;
-    padding: 0.5rem 0;
+    padding: @size-8 0;
 
     > label {
       color: @color-primary-text;
       flex: 1;
       font-weight: 600;
-      margin: 0 1rem 0 auto;
+      margin: 0 @size-16 0 auto;
       text-align: right;
     }
 
@@ -311,13 +311,13 @@ div.ErrorField:focus {
   color: @color-primary-text;
   font-size: @size-12;
   line-height: @size-18;
-  margin: 0 0 1.5rem;
+  margin: 0 0 @size-24;
   padding: 0 4rem;
 }
 
 .ModalTable {
-  border-left: 1px solid @color-primary-alternate;
-  border-top: 1px solid @color-primary-alternate;
+  border-left: 1px solid @color-dark-grey;
+  border-top: 1px solid @color-dark-grey;
   color: @color-primary-text;
   display: flex;
   flex-flow: column;
@@ -325,7 +325,7 @@ div.ErrorField:focus {
 }
 
 .ModalTableRow {
-  border-bottom: 1px solid @color-primary-alternate;
+  border-bottom: 1px solid @color-dark-grey;
   display: flex;
   flex: 1;
   flex-flow: row;
@@ -345,7 +345,7 @@ div.ErrorField:focus {
 }
 
 .ModalTableColumn {
-  border-right: 1px solid @color-primary-alternate;
+  border-right: 1px solid @color-dark-grey;
   flex: 1;
   font-size: @size-12;
   line-height: @size-14;
@@ -425,15 +425,15 @@ div.ErrorField:focus {
 }
 
 .ModalDisclaimer {
-  background: @color-tertiary-background;
-  border: 2px solid @color-primary-alternate;
-  border-radius: 5px;
+  background: @color-module-background;
+  border: @size-1 solid @color-dark-grey;
+  border-radius: @size-5;
   color: @color-primary-text;
   flex-flow: row nowrap;
   max-width: 35rem;
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
-  padding: 1.5rem 0 2rem 0;
+  padding: @size-24 0 @size-32 0;
   position: relative;
   text-align: center;
   width: 100%;
@@ -447,18 +447,18 @@ div.ErrorField:focus {
     font-size: @size-22;
     font-weight: 500;
     line-height: 1.75rem;
-    margin: 0.5rem 0 1.5rem;
+    margin: @size-8 0 @size-24;
   }
 }
 
 .ModalDisclaimer__TextBox {
   background-color: @color-dark-grey;
-  margin: 0 2rem 1.5rem;
+  margin: 0 @size-32 @size-24;
   max-height: 25rem;
   max-width: 35rem;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0.5rem 2rem;
+  padding: @size-8 @size-32;
   text-align: left;
   width: auto;
 
@@ -466,14 +466,14 @@ div.ErrorField:focus {
     color: @color-primary-text;
     font-size: @size-14;
     line-height: @size-22;
-    margin: 0 0 1.5rem;
+    margin: 0 0 @size-24;
   }
 }
 
 .ModalDisclaimer__helperText {
   display: flex;
   flex-flow: row nowrap;
-  margin-bottom: 1rem;
+  margin-bottom: @size-16;
 
   > label {
     align-items: center;
@@ -496,7 +496,7 @@ div.ErrorField:focus {
 .ModalDisclaimer__checkbox {
   display: flex;
   flex-flow: row nowrap;
-  margin-bottom: 1rem;
+  margin-bottom: @size-16;
 
   > label {
     align-items: center;
@@ -511,13 +511,13 @@ div.ErrorField:focus {
     user-select: none;
 
     > div {
-      margin-right: 2rem;
+      margin-right: @size-32;
     }
   }
 }
 
 .ModalView__content--full {
-  background-color: #161022;
+  background-color: @color-page-background;
   justify-content: normal;
   padding: 0;
 }
@@ -539,7 +539,7 @@ div.ErrorField:focus {
 
 .OverlayHeader {
   display: flex;
-  padding: 24px 20px;
+  padding: @size-24 @size-20;
 
   > button {
     height: @size-16;
@@ -560,15 +560,15 @@ div.ErrorField:focus {
 
 @media @breakpoint-mobile {
   .ModalDisclaimer__TextBox {
-    margin: 0 1rem 1.5rem;
+    margin: 0 @size-16 @size-24;
     max-height: 15rem;
-    padding: 0.5rem 1rem;
+    padding: @size-8 @size-16;
   }
 }
 
 @media @breakpoint-mobile-small {
   .ModalView__content {
-    padding: 1rem;
+    padding: @size-16;
   }
 
   .ModalView__content--full {
@@ -581,14 +581,14 @@ div.ErrorField:focus {
 
   .ModalContainer > p,
   form.ModalTightForm > p {
-    padding: 0 1.5rem;
+    padding: 0 @size-24;
   }
 
   .ModalForm {
     div,
     p,
     p.Error {
-      margin: 0 1.5rem 1.5rem;
+      margin: 0 @size-24 @size-24;
     }
 
     p.Error {
@@ -596,15 +596,15 @@ div.ErrorField:focus {
     }
 
     div.ErrorField {
-      margin: 0 1.5rem 0.5rem;
+      margin: 0 @size-24 @size-8;
     }
 
     div:last-of-type {
-      margin: 0.5rem 0 0;
+      margin: @size-8 0 0;
     }
 
     label {
-      margin: 0 1.5rem 0.5rem;
+      margin: 0 @size-24 @size-8;
     }
   }
 
@@ -615,9 +615,9 @@ div.ErrorField:focus {
   }
 
   .ModalDisclaimer__TextBox {
-    margin: 0 1rem 1rem;
+    margin: 0 @size-16 @size-16;
     max-height: 20rem;
-    padding: 0.5rem 1rem;
+    padding: @size-8 @size-16;
   }
 
   .ModalDisclaimer__helperText,
@@ -625,39 +625,39 @@ div.ErrorField:focus {
     > label {
       font-size: @size-12;
       line-height: @size-12;
-      margin: 0 1.5rem;
+      margin: 0 @size-24;
     }
   }
 
   .ModalDisclaimer {
     > h1 {
-      margin: 0 0 1rem;
+      margin: 0 0 @size-16;
     }
   }
 }
 
 @media @breakpoint-mobile-extra-small {
   .ModalDisclaimer__TextBox {
-    margin: 0 1rem 1rem;
+    margin: 0 @size-16 @size-16;
     max-height: 10rem;
   }
 
   .ModalDisclaimer {
-    padding: 1rem 0 4rem 0;
+    padding: @size-16 0 4rem 0;
 
     > h1 {
-      margin: 0 0 1rem;
+      margin: 0 0 @size-16;
     }
 
     .ModalDisclaimer__helperText,
     .ModalDisclaimer__checkbox {
       > label {
-        margin: 0 1rem;
+        margin: 0 @size-16;
       }
     }
 
     .ActionButtons {
-      padding: 1rem 0 0;
+      padding: @size-16 0 0;
     }
   }
 }
@@ -667,34 +667,34 @@ div.ErrorField:focus {
   .ModalDisclaimer {
     max-height: 75vh;
     max-width: 90vw;
-    padding: 0.5rem 0 2rem 0;
+    padding: @size-8 0 @size-32 0;
 
     > h1 {
-      margin: 0 0 0.5rem;
+      margin: 0 0 @size-8;
     }
 
     .ActionButtons {
       margin: 0;
       max-width: 90vw;
-      padding: 0.5rem 0 0;
+      padding: @size-8 0 0;
     }
   }
 
   .ModalDisclaimer__TextBox {
-    margin: 0 0.5rem 0.5rem;
+    margin: 0 @size-8 @size-8;
     max-height: 6rem;
     max-width: none;
-    padding: 0 0.5rem;
+    padding: 0 @size-8;
   }
 
   .ModalDisclaimer__helperText,
   .ModalDisclaimer__checkbox {
-    margin-bottom: 0.5rem;
+    margin-bottom: @size-8;
 
     > label {
       font-size: @size-12;
       line-height: @size-12;
-      margin: 0 1rem;
+      margin: 0 @size-16;
     }
   }
 }

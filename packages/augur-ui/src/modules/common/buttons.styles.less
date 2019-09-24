@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Button {
-  .text-14-bold;
+  .mono-12-bold;
 
   border: @border-default;
   border-radius: @border-radius-default;
@@ -42,7 +42,7 @@
   .Button;
 
   background: transparent;
-  border: 1px solid @color-primary-light;
+  border: 1px solid @color-secondary-action-outline;
   color: @color-primary-text;
   max-height: @button-height-default;
   padding: @size-12 @size-24;
@@ -73,17 +73,17 @@
 .BuyOrderButton {
   .Button;
 
-  background: fade(@color-positive, 40%);
+  background: fade(@color-positive, 10%);
   border-color: @color-positive;
-  color: @color-primary-text;
-  height: @button-height-orders;
-  max-height: @button-height-orders;
+  color: @color-positive;
+  height: @button-height-default;
+  max-height: @button-height-default;
   padding: @button-padding-orders;
 
   &:disabled {
-    background: fade(@color-positive, 20%);
+    background: fade(@color-positive, 5%);
     border-color: fade(@color-positive, 10%);
-    color: fade(@color-primary-text, 20%);
+    color: fade(@color-positive, 20%);
   }
 
   &:hover:enabled {
@@ -91,20 +91,48 @@
   }
 }
 
+.ToggleExtendButton {    
+  display: flex;
+  margin-left: @size-4;
+
+  > svg {
+    width: @size-12;
+    height: @size-15;
+
+    > path {
+      fill: @color-secondary-text;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    > svg {
+      > path {
+        fill: @color-primary-text;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
 .SellOrderButton {
   .Button;
 
-  background: fade(@color-negative, 40%);
+  background: fade(@color-negative, 10%);
   border-color: @color-negative;
-  color: @color-primary-text;
-  height: @button-height-orders;
-  max-height: @button-height-orders;
+  color: @color-negative;
+  height: @button-height-default;
+  max-height: @button-height-default;
   padding: @button-padding-orders;
 
   &:disabled {
-    background: fade(@color-negative, 20%);
+    background: fade(@color-negative, 5%);
     border-color: fade(@color-negative, 10%);
-    color: fade(@color-primary-text, 20%);
+    color: fade(@color-negative, 20%);
   }
 
   &:hover:enabled {
@@ -183,7 +211,7 @@
   .mono-9;
 
   border: @border-default;
-  border-color: @color-primary-light;
+  border-color: @color-secondary-action-outline;
   border-radius: @size-3;
   color: @color-inactive-text;
   line-height: @size-10;
@@ -191,7 +219,7 @@
   text-transform: uppercase;
 
   &:hover:enabled {
-    background: @color-primary-light;
+    background: @color-secondary-action;
     color: @color-primary-text;
   }
 }
@@ -294,7 +322,7 @@
 
   align-content: center;
   background: @color-secondary-action;
-  border: 1px solid @color-primary-light;
+  border: 1px solid @color-secondary-action-outline;
   color: @color-primary-text;
   display: flex;
   flex-flow: row nowrap;
@@ -515,8 +543,8 @@
   .Button;
 
   align-items: center;
-  background: @color-theme-primary;
-  border-color: @color-highlight;
+  background: @color-secondary-action;
+  border-color: @color-secondary-action-outline;
   display: flex;
   height: @size-32;
   padding: @size-8;
@@ -606,7 +634,7 @@
   .text-12;
 
   align-items: center;
-  border: 2px solid @color-primary-alternate;
+  border: 2px solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   color: @color-primary-text;
   display: flex;

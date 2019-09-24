@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Quad {
-  background: @color-theme-primary;
-  border: 1px solid @color-primary-alternate;
+  background: @color-module-background;
+  border: 1px solid @color-dark-grey;
   border-radius: @border-radius-default;
   color: @color-primary-text;
   flex: 1;
@@ -15,8 +15,8 @@
   }
 
   > div:last-of-type {
-    background: @color-secondary-background;
-    border-bottom: 1px solid @color-secondary-background;
+    background: @color-module-background;
+    border-bottom: 1px solid @color-dark-grey;
     flex: 1;
     overflow: auto;
     overflow-y: overlay;
@@ -58,8 +58,8 @@
 
 @media @breakpoint-mobile-mid {
   .NormalOnMobile {
-    background: @color-theme-primary;
-    border: 1px solid @color-primary-alternate;
+    background: @color-module-background;
+    border: 1px solid @color-dark-grey;
     padding-bottom: @size-24;
   }
   

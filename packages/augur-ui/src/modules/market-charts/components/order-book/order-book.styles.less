@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderBook {
-  background-color: @color-tertiary-background;
+  background-color: @color-module-background;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -41,7 +41,7 @@
       &::before {
         background-color: @color-positive;
         bottom: 0;
-        content: "";
+        content: '';
         display: block;
         height: @size-18;
         left: 0;
@@ -58,7 +58,7 @@
       }
 
       &.Hover {
-        background-color: @color-theme-primary;
+        background-color: @color-primary-action;
 
         &::before {
           width: @size-6;
@@ -70,17 +70,27 @@
       }
 
       > div:first-of-type {
-        background-color: fade(@color-positive, 50%);
-        bottom: 0;
-        cursor: pointer;
-        left: 0;
-        pointer-events: none;
+        max-width: @size-38;
+        width: @size-38;
         position: absolute;
-        top: 1px;
-        z-index: @default-z-index;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
 
-        &.Neg {
-          background-color: fade(@color-negative, 50%);
+        > div {
+          background-color: fade(@color-positive, 50%);
+          bottom: 0;
+          cursor: pointer;
+          left: 0;
+          pointer-events: none;
+          position: absolute;
+          top: 1px;
+          z-index: @default-z-index;
+
+          &.Neg {
+            background-color: fade(@color-negative, 50%);
+          }
         }
       }
     }
@@ -98,7 +108,7 @@
 }
 
 .EncompassedHover {
-  background-color: @color-theme-primary;
+  background-color: @color-primary-action;
 }
 
 .AskHead {
@@ -113,7 +123,8 @@
   }
 }
 
-.Ask, .Bid {
+.Ask,
+.Bid {
   &:nth-of-type(2) {
     justify-content: flex-start;
   }
@@ -154,13 +165,13 @@
 }
 
 .NoSize {
-  color: @color-inactive-text
+  color: @color-inactive-text;
 }
 
 .Midmarket {
   .mono-9-bold;
 
-  background-color: fade(@color-primary-alternate, 70%);
+  background-color: fade(@color-dark-grey, 70%);
   color: @color-inactive-text;
   margin: 1px 0;
   padding: @size-6 @size-12;

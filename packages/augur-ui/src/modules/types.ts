@@ -636,3 +636,9 @@ export interface MarketClaimablePositions {
     };
   };
 }
+
+export interface ClaimReportingOptions {
+  reportingParticipants: string[],
+  disputeWindows: string[],
+  estimateGas: boolean;
+}

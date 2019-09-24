@@ -34,7 +34,7 @@ export class DerivedDB extends AbstractDB {
     this.mergeEventNames = mergeEventNames;
     this.stateDB = db;
     this.name = name;
-    this.db.createIndex({
+    this.createIndex({
       index: {
         fields: idFields,
       },

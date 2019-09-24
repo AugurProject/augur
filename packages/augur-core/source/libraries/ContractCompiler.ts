@@ -101,6 +101,8 @@ export class ContractCompiler {
                 if (error.message.includes("instruction is only available after the Metropolis hard fork")) continue;
                 if (error.message.includes("Experimental features are turned on. Do not use experimental features on live deployments")) continue;
                 if (error.message.includes("This declaration shadows an existing declaration")) continue;
+                if (error.message.includes("Unused local variable")) continue;
+                if (error.message.includes("Unused function parameter")) continue;
                 errors += error.formattedMessage + "\n";
             }
 
@@ -141,7 +143,7 @@ export class ContractCompiler {
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, "");
-        if (['IExchange', 'FillOrder', 'ZeroXTradeToken', 'ZeroXExchange', 'SimulateTrade', 'IZeroXTradeToken'].includes(path.parse(filePath).base.replace(".sol", ""))) {
+        if (['IExchange', 'FillOrder', 'ZeroXTrade', 'ZeroXExchange', 'SimulateTrade', 'IZeroXTrade', 'ZeroXTradeToken'].includes(path.parse(filePath).base.replace(".sol", ""))) {
             result = "pragma experimental ABIEncoderV2;\n" + result;
         }
         return result;

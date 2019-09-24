@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Container {
-  background: @color-tertiary-background;
-  border: 1px solid fade(@color-highlight, 50%);
+  background: @color-module-background;
+  border: 1px solid fade(@color-dark-grey, 50%);
   border-radius: @border-radius-default;
   display: flex;
   flex-flow: column nowrap;
@@ -55,7 +55,7 @@
 
 .TitleHeader {
   align-items: center;
-  border-bottom: 1px solid fade(@color-highlight, 50%);
+  border-bottom: 1px solid fade(@color-dark-grey, 50%);
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -96,7 +96,7 @@
 }
 
 div.ButtonsRow:last-of-type {
-  border-top: 1px solid fade(@color-highlight, 50%);
+  border-top: 1px solid fade(@color-dark-grey, 50%);
   padding: @size-12 @size-24;
 
   @media @breakpoint-mobile {
@@ -144,15 +144,15 @@ div.ButtonsRow:last-of-type {
 
   > div {
     align-items: center;
-    background: @color-tertiary-background;
-    border: 1px solid @color-primary-light;
+    background: @color-module-background;
+    border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
     height: 44px;
 
     > span:first-of-type {
       .text-14;
 
-      color: @color-primary-alternate-two;
+      color: @color-primary-text;
     }
 
     > span:last-of-type > svg > g > g > polyline {
@@ -183,8 +183,8 @@ div.ButtonsRow:last-of-type {
   }
 
   > div {
-    background: @color-theme-primary;
-    border: 1px solid @color-primary-alternate;
+    background: @color-module-background;
+    border: 1px solid @color-dark-grey;
     border-radius: @border-radius-default;
     height: 82px;
     margin-top: @size-8;
@@ -254,7 +254,7 @@ div.ButtonsRow:last-of-type {
   > main {
     > .Orders__header {
       align-items: center;
-      background: @color-theme-primary;
+      background: @color-module-background;
       border-top: 1px solid @color-dark-grey;
       display: flex;
       flex-flow: row nowrap;
@@ -306,7 +306,7 @@ div.ButtonsRow:last-of-type {
 
       > div {
         align-items: center;
-        background: @color-tertiary-background;
+        background: @color-module-background;
         border-top: 1px solid @color-dark-grey;
         color: @color-primary-text;
         display: flex;
@@ -380,7 +380,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:first-of-type > div > div {
-      background: @color-tertiary-background;
+      background: @color-module-background;
       min-height: unset;
     }
 
@@ -509,8 +509,8 @@ div.ButtonsRow:last-of-type {
     > input {
       .text-14;
 
-      background: @color-dark-grey;
-      border: 1px solid @color-primary-alternate;
+      background: @color-secondary-action;
+      border: 1px solid @color-secondary-action-outline;
       border-radius: @border-radius-default;
       color: @color-primary-text;
       height: @size-40;
@@ -816,7 +816,7 @@ div.ButtonsRow:last-of-type {
     .TransactionsTable;
     .text-12;
 
-    background: @color-theme-primary;
+    background: @color-module-background;
     border-bottom: 0;
     color: @color-inactive-text;
     margin: @size-24 0 0;
@@ -952,7 +952,7 @@ div.ButtonsRow:last-of-type {
 .AlertMessage {
   .text-12;
 
-  color: @color-outcome-four;
+  color: @color-resolved;
   margin: 0 0 @size-8;
 }
 
@@ -1010,7 +1010,7 @@ div.ButtonsRow:last-of-type {
   .mono-12;
 
   align-items: center;
-  border: 1px solid @color-primary-alternate;
+  border: 1px solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   color: @color-primary-text;
   display: flex;
@@ -1030,7 +1030,7 @@ div.ButtonsRow:last-of-type {
 
   > button {
     align-items: center;
-    background: @color-primary-alternate;
+    background: @color-secondary-action;
     color: @color-inactive-text;
     display: flex;
     height: 100%;
@@ -1064,7 +1064,7 @@ div.ButtonsRow:last-of-type {
 
 .ActionRow {
   align-items: center;
-  background: @color-tertiary-background;
+  background: @color-module-background;
   border-bottom: 1px solid @color-dark-grey;
   display: flex;
   flex-flow: column nowrap;
@@ -1181,7 +1181,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .DepositInfo {
-  border-top: 1px solid @color-primary-alternate;
+  border-top: 1px solid @color-dark-grey;
   color: @color-primary-text;
 
   > h3 {
@@ -1204,7 +1204,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .ModalMarketReview {
-  background-color: @color-theme-primary;
+  background-color: @color-module-background;
   margin: 0 0 @size-24;
   padding: @size-32 0 0;
 
@@ -1275,7 +1275,7 @@ div.ButtonsRow:last-of-type {
     padding: @size-16 0 0;
 
     > div:first-of-type {
-      border-bottom: 1px solid @color-primary-alternate;
+      border-bottom: 1px solid @color-dark-grey;
       display: flex;
       flex-direction: column;
       padding: 0 @size-40;
@@ -1305,7 +1305,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:nth-of-type(2) {
-      border-bottom: 1px solid @color-primary-alternate;
+      border-bottom: 1px solid @color-dark-grey;
       display: flex;
       padding: @size-16 @size-40;
 

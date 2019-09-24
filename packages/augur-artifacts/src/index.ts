@@ -43,7 +43,9 @@ export interface ContractAddresses {
     TimeControlled?: string;
     GnosisSafe?: string;
     ProxyFactory?: string;
-    ZeroXTradeToken?: string;
+    ZeroXTrade?: string;
+    BuyParticipationTokens?: string;
+    RedeemStake?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

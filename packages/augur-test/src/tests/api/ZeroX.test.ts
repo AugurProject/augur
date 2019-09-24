@@ -194,5 +194,4 @@ describe('Augur API :: ZeroX :: ', () => {
     await expect(simulationData.sharesFilled).toEqual(fillAmount);
     await expect(simulationData.numFills).toEqual(new BigNumber(1));
   }, 150000);
-
 });

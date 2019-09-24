@@ -87,9 +87,9 @@ export class SyncableFlexSearch {
 
         if (info) {
           if (Array.isArray(info.categories)) {
-            category1 = info.categories[0] ? info.categories[0] : "";
-            category2 = info.categories[1] ? info.categories[1] : "";
-            category3 = info.categories[2] ? info.categories[2] : "";
+            category1 = info.categories[0] ? info.categories[0].toString().toLowerCase() : "";
+            category2 = info.categories[1] ? info.categories[1].toString().toLowerCase() : "";
+            category3 = info.categories[2] ? info.categories[2].toString().toLowerCase() : "";
           }
           description = info.description ? info.description : "";
           longDescription = info.longDescription ? info.longDescription : "";

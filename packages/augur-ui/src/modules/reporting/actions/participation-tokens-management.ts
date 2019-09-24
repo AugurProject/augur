@@ -1,7 +1,4 @@
 import logError from 'utils/log-error';
-import { formatGasCostToEther } from 'utils/format-number';
-import { closeModal } from 'modules/modal/actions/close-modal';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { AppState } from 'store';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -22,15 +19,13 @@ export const purchaseParticipationTokens = (
   const { universe } = getState();
   const universeId = universe.id;
   if (!universeId) return callback('no universe provided');
-  const disputeWindow = universe.disputeWindow.address;
   if (estimateGas) {
     const gas = await buyParticipationTokensEstimateGas(
       universeId,
-      disputeWindow,
       amount
     );
     return callback(null, gas);
   }
-  buyParticipationTokens(universeId, disputeWindow, amount);
+  buyParticipationTokens(universeId, amount);
   callback(null);
 };

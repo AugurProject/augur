@@ -6,7 +6,7 @@ import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import { RadioBarGroup } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR, INVALID_OUTCOME_ID } from 'modules/common/constants';
+import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
@@ -157,11 +157,12 @@ export default class ModalReporting extends Component<
       maxPrice,
       outcomesFormatted,
       disputeInfo,
-      noShowBondAmountFormatted, // this will be on MarketData once added to MarketInfo object
+      noShowBondAmount,
+      reportingState,
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
-
+    const isOpenReporting = reportingState === REPORTING_STATE.OPEN_REPORTING;
     let radioButtons = outcomesFormatted
       .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
       .map(outcome => {
@@ -170,11 +171,13 @@ export default class ModalReporting extends Component<
         );
         if (!stake) {
           stake = {
-            tentativeWinning: false,
-            bondSizeCurrent: '0',
+            outcome: outcome.id.toString(),
             bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
-            preFilledStake: '0',
             stakeCurrent: '0',
+            stakeRemaining: disputeInfo.bondSizeOfNewStake,
+            isInvalidOutcome: false,
+            isMalformedOutcome: false,
+            tentativeWinning: false,
           };
         }
         return {
@@ -182,12 +185,12 @@ export default class ModalReporting extends Component<
           value: outcome.id,
           checked: s.checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
+          preFilledStake: formatAttoRep('0').formatted,
           stake: {
             ...stake,
-            stakeCurrent: formatAttoRep(stake.stakeCurrent),
-            preFilledStake: formatAttoRep(stake.preFilledStake),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent).formatted,
+            stakeCurrent: formatAttoRep(stake.stakeCurrent).formatted,
+            stakeRemaining: formatAttoRep(stake.stakeRemaining).formatted,
           },
         };
       });
@@ -198,13 +201,13 @@ export default class ModalReporting extends Component<
           header: stake.outcome,
           value: stake.outcome,
           checked: s.checked === stake.outcome.toString(),
-          isInvalid: stake.outcome === "0",
-
+          isInvalid: stake.outcome === '0',
+          preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
           stake: {
             ...stake,
-            preFilledStake: formatAttoRep(stake.preFilledStake),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+            bondSizeCurrent: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
+            stakeCurrent: formatAttoRep(stake.stakeCurrent).formatted,
+            stakeRemaining: formatAttoRep(stake.stakeRemaining).formatted,
           },
         })
       })
@@ -250,6 +253,7 @@ export default class ModalReporting extends Component<
             <RadioBarGroup
               onChange={this.updateChecked}
               reporting={true}
+              disputeInfo={disputeInfo}
               isReporting={isReporting}
               marketType={marketType}
               minPrice={minPrice}
@@ -264,6 +268,8 @@ export default class ModalReporting extends Component<
               reportAction={this.reportingAction}
               updateScalarOutcome={this.updateScalarOutcome}
               scalarOutcome={s.scalarOutcome}
+              initialReporterStake={noShowBondAmount}
+              isOpenReporting={isOpenReporting}
             />
           </div>
         </main>

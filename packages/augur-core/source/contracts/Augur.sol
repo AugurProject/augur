@@ -43,7 +43,7 @@ contract Augur is IAugur {
         Fill
     }
 
-    event MarketCreated(IUniverse indexed universe, uint256 endTime, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feePerCashInAttoCash, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp);
+    event MarketCreated(IUniverse indexed universe, uint256 endTime, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feePerCashInAttoCash, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 noShowBond, uint256 timestamp);
     event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 nextWindowStartTime, uint256 nextWindowEndTime, uint256 timestamp);
     event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size, uint256 disputeRound);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256[] payoutNumerators, uint256 currentStake, uint256 stakeRemaining, uint256 disputeRound, uint256 timestamp);
@@ -77,7 +77,7 @@ contract Augur is IAugur {
 
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 timestamp);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 fees, uint256 timestamp);
-    event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees, uint256 timestamp);
+    event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp);
     event TokensTransferred(address indexed universe, address token, address indexed from, address indexed to, uint256 value, TokenType tokenType, address market);
     event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
     event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
@@ -279,7 +279,7 @@ contract Augur is IAugur {
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
         _prices[1] = DEFAULT_MAX_PRICE;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market,_marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market,_marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
 
@@ -291,7 +291,7 @@ contract Augur is IAugur {
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
         _prices[1] = DEFAULT_MAX_PRICE;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
 
@@ -302,7 +302,7 @@ contract Augur is IAugur {
         require(_prices[0] < _prices[1]);
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
 
@@ -438,9 +438,9 @@ contract Augur is IAugur {
         return _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
     }
 
-    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _finalTokenBalance, uint256 _fees) public returns (bool) {
+    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {
         require(msg.sender == registry["ClaimTradingProceeds"]);
-        emit TradingProceedsClaimed(address(_universe), _shareToken, _sender, _market, _outcome, _numShares, _numPayoutTokens, _finalTokenBalance, _fees, getTimestamp());
+        emit TradingProceedsClaimed(address(_universe), _shareToken, _sender, _market, _outcome, _numShares, _numPayoutTokens, _fees, getTimestamp());
         return true;
     }
 
