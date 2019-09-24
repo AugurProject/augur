@@ -40,7 +40,6 @@ interface MarketReportContracts {
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const accountReporting = state.loginAccount.reporting;
-  // accum totalAmount rep per marketId
   const disputingContracts = accountReporting.disputing.contracts;
   const uniqueMarketIds = Array.from(new Set(disputingContracts.map(contract => contract.marketId)));
 
@@ -80,7 +79,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     totalUnclaimedDaiFormatted: ownProps.unclaimedDai,
     totalUnclaimedRepFormatted: ownProps.unclaimedRep,
     accountReporting,
-    reportingMarkets,
+    reportingMarkets
   };
 };
 
@@ -90,28 +89,28 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const totalUnclaimedDaiFormatted = sP.totalUnclaimedDaiFormatted;
-  const totalUnclaimedRepFormatted = sP.totalUnclaimedRepFormatted;
-  const marketIdsToTest = sP.reportingMarkets;
+  const {totalUnclaimedDaiFormatted, totalUnclaimedRepFormatted, reportingMarkets, pendingQueue} = sP;
   const modalRows: ActionRowsProps[] = [];
-  const claimableMarkets: any = [];
+  const claimableMarkets: MarketData[] = [];
   let unclaimedRep = createBigNumber(sP.modal.unclaimedRep.fullPrecision);
   let unclaimedDai = createBigNumber(sP.modal.unclaimedDai.fullPrecision);
-  marketIdsToTest.forEach(marketObj => {
+  reportingMarkets.forEach(marketObj => {
     const market = selectMarket(marketObj.marketId);
-    const daiFees = formatAttoDai(marketObj.unclaimedDaiFees);
-    const total = createBigNumber(daiFees.fullPrecision);
+    // const daiFees = formatAttoDai(marketObj.unclaimedDaiFees);
+    // const total = createBigNumber(daiFees.fullPrecision);
 
     if (market) {
-      const marketRep = formatAttoRep(marketObj.unclaimedRepTotal, {
+      const marketRep = formatAttoRep(marketObj.totalAmount, {
         decimals: 4,
         decimalsRounded: 4,
         zeroStyled: false,
       });
 
+      const marketDai = formatAttoDai(marketObj.totalFees);
+
       const pending =
-        sP.pendingQueue[CLAIM_STAKE_FEES] &&
-        sP.pendingQueue[CLAIM_STAKE_FEES][marketObj.marketId];
+        pendingQueue[CLAIM_STAKE_FEES] &&
+        pendingQueue[CLAIM_STAKE_FEES][marketObj.marketId];
       if (!pending) {
         claimableMarkets.push(marketObj);
       } else {
@@ -119,7 +118,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           createBigNumber(marketRep.fullPrecision)
         );
         unclaimedDai = unclaimedDai.minus(
-          createBigNumber(daiFees.fullPrecision)
+          createBigNumber(marketDai.fullPrecision)
         );
       }
 
@@ -135,52 +134,54 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: 'Reporting Fees',
-            value: `${daiFees.formatted || 0} DAI`,
+            value: `${marketDai.formatted || 0} DAI`,
           },
           {
             label: 'est gas cost',
-            value: `${marketObj.gasCost} ETH`,
+            value: `${marketObj.gasCost} ETH`, // this doesn't exist
           },
           {
             label: 'total dai',
-            value: `${formatEther(createBigNumber(total).abs()).formatted} DAI`,
+            //value: `${formatEther(createBigNumber(total).abs()).formatted} DAI`,
+            value: `${0} DAI`,
           },
         ],
         action: () => {
-          const marketIndex = sP.reportingFees.nonforkedMarkets.findIndex(
-            market => market.marketId === marketObj.marketId
-          );
-          const RedeemStakeOptions = {
-            disputeWindows: [],
-            nonforkedMarkets: [sP.nonforkedMarkets[marketIndex]],
-            pendingId: sP.nonforkedMarkets[marketIndex].marketId,
-          };
-          dP.redeemStake(RedeemStakeOptions);
+          // const marketIndex = sP.reportingFees.nonforkedMarkets.findIndex(
+          //   market => market.marketId === marketObj.marketId
+          // );
+          // const RedeemStakeOptions = {
+          //   disputeWindows: [],
+          //   nonforkedMarkets: [sP.nonforkedMarkets[marketIndex]],
+          //   pendingId: sP.nonforkedMarkets[marketIndex].marketId,
+          // };
+          // dP.redeemStake(RedeemStakeOptions);
         },
       });
     }
   });
   let feeWindowsPending = false;
-  if (sP.disputeWindows.length > 0) {
+  if (sP.accountReporting.participationTokens.contracts && sP.accountReporting.participationTokens.contracts.length > 0) {
     const totalMinusGas = createBigNumber(
-      sP.reportingFees.unclaimedParticipationTokenDaiFees.fullPrecision
+      //sP.reportingFees.unclaimedParticipationTokenDaiFees.fullPrecision
+      sP.accountReporting.totalFees.fullPrecision
     )
-      .minus(createBigNumber(sP.reportingFees.gasCosts[CLAIM_FEE_WINDOWS]))
+      .minus(createBigNumber(sP.accountReporting.totalFees.gasCosts[CLAIM_FEE_WINDOWS])) // this doesn't exist
       .abs();
 
     feeWindowsPending =
-      sP.pendingQueue[CLAIM_STAKE_FEES] &&
-      sP.pendingQueue[CLAIM_STAKE_FEES][CLAIM_FEE_WINDOWS];
+      pendingQueue[CLAIM_STAKE_FEES] &&
+      pendingQueue[CLAIM_STAKE_FEES][CLAIM_FEE_WINDOWS];
 
     if (feeWindowsPending) {
       unclaimedRep = unclaimedRep.minus(
         createBigNumber(
-          sP.reportingFees.participationTokenRepStaked.fullPrecision
+          sP.accountReporting.totalAmount
         )
       );
       unclaimedDai = unclaimedDai.minus(
         createBigNumber(
-          sP.reportingFees.unclaimedParticipationTokenDaiFees.fullPrecision
+          sP.accountReporting.totalFees
         )
       );
     }
@@ -192,17 +193,20 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       properties: [
         {
           label: 'Reporting Stake',
-          value: `${sP.reportingFees.participationTokenRepStaked.formatted} REP`,
+          value: `${sP.accountReporting.participationTokens.totalAmount} REP`,
+          // value: `${sP.reportingFees.participationTokenRepStaked.formatted} REP`,
           addExtraSpace: true,
         },
         {
           label: 'Reporting Fees',
-          value: `${sP.reportingFees.unclaimedParticipationTokenDaiFees.formatted} DAI`,
+          value: `${sP.accountReporting.participationTokens.totalFees} DAI`,
+          // value: `${sP.reportingFees.unclaimedParticipationTokenDaiFees.formatted} DAI`,
         },
         {
           label: 'Est Gas cost',
           value: `${
             formatEther(sP.reportingFees.gasCosts[CLAIM_FEE_WINDOWS]).formatted
+            // formatEther(sP.reportingFees.gasCosts[CLAIM_FEE_WINDOWS]).formatted
           } ETH`,
         },
         {
@@ -212,7 +216,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       ],
       action: () => {
         const RedeemStakeOptions = {
-          disputeWindows: sP.disputeWindows,
+          disputeWindows: sP.accountReporting.participationTokens.contracts,
           reportingParticipants: [],
         };
         dP.redeemStake(RedeemStakeOptions);
@@ -233,7 +237,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: 'Transaction Cost',
-            value: `${sP.reportingFees.gasCosts[ALL]} ETH`,
+            // value: `${sP.reportingFees.gasCosts[ALL]} ETH`, // this doesn't exist
+            value: `${sP.gasCost} ETH`,
           },
         ]
       : null;
@@ -268,7 +273,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           const RedeemStakeOptions = {
             disputeWindows: feeWindowsPending
               ? []
-              : sP.reportingFees.disputeWindows,
+              : sP.accountReporting.participationTokens.contracts,
             nonforkedMarkets: claimableMarkets,
             onSent: () => {
               if (sP.modal.cb) {

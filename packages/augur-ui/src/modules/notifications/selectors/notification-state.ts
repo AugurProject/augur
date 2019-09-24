@@ -232,7 +232,7 @@ export const selectNotifications = createSelector(
     // Add unquie notifications
     if (
       claimReportingFees &&
-      (claimReportingFees.unclaimedDai && claimReportingFees.unclaimedRep)
+      (claimReportingFees.unclaimedDai.formattedValue || claimReportingFees.unclaimedRep.formattedValue)
     ) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.claimReportingFees,
