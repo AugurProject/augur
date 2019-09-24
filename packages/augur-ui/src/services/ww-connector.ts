@@ -1,4 +1,3 @@
-import RunWorker from './Sync.worker';
 import {
   Connectors,
   Events,

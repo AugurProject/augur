@@ -33,7 +33,7 @@ export function byteArrayToUtf8String(byteArray:(Buffer|string|BigNumber|Number)
   try {
     byteString = Buffer.from(byteString, "hex");
   } catch (ex) {
-    console.error("[speedomatic] byteArrayToUtf8String:", JSON.stringify(byteString, null, 2));
+    console.error("[@augurproject/utils] byteArrayToUtf8String:", JSON.stringify(byteString, null, 2));
     throw ex;
   }
   return byteString.toString("utf8");
