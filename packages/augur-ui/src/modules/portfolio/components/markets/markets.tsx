@@ -82,7 +82,7 @@ class MyMarkets extends Component<MyMarketsProps> {
             reportingState={market.reportingState}
             currentTime={currentAugurTimestamp}
             endTimeFormatted={market.endTimeFormatted}
-            reportingWindowEndtime={disputingWindowEndTime}
+            reportingWindowEndTime={disputingWindowEndTime}
             alignRight
           />
         )}

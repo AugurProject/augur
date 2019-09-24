@@ -195,7 +195,7 @@ export default class ModalParticipate extends Component<ModalParticipateProps, M
                   type: "gray",
                 },
                 {
-                  label: "review",
+                  label: "buy",
                   action: this.triggerReview,
                   type: "purple",
                   isDisabled: !isValid,
