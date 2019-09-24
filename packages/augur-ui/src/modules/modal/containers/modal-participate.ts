@@ -11,7 +11,11 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   rep: state.loginAccount.balances.rep,
-  gasPrice: getGasPrice(state)
+  gasPrice: getGasPrice(state),
+  messages: [{
+    preText: 'Quantity (1 token @ 1 REP)'
+  }],
+  title: 'Buy Participation Tokens',
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

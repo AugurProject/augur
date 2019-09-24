@@ -48,7 +48,7 @@ export interface AlertMessageProps {
 }
 
 export interface DescriptionMessageProps {
-  messages: Array<AlertMessageProps>;
+  messages: AlertMessageProps[];
 }
 
 interface SubheaderContent {

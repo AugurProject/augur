@@ -4,17 +4,21 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { InputErrorIcon } from 'modules/common/icons';
-import { Input } from 'modules/common/form';
+import { Input, TextInput } from 'modules/common/form';
 import ModalReview from 'modules/modal/components/modal-review';
 import Styles from 'modules/modal/components/common/common.styles.less';
 import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import { BUY_PARTICIPATION_TOKENS_GAS_LIMIT } from 'modules/common/constants';
+import ModalActions from './common/modal-actions';
+import { Title, DescriptionMessage, AlertMessageProps } from '../common';
 
 interface ModalParticipateProps {
   rep: string;
   gasPrice: string;
   closeModal: (...args: any[]) => any;
   purchaseParticipationTokens: Function;
+  messages: AlertMessageProps[];
+  title: string;
 }
 
 interface ModalParticipateState {
@@ -51,7 +55,7 @@ export default class ModalParticipate extends Component<
         this.state.quantity,
         true,
         (err, gasEstimate) => {
-          if (!err && !!gasEstimate) this.setState({ gasEstimate});
+          if (!err && !!gasEstimate) this.setState({ gasEstimate });
         }
       );
     }
@@ -113,7 +117,7 @@ export default class ModalParticipate extends Component<
   }
 
   render() {
-    const { closeModal, gasPrice } = this.props;
+    const { closeModal, gasPrice, messages, title } = this.props;
     const { errors, isValid, quantity, gasEstimate } = this.state;
     const invalidWithErrors = !isValid && errors.length > 0;
     const formattedQuantity = formatRep(quantity || 0);
@@ -147,51 +151,30 @@ export default class ModalParticipate extends Component<
 
     return (
       <section className={Styles.ModalContainer}>
-        <form className={Styles.ModalTightForm}>
-          <h1>Buy Participation Tokens</h1>
-          <label htmlFor="modal__participate-quantity">
-            Quantity (1 token @ 1 REP)
-          </label>
-          {/*
-              // @ts-ignore */}
-          <Input
-            id="modal__participate-quantity"
-            type="number"
-            className={classNames({
-              [`${Styles.ErrorField}`]: invalidWithErrors,
-            })}
-            value={quantity}
-            placeholder="0.0"
-            onChange={value => this.updateQuantity(value)}
-            onKeyDown={e => this.handleKeyDown(e)}
-            autoComplete="off"
-            maxButton
-            onMaxButtonClick={() => this.handleMaxClick()}
-          />
-          {!!errors.length &&
-            errors.map((error, index) => (
-              <p key={error} className={Styles.Error}>
-                {InputErrorIcon()} {error}
-              </p>
-            ))}
-          <ModalReview
-            title=""
-            items={items}
-            buttons={[
-              {
-                label: 'cancel',
-                action: closeModal,
-                type: 'gray',
-              },
-              {
-                label: 'buy',
-                action: this.submitForm,
-                type: 'purple',
-                isDisabled: !isValid,
-              },
-            ]}
-          />
-        </form>
+        <Title title={title} closeAction={() => closeModal()} />
+        <DescriptionMessage messages={messages} />
+        <TextInput
+          placeholder={'0.0000'}
+          value={quantity}
+          onChange={value => this.updateQuantity(value)}
+          errorMessage={errors[0]}
+          innerLabel="REP"
+        />
+        <ModalActions
+          buttons={[
+            {
+              label: 'cancel',
+              action: closeModal,
+              type: 'gray',
+            },
+            {
+              label: 'buy',
+              action: this.submitForm,
+              type: 'purple',
+              isDisabled: !isValid,
+            },
+          ]}
+        />
       </section>
     );
   }
