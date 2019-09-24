@@ -280,7 +280,7 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
 export const Subheader = (props: SubheaderProps) => (
   <div className={Styles.Subheader}>
     <span>{props.subheaderContent.header}</span>
-    {props.subheaderContent.numbered && 
+    {props.subheaderContent.numbered &&
       <ol>
         {props.subheaderContent.subheaders.map((subheader, index) => (
           <li key={index}>

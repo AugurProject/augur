@@ -1913,8 +1913,8 @@ export class Input extends Component<InputProps, InputState> {
         {isSearch && (
           <div style={{ marginRight: '8px' }}>
             <PulseLoader
-              color='#553580'
-              sizeUnit='px'
+              color="#AFA7C1"
+              sizeUnit="px"
               size={6}
               loading={isLoading}
             />

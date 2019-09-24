@@ -129,6 +129,27 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
   );
 };
 
+interface ScalarBlankDisputeOutcomeProps {
+  denomination: string;
+  dispute: Function;
+}
+
+export const ScalarBlankDisputeOutcome = (
+  props: ScalarBlankDisputeOutcomeProps
+) => (
+  <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
+    <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
+    <div>
+      <div></div>
+      <SecondaryButton
+        small
+        text={'Dispute Tentative Winner'}
+        action={() => props.dispute("1")}
+      />
+    </div>
+  </div>
+);
+
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
   min: BigNumber;
@@ -260,6 +281,12 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
               />
             ))
         )}
+      {props.marketType === SCALAR && inDispute && (
+        <ScalarBlankDisputeOutcome
+          denomination={props.scalarDenomination}
+          dispute={props.dispute}
+        />
+      )}
     </div>
   );
 };

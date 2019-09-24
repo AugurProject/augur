@@ -43,7 +43,7 @@ const TopNav = (props: TopNavProps) => {
           const selected = isCurrentItem(item);
           if (item.title === 'Create') {
             return (
-              <div className={Styles.CreatetButton} key={item.title}>
+              <div className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route ? makePath(item.route) : null}>
                   <SecondaryButton text={'Create Market'} action={() => null} />
                 </Link>
