@@ -1828,37 +1828,24 @@ describe('State API :: Markets :: ', () => {
     }
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
+    expect((await api.route('getMarketsInfo', { marketIds: [ yesNoMarket.address ]}))[0].reportingState)
+      .toEqual(MarketReportingState.AwaitingNextWindow);
+    expect((await api.route('getMarketsInfo', { marketIds: [ categoricalMarket.address ]}))[0].reportingState)
+      .toEqual(MarketReportingState.CrowdsourcingDispute);
+    expect((await api.route('getMarketsInfo', { marketIds: [ scalarMarket.address ]}))[0].reportingState)
+      .toEqual(MarketReportingState.OpenReporting);
 
-    markets = await api.route('getMarketsInfo', {
-      marketIds: [
-        yesNoMarket.address,
-        categoricalMarket.address,
-        scalarMarket.address,
-      ],
-    });
-
-    reportingStates = _.map(markets, 'reportingState');
-    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
-    expect(reportingStates).toContain(MarketReportingState.AwaitingNextWindow);
-    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
-
-    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
+    const SECONDS_IN_AN_HOUR = SECONDS_IN_A_DAY.div(24)
+    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7)).plus(SECONDS_IN_AN_HOUR).plus(1);
     await john.setTimestamp(newTime);
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
-
-    markets = await api.route('getMarketsInfo', {
-      marketIds: [
-        yesNoMarket.address,
-        categoricalMarket.address,
-        scalarMarket.address,
-      ],
-    });
-
-    reportingStates = _.map(markets, 'reportingState');
-    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
-    expect(reportingStates).toContain(MarketReportingState.AwaitingFinalization);
-    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
+    expect((await api.route('getMarketsInfo', { marketIds: [ yesNoMarket.address ]}))[0].reportingState)
+      .toEqual(MarketReportingState.CrowdsourcingDispute);
+    expect((await api.route('getMarketsInfo', { marketIds: [ categoricalMarket.address ]}))[0].reportingState)
+      .toEqual(MarketReportingState.AwaitingFinalization);
+    expect((await api.route('getMarketsInfo', { marketIds: [ scalarMarket.address ]}))[0].reportingState)
+      .toEqual(MarketReportingState.OpenReporting);
 
     // Continue disputing
     for (let disputeRound = 12; disputeRound <= 19; disputeRound++) {
