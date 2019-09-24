@@ -23,7 +23,7 @@ export interface AccountViewProps {
   newNotifications?: boolean;
 }
 
-interface AccountViewProps {
+interface AccountViewState {
   extendNotifications: boolean;
   extendActiveMarkets: boolean;
   extendWatchlist: boolean;
@@ -32,9 +32,9 @@ interface AccountViewProps {
 
 export default class AccountView extends React.Component<
   AccountViewProps,
-  AccountViewProps
+  AccountViewState
 > {
-  state: PortfolioViewState = {
+  state: AccountViewState = {
     extendNotifications: false,
     extendActiveMarkets: false,
     extendWatchlist: false,
@@ -93,15 +93,15 @@ export default class AccountView extends React.Component<
               >
                 <div>
                   <div>
-                    <Notifications toggle={this.toggle('extendNotifications', 'extendActiveMarkets')} />
-                    <OpenMarkets toggle={this.toggle('extendActiveMarkets', 'extendNotifications')} />
+                    <Notifications toggle={() => this.toggle('extendNotifications', 'extendActiveMarkets')} />
+                    <OpenMarkets toggle={() => this.toggle('extendActiveMarkets', 'extendNotifications')} />
                   </div>
                   <div>
                     <Overview />
                     <AugurStatus />
                   </div>
                   <div>
-                    <Favorites toggle={this.toggle('extendWatchlist', 'extendTransactions')}/>
+                    <Favorites toggle={() => this.toggle('extendWatchlist', 'extendTransactions')}/>
                     <Transactions />
                   </div>
                 </div>

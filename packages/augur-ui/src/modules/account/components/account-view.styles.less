@@ -70,20 +70,41 @@
   }
 
   &.HideNotifications {
+    > div > div:first-of-type > div:last-of-type {
+      max-height: unset;
+      flex: 1;
+    }
+
     > div > div:first-of-type > div:first-of-type {
       max-height: @size-32;
+      overflow-y: hidden;
+      min-height: unset;
     }
   }
 
   &.HideTransactions {
+    > div > div:last-of-type > div:first-of-type {
+      max-height: unset;
+      flex: 1;
+    }
+
     > div > div:last-of-type > div:last-of-type {
       max-height: @size-32;
+      overflow-y: hidden;
+      min-height: unset;
     }
   }
 
   &.HideActiveMarkets {
+    > div > div:first-of-type > div:first-of-type {
+      max-height: unset;
+      flex: 1;
+    }
+
     > div > div:first-of-type > div:last-of-type {
       max-height: @size-32;
+      min-height: unset;
+      overflow-y: hidden;
     }
   }
 }
