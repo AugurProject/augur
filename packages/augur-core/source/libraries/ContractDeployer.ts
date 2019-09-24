@@ -428,7 +428,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {
-            console.log('MARINA', contract.contractName, contract.relativeFilePath, contract.relativeFilePath.startsWith('trading/'))
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'ZeroXTradeToken') continue
