@@ -8,7 +8,7 @@ import {
   selectAccountPositionsState,
   selectLoginAccountReportingState,
 } from 'store/select-state';
-
+import { MarketReportingState } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   NOTIFICATION_TYPES,
@@ -94,17 +94,22 @@ export const selectMarketsInDispute = createSelector(
   selectAccountPositionsState,
   selectLoginAccountAddress,
   (markets, positions, address) => {
+    const state = store.getState();
+    const disputedMarkets = state
+      .loginAccount.reporting.disputing.contracts.map(obj => obj.marketId);
+    const reportedMarkets = state
+      .loginAccount.reporting.reporting.contracts.map(obj => obj.marketId);
     if (markets.length > 0) {
       const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
           market =>
-            market.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
-        )
-        .filter(
-          market =>
-            positionsMarkets.indexOf(market.id) > -1 ||
-            market.designatedReporter === address
+            disputedMarkets.indexOf(market.id) > -1 ||
+            reportedMarkets.indexOf(market.id) > -1 ||
+            (market.reportingState ===
+              MarketReportingState.CrowdsourcingDispute &&
+              (market.author === address ||
+                positionsMarkets.indexOf(market.id) > -1))
         )
         .map(getRequiredMarketData);
     }
@@ -161,7 +166,7 @@ export const selectUsersReportingFees = createSelector(
     return {
       unclaimedDai: formatAttoDai(unclaimed.unclaimedDai),
       unclaimedRep: formatAttoRep(unclaimed.unclaimedRep),
-    }
+    };
   }
 );
 
