@@ -212,7 +212,7 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
   return (
     <Template
       message={`Dispute round ${
-        disputeInfo.disputeRound
+        disputeInfo.disputeWindow.disputeRound
       } for the market: "${description}" is ending soon.`}
       {...props}
     />
