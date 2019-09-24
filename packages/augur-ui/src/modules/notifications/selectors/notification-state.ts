@@ -21,10 +21,10 @@ import {
   CLAIM_REPORTING_FEES_TITLE,
   UNSIGNED_ORDERS_TITLE,
   PROCEEDS_TO_CLAIM_TITLE,
-  MARKET_CLOSED,
   REPORTING_STATE,
   ZERO,
 } from 'modules/common/constants';
+import { MarketReportingState } from '@augurproject/sdk';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
   formatDai,
@@ -42,7 +42,12 @@ export const selectResolvedMarketsOpenOrders = createSelector(
   markets => {
     if (markets.length > 0) {
       return markets
-        .filter(market => market.marketStatus === MARKET_CLOSED)
+        .filter(
+          market =>
+            market.reportingState ===
+              MarketReportingState.AwaitingFinalization ||
+            market.reportingState === MarketReportingState.Finalized
+        )
         .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
     }
@@ -161,7 +166,7 @@ export const selectUsersReportingFees = createSelector(
     return {
       unclaimedDai: formatAttoDai(unclaimed.unclaimedDai),
       unclaimedRep: formatAttoRep(unclaimed.unclaimedRep),
-    }
+    };
   }
 );
 
