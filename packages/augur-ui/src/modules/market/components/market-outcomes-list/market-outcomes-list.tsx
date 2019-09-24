@@ -3,13 +3,13 @@ import classNames from 'classnames';
 
 import { SCALAR } from 'modules/common/constants';
 import MarketOutcomesListOutcome from 'modules/market/containers/market-outcome';
-import MarketScalarOutcomeDisplay from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
 import { OutcomeFormatted } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
+import { BigNumber } from 'utils/create-big-number';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -71,7 +71,7 @@ export default class MarketOutcomesList extends Component<
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomesFormatted.map(outcome => (
+          {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               marketId={marketId}
@@ -83,14 +83,6 @@ export default class MarketOutcomesList extends Component<
             />
           ))}
         </div>
-        {marketType === SCALAR && (
-          <MarketScalarOutcomeDisplay
-            scalarDenomination={scalarDenomination}
-            min={minPriceBigNumber}
-            max={maxPriceBigNumber}
-            outcomes={outcomesFormatted}
-          />
-        )}
       </section>
     );
   }
