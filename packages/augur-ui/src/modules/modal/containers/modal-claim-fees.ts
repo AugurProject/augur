@@ -146,16 +146,13 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         text: 'Claim All',
         disabled: modalRows.find(market => market.status === 'pending'),
         action: () => {
+          const reportingParticipants = claimReportingFees.claimableMarkets.marketContracts.reduce(
+            (p, c) => [...p, ...c.contracts],
+            []
+          );
           const RedeemStakeOptions = {
-            disputeWindows: feeWindowsPending
-              ? []
-              : sP.accountReporting.participationTokens.contracts,
-            nonforkedMarkets: claimableMarkets,
-            onSent: () => {
-              if (sP.modal.cb) {
-                sP.modal.cb();
-              }
-            },
+            disputeWindows: claimReportingFees.participationContracts.contracts,
+            reportingParticipants,
           };
           dP.redeemStake(RedeemStakeOptions, () => {
             if (sP.modal.cb) {
