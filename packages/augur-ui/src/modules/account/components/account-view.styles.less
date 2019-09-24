@@ -54,41 +54,36 @@
     }
 
     > div:last-of-type {
-      flex: 2;
-      flex-direction: row;
-      height: fit-content;
+      flex: 1;
+      flex-direction: column;
+      height: unset;
 
       > div:first-of-type {
-        flex: 1;
-        max-height: 70vh;
+        flex: unset;
       }
 
       > div:last-of-type {
-        flex: 1;
-        margin-left: 1.5rem;
+        flex: unset;
+        margin-left: 0;
       }
     }
   }
-}
 
-@media @breakpoint-1-0-0 {
+  &.HideNotifications {
+    > div > div:first-of-type > div:first-of-type {
+      max-height: @size-32;
+    }
+  }
 
-  .AccountView {
-    > div {
-      > div:last-of-type {
-        flex: 1;
-        flex-direction: column;
-        height: unset;
+  &.HideTransactions {
+    > div > div:last-of-type > div:last-of-type {
+      max-height: @size-32;
+    }
+  }
 
-        > div:first-of-type {
-          flex: unset;
-        }
-
-        > div:last-of-type {
-          flex: unset;
-          margin-left: 0;
-        }
-      }
+  &.HideActiveMarkets {
+    > div > div:first-of-type > div:last-of-type {
+      max-height: @size-32;
     }
   }
 }

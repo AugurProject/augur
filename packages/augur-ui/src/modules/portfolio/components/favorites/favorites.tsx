@@ -43,6 +43,7 @@ interface FavoritesProps {
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   toggleFavorite: Function;
+  toggle: Function;
 }
 
 export default class Favorites extends Component<FavoritesProps> {
@@ -84,7 +85,7 @@ export default class Favorites extends Component<FavoritesProps> {
   }
 
   render() {
-    const { markets } = this.props;
+    const { markets, toggle } = this.props;
 
     return (
       <FilterBox
@@ -96,6 +97,7 @@ export default class Favorites extends Component<FavoritesProps> {
         renderRightContent={this.renderRightContent}
         noToggle
         filterLabel="markets"
+        toggle={toggle}
         pickVariables={[
           "id",
           "favoriteAddedData",

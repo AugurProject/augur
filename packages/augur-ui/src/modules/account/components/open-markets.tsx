@@ -15,6 +15,7 @@ interface OpenMarketsProps {
   markets: Array<any>;
   marketsObj: object;
   totalPercentage: string;
+  toggle: Function;
 }
 
 export default class OpenMarkets extends Component<OpenMarketsProps> {
@@ -68,7 +69,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
   }
 
   render() {
-    const { markets, totalPercentage } = this.props;
+    const { markets, totalPercentage, toggle} = this.props;
 
     return (
       <FilterSwitchBox
@@ -78,6 +79,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         data={markets}
         filterComp={filterComp}
         noBackgroundBottom
+        toggle={toggle}
         bottomBarContent={
           <div className={Styles.BottomBar}>
             <div>
