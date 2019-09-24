@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  updateReadNotifications: (notifications: any) =>
+  updateReadNotifications: (notifications: Notifications[]) =>
     dispatch(updateReadNotifications(notifications)),
   finalizeMarketModal: (marketId: string, cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_FINALIZE_MARKET, marketId, cb })),
