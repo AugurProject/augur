@@ -98,7 +98,7 @@ h6 {
 }
 
 .SideBar {
-  background: @color-theme-primary;
+  background: @color-module-background;
   border-right: 0.0625rem solid @color-dark-grey;
 
   @media @breakpoint-mobile {
@@ -110,8 +110,8 @@ h6 {
   position: absolute;
   top: 0;
   left: 0;
-  background: @color-theme-primary;
-  border-bottom: 1px solid @color-dark-grey;
+  background: @color-dark-grey;
+  border-bottom: 1px solid @color-module-background;
   display: none;
   height: @top-bar-height-mobile;
   outline: none;
@@ -126,7 +126,7 @@ h6 {
   }
 
   @media @breakpoint-mobile {
-    border-bottom: 1px solid @color-primary-light;
+    border-bottom: 1px solid @color-dark-grey;
     display: block;
 
     > svg > g {
@@ -153,7 +153,7 @@ svg.SideBar__mobile-bars-unseen {
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
-    border-bottom: 1px solid @color-primary-light;
+    border-bottom: 1px solid @color-dark-grey;
     position: absolute;
     top: 0;
     width: 100%;

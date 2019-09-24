@@ -49,16 +49,15 @@ const assembleMarket = createSelector(
   }
 );
 
-export const selectSortedMarketOutcomes = (marketType, outcomes) => {
+export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {
   const sortedOutcomes = [...outcomes];
 
   if (marketType === YES_NO) {
     return sortedOutcomes.reverse();
-  } else {
-    // Move invalid to the end
-    sortedOutcomes.push(sortedOutcomes.shift());
-    return sortedOutcomes;
   }
+  // Move invalid to the end
+  sortedOutcomes.push(sortedOutcomes.shift());
+  return sortedOutcomes;
 };
 
 export const selectSortedDisputingOutcomes = (

@@ -19,9 +19,9 @@
 }
 
 .MarketView__overlay {
-  background-color: @color-theme-primary;
+  background-color: @color-module-background;
   bottom: 0;
-  color: white;
+  color: @color-primary-text;
   height: 100vh;
   left: 0;
   min-height: 800px;
@@ -54,7 +54,7 @@
 }
 
 .MarketView__body {
-  color: white;
+  color: @color-primary-text;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -72,14 +72,14 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-left: 0.75rem;
+  margin-left: @size-4;
   max-width: 20.3125rem;
   min-height: 100vh;
   min-width: 20.3125rem;
 }
 
 .MarketView__component {
-  background-color: @color-tertiary-background;
+  background-color: @color-module-background;
   display: flex;
   flex: 1 auto;
   flex-flow: column nowrap;
@@ -100,17 +100,11 @@
   flex-grow: 1;
 }
 
-.MarketView__secondRow {
-  display: flex;
-  flex-direction: row;
-  margin-top: 0.75rem;
-}
-
 .MarketView__innerFirstColumn {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-right: 0.75rem;
+  margin-right: @size-4;
   max-width: 325px;
   min-width: 325px;
 }
@@ -119,6 +113,15 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  > div:first-of-type {
+    flex-grow: unset;
+    margin-bottom: @size-4;
+  }
+
+  > div:nth-of-type(2) {
+    margin-bottom: @size-4;
+  }
 }
 
 .Market__upper {
@@ -154,7 +157,7 @@
   display: flex;
   flex-direction: column;
   height: 50vh;
-  margin-bottom: 0.75rem;
+  margin-bottom: @size-4;
 }
 
 .MarketView__hide {
@@ -177,18 +180,13 @@
   transition: max-height 0.2s ease;
 }
 
-.MarketView__outcomesList {
-  flex-grow: unset;
-  margin-bottom: 12px;
-}
-
 .MarketView__priceHistoryChart {
-  background-color: @color-theme-primary;
+  background-color: @color-module-background;
 
   > h3 {
-    background-color: @color-theme-primary;
-    border-bottom: 1px solid @color-tertiary-one;
-    color: white;
+    background-color: @color-module-background;
+    border-bottom: 1px solid @color-dark-grey;
+    color: @color-primary-text;
     font-size: 1rem;
     margin-top: 1rem;
     padding: 1.125rem 1rem;
@@ -203,12 +201,17 @@
   margin: 0rem 22.5625rem;
 }
 
+.Hide {
+  max-height: @size-32;
+  overflow-y: hidden;
+}
+
 div.OutcomeNameDisplay {
   .text-12;
 
   align-items: center;
   background: @color-dark-grey;
-  border: 1px solid @color-primary-alternate;
+  border: 1px solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   color: @color-primary-text;
   display: flex;
@@ -269,7 +272,7 @@ div.OutcomeNameDisplay {
   }
 
   .MarketView__history {
-    background: @color-tertiary-background;
+    background: @color-module-background;
     margin-bottom: 0;
     max-height: unset;
   }

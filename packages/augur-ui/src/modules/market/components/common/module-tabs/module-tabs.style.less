@@ -1,8 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .Headers {
+  background: @color-dark-grey;
   display: flex;
   overflow-x: auto;
+  margin-right: @size-12;
 
   > ul {
     border-bottom: 1px solid @color-dark-grey;
@@ -75,7 +77,6 @@
   display: flex;
   flex: 1 auto;
   flex-flow: column nowrap;
-  height: 100%;
 
   @media @breakpoint-mobile {
     height: fit-content;
@@ -100,7 +101,7 @@
 }
 
 .FillWidth {
-  background-color: @color-module-background;
+  background-color: @color-dark-grey;
 
   > li {
     .text-14;

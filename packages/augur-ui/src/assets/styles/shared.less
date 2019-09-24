@@ -36,16 +36,16 @@ label {
 
 input,
 textarea {
-  background-color: @color-primary-text;
+  background-color: @color-dark-grey;
   border: @size-1 solid transparent;
-  color: @color-theme-primary;
+  color: @color-primary-text;
   display: block;
   font-family: @roboto;
   padding: @size-12 @size-16;
   width: 100%;
 
   &:focus {
-    border: @size-1 solid @color-primary-light;
+    border: @size-1 solid @color-secondary-action-outline;
   }
 
   &:disabled {
@@ -54,7 +54,7 @@ textarea {
   }
 
   &::placeholder {
-    color: @color-primary-text;
+    color: @color-secondary-text;
     font-family: @roboto;
   }
 }
@@ -65,7 +65,7 @@ textarea {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: @color-primary-light;
+    background: @color-secondary-action-outline;
     border-radius: @border-radius-full-round;
   }
 }
