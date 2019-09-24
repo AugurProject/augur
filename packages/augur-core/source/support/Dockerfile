@@ -23,7 +23,7 @@ RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
 
 RUN yarn workspace @augurproject/core install && yarn workspace @augurproject/core build
 
-FROM alpine:3.9
+FROM alpine:3.10
 ENV PATH="/augur/venv/bin:${PATH}"
 
 RUN apk add --no-cache \
