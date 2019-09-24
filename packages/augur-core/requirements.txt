@@ -31,7 +31,7 @@ hexbytes==0.1.0           # via eth-account, eth-rlp, web3
 idna==2.8                 # via requests
 importlib-metadata==0.17  # via pluggy
 ipfshttpclient==0.4.12    # via ethpm
-jsonschema==2.6.0         # via ethpm
+jsonschema==3.0.2         # via ethpm
 lru-dict==1.1.6           # via py-evm, web3
 more-itertools==7.0.0     # via pytest
 multiaddr==0.0.8          # via ipfshttpclient
