@@ -160,7 +160,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
-          [`${Styles[`showColor-${selected.value + 1}`]}`]: selected && showColor
+          [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]: selected && showColor
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
