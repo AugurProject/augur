@@ -222,8 +222,8 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
 
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.unclaimedRep.formattedValue || 0;
-  const unclaimedDai = claimReportingFees.unclaimedDai.formattedValue || 0;
+  const unclaimedREP = claimReportingFees.unclaimedRep.formatted;
+  const unclaimedDai = claimReportingFees.unclaimedDai.formatted;
 
   return (
     <Template
