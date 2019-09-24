@@ -2,6 +2,8 @@
 @import (reference) "~modules/market/components/market-view/market-view.styles";
 
 .MarketHeader {
+  background: @color-module-background;
+  border: 1px solid @color-dark-grey;
   color: @color-secondary-text;
   display: flex;
   flex: 1;
@@ -18,10 +20,6 @@
       margin: 0 0 @size-8;
       overflow: auto;
     }
-  }
-
-  > h1 {
-    display: none;
   }
 
   > div:first-of-type {
@@ -53,31 +51,33 @@
   }
 }
 
+.TimeSection {
+  background: @color-module-background;
+  border: 1px solid @color-dark-grey;
+  max-width: 240px;
+  width: 200px;
+}
+
 .Toggle {
   display: flex;
   justify-content: center;
-  margin-top: @size-30;
 
   > button {
-    background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
-    border-radius: 4.6875rem;
-    height: @size-24;
-    width: 4rem;
+    background: @color-dark-grey;
+    display: flex;
+    height: @size-32;
+    width: 100%;
 
-    &:hover {
-      background-color: @color-secondary-action-outline;
+    > svg {
+      height: @size-16;
+      width: @size-12;
+      margin-left: auto;
+      margin-right: @size-12;
+
+      > path {
+        fill: @color-secondary-text;
+      }
     }
-
-    > span {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-    }
-  }
-
-  &.Collapsed {
-    margin-top: 0;
   }
 }
 
@@ -109,40 +109,22 @@
 .BackButton {
   .text-10;
 
+  align-items: center;
+  color: @color-primary-text;
   display: flex;
   text-transform: capitalize;
+  margin-right: @size-10;
 
   span {
-    color: @color-inactive-text;
+    color: @color-primary-text;
   }
 
   svg {
-    height: @size-16;
-    width: @size-18;
-    margin-right: @size-20;
-
-    rect {
-      fill: @color-inactive-text;
-    }
+    height: @size-6;
+    width: @size-10;
 
     path {
-      stroke: @color-inactive-text;
-    }
-  }
-
-  &:hover {
-    span {
-      color: @color-primary-text;
-    }
-
-    svg {
-      rect {
-        fill: @color-primary-text;
-      }
-
-      path {
-        stroke: @color-primary-text;
-      }
+      stroke: @color-primary-text;
     }
   }
 }
@@ -167,7 +149,7 @@
     }
 
     > h1 {
-      .text-24-bold;
+      .text-18-bold;
 
       color: @color-primary-text;
       flex-grow: 1;
@@ -189,7 +171,7 @@
   h4 {
     .mono-10;
 
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     display: block;
     padding-bottom: 2px;
     padding-right: @size-8;
@@ -238,25 +220,19 @@
 }
 
 .Properties {
+  border: 1px solid @color-dark-grey;
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin-left: @size-48;
 }
 
 .Core {
+  border: 1px solid @color-dark-grey;
   display: flex;
-  padding: @size-18 0 0;
 
   > div:first-of-type {
-    padding-top: 1px;
-
     @media @breakpoint-mobile {
       padding-top: @size-16;
-    }
-
-    > div:nth-of-type(3) {
-      padding-top: 1px;
     }
   }
 

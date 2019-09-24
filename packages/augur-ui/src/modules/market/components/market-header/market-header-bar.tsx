@@ -1,39 +1,21 @@
 import React, { Component } from "react";
 import Styles from "modules/market/components/market-header/market-header-bar.styles.less";
-import { FavoritesButton } from "modules/common/buttons";
 import { InReportingLabel } from "modules/common/labels";
-import { PaperClip, Person } from "modules/common/icons";
-import { MARKET_OPEN, COPY_MARKET_ID, COPY_AUTHOR } from "modules/common/constants";
-import Clipboard from "clipboard";
-import { DotSelection } from "modules/common/selection";
+import { MARKET_OPEN } from "modules/common/constants";
 import { DateFormattedObject } from "modules/types";
 import { Getters } from "@augurproject/sdk";
 
 export interface MarketHeaderBarProps {
-  addToFavorites: Function;
-  author: string;
-  marketId: string;
   marketStatus: string;
-  isLogged: boolean;
-  isFavorite: boolean;
   reportingState: string;
   disputeInfo: Getters.Markets.DisputeInfo;
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
-  disputingWindowEndTime: number;
 }
 
 class MarketHeaderBar extends Component<MarketHeaderBarProps> {
-  clipboardMarketId: any = new Clipboard("#copy_marketId");
-  clipboardAuthor: any = new Clipboard("#copy_author");
-
   render() {
     const {
-      author,
-      addToFavorites,
-      isLogged,
-      isFavorite,
-      marketId,
       marketStatus,
       reportingState,
       disputeInfo,
@@ -50,31 +32,6 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
           endTimeFormatted={endTimeFormatted}
           currentAugurTimestamp={currentAugurTimestamp}
         />
-
-        {addToFavorites && (
-          <div>
-            <FavoritesButton
-              action={() => addToFavorites()}
-              isFavorite={isFavorite}
-              hideText
-              disabled={!isLogged}
-            />
-          </div>
-        )}
-        <DotSelection>
-          <div
-            id="copy_marketId"
-            data-clipboard-text={marketId}
-          >
-            {PaperClip} {COPY_MARKET_ID}
-          </div>
-          <div
-            id="copy_author"
-            data-clipboard-text={author}
-          >
-            {Person} {COPY_AUTHOR}
-          </div>
-        </DotSelection>
       </section>
     );
   }
