@@ -1516,7 +1516,7 @@ describe('State API :: Markets :: ', () => {
           },
         },
       });
-    });
+    }, 200000);
 
     test('should return mysize of zero for mary', async () => {
       const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);

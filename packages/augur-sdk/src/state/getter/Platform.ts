@@ -193,12 +193,11 @@ async function getDisputedMarkets(
   const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
     selector: {
       universe,
-      ...timeConstraint(startTime, endTime),
+      nextWindowStartTime: { $lte: formatTimestamp(endTime)},
+      nextWindowEndTime: { $gte: formatTimestamp(startTime)},
     },
     fields: [ 'market' ],
   });
-
-  console.log('HEART', 'getDisputedMarkets', disputeCrowdsourcerCompletedLogs[0]);
 
   return _.uniqWith(disputeCrowdsourcerCompletedLogs, (a, b) => a.market === b.market).length;
 }

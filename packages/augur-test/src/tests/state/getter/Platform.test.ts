@@ -72,16 +72,17 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     const markets = await api.route('getMarketsInfo', { marketIds: [yesNoMarket.address]});
     await fork(john, markets[0]);
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     const stats = await getPlatformActivityStats(john, db, api, universe);
-    expect(stats).toEqual({
+    expect(stats).toMatchObject({
       activeUsers: 2,
-      amountStaked: '4650537188053131103515648',
       disputedMarkets: 1,
       marketsCreated: 3,
       numberOfTrades: 3,
-      openInterest: '2040000000000000',
-      volume: '6093000000000000',
     });
+    expect(stats.amountStaked.toString()).toEqual('4650537188053131103515648');
+    expect(stats.openInterest.toString()).toEqual('2040000000000000');
+    expect(stats.volume.toString()).toEqual('6093000000000000');
   }, 200000);
 });
 
