@@ -50,10 +50,12 @@ export interface DateFormattedObject {
   utcLocalOffset: number;
   clockTimeLocal: string;
   formattedTimezone: string;
+  formattedShortTimezone: string;
   formattedSimpleData: string;
   formattedUtcShortDate: string;
   clockTimeUtc: string;
   formattedUtc: string;
+  formattedShortUtc: string;
 }
 
 export interface ValueLabelPair {
