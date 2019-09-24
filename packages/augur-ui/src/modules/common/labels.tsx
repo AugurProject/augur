@@ -190,6 +190,23 @@ interface ValueDenominationProps {
   hideDenomination?: Boolean;
 }
 
+interface TimeLabelProps {
+  label: string;
+  time: DateFormattedObject;
+  showLocal: boolean;
+}
+
+export const TimeLabel = ({ label, time, showLocal }: TimeLabelProps) => {
+  return (
+    <div className={Styles.TimeLabel}>
+      <span>{label}</span>
+      <span>{time.formattedShortUtc}</span>
+      {showLocal && <span>{time.formattedShortTimezone}</span>}
+    </div>
+  )
+}
+
+
 export const DashlineNormal = () => (
   <svg width="100%" height="1">
     <line x1="0" x2="100%" y1="0" y2="0" className={Styles.Dashline} />
