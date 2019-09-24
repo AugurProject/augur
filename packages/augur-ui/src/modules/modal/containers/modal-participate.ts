@@ -6,10 +6,16 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   rep: state.loginAccount.balances.rep,
+  gasPrice: getGasPrice(state),
+  messages: [{
+    preText: 'Quantity (1 token @ 1 REP)'
+  }],
+  title: 'Buy Participation Tokens',
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
