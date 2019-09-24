@@ -1,10 +1,7 @@
-import PropTypes from "prop-types";
+export interface ModulePaneProps {
+  label?: string;
+  onClickCallback?: Function;
+  children: any;
+}
 
-const ModulePane = p => p.children;
-
-ModulePane.propTypes = {
-  label: PropTypes.string,
-  onClickCallback: PropTypes.func
-};
-
-export default ModulePane;
+export const ModulePane = (p: ModulePaneProps) => p.children;

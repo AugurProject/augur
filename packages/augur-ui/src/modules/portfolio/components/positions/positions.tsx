@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { CompactButton } from "modules/common/buttons";

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { Alerts } from "modules/common/icons";
@@ -101,14 +100,6 @@ const TopBar = ({
       </div>
     </header>
   );
-};
-
-TopBar.propTypes = {
-  alertsVisible: PropTypes.bool.isRequired,
-  isLogged: PropTypes.bool.isRequired,
-  stats: PropTypes.object.isRequired,
-  unseenCount: PropTypes.number.isRequired,
-  updateIsAlertVisible: PropTypes.func.isRequired
 };
 
 export default TopBar;

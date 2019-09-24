@@ -1,11 +1,8 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from "react";
 import moment, { Moment } from "moment";
 
 import {
   RadioCardGroup,
-  FormDropdown,
   TextInput,
   DatePicker,
   TimeSelector,
@@ -25,16 +22,13 @@ import {
   DESIGNATED_REPORTER_SPECIFIC
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
-import { RepLogoIcon } from "modules/common/icons";
 import {
   DESCRIPTION_PLACEHOLDERS,
-  DESCRIPTION,
   DESIGNATED_REPORTER_ADDRESS,
   EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES
 } from "modules/create-market/constants";
-import { formatDate, convertUnixToFormattedDate } from "utils/format-date";
 import { checkValidNumber } from 'modules/common/validations';
 
 import Styles from "modules/create-market/components/form-details.styles.less";

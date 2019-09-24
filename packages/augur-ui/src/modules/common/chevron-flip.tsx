@@ -1,8 +1,18 @@
 import React from "react";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 
 import Styles from "modules/common/chevron-flip.styles";
+
+interface ChevronFlip {
+  className?: string;
+  pointDown?: Boolean;
+  stroke?: string;
+  big?: Boolean;
+  filledInIcon?: Boolean;
+  quick?: Boolean;
+  hover?: Boolean;
+  containerClassName?: string;
+}
 
 const ChevronFlipIcon = (className = "", fillColor = "#A7A2B2") => (
   <svg className={className} viewBox="0 0 16 16">
@@ -75,17 +85,6 @@ const ChevronFlip = ({
         )}
   </span>
 );
-
-ChevronFlip.propTypes = {
-  className: PropTypes.string,
-  pointDown: PropTypes.bool,
-  stroke: PropTypes.string,
-  big: PropTypes.bool,
-  filledInIcon: PropTypes.bool,
-  quick: PropTypes.bool,
-  hover: PropTypes.bool,
-  containerClassName: PropTypes.string
-};
 
 ChevronFlip.defaultProps = {
   className: undefined,

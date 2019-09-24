@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 
-import PropTypes from "prop-types";
 import Styles from "modules/market/components/market-header/market-header-reporting.styles.less";
 import MarketLink from "modules/market/components/market-link/market-link";
 import {
@@ -11,17 +10,21 @@ import {
 } from "modules/common/constants";
 import { PrimaryButton } from "modules/common/buttons";
 
-export default class MarketHeaderReporting extends Component {
-  static propTypes = {
-    market: PropTypes.object.isRequired,
-    isDesignatedReporter: PropTypes.bool,
-    claimMarketsProceeds: PropTypes.func.isRequired,
-    tentativeWinner: PropTypes.object,
-    isLogged: PropTypes.bool,
-    location: PropTypes.object.isRequired,
-    canClaimProceeds: PropTypes.bool,
-  };
+interface MarketHeaderReportingProps {
+  market: Object;
+  isDesignatedReporter?: Boolean;
+  claimMarketsProceeds: Function;
+  tentativeWinner?: Object;
+  isLogged?: Boolean;
+  location: Object;
+  canClaimProceeds?: Boolean;
+}
 
+interface MarketHeaderReportingState {
+  disableFinalize: Boolean;
+}
+
+export default class MarketHeaderReporting extends Component<MarketHeaderReportingProps, MarketHeaderReportingState> {
   static defaultProps = {
     isDesignatedReporter: false,
     tentativeWinner: {},

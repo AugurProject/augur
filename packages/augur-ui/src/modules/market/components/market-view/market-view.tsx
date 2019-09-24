@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interaction */
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import classNames from 'classnames';
 import Media from 'react-media';

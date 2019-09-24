@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalLoading from "modules/modal/components/common/modal-loading";

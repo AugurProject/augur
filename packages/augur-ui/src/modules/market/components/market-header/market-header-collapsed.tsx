@@ -1,12 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
 
 import MarketHeaderReporting from "modules/market/containers/market-header-reporting";
 
 import Styles from "modules/market/components/market-header/market-header-collapsed.styles";
 
-export const MarketHeaderCollapsed = ({ description, market }) => (
+interface MarketHeaderCollapsedProps {
+  description: string;
+  market: object;
+}
+
+export const MarketHeaderCollapsed = ({ description, market }: MarketHeaderCollapsedProps) => (
   <div className={Styles.HeaderCollapsed}>
     <div>
       {description}
@@ -16,8 +19,3 @@ export const MarketHeaderCollapsed = ({ description, market }) => (
     </div>
   </div>
 );
-
-MarketHeaderCollapsed.propTypes = {
-  description: PropTypes.string.isRequired,
-  market: PropTypes.object.isRequired
-};

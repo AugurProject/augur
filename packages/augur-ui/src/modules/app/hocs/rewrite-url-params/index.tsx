@@ -1,12 +1,22 @@
 import React from "react";
-import PropTypes from "prop-types";
 import parseQuery from "modules/routes/helpers/parse-query";
 import { createPath } from "history";
 
 import makeQuery from "modules/routes/helpers/make-query";
 
+interface historyObject {
+  push: Function;
+  replace: Function;
+  createHref: Function;
+}
+
+interface WrapperComponent {
+  location: Object;
+  history: historyObject;
+}
+
 export const RewriteUrlParams = windowRef => BaseCmp => {
-  const WrapperCmp = props => {
+  const WrapperCmp = (props: WrapperComponent) => {
     const { location } = props;
     const searchValues = parseQuery(location.search);
     const {
@@ -43,15 +53,6 @@ export const RewriteUrlParams = windowRef => BaseCmp => {
       key => !windowParams[key] && delete windowParams[key]
     );
     return <BaseCmp {...props} {...windowParams} />;
-  };
-
-  WrapperCmp.propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-      replace: PropTypes.func.isRequired,
-      createHref: PropTypes.func.isRequired
-    }).isRequired
   };
 
   return WrapperCmp;

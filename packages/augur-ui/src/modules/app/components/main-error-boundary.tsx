@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import makePath from "modules/routes/helpers/make-path";
 import { DEFAULT_VIEW } from "modules/routes/constants/views";
 import { SecondaryButton } from "modules/common/buttons";
@@ -17,10 +16,6 @@ interface MEBState {
 }
 
 export default class MainErrorBoundary extends Component<MEBProps, MEBState> {
-  static propTypes = {
-    children: PropTypes.element.isRequired
-  };
-
   state: MEBState = {
     hasError: false
   };

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ModalReceipt from "modules/modal/components/common/modal-receipt";

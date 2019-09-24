@@ -1,6 +1,4 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from "react";
 
 import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
@@ -19,8 +17,7 @@ interface LandingProps {
 }
 
 export default class Landing extends React.Component<
-  LandingProps,
-  {}
+  LandingProps
 > {
 
   componentDidMount() {
@@ -34,7 +31,6 @@ export default class Landing extends React.Component<
       newMarket,
       clearNewMarket
     } = this.props;
-    const s = this.state;
 
     return (
       <div 

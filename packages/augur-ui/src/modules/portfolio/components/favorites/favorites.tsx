@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { MarketProgress } from "modules/common/progress";
@@ -8,7 +7,6 @@ import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData } from "modules/types";
-import { convertUnixToFormattedDate } from "utils/format-date";
 
 const sortByOptions = [
   {

@@ -1,6 +1,4 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from "react";
 
 import { Drafts} from "modules/types";
 import { formatDate } from "utils/format-date";

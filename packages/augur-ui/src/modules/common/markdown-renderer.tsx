@@ -1,9 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ReactHtmlParser from "react-html-parser";
 import Styles from "modules/common/markdown-renderer.styles.less";
+
+interface MarkdownRenderer {
+  text: string;
+  className?: string | null;
+  hideLabel: Boolean;
+}
 
 const Remarkable = require("remarkable");
 
@@ -39,12 +44,6 @@ const MarkdownRenderer = ({ text, className, hideLabel }) => {
       {ReactHtmlParser(md.render(text))}
     </label>
   );
-};
-
-MarkdownRenderer.propTypes = {
-  text: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  hideLabel: PropTypes.bool,
 };
 
 MarkdownRenderer.defaultProps = {

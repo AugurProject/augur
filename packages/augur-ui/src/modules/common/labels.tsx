@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -913,17 +912,6 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
   </div>
 );
 
-WordTrail.propTypes = {
-  typeLabel: PropTypes.string,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-    })
-  ),
-  children: PropTypes.array,
-};
-
 WordTrail.defaultProps = {
   children: [],
   items: [],
@@ -937,15 +925,6 @@ export const CategoryTagTrail = ({
     <WordTrail items={categories} typeLabel='Category' />
   </div>
 );
-
-CategoryTagTrail.propTypes = {
-  categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-    })
-  ).isRequired,
-};
 
 interface BulkTxLabelProps {
   count: number;
@@ -1006,20 +985,6 @@ export const ValueDenomination = ({
     }
   </span>
 );
-
-ValueDenomination.propTypes = {
-  valueClassname: PropTypes.string,
-  className: PropTypes.string,
-  value: PropTypes.number,
-  formatted: PropTypes.string,
-  fullPrecision: PropTypes.string,
-  denomination: PropTypes.string,
-  hidePrefix: PropTypes.bool,
-  hidePostfix: PropTypes.bool,
-  prefix: PropTypes.string,
-  postfix: PropTypes.string,
-  hideDenomination: PropTypes.bool,
-};
 
 ValueDenomination.defaultProps = {
   className: null,

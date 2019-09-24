@@ -1,26 +1,29 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import ModulePane from "modules/market/components/common/module-tabs/module-pane";
+import {ModulePaneProps} from "modules/market/components/common/module-tabs/module-pane";
 import Styles from "modules/market/components/common/module-tabs/module-tabs.style";
 import { ToggleExtendButton } from "modules/common/buttons";
 
-export default class ModuleTabs extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    selected: PropTypes.number,
-    children: PropTypes.arrayOf(ModulePane).isRequired,
-    fillWidth: PropTypes.bool,
-    fillForMobile: PropTypes.bool,
-    noBorder: PropTypes.bool,
-    id: PropTypes.string,
-    leftButton: PropTypes.element,
-    scrollOver: PropTypes.bool,
-    showToggle: PropTypes.bool,
-    toggle: PropTypes.func,
-  };
+interface ModuleTabsProps {
+  className?: string;
+  selected?: number;
+  children: Array<any>;
+  fillWidth?: Boolean;
+  fillForMobile?: Boolean;
+  noBorder?: Boolean;
+  id?: string;
+  leftButton?: Element | null;
+  scrollOver?: Boolean;
+  showToggle?: Boolean;
+  toggle?: Function;
+}
 
+interface ModuleTabsState {
+  selected: number;
+}
+
+export default class ModuleTabs extends Component<ModuleTabsProps, ModuleTabsState> {
   static defaultProps = {
     selected: 0,
     className: "",

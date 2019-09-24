@@ -1,13 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { SCALAR } from "modules/common/constants";
 import Styles from "modules/market/components/core-properties/core-properties.styles.less";
 import getValue from "utils/get-value";
 import { PropertyLabel } from "modules/common/labels";
 import { formatPercent, formatDai, formatNone, formatNumber } from "utils/format-number";
 
+interface CorePropertiesProps {
+  market: Object;
+}
+
 // TODO: Get market 24 hour volume, currently just using volume
-const CoreProperties = ({ market }) => (
+const CoreProperties = ({ market }: CorePropertiesProps) => (
   <div className={Styles.CoreProperties}>
     <PropertyLabel
       label="Total Volume"
@@ -50,9 +53,5 @@ const CoreProperties = ({ market }) => (
     )}
   </div>
 );
-
-CoreProperties.propTypes = {
-  market: PropTypes.object.isRequired
-};
 
 export default CoreProperties;
