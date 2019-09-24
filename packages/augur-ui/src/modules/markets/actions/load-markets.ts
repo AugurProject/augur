@@ -88,16 +88,6 @@ export const loadMarketsByFilter = (
       sort.isSortDescending = true;
       break;
     }
-    case MARKET_SORT_PARAMS.DISPUTE_ROUND: {
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.disputeRound;
-      sort.isSortDescending = true;
-      break;
-    }
-    case MARKET_SORT_PARAMS.TOTAL_REP_STAKED_IN_MARKET: {
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.totalRepStakedInMarket;
-      sort.isSortDescending = true;
-      break;
-    }
     default: {
       // Sort By Recently Traded
       sort.sortBy = Getters.Markets.GetMarketsSortBy.lastTradedTimestamp;
@@ -173,7 +163,6 @@ export const loadCurrentlyDisputingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
   };
@@ -188,7 +177,6 @@ export const loadOpenReportingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.OpenReporting],
     ...filterOptions,
   };
