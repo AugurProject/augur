@@ -123,7 +123,7 @@
     "@types/react-router-dom": "4.3.1",
     "autoprefixer": "9.1.5",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "9.0.0",
+    "babel-eslint": "10.0.3",
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.4",
     "chalk": "2.4.2",
