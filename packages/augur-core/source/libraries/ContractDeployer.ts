@@ -166,8 +166,6 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.contracts.get('Cash').address!;
-        mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
-        mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -430,7 +428,7 @@ Deploying to: ${networkConfiguration.networkName}
         for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
-            if (contract.contractName === 'ZeroXTradeToken') continue
+            if (contract.contractName === 'ZeroXTradeToken') continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             mapping[contract.contractName] = contract.address;
         }
