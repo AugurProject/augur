@@ -75,7 +75,7 @@
     "ts-loader": "6.0.1",
     "webpack": "4.29.6",
     "webpack-cli": "3.3.0",
-    "websocket-as-promised": "brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005",
+    "websocket-as-promised": "brianosaurus/websocket-as-promised#858ae554a04ffc3f2f40df48c836e8e5dc025583",
     "worker-loader": "2.0.0",
     "ws": "7.0.0",
     "yarn": "1.17.3"

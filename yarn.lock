@@ -24986,9 +24986,10 @@ webpack@4.39.3:
     watchpack "^1.6.0"
     webpack-sources "^1.4.1"
 
-websocket-as-promised@brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005:
-  version "0.9.1"
-  resolved "https://codeload.github.com/brianosaurus/websocket-as-promised/tar.gz/a104f774d702c0fbefe7ac2438b682676cf7d005"
+websocket-as-promised@brianosaurus/websocket-as-promised#858ae554a04ffc3f2f40df48c836e8e5dc025583:
+  version "0.9.0"
+  uid "858ae554a04ffc3f2f40df48c836e8e5dc025583"
+  resolved "https://codeload.github.com/brianosaurus/websocket-as-promised/tar.gz/858ae554a04ffc3f2f40df48c836e8e5dc025583"
   dependencies:
     chnl "^0.4.2"
     flat-options "^0.1.3"
