@@ -24,6 +24,7 @@ import {
   CLAIM_FEE_WINDOWS,
   CLAIM_STAKE_FEES,
   ZERO,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -42,10 +43,15 @@ const mapStateToProps = (state: AppState, ownProps) => {
   // accum totalAmount rep per marketId
   const disputingContracts = accountReporting.disputing.contracts;
   const uniqueMarketIds = Array.from(new Set(disputingContracts.map(contract => contract.marketId)));
-  const marketReportContracts = uniqueMarketIds.map(marketId => {
+
+  const marketReportContracts = uniqueMarketIds.filter(marketId => {
+    const marketObject = selectMarket(marketId);
+    return marketObject.reportingState === REPORTING_STATE.AWAITING_FINALIZATION || marketObject.reportingState === REPORTING_STATE.FINALIZED;
+  }).map(marketId => {
+    const marketObject = selectMarket(marketId);
     let marketReportContract = {
       marketId,
-      marketObject: selectMarket(marketId),
+      marketObject,
       contracts: [],
       totalAmount: ZERO
     };
@@ -60,10 +66,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     });
     return marketReportContract;
   });
-  // filter out markets that are not in `AWAITING_FINALIZATION` or `FINALIZED`
-  // look for REPORTING_STATE constants
+
   const reportingMarkets: MarketReportContracts[] = marketReportContracts;
-  // const market = selectMarket(marketId);
 
   return {
     modal: state.modal,
