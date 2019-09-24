@@ -94,7 +94,6 @@ async function getActiveUsers(
     ...await getField<ParsedOrderEventLog>('orderFiller', db.findOrderFilledLogs.bind(db)),
     ...await getField<ParticipationTokensRedeemedLog>('account', db.findParticipationTokensRedeemedLogs.bind(db)),
     ...await getField<TradingProceedsClaimedLog>('sender', db.findTradingProceedsClaimedLogs.bind(db)),
-    ...await getField<TradingProceedsClaimedLog>('sender', db.findTradingProceedsClaimedLogs.bind(db)),
   ];
 
   // Filter out null address then remove duplicates.
