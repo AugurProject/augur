@@ -83,6 +83,7 @@ export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
   volumeFormatted: FormattedNumber;
+  isTradeable: boolean;
 }
 
 export interface MarketData extends Getters.Markets.MarketInfo {
