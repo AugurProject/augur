@@ -80,7 +80,7 @@
     "copy-dir": "0.4.0",
     "crypto-promise": "2.1.0",
     "ethers": "4.0.24",
-    "get-port": "4.1.0",
+    "get-port": "5.0.0",
     "js-sha3": "0.8.0",
     "path": "0.12.7",
     "recursive-readdir": "2.2.2",
