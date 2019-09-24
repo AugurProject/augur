@@ -1,11 +1,8 @@
 /* eslint jsx-a11y/label-has-for: 0 */
 
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { InputErrorIcon } from 'modules/common/icons';
-import { Input, TextInput } from 'modules/common/form';
-import ModalReview from 'modules/modal/components/modal-review';
+import { TextInput } from 'modules/common/form';
 import Styles from 'modules/modal/components/common/common.styles.less';
 import { formatRep, formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
 import { BUY_PARTICIPATION_TOKENS_GAS_LIMIT } from 'modules/common/constants';
