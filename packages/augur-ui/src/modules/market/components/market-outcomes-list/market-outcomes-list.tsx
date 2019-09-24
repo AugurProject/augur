@@ -22,6 +22,7 @@ interface MarketOutcomesListProps {
   maxPriceBigNumber: BigNumber;
   popUp: boolean;
   toggle: Function;
+  hideOutcomes?: boolean;
 }
 
 export default class MarketOutcomesList extends Component<
@@ -46,18 +47,19 @@ export default class MarketOutcomesList extends Component<
       maxPriceBigNumber,
       popUp,
       marketId,
-      toggle
+      toggle,
+      hideOutcomes
     } = this.props;
 
     return (
       <section className={Styles.OutcomesList}>
-        {!popUp && (
+        {!popUp && toggle && (
           <h3 className={Styles.Heading}>
             Outcomes
             <ToggleExtendButton toggle={toggle} />
           </h3>
         )}
-        <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
+        <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes, {[SharedStyles.HideOutcomes]: hideOutcomes})}>
           <ul
             className={classNames(
               HeaderStyles.DataTableHeader,
@@ -71,17 +73,19 @@ export default class MarketOutcomesList extends Component<
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
-            <MarketOutcomesListOutcome
-              key={outcome.id}
-              marketId={marketId}
-              outcome={outcome}
-              selectedOutcomeId={selectedOutcomeId}
-              updateSelectedOutcome={updateSelectedOutcome}
-              marketType={marketType}
-              scalarDenomination={marketType === SCALAR && scalarDenomination}
-            />
-          ))}
+          <div>
+            {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
+              <MarketOutcomesListOutcome
+                key={outcome.id}
+                marketId={marketId}
+                outcome={outcome}
+                selectedOutcomeId={selectedOutcomeId}
+                updateSelectedOutcome={updateSelectedOutcome}
+                marketType={marketType}
+                scalarDenomination={marketType === SCALAR && scalarDenomination}
+              />
+            ))}
+          </div>
         </div>
       </section>
     );
