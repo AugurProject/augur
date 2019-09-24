@@ -2,7 +2,7 @@
 
 .TopBar {
   align-items: center;
-  background: @color-theme-primary;
+  background: @color-dark-grey;
   display: flex;
   font-size: @size-14;
   height: 100%;
@@ -14,7 +14,7 @@
 
   // AUGUR LOGO
   > div:first-of-type {
-    border-right: 1px solid @color-dark-grey;
+    border-right: 1px solid @color-module-background;
     padding: 0 @size-20 0 @size-16;
 
     @media @breakpoint-mobile {
@@ -33,7 +33,7 @@
     @media @breakpoint-mobile {
       width: 100%;
       justify-content: flex-end;
-      border-right: 1px solid @color-dark-grey;
+      border-right: 1px solid @color-module-background;
     }
   }
 
@@ -68,7 +68,7 @@
   }
 
   @media @breakpoint-mobile {
-    background: @color-theme-primary;
+    background: @color-dark-grey;
     margin-left: @size-48;
     margin-right: auto;
 
@@ -189,7 +189,7 @@
   width: unset;
 
   &:hover {
-    background-color: @color-primary-light;
+    background-color: @color-module-background;
   }
 
   &:focus {
@@ -201,7 +201,7 @@
   cursor: default;
 
   &:hover {
-    background-color: @color-theme-primary;
+    background-color: @color-module-background;
   }
 
   @media @breakpoint-mobile {
@@ -210,7 +210,7 @@
 }
 
 .alertsDark {
-  background-color: @color-primary-light;
+  background-color: @color-module-background;
 }
 
 div.tooltip {
