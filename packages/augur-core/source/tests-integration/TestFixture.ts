@@ -42,17 +42,9 @@ export class TestFixture {
         const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey as string, provider);
         const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
-        const deployerConfiguration = CreateDeployerConfiguration({ useNormalTime: false });
+        const deployerConfiguration = CreateDeployerConfiguration("environment", { useNormalTime: false });
 
         let contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
-
-        if (pretendToBeProduction) {
-            const legacyRepAddress = await contractDeployer.uploadLegacyRep();
-            await contractDeployer.initializeLegacyRep();
-
-            const fakeProdDeployerConfiguration = CreateDeployerConfiguration({ useNormalTime: false, legacyRepAddress, isProduction: true });
-            contractDeployer = new ContractDeployer(fakeProdDeployerConfiguration, dependencies, provider, signer, compiledContracts);
-        }
 
         await contractDeployer.deploy();
 

@@ -94,7 +94,7 @@ const networks: NetworksToOptions = {
 };
 
 export class NetworkConfiguration {
-    public readonly networkName: string;
+    public readonly networkName: NETWORKS;
     public readonly http: string;
     public readonly ws?: string;
     public readonly ipc?: string;
@@ -102,7 +102,7 @@ export class NetworkConfiguration {
     public readonly gasPrice: ethers.utils.BigNumber;
     public readonly isProduction: boolean;
 
-    public constructor(networkName: string, http: string, ws: string | undefined, ipc: string | undefined, gasPrice: ethers.utils.BigNumber, privateKey: string | undefined, isProduction: boolean) {
+    public constructor(networkName: NETWORKS, http: string, ws: string | undefined, ipc: string | undefined, gasPrice: ethers.utils.BigNumber, privateKey: string | undefined, isProduction: boolean) {
         this.networkName = networkName;
         this.http = http;
         this.ws = ws;

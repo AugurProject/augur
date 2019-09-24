@@ -18,9 +18,8 @@ export interface DeployerConfiguration {
   contractAddressesOutputPath: string;
   uploadBlockNumbersOutputPath: string;
   augurAddress: string|undefined;
-  createGenesisUniverse: boolean;
   useNormalTime: boolean;
-  isProduction: boolean;
+  isProduction: boolean; // Determines if faucets are enabled / created
   writeArtifacts: boolean;
   externalAddresses: ExternalAddresses;
 }
@@ -31,6 +30,9 @@ type ExternalAddresses = {
   vatAddress?: string;
   potAddress?: string;
   joinAddress?: string;
+  colAddress?: string,
+  colJoinAddress?: string,
+  daiFaucet?: string,
   repPriceOracleAddress?: string;
   gnosisSafeAddress?: string;
   proxyFactoryAddress?: string;
@@ -41,14 +43,17 @@ type NetworksToExternalAddresses = {
   [P in NETWORKS]?: ExternalAddresses;
 }
 
-const externalAddresses: NetworksToExternalAddresses = {
+const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   thunder: {},
   ropsten: {},
   kovan: {
-    cashAddress: "",
-    vatAddress: "",
-    potAddress: "",
-    joinAddress: "",
+    colAddress: "0xC7aa227823789E363f29679F23f7e8F6d9904a9B",
+    colJoinAddress: "0x8218a5a1ff5320e763127320A1A2c5f16E2e5933",
+    daiFaucet: "0x94598157fcf0715c3bc9b4a35450cce82ac57b20",
+    cashAddress: "0x98738f2ca303a7e8bf22b252e4418f2b14bbdfa2",
+    vatAddress: "0x1cc5abe5c0464f3af2a10df0c711236a8446bf75",
+    potAddress: "0x3d9afbed6ee2c2d17749b003875eaa38c0ce0c7f",
+    joinAddress: "0xa9ac4ae91f3e933cbb12a4229c425b7cfd3ac458",
   },
   rinkeby: {},
   clique: {},
@@ -80,14 +85,13 @@ export const defaultDeployerConfiguration: DeployerConfiguration = {
   contractAddressesOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'addresses.json'),
   uploadBlockNumbersOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'upload-block-numbers.json'),
   augurAddress: process.env.AUGUR_ADDRESS,
-  createGenesisUniverse: envOrDefault('CREATE_GENESIS_UNIVERSE', true),
   isProduction: envOrDefault('IS_PRODUCTION', false),
   useNormalTime: envOrDefault('USE_NORMAL_TIME', true),
   writeArtifacts: true,
   externalAddresses: {},
 };
 
-export function CreateDeployerConfiguration(overwrites: DeployerConfigurationOverwrite = {}): DeployerConfiguration {
-  // TODO take netid arg and use to map to externalAddresses
-  return Object.assign({}, defaultDeployerConfiguration, overwrites);
+export function CreateDeployerConfiguration(networkId: NETWORKS, overwrites: DeployerConfigurationOverwrite = {}): DeployerConfiguration {
+  const externalAddresses = EXTERNAL_ADDRESSES[networkId];
+  return Object.assign({}, defaultDeployerConfiguration, overwrites, );
 }

@@ -449,7 +449,7 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
-                if name in ['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin']: continue # We upload the Test Dai contracts manually after this process
+                if name in ['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin', 'CashFaucet', 'CashFaucetProxy']: continue # We upload the Test Dai contracts manually after this process
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock

@@ -30,6 +30,11 @@ contract TestNetDaiVat is IDaiVat {
         dai[dst] = add(dai[dst], rad);
     }
 
+    function frob(bytes32 i, address u, address v, address w, int dink, int dart) external {
+        // Just here for interface fulfilment
+        return;
+    }
+
     function faucet(address _target, uint256 _amount) public {
         dai[_target] = add(dai[_target], _amount);
     }
