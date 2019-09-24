@@ -336,72 +336,87 @@ jobs:
           fi
         displayName: integration tests
 
-# - job: Docker_populated_geth_images
-#   dependsOn:
-#   - TestAugurCore
-#   - DockerGethDev
-#   condition: |
-#     or
-#     (
-#       in(dependencies.TestAugurCore.result, 'Succeeded'),
-#       in(dependencies.DockerGethDev.result, 'Succeeded')
-#     )
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   timeoutInMinutes: 240
-#   strategy:
-#     matrix:
-#       dev-pop-geth-v2:
-#         IMAGE_NAME: augurproject/dev-pop-geth-v2
-#         NETWORK_ID: 102
-#         NORMAL_TIME: false
-#       dev-pop-normtime-geth-v2:
-#         IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
-#         NETWORK_ID: 103
-#         NORMAL_TIME: true
-#       dev-pop-geth-15-v2:
-#         IMAGE_NAME: augurproject/dev-pop-geth-15-v2
-#         NETWORK_ID: 104
-#         NORMAL_TIME: false
-#   steps:
-#     - checkout: self
-#     - task: Docker@1
-#       displayName: docker login
-#       inputs:
-#         command: login
-#         containerRegistryType: Container Registry
-#         dockerRegistryEndpoint: dockerhub-augurproject
-#     - script: |
-#         set -exuo pipefail
-#         sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-#         sudo systemctl status docker
-#         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-#         docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-#         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-#         docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
-#         docker images
-#         yarn
-#         # replaces @augurproject/tools docker:build
-#         docker pull augurproject/dev-node-geth:$(GETH_VERSION)
-#         docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
-#         MONO_ROOT=../../
-#         CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-#         # Build and copy to merge with current address.json/upload-block-numbers.json
-#         cd packages/augur-tools
-#         docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) $MONO_ROOT
-#         ./scripts/copy-docker-files.sh $(IMAGE_NAME)
-#         docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
-#         if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-#             docker push augurproject/augur-core:monorepo
-#         fi
-#         docker push $(IMAGE_NAME):$CONTRACT_SHA
-#       displayName: 'build and push $(IMAGE_NAME) image'
-#     - task: Docker@1
-#       displayName: docker logout
-#       inputs:
-#         command: logout
-#         containerRegistryType: Container Registry
-#         dockerRegistryEndpoint: dockerhub-augurproject
+ - job: Docker_populated_geth_images
+   dependsOn:
+   - TestAugurCore
+   - DockerGethDev
+   condition: |
+     or
+     (
+       in(dependencies.TestAugurCore.result, 'Succeeded'),
+       in(dependencies.DockerGethDev.result, 'Succeeded')
+     )
+   pool:
+     vmImage: 'Ubuntu 16.04'
+   timeoutInMinutes: 240
+   strategy:
+     matrix:
+       dev-pop-geth-v2:
+         IMAGE_NAME: augurproject/dev-pop-geth-v2
+         NETWORK_ID: 102
+         NORMAL_TIME: false
+       dev-pop-normtime-geth-v2:
+         IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
+         NETWORK_ID: 103
+         NORMAL_TIME: true
+       dev-pop-geth-15-v2:
+         IMAGE_NAME: augurproject/dev-pop-geth-15-v2
+         NETWORK_ID: 104
+         NORMAL_TIME: false
+   steps:
+     - checkout: self
+     - task: NodeTool@0
+       inputs:
+         versionSpec: $(PRIMARY_NODE_VERSION)
+     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+       inputs:
+         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+         vstsFeed: npmPackages
+     - script: |
+         yarn install --frozen-lockfile
+         yarn build
+       displayName: Install Dependencies
+     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+       inputs:
+         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+         vstsFeed: npmPackages
+     - script: |
+         set -exuo pipefail
+         export NETWORK_ID=$(NETWORK_ID)
+         export NORMAL_TIME=$(NORMAL_TIME)
+         docker run -p 8545:8545 -p 8546:8546 --name geth --detach augurproject/dev-node-geth:latest
+         yarn workspace @augurproject/tools flash run deploy --write-artifacts
+         yarn workspace @augurproject/tools build
+         yarn workspace @augurproject/tools flash run faucet --amount 10000000000000000000
+         yarn workspace @augurproject/tools flash run rep-faucet --amount 100000
+         yarn workspace @augurproject/tools flash run create-canned-markets-and-orders
+         docker cp geth:/geth geth
+         docker stop geth
+
+         MONO_ROOT=../../
+         CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
+         # Build and copy to merge with current address.json/upload-block-numbers.json
+
+         cd packages/augur-tools
+         docker build --no-cache -f docker-builder/Dockerfile -t $(IMAGE_NAME) $MONO_ROOT
+#        ./scripts/copy-docker-files.sh $(IMAGE_NAME)
+         docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
+#        docker push $(IMAGE_NAME):$CONTRACT_SHA
+       displayName: 'build and push $(IMAGE_NAME) image'
+     - task: Docker@1
+       displayName: docker login
+       inputs:
+         command: login
+         containerRegistryType: Container Registry
+         dockerRegistryEndpoint: dockerhub-augurproject
+     - task: Docker@1
+       displayName: docker logout
+       inputs:
+         command: logout
+         containerRegistryType: Container Registry
+         dockerRegistryEndpoint: dockerhub-augurproject
 
 # - job: publish_augur_ui_docker_image
 #   dependsOn:
