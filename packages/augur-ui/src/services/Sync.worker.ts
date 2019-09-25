@@ -44,7 +44,7 @@ ctx.addEventListener('message', async (message: any) => {
         };
         const subscription: string = subscriptions.subscribe(
           eventName,
-          buildResponse
+          buildResponse(eventName)
         );
         ctx.postMessage(
           MakeJsonRpcResponse(messageData.id, { subscribed: eventName, subscription })
