@@ -21,7 +21,7 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { Events, Logs, TXEventName } from '@augurproject/sdk';
+import { Events, Logs, TXEventName, NULL_ADDRESS } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
@@ -62,7 +62,7 @@ const handleAlert = (
     dispatch(
       updateAlert(log.transactionHash, {
         params: log,
-        toast: toast,
+        toast,
         status: TXEventName.Success,
         timestamp: blockchain.currentAugurTimestamp * 1000,
         name,
@@ -231,7 +231,9 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     log.orderCreator,
     getState().loginAccount.address
   );
-  if (isUserDataUpdate) {
+  // Ignore alerts for pre-liquidity orders here.
+  // They are handled elsewhere so they can be grouped as a single alert.
+  if (isUserDataUpdate && log.tradeGroupId === NULL_ADDRESS) {
     handleAlert(log, PUBLICTRADE, true, dispatch, getState);
 
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));

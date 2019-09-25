@@ -16,8 +16,8 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
   componentDidMount() {
     this.timeout = setInterval(() => {
       if (this.props.toasts.length > 0) {
-        const newToast = { 
-          name: this.props.toasts[0].name, 
+        const newToast = {
+          name: this.props.toasts[0].name,
           toast: false,
         };
         this.props.updateExistingAlert(this.props.toasts[0].id, newToast);

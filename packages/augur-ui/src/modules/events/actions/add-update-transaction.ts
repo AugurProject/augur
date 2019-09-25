@@ -93,6 +93,15 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
             name: CREATEMARKET,
           })
         );
+      } else if (methodCall === PUBLICCREATEORDERS) {
+        dispatch(
+          addAlert({
+            params: transaction.params,
+            status: TXEventName.Success,
+            timestamp: blockchain.currentAugurTimestamp * 1000,
+            name: PUBLICCREATEORDERS,
+          })
+        );
       } else {
         dispatch(
           updateAlert(hash, {

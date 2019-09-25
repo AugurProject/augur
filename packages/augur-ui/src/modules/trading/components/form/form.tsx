@@ -17,7 +17,7 @@ import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { Getters } from "@augurproject/sdk";
+import { Getters } from '@augurproject/sdk';
 import { CancelTextButton } from 'modules/common/buttons';
 
 interface FromProps {
@@ -40,7 +40,7 @@ interface FromProps {
   updateTradeTotalCost: Function;
   updateTradeNumShares: Function;
   clearOrderConfirmation: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
   orderBook: OutcomeOrderBook;
 }
 
