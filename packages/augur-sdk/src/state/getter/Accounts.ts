@@ -65,24 +65,24 @@ const getAccountReportingHistoryParamsSpecific = t.type({
   account: t.string,
 });
 
-interface ContractInfo {
+export interface ContractInfo {
   address: string;
   amount: BigNumber;
   marketId: string;
 }
 
-interface ContractOverview {
+export interface ContractOverview {
   totalAmount: BigNumber;
   contracts: ContractInfo[];
 }
 
-interface ParticipationContract {
+export interface ParticipationContract {
   address: string;
   amount: BigNumber;
   amountFees: BigNumber;
 }
 
-interface ParticipationOverview {
+export interface ParticipationOverview {
   totalAmount: BigNumber;
   totalFees: BigNumber;
   contracts: ParticipationContract[];
