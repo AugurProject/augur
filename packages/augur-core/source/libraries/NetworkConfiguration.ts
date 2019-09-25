@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { NetworkId } from '@augurproject/artifacts';
 
 type NetworkOptions = {
     isProduction: boolean;
@@ -25,6 +26,17 @@ export type NETWORKS = typeof NETWORKS[number];
 
 export function isNetwork(x: any): x is NETWORKS {
   return NETWORKS.includes(x);
+}
+
+export type NetworkIdToNetwork = {
+    [P in NetworkId]?: NETWORKS;
+}
+
+export const NETID_TO_NETWORK: NetworkIdToNetwork = {
+    1: "mainnet",
+    3: "ropsten",
+    4: "rinkeby",
+    42: "kovan",
 }
 
 type NetworksToOptions = {

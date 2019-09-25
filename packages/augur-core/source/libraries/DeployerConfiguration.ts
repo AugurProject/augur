@@ -93,5 +93,5 @@ export const defaultDeployerConfiguration: DeployerConfiguration = {
 
 export function CreateDeployerConfiguration(networkId: NETWORKS, overwrites: DeployerConfigurationOverwrite = {}): DeployerConfiguration {
   const externalAddresses = EXTERNAL_ADDRESSES[networkId];
-  return Object.assign({}, defaultDeployerConfiguration, overwrites, );
+  return Object.assign({}, defaultDeployerConfiguration, overwrites, externalAddresses);
 }
