@@ -98,8 +98,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   private encodeParam(param: any): any {
     if (isInstanceOfBigNumber(param)) {
       return new ethers.utils.BigNumber(param.toFixed());
-    } else if (isInstanceOfArray(param) && param.length > 0) {
-      return _.map(param, (value) => this.encodeParam(value));
+    } else if (isInstanceOfArray(param)) {
+      return param.length > 0 ? _.map(param, (value) => this.encodeParam(value)) : param;
     } else if (isObject(param)) {
       return _.mapValues(param, (value) => this.encodeParam(value));
     }
