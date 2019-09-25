@@ -16,7 +16,6 @@
 
   > div:last-of-type {
     background: @color-module-background;
-    border-bottom: 1px solid @color-dark-grey;
     flex: 1;
     overflow: auto;
     overflow-y: overlay;
@@ -25,10 +24,10 @@
 
     @media @breakpoint-mobile-mid {
       background: unset;
-      max-height: calc(100vh - 115px);
-      min-height: calc(100vh - 115px);
+      max-height: calc(~"100vh - @{multi-top-bar-height-mobile}");
+      min-height: calc(~"100vh - @{multi-top-bar-height-mobile}");
       overflow-y: visible;
-      padding: 0 @size-8 @size-4;
+      padding: 0 @size-6 @size-4;
     }
   }
 
