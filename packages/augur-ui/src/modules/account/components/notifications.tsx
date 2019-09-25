@@ -40,6 +40,7 @@ export interface NotificationsProps extends RouteComponentProps {
   currentAugurTimestamp: DateFormattedObject;
   disputingWindowEndTime: DateFormattedObject;
   finalizeMarketModal: Function;
+  dispute: Function;
   claimMarketsProceeds: Function;
   claimReportingFees: Function;
   unsignedOrdersModal: Function;
@@ -109,10 +110,7 @@ class Notifications extends React.Component<
             [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
             [RETURN_PARAM_NAME]: location.hash,
           };
-          history.push({
-            pathname: makePath(DISPUTING, null),
-            search: makeQuery(queryLink),
-          });
+          this.props.dispute(notification.market.id);
         };
         break;
 
