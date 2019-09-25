@@ -4,8 +4,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
 import getUserOpenOrder from 'modules/orders/selectors/select-user-open-order';
-import { cancelOpenOrders, cancelOpenOrder } from 'modules/contracts/actions/contractCalls';
-import { addAlert } from "modules/alerts/actions/alerts";
+import {
+  cancelOpenOrders,
+  cancelOpenOrder,
+} from 'modules/contracts/actions/contractCalls';
+import { addAlert } from 'modules/alerts/actions/alerts';
 import { CANCELORDER } from 'modules/common/constants';
 
 export const cancelAllOpenOrders = (orders: any, cb: NodeStyleCallback) => (
@@ -13,7 +16,7 @@ export const cancelAllOpenOrders = (orders: any, cb: NodeStyleCallback) => (
   getState: () => AppState
 ) => {
   // TODO: need to figure out max number of orders that can be cancelled at one time
-  cancelOpenOrders(orders.map(o => o.orderId));
+  cancelOpenOrders(orders.map(o => o.id));
   if (cb) cb(null);
 };
 
@@ -31,17 +34,19 @@ export const cancelOrder = (
   );
   if (order) {
     // TODO: we'll update state using pending tx events.
-    dispatch(addAlert({
-      id: orderId,
-      name: CANCELORDER,
-      status: "",
-      params: {
-        marketId: marketId,
-        outcomeId: outcome,
-        orderTypeLabel: orderTypeLabel,
-        order: order
-      }
-    }));
+    dispatch(
+      addAlert({
+        id: orderId,
+        name: CANCELORDER,
+        status: '',
+        params: {
+          marketId,
+          outcomeId: outcome,
+          orderTypeLabel,
+          order,
+        },
+      })
+    );
     cancelOpenOrder(orderId);
   }
 
