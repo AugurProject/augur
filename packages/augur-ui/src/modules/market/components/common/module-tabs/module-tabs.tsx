@@ -97,7 +97,7 @@ export default class ModuleTabs extends Component {
         >
           {this.props.children.map(labels.bind(this))}
         </ul>
-        {this.props.showToggle && 
+        {this.props.showToggle && this.props.toggle &&
           <ToggleExtendButton toggle={this.props.toggle} />
         }
       </div>
