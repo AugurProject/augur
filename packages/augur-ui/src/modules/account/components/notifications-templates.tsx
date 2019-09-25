@@ -7,7 +7,7 @@ import {
   formatTime,
 } from "modules/common/progress";
 import { CancelTextButton } from "modules/common/buttons";
-import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
+import { DateFormattedObject, MarketData, MarketReportClaimableContracts } from "modules/types";
 import { formatDai } from "utils/format-number";
 import Styles from "modules/account/components/notification.styles.less";
 
@@ -50,10 +50,7 @@ interface DisputeTemplateProps extends BaseProps {
 
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
   market: MarketData;
-  claimReportingFees: {
-    unclaimedDai: FormattedNumber;
-    unclaimedRep: FormattedNumber;
-  };
+  claimReportingFees: MarketReportClaimableContracts;
 }
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
@@ -116,6 +113,7 @@ interface CounterProps {
   type: string;
   market: MarketData;
   currentTime?: DateFormattedObject;
+  disputingWindowEndTime?: DateFormattedObject;
 }
 
 const Counter = (props: CounterProps) => {
@@ -123,13 +121,13 @@ const Counter = (props: CounterProps) => {
   const notificationsWithCountdown = [
     NOTIFICATION_TYPES.marketsInDispute,
     NOTIFICATION_TYPES.reportOnMarkets,
-    NOTIFICATION_TYPES.proceedsToClaimOnHold,
+    NOTIFICATION_TYPES.proceedsToClaim,
   ];
 
   if (props.market && notificationsWithCountdown.includes(props.type)) {
     const { endTimeFormatted, reportingState, finalizationTimeFormatted } = props.market;
 
-    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold && finalizationTimeFormatted && props.currentTime) {
+    if (props.type === NOTIFICATION_TYPES.proceedsToClaim && finalizationTimeFormatted && props.currentTime) {
       counter = (
         <div className={Styles.Countdown}>
           <CountdownProgress
@@ -212,7 +210,7 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
   return (
     <Template
       message={`Dispute round ${
-        disputeInfo.disputeRound
+        disputeInfo.disputeWindow.disputeRound
       } for the market: "${description}" is ending soon.`}
       {...props}
     />
@@ -221,8 +219,8 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
 
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.unclaimedRep.formatted;
-  const unclaimedDai = claimReportingFees.unclaimedDai.formatted;
+  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
+  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
 
   return (
     <Template
