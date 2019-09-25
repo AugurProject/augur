@@ -341,5 +341,6 @@ export class MarketDB extends DerivedDB {
     }
 
     await this.bulkUpsertUnorderedDocuments(updateDocs);
+    augurEmitter.emit(`DerivedDB:updated:Markets`, updateDocs);
   }
 }

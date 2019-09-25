@@ -23,6 +23,7 @@ import {
   handleTokenBalanceChangedLog,
   handleUniverseForkedLog,
   handleNewBlockLog,
+  handleMarketsUpdatedChangedLog,
   handleTxAwaitingSigning,
   handleTxSuccess,
   handleTxPending,
@@ -111,6 +112,9 @@ const EVENTS = {
   ),
   [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(
     handleTokenBalanceChangedLog
+  ),
+  [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
+    handleMarketsUpdatedChangedLog
   ),
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
