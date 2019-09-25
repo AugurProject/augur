@@ -100,10 +100,18 @@ export const selectMarketsInDispute = createSelector(
   selectLoginAccountAddress,
   (markets, positions, address) => {
     const state = store.getState();
-    const disputedMarkets = state
-      .loginAccount.reporting.disputing.contracts.map(obj => obj.marketId);
-    const reportedMarkets = state
-      .loginAccount.reporting.reporting.contracts.map(obj => obj.marketId);
+    let disputedMarkets = [];
+    let reportedMarkets = [];
+    if (state.loginAccount.reporting.disputing.contracts) {
+      disputedMarkets = state.loginAccount.reporting.disputing.contracts.map(
+        obj => obj.marketId
+      );
+    }
+    if (state.loginAccount.reporting.reporting.contracts) {
+      reportedMarkets = state.loginAccount.reporting.reporting.contracts.map(
+        obj => obj.marketId
+      );
+    }
     if (markets.length > 0) {
       const positionsMarkets = Object.keys(positions);
       return markets
