@@ -590,6 +590,7 @@ class Form extends Component<FromProps, FormState> {
             defaultValue={defaultOutcome}
             onChange={value => updateSelectedOutcome(value)}
             options={sortedOutcomes
+              .filter(outcome => outcome.isTradeable)
               .map(outcome => ({
               label: outcome.description,
               value: outcome.id,
