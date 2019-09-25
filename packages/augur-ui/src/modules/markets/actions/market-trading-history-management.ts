@@ -12,6 +12,7 @@ import { Getters } from "@augurproject/sdk";
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
 export const UPDATE_USER_OPEN_ORDERS = 'UPDATE_USER_OPEN_ORDERS';
 export const BULK_MARKET_TRADING_HISTORY = 'BULK_MARKET_TRADING_HISTORY';
+export const UPDATE_USER_OPEN_ORDERS_MARKET = 'UPDATE_USER_OPEN_ORDERS_MARKET';
 
 export function bulkMarketTradingHistory(
   keyedMarketTradingHistory: Getters.Markets.MarketTradingHistory
@@ -33,6 +34,19 @@ export function updateUserFilledOrders(
     data: {
       account,
       userFilledOrders,
+    },
+  };
+}
+
+export function updateUserOpenOrdersInMarket(
+  marketId: string,
+  openOrders: Getters.Markets.Orders
+) {
+  return {
+    type: UPDATE_USER_OPEN_ORDERS_MARKET,
+    data: {
+      marketId,
+      openOrders,
     },
   };
 }
