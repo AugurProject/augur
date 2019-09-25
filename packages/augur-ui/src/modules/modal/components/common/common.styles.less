@@ -32,83 +32,19 @@
   max-width: 35rem;
   padding: @size-24 0;
   position: relative;
-  text-align: center;
+  text-align: left;
   width: 100%;
 
   > * {
     width: 100%;
   }
 
-  form.ModalTightForm > h1,
-  h1 {
-    color: @color-primary-text;
-    font-size: @size-22;
-    font-weight: 500;
-    line-height: 1.75rem;
-    margin: @size-8 0 @size-24;
-    text-align: center;
-  }
-
-  form.ModalTightForm > label {
-    color: @color-primary-text;
-    font-size: @size-14;
-    font-weight: 600;
-    line-height: @size-18;
-    margin: 0 7rem @size-8;
-    text-align: left;
-    width: auto;
-  }
-
-  form.ModalTightForm > p,
-  > p {
-    color: @color-primary-text;
-    font-size: @size-12;
-    line-height: @size-18;
-    margin: 0;
-    padding: 0 4rem;
-
-    &:last-of-type {
-      margin-bottom: @size-24;
+  .ModalParticipation {
+    > div:last-of-type {
+      padding-top: @size-16;
     }
 
-    > button {
-      text-decoration: underline;
-    }
-  }
-
-  form.ModalTightForm > p.Error,
-  > p.Error {
-    color: @color-error;
-  }
-
-  form.ModalTightForm > p.Error {
-    margin: 0 7rem @size-24;
-    padding: 0;
-  }
-
-  form.ModalTightForm > div {
-    font-size: @size-14;
-    line-height: @size-16;
-    margin: 0 7rem @size-24;
-    width: auto;
-
-    > input {
-      font-size: @size-14;
-      line-height: @size-16;
-      padding: @size-12 @size-16;
-    }
-
-    > input::placeholder {
-      color: @color-primary-text;
-    }
-  }
-
-  form.ModalTightForm > div.ErrorField {
-    margin-bottom: @size-8;
-  }
-
-  form.ModalTightForm > div:last-of-type {
-    margin: @size-8 0 0;
+    padding: @size-24
   }
 }
 
