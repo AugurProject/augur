@@ -335,7 +335,7 @@ export const TYPE_TRADE = 'trade';
 export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
 export const TYPE_VIEW_SETS = 'view sets';
-export const TYPE_VIEW_DETAILS = 'view details';
+export const TYPE_VIEW_DETAILS = 'view';
 export const TYPE_MIGRATE_REP = 'migrate-rep';
 export const TYPE_FINALIZE_MARKET = 'finalize market';
 
