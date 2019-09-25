@@ -37,7 +37,7 @@
     "contract-dependencies-ethers": "10.0.0-alpha.1",
     "ethers": "4.0.24",
     "levelup": "4.0.1",
-    "memdown": "4.0.0"
+    "memdown": "5.0.0"
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",
@@ -57,6 +57,6 @@
   },
   "resolutions": {
     "**/sha3": "2.0.1",
-    "**/memdown": "4.0.0"
+    "**/memdown": "5.0.0"
   }
 }

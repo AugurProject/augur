@@ -15902,17 +15902,17 @@ memdown@1.2.4:
     inherits "~2.0.1"
     ltgt "~2.1.3"
 
-memdown@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/memdown/-/memdown-4.0.0.tgz#2b62ce2cefedcd8553665c410025c044cf8cb77e"
-  integrity sha512-n+3M/PXhEaex7dpbL3XDm6JI3QGRN6C3KbeNKEFX7gDNM77/gYOxeAmuPqcPqvYiQI3ix5EdmPgenn4ZEjdGFg==
+memdown@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/memdown/-/memdown-5.0.0.tgz#ac4cf88401c14eda1a4e26e1b1d004cb733c6e1e"
+  integrity sha512-xbt+LqodsJqoUtNg1JOuNpA806Yo8tjsFATRoZVIlGPpVslmPd5/6ET+s7xOWse/iNnSCRTwKN/9LegeDewzQw==
   dependencies:
-    abstract-leveldown "~6.0.1"
+    abstract-leveldown "~6.1.0"
     functional-red-black-tree "~1.0.1"
     immediate "~3.2.3"
     inherits "~2.0.1"
     ltgt "~2.2.0"
-    safe-buffer "~5.1.1"
+    safe-buffer "~5.2.0"
 
 memdown@^1.0.0:
   version "1.4.1"
