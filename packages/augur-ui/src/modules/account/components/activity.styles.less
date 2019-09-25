@@ -3,30 +3,35 @@
 .Activity {
   align-items: center;
   border-radius: @border-radius-default;
-  border-top: 2px solid @color-dark-grey;
+  border-top: 1px solid @color-dark-grey;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin: 0 @size-24;
-  padding-top: @size-24;
+  padding-top: @size-16;
 
   @media @breakpoint-mobile-mid {
     border-top: 1px solid @color-module-background;
+    margin: 0;
+
+    > div:first-of-type { 
+      max-width: unset;
+    }
   }
 
   > span {
-    .mono-10;
+    .mono-11-bold;
 
-    margin-bottom: @size-16;
+    margin-bottom: @size-14;
     text-transform: uppercase;
   }
 
   > div:first-of-type {
-    margin-bottom: @size-24;
-    max-width: 10rem;
+    margin-bottom: @size-16;
+    max-width: 300px;
   }
 
   > ul {
-    margin-bottom: @size-20;
+    margin-bottom: @size-16;
   }
 }

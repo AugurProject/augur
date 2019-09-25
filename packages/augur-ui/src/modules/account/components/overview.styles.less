@@ -8,8 +8,9 @@
     background: unset;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 150px);
-    padding: 0 @size-16;
+    height: calc(~"100vh - @{multi-top-bar-height-mobile}");
+    padding: 0;
+    margin-top: @size-6;
   }
 }
 
@@ -19,6 +20,6 @@
   margin-bottom: @size-16;
 
   @media @breakpoint-mobile-mid {
-    margin-bottom: @size-24;
+    margin-bottom: @size-20;
   }
 }
