@@ -343,6 +343,6 @@ export class MarketDB extends DerivedDB {
     }
 
     await this.bulkUpsertUnorderedDocuments(updateDocs);
-    augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { markets: updateDocs });
+    augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { data: updateDocs });
   }
 }

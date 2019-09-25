@@ -28,10 +28,7 @@ export interface Log {
 }
 
 export interface MarketReportingStateUpdatedLog {
-  markets : [{
-    market: Address;
-    reportingState: string;
-  }]
+  data: MarketData[]
 }
 
 export interface CompleteSetsPurchasedLog extends Log, Doc, Timestamped {
