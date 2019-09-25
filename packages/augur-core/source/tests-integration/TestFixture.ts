@@ -9,7 +9,7 @@ import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import {
   DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe,
   Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer,
-  TestNetReputationToken } from '../libraries/ContractInterfaces';
+  TestNetReputationToken, CashFaucet } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
@@ -24,6 +24,7 @@ export class TestFixture {
 
     get universe() { return this.contractDeployer.universe!; }
     get cash() { return new Cash(this.dependencies, this.contractDeployer.getContractAddress('Cash')); }
+    get cashFaucet() { return new CashFaucet(this.dependencies, this.contractDeployer.getContractAddress('CashFaucet')); }
 
     constructor(dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, account: string) {
         this.contractDeployer = contractDeployer;
@@ -57,7 +58,7 @@ export class TestFixture {
     }
 
     async faucet(attoCash: BigNumber): Promise<void> {
-      await this.cash.faucet(attoCash);
+      await this.cashFaucet.faucet(attoCash);
     }
 
     async repFaucet(attoRep: BigNumber): Promise<void> {
@@ -65,15 +66,17 @@ export class TestFixture {
       await reputationToken.faucet(attoRep);
     }
 
-  async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
+    async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheValidityBond_();
 
         console.log('Creating Market');
-        await this.cash.faucet(marketCreationFee);
+        await this.cashFaucet.faucet(marketCreationFee);
+        console.log('Getting Market Address');
         const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
         if (!marketAddress || marketAddress === '0x') {
             throw new Error('Unable to get address for new categorical market.');
         }
+        console.log('Sending Market Transaction');
         await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
         return new Market(this.dependencies, marketAddress);
     }
@@ -91,7 +94,7 @@ export class TestFixture {
 
         const ethValue = numShares.multipliedBy(price);
 
-        await this.cash.faucet(ethValue);
+        await this.cashFaucet.faucet(ethValue);
         await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, NULL_ADDRESS);
         return;
     }
@@ -108,7 +111,7 @@ export class TestFixture {
         }
         const ethValue = numShares.multipliedBy(actualPrice);
 
-        await this.cash.faucet(ethValue);
+        await this.cashFaucet.faucet(ethValue);
 
         const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
         if (bestPriceAmount.isEqualTo(0)) {
@@ -169,7 +172,7 @@ export class TestFixture {
         const numTicks = await market.getNumTicks_();
         const ethValue = amount.multipliedBy(numTicks);
 
-        await this.cash.faucet(ethValue);
+        await this.cashFaucet.faucet(ethValue);
         await completeSets.publicBuyCompleteSets(market.address, amount);
         return;
     }

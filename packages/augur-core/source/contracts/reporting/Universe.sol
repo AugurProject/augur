@@ -627,12 +627,14 @@ contract Universe is IUniverse {
 
     function saveDaiInDSR(uint256 _amount) private returns (bool) {
         daiJoin.join(address(this), _amount);
+        daiPot.drip();
         uint256 _sDaiAmount = _amount.mul(DAI_ONE) / daiPot.chi(); // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
         daiPot.join(_sDaiAmount);
         return true;
     }
 
     function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
+        daiPot.drip();
         uint256 _chi = daiPot.chi();
         uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
         if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {

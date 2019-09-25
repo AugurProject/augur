@@ -506,7 +506,9 @@ export class ContractAPI {
   }
 
   async faucet(attoCash: BigNumber): Promise<void> {
-    await this.augur.contracts.cash.faucet(attoCash);
+    while ((await this.getCashBalance()).lte(attoCash)) {
+      await this.augur.contracts.cashFaucet.faucet(attoCash);
+    }
   }
 
   async repFaucet(attoRep: BigNumber): Promise<void> {

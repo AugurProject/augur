@@ -207,7 +207,7 @@ export async function finalizeMarket(marketId: string) {
 
 export function getDai() {
   const { contracts } = augurSdk.get();
-  return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
+  return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
 }
 
 export function getRep() {

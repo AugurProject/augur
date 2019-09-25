@@ -25,18 +25,18 @@ export interface DeployerConfiguration {
 }
 
 type ExternalAddresses = {
-  legacyRepAddress?: string;
-  cashAddress?: string;
-  vatAddress?: string;
-  potAddress?: string;
-  joinAddress?: string;
-  colAddress?: string,
-  colJoinAddress?: string,
-  daiFaucet?: string,
-  repPriceOracleAddress?: string;
-  gnosisSafeAddress?: string;
-  proxyFactoryAddress?: string;
-  zeroXExchange?: string;
+  LegacyReputationToken?: string;
+  Cash?: string;
+  DaiVat?: string;
+  DaiPot?: string;
+  DaiJoin?: string;
+  MCDCol?: string,
+  MCDColJoin?: string,
+  MCDFaucet?: string,
+  RepPriceOracle?: string;
+  GnosisSafe?: string;
+  ProxyFactory?: string;
+  ZeroXExchange?: string;
 }
 
 type NetworksToExternalAddresses = {
@@ -47,13 +47,13 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   thunder: {},
   ropsten: {},
   kovan: {
-    colAddress: "0xC7aa227823789E363f29679F23f7e8F6d9904a9B",
-    colJoinAddress: "0x8218a5a1ff5320e763127320A1A2c5f16E2e5933",
-    daiFaucet: "0x94598157fcf0715c3bc9b4a35450cce82ac57b20",
-    cashAddress: "0x98738f2ca303a7e8bf22b252e4418f2b14bbdfa2",
-    vatAddress: "0x1cc5abe5c0464f3af2a10df0c711236a8446bf75",
-    potAddress: "0x3d9afbed6ee2c2d17749b003875eaa38c0ce0c7f",
-    joinAddress: "0xa9ac4ae91f3e933cbb12a4229c425b7cfd3ac458",
+    MCDCol: "0xC7aa227823789E363f29679F23f7e8F6d9904a9B",
+    MCDColJoin: "0x8218a5a1ff5320e763127320A1A2c5f16E2e5933",
+    MCDFaucet: "0x94598157fcf0715c3bc9b4a35450cce82ac57b20",
+    Cash: "0x98738f2ca303a7e8bf22b252e4418f2b14bbdfa2",
+    DaiVat: "0x1cc5abe5c0464f3af2a10df0c711236a8446bf75",
+    DaiPot: "0x3d9afbed6ee2c2d17749b003875eaa38c0ce0c7f",
+    DaiJoin: "0xa9ac4ae91f3e933cbb12a4229c425b7cfd3ac458",
   },
   rinkeby: {},
   clique: {},
@@ -61,10 +61,10 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   environment: {},
   testrpc: {},
   mainnet: {
-    legacyRepAddress: "0x1985365e9f78359a9B6AD760e32412f4a445E862",
-    gnosisSafeAddress: "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A",
-    proxyFactoryAddress: "0x12302fE9c02ff50939BaAaaf415fc226C078613C",
-    zeroXExchange: "0x080bf510FCbF18b91105470639e9561022937712",
+    LegacyReputationToken: "0x1985365e9f78359a9B6AD760e32412f4a445E862",
+    GnosisSafe: "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A",
+    ProxyFactory: "0x12302fE9c02ff50939BaAaaf415fc226C078613C",
+    ZeroXExchange: "0x080bf510FCbF18b91105470639e9561022937712",
   },
 };
 
@@ -93,5 +93,5 @@ export const defaultDeployerConfiguration: DeployerConfiguration = {
 
 export function CreateDeployerConfiguration(networkId: NETWORKS, overwrites: DeployerConfigurationOverwrite = {}): DeployerConfiguration {
   const externalAddresses = EXTERNAL_ADDRESSES[networkId];
-  return Object.assign({}, defaultDeployerConfiguration, overwrites, externalAddresses);
+  return Object.assign({}, defaultDeployerConfiguration, overwrites, { externalAddresses });
 }

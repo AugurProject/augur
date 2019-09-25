@@ -36,6 +36,7 @@ export class ContractDeployer {
     private readonly signer: ethers.Signer;
     public augur: Augur|null = null;
     public universe: Universe|null = null;
+    public externalContractAddresses = {};
 
     public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
         const compilerOutput = JSON.parse(await readFile(deployerConfiguration.contractInputPath, "utf8"));
@@ -70,76 +71,58 @@ Deploying to: ${networkConfiguration.networkName}
         const externalAddresses = this.configuration.externalAddresses;
 
         // Legacy REP
-        if (externalAddresses.legacyRepAddress) {
-            console.log(`Registering Legacy Rep Contract at ${externalAddresses.legacyRepAddress}`);
-            await this.augur!.registerContract(stringTo32ByteHex("LegacyReputationToken"), externalAddresses.legacyRepAddress);
-            let contract = await this.contracts.get("LegacyReputationToken");
-            contract.address = externalAddresses.legacyRepAddress;
+        if (externalAddresses.LegacyReputationToken) {
+            console.log(`Registering Legacy Rep Contract at ${externalAddresses.LegacyReputationToken}`);
+            await this.augur!.registerContract(stringTo32ByteHex("LegacyReputationToken"), externalAddresses.LegacyReputationToken);
         } else {
             await this.uploadLegacyRep();
         }
 
         // REP price oracle
-        if (externalAddresses.repPriceOracleAddress) {
-            console.log(`Registering Rep Price Oracle Contract at ${externalAddresses.repPriceOracleAddress}`);
-            await this.augur!.registerContract(stringTo32ByteHex("RepPriceOracle"), externalAddresses.repPriceOracleAddress);
-            let contract = await this.contracts.get("RepPriceOracle");
-            contract.address = externalAddresses.repPriceOracleAddress;
+        if (externalAddresses.RepPriceOracle) {
+            console.log(`Registering Rep Price Oracle Contract at ${externalAddresses.RepPriceOracle}`);
+            await this.augur!.registerContract(stringTo32ByteHex("RepPriceOracle"), externalAddresses.RepPriceOracle);
         } else {
             await this.uploadRepPriceOracle();
         }
 
         // Cash
-        if (externalAddresses.cashAddress) {
-            if (!(externalAddresses.vatAddress && externalAddresses.potAddress && externalAddresses.joinAddress)) {
+        if (externalAddresses.Cash) {
+            if (!(externalAddresses.DaiVat && externalAddresses.DaiPot && externalAddresses.DaiJoin)) {
                 throw new Error("Must provide ALL Maker contracts if any are provided");
             }
 
-            console.log(`Registering Cash Contract at ${externalAddresses.cashAddress}`);
-            await this.augur!.registerContract(stringTo32ByteHex("Cash"), externalAddresses.cashAddress);
-            let contract = await this.contracts.get("Cash");
-            contract.address = externalAddresses.cashAddress;
+            console.log(`Registering Cash Contract at ${externalAddresses.Cash}`);
+            await this.augur!.registerContract(stringTo32ByteHex("Cash"), externalAddresses.Cash);
 
             // Dai Vat
-            console.log(`Registering Vat Contract at ${externalAddresses.vatAddress}`);
-            await this.augur!.registerContract(stringTo32ByteHex("DaiVat"), externalAddresses.vatAddress);
-            contract = await this.contracts.get("DaiVat");
-            contract.address = externalAddresses.vatAddress;
+            console.log(`Registering Vat Contract at ${externalAddresses.DaiVat}`);
+            await this.augur!.registerContract(stringTo32ByteHex("DaiVat"), externalAddresses.DaiVat);
 
             // Dai Pot
-            console.log(`Registering Pot Contract at ${externalAddresses.potAddress}`);
-            await this.augur!.registerContract(stringTo32ByteHex("DaiPot"), externalAddresses.potAddress);
-            contract = await this.contracts.get("DaiPot");
-            contract.address = externalAddresses.potAddress;
+            console.log(`Registering Pot Contract at ${externalAddresses.DaiPot}`);
+            await this.augur!.registerContract(stringTo32ByteHex("DaiPot"), externalAddresses.DaiPot);
 
             // Dai Join
-            console.log(`Registering Join Contract at ${externalAddresses.joinAddress}`);
-            await this.augur!.registerContract(stringTo32ByteHex("DaiJoin"), externalAddresses.joinAddress);
-            contract = await this.contracts.get("DaiJoin");
-            contract.address = externalAddresses.joinAddress;
+            console.log(`Registering Join Contract at ${externalAddresses.DaiJoin}`);
+            await this.augur!.registerContract(stringTo32ByteHex("DaiJoin"), externalAddresses.DaiJoin);
 
             if (!this.configuration.isProduction) {
-                if (!(externalAddresses.colAddress && externalAddresses.colJoinAddress && externalAddresses.daiFaucet)) {
+                if (!(externalAddresses.MCDCol && externalAddresses.MCDColJoin && externalAddresses.MCDFaucet)) {
                     throw new Error("Must provide ALL Testnet Maker contracts");
                 }
 
                 // Col
-                console.log(`Registering MCDCol Contract at ${externalAddresses.colAddress}`);
-                await this.augur!.registerContract(stringTo32ByteHex("MCDCol"), externalAddresses.colAddress);
-                contract = await this.contracts.get("MCDCol");
-                contract.address = externalAddresses.colAddress;
+                console.log(`Registering MCDCol Contract at ${externalAddresses.MCDCol}`);
+                await this.augur!.registerContract(stringTo32ByteHex("MCDCol"), externalAddresses.MCDCol);
 
                 // Col Join
-                console.log(`Registering MCDColJoin Contract at ${externalAddresses.colJoinAddress}`);
-                await this.augur!.registerContract(stringTo32ByteHex("MCDColJoin"), externalAddresses.colJoinAddress);
-                contract = await this.contracts.get("MCDColJoin");
-                contract.address = externalAddresses.colJoinAddress;
+                console.log(`Registering MCDColJoin Contract at ${externalAddresses.MCDColJoin}`);
+                await this.augur!.registerContract(stringTo32ByteHex("MCDColJoin"), externalAddresses.MCDColJoin);
 
                 // Dai Faucet
-                console.log(`Registering MCDFaucet Contract at ${externalAddresses.daiFaucet}`);
-                await this.augur!.registerContract(stringTo32ByteHex("MCDFaucet"), externalAddresses.daiFaucet);
-                contract = await this.contracts.get("MCDFaucet");
-                contract.address = externalAddresses.daiFaucet;
+                console.log(`Registering MCDFaucet Contract at ${externalAddresses.MCDFaucet}`);
+                await this.augur!.registerContract(stringTo32ByteHex("MCDFaucet"), externalAddresses.MCDFaucet);
 
                 const cashFaucet = await this.contracts.get("CashFaucet");
                 cashFaucet.address = await this.uploadAndAddToAugur(cashFaucet, "CashFaucet", [this.augur!.address]);
@@ -149,28 +132,22 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         // Proxy Factory & Gnosis Safe
-        if (externalAddresses.proxyFactoryAddress) {
-            if (!externalAddresses.gnosisSafeAddress) {
+        if (externalAddresses.ProxyFactory) {
+            if (!externalAddresses.ProxyFactory) {
                 throw new Error("Must provide ALL Gnosis contracts if any are provided");
             }
 
-            let contract = await this.contracts.get("ProxyFactory");
-            await this.augur!.registerContract(stringTo32ByteHex("ProxyFactory"), externalAddresses.proxyFactoryAddress);
-            contract.address = externalAddresses.proxyFactoryAddress;
+            await this.augur!.registerContract(stringTo32ByteHex("ProxyFactory"), externalAddresses.ProxyFactory);
 
-            contract = await this.contracts.get("GnosisSafe");
-            await this.augur!.registerContract(stringTo32ByteHex("GnosisSafe"), externalAddresses.gnosisSafeAddress);
-            contract.address = externalAddresses.gnosisSafeAddress;
+            await this.augur!.registerContract(stringTo32ByteHex("GnosisSafe"), externalAddresses.GnosisSafe);
         } else {
             await this.uploadGnosisContracts();
         }
 
         // 0x Exchange
-        if (externalAddresses.zeroXExchange) {
-            console.log(`Registering 0x Exchange Contract at ${externalAddresses.zeroXExchange}`);
-            await this.augur!.registerContract(stringTo32ByteHex("ZeroXExchange"), externalAddresses.zeroXExchange);
-            let contract = await this.contracts.get("ZeroXExchange");
-            contract.address = externalAddresses.zeroXExchange;
+        if (externalAddresses.ZeroXExchange) {
+            console.log(`Registering 0x Exchange Contract at ${externalAddresses.ZeroXExchange}`);
+            await this.augur!.registerContract(stringTo32ByteHex("ZeroXExchange"), externalAddresses.ZeroXExchange);
         } else {
             await this.upload0xContracts();
         }
@@ -181,14 +158,14 @@ Deploying to: ${networkConfiguration.networkName}
             await this.resetTimeControlled();
         }
 
-        if (!externalAddresses.legacyRepAddress) {
+        if (!externalAddresses.LegacyReputationToken) {
             console.log("Initializing fake legacy REP");
             await this.initializeLegacyRep();
         }
 
         this.universe = await this.createGenesisUniverse();
 
-        if (!externalAddresses.legacyRepAddress) {
+        if (!externalAddresses.LegacyReputationToken) {
             console.log("Migrating from fake legacy REP");
             await this.migrateFromLegacyRep();
         }
@@ -210,7 +187,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
-        mapping['Cash'] = this.contracts.get('Cash').address!;
+        mapping['Cash'] = this.getContractAddress("Cash");
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         for (let contract of this.contracts) {
@@ -245,6 +222,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     public getContractAddress = (contractName: string): string => {
+        if (this.configuration.externalAddresses[contractName]) return this.configuration.externalAddresses[contractName];
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
@@ -471,7 +449,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
-        mapping['Cash'] = this.contracts.get('Cash').address!;
+        mapping['Cash'] = this.getContractAddress("Cash");
         mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
         mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
         if (!this.configuration.isProduction) {

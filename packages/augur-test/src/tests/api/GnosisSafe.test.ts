@@ -56,4 +56,4 @@ test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
   const amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 16);
 
-}, 150000);
+}, 300000);
