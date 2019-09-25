@@ -6,7 +6,7 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { formatRep, formatShares, formatDai } from 'utils/format-number';
+import { formatAttoDai, formatRep, formatShares, formatDai } from 'utils/format-number';
 import {
   calculatePayoutNumeratorsValue,
   TXEventName,
@@ -125,7 +125,27 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // ClaimTradingProceeds
       case CLAIMTRADINGPROCEEDS:
-        alert.title = 'Claim trading proceeds';
+        alert.title = 'Claim Winnings';
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
+            alert.description = marketInfo.description;
+            const amount = createBigNumber(alert.params.numPayoutTokens);
+            const outcomeDescription =
+              alert.params.outcome === null
+                ? 'Market Is Invalid'
+                : getOutcomeNameWithOutcome(
+                    marketInfo,
+                    alert.params.outcome,
+                    false,
+                    false
+                  );
+            alert.details = `$${
+              formatAttoDai(amount).formatted
+            } won on ${outcomeDescription}`;
+          })
+        );
         break;
 
       // FeeWindow & Universe
@@ -197,7 +217,6 @@ export default function setAlertText(alert: any, callback: Function) {
             } of ${
               formatShares(originalQuantity).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-            alert.toast = true;
           })
         );
         break;
@@ -298,7 +317,6 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-            alert.toast = true;
           })
         );
         break;
