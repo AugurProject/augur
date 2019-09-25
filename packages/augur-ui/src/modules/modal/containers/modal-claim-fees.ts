@@ -66,7 +66,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: 'est gas cost',
-            value: `${gasCost} ETH`, // this doesn't exist
+            value: `${gasCost} ETH`,
           },
         ],
         action: () => {
@@ -98,13 +98,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         {
           label: 'Reporting Stake',
           value: `${repFormatted.formatted} REP`,
-          // value: `${sP.reportingFees.participationTokenRepStaked.formatted} REP`,
           addExtraSpace: true,
         },
         {
           label: 'Reporting Fees',
           value: `${daiFormatted.formatted} DAI`,
-          // value: `${sP.reportingFees.unclaimedParticipationTokenDaiFees.formatted} DAI`,
         },
         {
           label: 'Est Gas cost',
