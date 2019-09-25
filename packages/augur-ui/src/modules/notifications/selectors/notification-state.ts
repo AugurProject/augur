@@ -9,7 +9,7 @@ import {
   selectLoginAccountReportingState,
   selectMarketInfosState,
 } from 'store/select-state';
-
+import { MarketReportingState } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   NOTIFICATION_TYPES,
@@ -25,9 +25,12 @@ import {
   REPORTING_STATE,
   ZERO,
 } from 'modules/common/constants';
-import { MarketReportingState } from '@augurproject/sdk';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
-import store from 'store';
+import {
+  formatAttoDai,
+  formatAttoRep,
+} from 'utils/format-number';
+import store, { AppState } from 'store';
 import {
   MarketClaimablePositions,
   MarketReportClaimableContracts,
@@ -44,8 +47,8 @@ export const selectResolvedMarketsOpenOrders = createSelector(
         .filter(
           market =>
             market.reportingState ===
-              MarketReportingState.AwaitingFinalization ||
-            market.reportingState === MarketReportingState.Finalized
+              REPORTING_STATE.AWAITING_FINALIZATION ||
+            market.reportingState === REPORTING_STATE.FINALIZED
         )
         .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
@@ -98,17 +101,30 @@ export const selectMarketsInDispute = createSelector(
   selectAccountPositionsState,
   selectLoginAccountAddress,
   (markets, positions, address) => {
+    const state = store.getState() as AppState;
+    let disputedMarkets = [];
+    let reportedMarkets = [];
+    if (state.loginAccount.reporting.disputing.contracts) {
+      disputedMarkets = state.loginAccount.reporting.disputing.contracts.map(
+        obj => obj.marketId
+      );
+    }
+    if (state.loginAccount.reporting.reporting.contracts) {
+      reportedMarkets = state.loginAccount.reporting.reporting.contracts.map(
+        obj => obj.marketId
+      );
+    }
     if (markets.length > 0) {
       const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
           market =>
-            market.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
-        )
-        .filter(
-          market =>
-            positionsMarkets.indexOf(market.id) > -1 ||
-            market.designatedReporter === address
+            disputedMarkets.indexOf(market.id) > -1 ||
+            reportedMarkets.indexOf(market.id) > -1 ||
+            (market.reportingState ===
+              MarketReportingState.CrowdsourcingDispute &&
+              (market.author === address ||
+                positionsMarkets.indexOf(market.id) > -1))
         )
         .map(getRequiredMarketData);
     }
@@ -295,7 +311,7 @@ const generateCards = (markets, type) => {
       title: UNSIGNED_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
     };
-  } else if (type === NOTIFICATION_TYPES.proceedsToClaimOnHold) {
+  } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
     defaults = {
       type,
       isImportant: false,

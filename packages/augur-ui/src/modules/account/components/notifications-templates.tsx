@@ -113,6 +113,7 @@ interface CounterProps {
   type: string;
   market: MarketData;
   currentTime?: DateFormattedObject;
+  disputingWindowEndTime?: DateFormattedObject;
 }
 
 const Counter = (props: CounterProps) => {
@@ -120,13 +121,13 @@ const Counter = (props: CounterProps) => {
   const notificationsWithCountdown = [
     NOTIFICATION_TYPES.marketsInDispute,
     NOTIFICATION_TYPES.reportOnMarkets,
-    NOTIFICATION_TYPES.proceedsToClaimOnHold,
+    NOTIFICATION_TYPES.proceedsToClaim,
   ];
 
   if (props.market && notificationsWithCountdown.includes(props.type)) {
     const { endTimeFormatted, reportingState, finalizationTimeFormatted } = props.market;
 
-    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold && finalizationTimeFormatted && props.currentTime) {
+    if (props.type === NOTIFICATION_TYPES.proceedsToClaim && finalizationTimeFormatted && props.currentTime) {
       counter = (
         <div className={Styles.Countdown}>
           <CountdownProgress
@@ -209,7 +210,7 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
   return (
     <Template
       message={`Dispute round ${
-        disputeInfo.disputeRound
+        disputeInfo.disputeWindow.disputeRound
       } for the market: "${description}" is ending soon.`}
       {...props}
     />
