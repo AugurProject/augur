@@ -335,7 +335,6 @@ export class MarketDB extends DerivedDB {
       if (reportingState) {
         updateDocs.push({
           _id: marketData._id,
-          _rev: marketData._rev,
           market: marketData._id,
           blockNumber,
           reportingState
