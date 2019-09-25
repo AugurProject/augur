@@ -1,5 +1,30 @@
 @import (reference) "~assets/styles/shared";
 
+.TimeLabel {
+  display: flex;
+  flex-flow: row wrap;
+
+  > span {
+    .mono-9-bold;
+
+    color: @color-secondary-text;
+    line-height: @size-14;
+    text-transform: uppercase;
+  }
+
+  > span:nth-of-type(2) {
+    .mono-12;
+
+    color: @color-primary-text;
+  }
+
+  > span:nth-of-type(3) {
+    .mono-9;
+
+    line-height: @size-11;
+  }
+}
+
 .Dashline {
   .dashline-normal;
 }
@@ -92,7 +117,7 @@
     .text-10;
 
     align-items: center;
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     display: flex;
     flex-flow: row nowrap;
     text-transform: uppercase;
@@ -109,8 +134,8 @@
         width: @size-12;
 
         > circle {
-          fill: @color-theme-primary;
-          stroke: @color-highlight;
+          fill: @color-primary-text;
+          stroke: @color-primary-text;
           stroke-width: 1.5;
         }
 
@@ -473,7 +498,7 @@ div.LinearPropertyViewTransaction {
     .mono-9;
 
     align-items: center;
-    background: @color-primary-light;
+    background: @color-secondary-action-outline;
     border-radius: @border-radius-rounded;
     color: @color-primary-text;
     display: flex;
@@ -532,7 +557,7 @@ div.LinearPropertyViewTransaction {
   }
 
   &_large {
-    .mono-12;
+    .mono-10;
   }
 
   &_positive {
@@ -594,7 +619,7 @@ div.LinearPropertyViewTransaction {
   .mono-10;
 
   align-items: center;
-  background: @color-primary-light;
+  background: @color-secondary-action-outline;
   border-radius: 0.375rem;
   display: flex;
   justify-content: center;

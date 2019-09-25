@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { MarketProgress } from "modules/common/progress";
@@ -8,7 +7,6 @@ import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData } from "modules/types";
-import { convertUnixToFormattedDate } from "utils/format-date";
 
 const sortByOptions = [
   {
@@ -45,6 +43,7 @@ interface FavoritesProps {
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   toggleFavorite: Function;
+  toggle: Function;
 }
 
 export default class Favorites extends Component<FavoritesProps> {
@@ -72,7 +71,7 @@ export default class Favorites extends Component<FavoritesProps> {
           reportingState={market.reportingState}
           currentTime={currentAugurTimestamp}
           endTimeFormatted={market.endTimeFormatted}
-          reportingWindowEndtime={disputingWindowEndTime}
+          reportingWindowEndTime={disputingWindowEndTime}
           alignRight
         />
         <FavoritesButton
@@ -86,7 +85,7 @@ export default class Favorites extends Component<FavoritesProps> {
   }
 
   render() {
-    const { markets } = this.props;
+    const { markets, toggle } = this.props;
 
     return (
       <FilterBox
@@ -98,6 +97,7 @@ export default class Favorites extends Component<FavoritesProps> {
         renderRightContent={this.renderRightContent}
         noToggle
         filterLabel="markets"
+        toggle={toggle}
         pickVariables={[
           "id",
           "favoriteAddedData",

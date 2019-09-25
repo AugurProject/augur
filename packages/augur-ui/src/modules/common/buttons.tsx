@@ -22,6 +22,7 @@ import {
   DownloadIcon,
   RotatableChevron,
   Filter,
+  TwoArrowsOutline,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -143,7 +144,6 @@ export const FavoritesButton = (props: FavoritesButtonProps) => (
     })}
     disabled={props.disabled}
     title={props.title}
-    style={props.hideText ? { marginRight: '0.5rem' } : undefined}
   >
     {StarIcon}{' '}
     {!props.hideText &&
@@ -170,6 +170,23 @@ export const DaiPercentButton = (props: EthPercentProps) => (
     title={props.title}
   >
     {!props.showEth ? DaiLogoIcon : PercentIcon}
+  </button>
+);
+
+interface ToggleExtendButtonProps {
+  toggle: Function;
+  hide?: boolean;
+  extended?: boolean;
+  disabled?: boolean;
+}
+
+export const ToggleExtendButton = (props: ToggleExtendButtonProps) => (
+  <button
+    onClick={e => props.toggle(e)}
+    className={Styles.ToggleExtendButton}
+    disabled={props.disabled}
+  >
+    {TwoArrowsOutline}
   </button>
 );
 

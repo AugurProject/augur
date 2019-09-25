@@ -48,7 +48,7 @@ export interface AlertMessageProps {
 }
 
 export interface DescriptionMessageProps {
-  messages: Array<AlertMessageProps>;
+  messages: AlertMessageProps[];
 }
 
 interface SubheaderContent {
@@ -66,7 +66,7 @@ export interface CallToActionProps {
 }
 
 export interface BreakdownProps {
-  rows: Array<LinearPropertyLabelProps>;
+  rows: LinearPropertyLabelProps[];
   title?: string;
   short?: boolean;
   reverse?: boolean;
@@ -280,7 +280,7 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
 export const Subheader = (props: SubheaderProps) => (
   <div className={Styles.Subheader}>
     <span>{props.subheaderContent.header}</span>
-    {props.subheaderContent.numbered && 
+    {props.subheaderContent.numbered &&
       <ol>
         {props.subheaderContent.subheaders.map((subheader, index) => (
           <li key={index}>

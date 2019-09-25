@@ -1,29 +1,69 @@
-import { WordTrail } from "modules/common/labels";
-import React, { Component } from "react";
-import classNames from "classnames";
-import { BackArrow, ChevronDown, ChevronUp } from "modules/common/icons";
-import MarkdownRenderer from "modules/common/markdown-renderer";
-import MarketHeaderBar from "modules/market/containers/market-header-bar";
-import { BigNumber } from "bignumber.js";
-import Styles from "modules/market/components/market-header/market-header.styles.less";
-import CoreProperties from "modules/market/components/core-properties/core-properties";
-import ChevronFlip from "modules/common/chevron-flip";
-import { MarketTypeLabel } from "modules/common/labels";
-import { MarketHeaderCollapsed } from "modules/market/components/market-header/market-header-collapsed";
-import makeQuery from "modules/routes/helpers/make-query";
+import { WordTrail } from 'modules/common/labels';
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import {
+  BackArrow,
+  ChevronDown,
+  ChevronUp,
+  TwoArrows,
+  TwoArrowsOutline,
+  LeftChevron,
+} from 'modules/common/icons';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
+import MarketHeaderBar from 'modules/market/containers/market-header-bar';
+import { BigNumber } from 'bignumber.js';
+import Styles from 'modules/market/components/market-header/market-header.styles.less';
+import CoreProperties from 'modules/market/components/core-properties/core-properties';
+import ChevronFlip from 'modules/common/chevron-flip';
+import { MarketTypeLabel, TimeLabel } from 'modules/common/labels';
+import { MarketHeaderCollapsed } from 'modules/market/components/market-header/market-header-collapsed';
+import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
-  SCALAR
-} from "modules/common/constants";
-import MarketHeaderReporting from "modules/market/containers/market-header-reporting";
-import { MarketTimeline } from "modules/common/progress";
-import { convertUnixToFormattedDate } from "utils/format-date";
-
-import ToggleHeightStyles from "utils/toggle-height.styles.less";
-import { MarketData, QueryEndpoints } from "modules/types";
+  SCALAR,
+  COPY_MARKET_ID,
+  COPY_AUTHOR
+} from 'modules/common/constants';
+import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
+import { MarketTimeline } from 'modules/common/progress';
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { PaperClip, Person } from "modules/common/icons";
+import { FavoritesButton } from "modules/common/buttons";
+import ToggleHeightStyles from 'utils/toggle-height.styles.less';
+import { MarketData, QueryEndpoints } from 'modules/types';
+import Clipboard from "clipboard";
+import { DotSelection } from "modules/common/selection";
 
 const OVERFLOW_DETAILS_LENGTH = 110; // in px, overflow limit to trigger MORE details
+
+// TODO: add this to top left -- refactor into it's own component:
+// clipboardMarketId: any = new Clipboard("#copy_marketId");
+// clipboardAuthor: any = new Clipboard("#copy_author");
+// {addToFavorites && (
+//   <div>
+//     <FavoritesButton
+//       action={() => addToFavorites()}
+//       isFavorite={isFavorite}
+//       hideText
+//       disabled={!isLogged}
+//     />
+//   </div>
+// )}
+// <DotSelection>
+//   <div
+//     id="copy_marketId"
+//     data-clipboard-text={marketId}
+//   >
+//     {PaperClip} {COPY_MARKET_ID}
+//   </div>
+//   <div
+//     id="copy_author"
+//     data-clipboard-text={author}
+//   >
+//     {Person} {COPY_AUTHOR}
+//   </div>
+// </DotSelection>
 
 interface MarketHeaderProps {
   description: string;
@@ -47,15 +87,18 @@ interface MarketHeaderState {
   detailsHeight: number;
   headerCollapsed: boolean;
 }
-export default class MarketHeader extends Component<MarketHeaderProps, MarketHeaderState> {
+export default class MarketHeader extends Component<
+  MarketHeaderProps,
+  MarketHeaderState
+> {
   static defaultProps = {
     scalarDenomination: null,
-    resolutionSource: "General knowledge",
+    resolutionSource: 'General knowledge',
     marketType: null,
     currentTime: 0,
     isFavorite: false,
     isLogged: false,
-    toggleFavorite: () => {}
+    toggleFavorite: () => {},
   };
   detailsContainer: any;
 
@@ -64,7 +107,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
     this.state = {
       showReadMore: false,
       detailsHeight: 0,
-      headerCollapsed: false
+      headerCollapsed: false,
     };
 
     this.gotoFilter = this.gotoFilter.bind(this);
@@ -84,7 +127,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
   updateDetailsHeight() {
     if (this.detailsContainer) {
       this.setState({
-        detailsHeight: this.detailsContainer.scrollHeight
+        detailsHeight: this.detailsContainer.scrollHeight,
       });
     }
   }
@@ -100,17 +143,17 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
   gotoFilter(type, value) {
     const { history } = this.props;
     const query: QueryEndpoints =
-      type === "category"
+      type === 'category'
         ? {
-            [CATEGORY_PARAM_NAME]: value
+            [CATEGORY_PARAM_NAME]: value,
           }
         : {
-            [TAGS_PARAM_NAME]: value
+            [TAGS_PARAM_NAME]: value,
           };
 
     history.push({
-      pathname: "markets",
-      search: makeQuery(query)
+      pathname: 'markets',
+      search: makeQuery(query),
     });
   }
 
@@ -135,22 +178,22 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       market.details && this.state.detailsHeight > OVERFLOW_DETAILS_LENGTH;
 
     if (marketType === SCALAR) {
-      const denomination = scalarDenomination ? ` ${scalarDenomination}` : "";
+      const denomination = scalarDenomination ? ` ${scalarDenomination}` : '';
       const warningText =
         (details.length > 0 ? `\n\n` : ``) +
         `If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toString()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toString()}${denomination}) should be reported.`;
       details += warningText;
     }
 
-    const process = (...arr) =>
+    const process = arr =>
       arr.filter(Boolean).map(label => ({
         label,
         onClick: () => {
-          this.gotoFilter("category", label);
-        }
+          this.gotoFilter('category', label);
+        },
       }));
 
-    const categoriesWithClick = process(market.category) || [];
+    const categoriesWithClick = process(market.categories) || [];
 
     return (
       <section
@@ -161,34 +204,27 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
           ToggleHeightStyles.quick,
           {
             [Styles.Collapsed]: headerCollapsed,
-            [ToggleHeightStyles.open]: !headerCollapsed
+            [ToggleHeightStyles.open]: !headerCollapsed,
           }
         )}
       >
-        <h1>{description}</h1>
         <div>
           <WordTrail items={[...categoriesWithClick]}>
             <button
               className={Styles.BackButton}
               onClick={() => history.goBack()}
             >
-              {BackArrow}
+              {LeftChevron} Back
             </button>
-
             <MarketTypeLabel marketType={marketType} />
           </WordTrail>
           <div className={Styles.Properties}>
             {(market.id || preview) && (
               <MarketHeaderBar
-                marketId={market.id}
-                author={market.author}
                 marketStatus={market.marketStatus}
-                addToFavorites={this.addToFavorites}
-                isFavorite={isFavorite}
                 reportingState={market.reportingState}
                 disputeInfo={market.disputeInfo}
                 endTimeFormatted={market.endTimeFormatted}
-                isLogged={isLogged}
               />
             )}
           </div>
@@ -200,11 +236,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
 
         {!headerCollapsed && (
           <div className={Styles.MainValues}>
-            <div
-              className={classNames({
-                [Styles.Collapsed]: headerCollapsed,
-              })}
-            >
+            <div>
               <h1>{description}</h1>
               <div className={Styles.Details}>
                 <h4>Resolution Source</h4>
@@ -232,9 +264,9 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                       onClick={this.toggleReadMore}
                     >
                       {!this.state.showReadMore
-                        ? ChevronDown({ stroke: "#FFFFFF" })
+                        ? ChevronDown({ stroke: '#FFFFFF' })
                         : ChevronUp()}
-                      <span>{!this.state.showReadMore ? "More" : "Less"}</span>
+                      <span>{!this.state.showReadMore ? 'More' : 'Less'}</span>
                     </button>
                   )}
                 </div>
@@ -243,26 +275,26 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
             <div className={Styles.Properties}>
               {(market.id || preview) && (
                 <MarketHeaderBar
-                  marketId={market.id}
-                  author={market.author}
                   marketStatus={market.marketStatus}
-                  addToFavorites={this.addToFavorites}
-                  isFavorite={isFavorite}
                   reportingState={market.reportingState}
                   disputeInfo={market.disputeInfo}
                   endTimeFormatted={market.endTimeFormatted}
-                  isLogged={isLogged}
                 />
               )}
-              <MarketHeaderReporting marketId={market.id} preview={preview} market={preview && market} />
+              {/* <MarketHeaderReporting
+                marketId={market.id}
+                preview={preview}
+                market={preview && market}
+              /> */}
               <div className={Styles.Core}>
                 {(market.id || preview) && <CoreProperties market={market} />}
-                <div className={Styles.Time}>
-                  <MarketTimeline
-                    startTime={market.creationTime || convertUnixToFormattedDate(currentTime)}
-                    currentTime={currentTime || 0}
-                    endTime={convertUnixToFormattedDate(market.endTimeFormatted.timestamp)}
+                <div className={Styles.TimeSection}>
+                  <TimeLabel
+                    label="Date Created"
+                    time={market.creationTimeFormatted}
+                    showLocal
                   />
+                  <TimeLabel label="Reporting Starts" time={market.endTimeFormatted} />
                 </div>
               </div>
             </div>
@@ -270,18 +302,13 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
         )}
         <div
           className={classNames(Styles.Toggle, {
-            [Styles.Collapsed]: headerCollapsed
+            [Styles.Collapsed]: headerCollapsed,
           })}
         >
           <button
             onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
           >
-            <ChevronFlip
-              stroke="#999999"
-              quick
-              filledInIcon
-              pointDown={!headerCollapsed}
-            />
+            {TwoArrowsOutline}
           </button>
         </div>
       </section>

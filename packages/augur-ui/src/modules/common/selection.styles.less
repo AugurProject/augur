@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .Dropdown {
-  border: 1px solid @color-highlight;
+  border: 1px solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   cursor: pointer;
   display: flex;
@@ -14,7 +14,7 @@
 
   > button {
     align-items: center;
-    background: @color-theme-primary;
+    background: @color-secondary-action;
     border-radius: @border-radius-default;
     color: @color-primary-text;
     display: flex;
@@ -33,7 +33,7 @@
     }
 
     &:hover {
-      background: fade(@color-theme-primary, 50%);
+      background: fade(@color-secondary-action, 50%);
       outline: none;
 
       > svg > path {
@@ -65,11 +65,11 @@
       width: 100%;
 
       &:hover {
-        background-color: fade(@color-highlight, 20%);
+        background-color: fade(@color-primary-action, 20%);
       }
 
       &::before {
-        background-color: fade(@color-highlight, 10%);
+        background-color: fade(@color-primary-action, 10%);
         bottom: 0;
         content: "";
         height: 1px;
@@ -90,7 +90,7 @@
 .Large {
   .Dropdown;
 
-  border-color: @color-primary-alternate;
+  border-color: @color-secondary-action-outline;
   height: @size-32;
 
   > button {
@@ -111,7 +111,7 @@
 
     > span {
       padding: @size-6 0;
-      border-right: 1px solid @color-primary-alternate;
+      border-right: 1px solid @color-secondary-action-outline;
       flex: 1;
       display: flex;
     }
@@ -167,7 +167,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       padding: @size-6 0;
-      border-right: 1px solid @color-primary-alternate;
+      border-right: 1px solid @color-secondary-action-outline;
       flex: 1;
       display: flex;
     }
@@ -176,7 +176,7 @@
   > div > button {
     .text-10;
 
-    height: 2rem;
+    height: @size-32;
     line-height: @size-12;
     padding: @size-10 @size-12;
 
@@ -212,7 +212,7 @@
 
 .isOpen {
   > button {
-    background: fade(@color-highlight, 30%);
+    background: fade(@color-primary-action, 30%);
 
     > svg > path {
       stroke: @color-primary-text;
@@ -222,7 +222,7 @@
 
 .highlight {
   > button {
-    background: @color-highlight;
+    background: @color-primary-action;
     border-radius: 0;
   }
 }
@@ -269,7 +269,7 @@
 
   > li {
     background: transparent;
-    border: 1px solid fade(@color-highlight, 20%);
+    border: 1px solid fade(@color-secondary-action-outline, 20%);
     border-right: 0;
     box-sizing: border-box;
     display: flex;
@@ -279,8 +279,8 @@
     white-space: nowrap;
 
     &.Selected {
-      background: @color-theme-primary;
-      border-color: @color-theme-primary;
+      background: @color-dark-grey;
+      border-color: @color-dark-grey;
 
       & + li {
         border-left: 0;
@@ -288,37 +288,31 @@
       }
 
       &:last-of-type {
-        border-bottom-right-radius: @border-radius-full-round;
-        border-right: 1px solid @color-theme-primary;
-        border-top-right-radius: @border-radius-full-round;
-      }
-
-      > button {
-        .mono-10;
-
-        color: @color-primary-text;
-        line-height: @size-14;
+        border-bottom-right-radius: @border-radius-default;
+        border-right: 1px solid @color-dark-grey;
+        border-top-right-radius: @border-radius-default;
       }
     }
 
     &:first-of-type {
-      border-bottom-left-radius: @border-radius-full-round;
-      border-top-left-radius: @border-radius-full-round;
+      border-bottom-left-radius: @border-radius-default;
+      border-top-left-radius: @border-radius-default;
     }
 
     &:last-of-type {
-      border-bottom-right-radius: @border-radius-full-round;
-      border-right: 1px solid fade(@color-highlight, 20%);
-      border-top-right-radius: @border-radius-full-round;
+      border-bottom-right-radius: @border-radius-default;
+      border-right: 1px solid fade(@color-secondary-action-outline, 20%);
+      border-top-right-radius: @border-radius-default;
     }
 
     > button {
-      .mono-10;
+      .mono-9;
 
       background: transparent;
-      color: @color-highlight;
-      line-height: normal;
-      padding: @size-10 @size-12;
+      color: @color-primary-text;
+      line-height: @size-11;
+      padding: @size-4 @size-16;
+      text-transform: uppercase;
     }
   }
 }
@@ -376,7 +370,7 @@
 
   > div {
     align-items: center;
-    border-top: 1px solid fade(@color-primary-alternate, 10%);
+    border-top: 1px solid fade(@color-secondary-action-outline, 10%);
     display: flex;
     width: 100%;
   }

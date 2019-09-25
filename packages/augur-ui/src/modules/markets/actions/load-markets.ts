@@ -132,7 +132,7 @@ export const loadMarketsByFilter = (
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
-    maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.GetMaxLiquiditySpread,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
   };
 
@@ -149,7 +149,6 @@ export const loadNextWindowDisputingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.AwaitingNextWindow],
     ...filterOptions,
   };
@@ -164,7 +163,6 @@ export const loadCurrentlyDisputingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
   };
@@ -179,7 +177,6 @@ export const loadOpenReportingMarkets = (
   getState
 ) => {
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     reportingStates: [MarketReportingState.OpenReporting],
     ...filterOptions,
   };

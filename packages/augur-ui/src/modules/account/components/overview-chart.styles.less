@@ -4,23 +4,23 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding-top: @size-24;
+  padding-top: @size-22;
 
   > div:first-of-type {
-    .mono-11;
+    .mono-11-bold;
 
     padding-bottom: @size-8;
     text-transform: uppercase;
   }
 
   > div:nth-of-type(2) {
-    .mono-11;
+    .mono-10;
   }
 
   > div:nth-of-type(3) {
-    .text-18-bold;
+    .text-14-bold;
 
-    padding-top: @size-8;
+    padding-top: @size-4;
 
     > svg {
       fill: none;
@@ -65,13 +65,12 @@
 
 .ProfitLossChart {
   margin: 0;
-  margin-bottom: @size-8;
   pointer-events: none;
 
   svg {
     :global {
       .highcharts-background {
-        fill: @color-tertiary-background;
+        fill: @color-module-background;
 
         @media @breakpoint-mobile-mid {
           fill: @color-dark-grey;
@@ -98,7 +97,7 @@
       }
 
       .highcharts-label-box {
-        fill: @color-theme-primary;
+        fill: @color-secondary-text;
         font-weight: bold;
 
         > text > tspan:last-child {

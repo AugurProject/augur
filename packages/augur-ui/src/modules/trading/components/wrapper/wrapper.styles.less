@@ -48,7 +48,7 @@
 
 .Buy,
 .Sell {
-  background-color: @color-tertiary-background;
+  background-color: @color-dark-grey;
   color: @color-inactive-text;
   display: flex;
 
@@ -87,4 +87,21 @@
 
 .Scalar {
   margin-bottom: @size-8;
+}
+
+@media @breakpoint-mobile-mid {
+  .Wrapper {
+    > div:last-of-type {
+      margin-top: @size-6;
+    }
+  }
+
+  .Buy,
+  .Sell {
+    justify-content: center;
+
+    > li > button {
+      padding: @size-12 0;
+    }
+  }
 }
