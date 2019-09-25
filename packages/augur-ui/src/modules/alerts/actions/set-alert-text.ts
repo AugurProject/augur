@@ -223,7 +223,6 @@ export default function setAlertText(alert: any, callback: Function) {
             } of ${
               formatShares(originalQuantity).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-            alert.toast = true;
           })
         );
         break;
@@ -323,7 +322,6 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-            alert.toast = true;
           })
         );
         break;
