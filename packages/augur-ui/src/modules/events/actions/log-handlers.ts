@@ -53,6 +53,7 @@ import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-mar
 const handleAlert = (
   log: any,
   name: string,
+  toast: boolean,
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -61,6 +62,7 @@ try {
     dispatch(
       updateAlert(log.transactionHash, {
         params: log,
+        toast: toast,
         status: TXEventName.Success,
         timestamp: blockchain.currentAugurTimestamp * 1000,
         name: name,
@@ -166,7 +168,7 @@ export const handleMarketCreatedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   if (isUserDataUpdate) {
-    handleAlert(log, CREATEMARKET, dispatch, getState);
+    handleAlert(log, CREATEMARKET, false, dispatch, getState);
     dispatch(loadCreateMarketHistory());
   }
 };
@@ -230,7 +232,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICTRADE, dispatch, getState);
+    handleAlert(log, PUBLICTRADE, true, dispatch, getState);
 
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -277,7 +279,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICFILLORDER, dispatch, getState);
+    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(loadMarketsInfo([marketId]));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -294,7 +296,7 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
+    handleAlert(log, CLAIMTRADINGPROCEEDS, false, dispatch, getState);
   }
 
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
@@ -311,7 +313,7 @@ export const handleInitialReportSubmittedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, DOINITIALREPORT, dispatch, getState);
+    handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
   if (isOnReportingPage()) dispatch(reloadReportingPage());
@@ -445,7 +447,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, CONTRIBUTE, dispatch, getState);
+    handleAlert(log, CONTRIBUTE, false, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
@@ -455,7 +457,7 @@ export const handleDisputeCrowdsourcerCompletedLog = (
   log: Logs.DisputeCrowdsourcerCompletedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  handleAlert(log, CONTRIBUTE, dispatch, getState);
+  handleAlert(log, CONTRIBUTE, false, dispatch, getState);
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
