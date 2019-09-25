@@ -117,61 +117,8 @@ export const selectMarketsInDispute = createSelector(
 );
 
 // Get reportingFees for signed in user
-<<<<<<< HEAD
 export const selectUsersReportingFees: MarketReportClaimableContracts = selectReportingWinningsByMarket(
   store.getState()
-=======
-export const selectUsersReportingFees = createSelector(
-  selectDisputeWindowStats,
-  selectLoginAccountReportingState,
-  (currentDisputeWindow, userReportingStats) => {
-    let unclaimed = {
-      unclaimedDai: ZERO,
-      unclaimedRep: ZERO,
-    };
-    if (
-      userReportingStats &&
-      userReportingStats.participationTokens &&
-      userReportingStats.participationTokens.contracts.length > 0
-    ) {
-      const calcUnclaimed = userReportingStats.participationTokens.contracts.reduce(
-        (p, c) => {
-          // filter out current dispute window rep staking
-          if (c.address === currentDisputeWindow.address) return p;
-          return {
-            dai: p.dai.plus(c.amountFees),
-            rep: p.rep.plus(createBigNumber(c.amount)),
-          };
-        },
-        { dai: ZERO, rep: ZERO }
-      );
-      unclaimed = {
-        unclaimedDai: calcUnclaimed.dai,
-        unclaimedRep: calcUnclaimed.rep,
-      };
-    }
-    if (
-      userReportingStats.reporting &&
-      userReportingStats.reporting.totalAmount
-    ) {
-      unclaimed.unclaimedRep = unclaimed.unclaimedRep.plus(
-        userReportingStats.reporting.totalAmount
-      );
-    }
-    if (
-      userReportingStats.disputing &&
-      userReportingStats.disputing.totalAmount
-    ) {
-      unclaimed.unclaimedRep = unclaimed.unclaimedRep.plus(
-        userReportingStats.disputing.totalAmount
-      );
-    }
-    return {
-      unclaimedDai: formatAttoDai(unclaimed.unclaimedDai),
-      unclaimedRep: formatAttoRep(unclaimed.unclaimedRep),
-    };
-  }
->>>>>>> 85502cc411a4d5d4161fc619ec7e83dc17f61c49
 );
 
 // Get all unsigned orders from localStorage
