@@ -7,6 +7,7 @@ import {
   selectReadNotificationState,
   selectAccountPositionsState,
   selectLoginAccountReportingState,
+  selectMarketInfosState,
 } from 'store/select-state';
 
 import { createBigNumber } from 'utils/create-big-number';
@@ -26,15 +27,13 @@ import {
 } from 'modules/common/constants';
 import { MarketReportingState } from '@augurproject/sdk';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
-import {
-  formatDai,
-  formatRep,
-  formatAttoDai,
-  formatAttoRep,
-} from 'utils/format-number';
 import store from 'store';
-import { MarketClaimablePositions } from 'modules/types';
+import {
+  MarketClaimablePositions,
+  MarketReportClaimableContracts,
+} from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
+import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -118,56 +117,8 @@ export const selectMarketsInDispute = createSelector(
 );
 
 // Get reportingFees for signed in user
-export const selectUsersReportingFees = createSelector(
-  selectDisputeWindowStats,
-  selectLoginAccountReportingState,
-  (currentDisputeWindow, userReportingStats) => {
-    let unclaimed = {
-      unclaimedDai: ZERO,
-      unclaimedRep: ZERO,
-    };
-    if (
-      userReportingStats &&
-      userReportingStats.participationTokens &&
-      userReportingStats.participationTokens.contracts.length > 0
-    ) {
-      const calcUnclaimed = userReportingStats.participationTokens.contracts.reduce(
-        (p, c) => {
-          // filter out current dispute window rep staking
-          if (c.address === currentDisputeWindow.address) return p;
-          return {
-            dai: p.dai.plus(c.amountFees),
-            rep: p.rep.plus(createBigNumber(c.amount)),
-          };
-        },
-        { dai: ZERO, rep: ZERO }
-      );
-      unclaimed = {
-        unclaimedDai: calcUnclaimed.dai,
-        unclaimedRep: calcUnclaimed.rep,
-      };
-    }
-    if (
-      userReportingStats.reporting &&
-      userReportingStats.reporting.totalAmount
-    ) {
-      unclaimed.unclaimedRep = unclaimed.unclaimedRep.plus(
-        userReportingStats.reporting.totalAmount
-      );
-    }
-    if (
-      userReportingStats.disputing &&
-      userReportingStats.disputing.totalAmount
-    ) {
-      unclaimed.unclaimedRep = unclaimed.unclaimedRep.plus(
-        userReportingStats.disputing.totalAmount
-      );
-    }
-    return {
-      unclaimedDai: formatAttoDai(unclaimed.unclaimedDai),
-      unclaimedRep: formatAttoRep(unclaimed.unclaimedRep),
-    };
-  }
+export const selectUsersReportingFees: MarketReportClaimableContracts = selectReportingWinningsByMarket(
+  store.getState()
 );
 
 // Get all unsigned orders from localStorage
@@ -191,7 +142,7 @@ export const selectNotifications = createSelector(
   selectResolvedMarketsOpenOrders,
   selectFinalizeMarkets,
   selectMarketsInDispute,
-  selectUsersReportingFees,
+  selectReportingWinningsByMarket,
   selectUnsignedOrders,
   selectReadNotificationState,
   (
@@ -237,7 +188,9 @@ export const selectNotifications = createSelector(
     // Add unquie notifications
     if (
       claimReportingFees &&
-      (claimReportingFees.unclaimedDai && claimReportingFees.unclaimedRep)
+      (claimReportingFees.participationContracts.unclaimedDai.gt(ZERO) ||
+        claimReportingFees.participationContracts.unclaimedRep.gt(ZERO) ||
+        claimReportingFees.claimableMarkets.unclaimedRep.gt(ZERO))
     ) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.claimReportingFees,

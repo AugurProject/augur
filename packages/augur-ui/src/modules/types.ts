@@ -645,3 +645,28 @@ export interface ClaimReportingOptions {
   disputeWindows: string[],
   estimateGas: boolean;
 }
+
+export interface MarketReportContracts {
+  marketId: string;
+  contracts: string[];
+  totalAmount: BigNumber;
+  marketObject: MarketData;
+}
+
+export interface marketsReportingCollection {
+  unclaimedRep: BigNumber;
+  marketContracts: MarketReportContracts[];
+}
+
+export interface MarketReportClaimableContracts {
+  claimableMarkets: marketsReportingCollection;
+  participationContracts: {
+    contracts: string[];
+    unclaimedDai: BigNumber;
+    unclaimedRep: BigNumber;
+  };
+  totalUnclaimedDai: BigNumber;
+  totalUnclaimedRep: BigNumber;
+  totalUnclaimedDaiFormatted: FormattedNumber;
+  totalUnclaimedRepFormatted: FormattedNumber;
+}
