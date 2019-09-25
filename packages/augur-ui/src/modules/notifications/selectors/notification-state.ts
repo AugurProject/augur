@@ -24,15 +24,12 @@ import {
   REPORTING_STATE,
   ZERO,
 } from 'modules/common/constants';
-import { MarketReportingState } from '@augurproject/sdk';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
-  formatDai,
-  formatRep,
   formatAttoDai,
   formatAttoRep,
 } from 'utils/format-number';
-import store from 'store';
+import store, { AppState } from 'store';
 import { MarketClaimablePositions } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 
@@ -45,8 +42,8 @@ export const selectResolvedMarketsOpenOrders = createSelector(
         .filter(
           market =>
             market.reportingState ===
-              MarketReportingState.AwaitingFinalization ||
-            market.reportingState === MarketReportingState.Finalized
+              REPORTING_STATE.AWAITING_FINALIZATION ||
+            market.reportingState === REPORTING_STATE.FINALIZED
         )
         .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
@@ -99,7 +96,7 @@ export const selectMarketsInDispute = createSelector(
   selectAccountPositionsState,
   selectLoginAccountAddress,
   (markets, positions, address) => {
-    const state = store.getState();
+    const state = store.getState() as AppState;
     let disputedMarkets = [];
     let reportedMarkets = [];
     if (state.loginAccount.reporting.disputing.contracts) {
@@ -355,7 +352,7 @@ const generateCards = (markets, type) => {
       title: UNSIGNED_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
     };
-  } else if (type === NOTIFICATION_TYPES.proceedsToClaimOnHold) {
+  } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
     defaults = {
       type,
       isImportant: false,
