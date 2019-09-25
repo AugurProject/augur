@@ -175,19 +175,6 @@ export function updateAlert(id: string, alert: any) {
         }
       }
       const foundAlert = alerts.find(findAlert => {
-        if (
-          (findAlert.id === id && alert.name.toUpperCase() === CREATEMARKET) ||
-          findAlert.name.toUpperCase() === CREATEMARKET
-        ) {
-          return (
-            alertName === CREATEYESNOMARKET ||
-            alertName === CREATESCALARMARKET ||
-            alertName === CREATECATEGORICALMARKET ||
-            findAlert.name.toUpperCase() === CREATEYESNOMARKET ||
-            findAlert.name.toUpperCase() === CREATESCALARMARKET ||
-            findAlert.name.toUpperCase() === CREATECATEGORICALMARKET
-          );
-        }
         return (
           findAlert.id === id &&
           findAlert.name.toUpperCase() === alert.name.toUpperCase()
