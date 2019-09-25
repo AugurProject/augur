@@ -27,7 +27,7 @@ export interface Log {
   logIndex: number;
 }
 
-export interface MarketReportingStateUpdatedLog {
+export interface MarketsUpdatedLog {
   data: MarketData[]
 }
 

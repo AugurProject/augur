@@ -154,8 +154,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   }
 };
 
-export const handleMarketReportingStateUpdatedLog = (
-  log: Logs.MarketReportingStateUpdatedLog
+export const handleMarketsUpdatedLog = (
+  log: Logs.MarketsUpdatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog', log);
   if (log && log.data) {
