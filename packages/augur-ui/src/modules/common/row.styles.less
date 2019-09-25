@@ -221,6 +221,12 @@
   }
 }
 
+.InvalidText {
+  > li:first-of-type > span:first-of-type > label {
+    color: @color-outcome-invalid;
+  }
+}
+
 @media @breakpoint-mobile-mid {
   .Row {
     grid-template-columns: repeat(3, 1fr);
