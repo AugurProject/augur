@@ -135,7 +135,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   });
   let feeWindowsPending = false;
-  if (sP.disputeWindows.length > 0) {
+  if (sP.disputeWindows && sP.disputeWindows.length > 0) {
     const totalMinusGas = createBigNumber(
       sP.reportingFees.unclaimedParticipationTokenDaiFees.fullPrecision
     )
