@@ -106,7 +106,8 @@ export function checkCategoriesArray(value) {
 
 export function moreThanDecimals(value, decimals) {
   if (Math.floor(value) === value) return "";
-  const decimalsValue  = value.split(".")[1].length || 0;
+  const splitValue = String(value).split(".");
+  const decimalsValue  = splitValue.length > 1 ? splitValue[1].length : 0;
   if (decimalsValue > decimals) return "Can't enter more than " + decimals + " decimal points";
   return "";
 }
