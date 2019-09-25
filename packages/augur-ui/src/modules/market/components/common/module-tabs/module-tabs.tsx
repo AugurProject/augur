@@ -4,6 +4,7 @@ import classNames from "classnames";
 
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import Styles from "modules/market/components/common/module-tabs/module-tabs.style";
+import { ToggleExtendButton } from "modules/common/buttons";
 
 export default class ModuleTabs extends Component {
   static propTypes = {
@@ -15,7 +16,9 @@ export default class ModuleTabs extends Component {
     noBorder: PropTypes.bool,
     id: PropTypes.string,
     leftButton: PropTypes.element,
-    scrollOver: PropTypes.bool
+    scrollOver: PropTypes.bool,
+    showToggle: PropTypes.bool,
+    toggle: PropTypes.func,
   };
 
   static defaultProps = {
@@ -94,6 +97,9 @@ export default class ModuleTabs extends Component {
         >
           {this.props.children.map(labels.bind(this))}
         </ul>
+        {this.props.showToggle && this.props.toggle &&
+          <ToggleExtendButton toggle={this.props.toggle} />
+        }
       </div>
     );
   }

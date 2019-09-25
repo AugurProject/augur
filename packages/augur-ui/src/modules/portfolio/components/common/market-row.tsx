@@ -53,7 +53,7 @@ const MarketRow = (props: MarketRowProps) => {
         {props.showState && !props.market.pending &&
           <div>
             <MarketStatusLabel
-              marketStatus={props.market.marketStatus}
+              reportingState={props.market.reportingState}
               alternate
               mini
             />
@@ -64,15 +64,15 @@ const MarketRow = (props: MarketRowProps) => {
             {props.market.description}
           </MarketLink>
         }
-        {props.market.pending && 
+        {props.market.pending &&
           <span>{props.market.description}</span>
         }
         {props.market.pending && props.market.status === TXEventName.Pending &&
           <span>When the market is confirmed you can submit initial liquidity</span>
         }
-        {!props.market.pending && props.showPending && props.market.hasPendingLiquidityOrders && 
+        {!props.market.pending && props.showPending && props.market.hasPendingLiquidityOrders &&
           <span>
-            You have pending initial liquidity. 
+            You have pending initial liquidity.
             <SubmitTextButton action={() => props.unsignedOrdersModal(props.market.marketId)} text="View orders"/>
           </span>
         }

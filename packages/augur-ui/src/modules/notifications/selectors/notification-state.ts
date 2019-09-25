@@ -21,10 +21,10 @@ import {
   CLAIM_REPORTING_FEES_TITLE,
   UNSIGNED_ORDERS_TITLE,
   PROCEEDS_TO_CLAIM_TITLE,
-  MARKET_CLOSED,
   REPORTING_STATE,
   ZERO,
 } from 'modules/common/constants';
+import { MarketReportingState } from '@augurproject/sdk';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
   formatDai,
@@ -42,7 +42,12 @@ export const selectResolvedMarketsOpenOrders = createSelector(
   markets => {
     if (markets.length > 0) {
       return markets
-        .filter(market => market.marketStatus === MARKET_CLOSED)
+        .filter(
+          market =>
+            market.reportingState ===
+              MarketReportingState.AwaitingFinalization ||
+            market.reportingState === MarketReportingState.Finalized
+        )
         .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
     }
@@ -118,8 +123,8 @@ export const selectUsersReportingFees = createSelector(
   selectLoginAccountReportingState,
   (currentDisputeWindow, userReportingStats) => {
     let unclaimed = {
-      unclaimedDai: formatDai(ZERO),
-      unclaimedRep: formatRep(ZERO),
+      unclaimedDai: ZERO,
+      unclaimedRep: ZERO,
     };
     if (
       userReportingStats &&
@@ -138,11 +143,30 @@ export const selectUsersReportingFees = createSelector(
         { dai: ZERO, rep: ZERO }
       );
       unclaimed = {
-        unclaimedDai: formatAttoDai(calcUnclaimed.dai),
-        unclaimedRep: formatAttoRep(calcUnclaimed.rep),
+        unclaimedDai: calcUnclaimed.dai,
+        unclaimedRep: calcUnclaimed.rep,
       };
     }
-    return unclaimed;
+    if (
+      userReportingStats.reporting &&
+      userReportingStats.reporting.totalAmount
+    ) {
+      unclaimed.unclaimedRep = unclaimed.unclaimedRep.plus(
+        userReportingStats.reporting.totalAmount
+      );
+    }
+    if (
+      userReportingStats.disputing &&
+      userReportingStats.disputing.totalAmount
+    ) {
+      unclaimed.unclaimedRep = unclaimed.unclaimedRep.plus(
+        userReportingStats.disputing.totalAmount
+      );
+    }
+    return {
+      unclaimedDai: formatAttoDai(unclaimed.unclaimedDai),
+      unclaimedRep: formatAttoRep(unclaimed.unclaimedRep),
+    };
   }
 );
 
@@ -227,7 +251,9 @@ export const selectNotifications = createSelector(
       });
     }
 
-    const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(store.getState());
+    const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
+      store.getState()
+    );
     if (accountMarketClaimablePositions.markets.length > 0) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.proceedsToClaim,

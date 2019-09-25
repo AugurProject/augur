@@ -2,26 +2,22 @@
 
 .Funds {
   align-items: center;
-  background: @color-tertiary-background;
+  background: @color-module-background;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin: 0 0 @size-16;
   text-transform: uppercase;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-mid {
     background: unset;
     margin: 0;
   }
 
   > div:first-of-type {
-    .mono-11;
+    .mono-11-bold;
 
     color: @color-primary-text;
-
-    @media @breakpoint-mobile {
-      .mono-12-bold;
-    }
   }
 
   > div:nth-of-type(2) {
@@ -29,11 +25,11 @@
   }
 
   > div:nth-of-type(3) {
-    .text-24-bold;
+    .mono-22-bold;
 
-    margin: 0 @size-4;
+    margin: @size-2 @size-4 0;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       color: @color-primary-text;
       margin-bottom: @size-12;
     }
@@ -57,86 +53,46 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px 0 0;
   text-align: center;
   width: 100%;
+  max-width: 300px;
+  
+  > div:last-of-type {
+    flex-grow: unset;
 
-  > div {
-    flex: 1;
-    flex-direction: column;
-
-    > div:first-of-type {
-      .mono-10;
-
-      color: @color-inactive-text;
-      text-align: center;
-    }
-
-    > div:nth-of-type(2) {
-      .mono-14;
-
-      color: @color-primary-text;
-      margin: @size-4 0 0;
-      text-align: center;
-    }
-
-    > div svg {
+    > svg {
       fill: @color-primary-text;
-      height: @size-16;
+      height: @size-12;
       margin: 0 0 0 @size-4;
-      width: @size-16;
-      vertical-align: -@size-4;
+      width: @size-8;
     }
   }
 
-  @media @breakpoint-mobile {
-    > span {
-      > div:first-of-type {
-        > span {
-          .mono-10;
-        }
-
-        > span:last-of-type {
-          .mono-14-bold;
-        }
-      }
-
-      > div:last-of-type {
-        margin: 0 0 @border-radius-default;
-      }
+  &:last-of-type {
+    > div {
+      margin-botttom: 0;
     }
+  }
 
-    > div:first-of-type {
-      flex-direction: row;
-    }
-
-    > div:last-of-type {
-      flex-grow: unset;
-
-      > svg {
-        fill: @color-primary-text;
-        height: @size-12;
-        margin: 0 0 0 @size-4;
-        width: @size-8;
-      }
-    }
+  @media @breakpoint-mobile-mid {
+    max-width: unset;
   }
 }
 
 .RepBalanceStaked {
   align-items: center;
-  border: 2px solid @color-tertiary-background;
+  border: 2px solid @color-secondary-action-outline;
   border-radius: @border-radius-default;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin: @size-16 @size-24 0;
+  margin: @size-16 0 0;
   text-align: center;
   width: 100%;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-mid {
     background: unset;
-    margin: @size-16 @size-32 @size-24;
+    margin: @size-16 0;
   }
 
   > div {
@@ -148,10 +104,10 @@
     }
 
     > div:first-of-type {
-      .mono-10;
+      .mono-9-bold;
 
       color: @color-inactive-text;
-      margin: @size-16 0 0;
+      margin: @size-18 0 0;
       text-align: center;
     }
 
@@ -159,10 +115,10 @@
       .mono-12;
 
       color: @color-primary-text;
-      margin: 0 0 @size-16;
+      margin: 1px 0 @size-18;
       text-align: center;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-mid {
         .mono-12-bold;
 
         color: @color-primary-text;
@@ -171,25 +127,7 @@
   }
 }
 
-.ShowOnMobile {
-  display: none;
-
-  @media @breakpoint-mobile {
-    display: flex;
-    margin-top: 0;
-  }
-}
-
-.HideOnMobile {
-  display: flex;
-
-  @media @breakpoint-mobile {
-    display: none;
-  }
-}
-
-.ChangeForMobile {
-  @media @breakpoint-mobile {
-    flex-direction: column;
-  }
+.Linear {
+  flex-direction: column;
+  margin-top: @size-20;
 }

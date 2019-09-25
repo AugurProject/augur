@@ -28,21 +28,19 @@ import {
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
 import { FormattedNumber, SizeTypes, DateFormattedObject } from 'modules/types';
-import { TXEventName } from '@augurproject/sdk';
+import { Getters, TXEventName } from '@augurproject/sdk';
 
 export interface MarketTypeProps {
   marketType: string;
 }
 
 export interface MarketStatusProps {
-  marketStatus: string;
+  reportingState: string;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
-  reportingState: string;
-  disputeInfo: any;
+  disputeInfo: Getters.Markets.DisputeInfo;
   endTimeFormatted: DateFormattedObject;
-  disputingWindowEndTime: number;
   currentAugurTimestamp: number;
 }
 
@@ -191,6 +189,23 @@ interface ValueDenominationProps {
   postfix?: string | null;
   hideDenomination?: Boolean;
 }
+
+interface TimeLabelProps {
+  label: string;
+  time: DateFormattedObject;
+  showLocal: boolean;
+}
+
+export const TimeLabel = ({ label, time, showLocal }: TimeLabelProps) => {
+  return (
+    <div className={Styles.TimeLabel}>
+      <span>{label}</span>
+      <span>{time.formattedShortUtc}</span>
+      {showLocal && <span>{time.formattedShortTimezone}</span>}
+    </div>
+  )
+}
+
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">
@@ -538,17 +553,18 @@ export const MarketTypeLabel = (props: MarketTypeProps) => {
 };
 
 export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { marketStatus, mini } = props;
-  let open: boolean = false;
-  let resolved: boolean = false;
-  let reporting: boolean = false;
+  const { reportingState, mini } = props;
+  let open = false;
+  let resolved = false;
+  let reporting = false;
   let text: string;
-  switch (marketStatus) {
-    case constants.MARKET_OPEN:
+  switch (reportingState) {
+    case REPORTING_STATE.PRE_REPORTING:
       open = true;
       text = constants.MARKET_STATUS_MESSAGES.OPEN;
       break;
-    case constants.MARKET_CLOSED:
+    case REPORTING_STATE.AWAITING_FINALIZATION:
+    case REPORTING_STATE.FINALIZED:
       resolved = true;
       text = constants.MARKET_STATUS_MESSAGES.RESOLVED;
       break;
@@ -557,6 +573,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
       text = constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
       break;
   }
+
   return (
     <span
       className={classNames(Styles.MarketStatus, {
@@ -576,7 +593,6 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     reportingState,
     disputeInfo,
     endTimeFormatted,
-    disputingWindowEndTime,
     currentAugurTimestamp,
   } = props;
 
@@ -600,16 +616,10 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
-  } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW) {
-    reportingExtraText = constants.AWAITING_NEXT_DISPUTE;
-  } else if (
-    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-    reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION
-  ) {
-    reportingExtraText =
-      disputeInfo && disputeInfo.disputeRound
-        ? `${constants.DISPUTE_ROUND} ${disputeInfo.disputeRound}`
-        : constants.DISPUTE_ROUND;
+  } else if (disputeInfo.disputePacingOn) {
+    reportingExtraText = constants.SLOW_DISPUTE;
+  } else if (!disputeInfo.disputePacingOn) {
+    reportingExtraText = constants.FAST_DISPUTE;
     customLabel = constants.DISPUTE_ENDS;
   } else {
     reportingExtraText = null;

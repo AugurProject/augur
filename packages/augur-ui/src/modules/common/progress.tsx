@@ -12,7 +12,7 @@ export interface CountdownProgressProps {
   countdownBreakpoint?: number;
   firstColorBreakpoint?: number;
   finalColorBreakpoint?: number;
-  alignRight?: Boolean;
+  alignRight?: boolean;
 }
 
 export interface TimeLabelProps {
@@ -30,9 +30,9 @@ export interface MarketProgressProps {
   reportingState: string;
   currentTime: DateFormattedObject | number;
   endTimeFormatted: DateFormattedObject;
-  reportingWindowEndtime: DateFormattedObject | number;
+  reportingWindowEndTime: DateFormattedObject | number;
   customLabel?: string;
-  alignRight?: Boolean;
+  alignRight?: boolean;
 }
 // default breakpoints
 const OneWeek = 168 * 60 * 60;
@@ -108,7 +108,7 @@ const reportingStateToLabelTime = (
   let time: DateFormattedObject = null;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
-      label = 'Reporting Begins';
+      label = 'Reporting Starts';
       time = endTimeFormatted;
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
@@ -119,7 +119,7 @@ const reportingStateToLabelTime = (
       label = 'Open Reporting';
       break;
     case REPORTING_STATE.CROWDSOURCING_DISPUTE:
-      label = 'Disputing Ends';
+      label = 'Time Left to Dispute';
       time = reportingEndTime;
       break;
     case REPORTING_STATE.AWAITING_NEXT_WINDOW:
@@ -133,9 +133,11 @@ const reportingStateToLabelTime = (
     case REPORTING_STATE.AWAITING_FORK_MIGRATION:
       label = 'Awaiting Fork Migration';
       break;
+    case REPORTING_STATE.AWAITING_FINALIZATION:
     case REPORTING_STATE.FINALIZED:
     default:
-      label = 'Expired';
+      label = 'Market Resolved';
+      time = reportingEndTime;
       break;
   }
 
@@ -147,22 +149,17 @@ export const MarketProgress = (props: MarketProgressProps) => {
     reportingState,
     currentTime,
     endTimeFormatted,
-    reportingWindowEndtime,
+    reportingWindowEndTime,
     customLabel,
     alignRight,
   } = props;
   const currTime = formatTime(currentTime);
-  const reportingEndTime = formatTime(reportingWindowEndtime);
+  const reportingEndTime = formatTime(reportingWindowEndTime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
     endTimeFormatted,
     reportingEndTime
   );
-
-  // Don't flash countdown component if we don't have reporting / augur timestamp data on state yet
-  if (reportingWindowEndtime === null || currentTime === null) {
-    return null;
-  }
 
   return (
     <CountdownProgress
@@ -184,9 +181,9 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
     finalColorBreakpoint,
     alignRight,
   } = props;
-  let valueString: string = '';
-  let timeLeft: number = 1;
-  let countdown: boolean = false;
+  let valueString = '';
+  let timeLeft = 1;
+  let countdown = false;
   const firstBreakpoint = firstColorBreakpoint || ThreeDays;
   const secondBreakpoint = finalColorBreakpoint || OneDay;
   if (time !== null && currentTime) {

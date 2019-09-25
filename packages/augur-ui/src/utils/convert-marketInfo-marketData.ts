@@ -1,7 +1,4 @@
-import {
-  calculatePayoutNumeratorsValue,
-  Getters,
-} from '@augurproject/sdk';
+import { calculatePayoutNumeratorsValue, Getters } from '@augurproject/sdk';
 import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
@@ -9,19 +6,30 @@ import {
   MARKET_CLOSED,
   MARKET_REPORTING,
   CATEGORICAL,
+  SCALAR,
+  SCALAR_DOWN_ID,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-import { formatPercent, formatDai, formatNone, formatNumber, formatAttoRep } from './format-number';
+import {
+  formatPercent,
+  formatDai,
+  formatNone,
+  formatNumber,
+  formatAttoRep,
+} from './format-number';
 import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
 
-export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.MarketInfo) {
+export function convertMarketInfoToMarketData(
+  marketInfo: Getters.Markets.MarketInfo
+) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
   const marketData: MarketData = {
     ...marketInfo,
-    marketId : marketInfo.id,
+    marketId: marketInfo.id,
     minPriceBigNumber: createBigNumber(marketInfo.minPrice),
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
     outcomesFormatted: processOutcomes(marketInfo),
@@ -29,7 +37,9 @@ export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.Market
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
-    finalizationTimeFormatted: marketInfo.finalizationTime ? convertUnixToFormattedDate(marketInfo.finalizationTime) : null,
+    finalizationTimeFormatted: marketInfo.finalizationTime
+      ? convertUnixToFormattedDate(marketInfo.finalizationTime)
+      : null,
     consensusFormatted: processConsensus(marketInfo),
     defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),
     reportingFeeRatePercent: formatPercent(reportingFee * 100, {
@@ -56,6 +66,11 @@ export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.Market
     }),
     unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
     marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from
+    disputeInfo: processDisputeInfo(
+      marketInfo.marketType,
+      marketInfo.disputeInfo,
+      marketInfo.outcomes
+    ),
   };
 
   return marketData;
@@ -81,31 +96,88 @@ function getMarketStatus(reportingState: string) {
   return marketStatus;
 }
 
-function processOutcomes(market: Getters.Markets.MarketInfo): OutcomeFormatted[] {
+function processOutcomes(
+  market: Getters.Markets.MarketInfo
+): OutcomeFormatted[] {
   return market.outcomes.map(outcome => ({
-      ...outcome,
-      marketId: market.id,
-      lastPricePercent: outcome.price
-        ? formatNumber(outcome.price, {
-            decimals: 2,
-            decimalsRounded: 1,
-            denomination: '',
-            positiveSign: false,
-            zeroStyled: true,
-          })
-        : formatNone(),
-      lastPrice: outcome.price
-        ? formatDai(outcome.price || 0, {
-            positiveSign: false,
-          })
-        : formatNone(),
-        volumeFormatted: formatDai(outcome.volume, {
+    ...outcome,
+    marketId: market.id,
+    lastPricePercent: outcome.price
+      ? formatNumber(outcome.price, {
+          decimals: 2,
+          decimalsRounded: 1,
+          denomination: '',
           positiveSign: false,
-        }),
-    }));
-};
+          zeroStyled: true,
+        })
+      : formatNone(),
+    lastPrice: outcome.price
+      ? formatDai(outcome.price || 0, {
+          positiveSign: false,
+        })
+      : formatNone(),
+    volumeFormatted: formatDai(outcome.volume, {
+      positiveSign: false,
+    }),
+    isTradeable:
+      market.marketType === SCALAR && outcome.id === SCALAR_DOWN_ID
+        ? false
+        : true,
+  }));
+}
 
-function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null {
+function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
+  return {
+    outcome: String(outcomeId),
+    bondSizeCurrent: bondSizeOfNewStake,
+    stakeCurrent: '0',
+    stakeRemaining: bondSizeOfNewStake,
+    isInvalidOutcome: outcomeId === INVALID_OUTCOME_ID,
+    isMalformedOutcome: false,
+    tentativeWinning: false,
+  };
+}
+
+// fill in missing stakes
+function processDisputeInfo(
+  marketType: string,
+  disputeInfo: Getters.Markets.DisputeInfo,
+  outcomes: Getters.Markets.MarketInfoOutcome[]
+): Getters.Markets.DisputeInfo {
+  if (!disputeInfo) return disputeInfo;
+  if (marketType === SCALAR) {
+    const invalidIncluded = disputeInfo.stakes.find(
+      s => Number(s.outcome) === INVALID_OUTCOME_ID
+    );
+    if (invalidIncluded) return disputeInfo;
+    return {
+      ...disputeInfo,
+      stakes: [
+        ...disputeInfo.stakes,
+        getEmptyStake(INVALID_OUTCOME_ID, disputeInfo.bondSizeOfNewStake),
+      ],
+    };
+  }
+
+  const stakes = disputeInfo.stakes
+    .reduce(
+      (p, s) => p.filter(o => o !== Number(s.outcome)),
+      outcomes.map(o => o.id)
+    )
+    .reduce(
+      (p, o) => [...p, getEmptyStake(o, disputeInfo.bondSizeOfNewStake)],
+      disputeInfo.stakes
+    );
+
+  return {
+    ...disputeInfo,
+    stakes,
+  };
+}
+
+function processConsensus(
+  market: Getters.Markets.MarketInfo
+): Consensus | null {
   if (market.consensus === null) return null;
   //   - formatted reported outcome
   //   - the percentage of correct reports (for binaries only)
@@ -128,6 +200,8 @@ function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null 
   return { payout: market.consensus, winningOutcome, outcomeName };
 }
 
-export const keyMarketInfoCollectionByMarketId = (marketInfos: Getters.Markets.MarketInfo[]) => {
+export const keyMarketInfoCollectionByMarketId = (
+  marketInfos: Getters.Markets.MarketInfo[]
+) => {
   return keyBy(marketInfos, 'id');
-}
+};

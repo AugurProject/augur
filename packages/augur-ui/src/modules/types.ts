@@ -50,10 +50,12 @@ export interface DateFormattedObject {
   utcLocalOffset: number;
   clockTimeLocal: string;
   formattedTimezone: string;
+  formattedShortTimezone: string;
   formattedSimpleData: string;
   formattedUtcShortDate: string;
   clockTimeUtc: string;
   formattedUtc: string;
+  formattedShortUtc: string;
 }
 
 export interface ValueLabelPair {
@@ -83,6 +85,7 @@ export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
   volumeFormatted: FormattedNumber;
+  isTradeable: boolean;
 }
 
 export interface MarketData extends Getters.Markets.MarketInfo {
@@ -635,4 +638,10 @@ export interface MarketClaimablePositions {
       unclaimedProceeds: string;
     };
   };
+}
+
+export interface ClaimReportingOptions {
+  reportingParticipants: string[],
+  disputeWindows: string[],
+  estimateGas: boolean;
 }

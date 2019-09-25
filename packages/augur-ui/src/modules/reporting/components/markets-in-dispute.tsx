@@ -4,7 +4,6 @@ import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import MarketCard from 'modules/market-cards/containers/market-card';
-import { createBigNumber } from 'utils/create-big-number';
 import { Checkbox } from 'modules/common/form';
 
 import PaginationStyles from 'modules/common/pagination.styles.less';
@@ -12,7 +11,6 @@ import Styles from 'modules/reporting/components/markets-in-dispute.styles.less'
 
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk/src';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 import { REPORTING_STATE } from 'modules/common/constants';
@@ -22,7 +20,7 @@ const NUM_LOADING_CARDS = 5;
 const DEFAULT_PAGE = 1;
 const TAB_CURRENT = 'current';
 const TAB_AWAITING = 'awaiting';
-const SORT_REP_STAKED = 'repStaked';
+const SORT_REP_STAKED = 'totalRepStakedInMarket';
 const SORT_DISPUTE_ROUND = 'disputeRound';
 const DEFAULT_PAGINATION = {
   limit: ITEMS_PER_SECTION,
@@ -54,8 +52,6 @@ interface MarketsInDisputeState {
   showPagination: boolean;
   marketCount: number;
   isLoadingMarkets: boolean;
-  sortByDisputeRounds: boolean;
-  sortByRepAmount: boolean;
   filterByMyPortfolio: boolean;
 }
 
@@ -98,8 +94,6 @@ export default class MarketsInDispute extends Component<
       showPagination: false,
       offset: DEFAULT_PAGE,
       limit: ITEMS_PER_SECTION,
-      sortByDisputeRounds: false,
-      sortByRepAmount: true,
       filterByMyPortfolio: false,
     };
   }
@@ -111,8 +105,7 @@ export default class MarketsInDispute extends Component<
     const { isConnected, markets } = this.props;
     const {
       filterByMyPortfolio,
-      sortByRepAmount,
-      sortByDisputeRounds,
+      sortBy,
       selectedTab,
       search,
       offset,
@@ -120,8 +113,7 @@ export default class MarketsInDispute extends Component<
     if (
       isConnected !== prevProps.isConnected ||
       filterByMyPortfolio !== prevState.filterByMyPortfolio ||
-      sortByRepAmount !== prevState.sortByRepAmount ||
-      sortByDisputeRounds !== prevState.sortByDisputeRounds ||
+      sortBy !== prevState.sortBy ||
       search !== prevState.search ||
       offset !== prevState.offset ||
       selectedTab !== prevState.selectedTab
@@ -182,16 +174,14 @@ export default class MarketsInDispute extends Component<
       limit,
       offset,
       filterByMyPortfolio,
-      sortByRepAmount,
-      sortByDisputeRounds,
+      sortBy,
       search,
     } = this.state;
 
     let filterOptions = {
       limit,
       offset,
-      sortByRepAmount,
-      sortByDisputeRounds,
+      sortBy,
       search,
     };
     if (filterByMyPortfolio) {

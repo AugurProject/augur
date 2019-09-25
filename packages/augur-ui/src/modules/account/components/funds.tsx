@@ -1,21 +1,18 @@
-import React from "react";
-import classNames from "classnames";
+import React from 'react';
+import classNames from 'classnames';
 
-import {
-  MovementLabel,
-  LinearPropertyLabel,
-} from "modules/common/labels";
-import { DaiLogoIcon, RepLogoIcon } from "modules/common/icons";
+import { MovementLabel, LinearPropertyLabel } from 'modules/common/labels';
+import { DaiLogoIcon, RepLogoIcon } from 'modules/common/icons';
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
   REP_BALANCE,
   REP_STAKED,
   TOTAL_ACCOUNT_VALUE_IN_DAI,
-} from "modules/common/constants";
-import { SizeTypes } from "modules/types";
+} from 'modules/common/constants';
+import { SizeTypes } from 'modules/types';
 
-import Styles from "modules/account/components/funds.styles.less";
+import Styles from 'modules/account/components/funds.styles.less';
 
 export interface FundsProps {
   repStaked: number;
@@ -79,7 +76,7 @@ const Funds = (props: FundsProps) => {
         className={Styles.BalanceFrozenFunds}
         columns={tradingBalanceFrozenFunds}
         showDaiLogo
-        changeForMobile
+        linear
       />
       <div>
         <FundDataRow
@@ -97,34 +94,36 @@ export interface FundDataRowProps {
   columns: Array<any>;
   showRepLogo?: boolean;
   showDaiLogo?: boolean;
-  changeForMobile?: boolean;
+  linear?: boolean;
 }
 
 const FundDataRow = (props: FundDataRowProps) => {
-  const { columns, showRepLogo, showDaiLogo, changeForMobile } = props;
+  const { columns, showRepLogo, showDaiLogo, linear } = props;
 
   const rows = columns.map((value: any) => (
     <>
-      {changeForMobile && (
-        <span className={classNames(props.className, Styles.ShowOnMobile)}>
+      {linear && (
+        <span className={props.className}>
           <LinearPropertyLabel value={value.value} label={value.title} />
           <div>{showDaiLogo ? DaiLogoIcon : null}</div>
         </span>
       )}
-      <div className={classNames({ [Styles.HideOnMobile]: changeForMobile })}>
-        <div>{value.title}</div>
+      {!linear && (
         <div>
-          {value.value}
-          {showDaiLogo ? DaiLogoIcon : null}
+          <div>{value.title}</div>
+          <div>
+            {value.value}
+            {showDaiLogo ? DaiLogoIcon : null}
+          </div>
         </div>
-      </div>
+      )}
     </>
   ));
 
   return (
     <div
       className={classNames(props.className, {
-        [Styles.ChangeForMobile]: changeForMobile,
+        [Styles.Linear]: linear,
       })}
     >
       {rows[0]}

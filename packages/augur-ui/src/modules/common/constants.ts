@@ -236,7 +236,6 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
-  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
 }
 
 export const SORT_OPTIONS = [
@@ -299,10 +298,10 @@ export const MARKET_CLOSED = 'closed';
 export const IN_REPORTING = 'In-reporting';
 export const WAITING_ON_REPORTER = 'Waiting on reporter';
 export const OPEN_REPORTING = 'Open reporting';
-export const AWAITING_NEXT_DISPUTE = 'Awaiting next dispute';
-export const DISPUTE_ROUND = 'Dispute round';
-export const REPORTING_ENDS = 'Reporting Ends';
-export const DISPUTE_ENDS = 'Dispute Ends';
+export const FAST_DISPUTE = 'Fast dispute';
+export const SLOW_DISPUTE = 'Slow dispute';
+export const REPORTING_ENDS = 'Reporting ends';
+export const DISPUTE_ENDS = 'Dispute ends';
 
 // # Market Status Messages
 export const MARKET_STATUS_MESSAGES = {
@@ -343,7 +342,7 @@ export const TYPE_TRADE = 'trade';
 export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
 export const TYPE_VIEW_SETS = 'view sets';
-export const TYPE_VIEW_DETAILS = 'view details';
+export const TYPE_VIEW_DETAILS = 'view';
 export const TYPE_MIGRATE_REP = 'migrate-rep';
 export const TYPE_FINALIZE_MARKET = 'finalize market';
 
@@ -661,6 +660,7 @@ export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
+export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(3000000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
   createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
     .div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
