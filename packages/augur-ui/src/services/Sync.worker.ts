@@ -42,7 +42,6 @@ ctx.addEventListener('message', async (message: any) => {
             })
           );
         };
-
         const subscription: string = subscriptions.subscribe(
           eventName,
           buildResponse
