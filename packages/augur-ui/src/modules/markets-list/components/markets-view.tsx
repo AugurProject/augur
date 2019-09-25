@@ -307,7 +307,7 @@ export default class MarketsView extends Component<
         />
 
         <FilterNotice
-          color={'red'}
+          color="red"
           show={this.props.includeInvalidMarkets === 'show'}
           content={
             <span>
@@ -321,6 +321,7 @@ export default class MarketsView extends Component<
         />
 
         <FilterNotice
+          color="red"
           show={!displayFee || !displayLiquiditySpread}
           content={
             <span>
