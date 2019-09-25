@@ -8,6 +8,7 @@ import {
   CATEGORICAL,
   SCALAR,
   SCALAR_DOWN_ID,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
 import {
@@ -65,6 +66,11 @@ export function convertMarketInfoToMarketData(
     }),
     unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
     marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from
+    disputeInfo: processDisputeInfo(
+      marketInfo.marketType,
+      marketInfo.disputeInfo,
+      marketInfo.outcomes
+    ),
   };
 
   return marketData;
@@ -118,6 +124,55 @@ function processOutcomes(
         ? false
         : true,
   }));
+}
+
+function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
+  return {
+    outcome: String(outcomeId),
+    bondSizeCurrent: bondSizeOfNewStake,
+    stakeCurrent: '0',
+    stakeRemaining: bondSizeOfNewStake,
+    isInvalidOutcome: outcomeId === INVALID_OUTCOME_ID,
+    isMalformedOutcome: false,
+    tentativeWinning: false,
+  };
+}
+
+// fill in missing stakes
+function processDisputeInfo(
+  marketType: string,
+  disputeInfo: Getters.Markets.DisputeInfo,
+  outcomes: Getters.Markets.MarketInfoOutcome[]
+): Getters.Markets.DisputeInfo {
+  if (!disputeInfo) return disputeInfo;
+  if (marketType === SCALAR) {
+    const invalidIncluded = disputeInfo.stakes.find(
+      s => Number(s.outcome) === INVALID_OUTCOME_ID
+    );
+    if (invalidIncluded) return disputeInfo;
+    return {
+      ...disputeInfo,
+      stakes: [
+        ...disputeInfo.stakes,
+        getEmptyStake(INVALID_OUTCOME_ID, disputeInfo.bondSizeOfNewStake),
+      ],
+    };
+  }
+
+  const stakes = disputeInfo.stakes
+    .reduce(
+      (p, s) => p.filter(o => o !== Number(s.outcome)),
+      outcomes.map(o => o.id)
+    )
+    .reduce(
+      (p, o) => [...p, getEmptyStake(o, disputeInfo.bondSizeOfNewStake)],
+      disputeInfo.stakes
+    );
+
+  return {
+    ...disputeInfo,
+    stakes,
+  };
 }
 
 function processConsensus(

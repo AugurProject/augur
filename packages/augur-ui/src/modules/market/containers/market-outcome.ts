@@ -2,13 +2,11 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
-import * as constants from "modules/common/constants";
+import { COLUMN_TYPES, INVALID_OUTCOME_ID } from "modules/common/constants";
 import { selectMarketOutcomeBestBidAsk } from "modules/markets/selectors/select-market-outcome-best-bid-ask";
 import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-
-const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState, ownProps) => {
   return {
@@ -88,6 +86,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       noToggle: true,
       colorId: outcome.id + 1,
       active: oP.selectedOutcomeId === outcome.id,
+      isInvalid: outcome.id === INVALID_OUTCOME_ID
     }
   };
 };
