@@ -105,11 +105,19 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
     )} ${localAMPM} ${timezoneName}`,
+    formattedShortTimezone: `${
+      shortMonths[date.getMonth()]
+    } ${date.getDate()} ${date.getFullYear()} ${localTimeTwelve.join(
+      ':'
+    )} ${localAMPM} ${timezoneName}`,
     formattedUtc: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
       ':'
     )} ${utcAMPM} (UTC 0)`,
+    formattedShortUtc: `${
+      shortMonths[date.getUTCMonth()]
+    } ${date.getUTCDate()} ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM} (UTC)`,
   };
 }
 
