@@ -38,7 +38,7 @@ export function redeemStake(
     disputeWindows: string[],
     reportingParticipants: string[]
   ) {
-    let batches: Batch[];
+    const batches = [] as Batch[];
     const disputeWindowBatchSize = Math.ceil(
       disputeWindows.length / DISPUTE_WINDOW_BATCH_SIZE
     );
