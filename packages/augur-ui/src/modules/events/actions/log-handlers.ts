@@ -58,14 +58,14 @@ const handleAlert = (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-try {
+  try {
     dispatch(
       updateAlert(log.transactionHash, {
         params: log,
         toast: toast,
         status: TXEventName.Success,
         timestamp: blockchain.currentAugurTimestamp * 1000,
-        name: name,
+        name,
       })
     );
   } catch (e) {
@@ -296,7 +296,16 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, CLAIMTRADINGPROCEEDS, false, dispatch, getState);
+    // handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
+    const { blockchain } = getState();
+    dispatch(
+      updateAlert(log.market, {
+        name: CLAIMTRADINGPROCEEDS,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        status: TXEventName.Success,
+        params: { ...log },
+      })
+    );
   }
 
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
