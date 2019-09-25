@@ -9,7 +9,7 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { MARKET, REPORTING, DISPUTING } from "modules/routes/constants/views";
+import { REPORTING, DISPUTING } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
@@ -186,13 +186,13 @@ class Notifications extends React.Component<
   render() {
     const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
     const notifications = this.props.notifications.map((notification) =>
-      this.getButtonAction(notification),
+      this.getButtonAction(notification)
     );
     const notificationCount = notifications.length;
     const newNotificationCount = notifications.filter((item) => item.isNew)
       .length;
 
-    const rows = orderBy(notifications, "isNew", ["desc"]).map((notification) => {
+    const rows = orderBy(notifications, 'isNew', ['desc']).map((notification) => {
       const {
         id,
         isImportant,
