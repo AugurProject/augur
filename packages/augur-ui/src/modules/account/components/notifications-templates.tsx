@@ -6,7 +6,7 @@ import {
   MarketProgress,
   formatTime,
 } from "modules/common/progress";
-import { SubmitTextButton } from "modules/common/buttons";
+import { CancelTextButton } from "modules/common/buttons";
 import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
 import { formatDai } from "utils/format-number";
 import Styles from "modules/account/components/notification.styles.less";
@@ -77,7 +77,7 @@ const Template = (props: TemplateProps) => (
         currentTime={props.currentTime}
       />
 
-      <SubmitTextButton
+      <CancelTextButton
         text={props.buttonLabel}
         action={() => props.buttonAction()}
         disabled={props.isDisabled}
