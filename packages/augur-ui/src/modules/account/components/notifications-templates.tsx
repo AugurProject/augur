@@ -7,7 +7,7 @@ import {
   formatTime,
 } from "modules/common/progress";
 import { CancelTextButton } from "modules/common/buttons";
-import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
+import { DateFormattedObject, MarketData, MarketReportClaimableContracts } from "modules/types";
 import { formatDai } from "utils/format-number";
 import Styles from "modules/account/components/notification.styles.less";
 
@@ -50,10 +50,7 @@ interface DisputeTemplateProps extends BaseProps {
 
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
   market: MarketData;
-  claimReportingFees: {
-    unclaimedDai: FormattedNumber;
-    unclaimedRep: FormattedNumber;
-  };
+  claimReportingFees: MarketReportClaimableContracts;
 }
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
@@ -222,8 +219,8 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
 
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.unclaimedRep.formatted;
-  const unclaimedDai = claimReportingFees.unclaimedDai.formatted;
+  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
+  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
 
   return (
     <Template
