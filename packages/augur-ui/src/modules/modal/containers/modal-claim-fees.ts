@@ -80,7 +80,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   });
   if (claimReportingFees.participationContracts.unclaimedRep.gt(ZERO)) {
-    const feeWindowsPending =
+    const disputeWindowsPending =
       pendingQueue[CLAIM_STAKE_FEES] &&
       pendingQueue[CLAIM_STAKE_FEES][CLAIM_FEE_WINDOWS];
 
@@ -93,7 +93,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     modalRows.push({
       title: 'Reedeem all participation tokens',
       text: 'Claim',
-      status: feeWindowsPending,
+      status: disputeWindowsPending,
       properties: [
         {
           label: 'Reporting Stake',
