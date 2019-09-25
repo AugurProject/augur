@@ -6,11 +6,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: @size-24 0;
+  padding: @size-16 0;
 
   @media @breakpoint-mobile-mid {
     background: unset;
     padding-top: 0;
+    margin: 0 @size-8;
   }
 
   > a {
@@ -24,46 +25,18 @@
 }
 
 .BlockStatus {
-  align-items: center;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  margin: @size-18 0 @size-24;
+  margin: @size-16 0;
   text-align: center;
   text-transform: uppercase;
   width: 100%;
+  max-width: 300px;
 
   @media @breakpoint-mobile-mid {
-    display: none;
-  }
-
-  > div {
-    flex: 1;
-
-    > div:first-of-type {
-      .mono-10;
-
-      color: @color-inactive-text;
-      text-align: center;
-    }
-
-    > div:last-of-type {
-      .text-14;
-
-      color: @color-primary-text;
-      margin: @size-4 0 0;
-      text-align: center;
-    }
-  }
-}
-
-.ShowOnMobile {
-  display: none;
-
-  @media @breakpoint-mobile-mid {
-    display: flex;
-    flex-direction: column;
-    padding: @size-24 @size-16;
+    max-width: unset;
   }
 }
 
@@ -75,14 +48,14 @@
   text-transform: uppercase;
 
   > div:first-of-type {
-    .mono-10;
+    .mono-11-bold;
 
     color: @color-primary-text;
     text-align: center;
   }
 
   > div:nth-of-type(2) {
-    .mono-12;
+    .mono-11-bold;
 
     align-items: center;
     color: @color-primary-text;
@@ -97,10 +70,11 @@
   }
 
   > div:nth-of-type(3) {
-    .text-24-bold;
+    .mono-22-bold;
 
     color: @color-primary-text;
     text-align: center;
+    line-height: @size-26;
   }
 
   > div:nth-of-type(4) {
@@ -112,7 +86,7 @@
   }
 
   @media @breakpoint-mobile-mid {
-    margin-top: @size-16;
+    margin-top: @size-6;
   }
 }
 

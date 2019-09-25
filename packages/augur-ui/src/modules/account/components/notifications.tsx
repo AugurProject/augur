@@ -44,6 +44,7 @@ export interface NotificationsProps extends RouteComponentProps {
   claimReportingFees: Function;
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
+  toggle: Function;
 }
 
 export interface NotificationsState {
@@ -184,7 +185,7 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime, toggle } = this.props;
     const notifications = this.props.notifications.map((notification) =>
       this.getButtonAction(notification)
     );
@@ -290,6 +291,7 @@ class Notifications extends React.Component<
       <QuadBox
         title={NOTIFICATIONS_TITLE}
         rightContent={labelContent}
+        toggle={toggle}
         content={
           notificationCount === 0 ? (
             <EmptyDisplay
