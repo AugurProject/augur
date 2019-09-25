@@ -390,14 +390,17 @@ export const determineVisible = (
   const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
   const customPrimary =
     selected[0] === CUSTOM ||
-    (selected[0] && !primaryOptions.map(option => option.value).includes(selected[0]));
+    (selected[0] &&
+      !primaryOptions.map(option => option.value).includes(selected[0]));
   const customSecondary =
     selected[1] === CUSTOM ||
-    (selected[1] && !secondaryOptions.map(option => option.value).includes(selected[1])) ||
+    (selected[1] &&
+      !secondaryOptions.map(option => option.value).includes(selected[1])) ||
     (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
     selected[2] === CUSTOM ||
-    (selected[2] && !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
+    (selected[2] &&
+      !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
     (!showTertiaryDropdown && values[1] !== '');
   return {
     showSecondaryDropdown,
@@ -516,7 +519,11 @@ export class CategorySingleSelect extends Component<
 > {
   state: CategorySingleSelectState = {
     selected: this.props.initialSelected || '',
-    value: this.props.initialValue || (this.props.initialSelected === CUSTOM ? '' : this.props.initialSelected || ''),
+    value:
+      this.props.initialValue ||
+      (this.props.initialSelected === CUSTOM
+        ? ''
+        : this.props.initialSelected || ''),
     showText: this.props.initialSelected === CUSTOM,
   };
 
@@ -622,7 +629,13 @@ export class CategoryMultiSelect extends Component<
       customPrimary,
       customSecondary,
       customTertiary,
-    } = determineVisible(values, primaryOptions, secondaryOptions, tertiaryOptions, selected);
+    } = determineVisible(
+      values,
+      primaryOptions,
+      secondaryOptions,
+      tertiaryOptions,
+      selected
+    );
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
@@ -809,27 +822,34 @@ export const ReportingRadioBarGroup = ({
           isOpenReporting={isOpenReporting}
         />
       )}
-      {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
-        <ReportingRadioBar
-          disputeInfo={disputeInfo}
-          key={index + radio.value}
-          expandable
-          {...radio}
-          checked={radio.value.toString() === selected}
-          isReporting={isReporting}
-          onChange={selected => {
-            onChange(selected.toString());
-          }}
-          reportAction={reportAction}
-          preFilledStake={preFilledStake}
-          updatePreFilledStake={updatePreFilledStake}
-          disputeStake={disputeStake}
-          updateDisputeStake={updateDisputeStake}
-          initialReporterStake={initialReporterStake}
-          isOpenReporting={isOpenReporting}
-        />
-      ))}
-      {((!isReporting && tentativeWinning && tentativeWinning.value !== invalid.value) || isReporting) &&
+      {radioButtons.map(
+        (radio, index) =>
+          !radio.isInvalid &&
+          !radio.stake.tentativeWinning && (
+            <ReportingRadioBar
+              disputeInfo={disputeInfo}
+              key={index + radio.value}
+              expandable
+              {...radio}
+              checked={radio.value.toString() === selected}
+              isReporting={isReporting}
+              onChange={selected => {
+                onChange(selected.toString());
+              }}
+              reportAction={reportAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={updatePreFilledStake}
+              disputeStake={disputeStake}
+              updateDisputeStake={updateDisputeStake}
+              initialReporterStake={initialReporterStake}
+              isOpenReporting={isOpenReporting}
+            />
+          )
+      )}
+      {((!isReporting &&
+        tentativeWinning &&
+        tentativeWinning.value !== invalid.value) ||
+        isReporting) && (
         <>
           <span>
             {isReporting
@@ -854,7 +874,7 @@ export const ReportingRadioBarGroup = ({
             initialReporterStake={initialReporterStake}
           />
         </>
-      }
+      )}
     </div>
   );
 };
@@ -964,7 +984,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       reportAction,
       scalarOutcome,
       updateScalarOutcome,
-      initialReporterStake
+      initialReporterStake,
     } = this.props;
 
     let { stake } = this.props;
@@ -980,8 +1000,12 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         stake = {
           outcome: scalarOutcome,
           stakeCurrent: '0',
-          bondSizeCurrent: createBigNumber(disputeInfo.bondSizeOfNewStake).toString(),
-          stakeRemaining: createBigNumber(disputeInfo.bondSizeOfNewStake).toString(),
+          bondSizeCurrent: createBigNumber(
+            disputeInfo.bondSizeOfNewStake
+          ).toString(),
+          stakeRemaining: createBigNumber(
+            disputeInfo.bondSizeOfNewStake
+          ).toString(),
           isInvalidOutcome: false,
           isMalformedOutcome: false,
           tentativeWinning: false,
@@ -989,10 +1013,20 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       }
     }
 
-    const reportingGasFee = formatNumber('100');
-    const inputtedStake = !checked || disputeStake === '' || isNaN(parseFloat(disputeStake)) ? formatAttoRep('0') : formatAttoRep(disputeStake);
+    const reportingGasFee = formatNumber('100'); // TODO: get actual gas cost
+    const inputtedStake =
+      !checked || disputeStake === '' || isNaN(parseFloat(disputeStake))
+        ? formatAttoRep('0')
+        : formatAttoRep(disputeStake);
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
-    const fullBond = stake && inputtedStake ? formatRep(createBigNumber(stake.stakeCurrent).plus(inputtedStake.fullPrecision)) : formatRep('0');
+    const fullBond =
+      stake && inputtedStake
+        ? formatRep(
+            createBigNumber(stake.stakeCurrent).plus(
+              inputtedStake.fullPrecision
+            )
+          )
+        : formatRep('0');
 
     return (
       <div
@@ -1006,18 +1040,27 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
+        <h5>
+          {scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}
+        </h5>
         <div onClick={e => e.stopPropagation()}>
-          {!isReporting && // for disputing or for scalar
+          {!isReporting && ( // for disputing or for scalar
             <>
-              {((stake && !stake.tentativeWinning) || scalar) &&
-                <DisputingButtonView stakeCurrent={formatAttoRep(stake.stakeCurrent)} bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)} inputtedStake={inputtedStake} fullBond={fullBond} />
-              }
-              {stake && stake.tentativeWinning &&
-                <Subheaders header='pre-filled stake' subheader={preFilledStake}/>
-              }
-              {checked &&
-
+              {((stake && !stake.tentativeWinning) || scalar) && (
+                <DisputingButtonView
+                  stakeCurrent={formatAttoRep(stake.stakeCurrent)}
+                  bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
+                  inputtedStake={inputtedStake}
+                  fullBond={fullBond}
+                />
+              )}
+              {stake && stake.tentativeWinning && (
+                <Subheaders
+                  header='pre-filled stake'
+                  subheader={preFilledStake}
+                />
+              )}
+              {checked && (
                 <DisputingBondsView
                   scalar={scalar}
                   rangeValue={scalarOutcome}
@@ -1031,9 +1074,9 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
                 />
-              }
+              )}
             </>
-          }
+          )}
           {isReporting && checked && (
             <ReportingBondsView
               scalar={scalar}
@@ -1913,8 +1956,8 @@ export class Input extends Component<InputProps, InputState> {
         {isSearch && (
           <div style={{ marginRight: '8px' }}>
             <PulseLoader
-              color="#AFA7C1"
-              sizeUnit="px"
+              color='#AFA7C1'
+              sizeUnit='px'
               size={6}
               loading={isLoading}
             />
