@@ -27,6 +27,13 @@ export interface Log {
   logIndex: number;
 }
 
+export interface MarketReportingStateUpdatedLog {
+  markets : [{
+    market: Address;
+    reportingState: string;
+  }]
+}
+
 export interface CompleteSetsPurchasedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;

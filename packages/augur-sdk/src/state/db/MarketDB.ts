@@ -4,6 +4,7 @@ import { DerivedDB } from './DerivedDB';
 import { DB } from './DB';
 import { Subscriptions } from '../../subscriptions';
 import { augurEmitter } from '../../events';
+import { SubscriptionEventName } from "../../constants";
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -334,6 +335,8 @@ export class MarketDB extends DerivedDB {
       if (reportingState) {
         updateDocs.push({
           _id: marketData._id,
+          _rev: marketData._rev,
+          market: marketData._id,
           blockNumber,
           reportingState
         });
@@ -341,9 +344,6 @@ export class MarketDB extends DerivedDB {
     }
 
     await this.bulkUpsertUnorderedDocuments(updateDocs);
-    augurEmitter.emit(
-      `DerivedDB:updated:Markets`,
-      updateDocs.map(d => ({ ...d, market: d._id }))
-    );
+    augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { markets: updateDocs });
   }
 }
