@@ -45,6 +45,9 @@ contract GnosisSafeRegistry {
     }
 
     function getSafe(address _account) public view returns (IGnosisSafe) {
+        if (accountSafes[_account].length < 1) {
+            return IGnosisSafe(0);
+        }
         return accountSafes[_account][0];
     }
 }
