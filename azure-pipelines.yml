@@ -105,11 +105,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(node_version)
-      - task: CacheBeta@0
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-        displayName: Cache Yarn packages
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
@@ -174,11 +169,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: CacheBeta@0
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-        displayName: Cache Yarn packages
       - bash: |
           set -euo pipefail
           python3 -m venv venv && \
@@ -312,11 +302,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: CacheBeta@0
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-        displayName: Cache Yarn packages
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
@@ -405,11 +390,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: CacheBeta@0
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-        displayName: Cache Yarn packages
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
