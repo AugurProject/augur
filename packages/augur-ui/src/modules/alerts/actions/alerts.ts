@@ -83,15 +83,25 @@ export function updateExistingAlert(id, alert) {
   };
 }
 
-export function updateAlert(id: string, alert: any) {
+function createUniqueOrderId(alert) {
+  const price = alert.params._price ? alert.params._price.toString() : new BigNumber(alert.params.price).toString();
+  const outcome = alert.params._outcome ? alert.params._outcome.toString() : new BigNumber(alert.params.outcome).toString();
+  const direction = alert.params._direction ? alert.params._direction.toString() : alert.params.orderType;
+
+  return `${alert.id}_${price}_${outcome}_${direction}`;
+}
+
+export function updateAlert(txHash: string, alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
-    alert.id = id;
     if (alert) {
       const { alerts, loginAccount } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
+      alert.txHash = txHash;
+      alert.uniqueId = alertName === PUBLICTRADE ? createUniqueOrderId(alert) : txHash;
+
       if (alertName === DOINITIALREPORT) {
         dispatch(
-          updateAlert(id, {
+          updateAlert(txHash, {
             ...alert,
             params: {
               ...alert.params,
@@ -100,88 +110,15 @@ export function updateAlert(id: string, alert: any) {
             name: CONTRIBUTE,
           })
         );
-      } else if (
-        alertName === PUBLICFILLORDER ||
-        alertName === PUBLICFILLBESTORDERWITHLIMIT ||
-        alertName === PUBLICFILLBESTORDER
-      ) {
-        // if fill log comes in first
-        if (
-          alert.params.orderCreator.toUpperCase() !==
-          loginAccount.address.toUpperCase()
-        ) {
-          // filler
-          const foundOpenOrder = alerts.find(
-            findAlert =>
-              (findAlert.name.toUpperCase() === PUBLICTRADE ||
-                findAlert.name.toUpperCase() === PUBLICTRADEWITHLIMIT) &&
-              findAlert.id === id
-          );
-          if (foundOpenOrder) {
-            const amountFilled = new BigNumber(alert.params.amountFilled);
-            const orderAmount = new BigNumber(
-              foundOpenOrder.params._amount || foundOpenOrder.params.amount
-            );
-
-            if (amountFilled.lt(orderAmount)) {
-              // if part of order is unfilled, update placed order
-              dispatch(
-                updateExistingAlert(foundOpenOrder.id, {
-                  ...foundOpenOrder,
-                  params: {
-                    ...foundOpenOrder.params,
-                    _amount: orderAmount.minus(amountFilled),
-                  },
-                })
-              );
-            } else {
-              // if full order was filled, then delete placed order
-              dispatch(removeAlert(foundOpenOrder.id, foundOpenOrder.name));
-            }
-          }
-        }
-      } else if (
-        alertName === PUBLICTRADE ||
-        alertName === PUBLICTRADEWITHLIMIT
-      ) {
-        // if order placed log comes in first
-        const foundFilledOrder = alerts.find(
-          findAlert =>
-            (findAlert.name.toUpperCase() === PUBLICFILLORDER ||
-              findAlert.name.toUpperCase() === PUBLICFILLBESTORDERWITHLIMIT ||
-              findAlert.name.toUpperCase() === PUBLICFILLBESTORDER) &&
-            findAlert.id === id
-        );
-        if (foundFilledOrder) {
-          if (
-            foundFilledOrder.params.orderCreator.toUpperCase() !==
-            loginAccount.address.toUpperCase()
-          ) {
-            const amountFilled = new BigNumber(
-              foundFilledOrder.params.amountFilled
-            );
-            const orderAmount = new BigNumber(
-              alert.params._amount || alert.params.amount
-            );
-
-            if (amountFilled.lt(orderAmount)) {
-              // if part of order is unfilled, update placed order
-              alert.params._amount = orderAmount.minus(amountFilled);
-            } else {
-              // if full order was filled, then no need to add the placed order
-              return;
-            }
-          }
-        }
       }
       const foundAlert = alerts.find(findAlert => {
         return (
-          findAlert.id === id &&
+          findAlert.uniqueId === alert.uniqueId &&
           findAlert.name.toUpperCase() === alert.name.toUpperCase()
         );
       });
       if (foundAlert) {
-        dispatch(removeAlert(id, alert.name));
+        dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
           addAlert({
             ...foundAlert,
