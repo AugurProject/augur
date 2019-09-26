@@ -506,8 +506,11 @@ export class ContractAPI {
   }
 
   async faucet(attoCash: BigNumber): Promise<void> {
-    while ((await this.getCashBalance()).lte(attoCash)) {
+    let balance = await this.getCashBalance();
+    const desired = balance.plus(attoCash);
+    while (balance.lt(desired)) {
       await this.augur.contracts.cashFaucet.faucet(attoCash);
+      balance = await this.getCashBalance();
     }
   }
 
@@ -553,11 +556,13 @@ export class ContractAPI {
     return new BigNumber(balance.toString());
   }
 
-  getRepBalance(owner: string=this.account.publicKey): Promise<BigNumber> {
+  async getRepBalance(owner?: string): Promise<BigNumber> {
+    if (!owner) owner = await this.augur.getAccount();
     return this.augur.contracts.getReputationToken().balanceOf_(owner);
   }
 
-  getCashBalance(owner: string=this.account.publicKey): Promise<BigNumber> {
+  async getCashBalance(owner?: string): Promise<BigNumber> {
+    if (!owner) owner = await this.augur.getAccount();
     return this.augur.contracts.cash.balanceOf_(owner);
   }
 
