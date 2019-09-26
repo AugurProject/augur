@@ -643,7 +643,7 @@ export interface MarketClaimablePositions {
 export interface ClaimReportingOptions {
   reportingParticipants: string[],
   disputeWindows: string[],
-  estimateGas: boolean;
+  estimateGas?: boolean;
 }
 
 export interface MarketReportContracts {

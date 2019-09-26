@@ -14,6 +14,7 @@ import { ActionRowsProps } from 'modules/modal/common';
 import {
   CLAIM_FEES_GAS_COST,
   redeemStake,
+  redeemStakeBatches,
 } from 'modules/reporting/actions/claim-reporting-fees';
 import {
   CLAIM_FEE_WINDOWS,
@@ -44,6 +45,16 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const { gasCost, pendingQueue } = sP;
   const claimReportingFees = sP.claimReportingFees as MarketReportClaimableContracts;
   const modalRows: ActionRowsProps[] = [];
+
+  const reportingParticipants = claimReportingFees.claimableMarkets.marketContracts.reduce(
+    (p, c) => [...p, ...c.contracts],
+    []
+  );
+  const AllRedeemStakeOptions = {
+    disputeWindows: claimReportingFees.participationContracts.contracts,
+    reportingParticipants,
+  };
+  const submitAllTxCount = redeemStakeBatches(AllRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
   claimableMarkets.marketContracts.map(marketObj => {
     const market = marketObj.marketObject;
@@ -120,6 +131,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   }
   return {
     title: 'Claim Stake & Fees',
+    submitAllTxCount,
     descriptionMessage: [
       {
         preText: 'You have',
@@ -144,15 +156,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         text: 'Claim All',
         disabled: modalRows.find(market => market.status === 'pending'),
         action: () => {
-          const reportingParticipants = claimReportingFees.claimableMarkets.marketContracts.reduce(
-            (p, c) => [...p, ...c.contracts],
-            []
-          );
-          const RedeemStakeOptions = {
-            disputeWindows: claimReportingFees.participationContracts.contracts,
-            reportingParticipants,
-          };
-          dP.redeemStake(RedeemStakeOptions, () => {
+          dP.redeemStake(AllRedeemStakeOptions, () => {
             if (sP.modal.cb) {
               sP.modal.cb();
             }

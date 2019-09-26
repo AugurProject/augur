@@ -66,7 +66,7 @@ export const selectReportingWinningsByMarket = createSelector(
     ) {
       claimableMarkets = userReporting.reporting.contracts.reduce(
         (p, contract) =>
-          isClaimable(contract.marketId) ? sumClaims(contract, p) : p,
+          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
         claimableMarkets
       );
     }
@@ -77,7 +77,7 @@ export const selectReportingWinningsByMarket = createSelector(
     ) {
       claimableMarkets = userReporting.disputing.contracts.reduce(
         (p, contract) =>
-          isClaimable(contract.marketId) ? sumClaims(contract, p) : p,
+          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
         claimableMarkets
       );
     }
@@ -129,8 +129,10 @@ function sumClaims(
   return marketsCollection;
 }
 
-function isClaimable(marketId: string) {
+function isClaimable(marketId: string, amount: BigNumber) {
+  if (createBigNumber(amount).lte(ZERO)) return false;
   const market = selectMarket(marketId);
+  if (!market) return false;
   return (
     market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
     market.reportingState === REPORTING_STATE.FINALIZED
