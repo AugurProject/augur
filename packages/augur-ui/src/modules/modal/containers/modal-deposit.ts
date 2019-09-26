@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Message } from 'modules/modal/message';
-import { assetDataUtils } from '@0xproject/order-utils';
-import { BigNumber } from '@0xproject/utils';
+import { assetDataUtils } from '@0x/order-utils';
+import { BigNumber } from 'ethers/utils';
 import { NETWORK_IDS } from 'modules/common/constants';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';

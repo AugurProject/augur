@@ -14,7 +14,7 @@ beforeAll(async () => {
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
   await john.approveCentralAuthority();
-}, 120000);
+});
 
 test("TransactionStatus :: transaction status updates", async () => {
   const transactions: Array<TransactionMetadata> = [];
@@ -44,7 +44,7 @@ test("TransactionStatus :: transaction status updates", async () => {
   await expect(tx.name).toEqual("createYesNoMarket");
   await expect(tx.params._affiliateFeeDivisor).toEqual(new BigNumber(25));
 
-}, 15000);
+});
 
 /*
 test("TransactionStatus :: transaction status events", async () => {

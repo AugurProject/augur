@@ -1,4 +1,4 @@
-import { MarketReportingState } from "../../constants";
+import { MarketReportingState } from '../../constants';
 
 export type Address = string;
 export type Bytes32 = string;
@@ -55,6 +55,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   disputeCrowdsourcer: Address;
   size: string;
   nextWindowStartTime: Timestamp;
+  nextWindowEndTime: Timestamp;
   pacingOn: boolean;
 }
 
@@ -102,7 +103,7 @@ export interface InitialReporterRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
-  initialReport: Address;
+  initialReporter: Address;
   amountRedeemed: string;
   repReceived: string;
   payoutNumerators: PayoutNumerators;
@@ -112,7 +113,6 @@ export interface InitialReportSubmittedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
-  initialReporter: Address;
   amountStaked: string;
   isDesignatedReporter: boolean;
   payoutNumerators: PayoutNumerators;

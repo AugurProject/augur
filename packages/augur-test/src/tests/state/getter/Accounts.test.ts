@@ -29,7 +29,7 @@ describe('State API :: Accounts :: ', () => {
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 200000);
+  });
 
   test(':getAccountTransactionHistory', async () => {
     // Create markets with multiple users
@@ -922,7 +922,7 @@ describe('State API :: Accounts :: ', () => {
         total: '0',
       },
     ]);
-  }, 200000);
+  });
 
   test(':getAllOrders', async () => {
     let allOrders: AllOrders = await api.route('getAllOrders', {
@@ -983,5 +983,5 @@ describe('State API :: Accounts :: ', () => {
       ignoreReportingStates: [MarketReportingState.Finalized],
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
-  }, 60000);
+  });
 });

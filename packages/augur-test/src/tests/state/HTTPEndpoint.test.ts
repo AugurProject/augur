@@ -21,7 +21,7 @@ beforeAll(async () => {
   db = mock.makeDB(augur, ACCOUNTS);
   // Must wait for the db for initialize before we start the http server.
   await db;
-}, 120000);
+});
 
 test("HTTPEndpoint :: Responds to ping Json RPC Request ", async () => {
   const api = new API(augur, db);
