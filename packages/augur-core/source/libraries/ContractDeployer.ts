@@ -202,11 +202,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
                 if (this.configuration.isProduction) continue;
-                if (this.contracts.get('CashFaucet').address) {
-                    mapping['CashFaucet'] = this.contracts.get('CashFaucet').address!;
-                } else {
-                    mapping['CashFaucet'] = this.contracts.get('Cash').address!;
-                }
+                mapping['CashFaucet'] = this.getCashFaucetAddress();
                 continue;
             }
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
@@ -223,6 +219,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public getContractAddress = (contractName: string): string => {
         if (this.configuration.externalAddresses[contractName]) return this.configuration.externalAddresses[contractName];
+        if (contractName === "CashFaucet") return this.getCashFaucetAddress();
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
@@ -447,6 +444,14 @@ Deploying to: ${networkConfiguration.networkName}
         }
     }
 
+    private getCashFaucetAddress(): string {
+        if (this.contracts.get('CashFaucet').address) {
+            return this.contracts.get('CashFaucet').address!;
+        } else {
+            return this.contracts.get('Cash').address!;
+        }
+    }
+
     private async generateAddressMappingFile(): Promise<void> {
         type ContractAddressMapping = { [name: string]: string };
 
@@ -459,13 +464,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Cash'] = this.getContractAddress("Cash");
         mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
         mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
-        if (!this.configuration.isProduction) {
-            if (this.contracts.get('CashFaucet').address) {
-                mapping['CashFaucet'] = this.contracts.get('CashFaucet').address!;
-            } else {
-                mapping['CashFaucet'] = this.contracts.get('Cash').address!;
-            }
-        }
+        if (!this.configuration.isProduction) mapping['CashFaucet'] = this.getCashFaucetAddress();
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
