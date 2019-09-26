@@ -264,7 +264,7 @@ export class MarketDB extends DerivedDB {
     log['reportingState'] = MarketReportingState.CrowdsourcingDispute;
     log['totalRepStakedInMarket'] = padHex(log['amountStaked']);
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
-    log['disputeRound'] = '0x1';
+    log['disputeRound'] = '0x01';
     return log;
   }
 
