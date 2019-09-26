@@ -321,7 +321,6 @@ export default function setAlertText(alert: any, callback: Function) {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            alert.toast = true;
           })
         );
         break;

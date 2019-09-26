@@ -100,6 +100,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
             status: TXEventName.Success,
             timestamp: blockchain.currentAugurTimestamp * 1000,
             name: PUBLICCREATEORDERS,
+            toast: true,
           })
         );
       } else {

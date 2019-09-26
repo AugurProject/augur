@@ -231,9 +231,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     log.orderCreator,
     getState().loginAccount.address
   );
-  // Ignore alerts for pre-liquidity orders here.
-  // They are handled elsewhere so they can be grouped as a single alert.
-  if (isUserDataUpdate && log.tradeGroupId === NULL_ADDRESS) {
+  if (isUserDataUpdate) {
     handleAlert(log, PUBLICTRADE, true, dispatch, getState);
 
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
