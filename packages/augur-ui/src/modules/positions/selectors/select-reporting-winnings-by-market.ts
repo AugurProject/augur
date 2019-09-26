@@ -131,6 +131,7 @@ function sumClaims(
 
 function isClaimable(marketId: string) {
   const market = selectMarket(marketId);
+  if (!market) return false;
   return (
     market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
     market.reportingState === REPORTING_STATE.FINALIZED
