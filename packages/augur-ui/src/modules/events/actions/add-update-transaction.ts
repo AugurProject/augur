@@ -101,6 +101,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
           updateAlert(hash, {
             params: transaction.params,
             status: TXEventName.Success,
+            toast: methodCall === PUBLICTRADE || methodCall === PUBLICFILLORDER,
             timestamp: blockchain.currentAugurTimestamp * 1000,
             name: methodCall,
           })
