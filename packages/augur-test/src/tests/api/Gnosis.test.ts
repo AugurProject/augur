@@ -20,6 +20,9 @@ test('Gnosis :: make safe directly', async () => {
 
   await expect(owners).toEqual([john.account.publicKey]);
 
+  const gnosisSafeAddress = await john.getGnosisSafeAddress(john.account.publicKey);
+  await expect(gnosisSafeAddress).toEqual(gnosisSafe.address);
+
 });
 
 test('Gnosis :: make safe through relay', async () => {

@@ -589,6 +589,10 @@ export class ContractAPI {
     return this.augur.contracts.gnosisSafeFromAddress(address);
   }
 
+  async getGnosisSafeAddress(account: string): Promise<string> {
+    return this.augur.gnosis.getGnosisSafeAddress(account);
+  }
+
   async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {
     const params = {
       paymentToken,
