@@ -241,7 +241,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICTRADE, true, dispatch, getState);
+    handleAlert(log, PUBLICTRADE, false, dispatch, getState);
 
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -288,7 +288,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    handleAlert(log, PUBLICFILLORDER, false, dispatch, getState);
     dispatch(loadMarketsInfo([marketId]));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
