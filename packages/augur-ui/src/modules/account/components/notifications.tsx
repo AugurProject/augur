@@ -9,7 +9,7 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { MARKET, REPORTING, DISPUTING } from "modules/routes/constants/views";
+import { REPORTING, DISPUTING } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
@@ -40,10 +40,12 @@ export interface NotificationsProps extends RouteComponentProps {
   currentAugurTimestamp: DateFormattedObject;
   disputingWindowEndTime: DateFormattedObject;
   finalizeMarketModal: Function;
+  dispute: Function;
   claimMarketsProceeds: Function;
   claimReportingFees: Function;
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
+  toggle: Function;
 }
 
 export interface NotificationsState {
@@ -108,10 +110,7 @@ class Notifications extends React.Component<
             [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
             [RETURN_PARAM_NAME]: location.hash,
           };
-          history.push({
-            pathname: makePath(DISPUTING, null),
-            search: makeQuery(queryLink),
-          });
+          this.props.dispute(notification.market.id);
         };
         break;
 
@@ -184,15 +183,15 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime, toggle } = this.props;
     const notifications = this.props.notifications.map((notification) =>
-      this.getButtonAction(notification),
+      this.getButtonAction(notification)
     );
     const notificationCount = notifications.length;
     const newNotificationCount = notifications.filter((item) => item.isNew)
       .length;
 
-    const rows = orderBy(notifications, "isNew", ["desc"]).map((notification) => {
+    const rows = orderBy(notifications, 'isNew', ['desc']).map((notification) => {
       const {
         id,
         isImportant,
@@ -290,6 +289,7 @@ class Notifications extends React.Component<
       <QuadBox
         title={NOTIFICATIONS_TITLE}
         rightContent={labelContent}
+        toggle={toggle}
         content={
           notificationCount === 0 ? (
             <EmptyDisplay

@@ -5,19 +5,22 @@
   border-radius: @border-radius-default;
   display: flex;
   flex-direction: column;
-  margin: 2px;
-  padding: @size-16;
+  padding: @size-12 @size-16;
 }
 
 .NewNotificationCard {
   background: @color-secondary-action;
-  border: 1px solid fade(@color-secondary-action-outline, 50%);
+  border-bottom: 1px solid fade(@color-secondary-action-outline, 50%);
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
 }
 
 .TitleBar {
   align-items: center;
   display: flex;
-  margin: 0 0 @size-8;
+  margin: 0 0 @size-4;
 
   > span:last-of-type {
     min-height: @size-16;
@@ -67,6 +70,8 @@
 
   color: @color-inactive-text;
   line-height: 0.9375rem;
+  display: flex;
+  flex-direction: column;
 
   @media @breakpoint-mobile {
     .text-10;
@@ -88,33 +93,7 @@
 }
 
 .NotificationCard button {
-  .mono-11;
-
-  border-radius: @size-9;
-  color: @color-primary-action;
-  line-height: normal;
   margin-left: auto;
-  margin-top: @size-8;
-  text-align: right;
-  text-transform: uppercase;
-
-  &:not(:disabled):hover {
-    color: fade(@color-primary-action, 90%);
-  }
-
-  &:disabled {
-    color: fade(@color-primary-action, 40%);
-
-    &:hover {
-      color: fade(@color-primary-action, 40%);
-      cursor: wait;
-      font-weight: normal;
-    }
-  }
-
-  @media @breakpoint-mobile {
-    .mono-10;
-  }
 }
 
 .BottomRow {

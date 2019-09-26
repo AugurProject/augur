@@ -28,7 +28,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    this.worker = new RunWorker();
+    this.worker = new Worker('./Sync.worker.ts', { type: 'module' });
 
     this.worker.postMessage({
       id: iterator.next().value,

@@ -66,7 +66,6 @@ export default class MarketCard extends React.Component<
       history,
       isLogged,
       currentAugurTimestamp,
-      disputingWindowEndTime,
       condensed,
       address,
       expandedView,
@@ -181,7 +180,6 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
                 endTimeFormatted={endTimeFormatted}
                 currentAugurTimestamp={currentAugurTimestamp}
-                disputingWindowEndTime={disputingWindowEndTime}
               />
               <MarketTypeLabel marketType={marketType} />
               <CategoryTagTrail
@@ -191,7 +189,7 @@ export default class MarketCard extends React.Component<
                 reportingState={reportingState}
                 currentTime={currentAugurTimestamp}
                 endTimeFormatted={endTimeFormatted}
-                reportingWindowEndtime={disputingWindowEndTime}
+                reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
                 alignRight
               />
               <div>
@@ -248,7 +246,7 @@ export default class MarketCard extends React.Component<
                 reportingState={reportingState}
                 currentTime={currentAugurTimestamp}
                 endTimeFormatted={endTimeFormatted}
-                reportingWindowEndtime={disputingWindowEndTime}
+                reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
                 alignRight
               />
             </div>

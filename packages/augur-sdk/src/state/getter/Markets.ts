@@ -1026,7 +1026,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
-        tentativeWinning: outcomeDetails.tentativeWinningOnRound === market.disputeRound,
+        tentativeWinning: String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators),
       };
     }
   }

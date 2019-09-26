@@ -14,6 +14,7 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
 import { Universe } from "./state/getter/Universe";
+import { Platform } from "./state/getter/Platform";
 import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
@@ -137,7 +138,7 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.dependencies.signer.signDigest(message);
   }
 
-  async getTimestamp() {
+  async getTimestamp(): Promise<BigNumber> {
     return this.contracts.augur.getTimestamp_();
   }
 
@@ -292,6 +293,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
   getAccountReportingHistory = this.bindTo(Accounts.getAccountReportingHistory);
   getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
+  getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);

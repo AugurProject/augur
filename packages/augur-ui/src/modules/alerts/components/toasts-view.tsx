@@ -20,8 +20,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
           name: this.props.toasts[0].name, 
           toast: false,
         };
-        console.log(newToast);
-        this.props.updateExistingAlert(this.props.toasts[0].id, newToast);
+        this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
       }
     }, 3000);
   }
@@ -41,7 +40,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
           {toasts.map((toast, i) => (
               <Alert
                   key={`${toast.id}-${toast.title}`}
-                  removeAlert={() => removeAlert(toast.id, toast.name)}
+                  removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
                   toggleAlerts={toggleAlerts}
                   noShow={i !== 0}
                   showToast={true}

@@ -110,10 +110,17 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
               ? 'pre-filled stake'
               : 'make tentative winner'}
           </span>
-          <span>
-            {props.stake ? stakeCurrent.formatted : 0}
-            <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
-          </span>
+          {props.stake && props.stake.tentativeWinning ? (
+            <span>
+              {props.stake ? stakeCurrent.formatted : 0}
+              <span> REP</span>
+            </span>
+          ) : (
+            <span>
+              {props.stake ? stakeCurrent.formatted : 0}
+              <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
+            </span>
+          )}
         </div>
         <SecondaryButton
           small
@@ -128,6 +135,27 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
     </div>
   );
 };
+
+interface ScalarBlankDisputeOutcomeProps {
+  denomination: string;
+  dispute: Function;
+}
+
+export const ScalarBlankDisputeOutcome = (
+  props: ScalarBlankDisputeOutcomeProps
+) => (
+  <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
+    <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
+    <div>
+      <div></div>
+      <SecondaryButton
+        small
+        text={'Dispute Tentative Winner'}
+        action={() => props.dispute("1")}
+      />
+    </div>
+  </div>
+);
 
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
@@ -233,7 +261,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
       {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
-            ((!props.expanded && index < 3) ||
+            ((!props.expanded && index < 4) ||
               (props.expanded || props.marketType === YES_NO)) &&
             (inDispute ? (
               <DisputeOutcome
@@ -260,6 +288,12 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
               />
             ))
         )}
+      {props.marketType === SCALAR && inDispute && (
+        <ScalarBlankDisputeOutcome
+          denomination={props.scalarDenomination}
+          dispute={props.dispute}
+        />
+      )}
     </div>
   );
 };

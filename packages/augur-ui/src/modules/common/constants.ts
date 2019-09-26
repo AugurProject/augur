@@ -8,14 +8,7 @@ import {
   Trezor,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
-import {
-  timeDay,
-  timeFormat,
-  timeHour,
-  timeMinute,
-  timeMonth,
-  timeSecond,
-} from 'd3';
+import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 
 // # MISC Constants
@@ -236,7 +229,6 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
-  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
 }
 
 export const SORT_OPTIONS = [
@@ -299,10 +291,10 @@ export const MARKET_CLOSED = 'closed';
 export const IN_REPORTING = 'In-reporting';
 export const WAITING_ON_REPORTER = 'Waiting on reporter';
 export const OPEN_REPORTING = 'Open reporting';
-export const AWAITING_NEXT_DISPUTE = 'Awaiting next dispute';
-export const DISPUTE_ROUND = 'Dispute round';
-export const REPORTING_ENDS = 'Reporting Ends';
-export const DISPUTE_ENDS = 'Dispute Ends';
+export const FAST_DISPUTE = 'Fast dispute';
+export const SLOW_DISPUTE = 'Slow dispute';
+export const REPORTING_ENDS = 'Reporting ends';
+export const DISPUTE_ENDS = 'Dispute ends';
 
 // # Market Status Messages
 export const MARKET_STATUS_MESSAGES = {
@@ -343,7 +335,7 @@ export const TYPE_TRADE = 'trade';
 export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
 export const TYPE_VIEW_SETS = 'view sets';
-export const TYPE_VIEW_DETAILS = 'view details';
+export const TYPE_VIEW_DETAILS = 'view';
 export const TYPE_MIGRATE_REP = 'migrate-rep';
 export const TYPE_FINALIZE_MARKET = 'finalize market';
 
@@ -406,35 +398,35 @@ export const RANGES = [
   {
     duration: 60,
     label: 'Past minute',
-    tickInterval: axis => axis.ticks(timeSecond.every(30)),
+    tickInterval: axis => axis.ticks(d3.timeSecond.every(30)),
   },
   {
     duration: 3600,
     label: 'Past hour',
-    tickInterval: axis => axis.ticks(timeMinute.every(10)),
+    tickInterval: axis => axis.ticks(d3.timeMinute.every(10)),
   },
   {
     duration: 86400,
     label: 'Past day',
-    tickInterval: axis => axis.ticks(timeHour.every(3)),
+    tickInterval: axis => axis.ticks(d3.timeHour.every(3)),
   },
   {
     duration: 604800,
     label: 'Past week',
     isDefault: true,
     tickInterval: axis =>
-      axis.ticks(timeDay.every(1)).tickFormat(timeFormat('%a %d')),
+      axis.ticks(d3.timeDay.every(1)).tickFormat(d3.timeFormat('%a %d')),
   },
   {
     duration: 2629800,
     label: 'Past month',
-    tickInterval: axis => axis.ticks(timeDay.every(6)),
+    tickInterval: axis => axis.ticks(d3.timeDay.every(6)),
   },
   {
     duration: 31557600,
     label: 'Past year',
     tickInterval: axis =>
-      axis.ticks(timeMonth.every(1)).tickFormat(timeFormat('%b')),
+      axis.ticks(d3.timeMonth.every(1)).tickFormat(d3.timeFormat('%b')),
   },
 ];
 
@@ -534,6 +526,7 @@ export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
+export const TX_ORDER_IDS = '_orderIds';
 export const TX_TRADE_GROUP_ID = '_tradeGroupId';
 export const TX_MARKET_ID = '_market';
 export const TX_AMOUNT = '_amount';
@@ -550,6 +543,7 @@ export const CRITICAL = 'CRITICAL';
 export const INFO = 'INFO';
 export const CREATEGENESISUNIVERSE = 'CREATEGENESISUNIVERSE';
 export const CANCELORDER = 'CANCELORDER';
+export const CANCELORDERS = 'CANCELORDERS';
 export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';
@@ -661,6 +655,7 @@ export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
+export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(3000000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
   createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
     .div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
@@ -870,14 +865,17 @@ export const YES_NO_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
+    isTradeable: true,
   },
   {
     id: 1,
     description: 'No',
+    isTradeable: true,
   },
   {
     id: 2,
     description: 'Yes',
+    isTradeable: true,
   },
 ];
 
@@ -885,10 +883,12 @@ export const SCALAR_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
+    isTradeable: true,
   },
   {
     id: 2,
     description: NON_EXISTENT,
+    isTradeable: true,
   },
 ];
 

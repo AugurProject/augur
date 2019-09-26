@@ -3,13 +3,13 @@ import classNames from 'classnames';
 
 import { SCALAR } from 'modules/common/constants';
 import MarketOutcomesListOutcome from 'modules/market/containers/market-outcome';
-import MarketScalarOutcomeDisplay from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
 import { OutcomeFormatted } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
+import { BigNumber } from 'utils/create-big-number';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];
@@ -22,6 +22,7 @@ interface MarketOutcomesListProps {
   maxPriceBigNumber: BigNumber;
   popUp: boolean;
   toggle: Function;
+  hideOutcomes?: boolean;
 }
 
 export default class MarketOutcomesList extends Component<
@@ -46,18 +47,19 @@ export default class MarketOutcomesList extends Component<
       maxPriceBigNumber,
       popUp,
       marketId,
-      toggle
+      toggle,
+      hideOutcomes
     } = this.props;
 
     return (
       <section className={Styles.OutcomesList}>
-        {!popUp && (
+        {!popUp && toggle && (
           <h3 className={Styles.Heading}>
             Outcomes
             <ToggleExtendButton toggle={toggle} />
           </h3>
         )}
-        <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
+        <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes, {[SharedStyles.HideOutcomes]: hideOutcomes})}>
           <ul
             className={classNames(
               HeaderStyles.DataTableHeader,
@@ -71,26 +73,20 @@ export default class MarketOutcomesList extends Component<
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomesFormatted.map(outcome => (
-            <MarketOutcomesListOutcome
-              key={outcome.id}
-              marketId={marketId}
-              outcome={outcome}
-              selectedOutcomeId={selectedOutcomeId}
-              updateSelectedOutcome={updateSelectedOutcome}
-              marketType={marketType}
-              scalarDenomination={marketType === SCALAR && scalarDenomination}
-            />
-          ))}
+          <div>
+            {outcomesFormatted.filter(o => o.isTradeable).map(outcome => (
+              <MarketOutcomesListOutcome
+                key={outcome.id}
+                marketId={marketId}
+                outcome={outcome}
+                selectedOutcomeId={selectedOutcomeId}
+                updateSelectedOutcome={updateSelectedOutcome}
+                marketType={marketType}
+                scalarDenomination={marketType === SCALAR && scalarDenomination}
+              />
+            ))}
+          </div>
         </div>
-        {marketType === SCALAR && (
-          <MarketScalarOutcomeDisplay
-            scalarDenomination={scalarDenomination}
-            min={minPriceBigNumber}
-            max={maxPriceBigNumber}
-            outcomes={outcomesFormatted}
-          />
-        )}
       </section>
     );
   }

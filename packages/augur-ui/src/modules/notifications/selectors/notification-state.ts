@@ -7,8 +7,9 @@ import {
   selectReadNotificationState,
   selectAccountPositionsState,
   selectLoginAccountReportingState,
+  selectMarketInfosState,
 } from 'store/select-state';
-
+import { MarketReportingState } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   NOTIFICATION_TYPES,
@@ -21,20 +22,21 @@ import {
   CLAIM_REPORTING_FEES_TITLE,
   UNSIGNED_ORDERS_TITLE,
   PROCEEDS_TO_CLAIM_TITLE,
-  MARKET_CLOSED,
   REPORTING_STATE,
   ZERO,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
-  formatDai,
-  formatRep,
   formatAttoDai,
   formatAttoRep,
 } from 'utils/format-number';
-import store from 'store';
-import { MarketClaimablePositions } from 'modules/types';
+import store, { AppState } from 'store';
+import {
+  MarketClaimablePositions,
+  MarketReportClaimableContracts,
+} from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
+import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -42,7 +44,12 @@ export const selectResolvedMarketsOpenOrders = createSelector(
   markets => {
     if (markets.length > 0) {
       return markets
-        .filter(market => market.marketStatus === MARKET_CLOSED)
+        .filter(
+          market =>
+            market.reportingState ===
+              REPORTING_STATE.AWAITING_FINALIZATION ||
+            market.reportingState === REPORTING_STATE.FINALIZED
+        )
         .filter(market => userOpenOrders(market.id).length > 0)
         .map(getRequiredMarketData);
     }
@@ -94,17 +101,30 @@ export const selectMarketsInDispute = createSelector(
   selectAccountPositionsState,
   selectLoginAccountAddress,
   (markets, positions, address) => {
+    const state = store.getState() as AppState;
+    let disputedMarkets = [];
+    let reportedMarkets = [];
+    if (state.loginAccount.reporting.disputing.contracts) {
+      disputedMarkets = state.loginAccount.reporting.disputing.contracts.map(
+        obj => obj.marketId
+      );
+    }
+    if (state.loginAccount.reporting.reporting.contracts) {
+      reportedMarkets = state.loginAccount.reporting.reporting.contracts.map(
+        obj => obj.marketId
+      );
+    }
     if (markets.length > 0) {
       const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
           market =>
-            market.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
-        )
-        .filter(
-          market =>
-            positionsMarkets.indexOf(market.id) > -1 ||
-            market.designatedReporter === address
+            disputedMarkets.indexOf(market.id) > -1 ||
+            reportedMarkets.indexOf(market.id) > -1 ||
+            (market.reportingState ===
+              MarketReportingState.CrowdsourcingDispute &&
+              (market.author === address ||
+                positionsMarkets.indexOf(market.id) > -1))
         )
         .map(getRequiredMarketData);
     }
@@ -113,37 +133,8 @@ export const selectMarketsInDispute = createSelector(
 );
 
 // Get reportingFees for signed in user
-export const selectUsersReportingFees = createSelector(
-  selectDisputeWindowStats,
-  selectLoginAccountReportingState,
-  (currentDisputeWindow, userReportingStats) => {
-    let unclaimed = {
-      unclaimedDai: formatDai(ZERO),
-      unclaimedRep: formatRep(ZERO),
-    };
-    if (
-      userReportingStats &&
-      userReportingStats.participationTokens &&
-      userReportingStats.participationTokens.contracts.length > 0
-    ) {
-      const calcUnclaimed = userReportingStats.participationTokens.contracts.reduce(
-        (p, c) => {
-          // filter out current dispute window rep staking
-          if (c.address === currentDisputeWindow.address) return p;
-          return {
-            dai: p.dai.plus(c.amountFees),
-            rep: p.rep.plus(createBigNumber(c.amount)),
-          };
-        },
-        { dai: ZERO, rep: ZERO }
-      );
-      unclaimed = {
-        unclaimedDai: formatAttoDai(calcUnclaimed.dai),
-        unclaimedRep: formatAttoRep(calcUnclaimed.rep),
-      };
-    }
-    return unclaimed;
-  }
+export const selectUsersReportingFees: MarketReportClaimableContracts = selectReportingWinningsByMarket(
+  store.getState()
 );
 
 // Get all unsigned orders from localStorage
@@ -167,7 +158,7 @@ export const selectNotifications = createSelector(
   selectResolvedMarketsOpenOrders,
   selectFinalizeMarkets,
   selectMarketsInDispute,
-  selectUsersReportingFees,
+  selectReportingWinningsByMarket,
   selectUnsignedOrders,
   selectReadNotificationState,
   (
@@ -213,7 +204,9 @@ export const selectNotifications = createSelector(
     // Add unquie notifications
     if (
       claimReportingFees &&
-      (claimReportingFees.unclaimedDai && claimReportingFees.unclaimedRep)
+      (claimReportingFees.participationContracts.unclaimedDai.gt(ZERO) ||
+        claimReportingFees.participationContracts.unclaimedRep.gt(ZERO) ||
+        claimReportingFees.claimableMarkets.unclaimedRep.gt(ZERO))
     ) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.claimReportingFees,
@@ -227,7 +220,9 @@ export const selectNotifications = createSelector(
       });
     }
 
-    const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(store.getState());
+    const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
+      store.getState()
+    );
     if (accountMarketClaimablePositions.markets.length > 0) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.proceedsToClaim,
@@ -316,7 +311,7 @@ const generateCards = (markets, type) => {
       title: UNSIGNED_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
     };
-  } else if (type === NOTIFICATION_TYPES.proceedsToClaimOnHold) {
+  } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
     defaults = {
       type,
       isImportant: false,

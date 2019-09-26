@@ -6,8 +6,8 @@ import {
   MarketProgress,
   formatTime,
 } from "modules/common/progress";
-import { SubmitTextButton } from "modules/common/buttons";
-import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
+import { CancelTextButton } from "modules/common/buttons";
+import { DateFormattedObject, MarketData, MarketReportClaimableContracts } from "modules/types";
 import { formatDai } from "utils/format-number";
 import Styles from "modules/account/components/notification.styles.less";
 
@@ -50,10 +50,7 @@ interface DisputeTemplateProps extends BaseProps {
 
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
   market: MarketData;
-  claimReportingFees: {
-    unclaimedDai: FormattedNumber;
-    unclaimedRep: FormattedNumber;
-  };
+  claimReportingFees: MarketReportClaimableContracts;
 }
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
@@ -77,7 +74,7 @@ const Template = (props: TemplateProps) => (
         currentTime={props.currentTime}
       />
 
-      <SubmitTextButton
+      <CancelTextButton
         text={props.buttonLabel}
         action={() => props.buttonAction()}
         disabled={props.isDisabled}
@@ -124,13 +121,13 @@ const Counter = (props: CounterProps) => {
   const notificationsWithCountdown = [
     NOTIFICATION_TYPES.marketsInDispute,
     NOTIFICATION_TYPES.reportOnMarkets,
-    NOTIFICATION_TYPES.proceedsToClaimOnHold,
+    NOTIFICATION_TYPES.proceedsToClaim,
   ];
 
   if (props.market && notificationsWithCountdown.includes(props.type)) {
     const { endTimeFormatted, reportingState, finalizationTimeFormatted } = props.market;
 
-    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold && finalizationTimeFormatted && props.currentTime) {
+    if (props.type === NOTIFICATION_TYPES.proceedsToClaim && finalizationTimeFormatted && props.currentTime) {
       counter = (
         <div className={Styles.Countdown}>
           <CountdownProgress
@@ -141,14 +138,14 @@ const Counter = (props: CounterProps) => {
         </div>
       );
     } else {
-      if (props.currentTime && props.disputingWindowEndTime) {
+      if (props.currentTime && props.market.disputeInfo.disputeWindow.endTime) {
         counter = (
           <div className={Styles.Countdown}>
             <MarketProgress
               reportingState={reportingState}
               currentTime={props.currentTime}
               endTimeFormatted={endTimeFormatted}
-              reportingWindowEndtime={props.disputingWindowEndTime}
+              reportingWindowEndTime={props.market.disputeInfo.disputeWindow.endTime}
               customLabel={REPORTING_ENDS}
             />
           </div>
@@ -213,7 +210,7 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
   return (
     <Template
       message={`Dispute round ${
-        disputeInfo.disputeRound
+        disputeInfo.disputeWindow.disputeRound
       } for the market: "${description}" is ending soon.`}
       {...props}
     />
@@ -222,8 +219,8 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
 
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.unclaimedRep.formattedValue || 0;
-  const unclaimedDai = claimReportingFees.unclaimedDai.formattedValue || 0;
+  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
+  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
 
   return (
     <Template

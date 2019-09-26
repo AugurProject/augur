@@ -25,6 +25,7 @@ export interface StyleOptions {
   outcome?: Boolean;
   colorId?: string;
   active?: Boolean;
+  isInvalid?: Boolean;
 }
 
 export interface RowProps {
@@ -48,6 +49,7 @@ const RowContent = (props: RowProps) => {
     openOrder, 
     filledOrder, 
     active, 
+    isInvalid,
     outcome, 
     colorId, 
     initialLiquidity 
@@ -69,7 +71,8 @@ const RowContent = (props: RowProps) => {
           outcome,
         [`${Styles[`Row4-${colorId}`]}`]: outcome && colorId,
         [`${Styles.active}`]:
-          outcome && active
+          outcome && active,
+        [`${Styles.InvalidText}`]: outcome && isInvalid
       })}
     >
       {columnProperties.map(column => (

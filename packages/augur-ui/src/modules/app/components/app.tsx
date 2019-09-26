@@ -339,6 +339,7 @@ export default class AppView extends Component<AppProps> {
           titleTemplate='%s | Augur'
         />
         {Object.keys(modal).length !== 0 && <Modal />}
+        <ToastsContainer />
         <div
           className={classNames({
             [Styles['App--blur']]: Object.keys(modal).length !== 0,
@@ -385,7 +386,6 @@ export default class AppView extends Component<AppProps> {
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
             />
-            <ToastsContainer />
             {universe.forkEndTime &&
               universe.forkEndTime !== '0' &&
               blockchain &&

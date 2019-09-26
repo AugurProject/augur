@@ -166,8 +166,6 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.contracts.get('Cash').address!;
-        mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
-        mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -246,13 +244,20 @@ Deploying to: ${networkConfiguration.networkName}
         return contract.address;
     }
 
-    private async uploadAllContracts(): Promise<void> {
+    private async uploadAllContracts(serial=false): Promise<void> {
         console.log('Uploading contracts...');
-        const promises: Array<Promise<void>> = [];
-        for (let contract of this.contracts) {
+
+        if (serial) { // needed for deploy to ganache
+          for (const contract of this.contracts) {
+            await this.upload(contract);
+          }
+        } else {
+          const promises: Array<Promise<void>> = [];
+          for (const contract of this.contracts) {
             promises.push(this.upload(contract));
+          }
+          await resolveAll(promises);
         }
-        await resolveAll(promises);
     }
 
     private async upload(contract: ContractData): Promise<void> {
@@ -416,10 +421,14 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Cash'] = this.contracts.get('Cash').address!;
         mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
         mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
+        mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
+        mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
-        for (let contract of this.contracts) {
+
+        for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
+            if (contract.contractName === 'ZeroXTradeToken') continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             mapping[contract.contractName] = contract.address;
         }

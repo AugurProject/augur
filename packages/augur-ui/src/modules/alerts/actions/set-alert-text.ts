@@ -6,7 +6,12 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { formatRep, formatShares, formatDai } from 'utils/format-number';
+import {
+  formatAttoDai,
+  formatRep,
+  formatShares,
+  formatDai,
+} from 'utils/format-number';
 import {
   calculatePayoutNumeratorsValue,
   TXEventName,
@@ -36,6 +41,7 @@ import {
   APPROVE,
   BUY_INDEX,
   SELL_INDEX,
+  ZERO
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
@@ -110,7 +116,6 @@ export default function setAlertText(alert: any, callback: Function) {
                 : getOutcomeNameWithOutcome(
                     marketInfo,
                     alert.params.outcomeId,
-                    false,
                     false
                   );
             alert.details = `${toCapitalizeCase(orderType)}  ${
@@ -125,7 +130,26 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // ClaimTradingProceeds
       case CLAIMTRADINGPROCEEDS:
-        alert.title = 'Claim trading proceeds';
+        alert.title = 'Claim Winnings';
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
+            alert.description = marketInfo.description;
+            const amount = createBigNumber(alert.params.numPayoutTokens);
+            const outcomeDescription =
+              alert.params.outcome === null
+                ? 'Market Is Invalid'
+                : getOutcomeNameWithOutcome(
+                    marketInfo,
+                    alert.params.outcome,
+                    false
+                  );
+            alert.details = `$${
+              formatAttoDai(amount).formatted
+            } won on ${outcomeDescription}`;
+          })
+        );
         break;
 
       // FeeWindow & Universe
@@ -168,6 +192,7 @@ export default function setAlertText(alert: any, callback: Function) {
               const orders = userOpenOrders[alert.params.market];
               const outcome = new BigNumber(alert.params.outcome).toString();
               const foundOrder =
+                orders &&
                 orders[outcome] &&
                 orders[outcome][alert.params.orderType] &&
                 orders[outcome][alert.params.orderType][alert.params.orderId];
@@ -197,7 +222,6 @@ export default function setAlertText(alert: any, callback: Function) {
             } of ${
               formatShares(originalQuantity).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-            alert.toast = true;
           })
         );
         break;
@@ -207,7 +231,7 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = alert.params.preFilled
           ? 'Prefilled Stake'
           : 'Market Disputed';
-        if (alert.params.preFilled && !alert.params._additionalStake) {
+        if (alert.params.preFilled && (!alert.params._additionalStake || (alert.params._additionalStake && createBigNumber(alert.params._additionalStake).eq(ZERO)))) {
           break;
         }
         const payoutNums = convertPayoutNumeratorsToStrings(
@@ -224,21 +248,19 @@ export default function setAlertText(alert: any, callback: Function) {
               marketInfo.marketType,
               payoutNums
             );
-            const outcomeDescription =
-              !!payoutNumeratorResultObject.invalid
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(
-                    marketInfo,
-                    payoutNumeratorResultObject.outcome,
-                    false
-                  );
+            const outcomeDescription = !!payoutNumeratorResultObject.invalid
+              ? 'Market Is Invalid'
+              : getOutcomeNameWithOutcome(
+                  marketInfo,
+                  payoutNumeratorResultObject.outcome,
+                  false
+                );
             payoutNumeratorResultObject.malformed
               ? MALFORMED_OUTCOME
               : getOutcomeNameWithOutcome(
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
-                  payoutNumeratorResultObject.invalid,
-                  false
+                  payoutNumeratorResultObject.invalid
                 );
             alert.description = marketInfo.description;
             alert.details = `${
@@ -273,7 +295,6 @@ export default function setAlertText(alert: any, callback: Function) {
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
                   payoutNumeratorResultObject.invalid,
-                  false
                 );
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
@@ -298,7 +319,6 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-            alert.toast = true;
           })
         );
         break;

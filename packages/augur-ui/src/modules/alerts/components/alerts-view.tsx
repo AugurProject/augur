@@ -26,7 +26,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
     if (this.props.alertsVisible && !nextProps.alertsVisible) {
       const { updateExistingAlert, alerts } = this.props;
       alerts.forEach(alert => {
-        updateExistingAlert(alert.id, { ...alert, seen: true });
+        updateExistingAlert(alert.uniqueId, { ...alert, seen: true });
       });
     }
   }
@@ -76,7 +76,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
               {alerts.map((alert, i) => (
                 <Alert
                   key={`${i}-${alert.id}-${alert.title}`}
-                  removeAlert={() => removeAlert(alert.id, alert.name)}
+                  removeAlert={() => removeAlert(alert.uniqueId, alert.name)}
                   toggleAlerts={toggleAlerts}
                   timestampInMilliseconds={alert.timestamp}
                   {...alert}

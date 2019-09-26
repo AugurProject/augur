@@ -518,7 +518,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
         displayName: ui build
         env:

@@ -123,7 +123,7 @@ test('UserSynableDB.sync', async () => {
     _id: doc.id,
     _rev: doc.value.rev,
   });
-}, 30000);
+});
 
 // Constructor does some (private) processing, so verify that it works right.
 test('props', async () => {
@@ -142,6 +142,5 @@ test('props', async () => {
       [0]
     );
   }
-
-  expect(createDB).toThrowError('invalid address (arg="address", value="artistotle", version=4.0.24)');
+  expect(createDB).toThrowError(/^invalid address/);
 });
