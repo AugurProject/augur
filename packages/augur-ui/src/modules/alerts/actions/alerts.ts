@@ -31,6 +31,21 @@ export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 
 export function addAlert(alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>) => {
+    const { alerts } = store.getState() as AppState;
+console.log('in addAlert')
+console.log(alert)
+    const foundGroupAlert = alerts.find(
+      findAlert =>
+        findAlert.params._tradeGroupId === alert.params.tradeGroupId &&
+        findAlert.id === alert.id
+    );
+console.log(foundGroupAlert);
+    // For preliquidity orders, display as just an alert
+    if (foundGroupAlert) {
+console.log("updating alertType to alert")
+      alert.alertType = ALERT_TYPE.ALERT;
+    }
+
     if (alert != null) {
       const { universe } = store.getState() as AppState;
       const callback = (alert: any) => {
@@ -166,19 +181,6 @@ export function updateAlert(
         alertName === PUBLICTRADE ||
         alertName === PUBLICTRADEWITHLIMIT
       ) {
-console.log(alert);
-        const foundGroupAlert = alerts.find(
-          findAlert =>
-            findAlert.params.tradeGroupId === alert.tradeGroupId &&
-            findAlert.id === alert.id
-        );
-console.log(foundGroupAlert);
-        // For preliquidity orders, display as just an alert
-        if (foundGroupAlert) {
-console.log("updating alertType to alert")
-          alert.alertType = ALERT_TYPE.ALERT;
-        }
-
         // if order placed log comes in first
         const foundFilledOrder = alerts.find(
           findAlert =>
