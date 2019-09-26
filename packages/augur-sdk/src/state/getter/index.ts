@@ -1,10 +1,11 @@
-import * as API from "./API";
-import * as Accounts from "./Accounts";
-import * as Markets from "./Markets";
-import * as Trading from "./Trading";
-import * as Users from "./Users";
-import * as Status from "./status";
-import * as Universe from "./Universe";
+import * as API from './API';
+import * as Accounts from './Accounts';
+import * as Markets from './Markets';
+import * as Trading from './Trading';
+import * as Users from './Users';
+import * as Status from './status';
+import * as Universe from './Universe';
+import * as Platform from './Platform';
 
 export {
   API,
@@ -14,5 +15,6 @@ export {
   Universe,
   Users,
   Status,
+  Platform,
 };
 

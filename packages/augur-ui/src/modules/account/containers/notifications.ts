@@ -4,6 +4,7 @@ import Notifications from 'modules/account/components/notifications';
 import { selectNotifications } from 'modules/notifications/selectors/notification-state';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { selectMarket } from 'modules/markets/selectors/market';
 import { AppState } from 'store';
 import {
   MODAL_FINALIZE_MARKET,
@@ -11,6 +12,7 @@ import {
   MODAL_CLAIM_FEES,
   MODAL_UNSIGNED_ORDERS,
   MODAL_OPEN_ORDERS,
+  MODAL_REPORTING,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -44,6 +46,15 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         ...reportingFees,
       })
     ),
+    dispute: (marketId: string) => {
+      const market = selectMarket(marketId);
+      dispatch(
+        updateModal({
+          type: MODAL_REPORTING,
+          market,
+        })
+      );
+    },
   unsignedOrdersModal: (marketId: string, cb: Function) =>
     dispatch(
       updateModal({

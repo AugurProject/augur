@@ -12,10 +12,11 @@ import './Universe';
 import './Liquidity';
 import './ZeroXOrdersGetters';
 import './status';
+import './Platform';
 
 export class API {
-  private readonly router: Router;
   db: Promise<DB>;
+  private readonly router: Router;
 
   constructor(augur: Augur, db: Promise<DB>) {
     this.db = db;

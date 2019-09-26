@@ -22,7 +22,7 @@ describe('State API :: Liquidity', () => {
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
-  }, 120000);
+  });
 
   test(': Liquidity Ranking', async () => {
     await john.approveCentralAuthority();
@@ -123,6 +123,6 @@ describe('State API :: Liquidity', () => {
     await expect(liquidityRanking.totalMarkets).toEqual(2);
     await expect(liquidityRanking.hasLiquidity).toEqual(true);
 
-  }, 60000);
+  });
 
 });

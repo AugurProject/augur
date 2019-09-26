@@ -11,7 +11,7 @@ beforeAll(async () => {
 
   mockGnosisRelay = new MockGnosisRelayAPI();
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
-}, 120000);
+});
 
 test('Gnosis :: make safe directly', async () => {
 
@@ -25,7 +25,7 @@ test('Gnosis :: make safe directly', async () => {
   await expect(estimatedGnosisSafeAddress).toEqual(gnosisSafe.address.toLowerCase());
   await expect(owners).toEqual([john.account.publicKey]);
 
-}, 150000);
+});
 
 test('Gnosis :: make safe through relay', async () => {
 
@@ -55,4 +55,4 @@ test('Gnosis :: make safe through relay', async () => {
 
   await expect(deployed).toEqual(true);
 
-}, 150000);
+});

@@ -187,11 +187,11 @@ export default class Visibility extends Component<
     callback(null, MarketLiquidityRanking);
   };
 
-  getRanking(forceCall = false) {
+  getRanking() {
     const { newMarket } = this.props;
     const { validations, validationMessage } = this.validate(newMarket);
     const { hasLiquidity, hasSells, hasBuys, validSpread } = validations;
-    if ((hasLiquidity && hasSells && hasBuys && validSpread) || forceCall) {
+    if ((hasLiquidity && hasSells && hasBuys && validSpread)) {
       const params = this.calculateParams(newMarket);
       this.getMarketLiquidityRanking(params, (err, updates) => {
         this.setState({
@@ -221,7 +221,7 @@ export default class Visibility extends Component<
   }
 
   componentDidMount() {
-    this.getRanking(true);
+    this.getRanking();
   }
 
   render() {

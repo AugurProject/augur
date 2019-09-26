@@ -250,7 +250,8 @@ contract Universe is IUniverse {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
             uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
-            uint256 _startTime = _timestamp.div(_duration).mul(_duration).add(Reporting.getDisputeWindowBufferSeconds());
+            uint256 _buffer = Reporting.getDisputeWindowBufferSeconds();
+            uint256 _startTime = _timestamp.sub(_buffer).div(_duration).mul(_duration).add(_buffer);
             IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, _windowId, _duration, _startTime);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);

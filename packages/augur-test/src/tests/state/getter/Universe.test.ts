@@ -393,6 +393,6 @@ describe('State API :: Universe :: ', () => {
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].address).not.toEqual(NULL_ADDRESS);
-  }, 200000);
+  });
 
 });

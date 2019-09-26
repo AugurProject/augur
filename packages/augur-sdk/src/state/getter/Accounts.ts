@@ -65,24 +65,24 @@ const getAccountReportingHistoryParamsSpecific = t.type({
   account: t.string,
 });
 
-interface ContractInfo {
+export interface ContractInfo {
   address: string;
   amount: BigNumber;
   marketId: string;
 }
 
-interface ContractOverview {
+export interface ContractOverview {
   totalAmount: BigNumber;
   contracts: ContractInfo[];
 }
 
-interface ParticipationContract {
+export interface ParticipationContract {
   address: string;
   amount: BigNumber;
   amountFees: BigNumber;
 }
 
-interface ParticipationOverview {
+export interface ParticipationOverview {
   totalAmount: BigNumber;
   totalFees: BigNumber;
   contracts: ParticipationContract[];
@@ -169,13 +169,13 @@ export class Accounts<TBigNumber> {
               reporter: params.account,
             },
           }
-        ).then((r) => r.reduce((acc, { amountRedeemed, initialReport, market, }) => {
-          const compositeKey = `${market}-${initialReport}`;
+        ).then((r) => r.reduce((acc, { amountRedeemed, initialReporter, market, }) => {
+          const compositeKey = `${market}-${initialReporter}`;
           return {
             ...acc,
             [compositeKey]: {
               marketId: market,
-              address: initialReport,
+              address: initialReporter,
               amount: amountRedeemed,
             },
           };

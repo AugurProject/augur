@@ -40,7 +40,7 @@ describe('Augur API :: ZeroX :: ', () => {
     api = new API(john.augur, dbPromise);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 120000);
+  });
 
   test('State API :: ZeroX :: getOrders', async () => {
     await john.approveCentralAuthority();
@@ -89,7 +89,7 @@ describe('Augur API :: ZeroX :: ', () => {
     await expect(order.amount).toEqual('1');
     await expect(order.kycToken).toEqual(kycToken);
     await expect(order.expirationTimeSeconds).toEqual("450");
-  }, 60000);
+  });
 
   test('ZeroX Trade :: placeTrade', async () => {
     const market1 = await john.createReasonableYesNoMarket();
@@ -123,7 +123,7 @@ describe('Augur API :: ZeroX :: ', () => {
 
     await expect(johnShares.toNumber()).toEqual(10 ** 16 / 2);
     await expect(maryShares.toNumber()).toEqual(10 ** 16 / 2);
-  }, 150000);
+  });
 
   test('Trade :: simulateTrade', async () => {
     const market1 = await john.createReasonableYesNoMarket();
@@ -193,5 +193,5 @@ describe('Augur API :: ZeroX :: ', () => {
     await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
     await expect(simulationData.sharesFilled).toEqual(fillAmount);
     await expect(simulationData.numFills).toEqual(new BigNumber(1));
-  }, 150000);
+  });
 });

@@ -8,14 +8,7 @@ import {
   Trezor,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
-import {
-  timeDay,
-  timeFormat,
-  timeHour,
-  timeMinute,
-  timeMonth,
-  timeSecond,
-} from 'd3';
+import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 
 // # MISC Constants
@@ -405,35 +398,35 @@ export const RANGES = [
   {
     duration: 60,
     label: 'Past minute',
-    tickInterval: axis => axis.ticks(timeSecond.every(30)),
+    tickInterval: axis => axis.ticks(d3.timeSecond.every(30)),
   },
   {
     duration: 3600,
     label: 'Past hour',
-    tickInterval: axis => axis.ticks(timeMinute.every(10)),
+    tickInterval: axis => axis.ticks(d3.timeMinute.every(10)),
   },
   {
     duration: 86400,
     label: 'Past day',
-    tickInterval: axis => axis.ticks(timeHour.every(3)),
+    tickInterval: axis => axis.ticks(d3.timeHour.every(3)),
   },
   {
     duration: 604800,
     label: 'Past week',
     isDefault: true,
     tickInterval: axis =>
-      axis.ticks(timeDay.every(1)).tickFormat(timeFormat('%a %d')),
+      axis.ticks(d3.timeDay.every(1)).tickFormat(d3.timeFormat('%a %d')),
   },
   {
     duration: 2629800,
     label: 'Past month',
-    tickInterval: axis => axis.ticks(timeDay.every(6)),
+    tickInterval: axis => axis.ticks(d3.timeDay.every(6)),
   },
   {
     duration: 31557600,
     label: 'Past year',
     tickInterval: axis =>
-      axis.ticks(timeMonth.every(1)).tickFormat(timeFormat('%b')),
+      axis.ticks(d3.timeMonth.every(1)).tickFormat(d3.timeFormat('%b')),
   },
 ];
 
@@ -870,14 +863,17 @@ export const YES_NO_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
+    isTradeable: true,
   },
   {
     id: 1,
     description: 'No',
+    isTradeable: true,
   },
   {
     id: 2,
     description: 'Yes',
+    isTradeable: true,
   },
 ];
 
@@ -885,10 +881,12 @@ export const SCALAR_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
+    isTradeable: true,
   },
   {
     id: 2,
     description: NON_EXISTENT,
+    isTradeable: true,
   },
 ];
 

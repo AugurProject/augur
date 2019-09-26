@@ -13,7 +13,7 @@ let augur: Augur;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   augur = await makeTestAugur(seed, ACCOUNTS);
-}, 120000);
+});
 
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
