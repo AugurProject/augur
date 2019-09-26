@@ -125,6 +125,9 @@ jobs:
           set -euo pipefail
           yarn workspace @augurproject/ui build:kovan
         displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
+        condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
           set -euo pipefail
           bash <(curl -s https://peek.run/ci)
@@ -132,10 +135,11 @@ jobs:
         condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
       - bash: |
           set -euo pipefail
-          export NODE_OPTIONS="--max-old-space-size=6144"
           yarn test --runInBand --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:
@@ -452,11 +456,11 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
           set -euo pipefail
-          export NODE_OPTIONS="--max-old-space-size=6144"
           yarn workspace @augurproject/ui docker:release kovan
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
         env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
       - task: Docker@1
@@ -488,7 +492,7 @@ jobs:
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
       - script: |
-          yarn install
+          yarn install --frozen-lockfile
         displayName: Install Dependencies
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
         inputs:
@@ -501,10 +505,11 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          export NODE_OPTIONS="--max-old-space-size=6144"
           yarn workspace @augurproject/ui build
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
         displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
       - bash: |
           set -euo pipefail
           sudo apt update
