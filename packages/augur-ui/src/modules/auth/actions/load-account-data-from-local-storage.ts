@@ -64,7 +64,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         );
       }
       if (alerts) {
-        alerts.map(n => dispatch(updateAlert(n.txHash, n)));
+        alerts.map(n => dispatch(updateAlert(n.id, n, true)));
       }
       if (
         pendingLiquidityOrders

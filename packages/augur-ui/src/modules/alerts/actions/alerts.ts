@@ -84,24 +84,35 @@ export function updateExistingAlert(id, alert) {
 }
 
 function createUniqueOrderId(alert) {
-  const price = alert.params._price ? alert.params._price.toString() : new BigNumber(alert.params.price).toString();
-  const outcome = alert.params._outcome ? alert.params._outcome.toString() : new BigNumber(alert.params.outcome).toString();
-  const direction = alert.params._direction ? alert.params._direction.toString() : alert.params.orderType;
+  const price = alert.params._price
+    ? alert.params._price.toString()
+    : new BigNumber(alert.params.price).toString();
+  const outcome = alert.params._outcome
+    ? alert.params._outcome.toString()
+    : new BigNumber(alert.params.outcome).toString();
+  const direction = alert.params._direction
+    ? alert.params._direction.toString()
+    : alert.params.orderType;
 
   return `${alert.id}_${price}_${outcome}_${direction}`;
 }
 
-export function updateAlert(txHash: string, alert: any) {
+export function updateAlert(
+  id: string,
+  alert: any,
+  dontMakeNewAlerts?: boolean
+) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
     if (alert) {
       const { alerts, loginAccount } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
-      alert.txHash = txHash;
-      alert.uniqueId = alertName === PUBLICTRADE ? createUniqueOrderId(alert) : txHash;
+      alert.id = id;
+      alert.uniqueId =
+        alertName === PUBLICTRADE ? createUniqueOrderId(alert) : id;
 
-      if (alertName === DOINITIALREPORT) {
+      if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
         dispatch(
-          updateAlert(txHash, {
+          updateAlert(id, {
             ...alert,
             params: {
               ...alert.params,
@@ -111,12 +122,11 @@ export function updateAlert(txHash: string, alert: any) {
           })
         );
       }
-      const foundAlert = alerts.find(findAlert => {
-        return (
+      const foundAlert = alerts.find(
+        findAlert =>
           findAlert.uniqueId === alert.uniqueId &&
           findAlert.name.toUpperCase() === alert.name.toUpperCase()
-        );
-      });
+      );
       if (foundAlert) {
         dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
