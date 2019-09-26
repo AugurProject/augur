@@ -6,7 +6,12 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { formatAttoDai, formatRep, formatShares, formatDai } from 'utils/format-number';
+import {
+  formatAttoDai,
+  formatRep,
+  formatShares,
+  formatDai,
+} from 'utils/format-number';
 import {
   calculatePayoutNumeratorsValue,
   TXEventName,
@@ -188,6 +193,7 @@ export default function setAlertText(alert: any, callback: Function) {
               const orders = userOpenOrders[alert.params.market];
               const outcome = new BigNumber(alert.params.outcome).toString();
               const foundOrder =
+                orders &&
                 orders[outcome] &&
                 orders[outcome][alert.params.orderType] &&
                 orders[outcome][alert.params.orderType][alert.params.orderId];
@@ -243,14 +249,13 @@ export default function setAlertText(alert: any, callback: Function) {
               marketInfo.marketType,
               payoutNums
             );
-            const outcomeDescription =
-              !!payoutNumeratorResultObject.invalid
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(
-                    marketInfo,
-                    payoutNumeratorResultObject.outcome,
-                    false
-                  );
+            const outcomeDescription = !!payoutNumeratorResultObject.invalid
+              ? 'Market Is Invalid'
+              : getOutcomeNameWithOutcome(
+                  marketInfo,
+                  payoutNumeratorResultObject.outcome,
+                  false
+                );
             payoutNumeratorResultObject.malformed
               ? MALFORMED_OUTCOME
               : getOutcomeNameWithOutcome(

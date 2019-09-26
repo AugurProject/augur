@@ -404,6 +404,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         outcomesFormatted = value.map((outcome, index) => ({
           description: outcome,
           id: index + 1,
+          isTradeable: true,
         }));
         outcomesFormatted.unshift({
           id: 0,
