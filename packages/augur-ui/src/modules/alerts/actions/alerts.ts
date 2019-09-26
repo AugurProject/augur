@@ -98,7 +98,7 @@ function createUniqueOrderId(alert) {
 }
 
 export function updateAlert(
-  txHash: string,
+  id: string,
   alert: any,
   dontMakeNewAlerts?: boolean
 ) {
@@ -106,13 +106,13 @@ export function updateAlert(
     if (alert) {
       const { alerts, loginAccount } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
-      alert.txHash = txHash;
+      alert.id = id;
       alert.uniqueId =
-        alertName === PUBLICTRADE ? createUniqueOrderId(alert) : txHash;
+        alertName === PUBLICTRADE ? createUniqueOrderId(alert) : id;
 
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
         dispatch(
-          updateAlert(txHash, {
+          updateAlert(id, {
             ...alert,
             params: {
               ...alert.params,
