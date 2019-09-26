@@ -1,7 +1,12 @@
 import * as speedomatic from 'speedomatic';
-import { updateAlert, addAlert } from 'modules/alerts/actions/alerts';
 import { selectCurrentTimestampInSeconds as getTime } from 'store/select-state';
-import { DAI, ETH, REP, CONFIRMED, FAILED } from 'modules/common/constants';
+import {
+  DAI,
+  ETH,
+  REP,
+  CONFIRMED,
+  FAILED,
+} from 'modules/common/constants';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -23,15 +28,6 @@ export function transferFunds(
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);
-    const update = (id: string, status: string) => {
-      dispatch(
-        updateAlert(id, {
-          id,
-          status,
-          timestamp: getTime(getState()),
-        })
-      );
-    };
     // TODO: need to add ability to transfer DAI
     switch (currency) {
       case DAI:

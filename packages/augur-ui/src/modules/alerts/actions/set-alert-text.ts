@@ -41,6 +41,7 @@ import {
   APPROVE,
   BUY_INDEX,
   SELL_INDEX,
+  ZERO
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
@@ -115,7 +116,6 @@ export default function setAlertText(alert: any, callback: Function) {
                 : getOutcomeNameWithOutcome(
                     marketInfo,
                     alert.params.outcomeId,
-                    false,
                     false
                   );
             alert.details = `${toCapitalizeCase(orderType)}  ${
@@ -143,7 +143,6 @@ export default function setAlertText(alert: any, callback: Function) {
                 : getOutcomeNameWithOutcome(
                     marketInfo,
                     alert.params.outcome,
-                    false,
                     false
                   );
             alert.details = `$${
@@ -232,7 +231,7 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = alert.params.preFilled
           ? 'Prefilled Stake'
           : 'Market Disputed';
-        if (alert.params.preFilled && !alert.params._additionalStake) {
+        if (alert.params.preFilled && (!alert.params._additionalStake || (alert.params._additionalStake && createBigNumber(alert.params._additionalStake).eq(ZERO)))) {
           break;
         }
         const payoutNums = convertPayoutNumeratorsToStrings(
@@ -261,8 +260,7 @@ export default function setAlertText(alert: any, callback: Function) {
               : getOutcomeNameWithOutcome(
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
-                  payoutNumeratorResultObject.invalid,
-                  false
+                  payoutNumeratorResultObject.invalid
                 );
             alert.description = marketInfo.description;
             alert.details = `${
@@ -297,7 +295,6 @@ export default function setAlertText(alert: any, callback: Function) {
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
                   payoutNumeratorResultObject.invalid,
-                  false
                 );
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
