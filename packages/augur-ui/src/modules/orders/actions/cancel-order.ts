@@ -37,6 +37,7 @@ export const cancelOrder = (
     dispatch(
       addAlert({
         id: orderId,
+        uniqueId: orderId,
         name: CANCELORDER,
         status: '',
         params: {

@@ -48,7 +48,7 @@ export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction
 
     case UPDATE_EXISTING_ALERT:
       let updatedAlerts = alerts.map((alert, i) => {
-        if (alert.id !== data.id || data.alert.name.toUpperCase() !== alert.name.toUpperCase()) {
+        if (alert.uniqueId !== data.id || data.alert.name.toUpperCase() !== alert.name.toUpperCase()) {
           return alert;
         }
 
@@ -59,7 +59,7 @@ export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction
 
     case REMOVE_ALERT:
       let newAlerts = alerts;
-      newAlerts = newAlerts.filter((alert, i) => alert.id !== data.id || data.name.toUpperCase() !== alert.name.toUpperCase())
+      newAlerts = newAlerts.filter((alert, i) => alert.uniqueId !== data.id || data.name.toUpperCase() !== alert.name.toUpperCase())
       return newAlerts;
 
     case CLEAR_ALERTS:
