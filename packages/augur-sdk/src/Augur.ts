@@ -165,8 +165,8 @@ export class Augur<TProvider extends Provider = Provider> {
   async sendETH(address: string, value: BigNumber): Promise<void> {
     const transaction = {
       to: address,
-      data: "0x",
-      value
+      data: '0x',
+      value,
     };
     const ethersTransaction = this.dependencies.transactionToEthersTransaction(transaction);
     await this.dependencies.signer.sendTransaction(ethersTransaction);
