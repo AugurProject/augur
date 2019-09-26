@@ -22,11 +22,13 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
       prevProps.toasts.length !== this.props.toasts.length
     ) {
       this.timeout = setTimeout(() => {
-        const newToast = {
-          name: this.props.toasts[0].name,
-          toast: false,
-        };
-        this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
+        if (this.props.toasts[0]) {
+            const newToast = {
+            name: this.props.toasts[0].name,
+            toast: false,
+          };
+          this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
+        }
       }, 2000);
     }
   };
@@ -34,18 +36,18 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
   render() {
     const { removeAlert, toggleAlerts, toasts } = this.props;
 
+    const toast = toasts[0];
+    if (!toast) return null;
+
     return (
       <div className={Styles.ToastsView}>
-        {toasts.map((toast, i) => (
-          <Alert
-            key={`${toast.id}-${toast.title}`}
-            removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
-            toggleAlerts={toggleAlerts}
-            noShow={i !== 0}
-            showToast={true}
-            {...toast}
-          />
-        ))}
+        <Alert
+          key={`${toast.id}-${toast.title}`}
+          removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
+          toggleAlerts={toggleAlerts}
+          showToast={true}
+          {...toast}
+        />
       </div>
     );
   }
