@@ -48,4 +48,4 @@ docker cp pop-geth-deploy:/geth geth
 docker stop pop-geth-deploy
 
 CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-DOCKER_BUILDKIT=1 docker build --no-cache -f packages/augur-tools/docker-builder/Dockerfile -t augurproject/"${BUILD_IMAGE}":${CONTRACT_SHA} .
+DOCKER_BUILDKIT=1 docker build --no-cache -f packages/augur-tools/docker-builder/Dockerfile -t augurproject/test-"${BUILD_IMAGE}":${CONTRACT_SHA} .

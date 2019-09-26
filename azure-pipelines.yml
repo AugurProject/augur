@@ -44,6 +44,16 @@ jobs:
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
               fi
+              if [[ $f =~ .*augur-artifacts/.* ]]
+              then
+                echo "found an artifacts change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
+              fi
+              if [[ $f == .*augur-tools/docker-builder/* ]]
+              then
+                echo "found a docker-builder change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_DOCKER_BUILDER;isOutput=true]true"
+              fi
               if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
               then
                 echo "found a change in geth-poa: $f"
@@ -63,78 +73,78 @@ jobs:
         displayName: check git for changes
         name: setVars
 
-# - job: TestAndLint
-#   dependsOn:
-#   - PreFlightCheck
-#   condition: |
-#     and
-#     (
-#       succeeded(),
-#       or
-#       (
-#         ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-#         ne(variables['Build.SourceBranch'], 'refs/tags')
-#       )
-#     )
-#   variables:
-#     JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
-#     JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
-#     JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
-#     JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
-#     USE_NORMAL_TIME: false
-#     PRODUCTION: false
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   strategy:
-#     matrix:
-#       node_10_x:
-#         node_version: $(PRIMARY_NODE_VERSION)
-#   steps:
-#     - checkout: self
-#     - task: NodeTool@0
-#       inputs:
-#         versionSpec: $(node_version)
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - script: |
-#         yarn install --frozen-lockfile
-#       displayName: Install Dependencies
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - bash: |
-#         set -euo pipefail
-#         yarn build
-#       displayName: yarn build
-#     - bash: |
-#         set -euo pipefail
-#         yarn workspace @augurproject/ui build:kovan
-#       displayName: ui build
-#     - bash: |
-#         set -euo pipefail
-#         bash <(curl -s https://peek.run/ci)
-#       displayName: feature peek
-#       condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
-#     - bash: |
-#         set -euo pipefail
-#         export NODE_OPTIONS="--max-old-space-size=6144"
-#         yarn test --runInBand --ci --reporters=default --reporters=jest-junit
-#       displayName: yarn test
-#       condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
-#     - task: PublishTestResults@2
-#       condition: succeededOrFailed()
-#       inputs:
-#         testRunner: JUnit
-#         testResultsFiles: '**/junit.xml'
+  - job: TestAndLint
+    dependsOn:
+    - PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+          ne(variables['Build.SourceBranch'], 'refs/tags')
+        )
+      )
+    variables:
+      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
+      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+      JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
+      USE_NORMAL_TIME: false
+      PRODUCTION: false
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    strategy:
+      matrix:
+        node_10_x:
+          node_version: $(PRIMARY_NODE_VERSION)
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build:kovan
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
+          bash <(curl -s https://peek.run/ci)
+        displayName: feature peek
+        condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
+      - bash: |
+          set -euo pipefail
+          export NODE_OPTIONS="--max-old-space-size=6144"
+          yarn test --runInBand --ci --reporters=default --reporters=jest-junit
+        displayName: yarn test
+        condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
 
   - job: ContractSanityCheck
     dependsOn:
-#   - TestAndLint
+    - TestAndLint
     - PreFlightCheck
     condition: |
       and
@@ -338,13 +348,14 @@ jobs:
 
  - job: Docker_populated_geth_images
    dependsOn:
+   - PreFlightCheck
    - TestAugurCore
-   - DockerGethDev
    condition: |
      or
      (
-       in(dependencies.TestAugurCore.result, 'Succeeded'),
-       in(dependencies.DockerGethDev.result, 'Succeeded')
+       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
+       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
+       in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
      )
    pool:
      vmImage: 'Ubuntu 16.04'
@@ -399,108 +410,108 @@ jobs:
          containerRegistryType: Container Registry
          dockerRegistryEndpoint: dockerhub-augurproject
 
-# - job: publish_augur_ui_docker_image
-#   dependsOn:
-#   - Augur_build_docker_image
-#   condition: |
-#     and
-#     (
-#         succeeded(),
-#         eq(variables['Build.SourceBranch'], 'refs/heads/master')
-#     )
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   steps:
-#     - task: UsePythonVersion@0
-#       inputs:
-#         versionSpec: '3.x'
-#     - task: Docker@1
-#       displayName: docker login
-#       inputs:
-#         command: login
-#         containerRegistryType: Container Registry
-#         dockerRegistryEndpoint: dockerhub-augurproject
-#     - script: |
-#         set -euo pipefail
-#         docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-#         docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-#         # when we get deploy going we will swap these commands out for
-#         # docker:release
-#         yarn workspace @augurproject/ui docker:release kovan
-#         docker push augurproject/augur-ui:kovan
-#         #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
-#       displayName: 'publish docker images on merge to master'
-#       env:
-#         AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
-#         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
-#     - task: Docker@1
-#       displayName: docker logout
-#       inputs:
-#         command: logout
-#         containerRegistryType: Container Registry
-#         dockerRegistryEndpoint: dockerhub-augurproject
+  - job: publish_augur_ui_docker_image
+    dependsOn:
+    - Augur_build_docker_image
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.x'
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - script: |
+          set -euo pipefail
+          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          # when we get deploy going we will swap these commands out for
+          # docker:release
+          yarn workspace @augurproject/ui docker:release kovan
+          docker push augurproject/augur-ui:kovan
+          #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
+        displayName: 'publish docker images on merge to master'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
 
-# - job: tag_build
-#   displayName: build tag
-#   dependsOn: PreFlightCheck
-#   condition: |
-#     and
-#     (
-#       succeeded(),
-#       startsWith(variables['build.sourceBranch'], 'refs/tags/v')
-#     )
-#   pool:
-#     vmImage: 'Ubuntu-16.04'
-#   steps:
-#     - checkout: self
-#     - task: NodeTool@0
-#       inputs:
-#         versionSpec: $(PRIMARY_NODE_VERSION)
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - script: |
-#         yarn install
-#       displayName: Install Dependencies
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - bash: |
-#         set -euo pipefail
-#         yarn build
-#       displayName: yarn build
-#     - bash: |
-#         set -euo pipefail
-#         yarn workspace @augurproject/ui build
-#         ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
-#       displayName: ui build
-#     - bash: |
-#         set -euo pipefail
-#         sudo apt update
-#         sudo apt install golang-go -y
-#         curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
-#         sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
-#       displayName: install ipfs
-#     - bash: |
-#         set -euo pipefail
-#         ipfs init > /dev/null 2>&1
-#         ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
-#       displayName: ipfs hash of build dir
-#     - task: CopyFiles@2
-#       inputs:
-#         #sourceFolder: # Optional
-#         contents: |
-#           augur.zip
-#           augur_ipfs_hash.txt
-#         targetFolder: $(Build.ArtifactStagingDirectory)
-#         cleanTargetFolder: true
-#         #overWrite: false # Optional
-#         #flattenFolders: false # Optional
-#         #preserveTimestamp: false # Optional
+  - job: tag_build
+    displayName: build tag
+    dependsOn: PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        startsWith(variables['build.sourceBranch'], 'refs/tags/v')
+      )
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build
+          ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
+          sudo apt update
+          sudo apt install golang-go -y
+          curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
+          sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
+        displayName: install ipfs
+      - bash: |
+          set -euo pipefail
+          ipfs init > /dev/null 2>&1
+          ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
+        displayName: ipfs hash of build dir
+      - task: CopyFiles@2
+        inputs:
+          #sourceFolder: # Optional
+          contents: |
+            augur.zip
+            augur_ipfs_hash.txt
+          targetFolder: $(Build.ArtifactStagingDirectory)
+          cleanTargetFolder: true
+          #overWrite: false # Optional
+          #flattenFolders: false # Optional
+          #preserveTimestamp: false # Optional
 
 # use below for github release (not test yet
 #     - task: GitHubRelease@1
