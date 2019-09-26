@@ -63,6 +63,7 @@ export const selectReportingWinningsByMarket = createSelector(
         unclaimedRep: calcUnclaimed.rep,
       };
     }
+    console.log("strating claimableMarkets unclaimed rep", formatAttoRep(claimableMarkets.unclaimedRep).formatted);
     if (
       userReporting &&
       userReporting.reporting &&
@@ -74,6 +75,7 @@ export const selectReportingWinningsByMarket = createSelector(
         claimableMarkets
       );
     }
+    console.log("claimableMarkets unclaimed rep", formatAttoRep(claimableMarkets.unclaimedRep).formatted);
     if (
       userReporting &&
       userReporting.disputing &&
@@ -89,6 +91,7 @@ export const selectReportingWinningsByMarket = createSelector(
     const totalUnclaimedRep = participationContracts.unclaimedRep.plus(
       claimableMarkets.unclaimedRep
     );
+    console.log("totalUnclaimedRep claimableMarkets unclaimed rep", formatAttoRep(totalUnclaimedRep).formatted);
     return {
       participationContracts,
       claimableMarkets,
@@ -109,12 +112,13 @@ function sumClaims(
   const found = marketsCollection.marketContracts.find(
     c => c.marketId === marketId
   );
+  console.log(found !== undefined, "did find", marketId);
   if (found) {
     found.totalAmount = createBigNumber(found.totalAmount).plus(
       createBigNumber(contractInfo.amount)
     );
     found.contracts = [...found.contracts, contractInfo.address];
-    addedValue = createBigNumber(found.totalAmount);
+    addedValue = createBigNumber(contractInfo.amount);
   } else {
     addedValue = createBigNumber(contractInfo.amount);
     marketsCollection.marketContracts = [
@@ -127,15 +131,17 @@ function sumClaims(
       },
     ];
   }
+  console.log("adding value", formatAttoRep(addedValue).formatted);
   marketsCollection.unclaimedRep = marketsCollection.unclaimedRep.plus(
     addedValue
   );
+  console.log("summing unclaimedRep", formatAttoRep(marketsCollection.unclaimedRep).formatted);
   return marketsCollection;
 }
 
 function isClaimable(marketId: string) {
   const market = selectMarket(marketId);
-  if (!market) return false;
+  if (!market) {console.log("market is null", marketId); return false;}
   return (
     market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
     market.reportingState === REPORTING_STATE.FINALIZED
