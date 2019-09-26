@@ -434,6 +434,12 @@ jobs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
+      - bash: |
+          set -exuo pipefail
+          CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
+          docker images
+          docker tag augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}" augurproject/$(IMAGE_NAME):test-"${CONTRACT_SHA}"
+          docker push augurproject/$(IMAGE_NAME):test-"${CONTRACT_SHA}"
       - task: Docker@1
         displayName: docker logout
         inputs:
