@@ -111,8 +111,10 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
         displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
         condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
           set -euo pipefail
@@ -161,7 +163,10 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build:kovan
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+        env:
+          ETHEREUM_NETWORK: "kovan"
+          NODE_OPTIONS: "--max_old_space_size=6144"
         displayName: ui build
       - bash: |
           set -euo pipefail
@@ -604,9 +609,11 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
         displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
       - bash: |
           set -euo pipefail
           sudo apt update

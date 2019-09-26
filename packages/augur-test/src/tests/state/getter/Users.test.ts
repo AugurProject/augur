@@ -74,7 +74,7 @@ describe('State API :: Users :: ', () => {
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 120000);
+  });
 
   test(':getAccountTimeRangedStats', async () => {
     // Create markets with multiple users
@@ -708,7 +708,7 @@ describe('State API :: Users :: ', () => {
       redeemedPositions: 4,
       successfulDisputes: 2,
     });
-  }, 300000);
+  });
 
   test(':getProfitLoss & getProfitLossSummary ', async () => {
     const market1 = await john.createReasonableYesNoMarket();
@@ -805,7 +805,7 @@ describe('State API :: Users :: ', () => {
       9.5
     );
 
-  }, 120000);
+  });
 
   test(':getUserTradingPositions binary-1', async () => {
     const market = await john.createReasonableYesNoMarket();
@@ -864,7 +864,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 120000);
+  });
 
   test(':getUserTradingPositions cat3-1', async () => {
     const market = await john.createReasonableMarket([
@@ -917,7 +917,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 120000);
+  });
 
   test(':getUserTradingPositions cat3-2', async () => {
     const market = await john.createReasonableMarket([
@@ -970,7 +970,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 120000);
+  });
 
   test(':getUserTradingPositions cat3-3', async () => {
     const market = await john.createReasonableMarket([
@@ -1053,7 +1053,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 120000);
+  });
 
   test(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
@@ -1118,7 +1118,7 @@ describe('State API :: Users :: ', () => {
       new BigNumber(50),
       new BigNumber(250)
     );
-  }, 120000);
+  });
 
   async function processTrades(
     tradeData: UTPTradeData[],

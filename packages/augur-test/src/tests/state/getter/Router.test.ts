@@ -18,7 +18,7 @@ beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   augur = await makeTestAugur(seed, ACCOUNTS);
   db = mock.makeDB(augur, ACCOUNTS);
-}, 120000);
+});
 
 test("State API :: Bad parameters to getter", async () => {
   const api = new API(augur, db); // have to do this to initialize the routes

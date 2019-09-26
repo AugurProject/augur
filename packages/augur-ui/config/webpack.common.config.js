@@ -2,6 +2,8 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WorkerPlugin = require('worker-plugin');
 
 const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -15,32 +17,8 @@ const PATHS = {
 // COMMON CONFIG
 const rules = [
   {
-    test: /\.worker\.[jt]s$/,
-    use: [
-      "worker-loader",
-      "babel-loader"
-    ]
-  },
-  {
-    test: /\.js$/,
-    use: ["source-map-loader"],
-    enforce: "pre"
-  },
-  {
     test: /npm-cli|node-hid/,
     loader: "null-loader"
-  },
-  {
-    test: /\.less$/,
-    enforce: "pre",
-    loader: "import-glob-loader"
-  },
-  {
-    test: /\.html$/,
-    loader: "html-loader",
-    query: {
-      minimize: true
-    }
   },
   {
     test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -139,11 +117,9 @@ module.exports = {
     rules: rules
   },
   plugins: [
+    new WorkerPlugin(),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
-      {
-        from: path.resolve(PATHS.APP, "splash.css"),
-        to: path.resolve(PATHS.BUILD, "assets/styles")
-      },
       {
         from: path.resolve(PATHS.APP, "config/manifest.json"),
         to: path.resolve(PATHS.BUILD, "config")

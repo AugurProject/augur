@@ -108,23 +108,24 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
     const parsedLog = contractInterface.parseLog(log);
     const omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
     omittedValues.push('length');
-    let logValues = _.omit(parsedLog.values, omittedValues);
-    logValues = _.mapValues(logValues, (val) => {
-      if (val._hex) {
-        return val._hex;
-      }
-      else if (Array.isArray(val)) {
-        val = _.map(val, (innerVal) => {
-          if (innerVal._hex) {
-            return innerVal._hex;
-          }
-          return innerVal;
-        });
-      }
-      return val;
-    });
-    logValues.name = parsedLog.name;
-    return logValues;
+    const logValues = _.omit(parsedLog.values, omittedValues);
+    return {
+      name: parsedLog.name,
+      ..._.mapValues(logValues, (val:any) => {
+        if (val._hex) {
+          return val._hex;
+        }
+        else if (Array.isArray(val)) {
+          val = _.map(val, (innerVal) => {
+            if (innerVal._hex) {
+              return innerVal._hex;
+            }
+            return innerVal;
+          });
+        }
+        return val;
+      })
+    };
   }
 
   private getContractInterface(contractName: string): ethers.utils.Interface {
