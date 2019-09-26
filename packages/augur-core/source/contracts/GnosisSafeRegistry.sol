@@ -28,7 +28,7 @@ contract GnosisSafeRegistry {
     }
 
     function register() external {
-        // Caller context is a proxy instance (proxy contract supposedly delgating to gnosisSafe master copy)
+        // Caller context is a proxy instance (proxy contract supposedly delegating to gnosisSafe master copy)
         IGnosisSafe _safe = IGnosisSafe(msg.sender);
         bytes32 _codeHash;
         assembly {
