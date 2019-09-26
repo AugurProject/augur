@@ -411,8 +411,6 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_augur_ui_docker_image
-    dependsOn:
-    - Augur_build_docker_image
     condition: |
       and
       (
