@@ -346,69 +346,69 @@ jobs:
           fi
         displayName: integration tests
 
- - job: Docker_populated_geth_images
-   dependsOn:
-   - PreFlightCheck
-   - TestAugurCore
-   condition: |
-     or
-     (
-       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
-       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
-       in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
-     )
-   pool:
-     vmImage: 'Ubuntu 16.04'
-   timeoutInMinutes: 240
-   strategy:
-     matrix:
-       dev-pop-geth-v2:
-         IMAGE_NAME: dev-pop-geth-v2
-         NETWORK_ID: 102
-         NORMAL_TIME: false
-       dev-pop-normtime-geth-v2:
-         IMAGE_NAME: dev-pop-normtime-geth-v2
-         NETWORK_ID: 103
-         NORMAL_TIME: true
-       dev-pop-geth-15-v2:
-         IMAGE_NAME: dev-pop-geth-15-v2
-         NETWORK_ID: 104
-         NORMAL_TIME: false
-   steps:
-     - checkout: self
-     - task: NodeTool@0
-       inputs:
-         versionSpec: $(PRIMARY_NODE_VERSION)
-     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-       inputs:
-         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-         vstsFeed: npmPackages
-     - script: |
-         yarn install --frozen-lockfile
-         yarn build
-       displayName: Install Dependencies
-     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-       inputs:
-         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-         vstsFeed: npmPackages
-     - script: |
-         set -exuo pipefail
-         packages/augur-tools/docker-builder/ci-build.sh -n $(NETWORK_ID) -t $(NORMAL_TIME) $(IMAGE_NAME)
-       displayName: 'build and push $(IMAGE_NAME) image'
-     - task: Docker@1
-       displayName: docker login
-       inputs:
-         command: login
-         containerRegistryType: Container Registry
-         dockerRegistryEndpoint: dockerhub-augurproject
-     - task: Docker@1
-       displayName: docker logout
-       inputs:
-         command: logout
-         containerRegistryType: Container Registry
-         dockerRegistryEndpoint: dockerhub-augurproject
+  - job: Docker_populated_geth_images
+    dependsOn:
+    - PreFlightCheck
+    - TestAugurCore
+    condition: |
+      or
+      (
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    timeoutInMinutes: 240
+    strategy:
+      matrix:
+        dev-pop-geth-v2:
+          IMAGE_NAME: dev-pop-geth-v2
+          NETWORK_ID: 102
+          NORMAL_TIME: false
+        dev-pop-normtime-geth-v2:
+          IMAGE_NAME: dev-pop-normtime-geth-v2
+          NETWORK_ID: 103
+          NORMAL_TIME: true
+        dev-pop-geth-15-v2:
+          IMAGE_NAME: dev-pop-geth-15-v2
+          NETWORK_ID: 104
+          NORMAL_TIME: false
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+          yarn build
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          set -exuo pipefail
+          packages/augur-tools/docker-builder/ci-build.sh -n $(NETWORK_ID) -t $(NORMAL_TIME) $(IMAGE_NAME)
+        displayName: 'build and push $(IMAGE_NAME) image'
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_augur_ui_docker_image
     dependsOn:
