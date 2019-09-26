@@ -288,7 +288,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICFILLORDER, false, dispatch, getState);
+    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(loadMarketsInfo([marketId]));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
