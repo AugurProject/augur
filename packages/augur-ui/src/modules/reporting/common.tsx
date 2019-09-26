@@ -32,7 +32,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
-import { Getters, convertDisplayValuetoAttoValue } from '@augurproject/sdk';
+import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -383,7 +383,7 @@ export class DisputingBondsView extends Component<
     const { disabled, scalarError, stakeError } = this.state;
     const min = formatAttoRep(minAllowableDisputeStake).value;
     const remaining = formatAttoRep(stakeRemaining).value;
-    const inputted = stakeValue ? formatAttoRep(stakeValue).value : stakeValue;
+    const inputted = stakeValue ? convertAttoValueToDisplayValue(createBigNumber(stakeValue)) : stakeValue;
     return (
       <div
         className={classNames(Styles.DisputingBondsView, {
