@@ -120,10 +120,11 @@ export class DerivedDB extends AbstractDB {
     syncing = false
   ): Promise<number> => {
     let success = true;
+    let documentsByIdByTopic = null;
     if (logs.length > 0) {
       const documents = _.map<ParsedLog, ParsedLog>(logs, this.processLog.bind(this));
       const documentsById = _.groupBy(documents, '_id');
-      const documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
+      documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
         const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topic'), documents => {
           return _.reduce(
             documents,
@@ -161,7 +162,7 @@ export class DerivedDB extends AbstractDB {
           syncing
         );
         this.updatingHighestSyncBlock = false;
-        augurEmitter.emit(`DerivedDB:updated:${this.name}`);
+        augurEmitter.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
       }
     } else {
       throw new Error(`Unable to add new block`);
