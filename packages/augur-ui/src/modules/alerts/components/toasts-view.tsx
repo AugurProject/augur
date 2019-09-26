@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Alert from "modules/alerts/components/alert";
 
 import Styles from "modules/alerts/components/toasts-view.styles.less";
+import { ALERT_TYPE } from "modules/types";
 
 interface ToastsViewProps {
   toasts: Array<any>;
@@ -18,7 +19,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
       if (this.props.toasts.length > 0) {
         const newToast = {
           name: this.props.toasts[0].name,
-          toast: false,
+          alertType: ALERT_TYPE.ALERT,
         };
         this.props.updateExistingAlert(this.props.toasts[0].id, newToast);
       }

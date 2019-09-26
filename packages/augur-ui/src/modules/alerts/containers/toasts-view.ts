@@ -8,11 +8,12 @@ import {
 } from "modules/alerts/actions/alerts";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { ALERT_TYPE } from "modules/types";
 
 const mapStateToProps = (state: AppState) => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   return {
-    toasts: alerts.filter(alert => alert.toast && !alert.seen)
+    toasts: alerts.filter(alert => (ALERT_TYPE.TOAST_AND_ALERT || ALERT_TYPE.TOAST) && !alert.seen)
   };
 };
 

@@ -25,7 +25,7 @@ import {
   PUBLICFILLBESTORDER,
   PUBLICFILLORDER,
 } from 'modules/common/constants';
-import { UIOrder, CreateMarketData } from 'modules/types';
+import { ALERT_TYPE, UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
 import {
   addPendingOrder,
@@ -95,12 +95,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         );
       } else if (methodCall === PUBLICCREATEORDERS) {
         dispatch(
-          addAlert({
+          updateAlert(hash, {
             params: transaction.params,
             status: TXEventName.Success,
             timestamp: blockchain.currentAugurTimestamp * 1000,
             name: PUBLICCREATEORDERS,
-            toast: true,
           })
         );
       } else {
@@ -121,7 +120,17 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const marketId = transaction.params[TX_MARKET_ID];
         const market = marketInfos[marketId];
         setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
-
+        if (eventName === TXEventName.Pending) {
+          dispatch(
+            updateAlert(hash, {
+              params: transaction.params,
+              status: TXEventName.Pending,
+              timestamp: blockchain.currentAugurTimestamp * 1000,
+              name: PUBLICCREATEORDERS,
+              ALERT_TYPE: ALERT_TYPE.TOAST,
+            })
+          );
+        }
         if (eventName === TXEventName.Success) {
           deleteMultipleLiquidityOrders(txStatus, market, dispatch);
         }

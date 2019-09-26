@@ -4,6 +4,7 @@ import * as alertLevels from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import getValue from 'utils/get-value';
 import { SUCCESS, FAILURE } from 'modules/common/constants';
+import { ALERT_TYPE } from 'modules/types';
 
 export const selectAlertsByLevel = level => state =>
   state.alerts.filter(it => it.level === level);

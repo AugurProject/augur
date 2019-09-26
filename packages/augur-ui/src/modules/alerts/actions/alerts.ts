@@ -22,6 +22,7 @@ import {
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
 } from 'modules/common/constants';
+import { ALERT_TYPE } from 'modules/types';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -144,6 +145,19 @@ export function updateAlert(id: string, alert: any) {
         alertName === PUBLICTRADE ||
         alertName === PUBLICTRADEWITHLIMIT
       ) {
+console.log(alert);
+        const foundGroupAlert = alerts.find(
+          findAlert =>
+            findAlert.params.tradeGroupId === alert.tradeGroupId &&
+            findAlert.id === alert.id
+        );
+console.log(foundGroupAlert);
+        // For preliquidity orders, display as just an alert
+        if (foundGroupAlert) {
+console.log("updating alertType to alert")
+          alert.alertType = ALERT_TYPE.ALERT;
+        }
+
         // if order placed log comes in first
         const foundFilledOrder = alerts.find(
           findAlert =>

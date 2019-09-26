@@ -23,6 +23,12 @@ export enum SizeTypes {
   LARGE = 'large',
 }
 
+export enum ALERT_TYPE {
+  TOAST = 'toast',
+  TOAST_AND_ALERT = 'toastAndAlert',
+  ALERT = 'alert',
+};
+
 export interface Alert {
   id: string;
   title: string;
@@ -35,6 +41,7 @@ export interface Alert {
   seen: boolean;
   level: string;
   params: object;
+  alertType: ALERT_TYPE;
 }
 
 export interface DateFormattedObject {

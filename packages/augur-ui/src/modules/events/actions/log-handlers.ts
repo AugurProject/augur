@@ -21,7 +21,7 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { Events, Logs, TXEventName, NULL_ADDRESS } from '@augurproject/sdk';
+import { Events, Logs, TXEventName } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
@@ -49,11 +49,12 @@ import {
   reloadDisputingPage,
 } from 'modules/reporting/actions/update-reporting-list';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
+import { ALERT_TYPE } from 'modules/types';
 
 const handleAlert = (
   log: any,
   name: string,
-  toast: boolean,
+  alertType: ALERT_TYPE,
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -62,7 +63,7 @@ const handleAlert = (
     dispatch(
       updateAlert(log.transactionHash, {
         params: log,
-        toast,
+        alertType,
         status: TXEventName.Success,
         timestamp: blockchain.currentAugurTimestamp * 1000,
         name,
@@ -177,7 +178,7 @@ export const handleMarketCreatedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   if (isUserDataUpdate) {
-    handleAlert(log, CREATEMARKET, false, dispatch, getState);
+    handleAlert(log, CREATEMARKET, ALERT_TYPE.ALERT, dispatch, getState);
     dispatch(loadCreateMarketHistory());
   }
 };
@@ -241,7 +242,9 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICTRADE, true, dispatch, getState);
+    let alertType = ALERT_TYPE.TOAST_AND_ALERT;
+
+    handleAlert(log, PUBLICTRADE, alertType, dispatch, getState);
 
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -288,7 +291,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    handleAlert(log, PUBLICFILLORDER, ALERT_TYPE.TOAST, dispatch, getState);
     dispatch(loadMarketsInfo([marketId]));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -331,7 +334,7 @@ export const handleInitialReportSubmittedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
+    handleAlert(log, DOINITIALREPORT, ALERT_TYPE.ALERT, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
   if (isOnReportingPage()) dispatch(reloadReportingPage());
@@ -465,7 +468,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, CONTRIBUTE, false, dispatch, getState);
+    handleAlert(log, CONTRIBUTE, ALERT_TYPE.ALERT, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
@@ -475,7 +478,7 @@ export const handleDisputeCrowdsourcerCompletedLog = (
   log: Logs.DisputeCrowdsourcerCompletedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  handleAlert(log, CONTRIBUTE, false, dispatch, getState);
+  handleAlert(log, CONTRIBUTE, ALERT_TYPE.ALERT, dispatch, getState);
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
