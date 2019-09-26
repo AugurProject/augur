@@ -110,10 +110,17 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
               ? 'pre-filled stake'
               : 'make tentative winner'}
           </span>
-          <span>
-            {props.stake ? stakeCurrent.formatted : 0}
-            <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
-          </span>
+          {props.stake && props.stake.tentativeWinning ? (
+            <span>
+              {props.stake ? stakeCurrent.formatted : 0}
+              <span> REP</span>
+            </span>
+          ) : (
+            <span>
+              {props.stake ? stakeCurrent.formatted : 0}
+              <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
+            </span>
+          )}
         </div>
         <SecondaryButton
           small
@@ -254,7 +261,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
       {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
-            ((!props.expanded && index < 3) ||
+            ((!props.expanded && index < 4) ||
               (props.expanded || props.marketType === YES_NO)) &&
             (inDispute ? (
               <DisputeOutcome
