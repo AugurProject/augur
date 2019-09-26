@@ -420,9 +420,30 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.x'
+          versionSpec: '3.6'
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build:kovan
+        displayName: ui build
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -431,12 +452,7 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
           set -euo pipefail
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          # when we get deploy going we will swap these commands out for
-          # docker:release
           yarn workspace @augurproject/ui docker:release kovan
-          docker push augurproject/augur-ui:kovan
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
         env:
