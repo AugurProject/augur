@@ -92,6 +92,8 @@ export function updateExistingAlert(id, alert) {
       return fullAlert;
     };
     try {
+console.log("Update existing alert")
+console.log(alert)
       return dispatch(setAlertText(alert, callback));
     } catch (error) {
       return callback(error, null);
@@ -137,79 +139,7 @@ export function updateAlert(
             name: CONTRIBUTE,
           })
         );
-      } else if (
-        alertName === PUBLICFILLORDER ||
-        alertName === PUBLICFILLBESTORDERWITHLIMIT ||
-        alertName === PUBLICFILLBESTORDER
-      ) {
-        // if fill log comes in first
-        if (
-          alert.params.orderCreator.toUpperCase() !==
-          loginAccount.address.toUpperCase()
-        ) {
-          // filler
-          const foundOpenOrder = alerts.find(
-            findAlert =>
-              (findAlert.name.toUpperCase() === PUBLICTRADE ||
-                findAlert.name.toUpperCase() === PUBLICTRADEWITHLIMIT) &&
-              findAlert.id === id
-          );
-          if (foundOpenOrder) {
-            const amountFilled = new BigNumber(alert.params.amountFilled);
-            const orderAmount = new BigNumber(
-              foundOpenOrder.params._amount || foundOpenOrder.params.amount
-            );
 
-            if (amountFilled.lt(orderAmount)) {
-              // if part of order is unfilled, update placed order
-              dispatch(
-                updateExistingAlert(foundOpenOrder.id, {
-                  ...foundOpenOrder,
-                  params: {
-                    ...foundOpenOrder.params,
-                    _amount: orderAmount.minus(amountFilled),
-                  },
-                })
-              );
-            } else {
-              // if full order was filled, then delete placed order
-              dispatch(removeAlert(foundOpenOrder.id, foundOpenOrder.name));
-            }
-          }
-        }
-      } else if (
-        alertName === PUBLICTRADE ||
-        alertName === PUBLICTRADEWITHLIMIT
-      ) {
-        // if order placed log comes in first
-        const foundFilledOrder = alerts.find(
-          findAlert =>
-            (findAlert.name.toUpperCase() === PUBLICFILLORDER ||
-              findAlert.name.toUpperCase() === PUBLICFILLBESTORDERWITHLIMIT ||
-              findAlert.name.toUpperCase() === PUBLICFILLBESTORDER) &&
-            findAlert.id === id
-        );
-        if (foundFilledOrder) {
-          if (
-            foundFilledOrder.params.orderCreator.toUpperCase() !==
-            loginAccount.address.toUpperCase()
-          ) {
-            const amountFilled = new BigNumber(
-              foundFilledOrder.params.amountFilled
-            );
-            const orderAmount = new BigNumber(
-              alert.params._amount || alert.params.amount
-            );
-
-            if (amountFilled.lt(orderAmount)) {
-              // if part of order is unfilled, update placed order
-              alert.params._amount = orderAmount.minus(amountFilled);
-            } else {
-              // if full order was filled, then no need to add the placed order
-              return;
-            }
-          }
-        }
       }
       const foundAlert = alerts.find(
         findAlert =>

@@ -306,6 +306,8 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // PublicCreateOrders
       case PUBLICCREATEORDERS:
+console.log('setting text for alert')
+console.log(alert)
         if (alert.params._prices.length === 1) {
           alert.title = 'Order placed';
           alert.details = 'Your order has been added';
