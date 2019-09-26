@@ -556,6 +556,7 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
           set -euo pipefail
+          export NODE_OPTIONS="--max-old-space-size=6144"
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           # when we get deploy going we will swap these commands out for
