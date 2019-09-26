@@ -6,7 +6,6 @@ import { ParsedLog } from '@augurproject/types';
  * DB to store current outcome stake and dispute related information
  */
 export class DisputeDatabase extends DerivedDB {
-
   constructor(
     db: DB,
     networkId: number,
@@ -18,30 +17,30 @@ export class DisputeDatabase extends DerivedDB {
 
     this.db.createIndex({
       index: {
-        ddoc: "marketIndex",
-        fields: ["market"],
+        ddoc: 'marketIndex',
+        fields: ['market'],
       },
     });
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {
     if (log.name === 'InitialReportSubmitted') {
-        return this.processInitialReportSubmitted(log);
-        } else if (log.name === 'DisputeCrowdsourcerCreated') {
-            return this.processDisputeCrowdsourcerCreated(log);
-        } else if (log.name === 'DisputeCrowdsourcerContribution') {
-            return this.processDisputeCrowdsourcerContribution(log);
-        } else if (log.name === 'DisputeCrowdsourcerCompleted') {
-            return this.processDisputeCrowdsourcerCompleted(log);
-        }
-        return log;
-      }
+      return this.processInitialReportSubmitted(log);
+    } else if (log.name === 'DisputeCrowdsourcerCreated') {
+      return this.processDisputeCrowdsourcerCreated(log);
+    } else if (log.name === 'DisputeCrowdsourcerContribution') {
+      return this.processDisputeCrowdsourcerContribution(log);
+    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
+      return this.processDisputeCrowdsourcerCompleted(log);
+    }
+    return log;
+  }
 
-      private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
-        log['stakeCurrent'] = '0x0';
-        log['stakeRemaining'] = '0x0';
+  private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
+    log['stakeCurrent'] = '0x0';
+    log['stakeRemaining'] = '0x0';
     log['totalRepStakedInPayout'] = log['amountStaked'];
-        log['disputeRound'] = '0x01';
+    log['disputeRound'] = '0x01';
     return log;
   }
 
@@ -52,14 +51,14 @@ export class DisputeDatabase extends DerivedDB {
     return log;
   }
 
-      private processDisputeCrowdsourcerContribution(log: ParsedLog): ParsedLog {
-        log['stakeCurrent'] = log['currentStake']
-        return log;
-      }
+  private processDisputeCrowdsourcerContribution(log: ParsedLog): ParsedLog {
+    log['stakeCurrent'] = log['currentStake'];
+    return log;
+  }
 
-      private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
-        log['stakeCurrent'] = '0x0';
-        log['stakeRemaining'] = '0x0';
+  private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
+    log['stakeCurrent'] = '0x0';
+    log['stakeRemaining'] = '0x0';
     return log;
   }
 }
