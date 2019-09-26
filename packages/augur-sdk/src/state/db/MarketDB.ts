@@ -264,7 +264,7 @@ export class MarketDB extends DerivedDB {
     log['reportingState'] = MarketReportingState.CrowdsourcingDispute;
     log['totalRepStakedInMarket'] = padHex(log['amountStaked']);
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
-    log['disputeRound'] = '0x1';
+    log['disputeRound'] = '0x01';
     return log;
   }
 
@@ -326,9 +326,9 @@ export class MarketDB extends DerivedDB {
         reportingState = MarketReportingState.AwaitingFinalization;
       } else if (marketData.nextWindowStartTime && timestamp >= new BigNumber(marketData.nextWindowStartTime, 16).toNumber()) {
         reportingState = MarketReportingState.CrowdsourcingDispute;
-      } else if ((marketData.reportingState == MarketReportingState.PreReporting || marketData.reportingState == MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart.toNumber()) {
+      } else if ((marketData.reportingState === MarketReportingState.PreReporting || marketData.reportingState === MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart.toNumber()) {
           reportingState = MarketReportingState.OpenReporting;
-      } else if (marketData.reportingState == MarketReportingState.PreReporting && timestamp >= marketEnd.toNumber() && timestamp < openReportingStart.toNumber()) {
+      } else if (marketData.reportingState === MarketReportingState.PreReporting && timestamp >= marketEnd.toNumber() && timestamp < openReportingStart.toNumber()) {
           reportingState = MarketReportingState.DesignatedReporting;
       }
 

@@ -126,3 +126,26 @@ def test_malicious_universe_in_market_creation(contractsFixture, cash, augur, re
     # User B gets the 100k DAI
     # assert maliciousUniverse.muahahaha()
     # assert cash.balanceOf(userB) == cashAmount
+
+def test_dispute_window_buffer(contractsFixture, augur, universe):
+    time = contractsFixture.contracts["Time"]
+    constants = contractsFixture.contracts["Constants"]
+
+    initialTimestamp = 1569110400 # Sunday, September 22, 2019 12:00:00 AM
+    lessThanBuffer = constants.DISPUTE_WINDOW_BUFFER_SECONDS() - 1
+    timestamp = initialTimestamp + lessThanBuffer
+    time.setTimestamp(timestamp)
+
+    curDisputeWindowAddress = universe.getOrCreateCurrentDisputeWindow(True)
+    curDisputeWindow = contractsFixture.applySignature("DisputeWindow", curDisputeWindowAddress)
+
+    assert curDisputeWindow.getStartTime() < timestamp
+    assert curDisputeWindow.getEndTime() > timestamp
+
+    nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(True)
+    nextDisputeWindow = contractsFixture.applySignature("DisputeWindow", nextDisputeWindowAddress)
+
+    expectedMaxEndTime = 2 * 24 * 60 * 60 # 2 days out
+
+    assert nextDisputeWindow.getStartTime() > timestamp
+    assert nextDisputeWindow.getEndTime() < timestamp + expectedMaxEndTime

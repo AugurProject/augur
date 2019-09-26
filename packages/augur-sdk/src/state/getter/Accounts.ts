@@ -169,13 +169,13 @@ export class Accounts<TBigNumber> {
               reporter: params.account,
             },
           }
-        ).then((r) => r.reduce((acc, { amountRedeemed, initialReport, market, }) => {
-          const compositeKey = `${market}-${initialReport}`;
+        ).then((r) => r.reduce((acc, { amountRedeemed, initialReporter, market, }) => {
+          const compositeKey = `${market}-${initialReporter}`;
           return {
             ...acc,
             [compositeKey]: {
               marketId: market,
-              address: initialReport,
+              address: initialReporter,
               amount: amountRedeemed,
             },
           };

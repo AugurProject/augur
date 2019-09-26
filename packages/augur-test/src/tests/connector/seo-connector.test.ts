@@ -62,7 +62,7 @@ beforeAll(async () => {
   connector = new SEOConnector();
   console.log("Connector connecting");
   await connector.connect('');
-}, 120000);
+});
 
 test('SEOConnector :: Should route correctly and handle events, extraInfo', async done => {
   const yesNoMarket1 = await john.createYesNoMarket({
@@ -95,7 +95,7 @@ test('SEOConnector :: Should route correctly and handle events, extraInfo', asyn
   );
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-}, 15000);
+});
 
 test('SEOConnector :: Should route correctly and handle events', async done => {
   const yesNoMarket1 = await john.createYesNoMarket({
@@ -138,4 +138,4 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
   );
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-}, 15000);
+}, 60000);
