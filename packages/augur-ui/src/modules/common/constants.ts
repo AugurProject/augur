@@ -863,14 +863,17 @@ export const YES_NO_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
+    isTradeable: true,
   },
   {
     id: 1,
     description: 'No',
+    isTradeable: true,
   },
   {
     id: 2,
     description: 'Yes',
+    isTradeable: true,
   },
 ];
 
@@ -878,10 +881,12 @@ export const SCALAR_OUTCOMES = [
   {
     id: 0,
     description: 'Invalid',
+    isTradeable: true,
   },
   {
     id: 2,
     description: NON_EXISTENT,
+    isTradeable: true,
   },
 ];
 
