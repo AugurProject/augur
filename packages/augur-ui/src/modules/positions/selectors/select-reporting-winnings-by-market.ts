@@ -5,7 +5,7 @@ import {
   selectDisputeWindowStats,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { ZERO, REPORTING_STATE } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import {
