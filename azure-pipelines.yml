@@ -352,15 +352,15 @@ jobs:
    strategy:
      matrix:
        dev-pop-geth-v2:
-         IMAGE_NAME: augurproject/dev-pop-geth-v2
+         IMAGE_NAME: dev-pop-geth-v2
          NETWORK_ID: 102
          NORMAL_TIME: false
        dev-pop-normtime-geth-v2:
-         IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
+         IMAGE_NAME: dev-pop-normtime-geth-v2
          NETWORK_ID: 103
          NORMAL_TIME: true
        dev-pop-geth-15-v2:
-         IMAGE_NAME: augurproject/dev-pop-geth-15-v2
+         IMAGE_NAME: dev-pop-geth-15-v2
          NETWORK_ID: 104
          NORMAL_TIME: false
    steps:
@@ -384,26 +384,7 @@ jobs:
          vstsFeed: npmPackages
      - script: |
          set -exuo pipefail
-         export NETWORK_ID=$(NETWORK_ID)
-         export NORMAL_TIME=$(NORMAL_TIME)
-         docker run -p 8545:8545 -p 8546:8546 --name geth --detach augurproject/dev-node-geth:latest
-         yarn workspace @augurproject/tools flash run deploy --write-artifacts
-         yarn workspace @augurproject/tools build
-         yarn workspace @augurproject/tools flash run faucet --amount 10000000000000000000
-         yarn workspace @augurproject/tools flash run rep-faucet --amount 100000
-         yarn workspace @augurproject/tools flash run create-canned-markets-and-orders
-         docker cp geth:/geth geth
-         docker stop geth
-
-         MONO_ROOT=../../
-         CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-         # Build and copy to merge with current address.json/upload-block-numbers.json
-
-         cd packages/augur-tools
-         docker build --no-cache -f docker-builder/Dockerfile -t $(IMAGE_NAME) $MONO_ROOT
-#        ./scripts/copy-docker-files.sh $(IMAGE_NAME)
-         docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
-#        docker push $(IMAGE_NAME):$CONTRACT_SHA
+         packages/augur-tools/docker-builder/ci-build.sh -n $(NETWORK_ID) -t $(NORMAL_TIME) $(IMAGE_NAME)
        displayName: 'build and push $(IMAGE_NAME) image'
      - task: Docker@1
        displayName: docker login
