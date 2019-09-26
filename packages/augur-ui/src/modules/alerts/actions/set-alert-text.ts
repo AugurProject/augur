@@ -27,7 +27,6 @@ import {
   CANCELORDER,
   CLAIMTRADINGPROCEEDS,
   BUYPARTICIPATIONTOKENS,
-  PUBLICCREATEORDERS,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
@@ -300,26 +299,6 @@ export default function setAlertText(alert: any, callback: Function) {
                 );
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
-          })
-        );
-        break;
-
-      // PublicCreateOrders
-      case PUBLICCREATEORDERS:
-console.log('setting text for alert')
-console.log(alert)
-        if (alert.params._prices.length === 1) {
-          alert.title = 'Order placed';
-          alert.details = 'Your order has been added';
-        } else {
-          alert.title = 'Orders placed';
-          alert.details = 'Your orders have been added';
-        }
-        dispatch(
-          loadMarketsInfoIfNotLoaded([marketId], () => {
-            const marketInfo = selectMarket(marketId);
-            if (marketInfo === null) return;
-            alert.description = marketInfo.description;
           })
         );
         break;

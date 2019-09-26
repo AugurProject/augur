@@ -25,7 +25,7 @@ export enum SizeTypes {
 
 export enum ALERT_TYPE {
   TOAST = 'toast',
-  TOAST_AND_ALERT = 'toastAndAlert',
+  TOAST_AND_ALERT = 'toastAndAlert', // Not currently used, but may be used in the future
   ALERT = 'alert',
 };
 

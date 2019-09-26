@@ -96,15 +96,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
             name: CREATEMARKET,
           })
         );
-      } else if (methodCall === PUBLICCREATEORDERS) {
-        dispatch(
-          updateAlert(hash, {
-            params: transaction.params,
-            status: TXEventName.Success,
-            timestamp: blockchain.currentAugurTimestamp * 1000,
-            name: PUBLICCREATEORDERS,
-          })
-        );
       } else {
         dispatch(
           updateAlert(hash, {
@@ -123,17 +114,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const marketId = transaction.params[TX_MARKET_ID];
         const market = marketInfos[marketId];
         setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
-        if (eventName === TXEventName.Pending) {
-          dispatch(
-            updateAlert(hash, {
-              params: transaction.params,
-              status: TXEventName.Pending,
-              timestamp: blockchain.currentAugurTimestamp * 1000,
-              name: PUBLICCREATEORDERS,
-              ALERT_TYPE: ALERT_TYPE.TOAST,
-            })
-          );
-        }
         if (eventName === TXEventName.Success) {
           deleteMultipleLiquidityOrders(txStatus, market, dispatch);
         }
