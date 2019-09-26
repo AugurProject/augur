@@ -21,7 +21,7 @@ contract GnosisSafeRegistry {
         return true;
     }
 
-    // The misdirection here is becuase this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
+    // The misdirection here is because this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
     function callRegister(address _gnosisSafeRegistry) public {
         GnosisSafeRegistry _gnosisSafeRegistry = GnosisSafeRegistry(_gnosisSafeRegistry);
         _gnosisSafeRegistry.register();
