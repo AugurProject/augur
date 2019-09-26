@@ -64,7 +64,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     if (hash && eventName === TXEventName.Failure) {
       dispatch(
         addAlert({
-          id: hash ? hash : generateTxParameterId(transaction.params),
+          txHash: hash ? hash : generateTxParameterId(transaction.params),
+          uniqueId: hash ? hash : generateTxParameterId(transaction.params),
           params: transaction.params,
           status: eventName,
           timestamp: blockchain.currentAugurTimestamp * 1000,

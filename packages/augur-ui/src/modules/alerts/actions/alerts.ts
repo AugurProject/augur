@@ -83,15 +83,25 @@ export function updateExistingAlert(id, alert) {
   };
 }
 
-export function updateAlert(id: string, alert: any) {
+function createUniqueOrderId(alert) {
+  const price = alert.params._price ? alert.params._price.toString() : new BigNumber(alert.params.price).toString();
+  const outcome = alert.params._outcome ? alert.params._outcome.toString() : new BigNumber(alert.params.outcome).toString();
+  const direction = alert.params._direction ? alert.params._direction.toString() : alert.params.orderType;
+
+  return `${alert.id}_${price}_${outcome}_${direction}`;
+}
+
+export function updateAlert(txHash: string, alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
-    alert.id = id;
     if (alert) {
       const { alerts, loginAccount } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
+      alert.txHash = txHash;
+      alert.uniqueId = alertName === PUBLICTRADE ? createUniqueOrderId(alert) : txHash;
+
       if (alertName === DOINITIALREPORT) {
         dispatch(
-          updateAlert(id, {
+          updateAlert(txHash, {
             ...alert,
             params: {
               ...alert.params,
@@ -176,12 +186,12 @@ export function updateAlert(id: string, alert: any) {
       }
       const foundAlert = alerts.find(findAlert => {
         return (
-          findAlert.id === id &&
+          findAlert.uniqueId === alert.uniqueId &&
           findAlert.name.toUpperCase() === alert.name.toUpperCase()
         );
       });
       if (foundAlert) {
-        dispatch(removeAlert(id, alert.name));
+        dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
           addAlert({
             ...foundAlert,
