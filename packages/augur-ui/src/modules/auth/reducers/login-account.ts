@@ -4,6 +4,8 @@ import {
   CLEAR_LOGIN_ACCOUNT,
 } from 'modules/account/actions/login-account';
 import { LoginAccount, BaseAction } from 'modules/types';
+import { ZERO } from 'modules/common/constants';
+import { formatAttoDai } from 'utils/format-number';
 
 const DEFAULT_STATE: LoginAccount = {
   balances: {
@@ -12,11 +14,14 @@ const DEFAULT_STATE: LoginAccount = {
     dai: 0,
   },
   reporting: {
-    profitLoss: 0,
+    profitLoss: ZERO,
+    profitAmount: ZERO,
     reporting: null,
     disputing: null,
     participationTokens: null,
   },
+  allowance: ZERO,
+  allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
     unrealizedRevenue24hChangePercent: "0",
   }
