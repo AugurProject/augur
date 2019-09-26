@@ -110,4 +110,4 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //   }],
   // });
   done();
-}, 15000);
+});

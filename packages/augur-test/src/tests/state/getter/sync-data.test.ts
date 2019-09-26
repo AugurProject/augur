@@ -17,7 +17,7 @@ beforeAll(async () => {
   db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();
-}, 120000);
+});
 
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts
 test("State API :: Status :: getSyncData", async () => {

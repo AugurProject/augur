@@ -97,7 +97,6 @@ export interface InitialReportSubmitted extends FormattedEventLog {
   payoutNumerators: string[];
   description: string;
   timestamp: string;
-
 }
 
 export interface InitialReporterRedeemed extends FormattedEventLog {

@@ -13,7 +13,7 @@ let augur: Augur;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   augur = await makeTestAugur(seed, ACCOUNTS);
-}, 120000);
+});
 
 test('database failure during trackedUsers.getUsers() call', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -34,10 +34,10 @@ test('database failure during trackedUsers.getUsers() call', async () => {
   } catch (e) {
     err = e;
   }
-  await expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
+  await expect(err.message).toMatch(/^invalid address/);
   mock.failNext();
     await expect(trackedUsers.getUsers()).rejects.toThrow();
-}, 60000);
+});
 
 test('database failure during sync, followed by another sync', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -55,7 +55,7 @@ test('database failure during sync, followed by another sync', async () => {
     mock.constants.chunkSize,
     mock.constants.blockstreamDelay
   );
-}, 60000);
+});
 
 test('syncing: succeed then fail then succeed again', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -80,4 +80,4 @@ test('syncing: succeed then fail then succeed again', async () => {
     mock.constants.chunkSize,
     mock.constants.blockstreamDelay
   );
-}, 60000);
+});
