@@ -360,12 +360,18 @@ jobs:
     - PreFlightCheck
     - TestAugurCore
     condition: |
-      or
+      and
       (
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
-        not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
-        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+        succeeded(),
+        in(dependencies.PreFlightCheck.result, 'Succeeded'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
+          not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+          not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
