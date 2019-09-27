@@ -460,7 +460,8 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build:kovan
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
       - task: Docker@1
         displayName: docker login
@@ -471,12 +472,9 @@ jobs:
       - script: |
           set -euo pipefail
           export NODE_OPTIONS="--max-old-space-size=6144"
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           # when we get deploy going we will swap these commands out for
           # docker:release
-          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          #yarn workspace @augurproject/ui docker:release kovan
+          yarn workspace @augurproject/ui docker:release kovan
           docker push augurproject/augur-ui:kovan
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
