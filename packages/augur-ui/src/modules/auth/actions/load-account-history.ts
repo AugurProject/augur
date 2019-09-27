@@ -9,6 +9,7 @@ import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
 import { AppState } from 'store';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
+import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -23,6 +24,7 @@ function loadTransactions(
   appState: AppState,
   callback: NodeStyleCallback
 ) {
+  dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
   dispatch(loadCreateMarketHistory()); // uses getMarkets so marketInfo objects are already returned
   const options = {};
   const promises = [];

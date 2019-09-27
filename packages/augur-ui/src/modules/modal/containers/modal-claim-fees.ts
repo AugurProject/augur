@@ -5,7 +5,6 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   formatGasCostToEther,
   formatAttoRep,
-  formatEther,
   formatAttoDai,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
@@ -38,7 +37,7 @@ const mapStateToProps = (state: AppState, ownProps) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  redeemStake: (options, callback) => dispatch(redeemStake(options, callback)),
+  redeemStake: (options, callback) => redeemStake(options, callback),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {

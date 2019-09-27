@@ -46,7 +46,7 @@ export const selectReportingWinningsByMarket = createSelector(
           // filter out current dispute window rep staking
           if (c.address === disputeWindow.address) return p;
           return {
-            contracts: [...p.contracts, c],
+            contracts: [...p.contracts, c.address],
             dai: p.dai.plus(c.amountFees),
             rep: p.rep.plus(createBigNumber(c.amount)),
           };
