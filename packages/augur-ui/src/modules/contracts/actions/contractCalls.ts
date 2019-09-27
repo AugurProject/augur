@@ -126,10 +126,21 @@ export async function getDaiBalance(address: string): Promise<number> {
   return formatAttoDai(balance).value;
 }
 
+export async function sendDai(address: string, amount: string) {
+  const { contracts } = augurSdk.get();
+  const Cash = contracts.cash;
+  const onChainAmount = createBigNumber(amount).multipliedBy(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  return Cash.transfer(address, onChainAmount);
+}
+
 export async function sendEthers(address: string, amount: string) {
   const Augur = augurSdk.get();
-  // TODO: have middleware supprt for transferring ETH
-  return Promise.resolve();
+  const onChainAmount = createBigNumber(amount).multipliedBy(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  return Augur.sendETH(address, onChainAmount);
 }
 
 export async function sendRep(address: string, amount: string) {
@@ -138,14 +149,7 @@ export async function sendRep(address: string, amount: string) {
   const onChainAmount = createBigNumber(amount).multipliedBy(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
-  const result = await RepToken.send(address, onChainAmount, '');
-  return result;
-}
-
-export async function sendDai(address: string, amount: string) {
-  const Augur = augurSdk.get();
-  // TODO: have middleware supprt for transferring DAI
-  return Promise.resolve();
+  return RepToken.transfer(address, onChainAmount);
 }
 
 export async function getDisputeThresholdForFork() {

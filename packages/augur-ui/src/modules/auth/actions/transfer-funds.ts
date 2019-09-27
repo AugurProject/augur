@@ -1,27 +1,41 @@
-import * as speedomatic from "speedomatic";
-import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
-import { ETH, REP, CONFIRMED, FAILED } from "modules/common/constants";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { sendRep, sendEthers } from "modules/contracts/actions/contractCalls";
+import * as speedomatic from 'speedomatic';
+import { selectCurrentTimestampInSeconds as getTime } from 'store/select-state';
+import {
+  DAI,
+  ETH,
+  REP,
+  CONFIRMED,
+  FAILED,
+} from 'modules/common/constants';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import {
+  sendDai,
+  sendEthers,
+  sendRep,
+} from 'modules/contracts/actions/contractCalls';
 
 export function transferFunds(
   amount: string,
   currency: string,
-  toAddress: string,
+  toAddress: string
 ) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
     const to = speedomatic.formatEthereumAddress(toAddress);
-    
     // TODO: need to add ability to transfer DAI
     switch (currency) {
+      case DAI:
+        return sendDai(to, amount);
       case ETH:
         // TODO: alerts will be handled by pending tx event stuff.
         return sendEthers(to, amount);
-        /*
+      /*
         return augur.assets.sendEther({
           meta: loginAccount.meta,
           to,
@@ -49,8 +63,8 @@ export function transferFunds(
         */
       case REP:
         return sendRep(to, amount);
-        // TODO: alerts will be handled by pending tx event stuff.
-        /*
+      // TODO: alerts will be handled by pending tx event stuff.
+      /*
         return augur.assets.sendReputation({
           meta: loginAccount.meta,
           universe: universe.id,
@@ -81,7 +95,8 @@ export function transferFunds(
         });
         */
       default:
-        console.error("transferFunds: unknown currency", currency);
+        console.error('transferFunds: unknown currency', currency);
+        break;
     }
   };
 }
