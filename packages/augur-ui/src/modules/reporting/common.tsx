@@ -382,8 +382,8 @@ export class DisputingBondsView extends Component<
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
-    const min = formatAttoRep(minAllowableDisputeStake).value;
-    const remaining = formatAttoRep(stakeRemaining).value;
+    const min = convertAttoValueToDisplayValue(createBigNumber(minAllowableDisputeStake));
+    const remaining = convertAttoValueToDisplayValue(createBigNumber(stakeRemaining));
     const inputted = stakeValue ? convertAttoValueToDisplayValue(createBigNumber(stakeValue)) : stakeValue;
     return (
       <div
