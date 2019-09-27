@@ -33,6 +33,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+import { DisputeWindow } from '@augurproject/sdk/src/state/getter/Universe';
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -842,9 +843,10 @@ export interface ParticipationTokensViewProps {
   openModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
-  disputeWindow: string;
+  disputeWindow: DisputeWindow;
   participationTokens: object;
   tokensOwned: FormattedNumber;
+  percentageOfTotalFees: FormattedNumber;
 }
 
 export const ParticipationTokensView = (
@@ -855,6 +857,7 @@ export const ParticipationTokensView = (
     disputeWindowFees,
     purchasedParticipationTokens,
     tokensOwned,
+    percentageOfTotalFees,
   } = props;
 
   return (
@@ -884,7 +887,7 @@ export const ParticipationTokensView = (
         info
         header="Participation Tokens I OWN in Current Dispute Window"
         subheader={tokensOwned.formatted}
-        secondSubheader="(3.0724% of Total Fees)"
+        secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
       />
 
       <PrimaryButton text="Get Participation Tokens" action={openModal} />
