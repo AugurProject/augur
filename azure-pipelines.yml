@@ -364,7 +364,7 @@ jobs:
       (
         succeeded(),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
-        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
         or
         (
           eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
