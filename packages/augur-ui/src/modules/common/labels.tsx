@@ -341,30 +341,34 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
     scrollWidth: null,
     clientWidth: null,
     isDisabled: true,
+    textContent: null,
   };
 
-  measure() {
-    const { clientWidth, scrollWidth } = this.labelRef;
+
+  setLabelProperties() {
+    const { clientWidth, scrollWidth, textContent } = this.labelRef;
 
     this.setState({
       scrollWidth,
       clientWidth,
       isDisabled: !(scrollWidth > clientWidth),
+      textContent,
     });
   }
 
   componentDidMount() {
-    this.measure();
+    this.setLabelProperties();
   }
 
   componentDidUpdate() {
-    this.measure();
+    this.setLabelProperties();
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
     return (
       this.state.scrollWidth !== nextState.scrollWidth ||
-      this.state.clientWidth !== nextState.clientWidth
+      this.state.clientWidth !== nextState.clientWidth ||
+      this.state.textContent !== nextProps.text
     );
   }
   render() {
