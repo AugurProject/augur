@@ -11,6 +11,8 @@ export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
 export class GnosisSafe extends c.GnosisSafe<BigNumber> {
 }
+export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {
+}
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }
 export class ProxyFactory extends c.ProxyFactory<BigNumber> {

@@ -143,7 +143,7 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, isReporting } = this.props;
+    const { closeAction, title, market, rep, isReporting, selectedOutcome } = this.props;
     const s = this.state;
     const {
       description,
@@ -163,7 +163,15 @@ export default class ModalReporting extends Component<
 
     // todo: need to add already staked outcomes for scalar markets for disputing
     const isOpenReporting = reportingState === REPORTING_STATE.OPEN_REPORTING;
-    let radioButtons = outcomesFormatted
+    let sortedOutcomes = outcomesFormatted;
+    if (selectedOutcome || selectedOutcome == 0) {
+      const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
+      if (selected) {
+        sortedOutcomes = [selected, ...outcomesFormatted.filter(o => o.id !== Number(selectedOutcome))]
+      }
+    }
+
+    let radioButtons = sortedOutcomes
       .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
       .map(outcome => {
         let stake = disputeInfo.stakes.find(
@@ -186,12 +194,7 @@ export default class ModalReporting extends Component<
           checked: s.checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
           preFilledStake: formatAttoRep('0').formatted,
-          stake: {
-            ...stake,
-            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent).formatted,
-            stakeCurrent: formatAttoRep(stake.stakeCurrent).formatted,
-            stakeRemaining: formatAttoRep(stake.stakeRemaining).formatted,
-          },
+          stake,
         };
       });
 
@@ -199,16 +202,11 @@ export default class ModalReporting extends Component<
       disputeInfo.stakes.forEach(stake => {
         radioButtons.push({
           header: stake.outcome,
-          value: stake.outcome,
+          value: Number(stake.outcome),
           checked: s.checked === stake.outcome.toString(),
           isInvalid: stake.outcome === '0',
           preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
-          stake: {
-            ...stake,
-            bondSizeCurrent: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
-            stakeCurrent: formatAttoRep(stake.stakeCurrent).formatted,
-            stakeRemaining: formatAttoRep(stake.stakeRemaining).formatted,
-          },
+          stake,
         })
       })
     }
