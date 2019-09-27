@@ -364,6 +364,7 @@ jobs:
       (
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
       )
     pool:
