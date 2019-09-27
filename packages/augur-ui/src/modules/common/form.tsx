@@ -25,7 +25,7 @@ import {
 } from 'modules/common/icons';
 import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
-import { CUSTOM, SCALAR } from 'modules/common/constants';
+import { CUSTOM, SCALAR, ZERO } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatAttoRep, formatRep, formatNumber } from 'utils/format-number';
@@ -1025,7 +1025,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         };
       }
     }
-
+    const userRepStaked = ZERO; // TODO: get user's stake per round
     const reportingGasFee = formatNumber('100'); // TODO: get actual gas cost
     const inputtedStake =
       !checked || disputeStake === '' || isNaN(parseFloat(disputeStake))
@@ -1060,6 +1060,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeCurrent={formatAttoRep(stake.stakeCurrent)}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
                   inputtedStake={formatAttoRep(inputtedStake)}
+                  userRepStaked={formatAttoRep(userRepStaked)}
                   fullBond={formatAttoRep(fullBond)}
                 />
               )}

@@ -84,7 +84,7 @@ export default class ModalReporting extends Component<
         numOutcomes,
         marketType,
         description: '',
-        amount: this.state.preFilledStake,
+        attoRepAmount: this.state.preFilledStake,
         outcomeId,
         isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
       });
@@ -111,7 +111,7 @@ export default class ModalReporting extends Component<
           numOutcomes,
           marketType,
           description: '',
-          amount: this.state.disputeStake,
+          attoRepAmount: this.state.disputeStake,
           outcomeId,
           isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
         });
@@ -124,7 +124,7 @@ export default class ModalReporting extends Component<
           numOutcomes,
           marketType,
           description: '',
-          amount: this.state.disputeStake,
+          attoRepAmount: this.state.disputeStake,
           outcomeId,
           isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
         });

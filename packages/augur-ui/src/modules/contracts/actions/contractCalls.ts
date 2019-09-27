@@ -286,7 +286,7 @@ export interface doReportDisputeAddStake {
   marketType: string;
   outcomeId: number;
   description: string;
-  amount: string;
+  attoRepAmount: string;
   isInvalid: boolean;
 }
 
@@ -294,13 +294,10 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(report);
-  const amount = convertDisplayValuetoAttoValue(
-    new BigNumber(report.amount || '0')
-  );
   return await market.doInitialReport(
     payoutNumerators,
     report.description,
-    amount
+    new BigNumber(report.attoRepAmount || '0')
   );
 }
 
@@ -310,10 +307,9 @@ export async function addRepToTentativeWinningOutcome(
   const market = getMarket(addStake.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(addStake);
-  const amount = convertDisplayValuetoAttoValue(new BigNumber(addStake.amount));
   return await market.contributeToTentative(
     payoutNumerators,
-    amount,
+    new BigNumber(addStake.attoRepAmount),
     addStake.description
   );
 }
@@ -322,8 +318,7 @@ export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
-  const amount = convertDisplayValuetoAttoValue(new BigNumber(dispute.amount));
-  return await market.contribute(payoutNumerators, amount, dispute.description);
+  return await market.contribute(payoutNumerators, new BigNumber(dispute.attoRepAmount), dispute.description);
 }
 
 function getMarket(marketId) {
