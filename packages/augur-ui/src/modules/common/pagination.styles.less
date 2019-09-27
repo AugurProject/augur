@@ -12,12 +12,19 @@
     }
   }
 
+  button {
+    height: @size-32
+  }
+
+  button > span {
+    padding-right: @size-8;
+  }
+
   button > span::before {
     content: 'Show:';
 
     font-weight: normal;
     padding-right: @size-4;
-    margin-bottom: @size-40;
   }
 
   @media @breakpoint-mobile {
