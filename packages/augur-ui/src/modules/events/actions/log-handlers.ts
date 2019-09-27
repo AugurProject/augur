@@ -241,7 +241,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    handleAlert(log, PUBLICTRADE, true, dispatch, getState);
+    handleAlert(log, PUBLICTRADE, false, dispatch, getState);
 
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -497,4 +497,18 @@ export const handleDisputeWindowCreatedLog = (
   log: Logs.DisputeWindowCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadDisputeWindow());
+};
+
+export const handleTokensMintedLog = (
+  log: Logs.TokensMinted
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  if(log.tokenType === Logs.TokenType.ParticipationToken) {
+    const isUserDataUpdate = isSameAddress(
+      log.target,
+      getState().loginAccount.address
+    );
+    if (isUserDataUpdate) {
+      dispatch(loadAccountReportingHistory());
+    }
+  }
 };

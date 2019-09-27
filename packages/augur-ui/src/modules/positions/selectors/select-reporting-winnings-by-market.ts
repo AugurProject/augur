@@ -1,13 +1,11 @@
 import { createSelector } from 'reselect';
-
-import store from 'store';
 import {
   selectMarketInfosState,
   selectLoginAccountReportingState,
   selectDisputeWindowStats,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { ZERO, REPORTING_STATE } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import {
@@ -15,8 +13,6 @@ import {
   marketsReportingCollection,
 } from 'modules/types';
 import {
-  formatDai,
-  formatRep,
   formatAttoDai,
   formatAttoRep,
 } from 'utils/format-number';
@@ -50,7 +46,7 @@ export const selectReportingWinningsByMarket = createSelector(
           // filter out current dispute window rep staking
           if (c.address === disputeWindow.address) return p;
           return {
-            contracts: [...p.contracts, c],
+            contracts: [...p.contracts, c.address],
             dai: p.dai.plus(c.amountFees),
             rep: p.rep.plus(createBigNumber(c.amount)),
           };
@@ -70,7 +66,7 @@ export const selectReportingWinningsByMarket = createSelector(
     ) {
       claimableMarkets = userReporting.reporting.contracts.reduce(
         (p, contract) =>
-          isClaimable(contract.marketId) ? sumClaims(contract, p) : p,
+          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
         claimableMarkets
       );
     }
@@ -81,7 +77,7 @@ export const selectReportingWinningsByMarket = createSelector(
     ) {
       claimableMarkets = userReporting.disputing.contracts.reduce(
         (p, contract) =>
-          isClaimable(contract.marketId) ? sumClaims(contract, p) : p,
+          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
         claimableMarkets
       );
     }
@@ -114,7 +110,7 @@ function sumClaims(
       createBigNumber(contractInfo.amount)
     );
     found.contracts = [...found.contracts, contractInfo.address];
-    addedValue = createBigNumber(found.totalAmount);
+    addedValue = createBigNumber(contractInfo.amount);
   } else {
     addedValue = createBigNumber(contractInfo.amount);
     marketsCollection.marketContracts = [
@@ -133,7 +129,8 @@ function sumClaims(
   return marketsCollection;
 }
 
-function isClaimable(marketId: string) {
+function isClaimable(marketId: string, amount: BigNumber) {
+  if (createBigNumber(amount).lte(ZERO)) return false;
   const market = selectMarket(marketId);
   if (!market) return false;
   return (

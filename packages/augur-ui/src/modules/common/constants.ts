@@ -247,6 +247,7 @@ export enum MARKET_CARD_FORMATS {
 }
 
 export const SEARCH_FILTER_PLACHOLDER = 'Search markets and categories';
+export const SEARCH_FILTER_PLACHOLDER_MOBILE = 'Search';
 
 // The user should be able to sort by:
 

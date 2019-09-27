@@ -82,6 +82,7 @@ export interface Consensus {
 
 export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   marketId: string;
+  description: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
   volumeFormatted: FormattedNumber;
@@ -643,7 +644,7 @@ export interface MarketClaimablePositions {
 export interface ClaimReportingOptions {
   reportingParticipants: string[],
   disputeWindows: string[],
-  estimateGas: boolean;
+  estimateGas?: boolean;
 }
 
 export interface MarketReportContracts {
