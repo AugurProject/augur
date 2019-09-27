@@ -34,25 +34,33 @@
 
 .CategoriesGroup {
   > span {
-    .text-10-bold;
+    .text-11-bold;
 
     display: block;
     color: @color-secondary-text;
-    margin: 0 0 @size-16 0;
+    margin: 0 0 @size-13 0;
+
+    @media @breakpoint-mobile {
+      .text-14-bold;
+    }
   }
 }
 
 .ShowAll {
-  .mono-12;
+  .mono-11;
 
   cursor: pointer;
   color: @color-primary-action;
-  margin: @size-16 0 0 0;
+  margin: @size-20 0 @size-10 0;
+
+  @media @breakpoint-mobile {
+    .mono-14;
+  }
 }
 
 
 .AllCategories {
-  .text-14;
+  .text-11;
 
   color: @color-primary-text;
   text-transform: capitalize;
@@ -67,17 +75,23 @@
   }
 
   @media @breakpoint-mobile {
+    .text-14;
+
     margin: 0 @size-16;
   }
 }
 
 .SelectedCategories {
-  .text-14;
+  .text-11;
 
   color: @color-primary-text;
   text-transform: capitalize;
   user-select: none;
   cursor: pointer;
+
+  @media @breakpoint-mobile {
+    .text-14;
+  }
 
   > svg {
     fill: @color-primary-text;
@@ -109,11 +123,13 @@
 }
 
 .SelectedCategory {
-  .text-14-bold;
+  .text-11-bold;
 
   margin: @size-8 @size-40 @size-8 3.25rem;
 
   @media @breakpoint-mobile {
+    .text-14-bold;
+
     margin: @size-8 @size-24;
   }
 }
