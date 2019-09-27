@@ -461,6 +461,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
+          export ETHEREUM_NETWORK=kovan
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
