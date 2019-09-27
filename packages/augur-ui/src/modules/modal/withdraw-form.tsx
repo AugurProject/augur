@@ -7,7 +7,7 @@ import {
   Breakdown,
   Description,
 } from "modules/modal/common";
-import { ETH, REP, ZERO } from "modules/common/constants";
+import { DAI, ETH, REP, ZERO } from "modules/common/constants";
 import { formatEther, formatRep } from "utils/format-number";
 import isAddress from "modules/auth/helpers/is-address";
 import Styles from "modules/modal/modal.styles.less";
@@ -56,13 +56,17 @@ export class WithdrawForm extends Component<
 
   options = [
     {
+      label: DAI,
+      value: DAI,
+    },
+    {
       label: ETH,
       value: ETH,
     },
     {
       label: REP,
       value: REP,
-    }
+    },
   ];
 
   dropdownChange = (value: string) => {

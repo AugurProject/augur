@@ -89,6 +89,12 @@ export function convertDisplayValuetoAttoValue(
   return displayValue.multipliedBy(QUINTILLION);
 }
 
+export function convertAttoValueToDisplayValue(
+  displayValue: BigNumber
+): BigNumber {
+  return displayValue.dividedBy(QUINTILLION);
+}
+
 export function compareObjects(key: string, order: string) {
   return function(a: any, b: any) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
