@@ -24,7 +24,7 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
-import { formatRep, formatAttoRep, formatEther } from 'utils/format-number';
+import { formatRep, formatAttoRep } from 'utils/format-number';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
 import { InfoIcon } from 'modules/common/icons';
@@ -32,7 +32,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
-import { Getters } from '@augurproject/sdk/build';
+import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -265,6 +265,7 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
+  minAllowableDisputeStake: string;
 }
 
 interface DisputingBondsViewState {
@@ -294,7 +295,7 @@ export class DisputingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(range) || range === '') {
+    } else if (isNaN(Number(range)) || range === '') {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -305,7 +306,7 @@ export class DisputingBondsView extends Component<
     changeRange(range);
   };
 
-  changeStake = (stake: string) => {
+  changeStake = (inputStakeValue: string) => {
     const {
       changeStake,
       scalar,
@@ -313,22 +314,46 @@ export class DisputingBondsView extends Component<
       userAvailableRep,
       stakeRemaining,
       tentativeWinning,
+      minAllowableDisputeStake,
     } = this.props;
 
-    if (isNaN(stake) || stake === '') {
+    const min = formatAttoRep(minAllowableDisputeStake).value;
+    const remaining = formatAttoRep(stakeRemaining).value;
+    const inputToAttoRep = convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue))
+    if (
+      isNaN(Number(inputStakeValue)) ||
+      inputStakeValue === '' ||
+      inputStakeValue === '0' ||
+      inputStakeValue === '.' ||
+      inputStakeValue === '0.'
+    ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-    } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
+      return changeStake(inputStakeValue);
+    } else if (
+      createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
+    ) {
       this.setState({
-        stakeError: 'Value is bigger than REP balance',
+        stakeError: `Value is bigger than REP balance: ${userAvailableRep} REP`,
         disabled: true,
       });
     } else if (
       !tentativeWinning &&
       stakeRemaining &&
-      createBigNumber(stakeRemaining).lt(createBigNumber(stake))
+      createBigNumber(stakeRemaining).lt(inputToAttoRep)
     ) {
       this.setState({
-        stakeError: 'Value is bigger than needed stake',
+        stakeError: `Value is bigger than needed: ${remaining} REP`,
+        disabled: true,
+      });
+    } else if (
+      !tentativeWinning &&
+      stakeRemaining &&
+      createBigNumber(inputToAttoRep).lt(
+        createBigNumber(minAllowableDisputeStake)
+      )
+    ) {
+      this.setState({
+        stakeError: `Value is samllar than minimum: ${min} REP`,
         disabled: true,
       });
     } else {
@@ -340,7 +365,7 @@ export class DisputingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    changeStake(stake);
+    changeStake(inputToAttoRep);
   };
 
   render() {
@@ -349,14 +374,16 @@ export class DisputingBondsView extends Component<
       rangeValue,
       scalarDenomination,
       stakeValue,
-      userAvailableRep,
       stakeRemaining,
       tentativeWinning,
       reportAction,
+      minAllowableDisputeStake,
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
-
+    const min = formatAttoRep(minAllowableDisputeStake).value;
+    const remaining = formatAttoRep(stakeRemaining).value;
+    const inputted = stakeValue ? convertAttoValueToDisplayValue(createBigNumber(stakeValue)) : stakeValue;
     return (
       <div
         className={classNames(Styles.DisputingBondsView, {
@@ -373,7 +400,7 @@ export class DisputingBondsView extends Component<
         )}
         <TextInput
           placeholder={'0.0000'}
-          value={stakeValue}
+          value={String(inputted)}
           onChange={value => this.changeStake(value)}
           errorMessage={stakeError}
           innerLabel="REP"
@@ -382,13 +409,13 @@ export class DisputingBondsView extends Component<
           <section>
             <CancelTextButton
               noIcon
-              action={() => this.changeStake(stakeRemaining)}
+              action={() => this.changeStake(String(min))}
               text={'MIN'}
             />
             |
             <CancelTextButton
               noIcon
-              action={() => this.changeStake(stakeRemaining)}
+              action={() => this.changeStake(String(remaining))}
               text={'FILL DISPUTE BOND'}
             />
           </section>
@@ -397,7 +424,7 @@ export class DisputingBondsView extends Component<
         <LinearPropertyLabel
           key="disputeRoundStake"
           label="Dispute Round Stake"
-          value={formatRep(stakeValue).formatted + ' REP'}
+          value={formatAttoRep(stakeValue).formatted + ' REP'}
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
@@ -465,7 +492,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(range) || range === '') {
+    } else if (isNaN(Number(range)) || range === '') {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -484,7 +511,7 @@ export class ReportingBondsView extends Component<
       userAvailableRep,
     } = this.props;
 
-    if (isNaN(stake)) {
+    if (isNaN(Number(stake))) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
     } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
       this.setState({

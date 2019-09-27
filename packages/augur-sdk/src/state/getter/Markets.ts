@@ -1005,10 +1005,10 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
   for (let i = 0; i < stakeDetails.length; i++) {
     const outcomeDetails = stakeDetails[i];
     const outcomeValue = getOutcomeValue(market, outcomeDetails.payoutNumerators);
-    if (outcomeDetails.disputeRound < market.disputeRound) {
-      const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
-        .multipliedBy(2)
-        .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
+    const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
+    .multipliedBy(2)
+    .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout || '0').multipliedBy(3)).toFixed();
+if (outcomeDetails.disputeRound < market.disputeRound) {
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
@@ -1023,7 +1023,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
-        bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),
+        bondSizeCurrent: new BigNumber(bondSizeCurrent).toFixed(),
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
         tentativeWinning: String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators),

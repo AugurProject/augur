@@ -82,6 +82,7 @@ export interface Consensus {
 
 export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   marketId: string;
+  description: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
   volumeFormatted: FormattedNumber;

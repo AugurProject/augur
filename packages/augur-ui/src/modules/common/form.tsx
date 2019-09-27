@@ -246,6 +246,7 @@ interface RadioGroupProps {
   scalarOutcome?: string;
   initialReporterStake?: string;
   isOpenReporting: boolean;
+  stake?: Getters.Markets.StakeDetails;
 }
 
 interface RadioGroupState {
@@ -760,6 +761,18 @@ export const ReportingRadioBarGroup = ({
   const tentativeWinning = radioButtons.find(
     radioButton => radioButton.stake.tentativeWinning
   );
+  let winningStakeCurrent = '0';
+  let disputeAmount = '0';
+  let notNewTentativeWinner = false;
+  if (tentativeWinning) {
+    const winning = disputeInfo.stakes.find(s => s.tentativeWinning);
+    const disputeOutcome = disputeInfo.stakes.find(s => s.outcome === selected);
+    if (disputeOutcome) {
+      notNewTentativeWinner = createBigNumber(winning.stakeCurrent).gt(disputeOutcome.bondSizeCurrent);
+      disputeAmount = formatAttoRep(disputeOutcome.bondSizeCurrent).formatted;
+      winningStakeCurrent = formatAttoRep(winning.stakeCurrent).formatted;
+    }
+  }
 
   return (
     <div className={Styles.ReportingRadioBarGroup}>
@@ -795,10 +808,16 @@ export const ReportingRadioBarGroup = ({
           ? 'Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake.'
           : 'If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome.'}
       </span>
+      {notNewTentativeWinner && (
+        <Error
+          header={`"Filling this bond of ${disputeAmount} REP only completes this current round`}
+          subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
+        />
+      )}
       {marketType === SCALAR && (
         <ReportingRadioBar
           disputeInfo={disputeInfo}
-          header=''
+          header=""
           value={'1'}
           checked={'1' === selected}
           stake={null}
@@ -828,7 +847,7 @@ export const ReportingRadioBarGroup = ({
           !radio.stake.tentativeWinning && (
             <ReportingRadioBar
               disputeInfo={disputeInfo}
-              key={index + radio.value}
+              key={`${index}${radio.value}`}
               expandable
               {...radio}
               checked={radio.value.toString() === selected}
@@ -853,7 +872,7 @@ export const ReportingRadioBarGroup = ({
         <>
           <span>
             {isReporting
-              ? 'Select Invalid if you believe this market\'s outcome was ambiguous or unverifiable.'
+              ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
               : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
           </span>
           <ReportingRadioBar
@@ -899,7 +918,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const {
       radioButtons,
       onChange,
-      errorMessage,
       reporting,
       marketType,
       minPrice,
@@ -944,7 +962,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
           />
         )}
         {!reporting &&
-          radioButtons.map((radio, index) => (
+          radioButtons.map((radio) => (
             <RadioBar
               key={radio.value}
               {...radio}
@@ -974,7 +992,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       minPrice,
       maxPrice,
       scalarDenomination,
-      expandable,
       isReporting,
       isOpenReporting,
       preFilledStake,
@@ -1000,12 +1017,8 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         stake = {
           outcome: scalarOutcome,
           stakeCurrent: '0',
-          bondSizeCurrent: createBigNumber(
-            disputeInfo.bondSizeOfNewStake
-          ).toString(),
-          stakeRemaining: createBigNumber(
-            disputeInfo.bondSizeOfNewStake
-          ).toString(),
+          bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
+          stakeRemaining: disputeInfo.bondSizeOfNewStake,
           isInvalidOutcome: false,
           isMalformedOutcome: false,
           tentativeWinning: false,
@@ -1016,17 +1029,13 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     const reportingGasFee = formatNumber('100'); // TODO: get actual gas cost
     const inputtedStake =
       !checked || disputeStake === '' || isNaN(parseFloat(disputeStake))
-        ? formatAttoRep('0')
-        : formatAttoRep(disputeStake);
+        ? '0'
+        : disputeStake;
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && inputtedStake
-        ? formatRep(
-            createBigNumber(stake.stakeCurrent).plus(
-              inputtedStake.fullPrecision
-            )
-          )
-        : formatRep('0');
+        ? createBigNumber(stake.stakeCurrent).plus(inputtedStake)
+        : '0';
 
     return (
       <div
@@ -1050,8 +1059,8 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 <DisputingButtonView
                   stakeCurrent={formatAttoRep(stake.stakeCurrent)}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
-                  inputtedStake={inputtedStake}
-                  fullBond={fullBond}
+                  inputtedStake={formatAttoRep(inputtedStake)}
+                  fullBond={formatAttoRep(fullBond)}
                 />
               )}
               {stake && stake.tentativeWinning && (
@@ -1073,6 +1082,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  minAllowableDisputeStake={initialReporterStake}
                 />
               )}
             </>
