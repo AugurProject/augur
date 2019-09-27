@@ -1061,7 +1061,7 @@ export const MarketStateLabel = (
   >
     <div>{props.label}</div>
     {props.selected && !props.loading && (
-      <div>{props.count}</div>
+      <div>({props.count})</div>
     )}
     {props.loading && props.selected && (
       <div>

@@ -22,6 +22,10 @@
   transition: min-width @animation-speed-normal @animation-default-type;
   width: 100%;
 
+  > button {
+    margin-right: @size-16;
+  }
+
   > svg {
     fill: @color-primary-text;
     height: @size-16;
@@ -31,9 +35,10 @@
   }
 
   > input {
+    .text-14;
+
     border: none;
     color: @color-primary-text;
-    font-size: inherit;
     line-height: normal;
     padding: 0 0 0 @size-8;
     text-overflow: ellipsis;
