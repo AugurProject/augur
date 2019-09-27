@@ -230,8 +230,8 @@ export class Accounts<TBigNumber> {
                 ...acc,
                 [`${token}`]: {
                   address: token,
-                  amount: new BigNumber(amount),
-                  amountFees: new BigNumber(0),
+                  amount: existing.amount.plus(new BigNumber(amount)),
+                  amountFees: existing.amountFees.plus(new BigNumber(0)),
                 },
               }
             : {
