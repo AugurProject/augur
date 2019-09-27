@@ -26,22 +26,27 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 
-const mapStateToProps = state => ({
-  blockchain: state.blockchain,
-  categories: state.categories,
-  connection: state.connection,
-  env: state.env,
-  isLogged: state.authStatus.isLogged,
-  isMobile: state.appStatus.isMobile,
-  isMobileSmall: state.appStatus.isMobileSmall,
-  loginAccount: state.loginAccount,
-  modal: state.modal,
-  alerts: selectInfoAlertsAndSeenCount(state),
-  universe: state.universe,
-  url: state.url,
-  useWeb3Transport: isGlobalWeb3(),
-  sidebarStatus: state.sidebarStatus
-});
+const mapStateToProps = state => {
+  const { alerts } = selectInfoAlertsAndSeenCount(state);
+
+  return {
+    blockchain: state.blockchain,
+    categories: state.categories,
+    connection: state.connection,
+    env: state.env,
+    isLogged: state.authStatus.isLogged,
+    isMobile: state.appStatus.isMobile,
+    isMobileSmall: state.appStatus.isMobileSmall,
+    loginAccount: state.loginAccount,
+    modal: state.modal,
+    alerts,
+    toasts: alerts.filter(alert => alert.toast && !alert.seen),
+    universe: state.universe,
+    url: state.url,
+    useWeb3Transport: isGlobalWeb3(),
+    sidebarStatus: state.sidebarStatus
+  }
+};
 
 const mapDispatchToProps = dispatch => ({
   initAugur: (history, overrides, cb) =>

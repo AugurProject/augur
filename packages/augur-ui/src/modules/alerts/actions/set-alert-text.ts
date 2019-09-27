@@ -350,6 +350,7 @@ export default function setAlertText(alert: any, callback: Function) {
     }
 
     if (alert.status === TXEventName.Failure) {
+      alert.description = alert.title;
       alert.title = 'Failed transaction';
     }
 
