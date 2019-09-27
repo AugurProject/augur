@@ -21,6 +21,7 @@ import {
     ProfitLoss,
     SimulateTrade,
     ZeroXTrade,
+    GnosisSafeRegistry,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -227,10 +228,10 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadGnosisContracts(): Promise<void> {
         const proxyFactoryContract = await this.contracts.get("ProxyFactory");
-        proxyFactoryContract.address = await this.construct(proxyFactoryContract, []);
+        proxyFactoryContract.address = await this.uploadAndAddToAugur(proxyFactoryContract, "ProxyFactory", []);
 
         const gnosisSafeContract = await this.contracts.get("GnosisSafe");
-        gnosisSafeContract.address = await this.construct(gnosisSafeContract, []);
+        gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, "GnosisSafe", []);
     }
 
     private async upload0xContracts(): Promise<void> {
@@ -344,6 +345,10 @@ Deploying to: ${networkConfiguration.networkName}
         const zeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
         promises.push(zeroXTrade.initialize(this.augur!.address));
 
+        const GnosisSafeRegistryContract = await this.getContractAddress("GnosisSafeRegistry");
+        const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, GnosisSafeRegistryContract);
+        promises.push(gnosisSafeRegistry.initialize(this.augur!.address));
+
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
             const time = new TimeControlled(this.dependencies, timeContract);
@@ -423,6 +428,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
+        mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {

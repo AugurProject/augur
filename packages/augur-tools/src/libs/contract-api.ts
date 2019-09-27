@@ -584,23 +584,13 @@ export class ContractAPI {
     }
   }
 
-  async getGnosisSafeAddress(paymentToken: string, payment: BigNumber): Promise<string> {
-    const params = {
-      paymentToken,
-      payment,
-      owner: this.account.publicKey,
-    };
-    return this.augur.gnosis.getGnosisSafeAddress(params);
+  async createGnosisSafeDirectlyWithETH(): Promise<ContractInterfaces.GnosisSafe> {
+    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(this.account.publicKey);
+    return this.augur.contracts.gnosisSafeFromAddress(address);
   }
 
-  async createGnosisSafeDirectlyWithETH(paymentToken: string, payment: BigNumber): Promise<ContractInterfaces.GnosisSafe> {
-    const params = {
-      paymentToken,
-      payment,
-      owner: this.account.publicKey,
-    };
-    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(params);
-    return this.augur.contracts.gnosisSafeFromAddress(address);
+  async getGnosisSafeAddress(account: string): Promise<string> {
+    return this.augur.gnosis.getGnosisSafeAddress(account);
   }
 
   async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {

@@ -12,6 +12,8 @@ export interface CreateSafeData {
   saltNonce: number;
   threshold: number;
   owners: string[];
+  to?: string;
+  data?: string;
   paymentToken: string;
 }
 

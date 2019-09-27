@@ -3168,6 +3168,84 @@ divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
 
 
 
+### `GnosisSafeRegistry`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafeRegistry.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#GnosisSafeRegistry.callRegister(address)"><code class="function-signature">callRegister(address _gnosisSafeRegistry)</code></a></li><li><a href="#GnosisSafeRegistry.register()"><code class="function-signature">register()</code></a></li><li><a href="#GnosisSafeRegistry.getSafe(address)"><code class="function-signature">getSafe(address _account)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.callRegister(address)"></a><code class="function-signature">callRegister(address _gnosisSafeRegistry)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.register()"></a><code class="function-signature">register()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.getSafe(address)"></a><code class="function-signature">getSafe(address _account) <span class="return-arrow">→</span> <span class="return-type">contract IGnosisSafe</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IGnosisSafe`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IGnosisSafe.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#IGnosisSafe.getOwners()"><code class="function-signature">getOwners()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getThreshold()"></a><code class="function-signature">getThreshold() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IProxyFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#IProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IProxyFactory.proxyRuntimeCode()"></a><code class="function-signature">proxyRuntimeCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IProxyFactory.proxyCreationCode()"></a><code class="function-signature">proxyCreationCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `DelegationTarget`
 
 
