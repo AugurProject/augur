@@ -354,7 +354,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
     });
   }
 
-  compomeanentDidMount() {
+  componentDidMount() {
     this.measure();
   }
 
