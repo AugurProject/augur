@@ -5,6 +5,7 @@ import moment from 'moment';
 import classNames from 'classnames';
 
 import { Close } from 'modules/common/icons';
+import { FAILURE } from 'modules/common/constants';
 import Styles from 'modules/alerts/components/alert.styles.less';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -23,6 +24,7 @@ interface AlertProps {
   toggleAlerts: Function;
   noShow?: boolean;
   showToast?: boolean;
+  status: string;
 }
 
 export default class Alert extends Component<AlertProps, {}> {
@@ -37,6 +39,7 @@ export default class Alert extends Component<AlertProps, {}> {
       title,
       noShow,
       showToast,
+      status
     } = this.props;
 
     if (!title || title === '') return null;
@@ -46,6 +49,7 @@ export default class Alert extends Component<AlertProps, {}> {
       <article
         className={classNames(Styles.Alert, {
           [Styles.Seen]: seen,
+          [Styles.Failure]: status === FAILURE
         })}
       >
         <div>
