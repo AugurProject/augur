@@ -213,13 +213,21 @@ export interface OutcomeGroupProps {
   dispute?: Function;
 }
 
+const MARKET_CARD_FOLD_OUTCOME_COUNT = 4;
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const inDispute =
     props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
-  outcomesCopy.splice(2, 0, removedInvalid);
+  if (
+    !props.expanded &&
+    props.outcomes.length > MARKET_CARD_FOLD_OUTCOME_COUNT
+  ) {
+    outcomesCopy.splice(MARKET_CARD_FOLD_OUTCOME_COUNT - 1, 0, removedInvalid);
+  } else {
+    outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
+  }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
@@ -261,7 +269,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
       {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
-            ((!props.expanded && index < 4) ||
+            ((!props.expanded && index < MARKET_CARD_FOLD_OUTCOME_COUNT) ||
               (props.expanded || props.marketType === YES_NO)) &&
             (inDispute ? (
               <DisputeOutcome
