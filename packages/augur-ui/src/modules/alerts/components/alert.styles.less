@@ -49,6 +49,17 @@
   }
 }
 
+.Failure {
+  background-color: fade(@color-alternate-error, 90%);
+  > div:first-of-type {
+    > div:first-of-type {
+      > div:first-of-type {
+        color: @color-resolved;
+      }
+    }
+  }
+}
+
 .Row {
   display: flex;
   justify-content: space-between;

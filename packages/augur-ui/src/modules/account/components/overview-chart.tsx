@@ -60,8 +60,8 @@ export default class OverviewChart extends React.Component<
     this.getChartData(timeRangeDataConfig);
   };
 
-  componentDidUpdate = (nextProps: OverviewChartProps) => {
-    if (nextProps.timeframe !== this.props.timeframe) {
+  componentDidUpdate = (prevProps: OverviewChartProps) => {
+    if (prevProps.timeframe !== this.props.timeframe) {
       const timeRangeDataConfig =
         constants.TIMEFRAME_OPTIONS[this.props.timeframe];
       this.getChartData(timeRangeDataConfig);

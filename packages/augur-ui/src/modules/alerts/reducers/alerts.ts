@@ -52,7 +52,7 @@ export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction
           return alert;
         }
 
-        return {...alert, ...data.alert};
+        return Object.assign(alert, data.alert);
       });
 
       return updatedAlerts;

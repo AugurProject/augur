@@ -5,6 +5,8 @@ variables:
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
     PRIMARY_NODE_VERSION: 10.16.x
     GETH_VERSION: v1.8.27
+    SOLC_VERSION: v0.5.10
+    SOLC_MD5: be02011efd6c6afd27cda02871bd70b3
 
 trigger:
   batch: false
@@ -42,6 +44,16 @@ jobs:
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
               fi
+              if [[ $f =~ .*augur-artifacts/.* ]]
+              then
+                echo "found an artifacts change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
+              fi
+              if [[ $f == .*augur-tools/docker-builder/* ]]
+              then
+                echo "found a docker-builder change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_DOCKER_BUILDER;isOutput=true]true"
+              fi
               if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
               then
                 echo "found a change in geth-poa: $f"
@@ -70,8 +82,8 @@ jobs:
         succeeded(),
         or
         (
-          ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-          ne(variables['Build.SourceBranch'], 'refs/tags')
+          ne(variables['Build.sourceBranch'], 'refs/heads/master'),
+          ne(variables['Build.sourceBranch'], 'refs/tags')
         )
       )
     variables:
@@ -81,6 +93,7 @@ jobs:
       JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
       USE_NORMAL_TIME: false
       PRODUCTION: false
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -98,7 +111,7 @@ jobs:
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
       - script: |
-          yarn install
+          yarn install --frozen-lockfile
         displayName: Install Dependencies
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
         inputs:
@@ -111,46 +124,71 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          yarn workspace @augurproject/ui build:kovan
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
         condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
           set -euo pipefail
-          export NODE_OPTIONS="--max-old-space-size=6144"
+          bash <(curl -s https://peek.run/ci)
+        displayName: feature peek
+        condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
+      - bash: |
+          set -euo pipefail
           yarn test --runInBand --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
 
-  - job: FeaturePeek
+  - job: ContractSanityCheck
     dependsOn:
     - TestAndLint
+    - PreFlightCheck
     condition: |
       and
       (
         succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
       - checkout: self
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6'
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
+      - bash: |
+          set -euo pipefail
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python3 -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
+        displayName: Python3 requirements
+      - bash: |
+          set -exuo pipefail
+          echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
+          sudo curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
+          md5sum -c solc.md5 && \
+          sudo chmod a+x /usr/local/bin/solc
+        displayName: install solc
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
       - script: |
-          yarn install
+          yarn install --frozen-lockfile
         displayName: Install Dependencies
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
         inputs:
@@ -160,275 +198,36 @@ jobs:
       - bash: |
           set -euo pipefail
           yarn build
-        displayName: yarn build
+          source venv/bin/activate
+          yarn workspace @augurproject/core build
+        displayName: compile contracts
       - bash: |
           set -euo pipefail
-          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-        env:
-          ETHEREUM_NETWORK: "kovan"
-          NODE_OPTIONS: "--max_old_space_size=6144"
-        displayName: ui build
-      - bash: |
-          set -euo pipefail
-          bash <(curl -s https://peek.run/ci)
-        displayName: trigger FeaturePeek
-
-  - job: Augur_build_docker_image
-    dependsOn:
-    - TestAndLint
-    - PreFlightCheck
-    condition: |
-      or
-      (
-        and
-        (
-          succeeded(),
-          or
-          (
-            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-          )
-        ),
-        eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-      - checkout: self
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '3.x'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - bash: |
-          set -euo pipefail
-          yarn build
-        displayName: yarn build
-      - bash: |
-          set -euo pipefail
-          yarn docker:build:augur
-          docker images
-          docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-      - bash: |
-          set -euo pipefail
-          docker images
-          docker push augurproject/augur-build:latest
-        displayName: docker push latest
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-
-# - job: Contract_Changes_and_no_Compile_check
-#   dependsOn:
-#   - TestAndLint
-#   - PreFlightCheck
-#   condition: |
-#     and
-#     (
-#       succeeded(),
-#       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-#     )
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   steps:
-#     - checkout: self
-#     - task: UsePythonVersion@0
-#       inputs:
-#         versionSpec: '3.x'
-#     - task: NodeTool@0
-#       inputs:
-#         versionSpec: $(PRIMARY_NODE_VERSION)
-#     - bash: |
-#         set -euo pipefail
-#         yarn
-#         yarn build
-#         yarn workspace @augurproject/core build:python
-#         yarn workspace @augurproject/core build
-#         git update-index -q --ignore-submodules --refresh
-#         err=0
-#         if ! git diff-files --quiet --ignore-submodules --
-#         then
-#             echo >&2 "unstaged changes detected"
-#             git diff-files --name-status -r --ignore-submodules -- >&2
-#             err=1
-#         fi
-#         if ! git diff-index --cached --quiet HEAD --ignore-submodules --
-#         then
-#             echo >&2 "uncommitted changes detected"
-#             git diff-index --cached --name-status -r --ignore-submodules HEAD -- >&2
-#             err=1
-#         fi
-#         if [ $err = 1 ]
-#         then
-#             echo >&2 "Contract changes detected"
-#             echo >&2 "Please rebuild augur-core and commit the generated files:"
-#             echo >&2 "yarn workspace @augurproject/core build"
-#             exit 1
-#         fi
-
-  - job: Build_Core_Docker
-    dependsOn:
-    - TestAndLint
-    - Augur_build_docker_image
-    - PreFlightCheck
-#   - Contract_Changes_and_no_Compile_check
-    condition: |
-      and
-      (
-        succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-        )
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-      - checkout: self
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '3.x'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Docker@1
-        displayName: docker login
-        inputs:
-          command: login
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-      - script: |
-          docker pull $CORE_IMAGE_LATEST;
-        displayName: augur-core pull
-      - script: |
-          set -euo pipefail
-          docker images
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker images
-          yarn workspace @augurproject/core docker:build;
-        displayName: augur-core docker image
-      - script: |
-          contract_sha=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-          docker tag $CORE_IMAGE_LATEST $CORE_IMAGE_BUILD;
-          docker tag $CORE_IMAGE_LATEST augurproject/augur-core:$contract_sha;
-          docker push $CORE_IMAGE_BUILD
-          docker push augurproject/augur-core:$contract_sha
-        displayName: augur-core push
-      - task: Docker@1
-        displayName: docker logout
-        inputs:
-          command: logout
-          containerRegistryType: Container Registry
-          dockerRegistryEndpoint: dockerhub-augurproject
-
-  - job: Test_Augur_Core
-    dependsOn:
-    - TestAndLint
-    - Build_Core_Docker
-    - PreFlightCheck
-    condition: |
-      and
-      (
-        succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-        )
-      )
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    timeoutInMinutes: 120
-    strategy:
-      maxParallel: 5
-      matrix:
-        trading_and_libs:
-          TESTS: tests/test*.py tests/libraries tests/trading
-        reporting:
-          TESTS: tests/reporting
-        fuzzy:
-          TESTS: tests/fuzzy
-        unit:
-          TESTS: tests/unit
-#       trading_and_libs_subfork:
-#         TESTS: tests/test*.py tests/libraries tests/trading --subFork
-#       reporting_subfork:
-#         TESTS: tests/reporting --subFork
-#       fuzzy_subfork:
-#         TESTS: tests/fuzzy --subFork
-#       unit_subfork:
-#         TESTS: tests/unit --subFork
-        geth_integration:
-          TESTS: integration:geth
-        parity_integration:
-          TESTS: integration:parity
-        security_mithril:
-          TESTS: security:mythril
-    steps:
-      - checkout: self
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '3.x'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - bash: |
-          set -euo pipefail
-          which node
-          node --version
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker pull $CORE_IMAGE_BUILD
-          docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
-          docker images
-          echo "tests: $(TESTS)"
-          if [[ "$(TESTS)" == "integration:geth" ]]; then
-            yarn workspace @augurproject/core docker:run:test:integration:geth;
-          elif [[ "$(TESTS)" == "integration:parity" ]]; then
-            yarn workspace @augurproject/core docker:run:test:integration:parity;
-          elif [[ "$(TESTS)" == "security:mythril" ]]; then
-            yarn workspace @augurproject/core docker:run:test:security:mythril;
-            cat $(find . -name test-results.log)
-          elif [[ "$(TESTS)" == "security:maian" ]]; then
-            yarn workspace @augurproject/core docker:run:test:security:maian;
-          elif [[ "$(TESTS)" == "security:smt" ]]; then
-            yarn workspace @augurproject/core docker:run:test:security:smt;
-          elif [[ "$(TESTS)" == "security:oyente" ]]; then
-            yarn workspace @augurproject/core docker:run:test:security:oyente;
-          else
-            (cd packages/augur-core &&  yarn docker:run:test:unit -- $(TESTS))
+          git update-index -q --ignore-submodules --refresh
+          err=0
+          if ! git diff-files --quiet --ignore-submodules --
+          then
+              echo >&2 "unstaged changes detected"
+              git diff-files --name-status -r --ignore-submodules -- >&2
+              git diff
+              err=1
           fi
-        displayName: integration tests
+          if ! git diff-index --cached --quiet HEAD --ignore-submodules --
+          then
+              echo >&2 "uncommitted changes detected"
+              git diff-index --cached --name-status -r --ignore-submodules HEAD -- >&2
+              err=1
+          fi
+          if [ $err = 1 ]
+          then
+              echo >&2 "Contract changes detected"
+              echo >&2 "Please rebuild augur-core and commit the generated files:"
+              echo >&2 "yarn workspace @augurproject/core build"
+              #exit 1
+          fi
+        displayName: check for contract changes
 
-  - job: Docker_geth_dev
+  - job: DockerGethDev
     dependsOn:
     - PreFlightCheck
     pool:
@@ -463,15 +262,110 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
+  - job: TestAugurCore
+    dependsOn:
+    - ContractSanityCheck
+    - DockerGethDev
+    condition: |
+      and
+      (
+        in(dependencies.ContractSanityCheck.result, 'Succeeded'),
+        in(dependencies.DockerGethDev.result, 'Succeeded', 'Skipped')
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    timeoutInMinutes: 120
+    strategy:
+      maxParallel: 5
+      matrix:
+        trading_and_libs:
+          TESTS: tests/test*.py tests/libraries tests/trading
+        reporting:
+          TESTS: tests/reporting
+        fuzzy:
+          TESTS: tests/fuzzy
+        unit:
+          TESTS: tests/unit
+        geth_integration:
+          TESTS: integration:geth
+        parity_integration:
+          TESTS: integration:parity
+        security_mithril:
+          TESTS: security:mythril
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+    steps:
+      - checkout: self
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+          yarn build
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -exuo pipefail
+          echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
+          sudo curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
+          md5sum -c solc.md5 && \
+          sudo chmod a+x /usr/local/bin/solc
+        displayName: install solc
+      - bash: |
+          set -euo pipefail
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python3 -m pip install --no-cache-dir -r packages/augur-core/requirements.txt
+          python3 -m pip install pytest
+          echo "tests: $(TESTS)"
+          export ETHEREUM_HTTP=http://localhost:8545
+          export ETHEREUM_GAS_PRICE_IN_NANOETH=1
+          export ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
+          if [[ "$(TESTS)" == "integration:geth" ]]; then
+            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:latest
+            yarn workspace @augurproject/core test:integration
+            docker stop geth
+          elif [[ "$(TESTS)" == "integration:parity" ]]; then
+            docker run -p 8180:8180 -p 8545:8545 -p 47623:8546 --name parity --detach augurproject/dev-node-parity:latest
+            yarn workspace @augurproject/core test:integration
+            docker stop parity
+          elif [[ "$(TESTS)" == "security:mythril" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:mythril;
+            cat $(find . -name test-results.log)
+          elif [[ "$(TESTS)" == "security:maian" ]]; then
+            docker run -v `pwd`/contracts:/augur/packages/augur-core/output/contracts/ cryptomental/maian-augur-ci python /scripts/test_runner.py
+          elif [[ "$(TESTS)" == "security:smt" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:smt;
+          elif [[ "$(TESTS)" == "security:oyente" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:oyente;
+          else
+            (cd packages/augur-core && yarn test:unit $(TESTS))
+          fi
+        displayName: integration tests
+
   - job: Docker_populated_geth_images
     dependsOn:
-    - Test_Augur_Core
-    - Docker_geth_dev
+    - PreFlightCheck
+    - TestAugurCore
     condition: |
       or
       (
-        in(dependencies.Test_Augur_Core.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded')
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -479,53 +373,55 @@ jobs:
     strategy:
       matrix:
         dev-pop-geth-v2:
-          IMAGE_NAME: augurproject/dev-pop-geth-v2
+          IMAGE_NAME: dev-pop-geth-v2
           NETWORK_ID: 102
           NORMAL_TIME: false
         dev-pop-normtime-geth-v2:
-          IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
+          IMAGE_NAME: dev-pop-normtime-geth-v2
           NETWORK_ID: 103
           NORMAL_TIME: true
         dev-pop-geth-15-v2:
-          IMAGE_NAME: augurproject/dev-pop-geth-15-v2
+          IMAGE_NAME: dev-pop-geth-15-v2
           NETWORK_ID: 104
           NORMAL_TIME: false
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
       - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+          yarn build
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          set -exuo pipefail
+          packages/augur-tools/docker-builder/ci-build.sh -n $(NETWORK_ID) -t $(NORMAL_TIME) $(IMAGE_NAME)
+        displayName: 'build and push $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
         inputs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
-      - script: |
+      - bash: |
           set -exuo pipefail
-          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
-          sudo systemctl status docker
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker pull augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
-          docker images
-          yarn
-
-          # replaces @augurproject/tools docker:build
-          docker pull augurproject/dev-node-geth:$(GETH_VERSION)
-          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
-          MONO_ROOT=../../
           CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-          # Build and copy to merge with current address.json/upload-block-numbers.json
-          cd packages/augur-tools
-          docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) $MONO_ROOT
-          ./scripts/copy-docker-files.sh $(IMAGE_NAME)
-          docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
-
-
-          if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-              docker push augurproject/augur-core:monorepo
-          fi
-          docker push $(IMAGE_NAME):$CONTRACT_SHA
-        displayName: 'build and push $(IMAGE_NAME) image'
+          docker images
+          docker tag augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}" augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
+          docker push augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
+        displayName: Push Docker Images to hub
       - task: Docker@1
         displayName: docker logout
         inputs:
@@ -534,8 +430,6 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_augur_ui_docker_image
-    dependsOn:
-    - Augur_build_docker_image
     condition: |
       and
       (
@@ -545,9 +439,34 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.x'
+          versionSpec: '3.6'
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          export ETHEREUM_NETWORK=kovan
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          #yarn workspace @augurproject/ui build:kovan
+        displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -557,8 +476,6 @@ jobs:
       - script: |
           set -euo pipefail
           export NODE_OPTIONS="--max-old-space-size=6144"
-          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           # when we get deploy going we will swap these commands out for
           # docker:release
           yarn workspace @augurproject/ui docker:release kovan
@@ -566,6 +483,7 @@ jobs:
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
         env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
       - task: Docker@1
@@ -597,7 +515,7 @@ jobs:
           targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
           vstsFeed: npmPackages
       - script: |
-          yarn install
+          yarn install --frozen-lockfile
         displayName: Install Dependencies
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
         inputs:
@@ -610,7 +528,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          yarn workspace @augurproject/ui build
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
         displayName: ui build
         env:
@@ -638,6 +556,8 @@ jobs:
           #overWrite: false # Optional
           #flattenFolders: false # Optional
           #preserveTimestamp: false # Optional
+
+# use below for github release (not test yet
 #     - task: GitHubRelease@1
 #       displayName: 'GitHub release (create)'
 #       inputs:
