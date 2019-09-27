@@ -25,6 +25,7 @@ export class Contracts {
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
   cashFaucet: ContractInterfaces.CashFaucet;
+  gnosisSafeRegistry: ContractInterfaces.GnosisSafeRegistry;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -50,6 +51,7 @@ export class Contracts {
     this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(dependencies, addresses.BuyParticipationTokens);
     this.redeemStake = new ContractInterfaces.RedeemStake(dependencies, addresses.RedeemStake);
     this.cashFaucet = new ContractInterfaces.CashFaucet(dependencies, addresses.CashFaucet);
+    this.gnosisSafeRegistry = new ContractInterfaces.GnosisSafeRegistry(dependencies, addresses.GnosisSafeRegistry);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);

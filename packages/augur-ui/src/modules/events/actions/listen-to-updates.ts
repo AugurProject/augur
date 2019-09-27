@@ -30,6 +30,7 @@ import {
   handleTxFailure,
   handleSDKReadyEvent,
   handleUserDataSyncedEvent,
+  handleTokensMintedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -115,6 +116,9 @@ const EVENTS = {
   ),
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
+  ),
+  [SubscriptionEventName.TokensMinted]: wrapLogHandler(
+    handleTokensMintedLog
   ),
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),

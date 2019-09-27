@@ -477,7 +477,7 @@ class ContractsFixture:
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTrade']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTrade','GnosisSafeRegistry']
         for contractName in contractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)

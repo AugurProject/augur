@@ -65,12 +65,15 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   public transactionToEthersTransaction(transaction: Transaction<BigNumber>): Transaction<ethers.utils.BigNumber> {
-    return {
+    const transactionObj: Transaction<ethers.utils.BigNumber> = {
       to: transaction.to,
-      from: transaction.from,
       data: transaction.data,
       value: transaction.value ? new ethers.utils.BigNumber(transaction.value.toString()) : new ethers.utils.BigNumber(0)
     }
+    if (transaction.from) {
+      transactionObj.from = transaction.from;
+    }
+    return transactionObj;
   }
 
   public ethersTransactionToTransaction(transaction: Transaction<ethers.utils.BigNumber>): Transaction<BigNumber> {

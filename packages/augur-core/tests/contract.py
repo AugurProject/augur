@@ -16,6 +16,13 @@ class Contract():
             functionName = abiFunc['name']
             originalFunction = self.w3Contract.functions.__dict__[functionName]
             setattr(self, functionName, self.get_contract_function(originalFunction, abiFunc))
+            setattr(self, functionName + "_encode", self.get_encode_contract_function(originalFunction, abiFunc))
+
+    def get_encode_contract_function(self, originalFunction, abiFunc):
+        def encode_contract_function(*args):
+            contractFunction = originalFunction(*self.processArgs(*args, abiFunc=abiFunc))
+            return contractFunction._encode_transaction_data()
+        return encode_contract_function
 
     def get_contract_function(self, originalFunction, abiFunc):
         def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True, debug=False):

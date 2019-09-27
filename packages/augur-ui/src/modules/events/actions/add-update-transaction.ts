@@ -5,7 +5,9 @@ import {
 import {
   PUBLICTRADE,
   CANCELORDER,
+  CANCELORDERS,
   TX_ORDER_ID,
+  TX_ORDER_IDS,
   TX_MARKET_ID,
   TX_TRADE_GROUP_ID,
   CREATEMARKET,
@@ -61,10 +63,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const methodCall = transaction.name.toUpperCase();
     const { blockchain, alerts } = getState();
 
-    if (hash && eventName === TXEventName.Failure) {
+    if (eventName === TXEventName.Failure) {
       dispatch(
         addAlert({
           id: hash ? hash : generateTxParameterId(transaction.params),
+          uniqueId: hash ? hash : generateTxParameterId(transaction.params),
           params: transaction.params,
           status: eventName,
           timestamp: blockchain.currentAugurTimestamp * 1000,
@@ -98,6 +101,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
           updateAlert(hash, {
             params: transaction.params,
             status: TXEventName.Success,
+            toast: methodCall === PUBLICFILLORDER,
             timestamp: blockchain.currentAugurTimestamp * 1000,
             name: methodCall,
           })
@@ -177,6 +181,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         dispatch(addCanceledOrder(orderId, eventName));
         if (eventName === TXEventName.Success) {
           dispatch(removeCanceledOrder(orderId));
+        }
+        break;
+      }
+      case CANCELORDERS: {
+        const orderIds = transaction.params[TX_ORDER_IDS];
+        orderIds.map(id => dispatch(addCanceledOrder(id, eventName)));
+        if (eventName === TXEventName.Success) {
+          orderIds.map(id => dispatch(removeCanceledOrder(id)));
         }
         break;
       }

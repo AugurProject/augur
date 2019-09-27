@@ -247,6 +247,7 @@ export enum MARKET_CARD_FORMATS {
 }
 
 export const SEARCH_FILTER_PLACHOLDER = 'Search markets and categories';
+export const SEARCH_FILTER_PLACHOLDER_MOBILE = 'Search';
 
 // The user should be able to sort by:
 
@@ -526,6 +527,7 @@ export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
+export const TX_ORDER_IDS = '_orderIds';
 export const TX_TRADE_GROUP_ID = '_tradeGroupId';
 export const TX_MARKET_ID = '_market';
 export const TX_AMOUNT = '_amount';
@@ -542,6 +544,7 @@ export const CRITICAL = 'CRITICAL';
 export const INFO = 'INFO';
 export const CREATEGENESISUNIVERSE = 'CREATEGENESISUNIVERSE';
 export const CANCELORDER = 'CANCELORDER';
+export const CANCELORDERS = 'CANCELORDERS';
 export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';

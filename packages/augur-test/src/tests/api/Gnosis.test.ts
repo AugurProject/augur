@@ -14,16 +14,14 @@ beforeAll(async () => {
 });
 
 test('Gnosis :: make safe directly', async () => {
-
-  // Compute the address
-  const estimatedGnosisSafeAddress = await john.getGnosisSafeAddress("0x0000000000000000000000000000000000000000", new BigNumber(0));
-
   // Make the Safe directly using ETH
-  const gnosisSafe = await john.createGnosisSafeDirectlyWithETH("0x0000000000000000000000000000000000000000", new BigNumber(0));
+  const gnosisSafe = await john.createGnosisSafeDirectlyWithETH();
   const owners = await gnosisSafe.getOwners_();
 
-  await expect(estimatedGnosisSafeAddress).toEqual(gnosisSafe.address.toLowerCase());
   await expect(owners).toEqual([john.account.publicKey]);
+
+  const gnosisSafeAddress = await john.getGnosisSafeAddress(john.account.publicKey);
+  await expect(gnosisSafeAddress).toEqual(gnosisSafe.address);
 
 });
 
