@@ -498,3 +498,17 @@ export const handleDisputeWindowCreatedLog = (
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadDisputeWindow());
 };
+
+export const handleTokensMintedLog = (
+  log: Logs.TokensMinted
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  if(log.tokenType === Logs.TokenType.ParticipationToken) {
+    const isUserDataUpdate = isSameAddress(
+      log.target,
+      getState().loginAccount.address
+    );
+    if (isUserDataUpdate) {
+      dispatch(loadAccountReportingHistory());
+    }
+  }
+};

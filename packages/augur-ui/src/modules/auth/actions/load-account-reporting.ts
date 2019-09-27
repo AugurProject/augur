@@ -20,8 +20,8 @@ export const loadAccountReportingHistory = (marketIdAggregator?: Function) => as
     reporting.reporting.contracts.map(c => [...marketIds, c.marketId]);
   if (reporting.disputing && reporting.disputing.contracts.length > 0)
     reporting.disputing.contracts.map(c => [...marketIds, c.marketId]);
-  // TODO: when we get real data pass to market id aggregator
-  if (marketIdAggregator) marketIdAggregator([]);
+
+  if (marketIdAggregator) marketIdAggregator(marketIds);
 
   dispatch(updateLoginAccount({ reporting }));
 };

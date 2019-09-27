@@ -4,7 +4,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { FILTER_SEARCH_PARAM, SEARCH_FILTER_PLACHOLDER } from 'modules/common/constants';
+import { FILTER_SEARCH_PARAM, SEARCH_FILTER_PLACHOLDER_MOBILE, SEARCH_FILTER_PLACHOLDER } from 'modules/common/constants';
 import Styles from 'modules/filter-sort/components/filter-search.styles.less';
 
 interface FilterSearchProps {
@@ -17,6 +17,9 @@ interface FilterSearchState {
   search: string;
   placeholder: string;
 }
+
+// Show mobile placeholder on devices with 475px or lower screen width
+const SERACH_PLACEHOLDER = window.innerWidth > 475 ? SEARCH_FILTER_PLACHOLDER : SEARCH_FILTER_PLACHOLDER_MOBILE
 
 export default class FilterSearch extends Component<
   FilterSearchProps,
@@ -34,7 +37,7 @@ export default class FilterSearch extends Component<
 
     this.state = {
       search: '',
-      placeholder: SEARCH_FILTER_PLACHOLDER,
+      placeholder: SERACH_PLACEHOLDER,
     };
 
     this.updateQuery = this.updateQuery.bind(this);
@@ -69,7 +72,7 @@ export default class FilterSearch extends Component<
   }
 
   onBlur() {
-    this.setState({ placeholder: SEARCH_FILTER_PLACHOLDER });
+    this.setState({ placeholder: SERACH_PLACEHOLDER });
   }
 
   onChange(search) {
@@ -83,7 +86,7 @@ export default class FilterSearch extends Component<
   }
 
   resetSearch() {
-    this.setState({ search: '', placeholder: SEARCH_FILTER_PLACHOLDER });
+    this.setState({ search: '', placeholder: SERACH_PLACEHOLDER });
   }
 
   updateQuery(search, location) {
