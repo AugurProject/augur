@@ -82,8 +82,8 @@ jobs:
         succeeded(),
         or
         (
-          ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-          ne(variables['Build.SourceBranch'], 'refs/tags')
+          ne(variables['Build.sourceBranch'], 'refs/heads/master'),
+          ne(variables['Build.sourceBranch'], 'refs/tags')
         )
       )
     variables:
@@ -461,6 +461,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
+          export ETHEREUM_NETWORK=kovan
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
