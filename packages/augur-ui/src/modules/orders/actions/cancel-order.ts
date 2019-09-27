@@ -36,7 +36,7 @@ export const cancelOrder = (
     // TODO: we'll update state using pending tx events.
     dispatch(
       addAlert({
-        txHash: orderId,
+        id: orderId,
         uniqueId: orderId,
         name: CANCELORDER,
         status: '',

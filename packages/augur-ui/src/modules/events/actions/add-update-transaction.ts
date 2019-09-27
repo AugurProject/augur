@@ -66,7 +66,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     if (hash && eventName === TXEventName.Failure) {
       dispatch(
         addAlert({
-          txHash: hash ? hash : generateTxParameterId(transaction.params),
+          id: hash ? hash : generateTxParameterId(transaction.params),
           uniqueId: hash ? hash : generateTxParameterId(transaction.params),
           params: transaction.params,
           status: eventName,

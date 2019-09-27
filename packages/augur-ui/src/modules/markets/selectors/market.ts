@@ -79,9 +79,9 @@ const sortStakes = (stakes: Getters.Markets.StakeDetails[]) => {
   const nonWinning = stakes.filter(s => !s.tentativeWinning);
   const sortedOutcomes = nonWinning.sort((a, b) => {
     if (createBigNumber(a.stakeCurrent).gt(createBigNumber(b.stakeCurrent)))
-      return 1;
-    if (createBigNumber(b.stakeCurrent).gt(createBigNumber(a.stakeCurrent)))
       return -1;
+    if (createBigNumber(b.stakeCurrent).gt(createBigNumber(a.stakeCurrent)))
+      return 1;
     return 0;
   });
   return [...winning, ...sortedOutcomes];
@@ -109,7 +109,8 @@ const buildScalarDisputingOutcomes = (
           lastPrice: null,
           volumeFormatted: formatNumber(ZERO),
           price: null,
-          volume: '0'
+          volume: '0',
+          isTradeable: true,
         } as OutcomeFormatted)
   );
   return results.find(o => o.id === INVALID_OUTCOME_ID)
