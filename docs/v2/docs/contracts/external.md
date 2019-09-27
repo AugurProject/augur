@@ -130,6 +130,50 @@ Fills an order with specified parameters and ECDSA signature.
 
 
 
+### `IGnosisSafe`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IGnosisSafe.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#IGnosisSafe.getOwners()"><code class="function-signature">getOwners()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getThreshold()"></a><code class="function-signature">getThreshold() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IGnosisSafe.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IProxyFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#IProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IProxyFactory.proxyRuntimeCode()"></a><code class="function-signature">proxyRuntimeCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IProxyFactory.proxyCreationCode()"></a><code class="function-signature">proxyCreationCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `IWallet`
 
 

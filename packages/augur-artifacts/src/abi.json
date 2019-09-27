@@ -3975,6 +3975,20 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "masterCopy",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -4415,6 +4429,134 @@
 			],
 			"name": "ContractCreation",
 			"type": "event"
+		}
+	],
+	"GnosisSafeRegistry": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_gnosisSafeRegistry",
+					"type": "address"
+				}
+			],
+			"name": "callRegister",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "register",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "accountSafes",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "getSafe",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "gnosisSafeMasterCopy",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "proxyCodeHash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
 		}
 	],
 	"LegacyReputationToken": [

@@ -27,8 +27,6 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
 
     let signingKey = new ethers.utils.SigningKey(SAFE_FUNDER_PRIVATE_KEY);
 
-    // TODO provide more params and confirm a pre-computed address is equal to the address generated
-
     const gnosisSafeData = {
         saltNonce: Number((Math.random() * 10000000).toFixed()),
         threshold: 1,
