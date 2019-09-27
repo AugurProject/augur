@@ -343,7 +343,6 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
     isDisabled: true,
   };
 
-
   measure() {
     const { clientWidth, scrollWidth } = this.labelRef;
 
