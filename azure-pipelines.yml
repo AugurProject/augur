@@ -470,7 +470,14 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
       - script: |
           set -euo pipefail
-          yarn workspace @augurproject/ui docker:release kovan
+          export NODE_OPTIONS="--max-old-space-size=6144"
+          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          # when we get deploy going we will swap these commands out for
+          # docker:release
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          #yarn workspace @augurproject/ui docker:release kovan
+          docker push augurproject/augur-ui:kovan
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
         env:
