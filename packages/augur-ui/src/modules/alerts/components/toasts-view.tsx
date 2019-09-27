@@ -12,26 +12,20 @@ interface ToastsViewProps {
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
+
+  componentDidMount() {
+    this.timeout = setInterval(() => {
+      const newToast = { 
+        name: this.props.toasts[0].name, 
+        toast: false,
+      };
+      this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
+    }, 2000);
+  }
+
   componentWillUnmount() {
     clearInterval(this.timeout);
   }
-
-  componentDidUpdate = (prevProps: ToastsViewProps) => {
-    if (
-      this.props.toasts.length > 0 &&
-      prevProps.toasts.length !== this.props.toasts.length
-    ) {
-      this.timeout = setTimeout(() => {
-        if (this.props.toasts[0]) {
-            const newToast = {
-            name: this.props.toasts[0].name,
-            toast: false,
-          };
-          this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
-        }
-      }, 2000);
-    }
-  };
 
   render() {
     const { removeAlert, toggleAlerts, toasts } = this.props;
