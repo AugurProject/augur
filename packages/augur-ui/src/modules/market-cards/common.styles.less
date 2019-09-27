@@ -188,7 +188,7 @@
 		color: @color-secondary-text;
 		display: flex;
     	justify-content: space-between;
-		
+
 		> span {
 			.mono-9;
 		}
@@ -198,7 +198,7 @@
 .OutcomeGroup {
 	display: grid;
     grid-gap: @size-6;
-	
+
 	&.Categorical {
 		grid-template-columns: repeat(3, 1fr);
 
@@ -211,7 +211,7 @@
 		grid-template-columns: repeat(3, 1fr);
 
 		> div:first-of-type {
-			grid-column: 1 / span 2;
+			grid-column: 1;
 		}
 
 		@media @breakpoint-mobile-mid {
@@ -267,7 +267,7 @@
 
 	@media @breakpoint-mobile-mid{
 		flex-direction: column;
-		
+
 		> span:first-of-type {
 			> span {
 				display: none;
@@ -277,7 +277,7 @@
 
 	&.Condensed {
 		flex-direction: column;
-		
+
 		> span:first-of-type {
 			> span {
 				display: none;
