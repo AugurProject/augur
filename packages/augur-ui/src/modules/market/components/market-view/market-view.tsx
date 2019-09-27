@@ -488,85 +488,89 @@ export default class MarketView extends Component<
               </>
             ) : (
               <>
-                <div className={Styles.Market__upper}>
-                  <MarketHeader
-                    marketId={marketId}
-                    market={preview && market}
-                    preview={preview}
-                  />
-                </div>
-
-                <section className={Styles.MarketView__body}>
-                  <div className={Styles.MarketView__firstColumn}>
-                    <div className={Styles.MarketView__firstRow}>
-                      <div className={Styles.MarketView__innerFirstColumn}>
-                        <div className={Styles.MarketView__component}>
-                          <TradingForm
-                            market={market}
-                            initialLiquidity={preview}
-                            selectedOrderProperties={selectedOrderProperties}
-                            selectedOutcomeId={outcomeId}
-                            updateSelectedOutcome={this.updateSelectedOutcome}
-                            updateSelectedOrderProperties={
-                              this.updateSelectedOrderProperties
-                            }
-                          />
+                <div className={Styles.MarketView__parent}>
+                  <section className={Styles.MarketView__body}>
+                    <MarketHeader
+                      marketId={marketId}
+                      market={preview && market}
+                      preview={preview}
+                    />
+                    <div className={Styles.MarketView__firstColumn}>
+                      <div className={Styles.MarketView__firstRow}>
+                        <div className={Styles.MarketView__innerFirstColumn}>
+                          <div className={Styles.MarketView__component}>
+                            <TradingForm
+                              market={market}
+                              initialLiquidity={preview}
+                              selectedOrderProperties={selectedOrderProperties}
+                              selectedOutcomeId={outcomeId}
+                              updateSelectedOutcome={this.updateSelectedOutcome}
+                              updateSelectedOrderProperties={
+                                this.updateSelectedOrderProperties
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className={Styles.MarketView__innerSecondColumn}>
-                        <div className={Styles.MarketView__component}>
-                          <MarketOutcomesList
-                            marketId={marketId}
-                            market={market}
-                            preview={preview}
-                            selectedOutcomeId={outcomeId}
-                            updateSelectedOutcome={this.updateSelectedOutcome}
-                            hideOutcomes={cat5 ? !extendOutcomesList : false}
-                          />
-                        </div>
-                        <div
-                          className={classNames(Styles.MarketView__component, {
-                            [Styles.Hide]: cat5
-                              ? extendOutcomesList
-                              : extendOrders,
-                          })}
-                        >
-                          <MarketChartsPane
-                            marketId={marketId}
-                            selectedOutcomeId={outcomeId}
-                            updateSelectedOrderProperties={
-                              this.updateSelectedOrderProperties
-                            }
-                            toggle={
-                              cat5
-                                ? () =>
-                                    this.toggleMiddleColumn(
-                                      'extendOutcomesList'
-                                    )
-                                : null
-                            }
-                            market={preview && market}
-                            preview={preview}
-                          />
-                        </div>
-                        <div className={Styles.MarketView__component}>
-                          <MarketOrdersPositionsTable
-                            updateSelectedOrderProperties={
-                              this.updateSelectedOrderProperties
-                            }
-                            marketId={marketId}
-                            toggle={
-                              cat5
-                                ? null
-                                : () => this.toggleMiddleColumn('extendOrders')
-                            }
-                            market={preview && market}
-                            preview={preview}
-                          />
+                        <div className={Styles.MarketView__innerSecondColumn}>
+                          <div className={Styles.MarketView__component}>
+                            <MarketOutcomesList
+                              marketId={marketId}
+                              market={market}
+                              preview={preview}
+                              selectedOutcomeId={outcomeId}
+                              updateSelectedOutcome={this.updateSelectedOutcome}
+                              hideOutcomes={cat5 ? !extendOutcomesList : false}
+                            />
+                          </div>
+                          <div
+                            className={classNames(
+                              Styles.MarketView__component,
+                              {
+                                [Styles.Hide]: cat5
+                                  ? extendOutcomesList
+                                  : extendOrders,
+                              }
+                            )}
+                          >
+                            <MarketChartsPane
+                              marketId={marketId}
+                              selectedOutcomeId={outcomeId}
+                              updateSelectedOrderProperties={
+                                this.updateSelectedOrderProperties
+                              }
+                              toggle={
+                                cat5
+                                  ? () =>
+                                      this.toggleMiddleColumn(
+                                        'extendOutcomesList'
+                                      )
+                                  : null
+                              }
+                              market={preview && market}
+                              preview={preview}
+                            />
+                          </div>
+                          <div className={Styles.MarketView__component}>
+                            <MarketOrdersPositionsTable
+                              updateSelectedOrderProperties={
+                                this.updateSelectedOrderProperties
+                              }
+                              marketId={marketId}
+                              toggle={
+                                cat5
+                                  ? null
+                                  : () =>
+                                      this.toggleMiddleColumn('extendOrders')
+                              }
+                              market={preview && market}
+                              preview={preview}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </section>
+
                   <div className={Styles.MarketView__secondColumn}>
                     <div
                       className={classNames(
@@ -614,7 +618,7 @@ export default class MarketView extends Component<
                       </div>
                     </div>
                   </div>
-                </section>
+                </div>
 
                 <MarketComments marketId={marketId} networkId={networkId} />
               </>

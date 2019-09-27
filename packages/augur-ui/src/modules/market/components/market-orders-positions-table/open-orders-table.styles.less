@@ -14,8 +14,6 @@ div.Table {
   width: 100%;
 
   > div:first-of-type {
-    max-height: 30vh;
-    min-height: 30vh;
     overflow-y: auto;
   }
 
@@ -25,6 +23,11 @@ div.Table {
       min-height: unset;
     }
   }
+}
+
+.TableHeight {
+  //height: 200px;
+  max-height: calc(100vh - 600px);
 }
 
 .Empty {
