@@ -67,6 +67,7 @@ interface AppProps {
   updateIsAlertVisible: Function;
   updateSidebarStatus: Function;
   alerts: Object;
+  toasts: Array<any>;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -327,6 +328,7 @@ export default class AppView extends Component<AppProps> {
       sidebarStatus,
       updateMobileMenuState,
       alerts,
+      toasts
     } = this.props;
 
     const { unseenCount } = alerts;
@@ -339,7 +341,7 @@ export default class AppView extends Component<AppProps> {
           titleTemplate='%s | Augur'
         />
         {Object.keys(modal).length !== 0 && <Modal />}
-        <ToastsContainer />
+        {toasts.length > 0 && <ToastsContainer toasts={toasts}/>}
         <div
           className={classNames({
             [Styles['App--blur']]: Object.keys(modal).length !== 0,

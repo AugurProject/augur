@@ -186,7 +186,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
   let countdown = false;
   const firstBreakpoint = firstColorBreakpoint || ThreeDays;
   const secondBreakpoint = finalColorBreakpoint || OneDay;
-  if (time !== null && currentTime) {
+  if (time && time !== null && currentTime) {
     const daysRemaining = format.getDaysRemaining(
       time.timestamp,
       currentTime.timestamp
