@@ -140,70 +140,52 @@ export class Accounts<TBigNumber> {
       tokensMintedLogs,
       participationTokensRedeemedLogs,
     ] = await Promise.all([
-      db
-        .findMarketCreatedLogs({
-          selector: {
-            universe: params.universe,
-            designatedReporter: params.account,
-          },
-        })
-        .then(r =>
-          Promise.all(
-            r.map(async ({ market }) => ({
+      db.findMarketCreatedLogs({
+        selector: {
+          universe: params.universe,
+          designatedReporter: params.account,
+        },
+      }).then((r) => Promise.all(
+        r.map(async ({ market }) => ({
+          marketId: market,
+          amount: await augur.getMarket(market).getValidityBondAttoCash_(),
+          address: await augur.getMarket(market).getInitialReporter_(),
+        }))
+        )).then((r) => r.reduce((acc, { amount, address, marketId }) => {
+          const compositeKey = `${marketId}-${address}`;
+          return {
+            ...acc,
+            [compositeKey]: {
+              marketId,
+              address,
+              amount,
+            },
+          };
+        }, {} as { [compositeKey: string]: ContractInfo })),
+        db.findInitialReporterRedeemedLogs(
+          {
+            selector: {
+              universe: params.universe,
+              reporter: params.account,
+            },
+          }
+        ).then((r) => r.reduce((acc, { amountRedeemed, initialReporter, market, }) => {
+          const compositeKey = `${market}-${initialReporter}`;
+          return {
+            ...acc,
+            [compositeKey]: {
               marketId: market,
-              amount: await augur.getMarket(market).getValidityBondAttoCash_(),
-              address: await augur.getMarket(market).getInitialReporter_(),
-            }))
-          )
-        )
-        .then(r =>
-          r.reduce(
-            (acc, { amount, address, marketId }) => {
-              const compositeKey = `${marketId}-${address}`;
-              return {
-                ...acc,
-                [compositeKey]: {
-                  marketId,
-                  address,
-                  amount,
-                },
-              };
+              address: initialReporter,
+              amount: amountRedeemed,
             },
-            {} as { [compositeKey: string]: ContractInfo }
-          )
-        ),
-      db
-        .findInitialReporterRedeemedLogs({
+          };
+        }, {} as { [compositeKey: string]: ContractInfo })),
+        db.findDisputeCrowdsourcerContributionLogs({
           selector: {
             universe: params.universe,
             reporter: params.account,
           },
-        })
-        .then(r =>
-          r.reduce(
-            (acc, { amountRedeemed, initialReporter, market }) => {
-              const compositeKey = `${market}-${initialReporter}`;
-              return {
-                ...acc,
-                [compositeKey]: {
-                  marketId: market,
-                  address: initialReporter,
-                  amount: amountRedeemed,
-                },
-              };
-            },
-            {} as { [compositeKey: string]: ContractInfo }
-          )
-        ),
-      db
-        .findDisputeCrowdsourcerContributionLogs({
-          selector: {
-            universe: params.universe,
-            reporter: params.account,
-          },
-        })
-        .then(r =>
-          r.reduce(
+        }).then((r) => r.reduce(
             (acc, { amountStaked, disputeCrowdsourcer, market }) => {
               const compositeKey = `${market}-${disputeCrowdsourcer}`;
               return {
@@ -211,25 +193,20 @@ export class Accounts<TBigNumber> {
                 [compositeKey]: {
                   marketId: market,
                   address: disputeCrowdsourcer,
-                  amount:
-                    compositeKey in acc
-                      ? acc[compositeKey].amount.plus(amountStaked)
-                      : new BigNumber(amountStaked),
+                  amount: (compositeKey in acc) ?
+                    acc[compositeKey].amount.plus(amountStaked) :
+                    new BigNumber(amountStaked),
                 },
               };
+            }, {} as { [compositeKey: string]: ContractInfo })),
+        db.findDisputeCrowdsourcerRedeemedLogs(
+          {
+            selector: {
+              universe: params.universe,
+              reporter: params.account,
             },
-            {} as { [compositeKey: string]: ContractInfo }
-          )
-        ),
-      db
-        .findDisputeCrowdsourcerRedeemedLogs({
-          selector: {
-            universe: params.universe,
-            reporter: params.account,
-          },
-        })
-        .then(r =>
-          r.reduce(
+          }
+        ).then((r) => r.reduce(
             (acc, { amountRedeemed, disputeCrowdsourcer, market }) => ({
               ...acc,
               [`${market}-${disputeCrowdsourcer}`]: {
@@ -237,66 +214,50 @@ export class Accounts<TBigNumber> {
                 address: disputeCrowdsourcer,
                 amount: new BigNumber(amountRedeemed),
               },
-            }),
-            {} as { [compositeKey: string]: ContractInfo }
-          )
-        ),
-      db
-        .findTokensMintedLogs(params.account, {
+            }), {} as { [compositeKey: string]: ContractInfo })),
+      db.findTokensMintedLogs(params.account, {
           selector: {
             universe: params.universe,
             target: params.account,
             tokenType: TokenType.ParticipationToken,
           },
-        })
-        .then(r =>
-          r.reduce(
-            (acc, { token, amount }) => {
-              const existing = acc[`${token}`];
-              return existing
-                ? {
-                    ...acc,
-                    [`${token}`]: {
-                      address: token,
-                      amount: existing.amount.plus(new BigNumber(amount)),
-                      amountFees: existing.amountFees.plus(new BigNumber(0)),
-                    },
-                  }
-                : {
-                    ...acc,
-                    [`${token}`]: {
-                      address: token,
-                      amount: new BigNumber(amount),
-                      amountFees: new BigNumber(0),
-                    },
-                  };
+        }
+      ).then((r) => r.reduce(
+        (acc, { token, amount }) => {
+          const existing = acc[`${token}`];
+          return existing
+            ? {
+                ...acc,
+                [`${token}`]: {
+                  address: token,
+                  amount: new BigNumber(amount),
+                  amountFees: new BigNumber(0),
+                },
+              }
+            : {
+                ...acc,
+                [`${token}`]: {
+                  address: token,
+                  amount: new BigNumber(amount),
+                  amountFees: new BigNumber(0),
+                },
+              };}, {} as { [compositeKey:string]: ParticipationContract })),
+      db.findParticipationTokensRedeemedLogs(
+          {
+            selector: {
+              universe: params.universe,
+              account: params.account,
             },
-            {} as { [compositeKey: string]: ParticipationContract }
-          )
-        ),
-      db
-        .findParticipationTokensRedeemedLogs({
-          selector: {
-            universe: params.universe,
-            account: params.account,
-          },
-        })
-        .then(r =>
-          r.reduce(
-            (
-              acc,
-              { disputeWindow, attoParticipationTokens, feePayoutShare }
-            ) => ({
-              ...acc,
-              [`${disputeWindow}`]: {
-                address: disputeWindow,
-                amount: new BigNumber(attoParticipationTokens),
-                amountFees: new BigNumber(feePayoutShare),
-              },
-            }),
-            {} as { [compositeKey: string]: ParticipationContract }
-          )
-        ),
+          }
+        ).then((r) => r.reduce(
+          (acc, { disputeWindow, attoParticipationTokens, feePayoutShare }) => ({
+            ...acc,
+            [`${disputeWindow}`]: {
+              address: disputeWindow,
+              amount: new BigNumber(attoParticipationTokens),
+              amountFees: new BigNumber(feePayoutShare),
+            },
+        }), {} as { [compositeKey:string]: ParticipationContract })),
     ]);
 
     const disputeContractInfo:ContractInfo[] = [];
