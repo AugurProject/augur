@@ -24,7 +24,7 @@ const getOutcomeName = (
 
   switch (marketType) {
     case YES_NO: {
-      if (outcomeId === YES_NO_YES_ID) {
+      if (outcomeId !== YES_NO_YES_ID) {
         return YES_NO_NO_OUTCOME_NAME;
       }
       return YES_NO_YES_OUTCOME_NAME;
