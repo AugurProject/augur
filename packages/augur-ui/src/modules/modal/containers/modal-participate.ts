@@ -13,6 +13,7 @@ const mapStateToProps = (state: AppState) => ({
   rep: state.loginAccount.balances.rep,
   gasPrice: getGasPrice(state),
   messages: [{
+    key: "quant",
     preText: 'Quantity (1 token @ 1 REP)'
   }],
   title: 'Buy Participation Tokens',
