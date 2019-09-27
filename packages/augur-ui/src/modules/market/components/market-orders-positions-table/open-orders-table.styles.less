@@ -25,9 +25,12 @@ div.Table {
   }
 }
 
-.TableHeight {
-  //height: 200px;
-  max-height: calc(100vh - 600px);
+div.TableHeight {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: @size-32;
+  position: absolute;
 }
 
 .Empty {
@@ -35,11 +38,14 @@ div.Table {
 }
 
 .Footer {
-  background: @color-dark-grey;
   display: flex;
   justify-content: flex-end;
   min-height: @size-32;
   padding: @size-8 @size-16;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 div.HideOutcomes {

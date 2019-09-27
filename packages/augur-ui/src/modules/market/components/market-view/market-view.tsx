@@ -497,19 +497,17 @@ export default class MarketView extends Component<
                     />
                     <div className={Styles.MarketView__firstColumn}>
                       <div className={Styles.MarketView__firstRow}>
-                        <div className={Styles.MarketView__innerFirstColumn}>
-                          <div className={Styles.MarketView__component}>
-                            <TradingForm
-                              market={market}
-                              initialLiquidity={preview}
-                              selectedOrderProperties={selectedOrderProperties}
-                              selectedOutcomeId={outcomeId}
-                              updateSelectedOutcome={this.updateSelectedOutcome}
-                              updateSelectedOrderProperties={
-                                this.updateSelectedOrderProperties
-                              }
-                            />
-                          </div>
+                        <div className={Styles.MarketView__component}>
+                          <TradingForm
+                            market={market}
+                            initialLiquidity={preview}
+                            selectedOrderProperties={selectedOrderProperties}
+                            selectedOutcomeId={outcomeId}
+                            updateSelectedOutcome={this.updateSelectedOutcome}
+                            updateSelectedOrderProperties={
+                              this.updateSelectedOrderProperties
+                            }
+                          />
                         </div>
                         <div className={Styles.MarketView__innerSecondColumn}>
                           <div className={Styles.MarketView__component}>

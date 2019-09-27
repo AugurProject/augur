@@ -62,7 +62,9 @@
 
 .MarketView__parent {
   display: flex;
-  margin-top: @size-4;
+  margin: @size-4 0;
+  height: calc(~"100vh - @{multi-top-bar-height}");
+  min-height: 800px;
 }
 
 .MarketView__body {
@@ -70,12 +72,10 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin: @size-4;
-  margin-top: 0;
-  min-height: calc(~"100vh - @{multi-top-bar-height}");
+  margin: 0 @size-4;
 
   > section:first-of-type {
-    min-height: unset;
+    flex: unset;
     margin: 0 0 @size-4;
   
     @media @breakpoint-mobile {
@@ -119,15 +119,15 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-}
 
-.MarketView__innerFirstColumn {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  margin-right: @size-4;
-  max-width: 325px;
-  min-width: 325px;
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-right: @size-4;
+    max-width: 325px;
+    min-width: 325px;
+  }
 }
 
 .MarketView__innerSecondColumn {
@@ -142,6 +142,10 @@
 
   > div:nth-of-type(2) {
     margin-bottom: @size-4;
+  }
+
+  > div:last-of-type {
+    min-height: 200px;
   }
 }
 
