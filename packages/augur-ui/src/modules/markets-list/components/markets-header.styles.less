@@ -3,7 +3,11 @@
 .MarketsHeader {
   display: flex;
   flex-direction: column;
-  padding: @size-16 0 0 0;
+  padding: @size-24 0 0 0;
+
+  > div {
+    display: none;
+  }
 
   > div > button {
     display: none;
@@ -11,6 +15,10 @@
 
   @media @breakpoint-mobile {
     padding: @size-20 0 0 0;
+
+    > div {
+      display: flex;
+    }
 
     > div > button {
       display: flex;
@@ -31,15 +39,18 @@
 
   > div:first-of-type {
     @media @breakpoint-mobile {
+      align-items: center;
       display: flex;
       flex-direction: row;
+      margin-bottom: @size-16;
     }
   }
 
   > div:nth-of-type(2) {
-    align-items: flex-start;
+    align-items: center;
     display: flex;
     justify-content: space-between;
+    margin-bottom: @size-16;
 
     @media @breakpoint-mobile {
       align-items: center;
@@ -62,6 +73,14 @@
       }
     }
 
+    > article {
+      max-width: @search-bar-width;
+
+      @media @breakpoint-mobile {
+        display: none;
+      }
+    }
+
     > div {
       display: flex;
       align-items: center;
@@ -74,11 +93,9 @@
 
   > div > article {
     flex: 1;
-    margin-bottom: @size-16;
     height: 44px;
 
     @media @breakpoint-mobile {
-      margin-bottom: @size-16;
       order: 0;
     }
   }
