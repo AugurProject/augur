@@ -282,7 +282,7 @@ export default class MarketsView extends Component<
           [Styles.Disabled]: isSearchingMarkets,
         })}>
           <MarketTypeFilter
-            isSearchingMarkets={isSearchingMarkets}
+            isSearchingMarkets={false}
             marketCount={this.state.marketCount}
             updateMarketsFilter={updateMarketsFilter}
             marketFilter={marketFilter}
