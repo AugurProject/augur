@@ -18,8 +18,8 @@ interface FilterSearchState {
   placeholder: string;
 }
 
-// Show mobile placeholder on devices with 375px or lower screen width
-const SERACH_PLACEHOLDER = window.innerWidth > 375 ? SEARCH_FILTER_PLACHOLDER : SEARCH_FILTER_PLACHOLDER_MOBILE
+// Show mobile placeholder on devices with 475px or lower screen width
+const SERACH_PLACEHOLDER = window.innerWidth > 475 ? SEARCH_FILTER_PLACHOLDER : SEARCH_FILTER_PLACHOLDER_MOBILE
 
 export default class FilterSearch extends Component<
   FilterSearchProps,
