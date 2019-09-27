@@ -5,7 +5,6 @@
  */
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
-import { BigNumber } from 'bignumber.js';
 import {
   formatAttoRep,
   formatAttoEth,
@@ -25,7 +24,7 @@ import {
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
   NULL_ADDRESS,
   SCALAR,
@@ -33,7 +32,6 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
 } from 'modules/common/constants';
-import { ContractInterfaces } from '@augurproject/core';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
@@ -155,7 +153,7 @@ export async function sendRep(address: string, amount: string) {
 export async function getDisputeThresholdForFork() {
   const { contracts } = augurSdk.get();
   const disputeThresholdForFork = await contracts.universe.getDisputeThresholdForFork_();
-  return new BigNumber(disputeThresholdForFork);
+  return createBigNumber(disputeThresholdForFork);
 }
 
 export async function getOpenInterestInAttoCash() {
@@ -211,13 +209,13 @@ export async function finalizeMarket(marketId: string) {
 
 export function getDai() {
   const { contracts } = augurSdk.get();
-  return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
+  return contracts.cash.faucet(createBigNumber('1000000000000000000000'));
 }
 
 export function getRep() {
   const { contracts } = augurSdk.get();
   const rep = contracts.reputationToken as TestNetReputationToken<BigNumber>;
-  return rep.faucet(new BigNumber('100000000000000000000'));
+  return rep.faucet(createBigNumber('100000000000000000000'));
 }
 
 export async function getCreateMarketBreakdown() {
@@ -236,7 +234,7 @@ export async function buyParticipationTokensEstimateGas(
   amount: string
 ) {
   const { contracts } = augurSdk.get();
-  const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
+  const attoAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
   return contracts.buyParticipationTokens.buyParticipationTokens_estimateGas(
     universeId,
     attoAmount
@@ -248,7 +246,7 @@ export async function buyParticipationTokens(
   amount: string
 ) {
   const { contracts } = augurSdk.get();
-  const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
+  const attoAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
   return contracts.buyParticipationTokens.buyParticipationTokens(
     universeId,
     attoAmount
@@ -297,7 +295,7 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
   return await market.doInitialReport(
     payoutNumerators,
     report.description,
-    new BigNumber(report.attoRepAmount || '0')
+    createBigNumber(report.attoRepAmount || '0')
   );
 }
 
@@ -309,7 +307,7 @@ export async function addRepToTentativeWinningOutcome(
   const payoutNumerators = getPayoutNumerators(addStake);
   return await market.contributeToTentative(
     payoutNumerators,
-    new BigNumber(addStake.attoRepAmount),
+    createBigNumber(addStake.attoRepAmount),
     addStake.description
   );
 }
@@ -318,7 +316,7 @@ export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
-  return await market.contribute(payoutNumerators, new BigNumber(dispute.attoRepAmount), dispute.description);
+  return await market.contribute(payoutNumerators, createBigNumber(dispute.attoRepAmount), dispute.description);
 }
 
 function getMarket(marketId) {
@@ -455,11 +453,11 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     order.maxPrice
   );
   return Augur.contracts.createOrder.publicCreateOrder(
-    new BigNumber(order.orderType),
+    createBigNumber(order.orderType),
     orderProperties.attoShares,
     orderProperties.attoPrice,
     order.marketId,
-    new BigNumber(order.outcomeId),
+    createBigNumber(order.outcomeId),
     formatBytes32String(''),
     formatBytes32String(''),
     orderProperties.tradeGroupId,
@@ -490,10 +488,10 @@ export async function createLiquidityOrders(
       maxPrice
     );
     const orderType = o.type === BUY ? 0 : 1;
-    outcomes.push(new BigNumber(o.outcomeId));
-    types.push(new BigNumber(orderType));
-    attoshareAmounts.push(new BigNumber(properties.attoShares));
-    prices.push(new BigNumber(properties.attoPrice));
+    outcomes.push(createBigNumber(o.outcomeId));
+    types.push(createBigNumber(orderType));
+    attoshareAmounts.push(createBigNumber(properties.attoShares));
+    prices.push(createBigNumber(properties.attoPrice));
   });
 
   return Augur.contracts.createOrder.publicCreateOrders(
@@ -509,19 +507,19 @@ export async function createLiquidityOrders(
 
 function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
   const tickSizeBigNumber = numTicksToTickSizeWithDisplayPrices(
-    new BigNumber(numTicks),
-    new BigNumber(minPrice),
-    new BigNumber(maxPrice)
+    createBigNumber(numTicks),
+    createBigNumber(minPrice),
+    createBigNumber(maxPrice)
   );
   return {
     tradeGroupId: generateTradeGroupId(),
     attoShares: convertDisplayAmountToOnChainAmount(
-      new BigNumber(numShares),
+      createBigNumber(numShares),
       tickSizeBigNumber
     ),
     attoPrice: convertDisplayPriceToOnChainPrice(
-      new BigNumber(price),
-      new BigNumber(minPrice),
+      createBigNumber(price),
+      createBigNumber(minPrice),
       tickSizeBigNumber
     ),
   };
