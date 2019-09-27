@@ -225,8 +225,8 @@ export class Accounts<TBigNumber> {
       ).then((r) => r.reduce(
         (acc, { target, token, amount }) => ({
           ...acc,
-          [`${target}`]: {
-            address: target,
+          [`${token}`]: {
+            address: token,
             amount: new BigNumber(amount),
             amountFees: new BigNumber(0),
           },
