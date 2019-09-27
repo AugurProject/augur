@@ -463,6 +463,8 @@ jobs:
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
       - task: Docker@1
         displayName: docker login
         inputs:
