@@ -14,7 +14,8 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
-
+import { createBigNumber } from 'utils/create-big-number';
+import { convertDisplayValuetoAttoValue } from '@augurproject/sdk';
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
@@ -79,6 +80,8 @@ export default class ModalReporting extends Component<
     }
 
     if (isReporting) {
+      const { preFilledStake } = this.state;
+      const attoRepAmount = convertDisplayValuetoAttoValue(createBigNumber(preFilledStake || '0')).toString();
       doInitialReport({
         marketId,
         maxPrice,
@@ -87,7 +90,7 @@ export default class ModalReporting extends Component<
         numOutcomes,
         marketType,
         description: '',
-        attoRepAmount: this.state.preFilledStake,
+        attoRepAmount,
         outcomeId,
         isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
       });
@@ -196,7 +199,7 @@ export default class ModalReporting extends Component<
           value: outcome.id,
           checked: checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
-          preFilledStake: formatAttoRep('0').formatted,
+          preFilledStake: formatAttoRep(stake.stakeCurrent).formatted,
           stake,
         };
       });
@@ -207,7 +210,7 @@ export default class ModalReporting extends Component<
           header: stake.outcome,
           value: Number(stake.outcome),
           checked: checked === stake.outcome.toString(),
-          isInvalid: stake.outcome === '0',
+          isInvalid: stake.outcome === String(INVALID_OUTCOME_ID),
           preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
           stake,
         })

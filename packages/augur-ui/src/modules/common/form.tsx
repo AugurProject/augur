@@ -734,7 +734,7 @@ export const ReportingRadioBarGroup = ({
   scalarOutcome,
   updateScalarOutcome,
 }: ReportingRadioGroupProps) => {
-  const { reportingState, disputeInfo } = market;
+  const { reportingState, disputeInfo, marketType } = market;
   const isReporting =
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
@@ -843,7 +843,7 @@ export const ReportingRadioBarGroup = ({
         <>
           <span>
             {isReporting
-              ? 'Select Invalid if you believe this market's outcome was ambiguous or unverifiable.'
+              ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
               : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
           </span>
           <ReportingRadioBar
@@ -902,7 +902,9 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       const { reportingState } = market;
       isReporting =
         reportingState === REPORTING_STATE.OPEN_REPORTING ||
-        reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
+        reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
+        reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+        reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
     }
     return (
       <div className={Styles.RadioBarGroup}>
@@ -1025,7 +1027,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {stake && stake.tentativeWinning && (
                 <Subheaders
                   header='pre-filled stake'
-                  subheader={preFilledStake}
+                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).formatted}
                 />
               )}
               {checked && (
