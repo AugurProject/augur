@@ -359,11 +359,13 @@ jobs:
     dependsOn:
     - PreFlightCheck
     - TestAugurCore
+    - TestAndLint
     condition: |
       and
       (
         succeeded(),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
+        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
         or
         (
