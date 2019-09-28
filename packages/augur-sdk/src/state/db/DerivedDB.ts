@@ -20,6 +20,7 @@ export class DerivedDB extends AbstractDB {
   private mergeEventNames: string[];
   private name: string;
   private updatingHighestSyncBlock = false;
+  protected requiresOrder: boolean = false;
 
   constructor(
     db: DB,
@@ -146,6 +147,8 @@ export class DerivedDB extends AbstractDB {
         return _.assign({}, ...processedDocs);
       }) as any[];
 
+      // NOTE: "!syncing" is because during bulk sync we can rely on the order of events provided as they are handled in sequence
+      if (this.requiresOrder && !syncing) documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex']);
       success = await this.bulkUpsertUnorderedDocuments(documentsByIdByTopic);
     }
 
