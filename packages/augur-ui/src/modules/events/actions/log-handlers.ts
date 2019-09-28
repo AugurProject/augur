@@ -510,5 +510,6 @@ export const handleTokensMintedLog = (
     if (isUserDataUpdate) {
       dispatch(loadAccountReportingHistory());
     }
+    dispatch(loadDisputeWindow());
   }
 };
