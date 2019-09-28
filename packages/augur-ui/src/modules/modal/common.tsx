@@ -42,6 +42,7 @@ export interface ButtonsRowProps {
 }
 
 export interface AlertMessageProps {
+  key?: string;
   preText: string;
   boldText?: string;
   postText?: string;
@@ -262,7 +263,7 @@ export const ButtonsRow = (props: ButtonsRowProps) => (
 export const DescriptionMessage = (props: DescriptionMessageProps) => (
   <div className={Styles.DescriptionMessage}>
     {props.messages.map((message) => (
-      <span key={message.boldText}>
+      <span key={message.boldText || message.key}>
         {message.preText}
         {message.boldText && (
           <b>

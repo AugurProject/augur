@@ -223,14 +223,25 @@ export class Accounts<TBigNumber> {
           },
         }
       ).then((r) => r.reduce(
-        (acc, { target, token, amount }) => ({
-          ...acc,
-          [`${token}`]: {
-            address: token,
-            amount: new BigNumber(amount),
-            amountFees: new BigNumber(0),
-          },
-        }), {} as { [compositeKey:string]: ParticipationContract })),
+        (acc, { token, amount }) => {
+          const existing = acc[`${token}`];
+          return existing
+            ? {
+                ...acc,
+                [`${token}`]: {
+                  address: token,
+                  amount: existing.amount.plus(new BigNumber(amount)),
+                  amountFees: existing.amountFees.plus(new BigNumber(0)),
+                },
+              }
+            : {
+                ...acc,
+                [`${token}`]: {
+                  address: token,
+                  amount: new BigNumber(amount),
+                  amountFees: new BigNumber(0),
+                },
+              };}, {} as { [compositeKey:string]: ParticipationContract })),
       db.findParticipationTokensRedeemedLogs(
           {
             selector: {
