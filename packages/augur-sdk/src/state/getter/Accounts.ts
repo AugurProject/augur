@@ -24,8 +24,8 @@ import {
   describeUniverseOutcome,
   marketTypeToName, PayoutNumeratorValue
 } from '../../index';
-import { compareObjects } from '../../utils';
-
+import { compareObjects, getOutcomeValue, convertOnChainPriceToDisplayPrice, numTicksToTickSize } from '../../utils';
+import * as _ from "lodash";
 import * as t from 'io-ts';
 
 export enum Action {
@@ -62,6 +62,11 @@ const getAccountTransactionHistoryParamsSpecific = t.type({
 
 const getAccountReportingHistoryParamsSpecific = t.type({
   universe: t.string,
+  account: t.string,
+});
+
+const getUserCurrentDisputeStakeParams = t.type({
+  marketId: t.string,
   account: t.string,
 });
 
@@ -115,6 +120,14 @@ export interface MarketCreatedInfo {
   [key: string]: MarketCreatedLog;
 }
 
+export interface UserCurrentOutcomeDisputeStake {
+  outcome: string,
+  isInvalid: boolean,
+  malformed?: boolean,
+  payoutNumerators: string[],
+  userStakeCurrent: string,
+}
+
 export class Accounts<TBigNumber> {
   static getAccountTransactionHistoryParams = t.intersection([
     getAccountTransactionHistoryParamsSpecific,
@@ -125,6 +138,8 @@ export class Accounts<TBigNumber> {
     getAccountReportingHistoryParamsSpecific,
     sortOptions,
   ]);
+
+  static getUserCurrentDisputeStakeParams = getUserCurrentDisputeStakeParams;
 
   @Getter('getAccountReportingHistoryParams')
   static async getAccountReportingHistory<TBigNumber>(
@@ -652,6 +667,51 @@ export class Accounts<TBigNumber> {
       end = allFormattedLogs.length;
     }
     return allFormattedLogs.slice(start, end);
+  }
+
+  @Getter('getUserCurrentDisputeStakeParams')
+  static async getUserCurrentDisputeStake<TBigNumber>(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Accounts.getUserCurrentDisputeStakeParams>
+  ): Promise<UserCurrentOutcomeDisputeStake[]> {
+    const marketData = await db.findMarkets({ selector: { market: params.marketId }});
+    const market = marketData[0];
+    const maxPrice = new BigNumber(market['prices'][1]);
+    const minPrice = new BigNumber(market['prices'][0]);
+    const numTicks = new BigNumber(market['numTicks']);
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+    const marketType = marketTypeToName(market.marketType);
+    const displayMaxPrice = convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString();
+    const displayMinPrice = convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString();
+    const contributions = await db.findDisputeCrowdsourcerContributionLogs({
+      selector: {
+        market: params.marketId,
+        disputeRound: market.disputeRound,
+        reporter: params.account
+      }
+    });
+    const contributionsByPayout = _.map(_.groupBy(contributions, "disputeCrowdsourcer"), (disputeCrowdsourcerContributions) => {
+      const firstContribution = disputeCrowdsourcerContributions[0];
+      const payoutNumeratorsValue = calculatePayoutNumeratorsValue(
+        displayMaxPrice,
+        displayMinPrice,
+        numTicks.toString(),
+        marketType,
+        firstContribution.payoutNumerators
+      );
+      const userStakeCurrent = _.reduce(disputeCrowdsourcerContributions, (sum, contribution) => {
+        return sum.plus(contribution.amountStaked);
+      }, new BigNumber(0));
+      return {
+        outcome: payoutNumeratorsValue.outcome,
+        isInvalid: payoutNumeratorsValue.invalid,
+        malformed: payoutNumeratorsValue.malformed,
+        payoutNumerators: firstContribution.payoutNumerators.map((hex) => Number(hex).toString(10)),
+        userStakeCurrent: userStakeCurrent.toFixed()
+      }
+    });
+    return contributionsByPayout;
   }
 
   static async getMarketCreatedInfo<TBigNumber>(
