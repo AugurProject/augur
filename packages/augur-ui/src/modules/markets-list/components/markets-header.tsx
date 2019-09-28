@@ -104,6 +104,7 @@ export default class MarketsHeader extends Component<
         </div>
         <div>
           <h1>{headerTitle}</h1>
+          <FilterSearch isSearchingMarkets={isSearchingMarkets} />
         </div>
       </article>
     );
