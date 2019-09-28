@@ -16,7 +16,7 @@ import {
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
+import { NodeStyleCallback, Notification } from 'modules/types';
 
 // TODO create state Interface
 const mapStateToProps = (state: AppState) => {
@@ -30,7 +30,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  updateReadNotifications: (notifications: Notifications[]) =>
+  updateReadNotifications: (notifications: Notification[]) =>
     dispatch(updateReadNotifications(notifications)),
   finalizeMarketModal: (marketId: string, cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_FINALIZE_MARKET, marketId, cb })),

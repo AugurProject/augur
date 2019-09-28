@@ -1,5 +1,4 @@
-import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from 'bignumber.js';
 import axios from 'axios';
 
 export interface Signatures {
@@ -52,19 +51,19 @@ export interface RelayTxEstimateResponse {
 
 export interface IGnosisRelayAPI {
   createSafe(createSafeTx: CreateSafeData): Promise<SafeResponse>;
-  execTransaction(RelayTransaction): Promise<string>; // TX Hash
+  execTransaction(tx: RelayTransaction): Promise<string>; // TX Hash
   checkSafe(safeAddress: string): Promise<CheckSafeResponse>;
   estimateTransaction(relayTxEstimateData: RelayTxEstimateData): Promise<RelayTxEstimateResponse>;
 }
 
 export class GnosisRelayAPI implements IGnosisRelayAPI {
-  public readonly relayURL: string;
+  readonly relayURL: string;
 
   constructor(relayURL: string) {
     this.relayURL = relayURL;
   }
 
-  public async createSafe(createSafeTx: CreateSafeData): Promise<SafeResponse> {
+  async createSafe(createSafeTx: CreateSafeData): Promise<SafeResponse> {
     const url = `${this.relayURL}v2/safes/`;
 
     const result = await axios.post(url, createSafeTx);
@@ -72,7 +71,7 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
     return result.data;
   }
 
-  public async checkSafe(safeAddress: string): Promise<CheckSafeResponse> {
+  async checkSafe(safeAddress: string): Promise<CheckSafeResponse> {
     const url = `${this.relayURL}v2/safes/${safeAddress}/funded/`;
 
     // Trigger an update
@@ -85,12 +84,12 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
       // If the safe address was just requested the service will not have an entry for it in the DB yet
       return {
         blockNumber: null,
-        txHash: null
-      }
+        txHash: null,
+      };
     }
   }
 
-  public async estimateTransaction(relayTxEstimateData: RelayTxEstimateData): Promise<RelayTxEstimateResponse> {
+  async estimateTransaction(relayTxEstimateData: RelayTxEstimateData): Promise<RelayTxEstimateResponse> {
     const url = `${this.relayURL}v2/safes/${relayTxEstimateData.safe}/transactions/estimate`;
 
     try {
@@ -101,7 +100,7 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
     }
   }
 
-  public async execTransaction(relayTx: RelayTransaction): Promise<string> {
+  async execTransaction(relayTx: RelayTransaction): Promise<string> {
     const url = `${this.relayURL}v1/safes/${relayTx.safe}/transactions/`;
 
     try {
