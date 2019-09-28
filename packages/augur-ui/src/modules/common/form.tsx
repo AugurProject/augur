@@ -734,10 +734,10 @@ export const ReportingRadioBarGroup = ({
   scalarOutcome,
   updateScalarOutcome,
 }: ReportingRadioGroupProps) => {
-  const { marketType, disputeInfo } = market;
+  const { reportingState, disputeInfo } = market;
   const isReporting =
-    marketType === REPORTING_STATE.OPEN_REPORTING ||
-    marketType === REPORTING_STATE.DESIGNATED_REPORTING;
+    reportingState === REPORTING_STATE.OPEN_REPORTING ||
+    reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(
     radioButton => radioButton.stake.tentativeWinning
