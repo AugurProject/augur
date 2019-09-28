@@ -53,10 +53,10 @@ export default class MarketOutcomesList extends Component<
 
     return (
       <section className={Styles.OutcomesList}>
-        {!popUp && toggle && (
+        {!popUp && (
           <h3 className={Styles.Heading}>
             Outcomes
-            <ToggleExtendButton toggle={toggle} />
+            {toggle && <ToggleExtendButton toggle={toggle} />}
           </h3>
         )}
         <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes, {[SharedStyles.HideOutcomes]: hideOutcomes})}>

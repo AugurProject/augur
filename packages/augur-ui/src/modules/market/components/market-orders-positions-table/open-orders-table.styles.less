@@ -14,8 +14,6 @@ div.Table {
   width: 100%;
 
   > div:first-of-type {
-    max-height: 30vh;
-    min-height: 30vh;
     overflow-y: auto;
   }
 
@@ -27,16 +25,27 @@ div.Table {
   }
 }
 
+div.TableHeight {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: @size-32;
+  position: absolute;
+}
+
 .Empty {
   background-color: @color-module-background;
 }
 
 .Footer {
-  background: @color-dark-grey;
   display: flex;
   justify-content: flex-end;
   min-height: @size-32;
   padding: @size-8 @size-16;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 div.HideOutcomes {
