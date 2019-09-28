@@ -364,7 +364,8 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
   shouldComponentUpdate(nextProps: any, nextState: any) {
     return (
       this.state.scrollWidth !== nextState.scrollWidth ||
-      this.state.clientWidth !== nextState.clientWidth
+      this.state.clientWidth !== nextState.clientWidth ||
+      this.props.text !== nextProps.text
     );
   }
   render() {
