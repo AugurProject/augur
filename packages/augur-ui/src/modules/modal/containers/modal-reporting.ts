@@ -23,7 +23,6 @@ const mergeProps = (sP, dP, oP) => {
     sP.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
     sP.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
   return {
-    isReporting,
     title: isReporting
       ? 'Report on this market'
       : 'Dispute or Support this market’s tenatative winning Outcome',

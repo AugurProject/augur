@@ -633,12 +633,12 @@ export class CategoryMultiSelect extends Component<
       <ul className={Styles.CategoryMultiSelect}>
         <DropdownInputGroup
           defaultValue={selected[0]}
-          staticLabel="Primary Category"
+          staticLabel='Primary Category'
           onChangeDropdown={choice => this.onChangeDropdown(choice, 0)}
           options={primaryOptions}
           errorMessage={errorMessage[0]}
           value={values[0]}
-          placeholder="Custom Primary Category"
+          placeholder='Custom Primary Category'
           onChangeInput={v =>
             this.handleUpdate(selected, getNewValues(v, 0, values))
           }
@@ -649,12 +649,12 @@ export class CategoryMultiSelect extends Component<
         {(showSecondaryDropdown || customSecondary) && (
           <DropdownInputGroup
             defaultValue={selected[1]}
-            staticLabel="Secondary Category"
+            staticLabel='Secondary Category'
             onChangeDropdown={choice => this.onChangeDropdown(choice, 1)}
             options={secondaryOptions}
             errorMessage={errorMessage[1]}
             value={values[1]}
-            placeholder="Custom Secondary Category"
+            placeholder='Custom Secondary Category'
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 1, values))
             }
@@ -667,12 +667,12 @@ export class CategoryMultiSelect extends Component<
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel="Tertiary Category"
+            staticLabel='Tertiary Category'
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
             errorMessage={errorMessage[2]}
             value={values[2]}
-            placeholder="Custom Tertiary Category"
+            placeholder='Custom Tertiary Category'
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
@@ -699,7 +699,7 @@ export const CheckboxBar = ({
       [Styles.RadioBarError]: error,
       [Styles.CheckboxBarChecked]: checked,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     {checked ? FilledCheckbox : EmptyCheckbox}
@@ -791,14 +791,14 @@ export const ReportingRadioBarGroup = ({
       </span>
       {notNewTentativeWinner && (
         <Error
-          header={`"Filling this bond of ${disputeAmount} REP only completes this current round`}
+          header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
           subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
         />
       )}
       {marketType === SCALAR && (
         <ReportingRadioBar
           market={market}
-          header=""
+          header=''
           value={'1'}
           checked={'1' === selected}
           stake={null}
@@ -843,7 +843,7 @@ export const ReportingRadioBarGroup = ({
         <>
           <span>
             {isReporting
-              ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+              ? 'Select Invalid if you believe this market's outcome was ambiguous or unverifiable.'
               : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
           </span>
           <ReportingRadioBar
@@ -899,10 +899,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const { selected } = this.state;
     let isReporting = false;
     if (market) {
-      const { marketType } = market;
+      const { reportingState } = market;
       isReporting =
-        marketType === REPORTING_STATE.OPEN_REPORTING ||
-        marketType === REPORTING_STATE.DESIGNATED_REPORTING;
+        reportingState === REPORTING_STATE.OPEN_REPORTING ||
+        reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
     }
     return (
       <div className={Styles.RadioBarGroup}>
@@ -1001,7 +1001,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.Invalid]: isInvalid,
           [Styles.Checked]: checked,
         })}
-        role="button"
+        role='button'
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
@@ -1024,7 +1024,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               )}
               {stake && stake.tentativeWinning && (
                 <Subheaders
-                  header="pre-filled stake"
+                  header='pre-filled stake'
                   subheader={preFilledStake}
                 />
               )}
@@ -1083,7 +1083,7 @@ export const RadioBar = ({
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     {checked ? FilledRadio : EmptyRadio}
@@ -1153,7 +1153,7 @@ export const RadioTwoLineBar = ({
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     {checked ? FilledRadio : EmptyRadio}
@@ -1206,7 +1206,7 @@ const RadioCard = ({
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
     })}
-    role="button"
+    role='button'
     onClick={e => onChange(value)}
   >
     <div>{CheckMark}</div>
@@ -1440,7 +1440,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
             {Arrow}
             <div>
               <IndividualTimeSelector
-                label="Hours"
+                label='Hours'
                 min={1}
                 max={12}
                 onChange={this.onChangeHours}
@@ -1448,7 +1448,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
               />
               <span>:</span>
               <IndividualTimeSelector
-                label="Minutes"
+                label='Minutes'
                 showLeadingZero
                 min={0}
                 max={59}
@@ -1456,7 +1456,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
                 value={minute !== null ? minute : '12'}
               />
               <IndividualTimeSelector
-                label="AM/PM"
+                label='AM/PM'
                 hasOptions
                 onChange={this.onChangeAM}
                 value={meridiem || 'AM'}
@@ -1551,7 +1551,7 @@ class IndividualTimeSelector extends React.Component<
         <button onClick={this.increment}>{Chevron}</button>
         {hasOptions && (
           <input
-            type="text"
+            type='text'
             onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
             disabled
@@ -1559,10 +1559,10 @@ class IndividualTimeSelector extends React.Component<
         )}
         {!hasOptions && (
           <input
-            type="number"
+            type='number'
             min={min}
             max={max}
-            step="1"
+            step='1'
             onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
           />
@@ -1584,7 +1584,7 @@ export const Checkbox = ({
     className={classNames(Styles.Checkbox, {
       [Styles.CheckboxSmall]: smallOnDesktop,
     })}
-    role="button"
+    role='button'
     onClick={e => {
       e.preventDefault();
       onClick(e);
@@ -1592,13 +1592,13 @@ export const Checkbox = ({
   >
     <input
       id={id}
-      type="checkbox"
+      type='checkbox'
       checked={isChecked}
       disabled={disabled}
       onChange={e => {}}
     />
     <span
-      role="button"
+      role='button'
       tabIndex={0}
       onClick={e => {}}
       className={classNames({
@@ -1646,7 +1646,7 @@ export const DatePicker = (props: DatePickerProps) => (
       numberOfMonths={props.numberOfMonths}
       navPrev={props.navPrev || OutlineChevron}
       navNext={props.navNext || OutlineChevron}
-      weekDayFormat="ddd"
+      weekDayFormat='ddd'
       customInputIcon={Calendar}
       readOnly={true}
     />
@@ -1905,7 +1905,7 @@ export class Input extends Component<InputProps, InputState> {
         {isMultiline && (
           <textarea
             {...p}
-            className="box"
+            className='box'
             value={value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
@@ -1916,8 +1916,8 @@ export class Input extends Component<InputProps, InputState> {
         {isSearch && (
           <div style={{ marginRight: '8px' }}>
             <PulseLoader
-              color="#AFA7C1"
-              sizeUnit="px"
+              color='#AFA7C1'
+              sizeUnit='px'
               size={6}
               loading={isLoading}
             />
@@ -1926,7 +1926,7 @@ export class Input extends Component<InputProps, InputState> {
 
         {isClearable && !isMultiline && !!value && (
           <button
-            type="button"
+            type='button'
             className={Styles.close}
             onClick={this.handleClear}
           >
@@ -1936,22 +1936,22 @@ export class Input extends Component<InputProps, InputState> {
 
         {canToggleVisibility && value && (
           <button
-            type="button"
-            className="button--text-only"
+            type='button'
+            className='button--text-only'
             onClick={this.handleToggleVisibility}
             tabIndex={-1}
           >
             {isHiddenContentVisible ? (
-              <i className="fa fa-eye-slash" />
+              <i className='fa fa-eye-slash' />
             ) : (
-              <i className="fa fa-eye" />
+              <i className='fa fa-eye' />
             )}
           </button>
         )}
 
         {maxButton && (
           <button
-            type="button"
+            type='button'
             className={classNames(Styles.Max, {
               [Styles.MaxDark]: darkMaxBtn,
             })}
@@ -1962,11 +1962,11 @@ export class Input extends Component<InputProps, InputState> {
         )}
 
         {shouldMatchValue && value && (
-          <div className="input-value-comparison">
+          <div className='input-value-comparison'>
             {value === comparisonValue ? (
-              <i className="fa fa-check-circle input-does-match" />
+              <i className='fa fa-check-circle input-does-match' />
             ) : (
-              <i className="fa fa-times-circle input-does-not-match" />
+              <i className='fa fa-times-circle input-does-not-match' />
             )}
           </div>
         )}
@@ -1974,7 +1974,7 @@ export class Input extends Component<InputProps, InputState> {
         {isIncrementable && (
           <div className={Styles.ValueIncrementers}>
             <button
-              type="button"
+              type='button'
               tabIndex={-1}
               className={classNames(Styles.IncrementValue, 'unstyled')}
               onClick={e => {
@@ -2001,12 +2001,12 @@ export class Input extends Component<InputProps, InputState> {
                 }
               }}
             >
-              <i className="fa fa-angle-up" />
+              <i className='fa fa-angle-up' />
             </button>
             <button
-              type="button"
+              type='button'
               tabIndex={-1}
-              className="decrement-value unstyled"
+              className='decrement-value unstyled'
               onClick={e => {
                 e.currentTarget.blur();
 
@@ -2031,7 +2031,7 @@ export class Input extends Component<InputProps, InputState> {
                 }
               }}
             >
-              <i className="fa fa-angle-down" />
+              <i className='fa fa-angle-down' />
             </button>
           </div>
         )}
@@ -2173,7 +2173,7 @@ export class InputDropdown extends Component<
           ))}
         </select>
         <span>
-          <ChevronFlip pointDown={!showList} stroke="white" />
+          <ChevronFlip pointDown={!showList} stroke='white' />
         </span>
       </div>
     );

@@ -19,7 +19,6 @@ interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
   rep: string;
-  isReporting: boolean;
   title: string;
   selectedOutcome?: number;
   reportAction: Function;
@@ -31,6 +30,7 @@ interface ModalReportingState {
   preFilledStake: string;
   disputeStake: string;
   scalarOutcome: string;
+  isReporting: boolean;
 }
 
 export default class ModalReporting extends Component<
@@ -44,6 +44,8 @@ export default class ModalReporting extends Component<
     preFilledStake: '',
     disputeStake: '',
     scalarOutcome: '',
+    isReporting: this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+    this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
   };
 
   updateChecked = (checked: string) => {
@@ -69,13 +71,14 @@ export default class ModalReporting extends Component<
       marketType,
       disputeInfo,
     } = this.props.market;
+    const { isReporting } = this.state;
     let outcomeId = parseInt(this.state.checked, 10);
     if (marketType === SCALAR) {
       // checked might be invalid outcome
       outcomeId = parseFloat(this.state.scalarOutcome || this.state.checked);
     }
 
-    if (this.props.isReporting) {
+    if (isReporting) {
       doInitialReport({
         marketId,
         maxPrice,
@@ -143,8 +146,14 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, isReporting, selectedOutcome } = this.props;
-    const s = this.state;
+    const { closeAction, title, market, rep, selectedOutcome } = this.props;
+    const {
+      checked,
+      isReporting,
+      preFilledStake,
+      scalarOutcome,
+      disputeStake,
+    } = this.state;
     const {
       description,
       marketType,
@@ -152,17 +161,11 @@ export default class ModalReporting extends Component<
       details,
       creationTimeFormatted,
       endTimeFormatted,
-      scalarDenomination,
-      minPrice,
-      maxPrice,
       outcomesFormatted,
       disputeInfo,
-      noShowBondAmount,
-      reportingState,
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
-    const isOpenReporting = reportingState === REPORTING_STATE.OPEN_REPORTING;
     let sortedOutcomes = outcomesFormatted;
     if (selectedOutcome || selectedOutcome == 0) {
       const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
@@ -191,7 +194,7 @@ export default class ModalReporting extends Component<
         return {
           header: outcome.description,
           value: outcome.id,
-          checked: s.checked === outcome.id.toString(),
+          checked: checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
           preFilledStake: formatAttoRep('0').formatted,
           stake,
@@ -203,7 +206,7 @@ export default class ModalReporting extends Component<
         radioButtons.push({
           header: stake.outcome,
           value: Number(stake.outcome),
-          checked: s.checked === stake.outcome.toString(),
+          checked: checked === stake.outcome.toString(),
           isInvalid: stake.outcome === '0',
           preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
           stake,
@@ -252,14 +255,14 @@ export default class ModalReporting extends Component<
               onChange={this.updateChecked}
               market={market}
               radioButtons={radioButtons}
-              defaultSelected={s.checked}
+              defaultSelected={checked}
               updatePreFilledStake={this.updatePreFilledStake}
-              preFilledStake={s.preFilledStake}
+              preFilledStake={preFilledStake}
               updateDisputeStake={this.updateDisputeStake}
-              disputeStake={s.disputeStake}
+              disputeStake={disputeStake}
               reportAction={this.reportingAction}
               updateScalarOutcome={this.updateScalarOutcome}
-              scalarOutcome={s.scalarOutcome}
+              scalarOutcome={scalarOutcome}
             />
           </div>
         </main>
