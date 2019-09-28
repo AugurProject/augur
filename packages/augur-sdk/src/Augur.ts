@@ -292,6 +292,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
   getAccountReportingHistory = this.bindTo(Accounts.getAccountReportingHistory);
+  getUserCurrentDisputeStake = this.bindTo(Accounts.getUserCurrentDisputeStake);
   getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
   getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
 

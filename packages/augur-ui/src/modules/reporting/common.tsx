@@ -37,7 +37,7 @@ import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
-  userRepStaked: FormattedNumber;
+  userValue: FormattedNumber;
   thirdPercent: FormattedNumber;
   total: FormattedNumber;
 }
@@ -51,7 +51,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
   const secondPercent = calculatePosition(
     ZERO,
     createBigNumber(props.total.value),
-    props.userRepStaked
+    props.userValue
   );
   const thirdPercent = calculatePosition(
     ZERO,
@@ -59,28 +59,30 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
     props.thirdPercent
   );
 
+  const key = `tooltip-${props.userValue.formattedValue}-existingStake`
   return (
     <div
       className={classNames(Styles.ReportingPercent, {
         [Styles.Round]: firstPercent === 0 && secondPercent === 0,
         [Styles.RoundSecond]: firstPercent === 0,
       })}
+      key={key}
     >
       <span style={{ width: `${firstPercent > 100 ? 100 : firstPercent}%` }} />
       <span
         style={{ width: `${secondPercent > 100 ? 100 : secondPercent}%` }}
         data-tip
-        data-for="tooltip--existingStake"
+        data-for={key}
       />
       <ReactTooltip
-        id="tooltip--existingStake"
+        id={key}
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="top"
         type="light"
       >
         My Existing Stake
-        <p>{props.userRepStaked.formattedValue} REP</p>
+        <p>{props.userValue.formattedValue} REP</p>
       </ReactTooltip>
       {thirdPercent > 100
         ? ''
@@ -209,7 +211,7 @@ export interface DisputingButtonViewProps {
   stakeCurrent: FormattedNumber;
   bondSizeCurrent: FormattedNumber;
   inputtedStake: FormattedNumber;
-  userRepStaked: FormattedNumber;
+  userValue: FormattedNumber;
 }
 
 export const DisputingButtonView = (props: DisputingButtonViewProps) => (
@@ -225,7 +227,7 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
     </div>
     <ReportingPercent
       firstPercent={props.stakeCurrent}
-      userRepStaked={props.userRepStaked}
+      userValue={props.userValue}
       thirdPercent={props.inputtedStake}
       total={props.bondSizeCurrent}
     />

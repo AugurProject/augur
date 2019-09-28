@@ -15,7 +15,8 @@ import {
 
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { convertDisplayValuetoAttoValue } from '@augurproject/sdk';
+import { convertDisplayValuetoAttoValue, Getters } from '@augurproject/sdk';
+import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
@@ -32,6 +33,7 @@ interface ModalReportingState {
   disputeStake: string;
   scalarOutcome: string;
   isReporting: boolean;
+  userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
 }
 
 export default class ModalReporting extends Component<
@@ -47,10 +49,22 @@ export default class ModalReporting extends Component<
     scalarOutcome: '',
     isReporting: this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
     this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
+    userCurrentDisputeRound: [],
   };
 
-  updateChecked = (checked: string) => {
+  componentDidMount = () => {
+    const { market, userAccount} = this.props;
+    loadAccountCurrentDisputeHistory(market.marketId, userAccount, (err, userCurrentDisputeRound) => {
+      if (err) {
+        return console.error("could not get user current dispute round values", err);
+      }
+      this.setState({
+        userCurrentDisputeRound: userCurrentDisputeRound ? userCurrentDisputeRound : []
+      })
+    })
+  }
 
+  updateChecked = (checked: string) => {
     this.updateDisputeStake("");
     this.updatePreFilledStake("");
     this.updateScalarOutcome("");
@@ -156,6 +170,7 @@ export default class ModalReporting extends Component<
       preFilledStake,
       scalarOutcome,
       disputeStake,
+      userCurrentDisputeRound,
     } = this.state;
     const {
       description,
@@ -266,6 +281,7 @@ export default class ModalReporting extends Component<
               reportAction={this.reportingAction}
               updateScalarOutcome={this.updateScalarOutcome}
               scalarOutcome={scalarOutcome}
+              userCurrentDisputeRound={userCurrentDisputeRound}
             />
           </div>
         </main>

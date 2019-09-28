@@ -30,6 +30,7 @@ import {
   SCALAR,
   ZERO,
   REPORTING_STATE,
+  SCALAR_UP_ID,
 } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
@@ -245,6 +246,7 @@ interface RadioGroupProps {
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
   stake?: Getters.Markets.StakeDetails;
+  userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
 }
 
 interface RadioGroupState {
@@ -286,6 +288,7 @@ interface ReportingRadioBarProps {
   reportAction: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
 }
 
 interface RadioTwoLineBarProps {
@@ -719,6 +722,7 @@ interface ReportingRadioGroupProps {
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[];
 }
 
 export const ReportingRadioBarGroup = ({
@@ -733,6 +737,7 @@ export const ReportingRadioBarGroup = ({
   updateDisputeStake,
   scalarOutcome,
   updateScalarOutcome,
+  userCurrentDisputeRound,
 }: ReportingRadioGroupProps) => {
   const { reportingState, disputeInfo, marketType } = market;
   const isReporting =
@@ -775,11 +780,12 @@ export const ReportingRadioBarGroup = ({
             disputeStake={disputeStake}
             updateDisputeStake={updateDisputeStake}
             isInvalid={tentativeWinning.isInvalid}
-            checked={tentativeWinning.value.toString() === selected}
+            checked={String(tentativeWinning.value) === selected}
             onChange={selected => {
               onChange(selected.toString());
             }}
             reportAction={reportAction}
+            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(tentativeWinning.value))}
           />
         </section>
       )}
@@ -799,8 +805,8 @@ export const ReportingRadioBarGroup = ({
         <ReportingRadioBar
           market={market}
           header=''
-          value={'1'}
-          checked={'1' === selected}
+          value={String(SCALAR_UP_ID)}
+          checked={String(SCALAR_UP_ID) === selected}
           stake={null}
           expandable
           preFilledStake={preFilledStake}
@@ -813,6 +819,7 @@ export const ReportingRadioBarGroup = ({
             onChange(selected.toString());
           }}
           reportAction={reportAction}
+          userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(SCALAR_UP_ID))}
         />
       )}
       {radioButtons.map(
@@ -824,7 +831,7 @@ export const ReportingRadioBarGroup = ({
               key={`${index}${radio.value}`}
               expandable
               {...radio}
-              checked={radio.value.toString() === selected}
+              checked={String(radio.value) === selected}
               onChange={selected => {
                 onChange(selected.toString());
               }}
@@ -833,6 +840,7 @@ export const ReportingRadioBarGroup = ({
               updatePreFilledStake={updatePreFilledStake}
               disputeStake={disputeStake}
               updateDisputeStake={updateDisputeStake}
+              userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(radio.value))}
             />
           )
       )}
@@ -855,11 +863,12 @@ export const ReportingRadioBarGroup = ({
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
             updateDisputeStake={updateDisputeStake}
-            checked={invalid.value.toString() === selected}
+            checked={String(invalid.value) === selected}
             reportAction={reportAction}
             onChange={selected => {
               onChange(selected.toString());
             }}
+            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(invalid.value))}
           />
         </>
       )}
@@ -895,6 +904,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       updateDisputeStake,
       updateScalarOutcome,
       scalarOutcome,
+      userCurrentDisputeRound,
     } = this.props;
     const { selected } = this.state;
     let isReporting = false;
@@ -921,6 +931,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             updateDisputeStake={updateDisputeStake}
             updateScalarOutcome={updateScalarOutcome}
             scalarOutcome={scalarOutcome}
+            userCurrentDisputeRound={userCurrentDisputeRound}
           />
         )}
         {!isReporting &&
@@ -957,6 +968,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       reportAction,
       scalarOutcome,
       updateScalarOutcome,
+      userOutcomeCurrentRoundDispute,
     } = this.props;
 
     let { stake } = this.props;
@@ -984,7 +996,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         };
       }
     }
-    const userRepStaked = ZERO; // TODO: get user's stake per round
     const reportingGasFee = formatNumber('0'); // TODO: get actual gas cost
     const inputtedStake =
       !checked || disputeStake === '' || isNaN(parseFloat(disputeStake))
@@ -1003,7 +1014,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.Invalid]: isInvalid,
           [Styles.Checked]: checked,
         })}
-        role='button'
+        role="button"
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
@@ -1020,14 +1031,22 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeCurrent={formatAttoRep(stake.stakeCurrent)}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
                   inputtedStake={formatAttoRep(inputtedStake)}
-                  userRepStaked={formatAttoRep(userRepStaked)}
+                  userValue={
+                    userOutcomeCurrentRoundDispute
+                      ? formatAttoRep(
+                          userOutcomeCurrentRoundDispute.userStakeCurrent
+                        )
+                      : formatAttoRep(ZERO)
+                  }
                   fullBond={formatAttoRep(fullBond)}
                 />
               )}
               {stake && stake.tentativeWinning && (
                 <Subheaders
-                  header='pre-filled stake'
-                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).formatted}
+                  header="pre-filled stake"
+                  subheader={
+                    formatAttoRep(stake.stakeCurrent || ZERO).formatted
+                  }
                 />
               )}
               {checked && (
