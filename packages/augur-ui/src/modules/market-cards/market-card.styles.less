@@ -6,7 +6,7 @@
 	border: 1px solid @color-dark-grey;
 	display: flex;
 	margin: @size-4 0;
-  display: grid;
+  	display: grid;
 	grid-template-columns: 111px auto;
 	grid-template-rows: auto 45px auto;
 	padding: 0 @size-16;
@@ -53,12 +53,17 @@
 		grid-column: 2;
 		padding-bottom: @size-16;
 		padding-top: @size-4;
+		overflow: hidden;
 
 		> a {
 			display: -webkit-box;
-		  -webkit-line-clamp: 3;
-		  -webkit-box-orient: vertical;
-		 	overflow: hidden;
+		  	-webkit-line-clamp: 3;
+		  	-webkit-box-orient: vertical;
+			overflow: hidden;
+			display: inline-block;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			width: 100%;
 		}
 
 		&:hover {
