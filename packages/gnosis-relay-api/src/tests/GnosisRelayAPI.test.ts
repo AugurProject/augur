@@ -1,13 +1,21 @@
 import { BigNumber } from 'bignumber.js';
-import { GnosisRelayAPI, RelayTransaction, Signatures } from "../index";
-import { ethers } from "ethers";
-import { abi } from "@augurproject/artifacts";
+import { GnosisRelayAPI, RelayTransaction } from '../index';
+import { ethers } from 'ethers';
+import { abi } from '@augurproject/artifacts';
 
-const SAFE_FUNDER_PRIVATE_KEY = "fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a";
-const SAFE_FUNDER_PUBLIC_KEY = "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb";
+// Local testing
+const RELAY_API = 'http://localhost:8000/api/';
+const SAFE_FUNDER_PRIVATE_KEY = '0x395df67f0c2d2d9fe1ad08d1bc8b6627011959b79c53d7dd6a3536a33ab8a4fd';
+const SAFE_FUNDER_PUBLIC_KEY = '0x95cED938F7991cd0dFcb48F0a06a40FA1aF46EBC';
+const URL = 'http://localhost:8545';
+// Rinkeby testing
+// const RELAY_API = 'https://safe-relay.rinkeby.gnosis.pm/api/';
+// const SAFE_FUNDER_PRIVATE_KEY = "fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a";
+// const SAFE_FUNDER_PUBLIC_KEY = "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb";
+// const URL = "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx";
 
-const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
-const DUMMY_ADDRESS = "0x0000000000000000000000000000000000000003";
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+const DUMMY_ADDRESS = '0x0000000000000000000000000000000000000003';
 
 export async function sleep(milliseconds: number): Promise<void> {
     return new Promise<void>(resolve => setTimeout(resolve, milliseconds));
@@ -16,16 +24,13 @@ export async function sleep(milliseconds: number): Promise<void> {
 let api: GnosisRelayAPI;
 
 beforeAll(async () => {
-    api = new GnosisRelayAPI("https://safe-relay.rinkeby.gnosis.pm/api/");
+    api = new GnosisRelayAPI(RELAY_API);
   }, 1000);
 
 test('Gnosis Relay API:: Make safe and do transactions', async () => {
-
-    const url = "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx";
-    const provider = new ethers.providers.JsonRpcProvider(url);
+    const provider = new ethers.providers.JsonRpcProvider(URL);
     const wallet = new ethers.Wallet(SAFE_FUNDER_PRIVATE_KEY, provider);
-
-    let signingKey = new ethers.utils.SigningKey(SAFE_FUNDER_PRIVATE_KEY);
+    const signingKey = new ethers.utils.SigningKey(SAFE_FUNDER_PRIVATE_KEY);
 
     const gnosisSafeData = {
         saltNonce: Number((Math.random() * 10000000).toFixed()),
@@ -35,7 +40,7 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     };
 
     // Get safe creation data
-    console.log(`Getting Safe Creation Data`);
+    console.log('Getting Safe Creation Data');
     const safeResponse = await api.createSafe(gnosisSafeData);
     const safeAddress = safeResponse.safe;
     const payment = safeResponse.payment;
@@ -48,23 +53,25 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     await expect(safeStatus.txHash).toEqual(null);
 
     // Fund the safe
-    console.log(`Funding Safe`);
+    console.log('Funding Safe');
     const fundingTransaction = {
         nonce: await wallet.getTransactionCount(),
         to: safeAddress,
         value: new ethers.utils.BigNumber(payment),
     };
     await wallet.sendTransaction(fundingTransaction);
+
     safeStatus = await api.checkSafe(safeAddress);
 
     // Wait till the relay service has deployed the safe
-    console.log(`Waiting for Safe Deployment`);
-    while (safeStatus.blockNumber === null) {
+    console.log('Waiting for Safe Deployment');
+    // Originally checked the blockNumber but it doesn't seem to be available in ganache.
+    while (safeStatus.txHash === null) {
         await sleep(2000);
         safeStatus = await api.checkSafe(safeAddress);
     }
 
-    console.log(`Depositing Additional Funds`);
+    console.log('Depositing Additional Funds');
     const depositTransaction = {
         nonce: await wallet.getTransactionCount(),
         to: safeAddress,
@@ -75,10 +82,10 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     await provider.getTransactionReceipt(txResponse.hash);
 
     // Lets send a transaction through the safe using the relay service
-    const gnosisSafe = new ethers.Contract(safeAddress, abi["GnosisSafe"], provider);
-  
+    const gnosisSafe = new ethers.Contract(safeAddress, abi['GnosisSafe'], provider);
+
     const to = DUMMY_ADDRESS;
-    const data = "0x";
+    const data = '0x';
     const value = 1;
     const operation = 0;
     const gasToken = NULL_ADDRESS;
@@ -101,17 +108,17 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
         refundReceiver,
         nonce,
         signatures: [{
-            s: "",
-            r: "",
-            v: 0
-        }]
+            s: '',
+            r: '',
+            v: 0,
+        }],
     };
 
-    console.log(`Getting TX Hash and Signing for a relay TX Execution`);
-    let txHashBytes = await gnosisSafe.getTransactionHash(to, value, data, operation, safeTxGas, dataGas, gasPrice, gasToken, refundReceiver, nonce);
+    console.log('Getting TX Hash and Signing for a relay TX Execution');
+    const txHashBytes = await gnosisSafe.getTransactionHash(to, value, data, operation, safeTxGas, dataGas, gasPrice, gasToken, refundReceiver, nonce);
     await expect(txHashBytes).not.toEqual(undefined);
 
-    let sig = signingKey.signDigest(ethers.utils.arrayify(txHashBytes));
+    const sig = signingKey.signDigest(ethers.utils.arrayify(txHashBytes));
 
     const address = ethers.utils.recoverAddress(txHashBytes, sig);
     await expect(address).toEqual(wallet.address);
@@ -125,6 +132,12 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     await expect(txHash).not.toEqual(undefined);
 
     console.log(`Waiting on TX: ${txHash}`);
-    await provider.getTransactionReceipt(txHash);
+    const receipt = await provider.getTransactionReceipt(txHash);
+    expect(receipt).toMatchObject({
+      to: safeAddress,
+      status: 1,
+      contractAddress: null,
+    });
+    expect(receipt.blockNumber).not.toBeNull();
   
 }, 600000);
