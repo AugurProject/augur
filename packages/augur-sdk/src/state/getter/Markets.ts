@@ -22,7 +22,7 @@ import {
   convertOnChainAmountToDisplayAmount,
   marketTypeToName,
 } from '../../index';
-import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
+import { getOutcomeValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -1005,10 +1005,10 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
   for (let i = 0; i < stakeDetails.length; i++) {
     const outcomeDetails = stakeDetails[i];
     const outcomeValue = getOutcomeValue(market, outcomeDetails.payoutNumerators);
-    const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
-    .multipliedBy(2)
-    .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout || '0').multipliedBy(3)).toFixed();
-if (outcomeDetails.disputeRound < market.disputeRound) {
+    if (outcomeDetails.disputeRound < market.disputeRound) {
+      const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
+        .multipliedBy(2)
+        .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
@@ -1023,7 +1023,7 @@ if (outcomeDetails.disputeRound < market.disputeRound) {
         outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
-        bondSizeCurrent: new BigNumber(bondSizeCurrent).toFixed(),
+        bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
         tentativeWinning: String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators),
@@ -1031,21 +1031,6 @@ if (outcomeDetails.disputeRound < market.disputeRound) {
     }
   }
   return formattedStakeDetails;
-}
-
-function getOutcomeValue(market: MarketData, payoutNumerators: string[]): PayoutNumeratorValue {
-  const maxPrice = new BigNumber(market['prices'][1]);
-  const minPrice = new BigNumber(market['prices'][0]);
-  const numTicks = new BigNumber(market['numTicks']);
-  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-  const marketType = marketTypeToName(market.marketType);
-  return calculatePayoutNumeratorsValue(
-    convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
-    convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
-    numTicks.toString(),
-    marketType,
-    payoutNumerators
-  );
 }
 
 function getMarketsCategoriesMeta(

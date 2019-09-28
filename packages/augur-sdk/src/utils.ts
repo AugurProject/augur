@@ -5,6 +5,7 @@ import {
   MarketType,
   MarketTypeName,
   YesNoOutcomes,
+  MarketData
 } from './state/logs/types';
 import { toAscii } from './state/utils/utils';
 
@@ -180,6 +181,21 @@ export function calculatePayoutNumeratorsValue(
       return { outcome: String(outcome) };
     }
   }
+}
+
+export function getOutcomeValue(market: MarketData, payoutNumerators: string[]): PayoutNumeratorValue {
+  const maxPrice = new BigNumber(market['prices'][1]);
+  const minPrice = new BigNumber(market['prices'][0]);
+  const numTicks = new BigNumber(market['numTicks']);
+  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+  const marketType = marketTypeToName(market.marketType);
+  return calculatePayoutNumeratorsValue(
+    convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
+    convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+    numTicks.toString(),
+    marketType,
+    payoutNumerators
+  );
 }
 
 export function isWellFormedYesNo(payout: string[]): boolean {
