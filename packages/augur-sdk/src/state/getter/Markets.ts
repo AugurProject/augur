@@ -554,21 +554,26 @@ export class Markets {
     // request.offset = params.offset;
     // NOTE: This data _could_ come in a standalone request which would let us do in query pagination. Should investigate if we need that as noted above in the TODO
     const filteredOutCount = numMarketDocs - marketData.length;
-    const categories = getMarketsCategoriesMeta(filteredMarketsFTSResults);
+
     const meta = {
       filteredOutCount,
-      categories,
       marketCount: marketData.length
     }
 
-    marketData = marketData.slice(params.offset, params.offset + params.limit);
-
     // Get markets info to return
-    const marketsInfo = await getMarketsInfo(db, marketData, reportingFeeDivisor);
+    let marketsInfo = await getMarketsInfo(db, marketData, reportingFeeDivisor);
+
+    // Get categories meta data
+    const categories = getMarketsCategoriesMeta(marketsInfo);
+
+    marketsInfo = marketsInfo.slice(params.offset, params.offset + params.limit);
 
     return {
       markets: marketsInfo,
-      meta,
+      meta: {
+        ...meta,
+        categories
+      },
     };
   }
 
@@ -1054,28 +1059,38 @@ function getMarketsCategoriesMeta(
   const categories = {};
   for (let i = 0; i < marketsResults.length; i++) {
     const marketsResult = marketsResults[i];
-    if (categories[marketsResult.category1]) {
-      categories[marketsResult.category1]['count']++;
+    const category1 = marketsResult.categories[0];
+    const category2 = marketsResult.categories[1] ? marketsResult.categories[1] : null;
+    const category3 = marketsResult.categories[2] ? marketsResult.categories[2] : null;
+
+    if (categories[category1]) {
+      categories[category1]['count']++;
     } else {
-      categories[marketsResult.category1] = {
+      categories[category1] = {
         'count': 1,
         'children': {},
       };
     }
-    if (categories[marketsResult.category1].children[marketsResult.category2]) {
-      categories[marketsResult.category1].children[marketsResult.category2]['count']++;
-    } else {
-      categories[marketsResult.category1].children[marketsResult.category2] = {
-        count: 1,
-        children: {},
-      };
+
+    if (category2) {
+      if (categories[category1].children[category2]) {
+        categories[category1].children[category2]['count']++;
+      } else {
+        categories[category1].children[category2] = {
+          count: 1,
+          children: {},
+        };
+      }
     }
-    if (categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3]) {
-      categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3]['count']++;
-    } else {
-      categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3] = {
-        count: 1,
-      };
+
+    if (category3) {
+      if (categories[category1].children[category2].children[category3]) {
+        categories[category1].children[category2].children[category3]['count']++;
+      } else {
+        categories[category1].children[category2].children[category3] = {
+          count: 1,
+        };
+      }
     }
   }
   return categories;
