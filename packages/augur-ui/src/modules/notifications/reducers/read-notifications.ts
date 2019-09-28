@@ -16,8 +16,11 @@ export default (
     | ClearLoginAccountAction
 ): Notification[] => {
   switch (action.type) {
-    case UPDATE_READ_NOTIFICATIONS:
-      return [...notifications, ...action.data.notifications];
+    case UPDATE_READ_NOTIFICATIONS: {
+      const ids = action.data.notifications.map(n => n.id);
+      const filtered = notifications.filter(n => !ids.includes(n.id))
+      return [...filtered, ...action.data.notifications];
+    }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;
