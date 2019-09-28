@@ -14,7 +14,6 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { Getters } from '@augurproject/sdk';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -24,6 +23,7 @@ interface ModalReportingProps {
   title: string;
   selectedOutcome?: number;
   reportAction: Function;
+  userAccount?: string;
 }
 
 interface ModalReportingState {
@@ -250,13 +250,7 @@ export default class ModalReporting extends Component<
           <div>
             <RadioBarGroup
               onChange={this.updateChecked}
-              reporting={true}
-              disputeInfo={disputeInfo}
-              isReporting={isReporting}
-              marketType={marketType}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              scalarDenomination={scalarDenomination}
+              market={market}
               radioButtons={radioButtons}
               defaultSelected={s.checked}
               updatePreFilledStake={this.updatePreFilledStake}
@@ -266,8 +260,6 @@ export default class ModalReporting extends Component<
               reportAction={this.reportingAction}
               updateScalarOutcome={this.updateScalarOutcome}
               scalarOutcome={s.scalarOutcome}
-              initialReporterStake={noShowBondAmount}
-              isOpenReporting={isOpenReporting}
             />
           </div>
         </main>

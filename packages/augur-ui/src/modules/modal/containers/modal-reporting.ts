@@ -11,6 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
   modal: state.modal,
   market: ownProps.market,
   rep: formatRep(state.loginAccount.balances.rep).formatted,
+  userAccount: state.loginAccount.address,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

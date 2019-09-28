@@ -7,6 +7,7 @@ import {
   MY_TOTOL_REP_STAKED,
   ALL_TIME_PROFIT_AND_LOSS_REP,
   REPORTING_STATE,
+  SCALAR,
 } from 'modules/common/constants';
 import { FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
@@ -251,28 +252,24 @@ export const ScalarOutcomeView = (props: ScalarOutcomeViewProps) => (
 );
 
 export interface DisputingBondsViewProps {
-  disputeInfo: Getters.Markets.DisputeInfo;
-  scalar?: boolean;
+  market: MarketData;
   rangeValue: string;
   changeRange: Function;
-  scalarDenomination: string;
   stakeValue: string;
   changeStake: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
-  minPrice?: string;
-  maxPrice?: string;
   userAvailableRep: number;
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
-  minAllowableDisputeStake: string;
 }
 
 interface DisputingBondsViewState {
   disabled: boolean;
   scalarError: string;
   stakeError: string;
+  isScalar: boolean;
 }
 
 export class DisputingBondsView extends Component<
@@ -283,14 +280,15 @@ export class DisputingBondsView extends Component<
     disabled: true,
     scalarError: '',
     stakeError: '',
+    isScalar: this.props.market.marketType === SCALAR,
   };
 
   changeRange = (range: string) => {
-    const { minPrice, maxPrice, changeRange, stakeValue } = this.props;
+    const { market, changeRange, stakeValue } = this.props;
 
     if (
-      createBigNumber(range).lt(createBigNumber(minPrice)) ||
-      createBigNumber(range).gt(createBigNumber(maxPrice))
+      createBigNumber(range).lt(createBigNumber(market.minPrice)) ||
+      createBigNumber(range).gt(createBigNumber(market.maxPrice))
     ) {
       this.setState({
         scalarError: 'Input value not between scalar market range',
@@ -309,16 +307,16 @@ export class DisputingBondsView extends Component<
 
   changeStake = (inputStakeValue: string) => {
     const {
+      market,
       changeStake,
-      scalar,
       rangeValue,
       userAvailableRep,
       stakeRemaining,
       tentativeWinning,
-      minAllowableDisputeStake,
     } = this.props;
 
-    const min = formatAttoRep(minAllowableDisputeStake).value;
+    const { isScalar } = this.state;
+    const min = formatAttoRep(market.noShowBondAmount).value;
     const remaining = formatAttoRep(stakeRemaining).value;
     const inputToAttoRep = convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue))
     if (
@@ -350,7 +348,7 @@ export class DisputingBondsView extends Component<
       !tentativeWinning &&
       stakeRemaining &&
       createBigNumber(inputToAttoRep).lt(
-        createBigNumber(minAllowableDisputeStake)
+        createBigNumber(market.noShowBondAmount)
       )
     ) {
       this.setState({
@@ -361,7 +359,7 @@ export class DisputingBondsView extends Component<
       this.setState({ stakeError: '' });
       if (
         this.state.scalarError === '' &&
-        ((scalar && rangeValue !== '') || !scalar)
+        ((isScalar && rangeValue !== '') || !isScalar)
       ) {
         this.setState({ disabled: false });
       }
@@ -371,31 +369,29 @@ export class DisputingBondsView extends Component<
 
   render() {
     const {
-      scalar,
+      market,
       rangeValue,
-      scalarDenomination,
       stakeValue,
       stakeRemaining,
       tentativeWinning,
       reportAction,
-      minAllowableDisputeStake,
     } = this.props;
 
-    const { disabled, scalarError, stakeError } = this.state;
-    const min = convertAttoValueToDisplayValue(createBigNumber(minAllowableDisputeStake));
+    const { disabled, scalarError, stakeError, isScalar } = this.state;
+    const min = convertAttoValueToDisplayValue(createBigNumber(market.noShowBondAmount));
     const remaining = convertAttoValueToDisplayValue(createBigNumber(stakeRemaining));
     const inputted = stakeValue ? convertAttoValueToDisplayValue(createBigNumber(stakeValue)) : stakeValue;
     return (
       <div
         className={classNames(Styles.DisputingBondsView, {
-          [Styles.Scalar]: scalar,
+          [Styles.Scalar]: isScalar,
         })}
       >
-        {scalar && (
+        {isScalar && (
           <ScalarOutcomeView
             rangeValue={rangeValue}
             changeRange={this.changeRange}
-            scalarDenomination={scalarDenomination}
+            scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
           />
         )}
@@ -443,21 +439,16 @@ export class DisputingBondsView extends Component<
 }
 
 export interface ReportingBondsViewProps {
-  scalar?: boolean;
+  market: MarketData;
   rangeValue: string;
   changeRange: Function;
-  scalarDenomination: string;
-  initialReporterStake: string;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
-  minPrice?: string;
-  maxPrice?: string;
   userAvailableRep: number;
-  isOpenReporting?: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -465,6 +456,7 @@ interface ReportingBondsViewState {
   disabled: boolean;
   scalarError: string;
   stakeError: string;
+  isScalar: boolean;
 }
 
 export class ReportingBondsView extends Component<
@@ -473,9 +465,10 @@ export class ReportingBondsView extends Component<
 > {
   state: ReportingBondsViewState = {
     showInput: false,
-    disabled: this.props.scalar ? true : false,
+    disabled: this.props.market.marketType === SCALAR ? true : false,
     scalarError: '',
     stakeError: '',
+    isScalar: this.props.market.marketType === SCALAR,
   };
 
   toggleInput = () => {
@@ -483,11 +476,11 @@ export class ReportingBondsView extends Component<
   };
 
   changeRange = (range: string) => {
-    const { minPrice, maxPrice, changeRange } = this.props;
+    const { market, changeRange } = this.props;
 
     if (
-      createBigNumber(range).lt(createBigNumber(minPrice)) ||
-      createBigNumber(range).gt(createBigNumber(maxPrice))
+      createBigNumber(range).lt(createBigNumber(market.minPrice)) ||
+      createBigNumber(range).gt(createBigNumber(market.maxPrice))
     ) {
       this.setState({
         scalarError: 'Input value not between scalar market range',
@@ -507,10 +500,10 @@ export class ReportingBondsView extends Component<
   updatePreFilledStake = (stake: string) => {
     const {
       updatePreFilledStake,
-      scalar,
       rangeValue,
       userAvailableRep,
     } = this.props;
+    const { isScalar } = this.state;
 
     if (isNaN(Number(stake))) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
@@ -523,7 +516,7 @@ export class ReportingBondsView extends Component<
       this.setState({ stakeError: '' });
       if (
         this.state.scalarError === '' &&
-        ((scalar && rangeValue !== '') || !scalar)
+        ((isScalar && rangeValue !== '') || !isScalar)
       ) {
         this.setState({ disabled: false });
       }
@@ -533,44 +526,39 @@ export class ReportingBondsView extends Component<
 
   render() {
     const {
-      scalar,
+      market,
       rangeValue,
-      changeRange,
-      scalarDenomination,
-      initialReporterStake,
       reportingGasFee,
       reportAction,
       preFilledStake,
-      updatePreFilledStake,
       userAvailableRep,
-      isOpenReporting,
     } = this.props;
 
-    const { showInput, disabled, scalarError, stakeError } = this.state;
+    const { showInput, disabled, scalarError, stakeError, isScalar } = this.state;
 
     const preFilled = preFilledStake || '0';
 
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
-          [Styles.Scalar]: scalar,
+          [Styles.Scalar]: isScalar,
         })}
       >
-        {scalar && (
+        {isScalar && (
           <ScalarOutcomeView
             rangeValue={rangeValue}
             changeRange={this.changeRange}
-            scalarDenomination={scalarDenomination}
+            scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
           />
         )}
-        {isOpenReporting && (
+        {market.reportingState === REPORTING_STATE.OPEN_REPORTING && (
           <>
             <span>Review Initial Reporting</span>
             <LinearPropertyLabel
               key="initial"
               label="open reporter winning Stake"
-              value={`${formatAttoRep(initialReporterStake).formatted} REP`}
+              value={`${formatAttoRep(market.noShowBondAmount).formatted} REP`}
             />
           </>
         )}
@@ -599,7 +587,7 @@ export class ReportingBondsView extends Component<
               value={
                 formatAttoRep(
                   createBigNumber(preFilled).plus(
-                    createBigNumber(initialReporterStake)
+                    createBigNumber(market.noShowBondAmount)
                   )
                 ).formatted
               }
