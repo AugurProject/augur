@@ -711,7 +711,7 @@ div.LinearPropertyViewTransaction {
 }
 
 .MarketLabel {
-  .text-14;
+  .text-11;
 
   align-items: center;
   color: @color-inactive-text;
@@ -719,6 +719,7 @@ div.LinearPropertyViewTransaction {
   display: flex;
   justify-content: flex-start;
   padding-bottom: @size-12;
+  text-transform: uppercase;
 
   > div:nth-child(even) {
     margin: 0 0 0 @size-4;
@@ -739,6 +740,8 @@ div.LinearPropertyViewTransaction {
   }
 
   &.selected {
+    .text-11-bold;
+
     color: @color-primary-text;
     border-bottom: 1px solid @color-primary-text;
 

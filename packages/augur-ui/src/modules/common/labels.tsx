@@ -364,7 +364,8 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
   shouldComponentUpdate(nextProps: any, nextState: any) {
     return (
       this.state.scrollWidth !== nextState.scrollWidth ||
-      this.state.clientWidth !== nextState.clientWidth
+      this.state.clientWidth !== nextState.clientWidth ||
+      this.props.text !== nextProps.text
     );
   }
   render() {
@@ -1060,7 +1061,7 @@ export const MarketStateLabel = (
   >
     <div>{props.label}</div>
     {props.selected && !props.loading && (
-      <div>{props.count}</div>
+      <div>({props.count})</div>
     )}
     {props.loading && props.selected && (
       <div>
