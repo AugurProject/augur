@@ -82,8 +82,8 @@ jobs:
         succeeded(),
         or
         (
-          ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-          ne(variables['Build.SourceBranch'], 'refs/tags')
+          not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+          not(eq(variables['Build.sourceBranch'], 'refs/tags'))
         )
       )
     variables:
@@ -359,13 +359,21 @@ jobs:
     dependsOn:
     - PreFlightCheck
     - TestAugurCore
+    - TestAndLint
     condition: |
-      or
+      and
       (
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped')
+        succeeded(),
+        in(dependencies.PreFlightCheck.result, 'Succeeded'),
+        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
+          not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+          not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'

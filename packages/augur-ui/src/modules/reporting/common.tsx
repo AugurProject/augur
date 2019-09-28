@@ -36,7 +36,7 @@ import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
-  secondPercent: FormattedNumber;
+  userRepStaked: FormattedNumber;
   thirdPercent: FormattedNumber;
   total: FormattedNumber;
 }
@@ -50,7 +50,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
   const secondPercent = calculatePosition(
     ZERO,
     createBigNumber(props.total.value),
-    props.secondPercent
+    props.userRepStaked
   );
   const thirdPercent = calculatePosition(
     ZERO,
@@ -79,10 +79,10 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         type="light"
       >
         My Existing Stake
-        <p>{props.firstPercent.formattedValue} REP</p>
+        <p>{props.userRepStaked.formattedValue} REP</p>
       </ReactTooltip>
       {thirdPercent > 100
-        ? 100
+        ? ''
         : thirdPercent > 0 && <span style={{ width: `${thirdPercent}%` }} />}
     </div>
   );
@@ -208,6 +208,7 @@ export interface DisputingButtonViewProps {
   stakeCurrent: FormattedNumber;
   bondSizeCurrent: FormattedNumber;
   inputtedStake: FormattedNumber;
+  userRepStaked: FormattedNumber;
 }
 
 export const DisputingButtonView = (props: DisputingButtonViewProps) => (
@@ -223,7 +224,7 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
     </div>
     <ReportingPercent
       firstPercent={props.stakeCurrent}
-      secondPercent={props.stakeCurrent}
+      userRepStaked={props.userRepStaked}
       thirdPercent={props.inputtedStake}
       total={props.bondSizeCurrent}
     />
@@ -381,8 +382,8 @@ export class DisputingBondsView extends Component<
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
-    const min = formatAttoRep(minAllowableDisputeStake).value;
-    const remaining = formatAttoRep(stakeRemaining).value;
+    const min = convertAttoValueToDisplayValue(createBigNumber(minAllowableDisputeStake));
+    const remaining = convertAttoValueToDisplayValue(createBigNumber(stakeRemaining));
     const inputted = stakeValue ? convertAttoValueToDisplayValue(createBigNumber(stakeValue)) : stakeValue;
     return (
       <div
