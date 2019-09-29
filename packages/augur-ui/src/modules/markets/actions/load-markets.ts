@@ -5,6 +5,7 @@ import {
   MARKET_CLOSED,
   REPORTING_STATE,
   MAX_SPREAD_ALL_SPREADS,
+  MAX_FEE_100_PERCENT,
 } from 'modules/common/constants';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
@@ -127,7 +128,7 @@ export const loadMarketsByFilter = (
     universe: universe.id,
     categories: filterOptions.categories,
     search: filterOptions.search ? filterOptions.search : '',
-    maxFee: filterOptions.maxFee,
+    maxFee: filterOptions.maxFee === MAX_FEE_100_PERCENT ? '' : filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
