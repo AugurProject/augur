@@ -1,5 +1,5 @@
 import { Signer, utils } from "ethers";
-import { prefixHex } from "speedomatic";
+import { prefixHex } from "@augurproject/utils";
 import { augurSdk } from "services/augursdk";
 import { EthersProvider } from "@augurproject/ethersjs-provider/build";
 import { TransactionRequest } from "ethers/providers";
