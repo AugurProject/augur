@@ -1000,7 +1000,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && disputeStake
-        ? createBigNumber(stake.stakeCurrent).plus(disputeStake.inputToAttoRep)
+        ? createBigNumber(stake.stakeCurrent).plus(disputeStake.inputToAttoRep || ZERO)
         : '0';
 
     return (
@@ -1034,7 +1034,11 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                     )
                   )}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
-                  inputtedStake={formatAttoRep((disputeStake && checked) ? disputeStake.inputToAttoRep : ZERO)}
+                  inputtedStake={formatAttoRep(
+                    disputeStake && disputeStake.inputToAttoRep && checked
+                      ? disputeStake.inputToAttoRep
+                      : ZERO
+                  )}
                   userValue={
                     userOutcomeCurrentRoundDispute
                       ? formatAttoRep(
