@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from 'modules/market-cards/common';
 import { createBigNumber } from 'utils/create-big-number';
@@ -28,12 +28,41 @@ import { ButtonActionType } from 'modules/types';
 import { formatRep, formatAttoRep } from 'utils/format-number';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon } from 'modules/common/icons';
+import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+
+interface DismissableNoticeProps {
+  content: JSX.Element;
+  show: boolean;
+}
+
+export const DismissableNotice = (props: DismissableNoticeProps) => {
+  const [show, setShow] = useState(props.show);
+
+  return (
+    <div className={Styles.DismissableNotice}>
+      {show ? (
+        <div>
+          <span>
+            {ExclamationCircle}
+          </span>
+          {props.content}
+          <button
+            type='button'
+            className={Styles.close}
+            onClick={() => setShow(() => false)}
+          >
+            {XIcon}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
