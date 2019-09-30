@@ -1034,7 +1034,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                     )
                   )}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
-                  inputtedStake={formatAttoRep(disputeStake ? disputeStake.inputToAttoRep : ZERO)}
+                  inputtedStake={formatAttoRep((disputeStake && checked) ? disputeStake.inputToAttoRep : ZERO)}
                   userValue={
                     userOutcomeCurrentRoundDispute
                       ? formatAttoRep(
