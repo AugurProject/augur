@@ -356,7 +356,7 @@ export class DisputingBondsView extends Component<
       )
     ) {
       this.setState({
-        stakeError: `Value is samllar than minimum: ${min} REP`,
+        stakeError: `Value is smaller than minimum: ${min} REP`,
         disabled: true,
       });
     } else {
