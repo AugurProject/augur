@@ -1024,7 +1024,15 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
             <>
               {((stake && !stake.tentativeWinning) || isScalar) && (
                 <DisputingButtonView
-                  stakeCurrent={formatAttoRep(stake.stakeCurrent)}
+                  stakeCurrent={formatAttoRep(
+                    createBigNumber(stake.stakeCurrent).minus(
+                      createBigNumber(
+                        userOutcomeCurrentRoundDispute
+                          ? userOutcomeCurrentRoundDispute.userStakeCurrent
+                          : ZERO
+                      )
+                    )
+                  )}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
                   inputtedStake={formatAttoRep(disputeStake ? disputeStake.inputToAttoRep : ZERO)}
                   userValue={
