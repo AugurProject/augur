@@ -1,10 +1,14 @@
+import { Getters } from '@augurproject/sdk/build';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadMarketAccountPositions,
   loadAccountPositionsTotals,
 } from 'modules/positions/actions/load-account-positions';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
-import { removeMarket } from 'modules/markets/actions/update-markets-data';
+import {
+  removeMarket,
+  updateMarketsData,
+} from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import {
   loadMarketsInfo,
@@ -16,6 +20,7 @@ import {
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
+import { MarketInfos } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -156,13 +161,17 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-  log: Logs.MarketsUpdatedLog
+  marketsData: Getters.Markets.MarketInfo[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  console.log('handleMarketsUpdatedChangedLog', log);
-  if (log && log.data) {
-    dispatch(loadMarketsInfo(log.data.map(d => d.market)));
-    if (isOnDisputingPage()) dispatch(reloadDisputingPage());
-  }
+  console.log('handleMarketsUpdatedChangedLog');
+
+  const marketsDataById = marketsData.reduce((acc, marketData) => ({
+      [marketData.id]: marketData,
+      ...acc,
+    }), {} as MarketInfos);
+
+  dispatch(updateMarketsData(marketsDataById));
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleMarketCreatedLog = (log: any) => (
