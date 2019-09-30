@@ -12,7 +12,7 @@
   > div:first-of-type {
     flex: 1;
     min-height: 800px;
-    max-height: calc(~"100vh - @{multi-top-bar-height}");
+    height: calc(~"100vh - @{multi-top-bar-height}");
   }
 
   > div {
@@ -23,6 +23,7 @@
       flex: 1;
       flex-direction: column;
       margin: @size-4;
+      height: inherit;
 
       > div {
         display: flex;
@@ -44,7 +45,6 @@
     > div:last-of-type {
       flex: 1;
       flex-direction: column;
-      height: unset;
 
       > div:last-of-type {
         flex: unset;
