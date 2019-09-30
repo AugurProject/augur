@@ -52,7 +52,7 @@ import {
 import { Moment } from 'moment';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
-import { MarketData } from 'modules/types';
+import { MarketData, DisputeInputtedValues } from 'modules/types';
 
 interface CheckboxProps {
   id: string;
@@ -241,7 +241,7 @@ interface RadioGroupProps {
   reportAction: Function;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
-  disputeStake?: string;
+  disputeStake?: DisputeInputtedValues;
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
@@ -283,7 +283,7 @@ interface ReportingRadioBarProps {
   isInvalid?: boolean;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
-  disputeStake?: string;
+  disputeStake?: DisputeInputtedValues;
   updateDisputeStake?: Function;
   reportAction: Function;
   updateScalarOutcome?: Function;
@@ -718,7 +718,7 @@ interface ReportingRadioGroupProps {
   reportAction: Function;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
-  disputeStake?: string;
+  disputeStake?: DisputeInputtedValues;
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
@@ -997,14 +997,10 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       }
     }
     const reportingGasFee = formatNumber('0'); // TODO: get actual gas cost
-    const inputtedStake =
-      !checked || disputeStake === '' || isNaN(parseFloat(disputeStake))
-        ? '0'
-        : disputeStake;
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
-      stake && inputtedStake
-        ? createBigNumber(stake.stakeCurrent).plus(inputtedStake)
+      stake && disputeStake
+        ? createBigNumber(stake.stakeCurrent).plus(disputeStake.inputToAttoRep)
         : '0';
 
     return (
@@ -1030,7 +1026,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 <DisputingButtonView
                   stakeCurrent={formatAttoRep(stake.stakeCurrent)}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
-                  inputtedStake={formatAttoRep(inputtedStake)}
+                  inputtedStake={formatAttoRep(disputeStake ? disputeStake.inputToAttoRep : ZERO)}
                   userValue={
                     userOutcomeCurrentRoundDispute
                       ? formatAttoRep(
@@ -1054,7 +1050,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   market={market}
                   rangeValue={scalarOutcome}
                   changeRange={updateScalarOutcome}
-                  stakeValue={disputeStake}
+                  stakeValue={disputeStake.inputStakeValue}
                   changeStake={updateDisputeStake}
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}

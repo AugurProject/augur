@@ -671,3 +671,8 @@ export interface MarketReportClaimableContracts {
   totalUnclaimedDaiFormatted: FormattedNumber;
   totalUnclaimedRepFormatted: FormattedNumber;
 }
+
+export interface DisputeInputtedValues {
+  inputStakeValue: string;
+  inputToAttoRep: string;
+}
