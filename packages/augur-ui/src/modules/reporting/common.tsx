@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from 'modules/market-cards/common';
 import { createBigNumber } from 'utils/create-big-number';
@@ -37,40 +37,32 @@ import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue
 
 interface DismissableNoticeProps {
   content: JSX.Element;
+  show: boolean;
 }
 
-interface DismissableNoticeState {
-  show: boolean,
-};
+// export class DismissableNotice extends Component<DismissableNoticeProps, {}> {
+export const DismissableNotice = (props: DismissableNoticeProps) => {
+  const [show, setShow] = useState(props.show);
 
-export class DismissableNotice extends Component<DismissableNoticeProps, {}> {
-  state: DismissableNoticeState = { show: true };
-
-  handleClose = () => {
-    this.setState({ show: false });
-  };
-
-  render() {
-    return (
-      <div className={Styles.DismissableNotice}>
-        {this.state.show ? (
-          <div>
-            <span>
-              {ExclamationCircle}
-            </span>
-            {this.props.content}
-            <button
-              type='button'
-              className={Styles.close}
-              onClick={this.handleClose}
-            >
-              {XIcon}
-            </button>
-          </div>
-        ) : null}
-      </div>
-    );
-  }
+  return (
+    <div className={Styles.DismissableNotice}>
+      {show ? (
+        <div>
+          <span>
+            {ExclamationCircle}
+          </span>
+          {props.content}
+          <button
+            type='button'
+            className={Styles.close}
+            onClick={() => setShow(() => false)}
+          >
+            {XIcon}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export interface ReportingPercentProps {
