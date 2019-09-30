@@ -73,6 +73,7 @@ export interface DisputeOutcomeProps {
   stake: Getters.Markets.StakeDetails | null;
   dispute: Function;
   id: number;
+  isLogged: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -124,6 +125,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         </div>
         <SecondaryButton
           small
+          disabled={!props.isLogged}
           text={
             props.stake && props.stake.tentativeWinning
               ? 'Support Tentative Winner'
@@ -211,6 +213,7 @@ export interface OutcomeGroupProps {
   reportingState: string;
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
+  isLogged: boolean;
 }
 const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
 const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
@@ -290,6 +293,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 )}
                 dispute={props.dispute}
                 id={outcome.id}
+                isLogged={props.isLogged}
               />
             ) : (
               <Outcome
