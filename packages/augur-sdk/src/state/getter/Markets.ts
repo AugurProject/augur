@@ -501,9 +501,8 @@ export class Markets {
     if (params.maxFee) {
       const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
       const maxMarketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
-      const maxMarketCreatorFeeDivisor = new BigNumber(1).dividedBy(maxMarketCreatorFee);
       request.selector = Object.assign(request.selector, {
-        feeDivisor: { $gte: maxMarketCreatorFeeDivisor.toNumber() },
+        feePercent: { $lte: maxMarketCreatorFee.toNumber() },
       });
     }
 
@@ -1010,7 +1009,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
   for (let i = 0; i < stakeDetails.length; i++) {
     const outcomeDetails = stakeDetails[i];
     const outcomeValue = getOutcomeValue(market, outcomeDetails.payoutNumerators);
-    const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
+    let bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
       .multipliedBy(2)
       .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout || 0).multipliedBy(3)).toFixed();
     if (outcomeDetails.disputeRound < market.disputeRound) {
@@ -1024,14 +1023,16 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         tentativeWinning: false,
       };
     } else {
+      const tentativeWinning = String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators);
+      bondSizeCurrent = tentativeWinning ? "0" : bondSizeCurrent;
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
-        bondSizeCurrent: new BigNumber(bondSizeCurrent).toFixed(),
+        bondSizeCurrent,
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
-        tentativeWinning: String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators),
+        tentativeWinning,
       };
     }
   }
