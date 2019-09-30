@@ -102,22 +102,6 @@ export default class MarketsView extends Component<
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.selectedCategories.length >
-        this.props.selectedCategories.length ||
-      nextProps.maxFee !== this.props.maxFee ||
-      nextProps.maxLiquiditySpread !== this.props.maxLiquiditySpread ||
-      nextProps.includeInvalidMarkets !== this.props.includeInvalidMarkets ||
-      nextProps.marketFilter !== this.props.marketFilter ||
-      nextProps.marketSort !== this.props.marketSort ||
-      nextProps.search !== this.props.search
-    ) {
-      this.setState({
-        offset: 1,
-      });
-    }
-  }
 
   componentDidUpdate(prevProps) {
     const {
@@ -129,9 +113,11 @@ export default class MarketsView extends Component<
       maxLiquiditySpread,
       includeInvalidMarkets,
       isConnected,
+      isLogged,
     } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
+      isLogged !== prevProps.isLogged ||
       (search !== prevProps.search ||
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
@@ -140,7 +126,12 @@ export default class MarketsView extends Component<
         maxFee !== prevProps.maxFee ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
-      this.updateFilteredMarkets();
+
+      this.setState({
+        offset: 1,
+      }, () => {
+        this.updateFilteredMarkets();
+      });
     }
   }
 
@@ -175,6 +166,8 @@ export default class MarketsView extends Component<
     } = this.props;
 
     const { limit, offset } = this.state;
+    this.componentWrapper.scrollIntoView();
+    window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
     this.setState({ isSearchingMarkets: true });
