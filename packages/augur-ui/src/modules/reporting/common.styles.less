@@ -1,15 +1,15 @@
 @import (reference) '~assets/styles/shared';
 
-.CloseableNotice {
+.DismissableNotice {
   margin: @size-16 0;
 
   > div {
     .mono-10-bold;
 
     align-items: center;
-    background: @color-closeable-notice-background;
+    background: @color-dismissable-notice-background;
     border: 1px solid @color-outcome-two;
-    border-left-width: @size-12;
+    border-left-width: @size-4;
     border-radius: @border-radius-rounded;
     display: flex;
     justify-content: flex-start;
@@ -29,7 +29,7 @@
       }
 
       circle {
-        fill: @color-closeable-notice-background;
+        fill: @color-dismissable-notice-background;
         stroke: @color-outcome-two;
       }
     }

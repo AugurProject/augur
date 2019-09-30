@@ -35,16 +35,16 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 
-interface CloseableNoticeProps {
+interface DismissableNoticeProps {
   content: JSX.Element;
 }
 
-interface CloseableNoticeState {
+interface DismissableNoticeState {
   show: boolean,
 };
 
-export class CloseableNotice extends Component<CloseableNoticeProps, {}> {
-  state: CloseableNoticeState = { show: true };
+export class DismissableNotice extends Component<DismissableNoticeProps, {}> {
+  state: DismissableNoticeState = { show: true };
 
   handleClose = () => {
     this.setState({ show: false });
@@ -52,7 +52,7 @@ export class CloseableNotice extends Component<CloseableNoticeProps, {}> {
 
   render() {
     return (
-      <div className={Styles.CloseableNotice}>
+      <div className={Styles.DismissableNotice}>
         {this.state.show ? (
           <div>
             <span>
