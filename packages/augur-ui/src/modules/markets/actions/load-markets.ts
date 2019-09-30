@@ -128,18 +128,17 @@ export const loadMarketsByFilter = (
     universe: universe.id,
     categories: filterOptions.categories,
     search: filterOptions.search ? filterOptions.search : '',
-    maxFee:
-      filterOptions.maxFee === MAX_FEE_100_PERCENT ? '' : filterOptions.maxFee,
+    maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
-    maxLiquiditySpread:
-      filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS
-        ? ''
-        : (filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread),
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
   };
+  // not pass properties at their max value
+  if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
+  if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS) delete params.maxLiquiditySpread
 
   const marketList = await augur.getMarkets({ ...params });
   dispatch(addUpdateMarketInfos(marketList.markets));
