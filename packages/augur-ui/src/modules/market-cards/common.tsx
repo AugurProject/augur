@@ -212,9 +212,11 @@ export interface OutcomeGroupProps {
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
 }
-
+const PRE_REPORTING_SHOW_NUM_OUTCOMES = 3;
 const MARKET_CARD_FOLD_OUTCOME_COUNT = 4;
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
+  const isPreReporting = props.reportingState === REPORTING_STATE.PRE_REPORTING;
+  const showOutcomeNumber = isPreReporting ? PRE_REPORTING_SHOW_NUM_OUTCOMES : MARKET_CARD_FOLD_OUTCOME_COUNT;
   const inDispute =
     props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
@@ -222,9 +224,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
   if (
     !props.expanded &&
-    props.outcomes.length > MARKET_CARD_FOLD_OUTCOME_COUNT
+    props.outcomes.length > showOutcomeNumber
   ) {
-    outcomesCopy.splice(MARKET_CARD_FOLD_OUTCOME_COUNT - 1, 0, removedInvalid);
+    outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
   } else {
     outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
   }
@@ -269,7 +271,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
       {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
-            ((!props.expanded && index < MARKET_CARD_FOLD_OUTCOME_COUNT) ||
+            ((!props.expanded && index < showOutcomeNumber) ||
               (props.expanded || props.marketType === YES_NO)) &&
             (inDispute ? (
               <DisputeOutcome
