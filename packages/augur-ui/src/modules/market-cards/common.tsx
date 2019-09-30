@@ -212,28 +212,36 @@ export interface OutcomeGroupProps {
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
 }
-
-const MARKET_CARD_FOLD_OUTCOME_COUNT = 4;
+const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
+const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
-  const inDispute =
-    props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-    props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
-  let outcomesCopy = props.outcomes.slice(0);
-  const removedInvalid = outcomesCopy.splice(0, 1)[0];
-  if (
-    !props.expanded &&
-    props.outcomes.length > MARKET_CARD_FOLD_OUTCOME_COUNT
-  ) {
-    outcomesCopy.splice(MARKET_CARD_FOLD_OUTCOME_COUNT - 1, 0, removedInvalid);
-  } else {
-    outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
-  }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
     props.stakes
   );
-  const outcomesShow = inDispute ? sortedStakeOutcomes : outcomesCopy;
+  const inDispute =
+    props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE;
+  const showOutcomeNumber = inDispute ? MARKET_CARD_FOLD_OUTCOME_COUNT : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+  let dipsutingOutcomes = sortedStakeOutcomes;
+  let outcomesCopy = props.outcomes.slice(0);
+  const removedInvalid = outcomesCopy.splice(0, 1)[0];
+
+  if (inDispute) {
+    if (!props.expanded) {
+      dipsutingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
+    }
+  } else {
+    if (
+      !props.expanded &&
+      props.outcomes.length > showOutcomeNumber
+    ) {
+      outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
+    } else {
+      outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
+    }
+  }
+  const outcomesShow = inDispute ? dipsutingOutcomes : outcomesCopy;
   return (
     <div
       className={classNames(Styles.OutcomeGroup, {
@@ -269,7 +277,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
       {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
-            ((!props.expanded && index < MARKET_CARD_FOLD_OUTCOME_COUNT) ||
+            ((!props.expanded && index < showOutcomeNumber) ||
               (props.expanded || props.marketType === YES_NO)) &&
             (inDispute ? (
               <DisputeOutcome
