@@ -29,6 +29,7 @@ export interface QuadBoxProps {
   toggle?: Function;
   hide?: boolean;
   extend?: boolean;
+  hideHeader?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -70,11 +71,13 @@ const QuadBox = (props: QuadBoxProps) => (
       [Styles.Extend]: props.extend
     })}
   >
-    <div
-      className={classNames({ [Styles.HideOnMobile]: !props.normalOnMobile })}
-    >
-      <BoxHeaderElement {...props} switchHeaders={false} />
-    </div>
+    {!props.hideHeader &&
+      <div
+        className={classNames({ [Styles.HideOnMobile]: !props.normalOnMobile })}
+      >
+        <BoxHeaderElement {...props} switchHeaders={false} />
+      </div>
+    }
     <div>
       <div
         className={classNames(Styles.ShowOnMobile, {
