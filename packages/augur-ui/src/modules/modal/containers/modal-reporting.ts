@@ -11,6 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
   modal: state.modal,
   market: ownProps.market,
   rep: formatRep(state.loginAccount.balances.rep).formatted,
+  userAccount: state.loginAccount.address,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -22,7 +23,6 @@ const mergeProps = (sP, dP, oP) => {
     sP.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
     sP.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
   return {
-    isReporting,
     title: isReporting
       ? 'Report on this market'
       : 'Dispute or Support this market’s tenatative winning Outcome',
