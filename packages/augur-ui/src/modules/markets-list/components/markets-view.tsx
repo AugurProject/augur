@@ -14,7 +14,6 @@ import {
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
 } from 'modules/common/constants';
-import { CloseableNotice } from 'modules/reporting/common';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
@@ -303,14 +302,6 @@ export default class MarketsView extends Component<
               <a href='https://augur.net' target='_blank'>
                 Learn more
               </a>
-            </span>
-          }
-        />
-
-        <CloseableNotice
-          content={
-            <span>
-              You may need to sign multiple transactions
             </span>
           }
         />
