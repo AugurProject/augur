@@ -28,17 +28,15 @@ import { ButtonActionType } from 'modules/types';
 import { formatRep, formatAttoRep } from 'utils/format-number';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon, XIcon } from 'modules/common/icons';
+import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
-import { ExclamationCircle } from 'modules/common/icons';
 
 interface CloseableNoticeProps {
   content: JSX.Element;
-  show: boolean;
 }
 
 interface CloseableNoticeState {
@@ -57,7 +55,7 @@ export class CloseableNotice extends Component<CloseableNoticeProps, {}> {
       <div className={Styles.closeableNotice}>
         {this.state.show ? (
           <div>
-            <span className={Styles.exclamation}>
+            <span>
               {ExclamationCircle}
             </span>
             {this.props.content}

@@ -4,23 +4,24 @@
   margin: @size-16 0;
 
   > div {
+    .mono-10-bold;
+
     align-items: center;
     background: @color-closeable-notice-background;
     border: 1px solid @color-outcome-two;
-    border-left-width: 0.25rem;
-    border-radius: @size-6;
+    border-left-width: @size-12;
+    border-radius: @border-radius-rounded;
     display: flex;
-    font-family: Roboto Mono;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: bold;
     justify-content: flex-start;
-    line-height: 12px;
+    line-height: @size-12;
     padding: @size-8 @size-16;
     text-transform: uppercase;
     width: 100%;
 
-    > .exclamation {
+    > span:first-of-type {
+      display: flex;
+      margin: 0 @size-16 0 0;
+
       svg {
         height: @size-16;
         width: @size-16;
@@ -31,11 +32,6 @@
         fill: @color-closeable-notice-background;
         stroke: @color-outcome-two;
       }
-    }
-
-    > span:first-of-type {
-      display: flex;
-      margin: 0 @size-16 0 0;
     }
 
     > span:last-of-type {
