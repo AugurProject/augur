@@ -128,12 +128,16 @@ export const loadMarketsByFilter = (
     universe: universe.id,
     categories: filterOptions.categories,
     search: filterOptions.search ? filterOptions.search : '',
-    maxFee: filterOptions.maxFee === MAX_FEE_100_PERCENT ? '' : filterOptions.maxFee,
+    maxFee:
+      filterOptions.maxFee === MAX_FEE_100_PERCENT ? '' : filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
-    maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
+    maxLiquiditySpread:
+      filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS
+        ? ''
+        : (filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread),
     ...sort,
   };
 
