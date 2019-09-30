@@ -501,9 +501,8 @@ export class Markets {
     if (params.maxFee) {
       const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
       const maxMarketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
-      const maxMarketCreatorFeeDivisor = new BigNumber(1).dividedBy(maxMarketCreatorFee);
       request.selector = Object.assign(request.selector, {
-        feeDivisor: { $gte: maxMarketCreatorFeeDivisor.toNumber() },
+        feePercent: { $lte: maxMarketCreatorFee.toNumber() },
       });
     }
 
