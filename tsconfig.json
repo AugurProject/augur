@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig-base.json",
   "files": [],
   "include": [],
   "references": [
@@ -40,7 +39,7 @@
       "path": "./packages/augur-tools"
     },
     {
-      "path": "./packages/speedomatic"
+      "path": "./packages/augur-utils"
     }
   ]
 }

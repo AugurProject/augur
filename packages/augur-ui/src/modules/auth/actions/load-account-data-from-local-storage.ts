@@ -14,6 +14,7 @@ import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -64,7 +65,22 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         );
       }
       if (alerts) {
-        alerts.map(n => dispatch(updateAlert(n.id, n, true)));
+        // get all market ids and load markets then process alerts
+        const marketIds = Array.from(
+          new Set(
+            alerts.reduce((p, alert) => {
+              const marketId =
+                alert.marketId ||
+                ((alert.params && alert.params.market) || alert.params._market);
+              return marketId ? [...p, marketId] : p;
+            }, [])
+          )
+        ) as string[];
+        dispatch(
+          loadMarketsInfoIfNotLoaded(marketIds, () => {
+            alerts.map(n => dispatch(updateAlert(n.id, n, true)));
+          })
+        );
       }
       if (
         pendingLiquidityOrders

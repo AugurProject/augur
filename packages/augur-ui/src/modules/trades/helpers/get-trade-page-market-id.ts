@@ -1,4 +1,4 @@
-import { formatEthereumAddress } from "speedomatic";
+import { formatEthereumAddress } from "@augurproject/utils";
 
 export const getTradePageMarketId = () => {
   const locationHash = document.location.hash.split("id=");
