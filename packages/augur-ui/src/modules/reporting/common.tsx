@@ -52,7 +52,7 @@ export class CloseableNotice extends Component<CloseableNoticeProps, {}> {
 
   render() {
     return (
-      <div className={Styles.closeableNotice}>
+      <div className={Styles.CloseableNotice}>
         {this.state.show ? (
           <div>
             <span>
