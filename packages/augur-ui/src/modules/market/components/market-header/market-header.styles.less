@@ -66,7 +66,11 @@
   }
 }
 
-.Toggle {
+.ScalarBox {
+  border-top: 1px solid @color-dark-grey;
+}
+
+div.Toggle {
   display: flex;
   justify-content: center;
   height: @size-32;
@@ -80,11 +84,44 @@
       height: @size-16;
       width: @size-12;
       margin-left: auto;
-      margin-right: @size-12;
+      margin-right: @size-10;
 
       > path {
         fill: @color-secondary-text;
       }
+    }
+  }
+
+  &.CollapsedToggle {
+    align-items: unset;
+    background: @color-dark-grey;
+    align-items: center;
+
+    > button {
+      width: unset;
+    }
+
+    > button:first-of-type {
+      width: unset;
+
+      > svg {
+        height: @size-6;
+        width: @size-10;
+        margin-right: 0;
+
+        > path {
+          fill: unset;
+        }
+      }
+    }
+
+    > h1 {
+      .text-12-bold;
+
+      color: @color-primary-text;
+      padding: 0;
+      margin: 0;
+      flex: 1;
     }
   }
 }
@@ -95,7 +132,7 @@
   border: 0;
   margin: 0;
   margin-top: -@size-10;
-  max-height: 90px;
+  max-height: 30px;
   overflow: hidden;
   resize: none;
   text-transform: none;
@@ -172,6 +209,12 @@
       > p {
         margin-bottom: 0;
       }
+
+      > span {
+        .text-12;
+
+        color: @color-primary-text;
+      }
     }
   }
 }
@@ -189,43 +232,47 @@
     text-transform: uppercase;
   }
 
-  > span,
-  > p,
-  > textarea,
-  > label {
-    .text-12;
+  > div {
+    display: flex;
+    align-items: flex-start;
 
-    color: @color-primary-text;
+    > button {
+      .text-12;
 
-    @media @breakpoint-mobile-small {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
+      color: @color-primary-text;
+      cursor: pointer;
+      margin-left: @size-5;
+      text-transform: uppercase;
 
-  > button {
-    .text-12;
+      svg {
+        height: @size-12;
 
-    color: @color-primary-text;
-    cursor: pointer;
-    margin-top: @size-12;
-    text-transform: uppercase;
+        polyline {
+          stroke: @color-primary-text;
+          stroke-width: 3;
+        }
+      }
 
-    svg {
-      height: @size-12;
-      margin-right: @size-8;
-
-      polyline {
-        stroke: @color-primary-text;
-        stroke-width: 3;
+      &.Less {
+        align-items: center;
+        display: flex;
+        margin-top: 0;
       }
     }
 
-    &.Less {
-      align-items: center;
-      display: flex;
-      margin-top: 0;
+    > span,
+    > p,
+    > textarea,
+    > label {
+      .text-12;
+
+      color: @color-primary-text;
+
+      @media @breakpoint-mobile-small {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 }
