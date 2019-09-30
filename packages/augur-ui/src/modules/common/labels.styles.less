@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .TimeLabel {
   display: flex;
@@ -10,12 +10,14 @@
     color: @color-secondary-text;
     line-height: @size-14;
     text-transform: uppercase;
+    line-height: 160%;
   }
 
   > span:nth-of-type(2) {
-    .mono-12;
+    .mono-11;
 
     color: @color-primary-text;
+    line-height: 160%;
   }
 
   > span:nth-of-type(3) {
@@ -50,11 +52,11 @@
 
 .SizableValueLabel {
   &.Large {
-    .mono-14-bold
+    .mono-14-bold;
   }
 
   &.Small {
-    .mono-11
+    .mono-11;
   }
 
   &.Highlight {
@@ -114,13 +116,14 @@
   flex-flow: column nowrap;
 
   > span:first-of-type {
-    .text-10;
+    .mono-9-bold;
 
     align-items: center;
     color: @color-secondary-text;
     display: flex;
     flex-flow: row nowrap;
     text-transform: uppercase;
+    line-height: 160%;
 
     > label {
       display: inline-block;
@@ -147,13 +150,10 @@
   }
 
   > span:last-of-type {
-    .mono-14;
+    .mono-11;
 
     color: @color-primary-text;
-
-    @media @breakpoint-mobile {
-      .mono-12;
-    }
+    line-height: 160%;
   }
 }
 
@@ -318,7 +318,7 @@
     }
 
     > span:nth-of-type(2) {
-      display: block
+      display: block;
     }
 
     > span:last-of-type {
@@ -404,7 +404,6 @@ div.LinearPropertyViewTransaction {
   &.Larger {
     > span:nth-of-type(2) {
       .mono-24;
-
     }
   }
 }
@@ -669,7 +668,7 @@ div.LinearPropertyViewTransaction {
 }
 
 .WordTrailButton {
-  .mono-10;
+  .mono-9-bold;
 
   color: @color-secondary-text;
   text-transform: uppercase;
@@ -771,5 +770,7 @@ div.LinearPropertyViewTransaction {
 }
 
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }

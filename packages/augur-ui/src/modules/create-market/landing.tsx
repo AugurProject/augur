@@ -88,18 +88,6 @@ export default class Landing extends React.Component<
               }}
             />
           </ContentBlock>
-
-          <ContentBlock>
-            <LargeSubheaders
-              link
-              header="Import a market template"
-              subheader="Use a market template created by you or the Augur community."
-            />
-            <SecondaryButton 
-              text="Import a template" 
-              action={() => updatePage(TEMPLATE)}
-            />
-          </ContentBlock>
         </div>
       </div>
     );
