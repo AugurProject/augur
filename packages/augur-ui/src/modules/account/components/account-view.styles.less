@@ -11,7 +11,8 @@
 
   > div:first-of-type {
     flex: 1;
-    min-height: calc(~"100vh - @{multi-top-bar-height}");
+    min-height: 800px;
+    max-height: calc(~"100vh - @{multi-top-bar-height}");
   }
 
   > div {
@@ -48,6 +49,7 @@
       > div:last-of-type {
         flex: unset;
         margin-left: 0;
+        min-height: fit-content;
       }
     }
   }
