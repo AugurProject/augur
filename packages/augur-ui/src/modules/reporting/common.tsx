@@ -40,7 +40,6 @@ interface DismissableNoticeProps {
   show: boolean;
 }
 
-// export class DismissableNotice extends Component<DismissableNoticeProps, {}> {
 export const DismissableNotice = (props: DismissableNoticeProps) => {
   const [show, setShow] = useState(props.show);
 
