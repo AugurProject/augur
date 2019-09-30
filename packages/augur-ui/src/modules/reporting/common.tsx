@@ -27,12 +27,52 @@ import { ButtonActionType } from 'modules/types';
 import { formatRep, formatAttoRep } from 'utils/format-number';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon } from 'modules/common/icons';
+import { InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+import { ExclamationCircle } from 'modules/common/icons';
+
+interface CloseableNoticeProps {
+  content: JSX.Element;
+  show: boolean;
+}
+
+interface CloseableNoticeState {
+  show: boolean,
+};
+
+export class CloseableNotice extends Component<CloseableNoticeProps, {}> {
+  state: CloseableNoticeState = { show: true };
+
+  handleClose = () => {
+    this.setState({ show: false });
+  };
+
+  render() {
+    return (
+      <div className={Styles.closeableNotice}>
+        {this.state.show ? (
+          <div>
+            <span className={Styles.exclamation}>
+              {ExclamationCircle}
+            </span>
+            {this.props.content}
+            <button
+              type='button'
+              className={Styles.close}
+              onClick={this.handleClose}
+            >
+              {XIcon}
+            </button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+}
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
