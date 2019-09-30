@@ -14,73 +14,11 @@ const PATHS = {
   TEST: path.resolve(__dirname, "../test")
 };
 
-// COMMON CONFIG
-const rules = [
-  {
-    test: /npm-cli|node-hid/,
-    loader: "null-loader"
-  },
-  {
-    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-    use: [
-      {
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]",
-          outputPath: "fonts/"
-        }
-      }
-    ]
-  },
-  {
-    test: /\.less$/,
-    use: [
-      "style-loader",
-      {
-        loader: "typings-for-css-modules-loader",
-        options: {
-          camelCase:true,
-          modules: true,
-          namedExport: true,
-          localIdentName: "[name]_[local]"
-        }
-      },
-      "postcss-loader",
-      "less-loader"
-    ]
-  },
-  {
-    test: /\.css$/,
-    use: [
-      "style-loader",
-      "postcss-loader"
-    ]
-  }
-];
-
-const babelConfig = {
-  test: /\.[jt]sx?$/,
-  loader: "babel-loader",
-  exclude: /(node_modules|bower_components)/
-};
-
-if(process.env.TYPE_CHECKING === "true") {
-  rules.push({
-    test: /\.tsx?$/,
-    loader: "ts-loader",
-    options: {
-      projectReferences: true
-    }
-  });
-  babelConfig.test = /\.jsx?$/;
-}
-
-rules.unshift(babelConfig);
-
 module.exports = {
   mode: "development",
   entry: [
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
+    'regenerator-runtime/runtime',
     `${PATHS.APP}/web-workers-exit`,
     "react",
     "react-dom",
@@ -88,7 +26,6 @@ module.exports = {
     "redux-thunk",
     "moment",
     "react-datetime",
-    "@babel/polyfill",
     `${PATHS.APP}/main`
   ],
   output: {
@@ -114,10 +51,67 @@ module.exports = {
     symlinks: false
   },
   module: {
-    rules: rules
+    rules: rules = [
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        options: {
+          projectReferences: true,
+          transpileOnly: (process.env.TYPE_CHECKING !== "true")
+        }
+      },
+      {
+        test: /\.js$/,
+        use: ["source-map-loader"],
+        enforce: "pre",
+        include: /@augurproject\/.*/
+      },
+      {
+        test: /npm-cli|node-hid/,
+        loader: "null-loader"
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "fonts/"
+            }
+          }
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          "style-loader",
+          {
+            loader: "typings-for-css-modules-loader",
+            options: {
+              camelCase:true,
+              modules: true,
+              namedExport: true,
+              localIdentName: "[name]_[local]"
+            }
+          },
+          "postcss-loader",
+          "less-loader"
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          "postcss-loader"
+        ]
+      }
+    ]
   },
   plugins: [
-    new WorkerPlugin(),
+    new WorkerPlugin({
+      globalObject: 'self'
+    }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {

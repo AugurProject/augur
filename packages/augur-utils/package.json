@@ -1,0 +1,15 @@
+{
+  "name": "@augurproject/utils",
+  "version": "10.0.0-alpha.1",
+  "description": "Grab bag of formatting and ABI encoding/decoding functions",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "main": "build",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "bignumber.js": "8.0.2",
+    "ethereumjs-abi": "0.6.8"
+  }
+}
