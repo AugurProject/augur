@@ -148,7 +148,7 @@ export const ScalarBlankDisputeOutcome = (
 ) => (
   <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
     <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
-    <div>
+    <div className={Styles.blank}>
       <div></div>
       <SecondaryButton
         small
