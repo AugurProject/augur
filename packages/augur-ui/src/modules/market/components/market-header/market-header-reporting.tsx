@@ -88,7 +88,7 @@ export default class MarketHeaderReporting extends Component {
                   (tentativeWinner.isInvalidOutcome
                     ? 'Invalid'
                     : market.marketType === SCALAR
-                    ? market.consensus.outcome
+                    ? tentativeWinner.outcome
                     : getOutcomeNameWithOutcome(
                         market,
                         tentativeWinner.outcome,
