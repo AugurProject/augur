@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MarketData } from 'modules/types';
+import { MarketData, DisputeInputtedValues } from 'modules/types';
 import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
@@ -14,23 +14,26 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { Getters } from '@augurproject/sdk';
-
+import { createBigNumber } from 'utils/create-big-number';
+import { convertDisplayValuetoAttoValue, Getters } from '@augurproject/sdk';
+import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
   rep: string;
-  isReporting: boolean;
   title: string;
   selectedOutcome?: number;
   reportAction: Function;
+  userAccount?: string;
 }
 
 interface ModalReportingState {
   checked: string;
   preFilledStake: string;
-  disputeStake: string;
+  disputeStake: DisputeInputtedValues;
   scalarOutcome: string;
+  isReporting: boolean;
+  userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
 }
 
 export default class ModalReporting extends Component<
@@ -42,15 +45,29 @@ export default class ModalReporting extends Component<
       ? this.props.selectedOutcome.toString()
       : '',
     preFilledStake: '',
-    disputeStake: '',
+    disputeStake: { inputStakeValue: '', inputToAttoRep: '' },
     scalarOutcome: '',
+    isReporting: this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+    this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
+    userCurrentDisputeRound: [],
   };
 
-  updateChecked = (checked: string) => {
+  componentDidMount = () => {
+    const { market, userAccount} = this.props;
+    loadAccountCurrentDisputeHistory(market.marketId, userAccount, (err, userCurrentDisputeRound) => {
+      if (err) {
+        return console.error("could not get user current dispute round values", err);
+      }
+      this.setState({
+        userCurrentDisputeRound: userCurrentDisputeRound ? userCurrentDisputeRound : []
+      })
+    })
+  }
 
-    this.updateDisputeStake("");
-    this.updatePreFilledStake("");
-    this.updateScalarOutcome("");
+  updateChecked = (checked: string) => {
+    this.updateDisputeStake({ inputStakeValue: '', inputToAttoRep: '' });
+    this.updatePreFilledStake('');
+    this.updateScalarOutcome('');
 
     this.setState({ checked });
   };
@@ -69,13 +86,16 @@ export default class ModalReporting extends Component<
       marketType,
       disputeInfo,
     } = this.props.market;
+    const { isReporting } = this.state;
     let outcomeId = parseInt(this.state.checked, 10);
     if (marketType === SCALAR) {
       // checked might be invalid outcome
       outcomeId = parseFloat(this.state.scalarOutcome || this.state.checked);
     }
 
-    if (this.props.isReporting) {
+    if (isReporting) {
+      const { preFilledStake } = this.state;
+      const attoRepAmount = convertDisplayValuetoAttoValue(createBigNumber(preFilledStake || '0')).toString();
       doInitialReport({
         marketId,
         maxPrice,
@@ -84,7 +104,7 @@ export default class ModalReporting extends Component<
         numOutcomes,
         marketType,
         description: '',
-        amount: this.state.preFilledStake,
+        attoRepAmount,
         outcomeId,
         isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
       });
@@ -111,7 +131,7 @@ export default class ModalReporting extends Component<
           numOutcomes,
           marketType,
           description: '',
-          amount: this.state.disputeStake,
+          attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
           isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
         });
@@ -124,7 +144,7 @@ export default class ModalReporting extends Component<
           numOutcomes,
           marketType,
           description: '',
-          amount: this.state.disputeStake,
+          attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
           isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
         });
@@ -134,7 +154,7 @@ export default class ModalReporting extends Component<
     }
   };
 
-  updateDisputeStake = (disputeStake: string) => {
+  updateDisputeStake = (disputeStake: DisputeInputtedValues) => {
     this.setState({ disputeStake });
   };
 
@@ -143,8 +163,15 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, isReporting, selectedOutcome } = this.props;
-    const s = this.state;
+    const { closeAction, title, market, rep, selectedOutcome } = this.props;
+    const {
+      checked,
+      isReporting,
+      preFilledStake,
+      scalarOutcome,
+      disputeStake,
+      userCurrentDisputeRound,
+    } = this.state;
     const {
       description,
       marketType,
@@ -152,17 +179,11 @@ export default class ModalReporting extends Component<
       details,
       creationTimeFormatted,
       endTimeFormatted,
-      scalarDenomination,
-      minPrice,
-      maxPrice,
       outcomesFormatted,
       disputeInfo,
-      noShowBondAmount,
-      reportingState,
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
-    const isOpenReporting = reportingState === REPORTING_STATE.OPEN_REPORTING;
     let sortedOutcomes = outcomesFormatted;
     if (selectedOutcome || selectedOutcome == 0) {
       const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
@@ -191,9 +212,9 @@ export default class ModalReporting extends Component<
         return {
           header: outcome.description,
           value: outcome.id,
-          checked: s.checked === outcome.id.toString(),
+          checked: checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
-          preFilledStake: formatAttoRep('0').formatted,
+          preFilledStake: formatAttoRep(stake.stakeCurrent).formatted,
           stake,
         };
       });
@@ -203,8 +224,8 @@ export default class ModalReporting extends Component<
         radioButtons.push({
           header: stake.outcome,
           value: Number(stake.outcome),
-          checked: s.checked === stake.outcome.toString(),
-          isInvalid: stake.outcome === '0',
+          checked: checked === stake.outcome.toString(),
+          isInvalid: stake.outcome === String(INVALID_OUTCOME_ID),
           preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
           stake,
         })
@@ -250,24 +271,17 @@ export default class ModalReporting extends Component<
           <div>
             <RadioBarGroup
               onChange={this.updateChecked}
-              reporting={true}
-              disputeInfo={disputeInfo}
-              isReporting={isReporting}
-              marketType={marketType}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              scalarDenomination={scalarDenomination}
+              market={market}
               radioButtons={radioButtons}
-              defaultSelected={s.checked}
+              defaultSelected={checked}
               updatePreFilledStake={this.updatePreFilledStake}
-              preFilledStake={s.preFilledStake}
+              preFilledStake={preFilledStake}
               updateDisputeStake={this.updateDisputeStake}
-              disputeStake={s.disputeStake}
+              disputeStake={disputeStake}
               reportAction={this.reportingAction}
               updateScalarOutcome={this.updateScalarOutcome}
-              scalarOutcome={s.scalarOutcome}
-              initialReporterStake={noShowBondAmount}
-              isOpenReporting={isOpenReporting}
+              scalarOutcome={scalarOutcome}
+              userCurrentDisputeRound={userCurrentDisputeRound}
             />
           </div>
         </main>

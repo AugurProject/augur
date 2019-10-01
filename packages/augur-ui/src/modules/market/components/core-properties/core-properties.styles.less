@@ -1,17 +1,14 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .CoreProperties {
   display: grid;
-  grid-gap: @size-20 0;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 1fr 1fr;
+  grid-gap: @size-8 0;
+  grid-template-columns: auto auto;
+  grid-template-rows: @size-34 @size-34;
+  margin: @size-12 @size-16;
 
   @media @breakpoint-mobile {
     background: @color-dark-grey;
     padding: @size-16;
-  }
-
-  > div > span:last-of-type {
-    margin-top: @size-6;
   }
 }

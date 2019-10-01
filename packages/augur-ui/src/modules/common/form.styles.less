@@ -1662,9 +1662,13 @@ div.error > div > div > div > div > input {
   cursor: pointer;
 
   > span:first-of-type {
-    .text-14;
+    .text-11;
 
     color: @color-primary-text;
+
+    @media @breakpoint-mobile {
+      .text-14;
+    }
   }
 
   > span:last-of-type {
@@ -1682,7 +1686,7 @@ div.error > div > div > div > div > input {
   }
 
   &.active span:first-of-type {
-    .text-14-bold;
+    .text-11-bold;
   }
 
   &.active span:last-of-type {

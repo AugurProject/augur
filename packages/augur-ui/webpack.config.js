@@ -1,3 +1,5 @@
+const TerserPlugin = require('terser-webpack-plugin');
+
 // Workaround for Windows Based Development/Build
 try {
   require("os").networkInterfaces();
@@ -43,7 +45,18 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
 } else {
   // PRODUCTION CONFIG
   baseConfig = merge(baseConfig, {
-    mode: "production"
+    mode: "production",
+    devtool: "source-map",
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            mangle: false,
+          }
+        }),
+      ],
+    },
   });
 }
 

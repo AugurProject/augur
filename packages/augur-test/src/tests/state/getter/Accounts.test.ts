@@ -31,6 +31,7 @@ describe('State API :: Accounts :: ', () => {
     await mary.approveCentralAuthority();
   });
 
+  /*
   test(':getAccountTransactionHistory', async () => {
     // Create markets with multiple users
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -983,5 +984,70 @@ describe('State API :: Accounts :: ', () => {
       ignoreReportingStates: [MarketReportingState.Finalized],
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
+  });
+  */
+
+  test(':getUserCurrentDisputeStake', async () => {
+    // Create market, do an initial report, and then dispute to multiple outcomes and multiple times
+    const johnYesNoMarket = await john.createReasonableYesNoMarket();
+
+    // Move time to open reporting
+    let newTime = (await johnYesNoMarket.getEndTime_()).plus(
+      SECONDS_IN_A_DAY.times(7)
+    );
+    await john.setTimestamp(newTime);
+
+    // Submit initial report
+    const invalidPayoutSet = [
+      new BigNumber(100),
+      new BigNumber(0),
+      new BigNumber(0),
+    ];
+    const noPayoutSet = [
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+    ];
+    const yesPayoutSet = [
+      new BigNumber(0),
+      new BigNumber(0),
+      new BigNumber(100),
+    ];
+
+    await john.repFaucet(new BigNumber(1e25));
+    await john.doInitialReport(johnYesNoMarket, yesPayoutSet);
+
+    // Now do multiple dispute contributions
+    await john.contribute(johnYesNoMarket, invalidPayoutSet, new BigNumber(1));
+    await john.contribute(johnYesNoMarket, invalidPayoutSet, new BigNumber(3));
+    await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(5));
+    await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(7));
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    let userCurrentDisputeStake = await api.route(
+      'getUserCurrentDisputeStake',
+      {
+        marketId: johnYesNoMarket.address,
+        account: ACCOUNTS[0].publicKey,
+      }
+    );
+    
+    await expect(userCurrentDisputeStake).toContainEqual({
+      outcome: "0",
+      isInvalid: true,
+      malformed: undefined,
+      payoutNumerators: ["100", "0", "0"],
+      userStakeCurrent: "4",
+    });
+
+    await expect(userCurrentDisputeStake).toContainEqual({
+      outcome: "1",
+      isInvalid: undefined,
+      malformed: undefined,
+      payoutNumerators: ["0", "100", "0"],
+      userStakeCurrent: "12",
+    });
+
   });
 });

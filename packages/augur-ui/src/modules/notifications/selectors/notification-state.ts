@@ -26,10 +26,6 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
-import {
-  formatAttoDai,
-  formatAttoRep,
-} from 'utils/format-number';
 import store, { AppState } from 'store';
 import {
   MarketClaimablePositions,
@@ -37,6 +33,7 @@ import {
 } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -75,21 +72,21 @@ export const selectReportOnMarkets = createSelector(
   }
 );
 
-// Get all the users markets that are in FINALIZATION
+// Get all the users markets that can be finalized to get their validity bond
+// not filtering out markets that resolve as invalid.
 export const selectFinalizeMarkets = createSelector(
-  selectMarkets,
-  selectAccountPositionsState,
+  selectMarketInfosState,
   selectLoginAccountAddress,
-  (markets, positions, address) => {
-    if (markets.length > 0) {
-      const positionsMarkets = Object.keys(positions);
-      return markets
-        .filter(
-          market =>
-            positionsMarkets.indexOf(market.id) > -1 ||
-            address === market.author
-        )
-        .map(getRequiredMarketData);
+  (marketInfos, address) => {
+    const marketId = Object.keys(marketInfos).filter(
+      id =>
+        (marketInfos[id].author === address &&
+          marketInfos[id].reportingState ===
+            REPORTING_STATE.AWAITING_FINALIZATION) ||
+        marketInfos[id].reportingState === REPORTING_STATE.FINALIZED
+    );
+    if (marketId.length > 0) {
+      return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
     }
     return [];
   }
@@ -97,35 +94,49 @@ export const selectFinalizeMarkets = createSelector(
 
 // Get all markets in dispute, for market creators and user with positions in disputed markets
 export const selectMarketsInDispute = createSelector(
-  selectMarkets,
+  selectMarketInfosState,
   selectAccountPositionsState,
   selectLoginAccountAddress,
   (markets, positions, address) => {
     const state = store.getState() as AppState;
-    let disputedMarkets = [];
-    let reportedMarkets = [];
+    let marketIds = Object.keys(positions);
     if (state.loginAccount.reporting.disputing.contracts) {
-      disputedMarkets = state.loginAccount.reporting.disputing.contracts.map(
-        obj => obj.marketId
+      marketIds = Array.from(
+        new Set([
+          ...marketIds,
+          ...state.loginAccount.reporting.disputing.contracts.map(
+            obj => obj.marketId
+          ),
+        ])
       );
     }
     if (state.loginAccount.reporting.reporting.contracts) {
-      reportedMarkets = state.loginAccount.reporting.reporting.contracts.map(
-        obj => obj.marketId
+      marketIds = Array.from(
+        new Set([
+          ...marketIds,
+          ...state.loginAccount.reporting.reporting.contracts.map(
+            obj => obj.marketId
+          ),
+        ])
       );
     }
-    if (markets.length > 0) {
-      const positionsMarkets = Object.keys(positions);
-      return markets
-        .filter(
-          market =>
-            disputedMarkets.indexOf(market.id) > -1 ||
-            reportedMarkets.indexOf(market.id) > -1 ||
-            (market.reportingState ===
-              MarketReportingState.CrowdsourcingDispute &&
-              (market.author === address ||
-                positionsMarkets.indexOf(market.id) > -1))
-        )
+    marketIds = Array.from(
+      new Set([
+        ...marketIds,
+        ...Object.keys(markets).filter(id => markets[id].author === address),
+      ])
+    );
+    if (marketIds.length > 0) {
+      return marketIds
+        .reduce((p, id) => {
+          const market = selectMarket(id);
+          if (!market) return p;
+          if (
+            market.reportingState !== MarketReportingState.CrowdsourcingDispute
+          )
+            return p;
+          return [...p, market];
+        }, [])
         .map(getRequiredMarketData);
     }
     return [];
@@ -134,7 +145,7 @@ export const selectMarketsInDispute = createSelector(
 
 // Get reportingFees for signed in user
 export const selectUsersReportingFees: MarketReportClaimableContracts = selectReportingWinningsByMarket(
-  store.getState()
+  (store.getState() as AppState)
 );
 
 // Get all unsigned orders from localStorage
@@ -169,7 +180,7 @@ export const selectNotifications = createSelector(
     claimReportingFees,
     unsignedOrders,
     readNotifications
-  ) => {
+  ): Notification[] => {
     // Generate non-unquie notifications
     const reportOnMarketsNotifications = generateCards(
       reportOnMarkets,

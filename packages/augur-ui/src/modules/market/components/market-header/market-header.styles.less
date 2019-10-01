@@ -1,5 +1,5 @@
-@import (reference) "~assets/styles/shared";
-@import (reference) "~modules/market/components/market-view/market-view.styles";
+@import (reference) '~assets/styles/shared';
+@import (reference) '~modules/market/components/market-view/market-view.styles';
 
 .MarketHeader {
   background: @color-module-background;
@@ -26,6 +26,7 @@
     align-items: flex-start;
     display: flex;
     width: 100%;
+    padding-left: @size-16;
 
     > div:first-of-type {
       display: flex;
@@ -33,7 +34,7 @@
       flex-wrap: wrap;
       margin-right: @size-20;
       max-width: 654px;
-      padding-top: 2px;
+      padding-top: @size-12;
 
       > span {
         margin: 0 @size-8 0 0;
@@ -43,6 +44,8 @@
     > div:last-of-type {
       display: flex;
       flex: 1;
+      border-bottom: 0;
+      border-top: 0;
     }
 
     > span {
@@ -53,30 +56,72 @@
 
 .TimeSection {
   background: @color-module-background;
-  border: 1px solid @color-dark-grey;
+  border-left: 1px solid @color-dark-grey;
   max-width: 240px;
   width: 200px;
+  padding: @size-12 @size-16;
+
+  > div:first-of-type {
+    margin-bottom: @size-8;
+  }
 }
 
-.Toggle {
+.ScalarBox {
+  border-top: 1px solid @color-dark-grey;
+}
+
+div.Toggle {
   display: flex;
   justify-content: center;
+  height: @size-32;
 
   > button {
     background: @color-dark-grey;
     display: flex;
-    height: @size-32;
     width: 100%;
 
     > svg {
       height: @size-16;
       width: @size-12;
       margin-left: auto;
-      margin-right: @size-12;
+      margin-right: @size-10;
 
       > path {
         fill: @color-secondary-text;
       }
+    }
+  }
+
+  &.CollapsedToggle {
+    align-items: unset;
+    background: @color-dark-grey;
+    align-items: center;
+
+    > button {
+      width: unset;
+    }
+
+    > button:first-of-type {
+      width: unset;
+
+      > svg {
+        height: @size-6;
+        width: @size-10;
+        margin-right: 0;
+
+        > path {
+          fill: unset;
+        }
+      }
+    }
+
+    > h1 {
+      .text-12-bold;
+
+      color: @color-primary-text;
+      padding: 0;
+      margin: 0;
+      flex: 1;
     }
   }
 }
@@ -87,9 +132,8 @@
   border: 0;
   margin: 0;
   margin-top: -@size-10;
-  max-height: 90px;
+  max-height: 30px;
   overflow: hidden;
-  padding: 0 0 @size-8 0;
   resize: none;
   text-transform: none;
   transition: max-height 0.15s ease-out;
@@ -107,12 +151,12 @@
 }
 
 .BackButton {
-  .text-10;
+  .mono-10;
 
   align-items: center;
   color: @color-primary-text;
   display: flex;
-  text-transform: capitalize;
+  text-transform: uppercase;
   margin-right: @size-10;
 
   span {
@@ -132,6 +176,7 @@
 .MainValues {
   display: flex;
   width: 100%;
+  padding-left: @size-16;
 
   > .Properties > section {
     display: none;
@@ -142,7 +187,7 @@
     margin-right: @size-20;
     max-width: 654px;
 
-    &.Collapsed { 
+    &.Collapsed {
       display: flex;
       flex: 1;
       width: 100%;
@@ -153,16 +198,25 @@
 
       color: @color-primary-text;
       flex-grow: 1;
+      margin-bottom: @size-8;
     }
 
     > div:first-of-type {
-      padding: 0 0 @size-16;
+      .mono-9-bold;
+
+      padding: 0 0 @size-8;
 
       > p {
         margin-bottom: 0;
       }
+
+      > span {
+        .text-12;
+
+        color: @color-primary-text;
+      }
     }
-  }   
+  }
 }
 
 .Details {
@@ -178,57 +232,63 @@
     text-transform: uppercase;
   }
 
-  > span,
-  > p,
-  > textarea,
-  > label {
-    .text-12;
+  > div {
+    display: flex;
+    align-items: flex-start;
 
-    color: @color-primary-text;
+    > button {
+      .text-12;
 
-    @media @breakpoint-mobile-small {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
+      color: @color-primary-text;
+      cursor: pointer;
+      margin-left: @size-5;
+      text-transform: uppercase;
 
-  > button {
-    .text-12;
+      svg {
+        height: @size-12;
 
-    color: @color-primary-text;
-    cursor: pointer;
-    margin-top: @size-12;
-    text-transform: uppercase;
+        polyline {
+          stroke: @color-primary-text;
+          stroke-width: 3;
+        }
+      }
 
-    svg {
-      height: @size-12;
-      margin-right: @size-8;
-
-      polyline {
-        stroke: @color-primary-text;
-        stroke-width: 3;
+      &.Less {
+        align-items: center;
+        display: flex;
+        margin-top: 0;
       }
     }
 
-    &.Less {
-      align-items: center;
-      display: flex;
-      margin-top: 0;
+    > span,
+    > p,
+    > textarea,
+    > label {
+      .text-12;
+
+      color: @color-primary-text;
+
+      @media @breakpoint-mobile-small {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 }
 
 .Properties {
   border: 1px solid @color-dark-grey;
+  border-bottom: 0;
+  border-right: 0;
   display: flex;
   flex: 1;
   flex-direction: column;
 }
 
 .Core {
-  border: 1px solid @color-dark-grey;
   display: flex;
+  flex: 1;
 
   > div:first-of-type {
     @media @breakpoint-mobile {

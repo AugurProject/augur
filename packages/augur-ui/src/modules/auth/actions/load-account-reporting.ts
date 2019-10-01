@@ -3,8 +3,11 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'store';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { NodeStyleCallback } from 'modules/types';
 
-export const loadAccountReportingHistory = (marketIdAggregator?: Function) => async (
+export const loadAccountReportingHistory = (
+  marketIdAggregator?: Function
+) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -24,4 +27,22 @@ export const loadAccountReportingHistory = (marketIdAggregator?: Function) => as
   if (marketIdAggregator) marketIdAggregator(marketIds);
 
   dispatch(updateLoginAccount({ reporting }));
+};
+
+export const loadAccountCurrentDisputeHistory = async (
+  marketId: string,
+  userAccount: string,
+  callback: NodeStyleCallback
+) => {
+  let disputeValues = [];
+  const Augur = augurSdk.get();
+  try {
+     disputeValues = await Augur.getUserCurrentDisputeStake({
+      marketId,
+      account: userAccount,
+    });
+  } catch(e) {
+    return callback(e);
+  }
+  callback(null, disputeValues);
 };

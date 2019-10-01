@@ -15,6 +15,8 @@ export class DisputeDatabase extends DerivedDB {
   ) {
     super(db, networkId, name, mergeEventNames, idFields);
 
+    this.requiresOrder = true;
+
     this.db.createIndex({
       index: {
         ddoc: 'marketIndex',

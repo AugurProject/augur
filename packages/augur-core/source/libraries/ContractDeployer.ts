@@ -286,7 +286,7 @@ Deploying to: ${networkConfiguration.networkName}
         return contract.address;
     }
 
-    private async uploadAllContracts(serial=false): Promise<void> {
+    private async uploadAllContracts(serial=true): Promise<void> {
         console.log('Uploading contracts...');
 
         if (serial) { // needed for deploy to ganache

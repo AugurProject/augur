@@ -102,6 +102,11 @@ export default class ModalParticipate extends Component<
       isValid = false;
     }
 
+    if (isNaN(quantity)) {
+      errors.push('Value not a number');
+      isValid = false;
+    }
+
     return { errors, isValid };
   }
 
