@@ -247,7 +247,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             min={props.min}
             max={props.max}
             lastPrice={
-              outcomesShow[YES_NO_YES_ID].price ? formatNumber(outcomesShow[YES_NO_YES_ID].price) : null
+              props.outcomes[YES_NO_YES_ID].price ? formatNumber(props.outcomes[YES_NO_YES_ID].price) : null
             }
             scalarDenomination={props.scalarDenomination}
           />

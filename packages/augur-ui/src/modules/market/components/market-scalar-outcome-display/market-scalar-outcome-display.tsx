@@ -66,7 +66,7 @@ const MarketScalarOutcomeDisplay = ({
       <div>
         <DashlineLong />
         <div style={currentValuePosition}>
-          <span>{lastPrice ? lastPrice.formatted : '-'}</span>
+          <span>{lastPrice ? lastPriceFormatted.formatted : '-'}</span>
           <MarketOutcomeTradingIndicator
             outcome={outcomes[0]}
             location="scalarScale"
