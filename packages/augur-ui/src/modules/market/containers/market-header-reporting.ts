@@ -15,7 +15,7 @@ import { ZERO } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
-  const disputeOutcomes = {}; // marketDisputeOutcomes() || {};
+  const disputeOutcomes = {};
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
