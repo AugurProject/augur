@@ -211,18 +211,18 @@ export interface OutcomeGroupProps {
   reportingState: string;
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
+  inDispute?: boolean;
+  showOutcomeNumber: number;
 }
-const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
-const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
+
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
     props.stakes
   );
-  const inDispute =
-    props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE;
-  const showOutcomeNumber = inDispute ? MARKET_CARD_FOLD_OUTCOME_COUNT : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+
+  const { inDispute, showOutcomeNumber } = props;
   let dipsutingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
