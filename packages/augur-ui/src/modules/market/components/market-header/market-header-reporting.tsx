@@ -1,14 +1,16 @@
-import React, { Component } from "react";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import classNames from 'classnames';
 
-import PropTypes from "prop-types";
-import Styles from "modules/market/components/market-header/market-header-reporting.styles.less";
+import PropTypes from 'prop-types';
+import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import {
   TYPE_DISPUTE,
   TYPE_REPORT,
   REPORTING_STATE,
-} from "modules/common/constants";
-import { PrimaryButton } from "modules/common/buttons";
+  SCALAR,
+} from 'modules/common/constants';
+import { PrimaryButton } from 'modules/common/buttons';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 export default class MarketHeaderReporting extends Component {
   static propTypes = {
@@ -42,42 +44,40 @@ export default class MarketHeaderReporting extends Component {
       tentativeWinner,
       isLogged,
       canClaimProceeds,
-      showReportingModal
+      showReportingModal,
     } = this.props;
-    const {
-      reportingState,
-      id,
-      consensusFormatted: consensus,
-    } = market;
+    const { reportingState, id, consensusFormatted: consensus } = market;
     let content = null;
+    const winningOutcomeName =
+      market.marketType === SCALAR
+        ? market.consensus.outcome
+        : getOutcomeNameWithOutcome(
+            market,
+            tentativeWinner && tentativeWinner.outcome,
+            tentativeWinner && tentativeWinner.isInvalid
+          );
+
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
-        <div
-          className={classNames(
-            Styles.Content,
-            Styles.Set
-          )}
-        >
+        <div className={classNames(Styles.Content, Styles.Set)}>
           <div>
-            <span>
-              Winning Outcome
-            </span>
+            <span>Winning Outcome</span>
             <span>
               {consensus.isInvalid
-                ? "Invalid"
+                ? 'Invalid'
                 : consensus.outcomeName || consensus.winningOutcome}
             </span>
           </div>
           {canClaimProceeds && (
-              <PrimaryButton
-                id="button"
-                action={() => {
-                  claimMarketsProceeds([id]);
-                }}
-                text="Claim Proceeds"
-                disabled={!isLogged || !canClaimProceeds}
-              />
-            )}
+            <PrimaryButton
+              id="button"
+              action={() => {
+                claimMarketsProceeds([id]);
+              }}
+              text="Claim Proceeds"
+              disabled={!isLogged || !canClaimProceeds}
+            />
+          )}
         </div>
       );
     } else if (
@@ -88,19 +88,17 @@ export default class MarketHeaderReporting extends Component {
       content = (
         <div className={classNames(Styles.Content, Styles.Dispute)}>
           <div>
-            <span>
-              Tentative Winner
-            </span>
+            <span>Tentative Winner</span>
             {tentativeWinner &&
             (tentativeWinner.outcome || tentativeWinner.isInvalidOutcome) ? (
               <span>
                 {tentativeWinner &&
                   (tentativeWinner.isInvalidOutcome
-                    ? "Invalid"
-                    : tentativeWinner.outcome)}
+                    ? 'Invalid'
+                    : winningOutcomeName)}
               </span>
             ) : (
-              <div style={{ minHeight: "20px" }} />
+              <div style={{ minHeight: '20px' }} />
             )}
           </div>
           {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
@@ -117,8 +115,7 @@ export default class MarketHeaderReporting extends Component {
     } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
       content = (
         <div className={classNames(Styles.Content, Styles.Report)}>
-          <div>
-          </div>
+          <div></div>
           <PrimaryButton
             id="button"
             text="Report"
@@ -128,13 +125,10 @@ export default class MarketHeaderReporting extends Component {
           />
         </div>
       );
-    } else if (
-      reportingState === REPORTING_STATE.DESIGNATED_REPORTING
-    ) {
+    } else if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
       content = (
         <div className={classNames(Styles.Content, Styles.Report)}>
-          <div>
-          </div>
+          <div></div>
           {isLogged && isDesignatedReporter ? (
             <PrimaryButton
               id="button"
@@ -151,10 +145,6 @@ export default class MarketHeaderReporting extends Component {
       return <div className={Styles.EmptyBreak} />;
     }
 
-    return (
-      <>
-      {content}
-      </>
-    );
+    return <>{content}</>;
   }
 }
