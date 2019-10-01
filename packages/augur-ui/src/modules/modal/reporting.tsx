@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MarketData } from 'modules/types';
+import { MarketData, DisputeInputtedValues } from 'modules/types';
 import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
@@ -30,7 +30,7 @@ interface ModalReportingProps {
 interface ModalReportingState {
   checked: string;
   preFilledStake: string;
-  disputeStake: string;
+  disputeStake: DisputeInputtedValues;
   scalarOutcome: string;
   isReporting: boolean;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
@@ -45,7 +45,7 @@ export default class ModalReporting extends Component<
       ? this.props.selectedOutcome.toString()
       : '',
     preFilledStake: '',
-    disputeStake: '',
+    disputeStake: { inputStakeValue: '', inputToAttoRep: '' },
     scalarOutcome: '',
     isReporting: this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
     this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
@@ -65,9 +65,9 @@ export default class ModalReporting extends Component<
   }
 
   updateChecked = (checked: string) => {
-    this.updateDisputeStake("");
-    this.updatePreFilledStake("");
-    this.updateScalarOutcome("");
+    this.updateDisputeStake({ inputStakeValue: '', inputToAttoRep: '' });
+    this.updatePreFilledStake('');
+    this.updateScalarOutcome('');
 
     this.setState({ checked });
   };
@@ -131,7 +131,7 @@ export default class ModalReporting extends Component<
           numOutcomes,
           marketType,
           description: '',
-          attoRepAmount: this.state.disputeStake,
+          attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
           isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
         });
@@ -144,7 +144,7 @@ export default class ModalReporting extends Component<
           numOutcomes,
           marketType,
           description: '',
-          attoRepAmount: this.state.disputeStake,
+          attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
           isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
         });
@@ -154,7 +154,7 @@ export default class ModalReporting extends Component<
     }
   };
 
-  updateDisputeStake = (disputeStake: string) => {
+  updateDisputeStake = (disputeStake: DisputeInputtedValues) => {
     this.setState({ disputeStake });
   };
 
