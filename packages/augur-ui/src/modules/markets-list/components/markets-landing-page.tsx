@@ -1,0 +1,176 @@
+import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
+import MarketsList from 'modules/markets-list/components/markets-list';
+import Styles from 'modules/markets-list/components/markets-landing-page.styles.less';
+import {
+  TYPE_TRADE,
+  MARKET_CARD_FORMATS,
+} from 'modules/common/constants';
+import { MarketData } from 'modules/types';
+import { Getters } from '@augurproject/sdk';
+import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKETS } from 'modules/routes/constants/views';
+import { CategorySelector } from 'modules/common/selection';
+
+interface MarketsViewProps {
+  isLogged: boolean;
+  markets: MarketData[];
+  location: object;
+  history: object;
+  isConnected: boolean;
+  toggleFavorite: (...args: any[]) => any;
+  loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
+  isMobile: boolean;
+  loadMarketsByFilter: Function;
+  isSearching: boolean;
+  setLoadMarketsPending: Function;
+  updateMarketsListMeta: Function;
+  categoryData: object;
+  signupModal: Function;
+}
+
+interface MarketsViewState {
+  isSearchingMarkets: boolean;
+  marketCategory: string;
+  filterSortedMarkets: string[];
+}
+
+export default class MarketsView extends Component<
+  MarketsViewProps,
+  MarketsViewState
+> {
+  private componentWrapper!: HTMLElement | null;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      marketCategory: 'all',
+      isSearchingMarkets: true,
+      filterSortedMarkets: [],
+    };
+
+    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
+    this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
+  }
+
+  componentDidMount() {
+    const { isConnected } = this.props;
+    if (isConnected) {
+      this.updateFilteredMarkets();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isConnected } = this.props;
+
+    if (isConnected !== prevProps.isConnected) {
+      this.updateFilteredMarkets();
+    }
+  }
+
+  updateFilteredMarkets() {
+    const { marketCategory } = this.state;
+
+    this.props.setLoadMarketsPending(true);
+    this.setState({ isSearchingMarkets: true });
+    this.loadMarketsByFilter(
+      {
+        categories: marketCategory && marketCategory !== 'all' ? [marketCategory] : [],
+        offset: 1,
+        limit: 25,
+      },
+      (err, result: Getters.Markets.MarketList) => {
+        if (err) return console.log('Error loadMarketsFilter:', err);
+        if (this.componentWrapper) {
+          const filterSortedMarkets = result.markets.map(m => m.id);
+          this.setState({
+            isSearchingMarkets: false,
+            filterSortedMarkets,
+          });
+          this.props.updateMarketsListMeta(result.meta);
+          this.props.setLoadMarketsPending(false);
+        }
+      }
+    );
+  }
+
+  render() {
+    const {
+      history,
+      isLogged,
+      isMobile,
+      loadMarketsInfoIfNotLoaded,
+      location,
+      markets,
+      toggleFavorite,
+      categoryData,
+      signupModal,
+    } = this.props;
+
+
+    return (
+      <section
+        className={Styles.LandingPage}
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
+        <Helmet>
+          <title>Markets</title>
+        </Helmet>
+
+        <div>
+          The world’s most accessible, no-limit betting platform.
+        </div>
+
+        {!isLogged ? <div>
+          <PrimaryButton
+            action={() => signupModal()}
+            text='Signup to start betting'
+          />
+        </div> : <div />}
+
+        <CategoryButtons
+          action={(categoryName) => {
+            history.push({
+              pathname: makePath(MARKETS, null),
+              search: `category=${categoryName}`,
+            })
+          }}
+          categoryData={categoryData}
+        />
+
+        <div>
+          Popular markets
+        </div>
+
+        <CategorySelector
+          action={(marketCategory) => {
+            this.setState({ marketCategory }, () => {
+              this.updateFilteredMarkets()
+            });
+          }}
+          selected={this.state.marketCategory}
+        />
+
+        <MarketsList
+          testid='markets'
+          isLogged={isLogged}
+          markets={markets}
+          showPagination={false}
+          filteredMarkets={this.state.filterSortedMarkets}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
+          linkType={TYPE_TRADE}
+          isMobile={isMobile}
+          isSearchingMarkets={this.state.isSearchingMarkets}
+          marketCardFormat={MARKET_CARD_FORMATS.COMPACT}
+        />
+      </section>
+    );
+  }
+}

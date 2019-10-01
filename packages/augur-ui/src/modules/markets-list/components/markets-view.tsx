@@ -90,15 +90,9 @@ export default class MarketsView extends Component<
   }
 
   componentDidMount() {
-    const {
-      isConnected,
-      setLoadMarketsPending,
-      updateMarketsListMeta,
-    } = this.props;
+    const { isConnected } = this.props;
     if (isConnected) {
-      setLoadMarketsPending(true);
       this.updateFilteredMarkets();
-      updateMarketsListMeta(null);
     }
   }
 
