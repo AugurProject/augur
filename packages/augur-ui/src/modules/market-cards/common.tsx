@@ -73,7 +73,7 @@ export interface DisputeOutcomeProps {
   stake: Getters.Markets.StakeDetails | null;
   dispute: Function;
   id: number;
-  isLogged: boolean;
+  canDispute: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -125,7 +125,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         </div>
         <SecondaryButton
           small
-          disabled={!props.isLogged}
+          disabled={!props.canDispute}
           text={
             props.stake && props.stake.tentativeWinning
               ? 'Support Tentative Winner'
@@ -141,6 +141,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
 interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
+  canDispute: boolean;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -152,6 +153,7 @@ export const ScalarBlankDisputeOutcome = (
       <div></div>
       <SecondaryButton
         small
+        disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
         action={() => props.dispute(null)}
       />
@@ -293,7 +295,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 )}
                 dispute={props.dispute}
                 id={outcome.id}
-                isLogged={props.canDispute}
+                canDispute={props.canDispute}
               />
             ) : (
               <Outcome
@@ -312,6 +314,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
         <ScalarBlankDisputeOutcome
           denomination={props.scalarDenomination}
           dispute={props.dispute}
+          canDispute={props.canDispute}
         />
       )}
     </div>

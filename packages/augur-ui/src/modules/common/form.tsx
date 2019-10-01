@@ -739,7 +739,7 @@ export const ReportingRadioBarGroup = ({
   updateScalarOutcome,
   userCurrentDisputeRound,
 }: ReportingRadioGroupProps) => {
-  const { reportingState, disputeInfo, marketType } = market;
+  const { reportingState, disputeInfo } = market;
   const isReporting =
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
