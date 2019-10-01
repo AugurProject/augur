@@ -126,9 +126,9 @@ function processOutcomes(
   }));
 }
 
-function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
+function getEmptyStake(outcomeId: number | null, bondSizeOfNewStake: string) {
   return {
-    outcome: String(outcomeId),
+    outcome: outcomeId !== null ? String(outcomeId) : null,
     bondSizeCurrent: bondSizeOfNewStake,
     stakeCurrent: '0',
     stakeRemaining: bondSizeOfNewStake,
@@ -149,12 +149,15 @@ function processDisputeInfo(
     const invalidIncluded = disputeInfo.stakes.find(
       s => Number(s.outcome) === INVALID_OUTCOME_ID
     );
-    if (invalidIncluded) return disputeInfo;
+    // add blank outcome
+    const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake)
+    if (invalidIncluded) return {...disputeInfo, stakes: [...disputeInfo.stakes, blankStake]};
     return {
       ...disputeInfo,
       stakes: [
         ...disputeInfo.stakes,
         getEmptyStake(INVALID_OUTCOME_ID, disputeInfo.bondSizeOfNewStake),
+        blankStake
       ],
     };
   }

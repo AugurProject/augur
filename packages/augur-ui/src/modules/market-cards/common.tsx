@@ -153,7 +153,7 @@ export const ScalarBlankDisputeOutcome = (
       <SecondaryButton
         small
         text={'Dispute Tentative Winner'}
-        action={() => props.dispute("1")}
+        action={() => props.dispute(null)}
       />
     </div>
   </div>

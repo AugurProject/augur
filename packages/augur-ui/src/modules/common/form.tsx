@@ -274,7 +274,7 @@ interface RadioBarProps {
 interface ReportingRadioBarProps {
   market: MarketData;
   header: string;
-  value: string;
+  value: string | null;
   onChange?: Function;
   expandable?: boolean;
   checked?: boolean;
@@ -778,14 +778,18 @@ export const ReportingRadioBarGroup = ({
             preFilledStake={preFilledStake}
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
+            scalarOutcome={scalarOutcome}
             updateDisputeStake={updateDisputeStake}
             isInvalid={tentativeWinning.isInvalid}
             checked={String(tentativeWinning.value) === selected}
+            updateScalarOutcome={updateScalarOutcome}
             onChange={selected => {
               onChange(selected.toString());
             }}
             reportAction={reportAction}
-            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(tentativeWinning.value))}
+            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
+              d => d.outcome === String(tentativeWinning.value)
+            )}
           />
         </section>
       )}
@@ -801,27 +805,6 @@ export const ReportingRadioBarGroup = ({
           subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
         />
       )}
-      {marketType === SCALAR && (
-        <ReportingRadioBar
-          market={market}
-          header=''
-          value={String(SCALAR_UP_ID)}
-          checked={String(SCALAR_UP_ID) === selected}
-          stake={null}
-          expandable
-          preFilledStake={preFilledStake}
-          updatePreFilledStake={updatePreFilledStake}
-          disputeStake={disputeStake}
-          updateDisputeStake={updateDisputeStake}
-          scalarOutcome={scalarOutcome}
-          updateScalarOutcome={updateScalarOutcome}
-          onChange={selected => {
-            onChange(selected.toString());
-          }}
-          reportAction={reportAction}
-          userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(SCALAR_UP_ID))}
-        />
-      )}
       {radioButtons.map(
         (radio, index) =>
           !radio.isInvalid &&
@@ -831,16 +814,24 @@ export const ReportingRadioBarGroup = ({
               key={`${index}${radio.value}`}
               expandable
               {...radio}
-              checked={String(radio.value) === selected}
+              checked={
+                radio.value
+                  ? String(radio.value) === selected
+                  : radio.value === selected
+              }
               onChange={selected => {
                 onChange(selected.toString());
               }}
               reportAction={reportAction}
               preFilledStake={preFilledStake}
+              scalarOutcome={scalarOutcome}
               updatePreFilledStake={updatePreFilledStake}
+              updateScalarOutcome={updateScalarOutcome}
               disputeStake={disputeStake}
               updateDisputeStake={updateDisputeStake}
-              userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(radio.value))}
+              userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
+                d => d.outcome === String(radio.value)
+              )}
             />
           )
       )}
@@ -862,13 +853,17 @@ export const ReportingRadioBarGroup = ({
             preFilledStake={preFilledStake}
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
+            scalarOutcome={scalarOutcome}
             updateDisputeStake={updateDisputeStake}
+            updateScalarOutcome={updateScalarOutcome}
             checked={String(invalid.value) === selected}
             reportAction={reportAction}
             onChange={selected => {
               onChange(selected.toString());
             }}
-            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(d => d.outcome === String(invalid.value))}
+            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
+              d => d.outcome === String(invalid.value)
+            )}
           />
         </>
       )}
@@ -985,15 +980,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       }
       // Set default values if outcome has not received stake
       if (!stake) {
-        stake = {
-          outcome: scalarOutcome,
-          stakeCurrent: '0',
-          bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
-          stakeRemaining: disputeInfo.bondSizeOfNewStake,
-          isInvalidOutcome: false,
-          isMalformedOutcome: false,
-          tentativeWinning: false,
-        };
+        stake = disputeInfo.stakes.find(s => s.outcome === null);
       }
     }
     const reportingGasFee = formatNumber('0'); // TODO: get actual gas cost
@@ -1015,7 +1002,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       >
         {checked ? FilledRadio : EmptyRadio}
         <h5>
-          {isScalar
+          {isScalar && stake.outcome === null
             ? `Enter a range from ${market.minPrice} to ${market.maxPrice}`
             : header}
         </h5>
@@ -1067,6 +1054,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  outcomeValue={stake.outcome}
                 />
               )}
             </>
@@ -1080,7 +1068,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               preFilledStake={preFilledStake}
               updatePreFilledStake={updatePreFilledStake}
               updateScalarOutcome={updateScalarOutcome}
-              scalarOutcome={scalarOutcome}
               reportingGasFee={reportingGasFee}
             />
           )}

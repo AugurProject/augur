@@ -288,12 +288,11 @@ export interface DisputingBondsViewProps {
   changeRange: Function;
   stakeValue: string;
   changeStake: Function;
-  updateScalarOutcome?: Function;
-  scalarOutcome?: string;
   userAvailableRep: number;
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
+  outcomeValue: string;
 }
 
 interface DisputingBondsViewState {
@@ -408,6 +407,7 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
       reportAction,
+      outcomeValue,
     } = this.props;
 
     const { disabled, scalarError, stakeError, isScalar } = this.state;
@@ -419,7 +419,7 @@ export class DisputingBondsView extends Component<
           [Styles.Scalar]: isScalar,
         })}
       >
-        {isScalar && (
+        {isScalar && !outcomeValue && (
           <ScalarOutcomeView
             rangeValue={rangeValue}
             changeRange={this.changeRange}
@@ -478,7 +478,6 @@ export interface ReportingBondsViewProps {
   reportAction: Function;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
-  updateScalarOutcome?: Function;
   scalarOutcome?: string;
   userAvailableRep: number;
 }

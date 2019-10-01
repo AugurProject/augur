@@ -187,11 +187,10 @@ export function getOutcomeValue(market: MarketData, payoutNumerators: string[]):
   const maxPrice = new BigNumber(market['prices'][1]);
   const minPrice = new BigNumber(market['prices'][0]);
   const numTicks = new BigNumber(market['numTicks']);
-  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
   const marketType = marketTypeToName(market.marketType);
   return calculatePayoutNumeratorsValue(
-    convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
-    convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+    convertAttoValueToDisplayValue(maxPrice).toString(),
+    convertAttoValueToDisplayValue(minPrice).toString(),
     numTicks.toString(),
     marketType,
     payoutNumerators

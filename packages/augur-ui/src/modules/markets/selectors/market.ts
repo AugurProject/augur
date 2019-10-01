@@ -103,7 +103,7 @@ const buildScalarDisputingOutcomes = (
       : ({
           // description is displayed as outcome in dispute form
           id: Number(s.outcome),
-          description: `${formatAttoDai(s.outcome).formatted} ${denom}`,
+          description: `${s.outcome} ${denom}`,
           marketId,
           lastPricePercent: null,
           lastPrice: null,

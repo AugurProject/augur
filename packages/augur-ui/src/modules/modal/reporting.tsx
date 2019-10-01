@@ -43,7 +43,7 @@ export default class ModalReporting extends Component<
   state: ModalReportingState = {
     checked: this.props.selectedOutcome
       ? this.props.selectedOutcome.toString()
-      : '',
+      : null,
     preFilledStake: '',
     disputeStake: { inputStakeValue: '', inputToAttoRep: '' },
     scalarOutcome: '',
@@ -198,17 +198,7 @@ export default class ModalReporting extends Component<
         let stake = disputeInfo.stakes.find(
           stake => parseFloat(stake.outcome) === outcome.id
         );
-        if (!stake) {
-          stake = {
-            outcome: outcome.id.toString(),
-            bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
-            stakeCurrent: '0',
-            stakeRemaining: disputeInfo.bondSizeOfNewStake,
-            isInvalidOutcome: false,
-            isMalformedOutcome: false,
-            tentativeWinning: false,
-          };
-        }
+
         return {
           header: outcome.description,
           value: outcome.id,
@@ -222,9 +212,9 @@ export default class ModalReporting extends Component<
     if (marketType === SCALAR) {
       disputeInfo.stakes.forEach(stake => {
         radioButtons.push({
-          header: stake.outcome,
-          value: Number(stake.outcome),
-          checked: checked === stake.outcome.toString(),
+          header: stake.outcome ? stake.outcome : null,
+          value: stake.outcome ? Number(stake.outcome) : null,
+          checked: checked === stake.outcome,
           isInvalid: stake.outcome === String(INVALID_OUTCOME_ID),
           preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
           stake,
