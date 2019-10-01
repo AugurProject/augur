@@ -35,7 +35,7 @@ import { MarketData, QueryEndpoints } from 'modules/types';
 import Clipboard from 'clipboard';
 import { DotSelection } from 'modules/common/selection';
 
-const OVERFLOW_DETAILS_LENGTH = 50; // in px, overflow limit to trigger MORE details
+const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
 // TODO: add this to top left -- refactor into it's own component:
 // clipboardMarketId: any = new Clipboard("#copy_marketId");
