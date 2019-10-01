@@ -93,15 +93,39 @@ export default class AccountView extends React.Component<
               >
                 <div>
                   <div>
-                    <Notifications toggle={() => this.toggle('extendNotifications', 'extendActiveMarkets')} />
-                    <OpenMarkets toggle={() => this.toggle('extendActiveMarkets', 'extendNotifications')} />
+                    <Notifications
+                      toggle={() =>
+                        this.toggle(
+                          'extendNotifications',
+                          'extendActiveMarkets'
+                        )
+                      }
+                    />
+                    <OpenMarkets
+                      toggle={() =>
+                        this.toggle(
+                          'extendActiveMarkets',
+                          'extendNotifications'
+                        )
+                      }
+                    />
                   </div>
                   <div>
-                    <Overview />
-                    <AugurStatus />
+                    <ModuleTabs selected={0}>
+                      <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                        <Overview />
+                      </ModulePane>
+                      <ModulePane label={AUGUR_STATUS_TITLE}>
+                        <AugurStatus />
+                      </ModulePane>
+                    </ModuleTabs>
                   </div>
                   <div>
-                    <Favorites toggle={() => this.toggle('extendWatchlist', 'extendTransactions')}/>
+                    <Favorites
+                      toggle={() =>
+                        this.toggle('extendWatchlist', 'extendTransactions')
+                      }
+                    />
                     <Transactions />
                   </div>
                 </div>
