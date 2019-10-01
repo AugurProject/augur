@@ -6,12 +6,12 @@ import { Getter } from './Router';
 import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
 import {
   Address,
-  DisputeDoc,
+  DisputeDoc, MarketCreatedLogExtraInfo,
   MarketData,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog
-} from '../logs/types';
+} from "../logs/types";
 import { sortOptions } from './types';
 import { MarketReportingState } from '../../constants';
 import {
@@ -26,6 +26,8 @@ import { getOutcomeValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
+import { pipe } from 'fp-ts/lib/pipeable'
+import { fold } from 'fp-ts/lib/Either'
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -221,6 +223,14 @@ export interface LiquidityOrderBookInfo {
   orderBook: OrderBook;
 }
 
+export interface CategoryStats {
+  [category: string]: {
+    category: string;
+    numberOfMarkets: number;
+    volume: string;
+  }
+}
+
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
 
 export class Markets {
@@ -247,6 +257,10 @@ export class Markets {
   ]);
 
   static getCategoriesParams = t.type({ universe: t.string });
+  static getCategoryStatsParams = t.type({
+    universe: t.string,
+    categories: t.array(t.string),
+  });
 
   @Getter('getMarketPriceCandlestickParams')
   static async getMarketPriceCandlesticks(
@@ -726,6 +740,75 @@ export class Markets {
     }
     return Object.keys(allCategories);
   }
+
+  @Getter('getCategoryStatsParams')
+  static async getCategoryStats(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Markets.getCategoryStatsParams>
+  ): Promise<CategoryStats> {
+    const { universe, categories } = params;
+
+    const allMarkets = await db.findMarkets({
+      selector: {
+        universe,
+      },
+    });
+
+    const markets = allMarkets.map((market) => {
+      const { extraInfo: extraInfoBlob } = market;
+      const extraInfo = parseExtraInfo(extraInfoBlob);
+
+      return {
+        categories: extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [],
+        volume: market.volume,
+      };
+    });
+
+    const categoryStats = categories.reduce((stats, category) => {
+      stats[category] = {
+        category,
+        numberOfMarkets: 0,
+        volume: '0',
+      };
+      return stats;
+    }, {} as CategoryStats);
+
+
+    markets.forEach((market) => {
+      categories.forEach((category) => {
+        if (market.categories.indexOf(category) !== -1) {
+          const stats = categoryStats[category];
+          stats.numberOfMarkets++;
+          stats.volume = new BigNumber(stats.volume).plus(market.volume).toString();
+        }
+      });
+    });
+
+    return categoryStats;
+  }
+}
+
+const extraInfoType = t.intersection([
+  t.interface({
+    description: t.string
+  }),
+  t.partial({
+    longDescription: t.string,
+    resolutionSource: t.string,
+    backupSource: t.string,
+    _scalarDenomination: t.string,
+    categories: t.array(t.string),
+    tags: t.array(t.string),
+  }),
+]);
+
+// Turns extraInfo blob into the correct object. Returns null if it can't.
+export function parseExtraInfo(extraInfoBlob: string): t.TypeOf<typeof extraInfoType>|null {
+  return pipe(
+    extraInfoType.decode(JSON.parse(extraInfoBlob)),
+    fold((errors: t.Errors) => null, (info: t.TypeOf<typeof extraInfoType>) => info),
+  )
 }
 
 function filterOrderFilledLogs(
