@@ -14,14 +14,14 @@ import { createBigNumber } from 'utils/create-big-number';
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
 
-  const { reportingState, consensus } = market;
+  const { reportingState, consensusFormatted: consensus } = market;
   let reportingBarShowing = false;
   const isDesignatedReporter =
     market.designatedReporter === state.loginAccount.address;
 
   const hasConsensus =
     consensus && (consensus.winningOutcome || consensus.isInvalid);
-    
+
   if (
     hasConsensus ||
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||

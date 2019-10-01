@@ -47,7 +47,7 @@ export default class MarketHeaderReporting extends Component {
     const {
       reportingState,
       id,
-      consensus,
+      consensusFormatted: consensus,
     } = market;
     let content = null;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
