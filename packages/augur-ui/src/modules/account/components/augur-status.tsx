@@ -34,6 +34,7 @@ const AugurStatus = ({ syncingInfo }: AugurStatusProps) => {
   return (
     <QuadBox
       title={AUGUR_STATUS_TITLE}
+      hideHeader
       content={
         <div className={Styles.AugurStatusContent}>
           <SyncStatus syncPercent={percent} />
