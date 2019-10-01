@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: @size-16;
+  padding: @size-8 @size-16;
   position: relative;
 
   @media @breakpoint-mobile {
@@ -20,75 +20,68 @@
 
     > div:first-of-type,
     > div:last-of-type {
-      background-color: @color-primary-text;
-      height: @size-16;
-      width: 1px;
+      .mono-9-bold;
+
+      display: flex;
+      flex-direction: column;
+      color: @color-secondary-text;
+      text-transform: uppercase;
+      line-height: 160%;
+
+      > span {
+        .mono-10;
+
+        color: @color-primary-text;
+        line-height: 100%;
+      }
     }
 
     > div:nth-of-type(2) {
-      flex-grow: 1;
-      margin-left: @size-6;
-      margin-right: @size-6;
-      position: relative;
+      .mono-9;
 
-      > svg {
-        bottom: 25%;
-        position: relative;
-      }
-
-      > div {
-        .text-14-bold;
-
-        left: 50%;
-        position: absolute;
-        top: -14.45px;
-        transform: translateX(-50%);
-
-        > span:first-of-type {
-          &::before {
-            background-color: @color-primary-action;
-            border-radius: 50%;
-            content: "";
-            height: @size-5;
-            left: 0;
-            margin: auto;
-            position: absolute;
-            right: 0;
-            top: 1.3rem;
-            width: @size-5;
-          }
-        }
-
-        > span:nth-of-type(2) {
-          left: @size-4;
-          position: relative;
-        }
-      }
-    }
-  }
-
-  > div:nth-of-type(2),
-  > div:last-of-type {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-
-    > div:first-of-type {
-      flex-grow: 1;
+      color: @color-primary-text;
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      text-transform: uppercase;
     }
   }
 
   > div:nth-of-type(2) {
-    .text-12;
+    flex-grow: 1;
+    position: relative;
 
-    > div > span {
-      font-weight: bold;
+    > svg {
+      bottom: 25%;
+      position: relative;
+      top: -@size-10;
     }
-  }
 
-  > div:last-of-type {
-    .text-10;
+    > div {
+      .text-14-bold;
 
-    margin-top: @size-4;
+      left: 50%;
+      position: absolute;
+      top: @size-7;
+
+      > span:first-of-type {
+        .mono-9;
+
+        color: @color-primary-text;
+
+        &::before {
+          background-color: @color-primary-action;
+          border-radius: 50%;
+          content: "";
+          height: @size-5;
+          left: 0;
+          margin: auto;
+          position: absolute;
+          right: 0;
+          top: -@size-7;
+          width: @size-5;
+        }
+      }
+    }
   }
 }

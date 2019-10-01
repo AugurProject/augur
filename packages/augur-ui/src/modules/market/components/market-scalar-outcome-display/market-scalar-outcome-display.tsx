@@ -3,10 +3,28 @@ import PropTypes from 'prop-types';
 
 import getValue from 'utils/get-value';
 import CustomPropTypes from 'utils/custom-prop-types';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { DashlineLong } from 'modules/common/labels';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 import Styles from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less';
+import { YES_NO_YES_ID } from 'modules/common/constants';
+import { formatDai } from 'utils/format-number';
+import { FormattedNumber } from 'modules/types';
+
+export function calculatePosition(
+  min: BigNumber,
+  max: BigNumber,
+  lastPrice: FormattedNumber|null
+) {  
+  const range = max.minus(min);
+  const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
+    .minus(min)
+    .dividedBy(range)
+    .times(createBigNumber(100))
+    .toNumber();
+
+  return lastPrice === null ? 50 : pricePercentage;
+};
 
 const MarketScalarOutcomeDisplay = ({
   outcomes,
@@ -14,22 +32,11 @@ const MarketScalarOutcomeDisplay = ({
   min,
   scalarDenomination = 'N/A',
 }) => {
-  const calculatePosition = (): number => {
-    const outcome = outcomes[1];
-    const range = max.minus(min);
-    const percentage = outcomes[0].lastPricePercent && outcomes[0].lastPricePercent.fullPrecision;
-    const pricePercentage = createBigNumber(percentage || 0)
-      .minus(min)
-      .dividedBy(range)
-      .times(createBigNumber(100)).toNumber();
-
-    return outcome && outcome.price === null
-      ? 50
-      : pricePercentage
-  };
+  const lastPrice = getValue(outcomes[YES_NO_YES_ID], 'price');
+  const lastPriceFormatted = formatDai(lastPrice);
 
   const outcomeVerticalLinePosition = (): string => {
-    let pos = calculatePosition();
+    let pos = calculatePosition(min, max, lastPrice === null ? null : lastPriceFormatted).toString();
     if (pos > 99.0) {
       pos = 99.0;
     } else if (pos < 1.0) {
@@ -38,45 +45,33 @@ const MarketScalarOutcomeDisplay = ({
     return pos.toString();
   };
 
+
   const currentValuePosition = {
     left: outcomeVerticalLinePosition() + '%',
   };
 
-  const lastPriceDenomination = getValue(
-    outcomes[1],
-    'lastPricePercent.denomination'
-  );
-
   return (
     <div className={Styles.ScalarOutcomes}>
       <div>
-        <div />
         <div>
-          <DashlineLong />
-          <div style={currentValuePosition}>
-            <span>{getValue(outcomes[1], 'lastPricePercent.formatted')}</span>
-            <span>{lastPriceDenomination}</span>
-            <MarketOutcomeTradingIndicator
-              outcome={outcomes[0]}
-              location="scalarScale"
-            />
-          </div>
-        </div>
-        <div />
-      </div>
-      <div>
-        <div>
-          Min:
+          Min
           <span>{`${min}`}</span>
         </div>
+        <div>{scalarDenomination}</div>
         <div>
-          Max:
+          Max
           <span>{`${max}`}</span>
         </div>
       </div>
       <div>
-        <div>{scalarDenomination}</div>
-        <div>{scalarDenomination}</div>
+        <DashlineLong />
+        <div style={currentValuePosition}>
+          <span>{lastPrice ? lastPrice.formatted : '-'}</span>
+          <MarketOutcomeTradingIndicator
+            outcome={outcomes[0]}
+            location="scalarScale"
+          />
+        </div>
       </div>
     </div>
   );
