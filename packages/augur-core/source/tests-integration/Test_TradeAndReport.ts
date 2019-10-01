@@ -20,10 +20,8 @@ describe('TradeAndReport', () => {
         await fixture.repFaucet(new BigNumber(11000000).times(1e18));
         await fixture.approveCentralAuthority();
 
-        let ethBalance = await fixture.getEthBalance();
-        console.log('Starting ETH balance', ethBalance.toString());
-
         // Create a market
+        console.log("Create Market");
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(' '), stringTo32ByteHex(' ')]);
 
         // Place an order
@@ -32,6 +30,7 @@ describe('TradeAndReport', () => {
         const numShares = new BigNumber(10000000000000);
         const price = new BigNumber(21);
 
+        console.log("Placing an Order");
         await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(''), stringTo32ByteHex(''), stringTo32ByteHex('42'));
 
         const orderID = await fixture.getBestOrderId(type, market.address, outcome);
@@ -39,18 +38,14 @@ describe('TradeAndReport', () => {
         const orderPrice = await fixture.getOrderPrice(orderID);
         expect(orderPrice.toNumber()).to.equal(price.toNumber());
 
-        ethBalance = await fixture.getEthBalance();
-        console.log('ethBalance before buying complete set', ethBalance.toString());
-
         // Buy complete sets
+        console.log("Buying Complete Sets");
         await fixture.buyCompleteSets(market, numShares);
         const numOwnedShares = await fixture.getNumSharesInMarket(market, outcome);
         expect(numOwnedShares.toNumber()).to.equal(numShares.toNumber());
 
-        ethBalance = await fixture.getEthBalance();
-        console.log('ethBalance after buying complete set', ethBalance.toString());
-
         // Cancel the original rest of order
+        console.log("Canceling Order");
         await fixture.cancelOrder(orderID);
         const remainingAmount = await fixture.getOrderAmount(orderID);
         expect(remainingAmount.toNumber()).to.equal(0);

@@ -11,9 +11,9 @@ export async function deployToNetworks(networks: Array<NETWORKS>) {
     // Create all network configs up front so that an error in any of them
     // causes us to die
     const networkConfigurations = networks.map((network) => NetworkConfiguration.create(network));
-    const deployerConfiguration = CreateDeployerConfiguration();
     for(let network of networkConfigurations) {
         // Deploy sequentially
+        const deployerConfiguration = CreateDeployerConfiguration(network.networkName);
         const provider = new ethers.providers.JsonRpcProvider(network.http);
         const signer = await EthersFastSubmitWallet.create(<string>network.privateKey, provider);
         const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);

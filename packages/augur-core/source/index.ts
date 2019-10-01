@@ -1,4 +1,4 @@
-export { NetworkConfiguration, NETWORKS, isNetwork } from "./libraries/NetworkConfiguration";
+export { NetworkConfiguration, NETWORKS, NETID_TO_NETWORK, isNetwork } from "./libraries/NetworkConfiguration";
 export { DeployerConfiguration, CreateDeployerConfiguration, DeployerConfigurationOverwrite } from "./libraries/DeployerConfiguration";
 export { ContractDeployer } from "./libraries/ContractDeployer";
 export { EthersFastSubmitWallet } from "./libraries/EthersFastSubmitWallet";
