@@ -147,7 +147,7 @@ export function calculatePayoutNumeratorsValue(
       return { outcome: '0', invalid: true };
     }
 
-    const longPayout = new BigNumber(payout[1]);
+    const longPayout = new BigNumber(payout[2]);
     const priceRange = new BigNumber(displayMaxPrice, 10).minus(
       new BigNumber(displayMinPrice, 10)
     );
