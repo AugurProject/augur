@@ -641,9 +641,11 @@ try {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
-              const outcomeValues =
-              ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-              if (!latestOutcomePLValue || !outcomeValues) {
+              let hasOutcomeValues = !!(
+                ordersFilledResultsByMarketAndOutcome[marketId] &&
+                ordersFilledResultsByMarketAndOutcome[marketId][outcome]
+              );
+              if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp,
                   frozenFunds: '0',
@@ -660,6 +662,7 @@ try {
                   currentValue: '0',
                 };
               }
+              const outcomeValues = ordersFilledResultsByMarketAndOutcome[marketId][outcome];
               let outcomeValue = new BigNumber(
                 getLastDocBeforeTimestamp<ParsedOrderEventLog>(
                   outcomeValues,

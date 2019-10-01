@@ -896,6 +896,7 @@ async function getMarketsInfo(
     let consensus = null;
     let finalizationBlockNumber = null;
     let finalizationTime = null;
+    try {
     if (marketData.winningPayoutNumerators) {
       let payouts = [];
       for (let i = 0; i < marketData.winningPayoutNumerators.length; i++) {
@@ -903,9 +904,11 @@ async function getMarketsInfo(
       }
       finalizationBlockNumber =  marketData.finalizationBlockNumber;
       finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
-      consensus = calculatePayoutNumeratorsValue(String(displayMaxPrice), String(displayMinPrice), String(numTicks), marketType, consensus);
+      consensus = calculatePayoutNumeratorsValue(String(displayMaxPrice), String(displayMinPrice), String(numTicks), marketType, payouts);
     }
-
+  }catch(e) {
+    console.error(e);
+  }
     let categories:string[] = [];
     let description = null;
     let details = null;
