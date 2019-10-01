@@ -73,6 +73,7 @@ export interface DisputeOutcomeProps {
   stake: Getters.Markets.StakeDetails | null;
   dispute: Function;
   id: number;
+  isLogged: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -124,6 +125,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         </div>
         <SecondaryButton
           small
+          disabled={!props.isLogged}
           text={
             props.stake && props.stake.tentativeWinning
               ? 'Support Tentative Winner'
@@ -213,6 +215,7 @@ export interface OutcomeGroupProps {
   dispute?: Function;
   inDispute?: boolean;
   showOutcomeNumber: number;
+  isLogged: boolean;
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
@@ -290,6 +293,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 )}
                 dispute={props.dispute}
                 id={outcome.id}
+                isLogged={props.isLogged}
               />
             ) : (
               <Outcome

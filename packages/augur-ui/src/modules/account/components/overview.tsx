@@ -46,6 +46,7 @@ export default class Overview extends React.Component<
     return (
       <QuadBox
         title={YOUR_OVERVIEW_TITLE}
+        hideHeader
         content={
           <div className={Styles.AccountOverview}>
             <Funds />

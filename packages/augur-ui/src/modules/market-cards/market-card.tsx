@@ -271,6 +271,8 @@ export default class MarketCard extends React.Component<
                   dispute={dispute}
                   inDispute={inDispute}
                   showOutcomeNumber={showOutcomeNumber}
+                  isLogged={isLogged}
+
                 />
                 {outcomesFormatted && outcomesFormatted.length > showOutcomeNumber && !expandedView &&
                   <button onClick={this.expand}>
