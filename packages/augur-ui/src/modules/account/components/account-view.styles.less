@@ -3,68 +3,53 @@
 .AccountView {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   margin: @size-4;
 
   @media @breakpoint-mobile {
     min-height: unset;
   }
 
+  > div:first-of-type {
+    flex: 1;
+    min-height: 800px;
+    height: calc(~"100vh - @{multi-top-bar-height}");
+  }
+
   > div {
     display: flex;
-    flex: 1;
 
     > div {
       display: flex;
       flex: 1;
       flex-direction: column;
       margin: @size-4;
+      height: inherit;
 
       > div {
         display: flex;
-        flex: 2 1 auto;
+        flex: 1;
         flex-direction: column;
         margin-bottom: @size-8;
-        max-height: 65vh;
         min-height: 6.25rem;
-
-        &:last-of-type {
-          margin-bottom: @size-20;
-        }
-      }
-    }
-
-    > div:first-of-type {
-      > div {
-        flex: unset;
       }
     }
 
     > div:nth-of-type(2) {
-      height: fit-content;
+      max-width: 470px;
 
       > div {
         max-height: unset;
-      }
-
-      > div:last-of-type {
-        flex: 0;
-        min-height: fit-content;
       }
     }
 
     > div:last-of-type {
       flex: 1;
       flex-direction: column;
-      height: unset;
-
-      > div:first-of-type {
-        flex: unset;
-      }
 
       > div:last-of-type {
         flex: unset;
         margin-left: 0;
+        min-height: fit-content;
       }
     }
   }
