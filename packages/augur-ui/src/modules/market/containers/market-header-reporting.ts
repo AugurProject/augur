@@ -25,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
       : market.designatedReporter === state.loginAccount.address,
-    tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning);
+    tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning),
     canClaimProceeds:
       state.accountPositions[ownProps.marketId] &&
       state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
