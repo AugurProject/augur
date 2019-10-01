@@ -129,6 +129,7 @@ export default class MarketsView extends Component<
           <PrimaryButton
             action={() => signupModal()}
             text='Signup to start betting'
+            disabled
           />
         </div> : <div />}
 
