@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Button {
-  .mono-12-bold;
+  .text-12-bold;
 
   border: @border-default;
   border-radius: @border-radius-default;
@@ -19,7 +19,7 @@
   background: @color-primary-action;
   color: @color-dark-grey;
   max-height: @button-height-default;
-  padding: @size-12 @size-24;
+  padding: @size-8 @size-12;
 
   &:not(:disabled):hover {
     background: fade(@color-primary-action, 90%);
@@ -45,7 +45,7 @@
   border: 1px solid @color-secondary-action-outline;
   color: @color-primary-text;
   max-height: @button-height-default;
-  padding: @size-12 @size-24;
+  padding: @size-8 @size-12;
 
   &:disabled {
     background: @color-inactive-text;

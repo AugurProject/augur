@@ -3,7 +3,6 @@ import classNames from "classnames";
 
 import PropTypes from "prop-types";
 import Styles from "modules/market/components/market-header/market-header-reporting.styles.less";
-import MarketLink from "modules/market/components/market-link/market-link";
 import {
   TYPE_DISPUTE,
   TYPE_REPORT,
@@ -42,8 +41,8 @@ export default class MarketHeaderReporting extends Component {
       claimMarketsProceeds,
       tentativeWinner,
       isLogged,
-      location,
-      canClaimProceeds
+      canClaimProceeds,
+      showReportingModal
     } = this.props;
     const {
       reportingState,
@@ -90,34 +89,28 @@ export default class MarketHeaderReporting extends Component {
         <div className={classNames(Styles.Content, Styles.Dispute)}>
           <div>
             <span>
-              Tentative Winning Outcome
+              Tentative Winner
             </span>
             {tentativeWinner &&
-            (tentativeWinner.name || tentativeWinner.isInvalid) ? (
+            (tentativeWinner.outcome || tentativeWinner.isInvalidOutcome) ? (
               <span>
                 {tentativeWinner &&
-                  (tentativeWinner.isInvalid
+                  (tentativeWinner.isInvalidOutcome
                     ? "Invalid"
-                    : tentativeWinner.name)}
+                    : tentativeWinner.outcome)}
               </span>
             ) : (
               <div style={{ minHeight: "20px" }} />
             )}
           </div>
           {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
-            <MarketLink
-              id={id}
-              linkType={TYPE_DISPUTE}
-              location={location}
+            <PrimaryButton
+              id="button"
+              text="Support or Dispute Outcome"
+              action={() => {}}
+              action={() => showReportingModal()}
               disabled={!isLogged}
-            >
-              <PrimaryButton
-                id="button"
-                text="Dispute"
-                action={() => {}}
-                disabled={!isLogged}
-              />
-            </MarketLink>
+            />
           )}
         </div>
       );
@@ -125,26 +118,14 @@ export default class MarketHeaderReporting extends Component {
       content = (
         <div className={classNames(Styles.Content, Styles.Report)}>
           <div>
-            <span>
-              Tentative Winning Outcome
-            </span>
-            <span>
-              Designated Reporter Failed to show. Please submit a report.
-            </span>
           </div>
-          <MarketLink
-            id={id}
-            location={location}
+          <PrimaryButton
+            id="button"
+            text="Report"
             disabled={!isLogged}
-            linkType={TYPE_REPORT}
-          >
-            <PrimaryButton
-              id="button"
-              text="Submit Report"
-              action={() => {}}
-              disabled={!isLogged}
-            />
-          </MarketLink>
+            action={() => showReportingModal()}
+            disabled={!isLogged}
+          />
         </div>
       );
     } else if (
@@ -153,28 +134,14 @@ export default class MarketHeaderReporting extends Component {
       content = (
         <div className={classNames(Styles.Content, Styles.Report)}>
           <div>
-            <span>
-              Reporting has started
-            </span>
-            <span>
-              {isDesignatedReporter
-                ? "Please Submit a report"
-                : "Awaiting the Market’s Designated Reporter"}
-            </span>
           </div>
           {isLogged && isDesignatedReporter ? (
-            <MarketLink
-              id={id}
-              location={location}
+            <PrimaryButton
+              id="button"
               disabled={!isLogged}
-              linkType={TYPE_REPORT}
-            >
-              <PrimaryButton
-                id="button"
-                action={() => {}}
-                text="Report"
-              />
-            </MarketLink>
+              action={() => showReportingModal()}
+              text="Report"
+            />
           ) : null}
         </div>
       );
