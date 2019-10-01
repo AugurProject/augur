@@ -774,7 +774,6 @@ export class Markets {
       return stats;
     }, {} as CategoryStats);
 
-
     markets.forEach((market) => {
       categories.forEach((category) => {
         if (market.categories.indexOf(category) !== -1) {
