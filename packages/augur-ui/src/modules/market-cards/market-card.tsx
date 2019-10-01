@@ -166,8 +166,16 @@ export default class MarketCard extends React.Component<
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
     const inDispute =
-      reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE;
-    const showOutcomeNumber = inDispute ? MARKET_CARD_FOLD_OUTCOME_COUNT : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+      reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+      reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
+    const showOutcomeNumber = inDispute
+      ? MARKET_CARD_FOLD_OUTCOME_COUNT
+      : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+    const canDispute =
+      inDispute &&
+      reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
+      isLogged;
+
     return (
       <div
         className={classNames(Styles.MarketCard, {[Styles.Loading]: loading})}
@@ -271,6 +279,7 @@ export default class MarketCard extends React.Component<
                   dispute={dispute}
                   inDispute={inDispute}
                   showOutcomeNumber={showOutcomeNumber}
+                  canDispute={canDispute}
                 />
                 {outcomesFormatted && outcomesFormatted.length > showOutcomeNumber && !expandedView &&
                   <button onClick={this.expand}>

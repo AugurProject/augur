@@ -5,6 +5,7 @@ import {
   MARKET_CLOSED,
   REPORTING_STATE,
   MAX_SPREAD_ALL_SPREADS,
+  MAX_FEE_100_PERCENT,
 } from 'modules/common/constants';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
@@ -135,6 +136,9 @@ export const loadMarketsByFilter = (
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
   };
+  // not pass properties at their max value
+  if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
+  if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS) delete params.maxLiquiditySpread
 
   const marketList = await augur.getMarkets({ ...params });
   dispatch(addUpdateMarketInfos(marketList.markets));
