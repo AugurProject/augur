@@ -8,8 +8,9 @@
 @color-module-background: #1B1A1E; // 51 files
 @color-module-background-action-focus: #27262B; // 1 file
 @color-page-background: #201E22; // 3 files
+@color-dismissable-notice-background: #DFF1FE;
 // Market status
-@color-open: #7DFFA8; // 5 files 
+@color-open: #7DFFA8; // 5 files
 @color-reporting: #F1E700; // 8 files
 @color-resolved: #F12B00; // 6 files
 // Trades
@@ -33,8 +34,8 @@
 @color-outcome-six: #FFF966; // 2 files
 @color-outcome-seven: #FFFFFF; // 4 files
 //  Chart / Outcome color helpers
-@color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven; 
- 
+@color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven;
+
 .generate-indexed-color-outcome-classes(@rules) {
   each(@color-outcome-list, {
     @newIndex: @index;

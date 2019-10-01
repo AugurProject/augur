@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from 'modules/market-cards/common';
 import { createBigNumber } from 'utils/create-big-number';
@@ -28,12 +28,41 @@ import { ButtonActionType } from 'modules/types';
 import { formatRep, formatAttoRep } from 'utils/format-number';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon } from 'modules/common/icons';
+import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+
+interface DismissableNoticeProps {
+  content: JSX.Element;
+  show: boolean;
+}
+
+export const DismissableNotice = (props: DismissableNoticeProps) => {
+  const [show, setShow] = useState(props.show);
+
+  return (
+    <div className={Styles.DismissableNotice}>
+      {show ? (
+        <div>
+          <span>
+            {ExclamationCircle}
+          </span>
+          {props.content}
+          <button
+            type='button'
+            className={Styles.close}
+            onClick={() => setShow(() => false)}
+          >
+            {XIcon}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -316,11 +345,13 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
     } = this.props;
-
+    let inputToAttoRep = null;
     const { isScalar } = this.state;
     const min = formatAttoRep(market.noShowBondAmount).value;
     const remaining = formatAttoRep(stakeRemaining).value;
-    const inputToAttoRep = convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue))
+    if (!isNaN(Number(inputStakeValue))) {
+      inputToAttoRep = convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue));
+    }
     if (
       isNaN(Number(inputStakeValue)) ||
       inputStakeValue === '' ||
@@ -329,7 +360,7 @@ export class DisputingBondsView extends Component<
       inputStakeValue === '0.'
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-      return changeStake(inputStakeValue);
+      return changeStake({inputStakeValue, inputToAttoRep});
     } else if (
       createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
     ) {
@@ -354,7 +385,7 @@ export class DisputingBondsView extends Component<
       )
     ) {
       this.setState({
-        stakeError: `Value is samllar than minimum: ${min} REP`,
+        stakeError: `Value is smaller than minimum: ${min} REP`,
         disabled: true,
       });
     } else {
@@ -366,7 +397,7 @@ export class DisputingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    changeStake(inputToAttoRep);
+    changeStake({inputStakeValue, inputToAttoRep});
   };
 
   render() {
@@ -382,7 +413,6 @@ export class DisputingBondsView extends Component<
     const { disabled, scalarError, stakeError, isScalar } = this.state;
     const min = convertAttoValueToDisplayValue(createBigNumber(market.noShowBondAmount));
     const remaining = convertAttoValueToDisplayValue(createBigNumber(stakeRemaining));
-    const inputted = stakeValue ? convertAttoValueToDisplayValue(createBigNumber(stakeValue)) : stakeValue;
     return (
       <div
         className={classNames(Styles.DisputingBondsView, {
@@ -399,7 +429,7 @@ export class DisputingBondsView extends Component<
         )}
         <TextInput
           placeholder={'0.0000'}
-          value={String(inputted)}
+          value={String(stakeValue)}
           onChange={value => this.changeStake(value)}
           errorMessage={stakeError}
           innerLabel="REP"
