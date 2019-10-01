@@ -1,3 +1,4 @@
+import { Augur, Provider } from '@augurproject/sdk';
 import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
@@ -126,13 +127,12 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     connect(
       env,
-      async (err: any) => {
+      async (err: any, sdk:Augur<Provider> ) => {
         if (err) {
           return callback(err, null);
         }
-        const Augur = augurSdk.get();
         const windowApp = windowRef as WindowApp;
-        let universeId = env.universe || Augur.contracts.universe.address;
+        let universeId = env.universe || sdk.contracts.universe.address;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
@@ -168,7 +168,7 @@ export function connectAugur(
         }
 
         // wire up start up events for sdk
-        dispatch(listenForStartUpEvents(Augur));
+        dispatch(listenForStartUpEvents(sdk));
       }
     );
   };

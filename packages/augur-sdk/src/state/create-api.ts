@@ -10,6 +10,7 @@ import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
 import { API } from './getter/API';
 import { DB } from './db/DB';
 import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { DatabaseConfiguration } from './Sync';
 
 const settings = require('./settings.json');
 
@@ -34,8 +35,8 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
   return { augur, blockAndLogStreamerListener, db };
 }
 
-export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false,  pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})): Promise<{ api: API, controller: Controller }> {
-  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch, pouchDBFactory);
+export async function create(ethNodeUrl: string, account?: string, enableFlexSearch = false,  databaseConfiguration:DatabaseConfiguration = {}): Promise<{ api: API, controller: Controller }> {
+  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch, PouchDBFactory(databaseConfiguration));
 
   const controller = new Controller(augur, db, blockAndLogStreamerListener);
   const api = new API(augur, db);
@@ -43,8 +44,8 @@ export async function create(ethNodeUrl: string, account?: string, enableFlexSea
   return { api, controller };
 }
 
-export async function buildAPI(ethNodeUrl: string, account?: string, enableFlexSearch = false,  pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})): Promise<API> {
-  const { augur, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch, pouchDBFactory);
+export async function buildAPI(ethNodeUrl: string, account?: string, enableFlexSearch = false,  databaseConfiguration:DatabaseConfiguration = {}): Promise<API> {
+  const { augur, db } = await buildDeps(ethNodeUrl, account, enableFlexSearch, PouchDBFactory(databaseConfiguration));
 
   return new API(augur, db);
 }
