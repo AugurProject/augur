@@ -31,9 +31,9 @@ interface MarketsViewProps {
 }
 
 interface MarketsViewState {
-  isSearchingMarkets: boolean;
   marketCategory: string;
   filterSortedMarkets: string[];
+  marketStats: object;
 }
 
 export default class MarketsView extends Component<
@@ -47,12 +47,9 @@ export default class MarketsView extends Component<
 
     this.state = {
       marketCategory: 'all',
-      isSearchingMarkets: true,
       filterSortedMarkets: [],
+      marketStats: null,
     };
-
-    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
-    this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
   }
 
   componentDidMount() {
@@ -63,10 +60,16 @@ export default class MarketsView extends Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { isConnected } = this.props;
+    const { isConnected, categoryData, isSearching } = this.props;
 
     if (isConnected !== prevProps.isConnected) {
       this.updateFilteredMarkets();
+    }
+
+    if (prevProps.isSearching && !isSearching && this.state.marketCategory === 'all') {
+      this.setState({
+        marketStats: categoryData
+      });
     }
   }
 
@@ -74,8 +77,7 @@ export default class MarketsView extends Component<
     const { marketCategory } = this.state;
 
     this.props.setLoadMarketsPending(true);
-    this.setState({ isSearchingMarkets: true });
-    this.loadMarketsByFilter(
+    this.props.loadMarketsByFilter(
       {
         categories: marketCategory && marketCategory !== 'all' ? [marketCategory] : [],
         offset: 1,
@@ -86,7 +88,6 @@ export default class MarketsView extends Component<
         if (this.componentWrapper) {
           const filterSortedMarkets = result.markets.map(m => m.id);
           this.setState({
-            isSearchingMarkets: false,
             filterSortedMarkets,
           });
           this.props.updateMarketsListMeta(result.meta);
@@ -105,10 +106,9 @@ export default class MarketsView extends Component<
       location,
       markets,
       toggleFavorite,
-      categoryData,
       signupModal,
+      isSearching,
     } = this.props;
-
 
     return (
       <section
@@ -139,7 +139,7 @@ export default class MarketsView extends Component<
               search: `category=${categoryName}`,
             })
           }}
-          categoryData={categoryData}
+          categoryData={this.state.marketStats}
         />
 
         <div>
@@ -167,7 +167,7 @@ export default class MarketsView extends Component<
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
-          isSearchingMarkets={this.state.isSearchingMarkets}
+          isSearchingMarkets={isSearching}
           marketCardFormat={MARKET_CARD_FORMATS.COMPACT}
         />
       </section>

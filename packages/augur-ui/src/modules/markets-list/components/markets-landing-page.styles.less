@@ -1,6 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .LandingPage {
+  @media @breakpoint-mobile {
+    margin: 0 @size-4;
+  }
+
   > div:nth-of-type(1) {
     .text-30-bold;
 
@@ -12,9 +16,7 @@
     width: @landing-page-width;
 
     @media @breakpoint-mobile {
-      margin: @size-64 0;
-      padding: 0 @size-48;
-      width: 100%;
+      margin: @size-64 auto;
     }
   }
 
@@ -27,6 +29,13 @@
   > div:nth-of-type(3) {
     margin-top: 87px;
     margin-bottom: 55px;
+
+    > div {
+        @media @breakpoint-mobile-small {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
   }
 
   > div:nth-of-type(4) {
@@ -42,6 +51,10 @@
 
   > div:nth-of-type(5) {
     margin: 0 @landing-page-margin;
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
   }
 
   > article {
