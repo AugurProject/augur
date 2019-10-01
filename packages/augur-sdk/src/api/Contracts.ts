@@ -24,6 +24,7 @@ export class Contracts {
   ZeroXTrade: ContractInterfaces.ZeroXTrade;
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
+  cashFaucet: ContractInterfaces.CashFaucet;
   gnosisSafeRegistry: ContractInterfaces.GnosisSafeRegistry;
 
   reputationToken: SomeRepToken | null = null;
@@ -49,6 +50,7 @@ export class Contracts {
     this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(dependencies, addresses.ZeroXTrade);
     this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(dependencies, addresses.BuyParticipationTokens);
     this.redeemStake = new ContractInterfaces.RedeemStake(dependencies, addresses.RedeemStake);
+    this.cashFaucet = new ContractInterfaces.CashFaucet(dependencies, addresses.CashFaucet);
     this.gnosisSafeRegistry = new ContractInterfaces.GnosisSafeRegistry(dependencies, addresses.GnosisSafeRegistry);
 
     if (typeof addresses.Time !== "undefined") {

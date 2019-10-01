@@ -138,4 +138,4 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
   );
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-}, 60000);
+});

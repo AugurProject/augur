@@ -7,7 +7,7 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import { ContractDeployer } from "@augurproject/core";
+import { ContractDeployer, NETID_TO_NETWORK } from "@augurproject/core";
 
 import { Account } from "../constants";
 
@@ -28,7 +28,9 @@ export interface UsefulContractObjects {
 
 export async function deployContracts(provider: EthersProvider,  account: Account, compiledContracts: CompilerOutput, config: DeployerConfigurationOverwrite): Promise<UsefulContractObjects> {
   config = Object.assign({}, flashDeployerConfigurationDefaults, config);
-  const deployerConfiguration = CreateDeployerConfiguration(config);
+  const networkId = await provider.getNetworkId();
+  const network = NETID_TO_NETWORK[networkId] || 'environment';
+  const deployerConfiguration = CreateDeployerConfiguration(network, config);
 
   const signer = await makeSigner(account, provider);
   const dependencies = makeDependencies(account, provider, signer);
