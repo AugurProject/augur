@@ -47,6 +47,7 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
   thunder: {},
   ropsten: {},
   kovan: {
+    /*
     MCDCol: "0xc7aa227823789e363f29679f23f7e8f6d9904a9b",
     MCDColJoin: "0xebbd300bb527f1d50abd937f8ca11d7fd0e5b68b",
     MCDFaucet: "0x94598157fcf0715c3bc9b4a35450cce82ac57b20",
@@ -54,6 +55,7 @@ const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
     DaiVat: "0x6e6073260e1a77dfaf57d0b92c44265122da8028",
     DaiPot: "0x24e89801dad4603a3e2280ee30fb77f183cb9ed9",
     DaiJoin: "0x61af28390d0b3e806bbaf09104317cb5d26e215d",
+    */
   },
   rinkeby: {},
   clique: {},
