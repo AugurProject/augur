@@ -26,6 +26,32 @@
   > div {
     flex: 1;
   }
+
+  &.ReportingBarShowing {
+    > div:first-of-type {
+      display: flex;
+      align-items: flex-start;
+
+      > button {
+        padding: @size-12 @size-16 0 @size-32;
+      }
+  
+      > div:first-of-type {
+        grid-template-columns: 215px auto;
+        grid-template-rows: @size-34;
+
+        > div:nth-of-type(2),
+        > div:nth-of-type(4) {
+          flex-direction: column;
+          justify-content: flex-end;
+
+          > span:last-of-type {
+            line-height: 160%;
+          }
+        }
+      }
+    }
+  }
 }
 
 .TimeSection {
