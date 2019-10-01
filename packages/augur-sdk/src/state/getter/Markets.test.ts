@@ -33,4 +33,7 @@ test('parseExtraInfo', () => {
     extraOrdinary: 'supers',
   };
   expect(parseExtraInfo(JSON.stringify(extraInfo))).toEqual(extraInfo);
+
+  extraInfo = 'invalid json';
+  expect(parseExtraInfo(extraInfo)).toBeNull();
 });

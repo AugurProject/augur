@@ -804,8 +804,15 @@ const extraInfoType = t.intersection([
 
 // Turns extraInfo blob into the correct object. Returns null if it can't.
 export function parseExtraInfo(extraInfoBlob: string): t.TypeOf<typeof extraInfoType>|null {
+  let extraInfo;
+  try {
+    extraInfo = JSON.parse(extraInfoBlob)
+  } catch(e) {
+    return null;
+  }
+
   return pipe(
-    extraInfoType.decode(JSON.parse(extraInfoBlob)),
+    extraInfoType.decode(extraInfo),
     fold((errors: t.Errors) => null, (info: t.TypeOf<typeof extraInfoType>) => info),
   )
 }
