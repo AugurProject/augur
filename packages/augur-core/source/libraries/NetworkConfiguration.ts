@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { NetworkId } from '@augurproject/artifacts';
 
 type NetworkOptions = {
     isProduction: boolean;
@@ -25,6 +26,17 @@ export type NETWORKS = typeof NETWORKS[number];
 
 export function isNetwork(x: any): x is NETWORKS {
   return NETWORKS.includes(x);
+}
+
+export type NetworkIdToNetwork = {
+    [P in NetworkId]?: NETWORKS;
+}
+
+export const NETID_TO_NETWORK: NetworkIdToNetwork = {
+    1: "mainnet",
+    3: "ropsten",
+    4: "rinkeby",
+    42: "kovan",
 }
 
 type NetworksToOptions = {
@@ -94,7 +106,7 @@ const networks: NetworksToOptions = {
 };
 
 export class NetworkConfiguration {
-    public readonly networkName: string;
+    public readonly networkName: NETWORKS;
     public readonly http: string;
     public readonly ws?: string;
     public readonly ipc?: string;
@@ -102,7 +114,7 @@ export class NetworkConfiguration {
     public readonly gasPrice: ethers.utils.BigNumber;
     public readonly isProduction: boolean;
 
-    public constructor(networkName: string, http: string, ws: string | undefined, ipc: string | undefined, gasPrice: ethers.utils.BigNumber, privateKey: string | undefined, isProduction: boolean) {
+    public constructor(networkName: NETWORKS, http: string, ws: string | undefined, ipc: string | undefined, gasPrice: ethers.utils.BigNumber, privateKey: string | undefined, isProduction: boolean) {
         this.networkName = networkName;
         this.http = http;
         this.ws = ws;

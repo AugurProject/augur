@@ -19,7 +19,7 @@ async function doWork(): Promise<void> {
     const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
-    const deployerConfiguration = CreateDeployerConfiguration();
+    const deployerConfiguration = CreateDeployerConfiguration(networkConfiguration.networkName);
     const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
     await contractDeployer.deploy();
 }

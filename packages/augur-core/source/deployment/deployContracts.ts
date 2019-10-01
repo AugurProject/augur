@@ -17,7 +17,7 @@ export async function deployContracts() {
     const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
-    await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, CreateDeployerConfiguration());
+    await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, CreateDeployerConfiguration(networkConfiguration.networkName));
 }
 
 deployContracts().then(() => {
