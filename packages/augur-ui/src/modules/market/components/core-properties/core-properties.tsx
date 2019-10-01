@@ -142,9 +142,6 @@ const CoreProperties = ({ market, reportingBarShowing }) => {
   );
 };
 
-// ((reportingBarShowing && showExtraProperties) ||
-// !reportingBarShowing) && (
-
 CoreProperties.propTypes = {
   market: PropTypes.object.isRequired,
   reportingBarShowing: PropTypes.bool,

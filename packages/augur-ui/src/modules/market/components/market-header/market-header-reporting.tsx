@@ -48,14 +48,6 @@ export default class MarketHeaderReporting extends Component {
     } = this.props;
     const { reportingState, id, consensusFormatted: consensus } = market;
     let content = null;
-    const winningOutcomeName =
-      market.marketType === SCALAR
-        ? market.consensus.outcome
-        : getOutcomeNameWithOutcome(
-            market,
-            tentativeWinner && tentativeWinner.outcome,
-            tentativeWinner && tentativeWinner.isInvalid
-          );
 
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
@@ -95,7 +87,13 @@ export default class MarketHeaderReporting extends Component {
                 {tentativeWinner &&
                   (tentativeWinner.isInvalidOutcome
                     ? 'Invalid'
-                    : winningOutcomeName)}
+                    : market.marketType === SCALAR
+                    ? market.consensus.outcome
+                    : getOutcomeNameWithOutcome(
+                        market,
+                        tentativeWinner.outcome,
+                        tentativeWinner.isInvalid
+                      ))}
               </span>
             ) : (
               <div style={{ minHeight: '20px' }} />
