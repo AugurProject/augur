@@ -7,7 +7,7 @@ import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { DashlineLong } from 'modules/common/labels';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 import Styles from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less';
-import { YES_NO_YES_ID } from 'modules/common/constants';
+import { SCALAR_UP_ID } from 'modules/common/constants';
 import { formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 
@@ -32,7 +32,7 @@ const MarketScalarOutcomeDisplay = ({
   min,
   scalarDenomination = 'N/A',
 }) => {
-  const lastPrice = getValue(outcomes[YES_NO_YES_ID], 'price');
+  const lastPrice = getValue(outcomes[SCALAR_UP_ID], 'price');
   const lastPriceFormatted = formatDai(lastPrice);
 
   const outcomeVerticalLinePosition = (): string => {

@@ -19,11 +19,8 @@ const mapStateToProps = (state, ownProps) => {
   const isDesignatedReporter =
     market.designatedReporter === state.loginAccount.address;
 
-  const hasConsensus =
-    consensus && (consensus.winningOutcome || consensus.isInvalid);
-
   if (
-    hasConsensus ||
+    consensus ||
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     (reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&

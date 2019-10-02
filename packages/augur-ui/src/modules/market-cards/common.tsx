@@ -7,8 +7,7 @@ import {
   YES_NO,
   REPORTING_STATE,
   ZERO,
-  INVALID_OUTCOME_ID,
-  YES_NO_YES_ID,
+  SCALAR_UP_ID,
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -247,7 +246,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             min={props.min}
             max={props.max}
             lastPrice={
-              props.outcomes[YES_NO_YES_ID].price ? formatNumber(props.outcomes[YES_NO_YES_ID].price) : null
+              props.outcomes[SCALAR_UP_ID].price ? formatNumber(props.outcomes[SCALAR_UP_ID].price) : null
             }
             scalarDenomination={props.scalarDenomination}
           />

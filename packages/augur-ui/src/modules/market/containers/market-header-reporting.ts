@@ -11,7 +11,7 @@ import {
   MODAL_REPORTING,
 } from 'modules/common/constants';
 import { NodeStyleCallback } from 'modules/types';
-import { createBigNumber } from '../../../utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => {
