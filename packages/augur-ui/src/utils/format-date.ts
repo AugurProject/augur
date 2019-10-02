@@ -1,5 +1,7 @@
 import moment from 'moment';
 import { DateFormattedObject } from 'modules/types';
+import { createBigNumber } from './create-big-number';
+import { ZERO } from 'modules/common/constants';
 
 const months = [
   'January',
@@ -183,7 +185,8 @@ export function buildformattedDate(
   const timezoneFormat = endTime.format(LONG_FORMAT);
   const formattedTimezone = `${timezoneFormat} (${abbr})`;
 
-  endTime.add(offset, 'hours');
+  const adjOffset = createBigNumber(offset || ZERO).times("-1").toNumber();
+  endTime.add(adjOffset, 'hours');
 
   const utcFormat = endTime.format(LONG_FORMAT);
   const formattedUtc = `${utcFormat} (UTC 0)`;

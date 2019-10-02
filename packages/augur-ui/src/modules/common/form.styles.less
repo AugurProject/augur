@@ -1224,7 +1224,7 @@ div.FormDropdownActive {
         &:hover {
           > rect,
           > path {
-            stroke: @color-primary-text;
+            stroke: @color-inactive-text;
           }
         }
       }
@@ -1244,7 +1244,7 @@ div.FormDropdownActive {
         &:hover {
           > rect,
           > path {
-            stroke: @color-primary-text;
+            stroke: @color-inactive-text;
           }
         }
       }
@@ -1448,7 +1448,7 @@ div.FormDropdownActive {
   }
 
   > div {
-    background: @color-secondary-action;
+    background: @color-primary-text;
     border: 1px solid @color-secondary-action-outline;
     color: @color-primary-text;
     display: flex;
@@ -1508,7 +1508,7 @@ div.FormDropdownActive {
   > span {
     .text-11;
 
-    color: @color-dark-grey;
+    color: @color-inactive-text;
     margin-bottom: @size-14;
   }
 
@@ -1516,7 +1516,7 @@ div.FormDropdownActive {
     .mono-14;
 
     background-color: @color-primary-text;
-    border: 1px solid @color-primary-text;
+    border: 1px solid @color-inactive-text;
     color: @color-inactive-text;
     height: @size-40;
     margin: @size-14 0;
@@ -1525,7 +1525,7 @@ div.FormDropdownActive {
     width: @size-40;
 
     &:hover {
-      border: 1px solid @color-inactive-text;
+      border: 1px solid @color-secondary-text;
     }
 
     &:focus {
@@ -1533,9 +1533,9 @@ div.FormDropdownActive {
     }
 
     &:disabled {
-      background-color: @color-primary-text;
-      border: 1px solid @color-primary-text;
-      color: @color-inactive-text;
+      background-color: @color-inactive-text;
+      border: 1px solid @color-inactive-text;
+      color: @color-secondary-text;
     }
   }
 

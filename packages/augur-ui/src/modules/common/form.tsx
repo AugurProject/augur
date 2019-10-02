@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -30,11 +30,10 @@ import {
   SCALAR,
   ZERO,
   REPORTING_STATE,
-  SCALAR_UP_ID,
 } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
-import { formatAttoRep, formatRep, formatNumber } from 'utils/format-number';
+import { formatAttoRep, formatNumber } from 'utils/format-number';
 import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
 import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
 
@@ -45,11 +44,8 @@ import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 import {
   getTimezones,
-  getUserTimezone,
-  Timezones,
   UTC_Default,
 } from 'utils/get-timezones';
-import { Moment } from 'moment';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues } from 'modules/types';
@@ -159,43 +155,30 @@ interface TimezoneDropdownProps {
   timezone: string;
 }
 
-interface TimezoneDropdownState {
-  value: string;
-}
-
-export class TimezoneDropdown extends Component<
-  TimezoneDropdownProps,
-  TimezoneDropdownState
-> {
-  state: TimezoneDropdownState = {
-    value: this.props.timezone,
-  };
-
-  onChangeDropdown = timezone => {
-    const parse = /\(UTC (.*)\)/i;
-    const offset = timezone.match(parse)[1];
-    const offsetName = timezone.split(')')[1].trim();
-    this.props.onChange(offsetName, offset, timezone);
-    this.setState({
-      value: timezone,
-    });
-  };
-
-  render() {
-    const timezones: Timezones = getTimezones(this.props.timestamp);
-
-    return (
-      <section className={Styles.Timezones}>
-        <TextInput
-          value={this.state.value}
-          placeholder={UTC_Default}
-          autoCompleteList={timezones.timezones}
-          onChange={() => {}}
-          onAutoCompleteListSelected={value => this.onChangeDropdown(value)}
-        />
-      </section>
-    );
-  }
+export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
+  const [value, setValue] = useState(UTC_Default);
+  const [timezones, setTimezones] = useState(getTimezones(props.timestamp));
+  useEffect(() => {
+    props.timezone ? setValue(props.timezone): setValue(UTC_Default);
+    setTimezones(getTimezones(props.timestamp));
+  }, [props.timezone, props.timestamp]);
+  return (
+    <section className={Styles.Timezones}>
+      <TextInput
+        value={value}
+        placeholder={UTC_Default}
+        autoCompleteList={timezones.timezones}
+        onChange={() => {}}
+        onAutoCompleteListSelected={timezone => {
+          const parse = /\(UTC (.*)\)/i;
+          const offset = timezone.match(parse)[1];
+          const offsetName = timezone.split(')')[1].trim();
+          props.onChange(offsetName, offset, timezone);
+          setValue(timezone);
+        }}
+      />
+    </section>
+  );
 }
 
 interface ErrorProps {
@@ -1234,8 +1217,12 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   toggleList = () => {
+    let value = this.state.value;
+    const showList = this.props.autoCompleteList && !this.state.showList;
+    if (showList) value = '';
     this.setState({
-      showList: this.props.autoCompleteList && !this.state.showList,
+      value,
+      showList,
     });
   };
 

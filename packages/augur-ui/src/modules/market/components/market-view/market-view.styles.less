@@ -16,6 +16,10 @@
     height: 0.5rem;
     margin-left: 1rem;
     width: 0.25rem;
+
+    > path {
+      stroke: @color-primary-text;
+    }
   }
 }
 
@@ -42,7 +46,7 @@
 
 .MarketView__paneContainer--mobile {
   flex: 1;
-  padding: @size-16 @size-8;
+  padding: @size-8 @size-4;
 
   > div:first-of-type {
     margin-bottom: @size-8;
@@ -192,13 +196,16 @@
 
 .MarketView__priceHistoryChart {
   background-color: @color-module-background;
+  border: 1px solid @color-dark-grey;  
+  border-radius: 1px;
+  margin-top: @size-16;
 
   > h3 {
+    .text-16;
+
     background-color: @color-module-background;
     border-bottom: 1px solid @color-dark-grey;
     color: @color-primary-text;
-    font-size: 1rem;
-    margin-top: 1rem;
     padding: 1.125rem 1rem;
   }
 }
@@ -208,7 +215,7 @@
   flex-direction: column;
   flex-grow: 1;
   justify-content: center;
-  margin: 0rem 22.5625rem;
+  margin: 0 22.5625rem;
 }
 
 .Hide {
@@ -233,15 +240,25 @@ div.OutcomeNameDisplay {
 
 @media @breakpoint-mobile {
   .OutcomeSelectionArea {
-    background: fade(@color-dark-grey, 90%);
-    padding: 0 @size-8 @size-16;
-    position: absolute;
+    padding: @size-12;
     width: 100%;
-    z-index: @mask;
+    margin-top: @size-8;
+    background: @color-module-background;
+
+    > h1 {
+      .text-14-bold;
+
+      color: @color-primary-text;
+      margin-bottom: @size-8;
+    }
   }
 
   .TradesMobile {
-    margin-top: @size-40;
+    > div,
+    > section {
+      border: 1px solid @color-dark-grey;
+      border-radius: 1px;
+    }
   }
 
   .Market__upper {
@@ -264,16 +281,21 @@ div.OutcomeNameDisplay {
 
   .MarketView__paneContainer--mobile {
     > h1 {
-      .text-12-bold;
+      .text-14-bold;
 
       color: @color-primary-text;
       display: block;
       margin: 0;
-      padding: 0.75rem 1rem;
+      padding: @size-12;
+      background: @color-module-background;
+      border: 1px solid @color-dark-grey;
+      border-radius: 1px;
     }
 
     > div:last-of-type {
-      margin-top: 0;
+      margin-top: @size-4;
+      border: 1px solid @color-dark-grey;
+      border-radius: 1px;
     }
   }
 
@@ -294,15 +316,18 @@ div.OutcomeNameDisplay {
   .MarketView__button {
     > svg {
       height: 0.75rem;
-      margin-left: 1rem;
+      margin-left: @size-14;
       width: 0.5rem;
     }
   }
 
   .MarketView__priceHistoryChart > h3 {
-    font-size: @size-14;
-    height: @size-48;
-    min-height: @size-48;
+    .mono-11-bold;
+
+    margin-top: @size-8;
+    text-transform: uppercase;
+    padding: @size-12 @size-16;
+    background: @color-dark-grey;
   }
 
   .MarketView__comments {
