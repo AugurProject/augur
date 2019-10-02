@@ -1,5 +1,6 @@
 pragma solidity 0.5.10;
 
+import 'ROOT/ICashFaucet.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/libraries/ITyped.sol';
@@ -11,7 +12,7 @@ import 'ROOT/external/IDaiJoin.sol';
  * @title Cash
  * @dev Test contract for CASH (Dai)
  */
-contract Cash is ITyped, ICash {
+contract Cash is ITyped, ICash, ICashFaucet {
     using SafeMathUint256 for uint256;
     uint256 public constant ETERNAL_APPROVAL_VALUE = 2 ** 256 - 1;
 

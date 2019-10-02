@@ -46,6 +46,7 @@ export interface ContractAddresses {
     ZeroXTrade?: string;
     BuyParticipationTokens?: string;
     RedeemStake?: string;
+    CashFaucet?: string;
     GnosisSafeRegistry?: string;
 }
 
