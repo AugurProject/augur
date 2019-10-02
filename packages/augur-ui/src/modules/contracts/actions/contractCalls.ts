@@ -292,7 +292,7 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(report);
-  return await market.doInitialReport(
+  return market.doInitialReport(
     payoutNumerators,
     report.description,
     createBigNumber(report.attoRepAmount || '0')

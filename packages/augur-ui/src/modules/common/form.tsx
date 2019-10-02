@@ -218,23 +218,23 @@ export const Error = (props: ErrorProps) => (
   </section>
 );
 
-interface RadioCardProps {
+export interface BaseRadioButtonProp {
+  id: string;
+  checked: boolean;
+}
+export interface RadioCardProps extends BaseRadioButtonProp {
   value: string;
   header: string;
   description: string;
-  checked?: boolean;
   onChange?: Function;
   icon?: JSX.Element;
   useIconColors?: boolean;
 }
 
 interface RadioGroupProps {
-  onChange: Function;
-  radioButtons:
-    | RadioCardProps[]
-    | RadioBarProps[]
-    | RadioTwoLineBarProps[]
-    | ReportingRadioBarProps[];
+  id: string;
+  updateChecked: Function;
+  radioButtons: BaseRadioButtonProp[];
   market?: MarketData;
   defaultSelected?: string | null;
   children?: any[];
@@ -244,21 +244,20 @@ interface RadioGroupProps {
   disputeStake?: DisputeInputtedValues;
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
-  scalarOutcome?: string;
+  inputScalarOutcome?: string;
   stake?: Getters.Markets.StakeDetails;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
 }
 
-interface RadioGroupState {
+export interface RadioGroupState {
   selected: string | null;
 }
 
-interface RadioBarProps {
+export interface RadioBarProps extends BaseRadioButtonProp {
   header: string;
   value: string;
   onChange?: Function;
   expandable?: boolean;
-  checked?: boolean;
   error?: boolean;
   onTextChange?: Function;
   placeholder?: string;
@@ -271,13 +270,12 @@ interface RadioBarProps {
   secondHeader?: string;
 }
 
-interface ReportingRadioBarProps {
+export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   market: MarketData;
   header: string;
   value: string | null;
-  onChange?: Function;
+  updateChecked?: Function;
   expandable?: boolean;
-  checked?: boolean;
   error?: boolean;
   stake: Getters.Markets.StakeDetails | null;
   isInvalid?: boolean;
@@ -287,24 +285,22 @@ interface ReportingRadioBarProps {
   updateDisputeStake?: Function;
   reportAction: Function;
   updateScalarOutcome?: Function;
-  scalarOutcome?: string;
+  inputScalarOutcome?: string;
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
 }
 
-interface RadioTwoLineBarProps {
+export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   header: string;
   description: string;
   value: string;
   onChange: Function;
-  checked?: boolean;
   error?: boolean;
 }
 
-interface CheckboxBarProps {
+interface CheckboxBarProps extends BaseRadioButtonProp {
   header: string;
   value: string;
   onChange: Function;
-  checked?: boolean;
   error?: boolean;
 }
 
@@ -714,14 +710,14 @@ interface ReportingRadioGroupProps {
   market: MarketData;
   radioButtons: ReportingRadioBarProps[];
   selected: string | null;
-  onChange: Function;
+  updateChecked: Function;
   reportAction: Function;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
   disputeStake?: DisputeInputtedValues;
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
-  scalarOutcome?: string;
+  inputScalarOutcome?: string;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[];
 }
 
@@ -729,13 +725,13 @@ export const ReportingRadioBarGroup = ({
   market,
   radioButtons,
   selected,
-  onChange,
+  updateChecked,
   reportAction,
   preFilledStake,
   updatePreFilledStake,
   disputeStake,
   updateDisputeStake,
-  scalarOutcome,
+  inputScalarOutcome,
   updateScalarOutcome,
   userCurrentDisputeRound,
 }: ReportingRadioGroupProps) => {
@@ -778,13 +774,13 @@ export const ReportingRadioBarGroup = ({
             preFilledStake={preFilledStake}
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
-            scalarOutcome={scalarOutcome}
+            inputScalarOutcome={inputScalarOutcome}
             updateDisputeStake={updateDisputeStake}
             isInvalid={tentativeWinning.isInvalid}
             checked={String(tentativeWinning.value) === selected}
             updateScalarOutcome={updateScalarOutcome}
-            onChange={selected => {
-              onChange(selected.toString());
+            updateChecked={selected => {
+              updateChecked(selected);
             }}
             reportAction={reportAction}
             userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
@@ -814,17 +810,12 @@ export const ReportingRadioBarGroup = ({
               key={`${index}${radio.value}`}
               expandable
               {...radio}
-              checked={
-                radio.value
-                  ? String(radio.value) === selected
-                  : radio.value === selected
-              }
-              onChange={selected => {
-                onChange(selected.toString());
+              updateChecked={selected => {
+                updateChecked(selected);
               }}
               reportAction={reportAction}
               preFilledStake={preFilledStake}
-              scalarOutcome={scalarOutcome}
+              inputScalarOutcome={inputScalarOutcome}
               updatePreFilledStake={updatePreFilledStake}
               updateScalarOutcome={updateScalarOutcome}
               disputeStake={disputeStake}
@@ -835,10 +826,10 @@ export const ReportingRadioBarGroup = ({
             />
           )
       )}
-      {((!isReporting &&
+      {(!isReporting &&
         tentativeWinning &&
         tentativeWinning.value !== invalid.value) ||
-        isReporting) && (
+        (isReporting && radioButtons.length > 0) && (
         <>
           <span>
             {isReporting
@@ -853,13 +844,13 @@ export const ReportingRadioBarGroup = ({
             preFilledStake={preFilledStake}
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
-            scalarOutcome={scalarOutcome}
+            inputScalarOutcome={inputScalarOutcome}
             updateDisputeStake={updateDisputeStake}
             updateScalarOutcome={updateScalarOutcome}
             checked={String(invalid.value) === selected}
             reportAction={reportAction}
-            onChange={selected => {
-              onChange(selected.toString());
+            updateChecked={selected => {
+              updateChecked(selected);
             }}
             userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
               d => d.outcome === String(invalid.value)
@@ -878,12 +869,12 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.onChange(nextProps.defaultSelected);
+      this.updateChecked(nextProps.defaultSelected);
     }
   }
 
-  onChange = selected => {
-    this.props.onChange(selected);
+  updateChecked = selected => {
+    this.props.updateChecked(selected);
     this.setState({ selected });
   };
 
@@ -891,14 +882,14 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const {
       radioButtons,
       market,
-      onChange,
+      updateChecked,
       reportAction,
       preFilledStake,
       updatePreFilledStake,
       disputeStake,
       updateDisputeStake,
       updateScalarOutcome,
-      scalarOutcome,
+      inputScalarOutcome,
       userCurrentDisputeRound,
     } = this.props;
     const { selected } = this.state;
@@ -918,14 +909,14 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             market={market}
             radioButtons={radioButtons}
             selected={selected}
-            onChange={this.onChange}
+            updateChecked={this.updateChecked}
             reportAction={reportAction}
             preFilledStake={preFilledStake}
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
             updateDisputeStake={updateDisputeStake}
             updateScalarOutcome={updateScalarOutcome}
-            scalarOutcome={scalarOutcome}
+            inputScalarOutcome={inputScalarOutcome}
             userCurrentDisputeRound={userCurrentDisputeRound}
           />
         )}
@@ -936,7 +927,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
               {...radio}
               checked={radio.value === selected}
               onChange={selected => {
-                onChange(selected);
+                updateChecked(selected);
                 this.setState({ selected });
               }}
             />
@@ -949,11 +940,11 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
+      id,
       market,
       header,
-      onChange,
+      updateChecked,
       checked,
-      value,
       error,
       isInvalid,
       preFilledStake,
@@ -961,7 +952,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       disputeStake,
       updateDisputeStake,
       reportAction,
-      scalarOutcome,
+      inputScalarOutcome,
       updateScalarOutcome,
       userOutcomeCurrentRoundDispute,
     } = this.props;
@@ -974,7 +965,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
     if (isScalar) {
       for (const index in disputeInfo.stakes) {
-        if (disputeInfo.stakes[index].outcome === scalarOutcome) {
+        if (disputeInfo.stakes[index].outcome === inputScalarOutcome) {
           stake = disputeInfo.stakes[index];
         }
       }
@@ -998,13 +989,11 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.Checked]: checked,
         })}
         role="button"
-        onClick={e => onChange(value)}
+        onClick={e => updateChecked(id)}
       >
         {checked ? FilledRadio : EmptyRadio}
         <h5>
-          {isScalar && stake.outcome === null
-            ? `Enter a range from ${market.minPrice} to ${market.maxPrice}`
-            : header}
+          {header}
         </h5>
         <div onClick={e => e.stopPropagation()}>
           {!isReporting && ( // for disputing or for scalar
@@ -1047,14 +1036,14 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {checked && (
                 <DisputingBondsView
                   market={market}
-                  rangeValue={scalarOutcome}
-                  changeRange={updateScalarOutcome}
+                  id={id}
+                  inputScalarOutcome={inputScalarOutcome}
+                  updateScalarOutcome={updateScalarOutcome}
                   stakeValue={disputeStake.inputStakeValue}
-                  changeStake={updateDisputeStake}
+                  updateDisputeStake={updateDisputeStake}
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
-                  outcomeValue={stake.outcome}
                 />
               )}
             </>
@@ -1062,12 +1051,12 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           {isReporting && checked && (
             <ReportingBondsView
               market={market}
-              rangeValue={scalarOutcome}
-              changeRange={updateScalarOutcome}
+              id={id}
+              inputScalarOutcome={inputScalarOutcome}
+              updateScalarOutcome={updateScalarOutcome}
               reportAction={reportAction}
               preFilledStake={preFilledStake}
               updatePreFilledStake={updatePreFilledStake}
-              updateScalarOutcome={updateScalarOutcome}
               reportingGasFee={reportingGasFee}
             />
           )}
