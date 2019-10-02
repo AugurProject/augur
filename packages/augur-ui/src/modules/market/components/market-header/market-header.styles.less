@@ -278,6 +278,18 @@ div.Toggle {
       }
     }
   }
+
+  @media @breakpoint-mobile {
+    > div {
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: @size-12;
+
+      > label {
+        margin-bottom: @size-8;
+      }
+    }
+  }
 }
 
 .Properties {
@@ -291,6 +303,8 @@ div.Toggle {
 
 @media @breakpoint-mobile {
   .MarketHeader {
+    border-radius: 1px;
+    
     > h1 {
       .text-18-bold;
 
@@ -301,23 +315,24 @@ div.Toggle {
 
     > div:first-of-type {
       align-items: normal;
-      margin-left: @size-8;
+      padding-left: @size-14;
       overflow: auto;
+      margin-bottom: @size-5;
 
       div.Properties {
         display: none;
       }
 
       > div:first-of-type {
-        padding-top: 0;
-        margin-top: -@size-8;
+        padding-top: @size-12;
+        align-items: flex-start;
 
-        > span {
-          margin: @size-8 @size-8 0 0;
-        }
+        > div:first-of-type {
+          flex-direction: column;
 
-        > button {
-          margin-top: @size-8;
+          > span {
+            margin: 0 0 @size-8;
+          }
         }
       }
     }
@@ -338,23 +353,23 @@ div.Toggle {
 
   .MainValues {
     flex-direction: column;
+    padding-left: 0;
 
     > .Properties {
-      border-bottom: 1px solid @color-dark-grey;
+      border-left: 0;
       margin-left: 0;
 
       > section {
         display: flex;
+        margin-left: @size-14;
       }
     }
 
     > div:first-of-type {
-      > h1 {
-        display: none;
-      }
+      padding-left: @size-12;
 
-      > div {
-        margin: @size-12 0 @size-10 @size-8;
+      > h1 {
+        margin-bottom: @size-12;
       }
     }
   }
@@ -366,7 +381,7 @@ div.Toggle {
     padding: @size-16;
   }
 
-  .Toggle {
+  div.Toggle {
     display: none;
   }
 }
