@@ -31,12 +31,22 @@ import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
-interface DismissableNoticeProps {
-  content: JSX.Element;
+export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
+  BUTTON = 'PrimaryButton',
+  CLOSE = 'close'
+}
+
+export interface DismissableNoticeProps {
+  title: string;
+  description: string;
+  buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES;
+  buttonText?: string;
+  buttonAction?: Function;
   show: boolean;
 }
 
@@ -50,14 +60,28 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
           <span>
             {ExclamationCircle}
           </span>
-          {props.content}
-          <button
-            type='button'
-            className={Styles.close}
-            onClick={() => setShow(() => false)}
-          >
-            {XIcon}
-          </button>
+          <div>
+            <div>{props.title}</div>
+            <div>{props.description}</div>
+          </div>
+          {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON &&
+            <button
+              type='button'
+              className={ButtonStyles.PrimaryButton}
+              onClick={props.buttonAction}
+            >
+              {props.buttonText}
+            </button>
+          }
+          {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE &&
+            <button
+              type='button'
+              className={Styles.close}
+              onClick={() => setShow(() => false)}
+            >
+              {XIcon}
+            </button>
+          }
         </div>
       ) : null}
     </div>
