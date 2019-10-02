@@ -4,7 +4,7 @@ import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
-import { RadioBarGroup, RadioCardProps, RadioBarProps, RadioTwoLineBarProps, ReportingRadioBarProps, BaseRadio } from 'modules/common/form';
+import { ReportingRadioBarGroup, ReportingRadioBarProps } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
 import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE } from 'modules/common/constants';
 import {
@@ -34,7 +34,7 @@ interface ModalReportingState {
   inputScalarOutcome: string;
   isReporting: boolean;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
-  radioButtons: BaseRadio[];
+  radioButtons: ReportingRadioBarProps[];
 }
 
 export default class ModalReporting extends Component<
@@ -285,16 +285,16 @@ export default class ModalReporting extends Component<
             </div>
           )}
           <div>
-            <RadioBarGroup
-              updateChecked={this.updateChecked}
+            <ReportingRadioBarGroup
               market={market}
               radioButtons={radioButtons}
-              defaultSelected={checked}
-              updatePreFilledStake={this.updatePreFilledStake}
-              preFilledStake={preFilledStake}
-              updateDisputeStake={this.updateDisputeStake}
-              disputeStake={disputeStake}
+              selected={checked}
+              updateChecked={this.updateChecked}
               reportAction={this.reportingAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={this.updatePreFilledStake}
+              disputeStake={disputeStake}
+              updateDisputeStake={this.updateDisputeStake}
               updateScalarOutcome={this.updateScalarOutcome}
               inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}

@@ -826,15 +826,41 @@ export const ReportingRadioBarGroup = ({
             />
           )
       )}
+      <span>
+        {isReporting
+          ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+          : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
+      </span>
+      {radioButtons.map(
+        (radio, index) =>
+          radio.isInvalid && (
+            <ReportingRadioBar
+              market={market}
+              key={`${index}${radio.value}`}
+              expandable
+              {...radio}
+              updateChecked={selected => {
+                updateChecked(selected);
+              }}
+              reportAction={reportAction}
+              preFilledStake={preFilledStake}
+              inputScalarOutcome={inputScalarOutcome}
+              updatePreFilledStake={updatePreFilledStake}
+              updateScalarOutcome={updateScalarOutcome}
+              disputeStake={disputeStake}
+              updateDisputeStake={updateDisputeStake}
+              userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
+                d => d.outcome === String(radio.value)
+              )}
+            />
+          )
+      )}
       {(!isReporting &&
         tentativeWinning &&
-        tentativeWinning.value !== invalid.value) ||
-        (isReporting && radioButtons.length > 0) && (
+        tentativeWinning.value !== invalid.value) && (
         <>
           <span>
-            {isReporting
-              ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
-              : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
+            {'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
           </span>
           <ReportingRadioBar
             market={market}
@@ -881,46 +907,11 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   render() {
     const {
       radioButtons,
-      market,
-      reportAction,
-      preFilledStake,
-      updatePreFilledStake,
-      disputeStake,
-      updateDisputeStake,
-      updateScalarOutcome,
-      inputScalarOutcome,
-      userCurrentDisputeRound,
     } = this.props;
     const { selected } = this.state;
-    let isReporting = false;
-    if (market) {
-      const { reportingState } = market;
-      isReporting =
-        reportingState === REPORTING_STATE.OPEN_REPORTING ||
-        reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
-        reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-        reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
-    }
     return (
       <div className={Styles.RadioBarGroup}>
-        {isReporting && (
-          <ReportingRadioBarGroup
-            market={market}
-            radioButtons={radioButtons}
-            selected={selected}
-            updateChecked={this.updateChecked}
-            reportAction={reportAction}
-            preFilledStake={preFilledStake}
-            updatePreFilledStake={updatePreFilledStake}
-            disputeStake={disputeStake}
-            updateDisputeStake={updateDisputeStake}
-            updateScalarOutcome={updateScalarOutcome}
-            inputScalarOutcome={inputScalarOutcome}
-            userCurrentDisputeRound={userCurrentDisputeRound}
-          />
-        )}
-        {!isReporting &&
-          radioButtons.map(radio => (
+        {radioButtons.map(radio => (
             <RadioBar
               key={radio.value}
               {...radio}
