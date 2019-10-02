@@ -411,7 +411,7 @@ export default class AppView extends Component<AppProps> {
                 onClick={this.mainSectionClickHandler}
                 role='presentation'
               >
-                <Routes />
+                <Routes isLogged={isLogged} />
               </section>
             </section>
           </section>
