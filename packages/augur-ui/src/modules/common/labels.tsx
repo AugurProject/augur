@@ -200,8 +200,8 @@ export const TimeLabel = ({ label, time, showLocal }: TimeLabelProps) => {
   return (
     <div className={Styles.TimeLabel}>
       <span>{label}</span>
-      <span>{time.formattedShortUtc}</span>
-      {showLocal && <span>{time.formattedShortTimezone}</span>}
+      <span>{time && time.formattedShortUtc}</span>
+      {showLocal && <span>{time && time.formattedShortTimezone}</span>}
     </div>
   )
 }
