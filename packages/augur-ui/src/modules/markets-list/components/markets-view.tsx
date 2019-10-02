@@ -52,7 +52,6 @@ interface MarketsViewProps {
 
 interface MarketsViewState {
   filterSortedMarkets: string[];
-  isSearchingMarkets: boolean;
   marketCount: number;
   limit: number;
   offset: number;
@@ -67,8 +66,6 @@ export default class MarketsView extends Component<
     search: null,
     universe: null,
   };
-  loadMarketsByFilter: any;
-
   private componentWrapper!: HTMLElement | null;
 
   constructor(props) {
@@ -76,7 +73,6 @@ export default class MarketsView extends Component<
 
     this.state = {
       filterSortedMarkets: [],
-      isSearchingMarkets: true,
       marketCount: 0,
       limit: PAGINATION_COUNT,
       offset: 1,
@@ -86,19 +82,12 @@ export default class MarketsView extends Component<
     this.setPageNumber = this.setPageNumber.bind(this);
     this.updateLimit = this.updateLimit.bind(this);
     this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
-    this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
   }
 
   componentDidMount() {
-    const {
-      isConnected,
-      setLoadMarketsPending,
-      updateMarketsListMeta,
-    } = this.props;
+    const { isConnected } = this.props;
     if (isConnected) {
-      setLoadMarketsPending(true);
       this.updateFilteredMarkets();
-      updateMarketsListMeta(null);
     }
   }
 
@@ -170,8 +159,7 @@ export default class MarketsView extends Component<
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
-    this.setState({ isSearchingMarkets: true });
-    this.loadMarketsByFilter(
+    this.props.loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
         search,
@@ -191,16 +179,13 @@ export default class MarketsView extends Component<
           const marketCount = result.meta.marketCount;
           const showPagination = marketCount > limit;
           this.setState({
-            isSearchingMarkets: false,
             filterSortedMarkets,
             marketCount,
             showPagination,
+            marketCount,
           });
           this.props.updateMarketsListMeta(result.meta);
           this.props.setLoadMarketsPending(false);
-          this.setState({
-            marketCount,
-          });
         }
       }
     );
@@ -223,10 +208,10 @@ export default class MarketsView extends Component<
       updateMarketsFilter,
       marketFilter,
       marketSort,
+      isSearching,
     } = this.props;
     const {
       filterSortedMarkets,
-      isSearchingMarkets,
       marketCount,
       limit,
       offset,
@@ -255,7 +240,7 @@ export default class MarketsView extends Component<
         </Helmet>
         <MarketsHeader
           location={location}
-          isSearchingMarkets={isSearchingMarkets}
+          isSearchingMarkets={isSearching}
           filter={marketFilter}
           sort={marketSort}
           history={history}
@@ -265,10 +250,10 @@ export default class MarketsView extends Component<
         />
 
         <div className={classNames({
-          [Styles.Disabled]: isSearchingMarkets,
+          [Styles.Disabled]: isSearching,
         })}>
           <MarketTypeFilter
-            isSearchingMarkets={isSearchingMarkets}
+            isSearchingMarkets={isSearching}
             marketCount={this.state.marketCount}
             updateMarketsFilter={updateMarketsFilter}
             marketFilter={marketFilter}
@@ -323,7 +308,7 @@ export default class MarketsView extends Component<
           testid='markets'
           isLogged={isLogged}
           markets={markets}
-          showPagination={showPagination && !isSearchingMarkets}
+          showPagination={showPagination && !isSearching}
           filteredMarkets={filterSortedMarkets}
           marketCount={marketCount}
           location={location}
@@ -336,7 +321,7 @@ export default class MarketsView extends Component<
           updateLimit={this.updateLimit}
           offset={offset}
           setOffset={this.setPageNumber}
-          isSearchingMarkets={isSearchingMarkets}
+          isSearchingMarkets={isSearching}
           marketCardFormat={marketCardFormat}
         />
 

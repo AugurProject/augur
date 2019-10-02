@@ -19,12 +19,17 @@
 
     > div {
 
-      grid-template-columns: 34px auto @size-16;
+
+      grid-template-columns: 28px auto @size-16;
       border: none;
       height: auto;
       margin: 0 0 @size-12 0;
       cursor: pointer;
       background: @color-dark-grey;
+
+      @media @breakpoint-mobile {
+        grid-template-columns: 34px auto @size-16;
+      }
 
       > h5 {
         .text-11;
@@ -37,7 +42,12 @@
       }
 
       > svg {
-        margin: 0
+        margin: 0;
+        height: 1rem;
+
+        @media @breakpoint-mobile {
+          height: 1.25rem;
+        }
       }
 
       &:hover {

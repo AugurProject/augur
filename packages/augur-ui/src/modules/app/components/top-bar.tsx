@@ -16,7 +16,7 @@ import Styles from "modules/app/components/top-bar.styles.less";
 import { Link } from "react-router-dom";
 import makePath from "modules/routes/helpers/make-path";
 import Logo from "modules/app/components/logo";
-import { DEFAULT_VIEW } from "modules/routes/constants/views";
+import { DEFAULT_VIEW, LANDING_PAGE } from "modules/routes/constants/views";
 
 
 interface TopBarProps {
@@ -44,7 +44,7 @@ const TopBar = ({
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
-        <Link to={makePath(DEFAULT_VIEW)}>
+        <Link to={makePath(LANDING_PAGE)}>
           <Logo />
         </Link>
       </div>

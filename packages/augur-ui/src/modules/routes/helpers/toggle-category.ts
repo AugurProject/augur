@@ -14,7 +14,6 @@ const toggleCategory = (category, location, history) => () => {
     searchParams[CATEGORY_PARAM_NAME] = category;
     searchParams = makeQuery(searchParams);
 
-    console.log('cool?',searchParams);
     return history.push({
       ...location,
       search: searchParams,
