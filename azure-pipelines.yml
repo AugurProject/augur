@@ -80,11 +80,8 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
-          not(eq(variables['Build.sourceBranch'], 'refs/tags'))
-        )
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     variables:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
