@@ -29,8 +29,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  console.log(sP.modal.market);
-  console.log(oP);
   const gasCost = sP.gasCost;
   return {
     title: 'Migrate Market',
