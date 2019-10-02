@@ -24,7 +24,6 @@ import {
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import MarketOutcomeSelector from 'modules/market/components/market-view/market-outcome-selector';
 import MarketOutcomesChart from 'modules/market-charts/containers/market-outcomes-chart';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
@@ -32,7 +31,7 @@ import { TEMP_TABLET } from 'modules/common/constants';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { tuple } from 'io-ts';
+import { SquareDropdown } from 'modules/common/selection';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -52,6 +51,7 @@ interface MarketViewProps {
   history: object;
   showMarketLoadingModal: Function;
   preview?: boolean;
+  sortedOutcomes: OutcomeFormatted[];
 }
 
 interface DefaultOrderProperties {
@@ -283,9 +283,9 @@ export default class MarketView extends Component<
       marketId,
       outcomes,
       market,
-      marketType,
       history,
       preview,
+      sortedOutcomes
     } = this.props;
     const {
       selectedOutcomeId,
@@ -321,6 +321,7 @@ export default class MarketView extends Component<
     const networkId = getNetworkId();
 
     const cat5 = this.findType();
+    const defaultOutcome = outcome ? outcome.id : 2;
 
     return (
       <div
@@ -388,27 +389,27 @@ export default class MarketView extends Component<
                       });
                     }}
                   >
-                    <div className={Styles.OutcomeSelectionArea}>
-                      {marketType === CATEGORICAL && (
-                        <MarketOutcomeSelector
-                          outcome={outcomeId}
-                          outcomeName={selectedOutcomeName}
-                          selectOutcome={this.updateSelectedOutcome}
-                        />
-                      )}
-                      {marketType !== CATEGORICAL && (
-                        <div className={Styles.OutcomeNameDisplay}>
-                          {selectedOutcomeName}
-                        </div>
-                      )}
-                    </div>
                     <div
                       className={classNames(
                         Styles['MarketView__paneContainer--mobile'],
                         Styles.TradesMobile
                       )}
                     >
-                      <h1>{description}</h1>
+                      <div className={Styles.OutcomeSelectionArea}>
+                        <h1>{description}</h1>
+                        <SquareDropdown
+                          defaultValue={defaultOutcome}
+                          onChange={value => this.updateSelectedOutcome(value)}
+                          options={sortedOutcomes
+                            .filter(outcome => outcome.isTradeable)
+                            .map(outcome => ({
+                            label: outcome.description,
+                            value: outcome.id,
+                          }))}
+                          large
+                          showColor
+                        />
+                      </div>
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
                           <div className={Styles.MarketView__orders}>
