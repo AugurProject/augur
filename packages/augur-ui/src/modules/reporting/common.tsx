@@ -67,7 +67,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON &&
             <button
               type='button'
-              className={ButtonStyles[props.buttonType]}
+              className={ButtonStyles.PrimaryButton}
               onClick={props.buttonAction}
             >
               {props.buttonText}
@@ -76,7 +76,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE &&
             <button
               type='button'
-              className={Styles[props.buttonType]}
+              className={Styles.close}
               onClick={() => setShow(() => false)}
             >
               {XIcon}

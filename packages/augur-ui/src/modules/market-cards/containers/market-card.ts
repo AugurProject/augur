@@ -39,7 +39,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       updateModal({
         type: MODAL_MIGRATE_MARKET,
         market: ownProps.market,
-        gasCost: MIGRATE_MARKET_GAS_ESTIMATE,
       })
     ),
 });
