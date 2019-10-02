@@ -121,7 +121,7 @@ test('calculate payout numerators value : scalar', () => {
     MarketTypeName.Scalar,
     ['0', '5001', '4999']
   );
-  expect(value).toEqual({ outcome: '0.002' });
+  expect(value).toEqual({ outcome: '-0.002' });
 });
 
 test('calculate payout numerators value : categorical : malformed', () => {

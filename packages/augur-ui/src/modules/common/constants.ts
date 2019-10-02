@@ -348,6 +348,7 @@ export const MARKET_FULLY_LOADED = 'MARKET_FULLY_LOADED';
 
 // # Market Outcome Constants
 export const INVALID_OUTCOME_ID = 0;
+export const INVALID_OUTCOME_NAME = 'Invalid';
 export const YES_NO_NO_ID = 1;
 export const YES_NO_NO_OUTCOME_NAME = 'No';
 export const YES_NO_YES_ID = 2;

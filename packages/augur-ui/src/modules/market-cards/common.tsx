@@ -74,7 +74,7 @@ export interface DisputeOutcomeProps {
   stake: Getters.Markets.StakeDetails | null;
   dispute: Function;
   id: number;
-  isLogged: boolean;
+  canDispute: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -126,7 +126,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         </div>
         <SecondaryButton
           small
-          disabled={!props.isLogged}
+          disabled={!props.canDispute}
           text={
             props.stake && props.stake.tentativeWinning
               ? 'Support Tentative Winner'
@@ -142,6 +142,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
 interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
+  canDispute: boolean;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -149,12 +150,13 @@ export const ScalarBlankDisputeOutcome = (
 ) => (
   <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
     <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
-    <div>
+    <div className={Styles.blank}>
       <div></div>
       <SecondaryButton
         small
+        disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
-        action={() => props.dispute("1")}
+        action={() => props.dispute(null)}
       />
     </div>
   </div>
@@ -199,19 +201,19 @@ export interface OutcomeGroupProps {
   reportingState: string;
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
-  isLogged: boolean;
+  inDispute?: boolean;
+  showOutcomeNumber: number;
+  canDispute: boolean;
 }
-const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
-const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
+
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
     props.stakes
   );
-  const inDispute =
-    props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE;
-  const showOutcomeNumber = inDispute ? MARKET_CARD_FOLD_OUTCOME_COUNT : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+
+  const { inDispute, showOutcomeNumber } = props;
   let dipsutingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
@@ -279,7 +281,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 )}
                 dispute={props.dispute}
                 id={outcome.id}
-                isLogged={props.isLogged}
+                canDispute={props.canDispute}
               />
             ) : (
               <Outcome
@@ -298,6 +300,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
         <ScalarBlankDisputeOutcome
           denomination={props.scalarDenomination}
           dispute={props.dispute}
+          canDispute={props.canDispute}
         />
       )}
     </div>
