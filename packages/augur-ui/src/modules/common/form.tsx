@@ -998,7 +998,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         <div onClick={e => e.stopPropagation()}>
           {!isReporting && ( // for disputing or for scalar
             <>
-              {!stake.tentativeWinning && (
+              {!stake.tentativeWinning && checked && (
                 <DisputingButtonView
                   stakeCurrent={formatAttoRep(
                     createBigNumber(stake.stakeCurrent).minus(
