@@ -26,9 +26,9 @@ export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
 ) {
   const isReporting =
-    marketInfo.reportingState !== REPORTING_STATE.PRE_REPORTING ||
-    marketInfo.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
-    marketInfo.reportingState === REPORTING_STATE.FINALIZED;
+    marketInfo.reportingState !== REPORTING_STATE.PRE_REPORTING &&
+    marketInfo.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+    marketInfo.reportingState !== REPORTING_STATE.FINALIZED;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
