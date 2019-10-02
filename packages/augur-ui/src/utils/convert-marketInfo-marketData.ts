@@ -206,7 +206,7 @@ function processConsensus(
       ...winning,
       winningOutcome: winning.outcome,
       outcomeName: isScalar
-        ? market.consensus.outcome
+        ? winning.outcome
         : getOutcomeNameWithOutcome(
             market,
             winning.outcome,
