@@ -1,6 +1,5 @@
 import React, { Component, useState } from 'react';
 import classNames from 'classnames';
-import { calculatePosition } from 'modules/market-cards/common';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   ZERO,
@@ -34,6 +33,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
 interface DismissableNoticeProps {
   content: JSX.Element;

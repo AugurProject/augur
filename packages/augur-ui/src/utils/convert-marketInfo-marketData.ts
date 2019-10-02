@@ -20,6 +20,7 @@ import {
 } from './format-number';
 import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
+import { getOutcomeNameWithOutcome } from './get-outcome';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
@@ -181,26 +182,36 @@ function processDisputeInfo(
 function processConsensus(
   market: Getters.Markets.MarketInfo
 ): Consensus | null {
-  if (market.consensus === null) return null;
-  //   - formatted reported outcome
-  //   - the percentage of correct reports (for binaries only)
-  const winningOutcome = null;
-  let outcomeName = null;
-  if (market.outcomes.length) {
-    const winningOutcome = calculatePayoutNumeratorsValue(
-      market.maxPrice,
-      market.minPrice,
-      market.numTicks,
-      market.marketType,
-      market.consensus
-    );
-    // for scalars, we will just use the winningOutcome for display
-    const marketOutcome = market.outcomes.find(
-      outcome => outcome.id === parseInt(winningOutcome, 10)
-    );
-    if (marketOutcome) outcomeName = marketOutcome.description;
+  const isScalar = market.marketType === SCALAR;
+  if (market.reportingState === REPORTING_STATE.FINALIZED) {
+    return {
+      ...market.consensus,
+      winningOutcome: market.consensus.outcome,
+      outcomeName: isScalar
+        ? market.consensus.outcome
+        : getOutcomeNameWithOutcome(
+            market,
+            market.consensus.outcome,
+            market.consensus.invalid
+          ),
+    };
   }
-  return { payout: market.consensus, winningOutcome, outcomeName };
+
+  if (market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION) {
+    const winning = market.disputeInfo.stakes.find(s => s.tentativeWinning);
+    return {
+      ...winning,
+      winningOutcome: winning.outcome,
+      outcomeName: isScalar
+        ? market.consensus.outcome
+        : getOutcomeNameWithOutcome(
+            market,
+            winning.outcome,
+            winning.isInvalidOutcome
+          ),
+    };
+  }
+  return null;
 }
 
 export const keyMarketInfoCollectionByMarketId = (

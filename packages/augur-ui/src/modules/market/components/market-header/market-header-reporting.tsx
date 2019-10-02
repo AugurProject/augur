@@ -1,15 +1,16 @@
-import React, { Component } from "react";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import classNames from 'classnames';
 
-import PropTypes from "prop-types";
-import Styles from "modules/market/components/market-header/market-header-reporting.styles.less";
-import MarketLink from "modules/market/components/market-link/market-link";
+import PropTypes from 'prop-types';
+import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import {
   TYPE_DISPUTE,
   TYPE_REPORT,
   REPORTING_STATE,
-} from "modules/common/constants";
-import { PrimaryButton } from "modules/common/buttons";
+  SCALAR,
+} from 'modules/common/constants';
+import { PrimaryButton } from 'modules/common/buttons';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 export default class MarketHeaderReporting extends Component {
   static propTypes = {
@@ -42,43 +43,33 @@ export default class MarketHeaderReporting extends Component {
       claimMarketsProceeds,
       tentativeWinner,
       isLogged,
-      location,
-      canClaimProceeds
+      canClaimProceeds,
+      showReportingModal,
     } = this.props;
-    const {
-      reportingState,
-      id,
-      consensus,
-    } = market;
+    const { reportingState, id, consensusFormatted: consensus } = market;
     let content = null;
+
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
-        <div
-          className={classNames(
-            Styles.Content,
-            Styles.Set
-          )}
-        >
+        <div className={classNames(Styles.Content, Styles.Set)}>
           <div>
-            <span>
-              Winning Outcome
-            </span>
+            <span>Winning Outcome</span>
             <span>
               {consensus.isInvalid
-                ? "Invalid"
+                ? 'Invalid'
                 : consensus.outcomeName || consensus.winningOutcome}
             </span>
           </div>
           {canClaimProceeds && (
-              <PrimaryButton
-                id="button"
-                action={() => {
-                  claimMarketsProceeds([id]);
-                }}
-                text="Claim Proceeds"
-                disabled={!isLogged || !canClaimProceeds}
-              />
-            )}
+            <PrimaryButton
+              id="button"
+              action={() => {
+                claimMarketsProceeds([id]);
+              }}
+              text="Claim Proceeds"
+              disabled={!isLogged || !canClaimProceeds}
+            />
+          )}
         </div>
       );
     } else if (
@@ -89,92 +80,60 @@ export default class MarketHeaderReporting extends Component {
       content = (
         <div className={classNames(Styles.Content, Styles.Dispute)}>
           <div>
-            <span>
-              Tentative Winning Outcome
-            </span>
+            <span>Tentative Winner</span>
             {tentativeWinner &&
-            (tentativeWinner.name || tentativeWinner.isInvalid) ? (
+            (tentativeWinner.outcome || tentativeWinner.isInvalidOutcome) ? (
               <span>
                 {tentativeWinner &&
-                  (tentativeWinner.isInvalid
-                    ? "Invalid"
-                    : tentativeWinner.name)}
+                  (tentativeWinner.isInvalidOutcome
+                    ? 'Invalid'
+                    : market.marketType === SCALAR
+                    ? tentativeWinner.outcome
+                    : getOutcomeNameWithOutcome(
+                        market,
+                        tentativeWinner.outcome,
+                        tentativeWinner.isInvalid
+                      ))}
               </span>
             ) : (
-              <div style={{ minHeight: "20px" }} />
+              <div style={{ minHeight: '20px' }} />
             )}
           </div>
           {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
-            <MarketLink
-              id={id}
-              linkType={TYPE_DISPUTE}
-              location={location}
+            <PrimaryButton
+              id="button"
+              text="Support or Dispute Outcome"
+              action={() => {}}
+              action={() => showReportingModal()}
               disabled={!isLogged}
-            >
-              <PrimaryButton
-                id="button"
-                text="Dispute"
-                action={() => {}}
-                disabled={!isLogged}
-              />
-            </MarketLink>
+            />
           )}
         </div>
       );
     } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
       content = (
         <div className={classNames(Styles.Content, Styles.Report)}>
-          <div>
-            <span>
-              Tentative Winning Outcome
-            </span>
-            <span>
-              Designated Reporter Failed to show. Please submit a report.
-            </span>
-          </div>
-          <MarketLink
-            id={id}
-            location={location}
+          <div></div>
+          <PrimaryButton
+            id="button"
+            text="Report"
             disabled={!isLogged}
-            linkType={TYPE_REPORT}
-          >
-            <PrimaryButton
-              id="button"
-              text="Submit Report"
-              action={() => {}}
-              disabled={!isLogged}
-            />
-          </MarketLink>
+            action={() => showReportingModal()}
+            disabled={!isLogged}
+          />
         </div>
       );
-    } else if (
-      reportingState === REPORTING_STATE.DESIGNATED_REPORTING
-    ) {
+    } else if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
       content = (
         <div className={classNames(Styles.Content, Styles.Report)}>
-          <div>
-            <span>
-              Reporting has started
-            </span>
-            <span>
-              {isDesignatedReporter
-                ? "Please Submit a report"
-                : "Awaiting the Market’s Designated Reporter"}
-            </span>
-          </div>
+          <div></div>
           {isLogged && isDesignatedReporter ? (
-            <MarketLink
-              id={id}
-              location={location}
+            <PrimaryButton
+              id="button"
               disabled={!isLogged}
-              linkType={TYPE_REPORT}
-            >
-              <PrimaryButton
-                id="button"
-                action={() => {}}
-                text="Report"
-              />
-            </MarketLink>
+              action={() => showReportingModal()}
+              text="Report"
+            />
           ) : null}
         </div>
       );
@@ -184,10 +143,6 @@ export default class MarketHeaderReporting extends Component {
       return <div className={Styles.EmptyBreak} />;
     }
 
-    return (
-      <>
-      {content}
-      </>
-    );
+    return <>{content}</>;
   }
 }
