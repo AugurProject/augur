@@ -14,7 +14,7 @@ import {
   CategoryMultiSelect
 } from "modules/common/form";
 import { setCategories } from "modules/categories/set-categories";
-import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
+import { Header, Subheaders, LineBreak, NumberedList, DateTimeHeaders } from "modules/create-market/components/common";
 import {
   YES_NO,
   SCALAR,
@@ -97,7 +97,8 @@ export default class FormDetails extends React.Component<
       designatedReporterType,
       validations,
       currentStep,
-      timezone
+      timezone,
+      endTimeFormatted
     } = newMarket;
 
     return (
@@ -148,7 +149,10 @@ export default class FormDetails extends React.Component<
                 if (setEndTime === null) {
                   onChange("setEndTime", currentTimestamp);
                 }
-                this.setState({ dateFocused: focused });
+                this.setState({ dateFocused: focused }, () => {
+                  const timezoneParams = {offset: 0, timezone: '', offsetName: ''}
+                  onChange("timezoneDropdown", timezoneParams);
+                });
               }}
               focused={s.dateFocused}
               errorMessage={validations[currentStep].setEndTime}
