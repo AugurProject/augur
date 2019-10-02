@@ -160,7 +160,7 @@
         fill: @color-primary-text;
       }
     }
-    
+
     > span {
       display: block;
       overflow: hidden;
@@ -259,7 +259,7 @@
 
 
 
-  
+
 
 .PillSelection {
   align-items: center;
@@ -394,6 +394,31 @@
 
     @media @breakpoint-mobile {
       padding-top: @size-16;
+    }
+  }
+}
+
+.CategorySelector {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  > div {
+    .text-14;
+
+    color: @color-inactive-text;
+    cursor: pointer;
+    height: @size-32 ;
+    margin: @size-24 @size-32 @size-24 0;
+
+
+    &.selected {
+      color: @color-primary-text;
+      border-bottom: 1px solid @color-primary-text;
+    }
+
+    @media @breakpoint-mobile {
+      .text-12;
     }
   }
 }

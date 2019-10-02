@@ -131,41 +131,45 @@ export default class MarketsInDispute extends Component<
   }
 
   loadMarkets = () => {
-    const { limit, selectedTab, tabs } = this.state;
-    let loadDisputeMarkets = this.getLoadMarketsMethod(selectedTab);
+    const { tabs } = this.state;
     const filterOptions = this.getLoadMarketsFiltersOptions();
+    this.getLoadMarketsMethods().map(loader =>
+      this.loadDisputeTypeMarkets(loader.method, filterOptions, tabs, loader.tabName)
+    );
+  };
 
+  loadDisputeTypeMarkets(loadDisputeMarkets, filterOptions, tabs, tabName) {
     loadDisputeMarkets(
       filterOptions,
       (err, marketResults: Getters.Markets.MarketList) => {
         if (err) return console.log('error', err);
         const marketCount = marketResults.meta.marketCount;
-        const showPagination = marketCount > limit;
+        const showPagination = marketCount > filterOptions.limit;
         this.setState({
           showPagination,
           marketCount,
           isLoadingMarkets: false,
-          tabs: this.setTabCounts(tabs, selectedTab, marketCount),
+          tabs: this.setTabCounts(tabs, tabName, marketCount),
         });
       }
     );
-  };
+  }
 
-  setTabCounts = (tabs, selectedTab, marketCount) => {
-    tabs[0].num = selectedTab === TAB_CURRENT ? marketCount : 0;
-    tabs[1].num = selectedTab === TAB_AWAITING ? marketCount : 0;
+  setTabCounts = (tabs, tabName, marketCount) => {
+    const index = tabName === TAB_CURRENT ? 0 : 1;
+    tabs[index].num = marketCount;
     return tabs;
   };
 
-  getLoadMarketsMethod = selectedTab => {
+  getLoadMarketsMethods = () => {
     const {
       loadCurrentlyDisputingMarkets,
       loadNextWindowDisputingMarkets,
     } = this.props;
-    let loadDisputeMarkets = loadCurrentlyDisputingMarkets;
-    if (selectedTab === TAB_AWAITING)
-      loadDisputeMarkets = loadNextWindowDisputingMarkets;
-    return loadDisputeMarkets;
+    return [
+      { method: loadCurrentlyDisputingMarkets, tabName: TAB_CURRENT },
+      { method: loadNextWindowDisputingMarkets, tabName: TAB_AWAITING },
+    ];
   };
 
   getLoadMarketsFiltersOptions = () => {
