@@ -266,6 +266,7 @@ export default class MarketCard extends React.Component<
                   reportingState={reportingState}
                   stakes={disputeInfo.stakes}
                   dispute={dispute}
+                  isLogged={isLogged}
                 />
                 {marketType === CATEGORICAL && outcomesFormatted && outcomesFormatted.length > 3 && !expandedView &&
                   <button onClick={this.expand}>

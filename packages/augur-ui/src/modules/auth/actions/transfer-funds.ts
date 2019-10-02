@@ -1,4 +1,4 @@
-import * as speedomatic from 'speedomatic';
+import * as utils from "@augurproject/utils";
 import { selectCurrentTimestampInSeconds as getTime } from 'store/select-state';
 import {
   DAI,
@@ -27,7 +27,7 @@ export function transferFunds(
   ) => {
     const { universe, loginAccount } = getState();
     const fromAddress = loginAccount.address;
-    const to = speedomatic.formatEthereumAddress(toAddress);
+    const to = utils.formatEthereumAddress(toAddress);
     // TODO: need to add ability to transfer DAI
     switch (currency) {
       case DAI:

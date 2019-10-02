@@ -1,11 +1,11 @@
-@import (reference) "~assets/styles/shared";
-@import (reference) "~modules/market/components/market-view/market-view.styles";
+@import (reference) '~assets/styles/shared';
+@import (reference) '~modules/market/components/market-view/market-view.styles';
 
 .HeaderBar {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin-bottom: @size-16;
+  margin: @size-10 @size-18;
 
   > span:first-of-type {
     margin-right: @size-16;
@@ -57,8 +57,6 @@
     }
   }
 }
-
-
 
 @media @breakpoint-mobile {
   .HeaderBar {

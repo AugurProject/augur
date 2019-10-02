@@ -2,7 +2,7 @@
 A reviver is a function that prescribes how the value originally produced by JSON.parse is transformed, before being returned.
 */
 
-import { formatEthereumAddress } from "speedomatic";
+import { formatEthereumAddress } from "@augurproject/utils";
 import { getAddress } from "ethers/utils/address";
 
 export interface StringToBoolMap {

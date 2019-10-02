@@ -1,37 +1,74 @@
 import * as path from 'path';
+import { NETWORKS } from './NetworkConfiguration';
 
 const ARTIFACT_OUTPUT_ROOT = (typeof process.env.ARTIFACT_OUTPUT_ROOT === 'undefined') ? path.join(__dirname, '../../output/contracts') : path.normalize(process.env.ARTIFACT_OUTPUT_ROOT);
 const CONTRACT_INPUT_ROOT  = (typeof process.env.CONTRACT_INPUT_ROOT === 'undefined')  ? path.join(__dirname, '../../output/contracts') : path.normalize(process.env.CONTRACT_INPUT_ROOT);
 
-const PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS = "0x1985365e9f78359a9B6AD760e32412f4a445E862";
-const PRODUCTION_CASH_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when MC DAI is released
-const PRODUCTION_VAT_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when MC DAI is released
-const PRODUCTION_POT_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when MC DAI is released
-const PRODUCTION_JOIN_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when MC DAI is released
-const PRODUCTION_REP_PRICE_ORACLE_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when uniswap price oracle is released
-const PRODUCTION_GNOSIS_SAFE = "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A";
-const PRODUCTION_PROXY_FACTORY = "0x12302fE9c02ff50939BaAaaf415fc226C078613C";
-const PRODUCTION_ZEROX_EXCHANGE = "0x080bf510FCbF18b91105470639e9561022937712";
+// TODO: organize these into per-network mappings that fulfil an interface
+// Get rid of isProduction and simply make toggles for real-time
+// Review faucet abilities of DAI on Kovan
+// Confirm their contracts match our interfaces
+// Do a Kovan deploy
+// Create a market
+// Trade on it
+// Sweep interest
 
 export interface DeployerConfiguration {
   contractInputPath: string;
   contractAddressesOutputPath: string;
   uploadBlockNumbersOutputPath: string;
   augurAddress: string|undefined;
-  createGenesisUniverse: boolean;
   useNormalTime: boolean;
-  isProduction: boolean;
-  legacyRepAddress: string;
-  cashAddress: string;
-  vatAddress: string;
-  potAddress: string;
-  joinAddress: string;
-  repPriceOracleAddress: string;
-  gnosisSafeAddress: string;
-  proxyFactoryAddress: string;
-  zeroXExchange: string;
+  isProduction: boolean; // Determines if faucets are enabled / created
   writeArtifacts: boolean;
+  externalAddresses: ExternalAddresses;
 }
+
+type ExternalAddresses = {
+  LegacyReputationToken?: string;
+  Cash?: string;
+  DaiVat?: string;
+  DaiPot?: string;
+  DaiJoin?: string;
+  MCDCol?: string,
+  MCDColJoin?: string,
+  MCDFaucet?: string,
+  RepPriceOracle?: string;
+  GnosisSafe?: string;
+  ProxyFactory?: string;
+  ZeroXExchange?: string;
+}
+
+type NetworksToExternalAddresses = {
+  [P in NETWORKS]?: ExternalAddresses;
+}
+
+const EXTERNAL_ADDRESSES: NetworksToExternalAddresses = {
+  thunder: {},
+  ropsten: {},
+  kovan: {
+    /*
+    MCDCol: "0xc7aa227823789e363f29679f23f7e8f6d9904a9b",
+    MCDColJoin: "0xebbd300bb527f1d50abd937f8ca11d7fd0e5b68b",
+    MCDFaucet: "0x94598157fcf0715c3bc9b4a35450cce82ac57b20",
+    Cash: "0x1f9beaf12d8db1e50ea8a5ed53fb970462386aa0",
+    DaiVat: "0x6e6073260e1a77dfaf57d0b92c44265122da8028",
+    DaiPot: "0x24e89801dad4603a3e2280ee30fb77f183cb9ed9",
+    DaiJoin: "0x61af28390d0b3e806bbaf09104317cb5d26e215d",
+    */
+  },
+  rinkeby: {},
+  clique: {},
+  aura: {},
+  environment: {},
+  testrpc: {},
+  mainnet: {
+    LegacyReputationToken: "0x1985365e9f78359a9B6AD760e32412f4a445E862",
+    GnosisSafe: "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A",
+    ProxyFactory: "0x12302fE9c02ff50939BaAaaf415fc226C078613C",
+    ZeroXExchange: "0x080bf510FCbF18b91105470639e9561022937712",
+  },
+};
 
 export type DeployerConfigurationOverwrite = Partial<DeployerConfiguration>;
 
@@ -50,21 +87,13 @@ export const defaultDeployerConfiguration: DeployerConfiguration = {
   contractAddressesOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'addresses.json'),
   uploadBlockNumbersOutputPath: path.join(ARTIFACT_OUTPUT_ROOT, 'upload-block-numbers.json'),
   augurAddress: process.env.AUGUR_ADDRESS,
-  createGenesisUniverse: envOrDefault('CREATE_GENESIS_UNIVERSE', true),
   isProduction: envOrDefault('IS_PRODUCTION', false),
   useNormalTime: envOrDefault('USE_NORMAL_TIME', true),
-  legacyRepAddress: PRODUCTION_LEGACY_REP_CONTRACT_ADDRESS,
-  cashAddress: PRODUCTION_CASH_CONTRACT_ADDRESS,
-  repPriceOracleAddress: PRODUCTION_REP_PRICE_ORACLE_CONTRACT_ADDRESS,
-  vatAddress: PRODUCTION_VAT_CONTRACT_ADDRESS,
-  potAddress: PRODUCTION_POT_CONTRACT_ADDRESS,
-  joinAddress: PRODUCTION_JOIN_CONTRACT_ADDRESS,
-  gnosisSafeAddress: PRODUCTION_GNOSIS_SAFE,
-  proxyFactoryAddress: PRODUCTION_PROXY_FACTORY,
-  zeroXExchange: PRODUCTION_ZEROX_EXCHANGE,
   writeArtifacts: true,
+  externalAddresses: {},
 };
 
-export function CreateDeployerConfiguration(overwrites: DeployerConfigurationOverwrite = {}): DeployerConfiguration {
-  return Object.assign({}, defaultDeployerConfiguration, overwrites);
+export function CreateDeployerConfiguration(networkId: NETWORKS, overwrites: DeployerConfigurationOverwrite = {}): DeployerConfiguration {
+  const externalAddresses = EXTERNAL_ADDRESSES[networkId];
+  return Object.assign({}, defaultDeployerConfiguration, overwrites, { externalAddresses });
 }

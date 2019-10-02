@@ -2,68 +2,33 @@ import { WordTrail } from 'modules/common/labels';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import {
-  BackArrow,
   ChevronDown,
   ChevronUp,
-  TwoArrows,
   TwoArrowsOutline,
   LeftChevron,
+  CopyAlternateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import ChevronFlip from 'modules/common/chevron-flip';
-import { MarketTypeLabel, TimeLabel } from 'modules/common/labels';
-import { MarketHeaderCollapsed } from 'modules/market/components/market-header/market-header-collapsed';
+import { MarketTypeLabel } from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   SCALAR,
   COPY_MARKET_ID,
-  COPY_AUTHOR
+  COPY_AUTHOR,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
-import { MarketTimeline } from 'modules/common/progress';
-import { convertUnixToFormattedDate } from 'utils/format-date';
-import { PaperClip, Person } from "modules/common/icons";
-import { FavoritesButton } from "modules/common/buttons";
+import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints } from 'modules/types';
-import Clipboard from "clipboard";
-import { DotSelection } from "modules/common/selection";
+import Clipboard from 'clipboard';
 
-const OVERFLOW_DETAILS_LENGTH = 110; // in px, overflow limit to trigger MORE details
-
-// TODO: add this to top left -- refactor into it's own component:
-// clipboardMarketId: any = new Clipboard("#copy_marketId");
-// clipboardAuthor: any = new Clipboard("#copy_author");
-// {addToFavorites && (
-//   <div>
-//     <FavoritesButton
-//       action={() => addToFavorites()}
-//       isFavorite={isFavorite}
-//       hideText
-//       disabled={!isLogged}
-//     />
-//   </div>
-// )}
-// <DotSelection>
-//   <div
-//     id="copy_marketId"
-//     data-clipboard-text={marketId}
-//   >
-//     {PaperClip} {COPY_MARKET_ID}
-//   </div>
-//   <div
-//     id="copy_author"
-//     data-clipboard-text={author}
-//   >
-//     {Person} {COPY_AUTHOR}
-//   </div>
-// </DotSelection>
+const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
 interface MarketHeaderProps {
   description: string;
@@ -80,6 +45,7 @@ interface MarketHeaderProps {
   isFavorite: boolean;
   history: History;
   preview?: boolean;
+  reportingBarShowing: boolean;
 }
 
 interface MarketHeaderState {
@@ -101,6 +67,7 @@ export default class MarketHeader extends Component<
     toggleFavorite: () => {},
   };
   detailsContainer: any;
+  clipboardMarketId: any = new Clipboard('#copy_marketId');
 
   constructor(props) {
     super(props);
@@ -171,6 +138,8 @@ export default class MarketHeader extends Component<
       isFavorite,
       history,
       preview,
+      reportingBarShowing,
+      toggleFavorite,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -208,103 +177,124 @@ export default class MarketHeader extends Component<
           }
         )}
       >
-        <div>
-          <WordTrail items={[...categoriesWithClick]}>
-            <button
-              className={Styles.BackButton}
-              onClick={() => history.goBack()}
-            >
-              {LeftChevron} Back
-            </button>
-            <MarketTypeLabel marketType={marketType} />
-          </WordTrail>
-          <div className={Styles.Properties}>
-            {(market.id || preview) && (
-              <MarketHeaderBar
-                marketStatus={market.marketStatus}
-                reportingState={market.reportingState}
-                disputeInfo={market.disputeInfo}
-                endTimeFormatted={market.endTimeFormatted}
-              />
-            )}
-          </div>
-        </div>
-
-        {headerCollapsed && (
-          <MarketHeaderCollapsed description={description} market={market} />
-        )}
-
         {!headerCollapsed && (
-          <div className={Styles.MainValues}>
+          <>
             <div>
-              <h1>{description}</h1>
-              <div className={Styles.Details}>
-                <h4>Resolution Source</h4>
-                <span>{resolutionSource}</span>
-              </div>
-              {details.length > 0 && (
-                <div className={Styles.Details}>
-                  <h4>Additional Details</h4>
-                  <label
-                    ref={detailsContainer => {
-                      this.detailsContainer = detailsContainer;
-                    }}
-                    className={classNames(Styles.AdditionalDetails, {
-                      [Styles.Tall]: detailsTooLong && this.state.showReadMore,
-                    })}
+              <div>
+                <WordTrail items={[...categoriesWithClick]}>
+                  <button
+                    className={Styles.BackButton}
+                    onClick={() => history.goBack()}
                   >
-                    <MarkdownRenderer text={details} hideLabel />
-                  </label>
-
-                  {detailsTooLong && (
-                    <button
-                      className={classNames({
-                        [Styles.Less]: this.state.showReadMore,
-                      })}
-                      onClick={this.toggleReadMore}
-                    >
-                      {!this.state.showReadMore
-                        ? ChevronDown({ stroke: '#FFFFFF' })
-                        : ChevronUp()}
-                      <span>{!this.state.showReadMore ? 'More' : 'Less'}</span>
-                    </button>
-                  )}
+                    {LeftChevron} Back
+                  </button>
+                  <MarketTypeLabel marketType={marketType} />
+                </WordTrail>
+                <div id="copy_marketId" data-clipboard-text={market.id}>
+                  {CopyAlternateIcon}
                 </div>
-              )}
-            </div>
-            <div className={Styles.Properties}>
-              {(market.id || preview) && (
-                <MarketHeaderBar
-                  marketStatus={market.marketStatus}
-                  reportingState={market.reportingState}
-                  disputeInfo={market.disputeInfo}
-                  endTimeFormatted={market.endTimeFormatted}
-                />
-              )}
-              {/* <MarketHeaderReporting
-                marketId={market.id}
-                preview={preview}
-                market={preview && market}
-              /> */}
-              <div className={Styles.Core}>
-                {(market.id || preview) && <CoreProperties market={market} />}
-                <div className={Styles.TimeSection}>
-                  <TimeLabel
-                    label="Date Created"
-                    time={market.creationTimeFormatted}
-                    showLocal
+                {toggleFavorite && (
+                  <div>
+                    <FavoritesButton
+                      action={() => this.addToFavorites()}
+                      isFavorite={isFavorite}
+                      hideText
+                      disabled={!isLogged}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className={Styles.Properties}>
+                {(market.id || preview) && (
+                  <MarketHeaderBar
+                    marketStatus={market.marketStatus}
+                    reportingState={market.reportingState}
+                    disputeInfo={market.disputeInfo}
+                    endTimeFormatted={market.endTimeFormatted}
                   />
-                  <TimeLabel label="Reporting Starts" time={market.endTimeFormatted} />
-                </div>
+                )}
               </div>
             </div>
-          </div>
+            <div className={Styles.MainValues}>
+              <div>
+                <h1>{description}</h1>
+                <div className={Styles.Details}>
+                  <h4>Resolution Source</h4>
+                  <span>{resolutionSource}</span>
+                </div>
+                {details.length > 0 && (
+                  <div className={Styles.Details}>
+                    <h4>Additional Details</h4>
+                    <div>
+                      <label
+                        ref={detailsContainer => {
+                          this.detailsContainer = detailsContainer;
+                        }}
+                        className={classNames(Styles.AdditionalDetails, {
+                          [Styles.Tall]:
+                            detailsTooLong && this.state.showReadMore,
+                        })}
+                      >
+                        <MarkdownRenderer text={details} hideLabel />
+                      </label>
+
+                      {detailsTooLong && (
+                        <button
+                          className={classNames({
+                            [Styles.Less]: this.state.showReadMore,
+                          })}
+                          onClick={this.toggleReadMore}
+                        >
+                          {!this.state.showReadMore
+                            ? ChevronDown({ stroke: '#FFFFFF' })
+                            : ChevronUp()}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className={Styles.Properties}>
+                {(market.id || preview) && (
+                  <MarketHeaderBar
+                    marketStatus={market.marketStatus}
+                    reportingState={market.reportingState}
+                    disputeInfo={market.disputeInfo}
+                    endTimeFormatted={market.endTimeFormatted}
+                  />
+                )}
+                <MarketHeaderReporting
+                  marketId={market.id}
+                  preview={preview}
+                  market={preview && market}
+                />
+                {(market.id || preview) && (
+                  <CoreProperties
+                    market={market}
+                    alternateView
+                    reportingBarShowing={reportingBarShowing}
+                  />
+                )}
+              </div>
+            </div>
+          </>
         )}
         <div
           className={classNames(Styles.Toggle, {
-            [Styles.Collapsed]: headerCollapsed,
+            [Styles.CollapsedToggle]: headerCollapsed,
           })}
         >
+          {headerCollapsed && (
+            <>
+              <button
+                className={Styles.BackButton}
+                onClick={() => history.goBack()}
+              >
+                {LeftChevron} Back
+              </button>
+              <h1>{description}</h1>
+            </>
+          )}
           <button
             onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
           >

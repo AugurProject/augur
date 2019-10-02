@@ -22,7 +22,7 @@ import {
   convertOnChainAmountToDisplayAmount,
   marketTypeToName,
 } from '../../index';
-import { getOutcomeValue } from '../../utils';
+import { getOutcomeValue, convertPayoutNumeratorsToStrings, calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -137,7 +137,7 @@ export interface MarketInfo {
   backupSource: string | null;
   numTicks: string;
   tickSize: string;
-  consensus: string[] | null;
+  consensus: PayoutNumeratorValue;
   transactionHash: string;
   outcomes: MarketInfoOutcome[];
   marketCreatorFeeRate: string;
@@ -501,9 +501,8 @@ export class Markets {
     if (params.maxFee) {
       const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
       const maxMarketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
-      const maxMarketCreatorFeeDivisor = new BigNumber(1).dividedBy(maxMarketCreatorFee);
       request.selector = Object.assign(request.selector, {
-        feeDivisor: { $gte: maxMarketCreatorFeeDivisor.toNumber() },
+        feePercent: { $lte: maxMarketCreatorFee.toNumber() },
       });
     }
 
@@ -892,20 +891,21 @@ async function getMarketsInfo(
     const reportingState = marketData.reportingState;
     const universeForking = false; // TODO get from initialization
     const needsMigration = reportingState !== MarketReportingState.Finalized && universeForking; // TODO: also check if the market is the forking market
+    const marketType = marketTypeToName(marketData.marketType);
 
     let consensus = null;
     let finalizationBlockNumber = null;
     let finalizationTime = null;
+
     if (marketData.winningPayoutNumerators) {
-      consensus = [];
+      let payouts = [];
       for (let i = 0; i < marketData.winningPayoutNumerators.length; i++) {
-        consensus[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
+        payouts[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
       }
       finalizationBlockNumber =  marketData.finalizationBlockNumber;
       finalizationTime = new BigNumber(marketData.finalizationTime).toString(10);
+      consensus = calculatePayoutNumeratorsValue(String(displayMaxPrice), String(displayMinPrice), String(numTicks), marketType, payouts);
     }
-
-    const marketType = marketTypeToName(marketData.marketType);
 
     let categories:string[] = [];
     let description = null;

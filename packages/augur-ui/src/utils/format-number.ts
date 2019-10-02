@@ -3,7 +3,7 @@ import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
   unfix,
-} from "speedomatic";
+} from "@augurproject/utils";
 import { ZERO, TEN, ETHER } from "modules/common/constants";
 import addCommas from "utils/add-commas-to-number";
 import { FormattedNumber, FormattedNumberOptions } from "modules/types";

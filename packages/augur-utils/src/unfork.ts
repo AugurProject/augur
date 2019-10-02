@@ -17,9 +17,9 @@ export function unfork(forked, prefix = false) {
       if (prefix) unforked = prefixHex(unforked);
       return unforked;
     }
-    throw new Error("speedomatic.unfork failed (bad input): " + JSON.stringify(forked));
+    throw new Error("@augurproject/utils.unfork failed (bad input): " + JSON.stringify(forked));
   }
-  throw new Error("speedomatic.unfork failed (bad input): " + JSON.stringify(forked));
+  throw new Error("@augurproject/utils.unfork failed (bad input): " + JSON.stringify(forked));
 }
 
 
