@@ -739,7 +739,6 @@ export const ReportingRadioBarGroup = ({
   const isReporting =
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
-  const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(
     radioButton => radioButton.stake.tentativeWinning
   );
@@ -854,35 +853,6 @@ export const ReportingRadioBarGroup = ({
               )}
             />
           )
-      )}
-      {(!isReporting &&
-        tentativeWinning &&
-        tentativeWinning.value !== invalid.value) && (
-        <>
-          <span>
-            {'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
-          </span>
-          <ReportingRadioBar
-            market={market}
-            expandable
-            {...invalid}
-            isInvalid
-            preFilledStake={preFilledStake}
-            updatePreFilledStake={updatePreFilledStake}
-            disputeStake={disputeStake}
-            inputScalarOutcome={inputScalarOutcome}
-            updateDisputeStake={updateDisputeStake}
-            updateScalarOutcome={updateScalarOutcome}
-            checked={String(invalid.value) === selected}
-            reportAction={reportAction}
-            updateChecked={selected => {
-              updateChecked(selected);
-            }}
-            userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
-              d => d.outcome === String(invalid.value)
-            )}
-          />
-        </>
       )}
     </div>
   );
@@ -1027,6 +997,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 <DisputingBondsView
                   market={market}
                   id={id}
+                  isInvalid={isInvalid}
                   inputScalarOutcome={inputScalarOutcome}
                   updateScalarOutcome={updateScalarOutcome}
                   stakeValue={disputeStake.inputStakeValue}

@@ -70,10 +70,9 @@ export default class ModalReporting extends Component<
   updateChecked = (selected: string) => {
     const { radioButtons } = this.state;
     this.updateDisputeStake({ inputStakeValue: '', inputToAttoRep: '' });
+    radioButtons.map(r => (r.id === selected) ? r.checked = true : r.checked = false);
     this.updatePreFilledStake('');
     this.updateScalarOutcome('');
-
-    radioButtons.map(r => (r.id === selected) ? r.checked = true : r.checked = false);
     this.setState({ radioButtons });
   };
 
@@ -130,7 +129,7 @@ export default class ModalReporting extends Component<
           value: stake.outcome ? Number(stake.outcome) : null,
           description: stake.outcome,
           checked: checked === stake.outcome,
-          isInvalid: stake.outcome === String(INVALID_OUTCOME_ID),
+          isInvalid: stake.isInvalidOutcome,
           preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
           stake,
         })
@@ -154,6 +153,7 @@ export default class ModalReporting extends Component<
     const selectedRadio = this.state.radioButtons.find(r => r.checked);
     // for cat and binary markets id is outcomeId
     outcomeId = selectedRadio.id;
+    let isInvalid = selectedRadio.isInvalid;
     if (marketType === SCALAR) {
       // checked might be invalid outcome
       outcomeId = parseFloat(this.state.inputScalarOutcome || this.state.checked);
@@ -172,7 +172,7 @@ export default class ModalReporting extends Component<
         description: '',
         attoRepAmount,
         outcomeId,
-        isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+        isInvalid,
       });
       // wait a moment before closing the form.
       // need to either give user wait indicator in form
@@ -199,7 +199,7 @@ export default class ModalReporting extends Component<
           description: '',
           attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
-          isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+          isInvalid,
         });
       } else {
         contribute({
@@ -212,7 +212,7 @@ export default class ModalReporting extends Component<
           description: '',
           attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
-          isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+          isInvalid,
         });
       }
 

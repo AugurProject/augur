@@ -286,6 +286,7 @@ export interface DisputingBondsViewProps {
   market: MarketData;
   id: string;
   checked: string;
+  isInvalid: boolean;
   inputScalarOutcome: string;
   updateScalarOutcome: Function;
   stakeValue: string;
@@ -344,6 +345,7 @@ export class DisputingBondsView extends Component<
       userAvailableRep,
       stakeRemaining,
       tentativeWinning,
+      isInvalid
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar } = this.state;
@@ -392,7 +394,7 @@ export class DisputingBondsView extends Component<
       this.setState({ stakeError: '' });
       if (
         this.state.scalarError === '' &&
-        ((isScalar && inputScalarOutcome !== '') || !isScalar)
+        ((isScalar && inputScalarOutcome !== '') || isInvalid) || (!isScalar)
       ) {
         this.setState({ disabled: false });
       }
