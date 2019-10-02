@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .Finalization,
 .ClaimHold {
@@ -92,9 +92,10 @@
   border-radius: @border-radius-default;
   display: flex;
   flex-direction: row;
-  padding: @size-16;
-  justify-content: space-between; 
-  
+  padding: @size-12 @size-16;
+  justify-content: space-between;
+  border-bottom: 1px solid @color-dark-grey;
+
   @media @breakpoint-mobile {
     margin-bottom: @size-8;
   }
@@ -125,24 +126,26 @@
   &.Dispute,
   &.Set {
     > div:first-of-type {
-      margin-top: @size-8;
+      > span:first-of-type {
+        .mono-11-bold;
+
+        text-transform: uppercase;
+        color: @color-tenative-winner;
+      }
 
       > span:not(:first-of-type) {
         .text-12-bold;
 
         color: @color-primary-text;
+        margin-top: @size-4;
       }
     }
   }
 
-  &.Dispute,
-  &.Report {
+  &.Set {
     > div:first-of-type {
       > span:first-of-type {
-        .mono-12-bold;
-
-        color: @color-secondary-action-outline;
-        text-transform: uppercase;
+        color: @color-open;
       }
     }
   }

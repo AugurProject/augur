@@ -8,9 +8,10 @@ import {
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
 
 const getOutcomeName = (
-  market: MarketData,
+  market: MarketData | MarketInfo,
   outcomeId: number,
   isInvalid: boolean = false
 ): string => {
@@ -42,7 +43,7 @@ const getOutcomeName = (
 };
 
 export const getOutcomeNameWithOutcome = (
-  market: MarketData,
+  market: MarketData | MarketInfo,
   outcomeId: string,
   isInvalid: boolean = false
 ): string => {
