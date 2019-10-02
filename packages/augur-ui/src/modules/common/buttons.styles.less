@@ -91,7 +91,7 @@
   }
 }
 
-.ToggleExtendButton {    
+.ToggleExtendButton {
   display: flex;
   margin-left: @size-4;
 
@@ -706,6 +706,25 @@
       .text-14;
 
       color: @color-secondary-text;
+
+      &.loading {
+        animation: colorchange 0.5s infinite;
+        animation-direction: alternate-reverse;
+        background-color: @color-secondary-action-outline;
+        height: @size-16;
+        width: 80px;
+      }
     }
   }
 }
+
+@keyframes colorchange {
+  0% {
+    background-color: fade(@color-secondary-action-outline, 70)
+  }
+
+  100% {
+    background-color: fade(@color-secondary-action-outline, 100)
+  }
+}
+

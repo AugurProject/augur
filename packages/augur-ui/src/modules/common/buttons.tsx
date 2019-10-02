@@ -379,7 +379,7 @@ export const CategoryButtons = ({
         <div key={idx} onClick={() => action(categoryName)}>
           <div>{item.icon}</div>
           <div>{item.header}</div>
-          <div>{body}</div>
+          <div className={!categoryData ? Styles.loading : ''}>{body}</div>
         </div>
       );
     })}
