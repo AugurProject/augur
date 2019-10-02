@@ -166,6 +166,7 @@ export default class MarketCard extends React.Component<
       }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    const marketAwaitingForkMigration = reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION;
 
     return (
       <div
@@ -286,14 +287,16 @@ export default class MarketCard extends React.Component<
               :
               <div style={{ display: 'none' }}></div>
             }
-            <DismissableNotice
-              show={true}
-              buttonAction={this.props.migrateMarketModal}
-              buttonText='Migrate Market'
-              buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-              title='Fork has finalized. Please migrate this market to the new universe.'
-              description='Message about migrating, gas cost etc.'
-            />
+            {marketAwaitingForkMigration &&
+              <DismissableNotice
+                show={true}
+                buttonAction={this.props.migrateMarketModal}
+                buttonText='Migrate Market'
+                buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+                title='Fork has finalized. Please migrate this market to the new universe.'
+                description='Message about migrating, gas cost etc.'
+              />
+            }
             {marketResolved &&
               <ResolvedOutcomes
                 outcomes={outcomesFormatted}
