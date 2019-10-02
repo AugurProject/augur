@@ -16,6 +16,10 @@
     height: 0.5rem;
     margin-left: 1rem;
     width: 0.25rem;
+
+    > path {
+      stroke: @color-primary-text;
+    }
   }
 }
 
@@ -42,7 +46,7 @@
 
 .MarketView__paneContainer--mobile {
   flex: 1;
-  padding: @size-16 @size-8;
+  padding: @size-8 @size-4;
 
   > div:first-of-type {
     margin-bottom: @size-8;
@@ -294,7 +298,7 @@ div.OutcomeNameDisplay {
   .MarketView__button {
     > svg {
       height: 0.75rem;
-      margin-left: 1rem;
+      margin-left: @size-14;
       width: 0.5rem;
     }
   }
