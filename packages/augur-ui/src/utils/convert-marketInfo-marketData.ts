@@ -20,10 +20,15 @@ import {
 } from './format-number';
 import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
+import { getOutcomeNameWithOutcome } from './get-outcome';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
 ) {
+  const isReporting =
+    marketInfo.reportingState !== REPORTING_STATE.PRE_REPORTING &&
+    marketInfo.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+    marketInfo.reportingState !== REPORTING_STATE.FINALIZED;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
@@ -69,7 +74,8 @@ export function convertMarketInfoToMarketData(
     disputeInfo: processDisputeInfo(
       marketInfo.marketType,
       marketInfo.disputeInfo,
-      marketInfo.outcomes
+      marketInfo.outcomes,
+      isReporting
     ),
   };
 
@@ -126,9 +132,9 @@ function processOutcomes(
   }));
 }
 
-function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
+function getEmptyStake(outcomeId: number | null, bondSizeOfNewStake: string) {
   return {
-    outcome: String(outcomeId),
+    outcome: outcomeId !== null ? String(outcomeId) : null,
     bondSizeCurrent: bondSizeOfNewStake,
     stakeCurrent: '0',
     stakeRemaining: bondSizeOfNewStake,
@@ -142,19 +148,23 @@ function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
 function processDisputeInfo(
   marketType: string,
   disputeInfo: Getters.Markets.DisputeInfo,
-  outcomes: Getters.Markets.MarketInfoOutcome[]
+  outcomes: Getters.Markets.MarketInfoOutcome[],
+  isReporting: boolean,
 ): Getters.Markets.DisputeInfo {
-  if (!disputeInfo) return disputeInfo;
+  if (!disputeInfo || !isReporting) return disputeInfo;
   if (marketType === SCALAR) {
     const invalidIncluded = disputeInfo.stakes.find(
       s => Number(s.outcome) === INVALID_OUTCOME_ID
     );
-    if (invalidIncluded) return disputeInfo;
+    // add blank outcome
+    const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake)
+    if (invalidIncluded) return {...disputeInfo, stakes: [...disputeInfo.stakes, blankStake]};
     return {
       ...disputeInfo,
       stakes: [
         ...disputeInfo.stakes,
         getEmptyStake(INVALID_OUTCOME_ID, disputeInfo.bondSizeOfNewStake),
+        blankStake
       ],
     };
   }
@@ -178,26 +188,36 @@ function processDisputeInfo(
 function processConsensus(
   market: Getters.Markets.MarketInfo
 ): Consensus | null {
-  if (market.consensus === null) return null;
-  //   - formatted reported outcome
-  //   - the percentage of correct reports (for binaries only)
-  const winningOutcome = null;
-  let outcomeName = null;
-  if (market.outcomes.length) {
-    const winningOutcome = calculatePayoutNumeratorsValue(
-      market.maxPrice,
-      market.minPrice,
-      market.numTicks,
-      market.marketType,
-      market.consensus
-    );
-    // for scalars, we will just use the winningOutcome for display
-    const marketOutcome = market.outcomes.find(
-      outcome => outcome.id === parseInt(winningOutcome, 10)
-    );
-    if (marketOutcome) outcomeName = marketOutcome.description;
+  const isScalar = market.marketType === SCALAR;
+  if (market.reportingState === REPORTING_STATE.FINALIZED) {
+    return {
+      ...market.consensus,
+      winningOutcome: market.consensus.outcome,
+      outcomeName: isScalar
+        ? market.consensus.outcome
+        : getOutcomeNameWithOutcome(
+            market,
+            market.consensus.outcome,
+            market.consensus.invalid
+          ),
+    };
   }
-  return { payout: market.consensus, winningOutcome, outcomeName };
+
+  if (market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION) {
+    const winning = market.disputeInfo.stakes.find(s => s.tentativeWinning);
+    return {
+      ...winning,
+      winningOutcome: winning.outcome,
+      outcomeName: isScalar
+        ? winning.outcome
+        : getOutcomeNameWithOutcome(
+            market,
+            winning.outcome,
+            winning.isInvalidOutcome
+          ),
+    };
+  }
+  return null;
 }
 
 export const keyMarketInfoCollectionByMarketId = (

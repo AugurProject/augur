@@ -344,7 +344,11 @@ export class Users {
       limit: params.limit,
       skip: params.offset,
     };
-
+    let tradingPositions = null;
+    let marketTradingPositions = null;
+    let frozenFundsTotal = null;
+    let profitLossSummary = null;
+try {
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
       await getProfitLossRecordsByMarketAndOutcome(db, params.account, request)
     );
@@ -458,11 +462,11 @@ export class Users {
 
     // TODO add raw token balances that have no PL data for third party client integration to work ok.
 
-    const tradingPositions = _.flatten(
+    tradingPositions = _.flatten(
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
-    const marketTradingPositions = _.mapValues(
+    marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
       tradingPositionsByOutcome => {
         const tradingPositions = _.values(
@@ -495,7 +499,7 @@ export class Users {
       if (marketData.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
         if (marketData.tentativeWinningPayoutNumerators) {
           for (const tentativeWinningPayoutNumerator in marketData.tentativeWinningPayoutNumerators) {
-            if (marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator] !== '0x00' && marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]) {
+            if (marketOutcomeBalances[marketData.market] && marketData.tentativeWinningPayoutNumerators[tentativeWinningPayoutNumerator] !== '0x00' && marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]) {
               const numShares = new BigNumber(marketOutcomeBalances[marketData.market][tentativeWinningPayoutNumerator]);
               const reportingFeeDivisor = marketData.feeDivisor;
               const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
@@ -520,7 +524,7 @@ export class Users {
     const allProfitLossResults = _.flatten(
       _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
     );
-    const frozenFundsTotal = _.reduce(
+    frozenFundsTotal = _.reduce(
       allProfitLossResults,
       (value, tradingPosition) => {
         return value.plus(tradingPosition.frozenFunds);
@@ -532,17 +536,20 @@ export class Users {
     const universe = params.universe
       ? params.universe
       : await augur.getMarket(params.marketId).getUniverse_();
-    const profitLossSummary = await Users.getProfitLossSummary(augur, db, {
+    profitLossSummary = await Users.getProfitLossSummary(augur, db, {
       universe,
       account: params.account,
     });
-
+  } catch(e) {
+    console.log(e)
+  }
     return {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
       frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
       unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
     };
+
   }
 
   @Getter('getProfitLossParams')
@@ -634,9 +641,11 @@ export class Users {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
-              const outcomeValues =
-              ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-              if (!latestOutcomePLValue || !outcomeValues) {
+              let hasOutcomeValues = !!(
+                ordersFilledResultsByMarketAndOutcome[marketId] &&
+                ordersFilledResultsByMarketAndOutcome[marketId][outcome]
+              );
+              if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp,
                   frozenFunds: '0',
@@ -653,6 +662,7 @@ export class Users {
                   currentValue: '0',
                 };
               }
+              const outcomeValues = ordersFilledResultsByMarketAndOutcome[marketId][outcome];
               let outcomeValue = new BigNumber(
                 getLastDocBeforeTimestamp<ParsedOrderEventLog>(
                   outcomeValues,
@@ -815,13 +825,13 @@ export function sumTradingPositions(
   summedTrade.totalCost = totalCost.toFixed();
   summedTrade.realizedPercent = realizedCost.isZero()
     ? '0'
-    : realized.dividedBy(realizedCost).toFixed();
+    : realized.dividedBy(realizedCost).toFixed(4);
   summedTrade.unrealizedPercent = unrealizedCost.isZero()
     ? '0'
     : unrealized.dividedBy(unrealizedCost).toFixed();
   summedTrade.totalPercent = totalCost.isZero()
     ? '0'
-    : total.dividedBy(totalCost).toFixed();
+    : total.dividedBy(totalCost).toFixed(4);
 
   return summedTrade;
 }

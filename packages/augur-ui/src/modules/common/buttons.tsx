@@ -28,6 +28,9 @@ import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
+import { MARKET_TEMPLATES } from 'modules/create-market/constants';
+import { MARKETS } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -352,6 +355,35 @@ export const SortButton = (props: SortButtonProps) => (
     {SortIcon}
     {props.text}
   </button>
+);
+
+export interface CategoryButtonsProps {
+  categoryData: object;
+  action: Function;
+}
+
+export const CategoryButtons = ({
+  categoryData,
+  action,
+}: CategoryButtonsProps) => (
+  <div className={Styles.CategoryButtons}>
+    {MARKET_TEMPLATES.map((item, idx) => {
+      const categoryName = item.value.toLowerCase();
+      let body = null;
+      if (categoryData) {
+        const marketText =
+          categoryData[categoryName].markets === 1 ? 'Market' : 'Markets';
+        body = `${categoryData[categoryName].markets} ${marketText} | ${categoryData[categoryName].OI}`;
+      }
+      return (
+        <div key={idx} onClick={() => action(categoryName)}>
+          <div>{item.icon}</div>
+          <div>{item.header}</div>
+          <div className={!categoryData ? Styles.loading : ''}>{body}</div>
+        </div>
+      );
+    })}
+  </div>
 );
 
 export const FilterButton = (props: DefaultActionButtonProps) => (

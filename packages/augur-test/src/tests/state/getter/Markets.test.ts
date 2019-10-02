@@ -57,7 +57,7 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
+      extraInfo: '{"categories": ["common", "yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
     })).address;
     markets['yesNoMarket2'] = (await john.createYesNoMarket({
       endTime,
@@ -89,7 +89,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
-      extraInfo: '{"categories": ["scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
+      extraInfo: '{"categories": ["common", "scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
     })).address;
     endTime = endTime.plus(1);
     markets['scalarMarket2'] = (await john.createScalarMarket({
@@ -1954,6 +1954,7 @@ describe('State API :: Markets :: ', () => {
       universe: john.augur.contracts.universe.address,
     });
     expect(categories).toMatchObject([
+      'common',
       'yesNo 1 primary',
       'yesNo 1 secondary',
       'yesNo 1 tertiary',
@@ -1973,5 +1974,80 @@ describe('State API :: Markets :: ', () => {
       'scalar 2 secondary',
       'scalar 2 tertiary',
     ]);
+  });
+
+  test(':getCategoryStats', async () => {
+    const yesNoMarket1 = john.augur.contracts.marketFromAddress(markets['yesNoMarket1']);
+    const scalarMarket1 = john.augur.contracts.marketFromAddress(markets['scalarMarket1']);
+
+    const numShares = new BigNumber(10000000000000);
+    const price = new BigNumber(22);
+
+    const order1Id = await john.placeOrder(
+      yesNoMarket1.address,
+      ORDER_TYPES.ASK,
+      numShares,
+      price,
+      outcome1,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('volumetric'),
+    );
+    const order2Id = await john.placeOrder(
+      scalarMarket1.address,
+      ORDER_TYPES.ASK,
+      numShares,
+      price,
+      outcome1,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('galvanize'),
+    );
+
+    await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+
+    await mary.fillOrder(
+      order1Id,
+      numShares.div(10),
+      'volumetric',
+    );
+    await mary.fillOrder(
+      order2Id,
+      numShares.div(2),
+      'galvanize',
+    );
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+    const stats = await api.route('getCategoryStats', {
+      universe: john.augur.contracts.universe.address,
+      categories: [
+        'yesNo 1 primary',
+        'common',
+        'categorical 2 secondary',
+        'nonexistent'
+      ],
+    });
+    expect(stats).toEqual({
+      'yesNo 1 primary': {
+        category: 'yesNo 1 primary',
+        numberOfMarkets: 1,
+        volume: '100000000000000',
+      },
+      'common': {
+        category: 'common',
+        numberOfMarkets: 2,
+        volume: '600000000000000',
+      },
+      'categorical 2 secondary': {
+        category: 'categorical 2 secondary',
+        numberOfMarkets: 1,
+        volume: '0',
+      },
+      'nonexistent': {
+        category: 'nonexistent',
+        numberOfMarkets: 0,
+        volume: '0',
+      },
+    });
   });
 });

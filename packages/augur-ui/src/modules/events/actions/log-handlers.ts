@@ -441,6 +441,7 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   getState: () => AppState
 ) => {
   console.log('handleUniverseForkedLog');
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
@@ -497,6 +498,7 @@ export const handleDisputeWindowCreatedLog = (
   log: Logs.DisputeWindowCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadDisputeWindow());
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleTokensMintedLog = (

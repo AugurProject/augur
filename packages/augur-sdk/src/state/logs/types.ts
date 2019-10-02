@@ -125,6 +125,8 @@ export interface MarketCreatedLogExtraInfo {
   resolutionSource?: string;
   backupSource?: string;
   _scalarDenomination?: string;
+  categories?: string[];
+  tags?: string[];
 }
 
 export interface MarketCreatedLog extends Log, Doc, Timestamped {

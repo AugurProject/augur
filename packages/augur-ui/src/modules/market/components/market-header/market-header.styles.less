@@ -32,12 +32,31 @@
       display: flex;
       flex: 1;
       flex-wrap: wrap;
-      margin-right: @size-20;
+      margin-right: @size-8;
       max-width: 654px;
-      padding-top: @size-12;
+      padding-top: @size-8;
+      align-items: center;
 
-      > span {
-        margin: 0 @size-8 0 0;
+      > div:first-of-type {
+        height: fit-content;
+        > span {
+          margin: 0 @size-8 0 0;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        flex: 1;
+        justify-content: flex-end;
+        display: flex;
+
+        > svg {
+          cursor: pointer;
+        }
+      }
+
+      > div:last-of-type {
+        display: flex;
+        margin-left: @size-8;
       }
     }
 
@@ -52,22 +71,6 @@
       margin: 0 @size-8 0 0;
     }
   }
-}
-
-.TimeSection {
-  background: @color-module-background;
-  border-left: 1px solid @color-dark-grey;
-  max-width: 240px;
-  width: 200px;
-  padding: @size-12 @size-16;
-
-  > div:first-of-type {
-    margin-bottom: @size-8;
-  }
-}
-
-.ScalarBox {
-  border-top: 1px solid @color-dark-grey;
 }
 
 div.Toggle {
@@ -131,13 +134,13 @@ div.Toggle {
   background: none;
   border: 0;
   margin: 0;
-  margin-top: -@size-10;
-  max-height: 30px;
+  max-height: @size-16;
   overflow: hidden;
   resize: none;
   text-transform: none;
   transition: max-height 0.15s ease-out;
   white-space: pre-wrap;
+  margin-bottom: @size-12;
 
   > p {
     margin-top: 0;
@@ -184,7 +187,7 @@ div.Toggle {
 
   > div:first-of-type {
     flex: 1;
-    margin-right: @size-20;
+    margin-right: @size-8;
     max-width: 654px;
 
     &.Collapsed {
@@ -284,21 +287,6 @@ div.Toggle {
   display: flex;
   flex: 1;
   flex-direction: column;
-}
-
-.Core {
-  display: flex;
-  flex: 1;
-
-  > div:first-of-type {
-    @media @breakpoint-mobile {
-      padding-top: @size-16;
-    }
-  }
-
-  > div {
-    flex: 1;
-  }
 }
 
 @media @breakpoint-mobile {
