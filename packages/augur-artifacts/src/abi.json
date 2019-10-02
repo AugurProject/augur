@@ -603,6 +603,25 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_noShowBond",
+					"type": "uint256"
+				}
+			],
+			"name": "logNoShowBondChanged",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -1259,6 +1278,25 @@
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_designatedReportStake",
+					"type": "uint256"
+				}
+			],
+			"name": "logDesignatedReportStakeChanged",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				},
@@ -1389,6 +1427,44 @@
 				}
 			],
 			"name": "logInitialReporterRedeemed",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_reportingFee",
+					"type": "uint256"
+				}
+			],
+			"name": "logReportingFeeChanged",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_validityBond",
+					"type": "uint256"
+				}
+			],
+			"name": "logValidityBondChanged",
 			"outputs": [
 				{
 					"name": "",
@@ -2928,6 +3004,74 @@
 				}
 			],
 			"name": "TimestampSet",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "validityBond",
+					"type": "uint256"
+				}
+			],
+			"name": "ValidityBondChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "designatedReportStake",
+					"type": "uint256"
+				}
+			],
+			"name": "DesignatedReportStakeChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "noShowBond",
+					"type": "uint256"
+				}
+			],
+			"name": "NoShowBondChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "reportingFee",
+					"type": "uint256"
+				}
+			],
+			"name": "ReportingFeeChanged",
 			"type": "event"
 		}
 	],
@@ -4581,13 +4725,8 @@
 	"GnosisSafeRegistry": [
 		{
 			"constant": false,
-			"inputs": [
-				{
-					"name": "_gnosisSafeRegistry",
-					"type": "address"
-				}
-			],
-			"name": "callRegister",
+			"inputs": [],
+			"name": "register",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -4595,8 +4734,21 @@
 		},
 		{
 			"constant": false,
-			"inputs": [],
-			"name": "register",
+			"inputs": [
+				{
+					"name": "_gnosisSafeRegistry",
+					"type": "address"
+				},
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_cash",
+					"type": "address"
+				}
+			],
+			"name": "callRegister",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -16556,20 +16708,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "totalAmountFeesPaid",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -16654,6 +16792,20 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "feesPaid",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{

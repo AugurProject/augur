@@ -26,8 +26,7 @@ test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
   john.setUseGnosisSafe(true);
   john.setUseGnosisRelay(false);
 
-  // Approve use of funds
-  await john.approveCentralAuthority();
+  // Approving use of funds isnt needed as the gnosis registration takes care of that
 
   // Now lets make a market and do a trade
   console.log('Making Market');

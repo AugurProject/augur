@@ -19,8 +19,7 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
     IERC20 public cash;
     IUniverse public universe;
     ICompleteSets public completeSets;
-    uint256 public totalAmountFeesPaid;
-
+    uint256 public feesPaid;
 
     function initialize(IAugur _augur, IUniverse _universe, address _erc1820RegistryAddress) external beforeInitialized {
         endInitialization();
@@ -41,24 +40,20 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
     function withdraw(uint256 _amount) external returns (bool) {
         burn(msg.sender, _amount);
 
-        uint256 _payout = _amount;
-        uint256 _amountOwedFees = _amount;
-
-        if (totalAmountFeesPaid >= _amountOwedFees) {
-            totalAmountFeesPaid = totalAmountFeesPaid.sub(_amountOwedFees);
-            _amountOwedFees = 0;
-        } else if (totalAmountFeesPaid > 0) {
-            _amountOwedFees = _amountOwedFees.sub(totalAmountFeesPaid);
-            totalAmountFeesPaid = 0;
-        }
-
+        // Withdraw cash to this contract
         universe.withdraw(address(this), _amount, address(0));
 
-        if (_amountOwedFees > 0) {
-            uint256 _reportingFeeDivisor = universe.getOrCacheReportingFeeDivisor();
-            uint256 _reportingFee = _amountOwedFees.div(_reportingFeeDivisor);
-            _payout = _payout.sub(_reportingFee);
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _reportingFee);
+        uint256 _payout = _amount;
+        uint256 _reportingFeeDivisor = universe.getOrCacheReportingFeeDivisor();
+        uint256 _feesOwed = _amount / _reportingFeeDivisor;
+
+        if (feesPaid > _feesOwed) {
+            feesPaid = feesPaid.sub(_feesOwed);
+        } else {
+            _feesOwed = _feesOwed.sub(feesPaid);
+            feesPaid = 0;
+            _payout = _payout.sub(_feesOwed);
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _feesOwed);
         }
 
         cash.transfer(msg.sender, _payout);
@@ -68,17 +63,15 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
 
     function payFees(uint256 _feeAmount) external returns (bool) {
         burn(msg.sender, _feeAmount);
-        uint256 _reportingFeeDivisor = universe.getOrCacheReportingFeeDivisor();
-        uint256 _openInterestAmount = _feeAmount.mul(_reportingFeeDivisor);
         universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _feeAmount, address(0));
-        totalAmountFeesPaid = totalAmountFeesPaid.add(_openInterestAmount);
+        feesPaid = feesPaid.add(_feeAmount);
         return true;
     }
 
     function buyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         require(universe.isContainerForMarket(_market), "Market does not belong to universe");
         uint256 _cost = _amount.mul(_market.getNumTicks());
-        totalAmountFeesPaid = totalAmountFeesPaid.add(_cost);
+        feesPaid = feesPaid.add(_cost / universe.getOrCacheReportingFeeDivisor());
         burn(msg.sender, _cost);
         universe.withdraw(msg.sender, _cost, address(0));
         completeSets.buyCompleteSets(msg.sender, _market, _amount);

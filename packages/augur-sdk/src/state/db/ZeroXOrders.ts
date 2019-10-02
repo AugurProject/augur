@@ -12,6 +12,8 @@ import { SignedOrder } from '@0x/types';
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load. We can do this on demand if the full sync above is too slow
 
+const EXPECTED_ASSET_DATA_LENGTH = 650;
+
 export interface OrderData {
   token: string;
   price: string;
@@ -75,7 +77,8 @@ export class ZeroXOrders extends AbstractDB {
 
   // TODO: Investigate actual data returned to see if we need to handle the "KIND" field. If for example a "EXPIRED" kind does not also set the fillableTakerAssetAmount to 0 then we'll need to handle that
   handleMeshEvent(orderEvents: OrderEvent[]): void {
-    const documents = _.map(orderEvents, this.processOrder.bind(this));
+    const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
+    const documents = _.map(filteredOrders, this.processOrder.bind(this));
     this.bulkUpsertUnorderedDocuments(
       documents
     ).then((success) => {
@@ -92,7 +95,8 @@ export class ZeroXOrders extends AbstractDB {
     let success = true;
     let documents;
     if (orders.length > 0) {
-      documents = _.map(orders, this.processOrder.bind(this));
+      documents = _.filter(orders, this.validateOrder.bind(this));
+      documents = _.map(documents, this.processOrder.bind(this));
 
       success = await this.bulkUpsertUnorderedDocuments(
         documents
@@ -103,6 +107,13 @@ export class ZeroXOrders extends AbstractDB {
     } else {
       throw new Error('Unable to sync ZeroX Orders');
     }
+  }
+
+  validateOrder(order: OrderInfo): boolean {
+    if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
+    if (order.signedOrder.makerAssetData !== order.signedOrder.takerAssetData) return false;
+    // TODO Validate minimum order size
+    return true;
   }
 
   processOrder(order: OrderInfo): BaseDocument {

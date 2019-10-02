@@ -78,8 +78,8 @@ def test_openInterestCash_payFees(contractsFixture, augur, universe, cash, marke
     with TokenDelta(cash, halfDepositFees, disputeWindowAddress):
         assert openInterestCash.payFees(halfDepositFees, sender=account2)
 
-    totalAmountFeesPaid = openInterestCash.totalAmountFeesPaid()
-    assert totalAmountFeesPaid == depositAmount / 2
+    feesPaid = openInterestCash.feesPaid()
+    assert feesPaid == halfDepositFees
 
     # On withdraw account 1 will only have to pay half of the amount owed
     expectedFees = depositAmount / reportingFeeDivisor / 2
@@ -102,10 +102,10 @@ def test_completeSets(contractsFixture, augur, universe, cash, market):
 
     # Now that OI Cash has been deposited we can choose to use it to buy complete sets rather than taking the money out and paying fees
     numCompleteSets = 10**14
-    initialFeesPaid = openInterestCash.totalAmountFeesPaid()
+    initialFeesPaid = openInterestCash.feesPaid()
     assert openInterestCash.buyCompleteSets(market.address, numCompleteSets)
 
     for i in range(0, 3):
         assert contractsFixture.applySignature("ShareToken", market.getShareToken(i)).balanceOf(account1) == numCompleteSets
 
-    assert openInterestCash.totalAmountFeesPaid() == initialFeesPaid + (numCompleteSets * market.getNumTicks())
+    assert openInterestCash.feesPaid() == initialFeesPaid + (numCompleteSets * market.getNumTicks() / universe.getOrCacheReportingFeeDivisor())

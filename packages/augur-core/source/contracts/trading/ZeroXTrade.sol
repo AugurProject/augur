@@ -113,6 +113,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
             IExchange.Order memory _order = _orders[i];
+            validateOrder(_order);
 
             // Update 0x. This will also validate signatures and order state for us.
             IExchange.FillResults memory totalFillResults = exchange.fillOrderNoThrow(
@@ -134,6 +135,15 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         return _fillAmountRemaining;
     }
 
+    function validateOrder(IExchange.Order memory _order) internal pure {
+        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
+        (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
+        require(_zeroXTradeToken == _zeroXTradeTokenTaker);
+        require(_tokenId == _tokenIdTaker);
+        // XXX: Needs merge from master to work
+        // XXX require(_zeroXTradeToken == this);
+    }
+
     function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
         // parseOrderData will validate that the token being traded is the leigitmate one for the market
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
@@ -151,7 +161,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
     }
 
     function creatorHasFundsForTrade(IExchange.Order memory _order, uint256 _amount) public view returns (bool) {
-        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order);
+        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
         return _amount <= _zeroXTradeToken.balanceOf(_order.makerAddress, _tokenId);
     }
 
@@ -269,8 +279,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         _data.kycToken = _kycToken;
     }
 
-    function getZeroXTradeTokenData(IExchange.Order memory _order) public pure returns (IERC1155 _token, uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
+    function getZeroXTradeTokenData(bytes memory _assetData) public pure returns (IERC1155 _token, uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_assetData);
         _token = IERC1155(_tokenAddress);
         _tokenId = _tokenIds[0];
     }
