@@ -51,10 +51,6 @@ export const Transactions = ({
             <DAIFaucetButton action={daiFaucet} />
           </div>
         )}
-        <div>
-          <p>Approve for trading</p>
-          <ApprovalButton action={approval} />
-        </div>
       </div>
     }
   />
