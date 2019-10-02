@@ -13,15 +13,8 @@
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
-    bottom: 0;
-    flex-flow: column nowrap;
-    height: 100%;
-    left: 0;
-    max-height: 100%;
-    padding-bottom: @size-4;
-    right: 0;
-    top: 0;
     width: 100%;
+    top: @top-bar-height-mobile;
 
     &::after {
       border: none;
@@ -54,7 +47,6 @@
   width: 100%;
 
   @media @breakpoint-mobile {
-    margin-top: @size-40;
     max-height: unset;
   }
 }

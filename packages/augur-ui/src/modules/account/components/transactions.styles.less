@@ -7,6 +7,7 @@
   flex-flow: row wrap;
   justify-content: space-between;
   padding: @size-24;
+  flex: 1;
 
   > button:first-of-type {
     flex: 0 0 auto;
@@ -40,7 +41,7 @@
 
   > div {
     display: flex;
-    flex: 1 100%;
+    flex: 1 50%;
     flex-flow: column nowrap;
 
     > p {
@@ -56,6 +57,20 @@
     > button {
       flex: 0 0 16.75rem;
       margin: auto;
+    }
+
+    &:first-of-type {
+      > p, 
+      > button {
+        margin-right: @size-12;
+      }
+    }
+
+    &:last-of-type {
+      > p, 
+      > button {
+        margin-left: @size-12;
+      }
     }
   }
 
