@@ -97,7 +97,15 @@
   border-bottom: 1px solid @color-dark-grey;
 
   @media @breakpoint-mobile {
-    margin-bottom: @size-8;
+    border-top: 1px solid @color-dark-grey;
+    border-radius: 0;
+    flex-direction: column;
+
+    > div:first-of-type {
+      > span:nth-of-type(2) {
+        margin-bottom: @size-12;
+      }
+    }
   }
 
   @media @breakpoint-mobile-extra-small {
