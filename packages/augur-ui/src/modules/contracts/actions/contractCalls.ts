@@ -656,3 +656,15 @@ export async function claimMarketsProceeds(
     );
   }
 }
+
+export async function migrateThroughOneFork(
+  marketId: string,
+  description: string
+): Promise<void> {
+  const Augur = augurSdk.get();
+
+  const market = Augur.getMarket(marketId);
+  // const winningPayoutNumerators = market.getWinningPayoutNumerator_();
+  // return market.migrateThroughOneFork();
+  return;
+}
