@@ -657,11 +657,22 @@ export async function claimMarketsProceeds(
   }
 }
 
+export async function migrateThroughOneForkEstimateGas(
+  marketId: string,
+  payoutNumerators: BigNumber[],
+  description: string
+): Promise<BigNumber> {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(marketId);
+  return market.migrateThroughOneFork_estimateGas(payoutNumerators, description);
+}
+
 export async function migrateThroughOneFork(
   marketId: string,
+  payoutNumerators: BigNumber[],
   description: string
-): Promise<void> {
+) {
   const Augur = augurSdk.get();
-  // TBD
-  return;
+  const market = Augur.getMarket(marketId);
+  return market.migrateThroughOneFork(payoutNumerators, description);
 }

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { ModalMigrateMarket } from 'modules/modal/components/modal-migrate-market';
-import { migrateMarketThroughOneFork } from 'modules/forking/actions/migrate-market-through-one-fork';
+import { migrateMarketThroughOneFork } from 'modules/forking/actions/migrate-through-one-fork';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
@@ -15,6 +15,7 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
+  // TODO: Replace MIGRATE_MARKET_GAS_ESTIMATE with call to `migrateMarketThroughOneFork` with `estimateGas` set to true
   gasCost: formatGasCostToEther(
     MIGRATE_MARKET_GAS_ESTIMATE.toFixed(),
     { decimalsRounded: 4 },
@@ -24,8 +25,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  migrateMarketThroughOneFork: (marketId, estimateGas, callback) =>
-    dispatch(migrateMarketThroughOneFork(marketId, estimateGas, callback)),
+  migrateMarketThroughOneFork: (marketId, payoutNumerators, description, estimateGas, callback) =>
+    dispatch(migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas, callback)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -37,8 +38,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     marketTitle: sP.modal.market.description,
     type: sP.modal.marketType,
     closeModal: () => dP.closeModal(),
-    migrateMarketThroughOneFork: (marketId, estimateGas, callback) => {
-      dP.migrateMarketThroughOneFork(marketId, estimateGas, callback)
+    migrateMarketThroughOneFork: (marketId, payoutNumerators, description, estimateGas, callback) => {
+      dP.migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas, callback)
     },
     breakdown: [
       {
