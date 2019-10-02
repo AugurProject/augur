@@ -662,9 +662,6 @@ export async function migrateThroughOneFork(
   description: string
 ): Promise<void> {
   const Augur = augurSdk.get();
-
-  const market = Augur.getMarket(marketId);
-  // const winningPayoutNumerators = market.getWinningPayoutNumerator_();
-  // return market.migrateThroughOneFork();
+  // TBD
   return;
 }
