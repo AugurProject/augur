@@ -419,9 +419,7 @@ export class DisputingBondsView extends Component<
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div
-        className={classNames(Styles.DisputingBondsView, {
-          [Styles.Scalar]: isScalar,
-        })}
+        className={classNames(Styles.DisputingBondsView)}
       >
         {isScalar && id === "null" && (
           <ScalarOutcomeView
@@ -456,8 +454,8 @@ export class DisputingBondsView extends Component<
         <span>Review</span>
         <LinearPropertyLabel
           key="disputeRoundStake"
-          label="Dispute Round Stake"
-          value={formatAttoRep(stakeValue).formatted + ' REP'}
+          label={tentativeWinning ? "Contribute to Next Round" : "Dispute Round Stake"}
+          value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
         <LinearPropertyLabel
           key="estimatedGasFee"

@@ -6,7 +6,7 @@ import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import { ReportingRadioBarGroup, ReportingRadioBarProps } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE } from 'modules/common/constants';
+import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE, INVALID_OUTCOME_NAME } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
@@ -67,12 +67,17 @@ export default class ModalReporting extends Component<
     this.setState({ radioButtons: this.buildRadioButtonCollection() })
   }
 
-  updateChecked = (selected: string) => {
+  updateChecked = (selected: string, isInvalid: boolean = false) => {
     const { radioButtons } = this.state;
     this.updateDisputeStake({ inputStakeValue: '', inputToAttoRep: '' });
-    radioButtons.map(r => (r.id === selected) ? r.checked = true : r.checked = false);
+    radioButtons.map(r =>
+      r.id === selected && r.isInvalid === isInvalid
+        ? (r.checked = true)
+        : (r.checked = false)
+    );
+    const radioValue = radioButtons.find(r => r.checked);
     this.updatePreFilledStake('');
-    this.updateScalarOutcome('');
+    this.updateScalarOutcome(String(radioValue.value) ? String(radioValue.value) : '');
     this.setState({ radioButtons });
   };
 
@@ -93,7 +98,6 @@ export default class ModalReporting extends Component<
       maxPrice
     } = market;
 
-    // todo: need to add already staked outcomes for scalar markets for disputing
     let sortedOutcomes = outcomesFormatted;
     if (selectedOutcome !== null) {
       const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
@@ -122,18 +126,29 @@ export default class ModalReporting extends Component<
       });
 
     if (marketType === SCALAR) {
+      if (selectedOutcome && String(selectedOutcome) !== 'null')
+        this.updateScalarOutcome(String(selectedOutcome));
+      radioButtons = [];
+      const denomination = market.scalarDenomination;
       disputeInfo.stakes.forEach(stake => {
+        const populatedHeader = stake.isInvalidOutcome
+          ? INVALID_OUTCOME_NAME
+          : `${stake.outcome} ${denomination}`;
         radioButtons.push({
           id: String(stake.outcome),
-          header: stake.outcome ? stake.outcome : `Enter a range from ${minPrice} to ${maxPrice}`,
+          header: stake.outcome
+            ? populatedHeader
+            : `Enter a range from ${minPrice} to ${maxPrice}`,
           value: stake.outcome ? Number(stake.outcome) : null,
           description: stake.outcome,
           checked: checked === stake.outcome,
           isInvalid: stake.isInvalidOutcome,
-          preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
+          preFilledStake: formatAttoRep(
+            stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent
+          ).formatted,
           stake,
-        })
-      })
+        });
+      });
     }
     return radioButtons;
   }
@@ -181,14 +196,23 @@ export default class ModalReporting extends Component<
       setTimeout(() => this.props.closeAction(), 1000);
     } else {
       // disputing
-      const tentativeWinningStake = disputeInfo.stakes.find(
+      let tentativeWinningStake = disputeInfo.stakes.find(
         s => s.tentativeWinning
       );
+      if (isInvalid) {
+        tentativeWinningStake = disputeInfo.stakes.find(
+          s => s.isInvalidOutcome
+        );
+        // only one outcome can be invalid. if choosen match outcomeIds
+        outcomeId = tentativeWinningStake.outcome;
+      }
       let tentativeOutcomeId = parseInt(tentativeWinningStake.outcome, 10);
       if (marketType === SCALAR) {
         tentativeOutcomeId = parseFloat(tentativeWinningStake.outcome);
       }
-      if (tentativeOutcomeId && tentativeOutcomeId === outcomeId) {
+      if (
+        tentativeOutcomeId === outcomeId
+      ) {
         addRepToTentativeWinningOutcome({
           marketId,
           maxPrice,

@@ -24,6 +24,7 @@ import { keyBy } from './key-by';
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
 ) {
+  const isDispute = marketInfo.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || marketInfo.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
@@ -69,7 +70,8 @@ export function convertMarketInfoToMarketData(
     disputeInfo: processDisputeInfo(
       marketInfo.marketType,
       marketInfo.disputeInfo,
-      marketInfo.outcomes
+      marketInfo.outcomes,
+      isDispute
     ),
   };
 
@@ -142,9 +144,10 @@ function getEmptyStake(outcomeId: number | null, bondSizeOfNewStake: string) {
 function processDisputeInfo(
   marketType: string,
   disputeInfo: Getters.Markets.DisputeInfo,
-  outcomes: Getters.Markets.MarketInfoOutcome[]
+  outcomes: Getters.Markets.MarketInfoOutcome[],
+  isDispute: boolean,
 ): Getters.Markets.DisputeInfo {
-  if (!disputeInfo) return disputeInfo;
+  if (!disputeInfo || !isDispute) return disputeInfo;
   if (marketType === SCALAR) {
     const invalidIncluded = disputeInfo.stakes.find(
       s => Number(s.outcome) === INVALID_OUTCOME_ID

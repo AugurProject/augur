@@ -776,10 +776,9 @@ export const ReportingRadioBarGroup = ({
             inputScalarOutcome={inputScalarOutcome}
             updateDisputeStake={updateDisputeStake}
             isInvalid={tentativeWinning.isInvalid}
-            checked={String(tentativeWinning.value) === selected}
             updateScalarOutcome={updateScalarOutcome}
-            updateChecked={selected => {
-              updateChecked(selected);
+            updateChecked={(selected, isInvalid )=> {
+              updateChecked(selected, isInvalid);
             }}
             reportAction={reportAction}
             userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
@@ -809,8 +808,8 @@ export const ReportingRadioBarGroup = ({
               key={`${index}${radio.value}`}
               expandable
               {...radio}
-              updateChecked={selected => {
-                updateChecked(selected);
+              updateChecked={(selected, isInvalid) => {
+                updateChecked(selected, isInvalid);
               }}
               reportAction={reportAction}
               preFilledStake={preFilledStake}
@@ -832,14 +831,15 @@ export const ReportingRadioBarGroup = ({
       </span>
       {radioButtons.map(
         (radio, index) =>
+          !radio.stake.tentativeWinning &&
           radio.isInvalid && (
             <ReportingRadioBar
               market={market}
               key={`${index}${radio.value}`}
               expandable
               {...radio}
-              updateChecked={selected => {
-                updateChecked(selected);
+              updateChecked={(selected, isInvalid) => {
+                updateChecked(selected, isInvalid);
               }}
               reportAction={reportAction}
               preFilledStake={preFilledStake}
@@ -949,7 +949,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.Checked]: checked,
         })}
         role="button"
-        onClick={e => updateChecked(id)}
+        onClick={e => updateChecked(id, isInvalid)}
       >
         {checked ? FilledRadio : EmptyRadio}
         <h5>
