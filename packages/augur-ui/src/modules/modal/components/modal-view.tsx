@@ -34,6 +34,7 @@ import ModalContent from "modules/modal/containers/modal-content";
 import ModalCategories from "modules/modal/containers/modal-categories";
 import ModalMarketType from "modules/modal/containers/modal-market-type";
 import ModalDrQuickGuide from "modules/modal/containers/modal-dr-quick-guide";
+import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 
 import * as TYPES from "modules/common/constants";
 
@@ -112,6 +113,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalMarketLoading />;
     case TYPES.MODAL_DR_QUICK_GUIDE:
       return <ModalDrQuickGuide />;
+    case TYPES.MODAL_MIGRATE_MARKET:
+      return <ModalMigrateMarket {...modal} />;
     default:
       return <div />;
   }
