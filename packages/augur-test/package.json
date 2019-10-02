@@ -37,7 +37,9 @@
     "contract-dependencies-ethers": "10.0.0-alpha.1",
     "ethers": "4.0.37",
     "levelup": "4.2.0",
-    "memdown": "4.1.0"
+    "memdown": "4.1.0",
+    "pouchdb": "7.0.0",
+    "pouchdb-adapter-memory": "7.0.0"
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",
@@ -48,7 +50,7 @@
     "ganache-core": "2.8.0",
     "jest": "24.9.0",
     "jest-puppeteer": "4.3.0",
-    "pouchdb-adapter-memory": "7.1.1",
+    "pouchdb-adapter-memory": "7.0.0",
     "puppeteer": "1.20.0",
     "supertest": "4.0.2",
     "ts-jest": "24.0.2",

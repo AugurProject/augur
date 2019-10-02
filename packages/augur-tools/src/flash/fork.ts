@@ -9,9 +9,12 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
   const MAX_DISPUTES = 20;
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
+  console.log('HERO', 0, market);
   const payoutNumerators = getPayoutNumerators(market, 'invalid');
   const conflictOutcome = market.marketType === MarketTypeName.Scalar ? makeValidScalarOutcome(market) : 1;
+  console.log('HERO', 1);
   const conflictNumerators = getPayoutNumerators(market, conflictOutcome);
+  console.log('HERO', 2);
 
   const marketContract = user.augur.contracts.marketFromAddress(market.id);
 

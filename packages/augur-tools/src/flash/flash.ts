@@ -1,17 +1,17 @@
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { NetworkConfiguration } from "@augurproject/core";
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { NetworkConfiguration } from '@augurproject/core';
 
-import { ContractAPI } from "../libs/contract-api";
-import { Account } from "../constants";
-import { providers } from "ethers";
-import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
-import { API } from "@augurproject/sdk/build/state/getter/API";
-import { PouchDBFactory } from "@augurproject/sdk/build/state/db/AbstractDB";
-import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
-import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { EmptyConnector } from "@augurproject/sdk";
-import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { ContractAPI } from '../libs/contract-api';
+import { Account } from '../constants';
+import { providers } from 'ethers';
+import { Connectors, Events, SubscriptionEventName } from '@augurproject/sdk';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { PouchDBFactory } from '@augurproject/sdk/build/state/db/AbstractDB';
+import { IBlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { EmptyConnector } from '@augurproject/sdk';
+import { BaseConnector } from '@augurproject/sdk/build/connector';
 
 export interface FlashOption {
   name: string;
@@ -39,6 +39,7 @@ export class FlashSession {
   accounts: Account[];
   user?: ContractAPI;
   api?: API;
+  db?: DB;
   readonly scripts: { [name: string]: FlashScript } = {};
   log: Logger = console.log;
   network?: NetworkConfiguration;
@@ -145,7 +146,8 @@ export class FlashSession {
       if (!network) throw Error('Cannot wire up sdk if network is not set.');
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
-      this.api = new API(this.user.augur, this.makeDB());
+      this.db = await this.makeDB();
+      this.api = new API(this.user.augur, Promise.resolve(this.db));
     }
 
     if (approveCentralAuthority) {

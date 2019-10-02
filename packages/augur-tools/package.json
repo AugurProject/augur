@@ -61,6 +61,8 @@
     "vorpal": "1.12.0"
   },
   "resolutions": {
-    "**/memdown": "4.1.0"
+    "**/memdown": "4.1.0",
+    "leveldown": "5.0.2",
+    "levelup": "4.0.2"
   }
 }

@@ -678,9 +678,13 @@ export function addScripts(flash: FlashSession) {
         this.log(`Created market ${marketId}`);
       }
 
+      await this.db.sync(user.augur, 100000, 0);
+
+      console.log('ABRAKADABRA', 0);
       const marketInfo = (await this.api.route('getMarketsInfo', {
         marketIds: [marketId],
       }))[0];
+      console.log('ABRAKADABRA', 1);
 
       if (await fork(user, marketInfo)) {
         this.log('Fork successful!');
