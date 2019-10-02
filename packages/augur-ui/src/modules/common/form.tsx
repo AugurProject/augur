@@ -233,7 +233,7 @@ export interface RadioCardProps extends BaseRadioButtonProp {
 
 interface RadioGroupProps {
   id: string;
-  updateChecked: Function;
+  onChange: Function;
   radioButtons: BaseRadioButtonProp[];
   market?: MarketData;
   defaultSelected?: string | null;
@@ -874,7 +874,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 
   updateChecked = selected => {
-    this.props.updateChecked(selected);
+    this.props.onChange(selected);
     this.setState({ selected });
   };
 
@@ -882,7 +882,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const {
       radioButtons,
       market,
-      updateChecked,
       reportAction,
       preFilledStake,
       updatePreFilledStake,
@@ -927,7 +926,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
               {...radio}
               checked={radio.value === selected}
               onChange={selected => {
-                updateChecked(selected);
+                this.props.onChange(selected);
                 this.setState({ selected });
               }}
             />
@@ -1136,7 +1135,7 @@ export class RadioTwoLineBarGroup extends Component<
             {...radio}
             checked={radio.value === selected}
             onChange={selected => {
-              onChange(selected);
+              this.props.onChange(selected);
               this.setState({ selected });
             }}
           />
