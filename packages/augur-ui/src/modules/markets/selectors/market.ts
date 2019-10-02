@@ -97,22 +97,27 @@ const buildScalarDisputingOutcomes = (
 
   if (sortedStakes.length === 0) return [invalidOutcome];
 
-  const results = sortedStakes.map(s =>
-    s.isInvalidOutcome
-      ? invalidOutcome
-      : ({
-          // description is displayed as outcome in dispute form
-          id: Number(s.outcome),
-          description: `${formatAttoDai(s.outcome).formatted} ${denom}`,
-          marketId,
-          lastPricePercent: null,
-          lastPrice: null,
-          volumeFormatted: formatNumber(ZERO),
-          price: null,
-          volume: '0',
-          isTradeable: true,
-        } as OutcomeFormatted)
-  );
+  const results = sortedStakes.reduce((p, s) => {
+    if (s.outcome === null) return p;
+    return s.isInvalidOutcome
+      ? [...p, invalidOutcome]
+      : [
+          ...p,
+          {
+            // description is displayed as outcome in dispute form
+            id: Number(s.outcome),
+            description: `${s.outcome} ${denom}`,
+            marketId,
+            lastPricePercent: null,
+            lastPrice: null,
+            volumeFormatted: formatNumber(ZERO),
+            price: null,
+            volume: '0',
+            isTradeable: true,
+          } as OutcomeFormatted,
+        ];
+  }, []);
+
   return results.find(o => o.id === INVALID_OUTCOME_ID)
     ? results
     : [...results, invalidOutcome];

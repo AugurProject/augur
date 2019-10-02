@@ -25,6 +25,7 @@ import { getOutcomeNameWithOutcome } from './get-outcome';
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
 ) {
+  const isDispute = marketInfo.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || marketInfo.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
@@ -70,7 +71,8 @@ export function convertMarketInfoToMarketData(
     disputeInfo: processDisputeInfo(
       marketInfo.marketType,
       marketInfo.disputeInfo,
-      marketInfo.outcomes
+      marketInfo.outcomes,
+      isDispute
     ),
   };
 
@@ -127,9 +129,9 @@ function processOutcomes(
   }));
 }
 
-function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
+function getEmptyStake(outcomeId: number | null, bondSizeOfNewStake: string) {
   return {
-    outcome: String(outcomeId),
+    outcome: outcomeId !== null ? String(outcomeId) : null,
     bondSizeCurrent: bondSizeOfNewStake,
     stakeCurrent: '0',
     stakeRemaining: bondSizeOfNewStake,
@@ -143,19 +145,23 @@ function getEmptyStake(outcomeId: number, bondSizeOfNewStake: string) {
 function processDisputeInfo(
   marketType: string,
   disputeInfo: Getters.Markets.DisputeInfo,
-  outcomes: Getters.Markets.MarketInfoOutcome[]
+  outcomes: Getters.Markets.MarketInfoOutcome[],
+  isDispute: boolean,
 ): Getters.Markets.DisputeInfo {
-  if (!disputeInfo) return disputeInfo;
+  if (!disputeInfo || !isDispute) return disputeInfo;
   if (marketType === SCALAR) {
     const invalidIncluded = disputeInfo.stakes.find(
       s => Number(s.outcome) === INVALID_OUTCOME_ID
     );
-    if (invalidIncluded) return disputeInfo;
+    // add blank outcome
+    const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake)
+    if (invalidIncluded) return {...disputeInfo, stakes: [...disputeInfo.stakes, blankStake]};
     return {
       ...disputeInfo,
       stakes: [
         ...disputeInfo.stakes,
         getEmptyStake(INVALID_OUTCOME_ID, disputeInfo.bondSizeOfNewStake),
+        blankStake
       ],
     };
   }
