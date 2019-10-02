@@ -78,7 +78,7 @@ export default class ModalReporting extends Component<
     const radioValue = radioButtons.find(r => r.checked);
     this.updatePreFilledStake('');
     this.updateScalarOutcome(String(radioValue.value) ? String(radioValue.value) : '');
-    this.setState({ radioButtons });
+    this.setState({ radioButtons, checked: selected });
   };
 
   updatePreFilledStake = (preFilledStake: string) => {
