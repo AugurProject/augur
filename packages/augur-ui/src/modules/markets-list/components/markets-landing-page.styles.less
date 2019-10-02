@@ -1,0 +1,70 @@
+@import (reference) '~assets/styles/shared';
+
+.LandingPage {
+  @media @breakpoint-mobile {
+    margin: 0 @size-4;
+  }
+
+  > div:nth-of-type(1) {
+    .text-30-bold;
+
+    color: @color-primary-text;
+    display: flex;
+    justify-content: center;
+    margin: 77px auto 24px auto;
+    text-align: center;
+    width: @landing-page-width;
+
+    @media @breakpoint-mobile {
+      margin: @size-64 auto;
+      width: fit-content;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  > div:nth-of-type(3) {
+    margin-top: 87px;
+    margin-bottom: 55px;
+
+    > div {
+        @media @breakpoint-mobile-small {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+
+  > div:nth-of-type(4) {
+    .text-30-bold;
+
+    color: @color-primary-text;
+    margin: 0 @landing-page-margin;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16 @size-32 @size-16;
+    }
+  }
+
+  > div:nth-of-type(5) {
+    margin: 0 @landing-page-margin;
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
+  }
+
+  > article {
+    margin: 0 @landing-page-margin;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
+  }
+}
+
+
