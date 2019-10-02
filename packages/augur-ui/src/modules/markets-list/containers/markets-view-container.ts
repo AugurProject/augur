@@ -18,6 +18,7 @@ import { updateFilterSortOptions, MARKET_FILTER, MARKET_MAX_FEES, MARKET_MAX_SPR
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 
 const mapStateToProps = (state: AppState, { location }) => {
+  try {
   const markets = selectMarkets(state);
   const {
     keywords,
@@ -43,6 +44,9 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketFilter: state.filterSortOptions.marketFilter,
     marketCardFormat: state.marketsList.marketCardFormat,
   };
+}catch(e) {
+  console.log(e);
+}
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => ({
