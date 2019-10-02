@@ -28,14 +28,14 @@ interface MarketsListProps {
   showDisputingCard?: boolean;
   outcomes?: object;
   showOutstandingReturns?: boolean;
-  marketCount: number;
-  showPagination: boolean;
-  limit: number;
-  offset: number;
-  setOffset: Function;
-  updateLimit: Function;
   isSearchingMarkets: boolean;
   marketCardFormat: string;
+  showPagination: boolean;
+  limit?: number;
+  offset?: number;
+  setOffset?: Function;
+  updateLimit?: Function;
+  marketCount?: number;
 }
 
 interface MarketsListState {
@@ -74,7 +74,7 @@ export default class MarketsList extends Component<
     } = this.props;
     let marketCards = [];
 
-    const loadingLimit = limit === 1 ? 10 : limit;
+    const loadingLimit = 10;
     if (isSearchingMarkets) {
       new Array(loadingLimit).fill(null).map((prop, index) => (
         marketCards.push(

@@ -8,5 +8,6 @@ export const DISPUTING = 'disputing';
 export const TRANSACTIONS = 'transactions';
 export const MY_POSITIONS = 'portfolio';
 export const MIGRATE_REP = 'migrate-rep';
+export const LANDING_PAGE = 'explore';
 
 export const DEFAULT_VIEW = MARKETS;
