@@ -34,7 +34,7 @@ const BoxHeader = (props: BoxHeaderProps) => (
       >
         {props.bottomBarContent && (
           <div
-            className={classNames(Styles.DisputeTabs, {
+            className={classNames(Styles.BottomContent, {
               [Styles.noBackground]: props.noBackgroundBottom,
             })}
           >
