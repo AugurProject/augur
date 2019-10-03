@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import MarketCard from 'modules/market-cards/market-card';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { hasStakeInMarket } from 'modules/account/selectors/has-stake-in-market';
-import { MODAL_REPORTING } from 'modules/common/constants';
+import { MIGRATE_MARKET_GAS_ESTIMATE, MODAL_MIGRATE_MARKET, MODAL_REPORTING } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 
 const mapStateToProps = (state, ownProps) => {
@@ -32,6 +32,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         type: MODAL_REPORTING,
         market: ownProps.market,
         selectedOutcome,
+      })
+    ),
+  migrateMarketModal: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_MIGRATE_MARKET,
+        market: ownProps.market,
       })
     ),
 });

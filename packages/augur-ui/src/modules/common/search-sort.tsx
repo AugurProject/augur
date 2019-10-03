@@ -62,7 +62,7 @@ export class SearchSort extends React.Component<
             sortByStyles={sortByStyles}
           />
         )}
-        <SearchBar onFocus={this.onFocus} onChange={() => onChange} />
+        <SearchBar onFocus={this.onFocus} onChange={(value) => onChange(value)} />
       </div>
     );
   }

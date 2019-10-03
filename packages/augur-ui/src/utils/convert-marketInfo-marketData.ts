@@ -25,7 +25,10 @@ import { getOutcomeNameWithOutcome } from './get-outcome';
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
 ) {
-  const isDispute = marketInfo.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || marketInfo.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
+  const isReporting =
+    marketInfo.reportingState !== REPORTING_STATE.PRE_REPORTING &&
+    marketInfo.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+    marketInfo.reportingState !== REPORTING_STATE.FINALIZED;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
@@ -72,7 +75,7 @@ export function convertMarketInfoToMarketData(
       marketInfo.marketType,
       marketInfo.disputeInfo,
       marketInfo.outcomes,
-      isDispute
+      isReporting
     ),
   };
 
@@ -146,9 +149,9 @@ function processDisputeInfo(
   marketType: string,
   disputeInfo: Getters.Markets.DisputeInfo,
   outcomes: Getters.Markets.MarketInfoOutcome[],
-  isDispute: boolean,
+  isReporting: boolean,
 ): Getters.Markets.DisputeInfo {
-  if (!disputeInfo || !isDispute) return disputeInfo;
+  if (!disputeInfo || !isReporting) return disputeInfo;
   if (marketType === SCALAR) {
     const invalidIncluded = disputeInfo.stakes.find(
       s => Number(s.outcome) === INVALID_OUTCOME_ID

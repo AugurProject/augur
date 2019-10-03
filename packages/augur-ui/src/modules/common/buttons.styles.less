@@ -91,7 +91,7 @@
   }
 }
 
-.ToggleExtendButton {    
+.ToggleExtendButton {
   display: flex;
   margin-left: @size-4;
 
@@ -654,3 +654,77 @@
     }
   }
 }
+
+.CategoryButtons {
+  display: grid;
+  grid-template-columns: repeat(5, 168px);
+  grid-column-gap: 17px;
+  justify-content: center;
+
+  @media @breakpoint-mobile {
+    display: flex;
+    flex-wrap: wrap;
+
+    > div {
+      margin: @size-12;
+    }
+  }
+
+  > div {
+    .text-16-bold;
+
+    align-items: center;
+    background: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @size-3;
+    color: @color-primary-text;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 178px;
+    max-width: 168px;
+    min-height: 178px;
+    min-width: 168px;
+
+    > div:first-of-type {
+      > svg {
+        height: @size-42;
+        width: @size-42;
+
+        > path {
+          stroke: @color-primary-text;
+        }
+      }
+    }
+
+    > div:nth-of-type(2) {
+      margin: @size-22 0 @size-12 0;
+    }
+
+    > div:nth-of-type(3) {
+      .text-14;
+
+      color: @color-secondary-text;
+
+      &.loading {
+        animation: colorchange 0.5s infinite;
+        animation-direction: alternate-reverse;
+        background-color: @color-secondary-action-outline;
+        height: @size-16;
+        width: 80px;
+      }
+    }
+  }
+}
+
+@keyframes colorchange {
+  0% {
+    background-color: fade(@color-secondary-action-outline, 70)
+  }
+
+  100% {
+    background-color: fade(@color-secondary-action-outline, 100)
+  }
+}
+

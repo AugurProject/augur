@@ -22,16 +22,17 @@
 @media @breakpoint-mobile {
   .OutcomesList {
     background: @color-module-background;
-    border-radius: @border-radius-default;
+    border-radius: 1px;
     color: @color-primary-text;
-    border-left: 1px solid @color-dark-grey;  
-    border-right: 1px solid @color-dark-grey;  
+    border: 1px solid @color-dark-grey; 
+    margin-top: @size-8;
+    border-bottom: 0;
   }
 
   .Heading {
-    font-size: @size-14;
-    height: @size-48;
-    min-height: @size-48;
-    padding-left: @size-16;
+    .mono-11-bold;
+    
+    text-transform: uppercase;
+    padding: @size-12 @size-16;
   }
 }

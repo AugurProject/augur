@@ -150,6 +150,7 @@ export class ZeroX {
       new BigNumber(params.outcome),
       params.kycToken,
       params.expirationTime,
+      this.augur.addresses.ZeroXExchange,
       salt
     );
     const signedOrder: any[] = result[0];

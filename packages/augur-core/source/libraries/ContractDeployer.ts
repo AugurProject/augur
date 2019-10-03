@@ -473,6 +473,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
+        mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {
