@@ -12,7 +12,7 @@ import { SignedOrder } from '@0x/types';
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load. We can do this on demand if the full sync above is too slow
 
-const EXPECTED_ASSET_DATA_LENGTH = 650;
+const EXPECTED_ASSET_DATA_LENGTH = 714;
 
 export interface OrderData {
   market: string;
