@@ -177,6 +177,7 @@ export default class MarketCard extends React.Component<
       inDispute &&
       reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
       isLogged;
+    const canSupport = !disputeInfo.disputePacingOn
     const marketAwaitingForkMigration = reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION;
 
     return (
@@ -283,6 +284,7 @@ export default class MarketCard extends React.Component<
                   inDispute={inDispute}
                   showOutcomeNumber={showOutcomeNumber}
                   canDispute={canDispute}
+                  canSupport={canSupport}
                 />
                 {outcomesFormatted && outcomesFormatted.length > showOutcomeNumber && !expandedView &&
                   <button onClick={this.expand}>

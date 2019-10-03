@@ -111,20 +111,18 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   outcomesFormatted: OutcomeFormatted[];
 }
 
-export interface Universe {
-  id: string;
-  market?: Getters.Markets.MarketInfo;
-  forkEndTime?: number;
-  forkReputationGoal?: BigNumber;
-  forkingMarket?: string;
-  isForking?: boolean;
-  outcomes?: any;
-  isForkingMarketFinalized?: boolean;
+export interface ForkingInfo {
+  forkEndTime: number;
+  forkAttoReputationGoal: BigNumber;
+  forkingMarket: string;
+  forkAttoThreshold: BigNumber;
+  isForkingMarketFinalized: boolean;
   winningChildUniverseId?: string;
-  winningChildUniverse?: string;
-  openInterest?: BigNumber | string;
-  forkThreshold?: BigNumber;
+}
+export interface Universe extends Getters.Universe.UniverseDetails {
+  id: string;
   disputeWindow: Getters.Universe.DisputeWindow;
+  forkingInfo?: ForkingInfo;
 }
 
 export interface Versions {
@@ -539,6 +537,9 @@ export interface LoginAccount {
     address: string;
     signer: any | EthersSigner;
     isWeb3: boolean;
+    profileImage?: string;
+    email?: string;
+    openWallet?: Function;
   };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
@@ -559,6 +560,9 @@ export interface WindowApp extends Window {
   ethereum: object;
   localStorage: Storage;
   integrationHelpers: any;
+  fm?: any;
+  torus?: any;
+  portis?: any;
 }
 
 export type ButtonActionType = (
