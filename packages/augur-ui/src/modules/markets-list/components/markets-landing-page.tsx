@@ -129,7 +129,6 @@ export default class MarketsView extends Component<
           <PrimaryButton
             action={() => signupModal()}
             text='Signup to start betting'
-            disabled
           />
         </div> : <div />}
 
@@ -138,7 +137,7 @@ export default class MarketsView extends Component<
             history.push({
               pathname: makePath(MARKETS, null),
               search: `category=${categoryName}`,
-            })
+            });
           }}
           categoryData={this.state.marketStats}
         />

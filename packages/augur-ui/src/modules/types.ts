@@ -559,6 +559,9 @@ export interface WindowApp extends Window {
   ethereum: object;
   localStorage: Storage;
   integrationHelpers: any;
+  fm?: any;
+  torus?: any;
+  portis?: any;
 }
 
 export type ButtonActionType = (
