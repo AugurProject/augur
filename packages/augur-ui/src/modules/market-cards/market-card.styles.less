@@ -225,9 +225,11 @@
 			display: flex;
 			order: 4;
 			grid-column: 1 / span 2;
+			grid-row: -1;
 			justify-content: space-between;
-			margin-top: 0;
-			margin-bottom: @size-6;
+			margin: @size-12 -@size-12 -@size-12 -@size-12;
+			padding: @size-12;
+			background-color: @color-dark-grey;
 
 			> div:nth-of-type(2) {
 				display: none;
