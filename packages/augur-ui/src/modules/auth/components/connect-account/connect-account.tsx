@@ -1,93 +1,85 @@
-import React, { Component } from "react";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import Blockies from 'react-blockies';
 
-import ConnectDropdown from "modules/auth/containers/connect-dropdown";
-import ChevronFlip from "modules/common/chevron-flip";
-import formatAddress from "modules/auth/helpers/format-address";
+import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
+import ChevronFlip from 'modules/common/chevron-flip';
+import formatAddress from 'modules/auth/helpers/format-address';
 
-import Styles from "modules/auth/components/connect-account/connect-account.styles.less";
-import ToggleHeightStyles from "utils/toggle-height.styles.less";
+import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
+import ToggleHeightStyles from 'utils/toggle-height.styles.less';
+import { LoginAccount } from 'modules/types';
 
 interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
-  address?: string;
-  className?: string;
   updateConnectionTray: Function;
+  userInfo: LoginAccount['meta'];
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {
-  static defaultProps = {
-    address: "",
-    className: undefined,
-  };
+  connectAccount;
+  connectDropdown;
 
-  public connectAccount;
-  public connectDropdown;
-
-  constructor(props) {
-    super(props);
-
-    this.toggleDropdown = this.toggleDropdown.bind(this);
-  }
-
-  toggleDropdown(cb) {
+  toggleDropdown(cb?: Functio) {
     const { updateConnectionTray, isConnectionTrayOpen } = this.props;
     updateConnectionTray(!isConnectionTrayOpen);
     if (cb && typeof cb === "function") cb();
   }
 
   render() {
-    const { isLogged, address, className, isConnectionTrayOpen } = this.props;
+    const {
+      isLogged,
+      isConnectionTrayOpen,
+      userInfo,
+    } = this.props;
+
+    if (!isLogged || !userInfo) return null;
 
     return (
       <div
-        className={classNames(Styles.ConnectAccount, className, {
-          [Styles.selected]: isConnectionTrayOpen,
-          [Styles.ConnectAccountLoggedIn]: isLogged,
-        })}
-        ref={(connectAccount) => {
+        className={Styles.ConnectAccount}
+        ref={connectAccount => {
           this.connectAccount = connectAccount;
         }}
       >
         <div
-          className={classNames(Styles.container, {
-            [Styles.containerLoggedIn]: isLogged,
-          })}
-          onClick={this.toggleDropdown}
-          role="button"
+          onClick={() => this.toggleDropdown()}
+          role='button'
           tabIndex={-1}
         >
           <div>
-            <div className={classNames(Styles.status, {
-                  [Styles.logged]: isLogged,
-                })}>
-              <div className={Styles.statusIndicator} />
-              {isLogged ? "Connected" : "Disconnected"}
+            <div className={Styles.AccountInfo}>
+              {userInfo.profileImage ? (
+                <img src={userInfo.profileImage} />
+              ) : (
+                <Blockies seed={userInfo.address.toLowerCase()} />
+              )}
+              <div>
+                <div>Account</div>
+                <div>
+                  {userInfo.email
+                    ? userInfo.email
+                    : formatAddress(userInfo.address)}
+                </div>
+              </div>
             </div>
-            <div className={Styles.title}>
-              {isLogged ? formatAddress(address) : "Connect A Wallet"}
-              <span
-                className={classNames(Styles.arrow, {
-                  [Styles.arrowHide]: isLogged,
-                })}
-              >
-                <ChevronFlip
-                  pointDown={isConnectionTrayOpen}
-                  stroke="#fff"
-                  filledInIcon
-                  quick
-                />
-              </span>
-            </div>
+            <span>
+              <ChevronFlip
+                pointDown={isConnectionTrayOpen}
+                stroke='#fff'
+                filledInIcon
+                quick
+              />
+            </span>
           </div>
         </div>
         <div
-          ref={(connectDropdown) => {
+          ref={connectDropdown => {
             this.connectDropdown = connectDropdown;
           }}
           className={classNames(
-            Styles.connectDropdown,
+            Styles.ConnectDropdown,
             ToggleHeightStyles.target,
             ToggleHeightStyles.quick,
             {
@@ -95,7 +87,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             }
           )}
         >
-          <ConnectDropdown toggleDropdown={this.toggleDropdown} />
+          <ConnectDropdown toggleDropdown={(cb) => this.toggleDropdown(cb)} />
         </div>
       </div>
     );

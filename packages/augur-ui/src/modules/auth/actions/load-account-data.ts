@@ -25,9 +25,9 @@ export const loadAccountData = (
     windowApp &&
     windowApp.localStorage.setItem &&
     loginAccount &&
-    loginAccount.meta &&
-    loginAccount.meta.accountType === ACCOUNT_TYPES.METAMASK
+    loginAccount.meta
   ) {
+    windowApp.localStorage.setItem('loggedInAccountType', loginAccount.meta.accountType);
     windowApp.localStorage.setItem('loggedInAccount', address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));

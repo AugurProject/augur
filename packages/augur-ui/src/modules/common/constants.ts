@@ -55,6 +55,7 @@ export const ETHEREUM_NODE_WS = 'ethereum_node_ws';
 // # Auth Types
 export const REGISTER = 'register';
 export const LOGIN = 'login';
+export const SIGNUP = 'signup';
 export const LOGOUT = 'logout';
 export const IMPORT = 'import';
 export const FUND_ACCOUNT = 'fund_account';
@@ -73,12 +74,13 @@ export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
 // # Connect Nav Constants
 export const ACCOUNT_TYPES = {
-  EDGE: 'edge',
-  PORTIS: 'portis',
-  FORTMATIC: 'fortmatic',
-  LEDGER: 'ledger',
-  METAMASK: 'metaMask',
-  TREZOR: 'trezor',
+  EDGE: 'Edge',
+  PORTIS: 'Portis',
+  FORTMATIC: 'Fortmatic',
+  TORUS: 'Torus',
+  LEDGER: 'Ledger',
+  METAMASK: 'MetaMask',
+  TREZOR: 'Trezor',
   UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
 };
 
