@@ -15,11 +15,12 @@ import { SignedOrder } from '@0x/types';
 const EXPECTED_ASSET_DATA_LENGTH = 650;
 
 export interface OrderData {
-  token: string;
+  market: string;
   price: string;
   outcome: string;
   orderType: string;
   kycToken: string;
+  exchange: string;
 }
 
 export interface Document extends BaseDocument {
@@ -126,11 +127,12 @@ export class ZeroXOrders extends AbstractDB {
   parseAssetData(assetData: string): OrderData {
     const data = assetData.substr(2); // remove the 0x
     return {
-      token: getAddress(`0x${data.substr(32, 40)}`),
-      price: `0x${data.substr(392, 60)}`,
-      outcome: `0x${data.substr(452, 2)}`,
-      orderType: `0x${data.substr(454, 2)}`,
+      market: getAddress(`0x${data.substr(456, 40)}`),
+      price: `0x${data.substr(496, 20)}`,
+      outcome: `0x${data.substr(516, 2)}`,
+      orderType: `0x${data.substr(518, 2)}`,
       kycToken: getAddress(`0x${data.substr(288, 40)}`),
+      exchange: getAddress(`0x${data.substr(352, 40)}`),
     }
   }
 }
