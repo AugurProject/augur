@@ -6,6 +6,7 @@ import {
   Address,
   DisputeWindowCreatedLog,
   MarketCreatedLog,
+  TokenType,
   UniverseCreatedLog,
   UniverseForkedLog
 } from '../logs/types';
@@ -46,6 +47,7 @@ export interface UniverseDetails {
   address: string;
   creationTimestamp: number;
   outcomeName: string;
+  usersRep: string;
   totalRepSupply: string;
   totalOpenInterest: string;
   numberOfMarkets: number;
@@ -59,6 +61,7 @@ export class Universe {
   });
   static getUniverseChildrenParams = t.type({
     universe: t.string,
+    account: t.string,
   });
 
   // TODO: refractor getDisputeWindow getter to make a contract call to get the needed information, time isn't saved because of the getTime contract call
@@ -112,21 +115,21 @@ export class Universe {
     db: DB,
     params: t.TypeOf<typeof Universe.getUniverseChildrenParams>
   ): Promise<UniverseDetails|null> {
-    const address = params.universe;
+    const { universe, account } = params;
 
-    const details = await getUniverseDetails(augur, db, address);
+    const details = await getUniverseDetails(augur, db, universe, account);
     if (details === null) return null;
 
-    const childrenUniverseCreatedLogs = await getUniverseChildrenCreationLogs(db, address);
+    const childrenUniverseCreatedLogs = await getUniverseChildrenCreationLogs(db, universe);
     details.children = await Promise.all(childrenUniverseCreatedLogs.map(async (child) => {
-      return getUniverseDetails(augur, db, child.childUniverse);
+      return getUniverseDetails(augur, db, child.childUniverse, account);
     }));
 
     return details;
   }
 }
 
-async function getUniverseDetails(augur: Augur, db: DB, address: string): Promise<UniverseDetails> {
+async function getUniverseDetails(augur: Augur, db: DB, address: string, account: string): Promise<UniverseDetails> {
   const universe = await augur.contracts.universeFromAddress(address);
   const universeCreationLog = await getUniverseCreationLog(db, address);
   if (universeCreationLog === null) return null;
@@ -135,14 +138,13 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string): Promis
   if (universeCreationLog.parentUniverse === NULL_ADDRESS) {
     outcomeName = GENESIS;
   } else {
-    // TODO this is the forking log of this universe...
-    // but we need its parent's forking info
     const universeForkedLog = await getUniverseForkedLog(db, universeCreationLog.parentUniverse);
     const forkingMarketLog = await getMarket(db, universeForkedLog.forkingMarket); // the market that created this universe
     outcomeName = getOutcomeNameFromLogs(universeCreationLog, forkingMarketLog);
   }
 
   const creationTimestamp = Number(universeCreationLog.creationTimestamp);
+  const usersRep = (await getUserRep(db, universe, account)).toString();
   const totalRepSupply = (await getRepSupply(augur, universe)).toString();
   const totalOpenInterest = (await universe.getOpenInterestInAttoCash_()).toString();
   const numberOfMarkets = (await getMarketsForUniverse(db, address)).length;
@@ -153,6 +155,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string): Promis
     address,
     creationTimestamp,
     outcomeName,
+    usersRep,
     totalRepSupply,
     totalOpenInterest,
     numberOfMarkets,
@@ -206,6 +209,23 @@ async function getMigrationOutcomes(
       payoutNumerators,
     };
   }));
+}
+
+async function getUserRep(db: DB, universe: ContractInterfaces.Universe, account: string): Promise<BigNumber> {
+  const tokenChangedLogs = await db.findTokenBalanceChangedLogs(account, {
+    selector: {
+      universe: universe.address,
+      owner: account,
+      tokenType: TokenType.ReputationToken,
+    },
+    fields: [ 'balance' ],
+  });
+  if (tokenChangedLogs.length === 0) {
+    return new BigNumber(0);
+  } else {
+    // There will only ever be at most one log for a given token and only one REP token per universe.
+    return new BigNumber(tokenChangedLogs[0].balance);
+  }
 }
 
 async function getRepSupply(augur: Augur, universe: ContractInterfaces.Universe): Promise<BigNumber> {
