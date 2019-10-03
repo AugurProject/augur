@@ -49,7 +49,7 @@ const Routes = (p) => {
         path={makePath(VIEWS.REPORTING)}
         component={COMPONENTS.Reporting}
       />
-      <Redirect to={p.isLogged || loggedInAccount ? makePath(VIEWS.MARKETS) : makePath(VIEWS.LANDING_PAGE)} />
+      <Redirect to={makePath(VIEWS.MARKETS)} />
     </Switch>
   );
 }

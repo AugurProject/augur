@@ -49,14 +49,16 @@ function pollForAccount(
     const { authStatus, connection } = getState();
     if (connection.isConnected) {
       let loggedInAccount: string = undefined;
+      let loggedInAccountType: string = undefined;
       if (!loginAccount.address) {
         if (windowApp.localStorage && windowApp.localStorage.getItem) {
           loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+          loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
         }
       } else {
         loggedInAccount = loginAccount.address;
       }
-      if (!authStatus.isLogged && usingMetaMask && loggedInAccount) {
+      if (!authStatus.isLogged && usingMetaMask && loggedInAccount && loggedInAccountType === ACCOUNT_TYPES.METAMASK) {
         autoLoginAccount(dispatch, loggedInAccount);
       }
       const disclaimerSeen =
@@ -76,7 +78,7 @@ function pollForAccount(
 
 async function autoLoginAccount(
   dispatch: ThunkDispatch<void, any, Action>,
-  loggedInAccount: string
+  loggedInAccount: string,
 ) {
   const windowApp = windowRef as WindowApp;
   const accounts = await windowApp.ethereum.enable().catch((err: Error) => {

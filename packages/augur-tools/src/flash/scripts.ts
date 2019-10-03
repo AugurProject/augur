@@ -91,7 +91,7 @@ export function addScripts(flash: FlashSession) {
         useNormalTime: true,
       };
 
-      if (args.time_controlled === 'true') {
+      if (args.time_controlled) {
         config['useNormalTime'] = false;
       }
 

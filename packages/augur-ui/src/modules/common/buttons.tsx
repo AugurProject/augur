@@ -2,15 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  NEUTRAL,
   ASCENDING,
   DESCENDING,
   BUY,
-  SELL,
 } from 'modules/common/constants';
 import {
   StarIcon,
-  XIcon,
   SortIcon,
   PercentIcon,
   QRCodeIcon,
@@ -29,8 +26,6 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { MARKETS } from 'modules/routes/constants/views';
-import makePath from 'modules/routes/helpers/make-path';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -41,6 +36,7 @@ export interface DefaultButtonProps {
   icon?: any;
   small?: boolean;
   noIcon?: boolean;
+  subText?: string;
 }
 
 export interface SortButtonProps {
@@ -120,6 +116,42 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
   >
     {!!props.icon && props.icon}
     {props.text}
+  </button>
+);
+
+export const PrimarySignInButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.PrimarySignInButton}
+    disabled={props.disabled}
+    title={props.title || props.text}
+  >
+    <div>
+      <div>{props.icon}</div>
+      <div>
+        <div>{props.text}</div>
+        <div>{props.subText}</div>
+      </div>
+    </div>
+  </button>
+);
+
+export const SecondarySignInButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={classNames(Styles.SecondarySignInButton, {
+      [Styles.Small]: props.small,
+    })}
+    disabled={props.disabled}
+    title={props.title || props.text}
+  >
+    <div>
+      <div>{props.icon}</div>
+      <div>
+        <div>{props.text}</div>
+        <div>{props.subText}</div>
+      </div>
+    </div>
   </button>
 );
 

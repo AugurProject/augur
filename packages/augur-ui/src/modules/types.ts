@@ -537,6 +537,9 @@ export interface LoginAccount {
     address: string;
     signer: any | EthersSigner;
     isWeb3: boolean;
+    profileImage?: string;
+    email?: string;
+    openWallet?: Function;
   };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
@@ -557,6 +560,9 @@ export interface WindowApp extends Window {
   ethereum: object;
   localStorage: Storage;
   integrationHelpers: any;
+  fm?: any;
+  torus?: any;
+  portis?: any;
 }
 
 export type ButtonActionType = (
