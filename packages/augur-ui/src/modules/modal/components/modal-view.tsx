@@ -35,6 +35,7 @@ import ModalCategories from "modules/modal/containers/modal-categories";
 import ModalMarketType from "modules/modal/containers/modal-market-type";
 import ModalDrQuickGuide from "modules/modal/containers/modal-dr-quick-guide";
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
+import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
 
 import * as TYPES from "modules/common/constants";
 
@@ -64,6 +65,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalRepFaucet />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
+    case TYPES.MODAL_ADD_FUNDS:
+        return <ModalAddFunds />;
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:

@@ -466,7 +466,7 @@ export class AccountAddressDisplay extends Component<
               data-tip
               data-for="AccountAddressDisplay_copy_tooltip"
             >
-              {isCopied ? CheckCircleIcon : CopyIcon}
+              Copy
             </button>
             {isCopied && (
               <ReactTooltip

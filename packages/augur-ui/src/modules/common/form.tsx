@@ -230,6 +230,7 @@ interface RadioGroupProps {
   inputScalarOutcome?: string;
   stake?: Getters.Markets.StakeDetails;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
+  hideRadioButton?: boolean;
 }
 
 export interface RadioGroupState {
@@ -278,6 +279,7 @@ export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   value: string;
   onChange: Function;
   error?: boolean;
+  hideRadioButton?: boolean;
 }
 
 interface CheckboxBarProps extends BaseRadioButtonProp {
@@ -1069,8 +1071,19 @@ export class RadioTwoLineBarGroup extends Component<
     selected: this.props.defaultSelected || null,
   };
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultSelected !== this.props.defaultSelected) {
+      this.updateChecked(nextProps.defaultSelected);
+    }
+  }
+
+  updateChecked = selected => {
+    this.props.onChange(selected);
+    this.setState({ selected });
+  };
+
   render() {
-    const { radioButtons, onChange } = this.props;
+    const { radioButtons, onChange, hideRadioButton } = this.props;
     const { selected } = this.state;
     return (
       <div>
@@ -1079,8 +1092,9 @@ export class RadioTwoLineBarGroup extends Component<
             key={radio.value}
             {...radio}
             checked={radio.value === selected}
+            hideRadioButton={hideRadioButton}
             onChange={selected => {
-              this.props.onChange(selected);
+              onChange(selected);
               this.setState({ selected });
             }}
           />
@@ -1097,15 +1111,18 @@ export const RadioTwoLineBar = ({
   value,
   error,
   description,
+  hideRadioButton
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
+      [Styles.HideRadioButton]: hideRadioButton,
+      [Styles.Checked]: hideRadioButton && checked
     })}
     role='button'
     onClick={e => onChange(value)}
   >
-    {checked ? FilledRadio : EmptyRadio}
+    {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
     <p>{description}</p>
   </div>
