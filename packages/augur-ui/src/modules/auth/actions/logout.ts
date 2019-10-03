@@ -19,18 +19,19 @@ export function logout() {
 
     // Clean up web3 wallets
     if (windowRef.torus) {
-      windowRef.torus.cleanUp();
-      windowRef.torus = undefined;
+      await windowRef.torus.cleanUp();
     }
+
 
     if (windowRef.portis) {
-      windowRef.portis.logout();
-      windowRef.portis.fm = undefined;
+      await windowRef.portis.logout();
+      document.querySelector('.por_portis-container').remove();
     }
 
+
+
     if (windowRef.fm) {
-      windowRef.fm.user.logout();
-      windowRef.fm = undefined;
+      await windowRef.fm.user.logout();
     }
   };
 }

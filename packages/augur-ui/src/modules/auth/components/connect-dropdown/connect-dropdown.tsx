@@ -21,6 +21,7 @@ interface ConnectDropdownProps {
   accountMeta: {
     accountType: string;
     openWallet: Function;
+    email?: string;
   };
   balances: AccountBalances;
   gasModal: Function;
@@ -31,8 +32,6 @@ interface ConnectDropdownProps {
 interface ConnectDropdownState {
   showMetaMaskHelper: boolean;
 }
-
-let timeOutId = null;
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
   const {
@@ -54,7 +53,10 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   };
 
   const MetaMaskHelper = (
-    <div onClick={() => setShowMetaMaskHelper(false)} className={Styles.MetaMaskHelper}>
+    <div
+      onClick={() => setShowMetaMaskHelper(false)}
+      className={Styles.MetaMaskHelper}
+    >
       <div>
         <img src="assets/images/metamask-help.png" />
       </div>
@@ -136,7 +138,10 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               <div key={idx} className={Styles.WalletProvider}>
                 <div>
                   <div>Wallet provider</div>
-                  <div>{wallet.accountType}</div>
+                  <div>
+                    {wallet.accountType}{' '}
+                    {accountMeta.email ? `(${accountMeta.email})` : null}
+                  </div>
                 </div>
                 <SecondaryButton
                   action={() => wallet.action()}

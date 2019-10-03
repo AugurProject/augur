@@ -5,17 +5,17 @@ import { Action } from 'redux';
 import { Web3Provider } from 'ethers/providers';
 import Torus from '@toruslabs/torus-embed';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 
 const getTorusNetwork = (networkId): string => {
-  if (networkId === '1') {
+  if (networkId === NETWORK_IDS.Mainnet) {
     return 'mainnet';
-  } else if (networkId === '42') {
+  } else if (networkId === NETWORK_IDS.Kovan) {
     return 'kovan';
   } else {
-    return 'http://localhost:8545';
+    return 'localhost';
   }
 };
 
@@ -77,7 +77,9 @@ export const loginWithTorus = () => async (
         return;
       }
     } catch (error) {
-      throw error;
+      document.querySelector('#torusIframe').remove();
+      document.querySelector('#torusWidget').remove();
+     throw error;
     }
   } else {
     throw Error('Network currently not supported with Torus');

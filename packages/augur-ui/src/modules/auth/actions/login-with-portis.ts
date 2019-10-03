@@ -5,7 +5,7 @@ import { Action } from 'redux';
 import { Web3Provider } from 'ethers/providers';
 import Portis, { INetwork } from '@portis/web3';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES, PORTIS_API_KEY } from 'modules/common/constants';
+import { ACCOUNT_TYPES, PORTIS_API_KEY, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 
@@ -14,9 +14,9 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
     nodeUrl: 'http://localhost:8545',
     chainId: networkId,
   };
-  if (networkId === '1') {
+  if (networkId === NETWORK_IDS.Mainnet) {
     return 'mainnet';
-  } else if (networkId === '42') {
+  } else if (networkId === NETWORK_IDS.Kovan) {
     return 'kovan';
   } else {
     return myPrivateEthereumNode;
@@ -67,7 +67,8 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
 
         await dispatch(updateSdk(accountObject, undefined));
       } catch (error) {
-        throw error;
+          document.querySelector('.por_portis-container').remove();
+          throw error;
       }
     };
 

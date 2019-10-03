@@ -5,14 +5,14 @@ import { Action } from 'redux';
 import { Web3Provider } from 'ethers/providers';
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY } from 'modules/common/constants';
+import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 
 const getFormaticNetwork = (networkId: string): false | string   => {
-  if (networkId === '1') {
+  if (networkId === NETWORK_IDS.Mainnet) {
     return 'mainnet';
-  } else if (networkId === '42') {
+  } else if (networkId === NETWORK_IDS.Kovan) {
     return 'kovan';
   } else {
     return false;
@@ -28,7 +28,7 @@ export const loginWithFortmatic = () => async (
 
   if (supportedNetworks) {
     try {
-      const fm = new Fortmatic(networkId === '1' ? FORTMATIC_API_KEY : FORTMATIC_API_TEST_KEY, supportedNetworks);
+      const fm = new Fortmatic(networkId === NETWORK_IDS.Mainnet ? FORTMATIC_API_KEY : FORTMATIC_API_TEST_KEY, supportedNetworks);
       const web3 = new Web3(fm.getProvider());
       const provider = new Web3Provider(fm.getProvider());
 
