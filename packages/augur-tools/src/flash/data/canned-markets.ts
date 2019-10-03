@@ -21,14 +21,14 @@ export interface OrderBook {
 }
 
 const singleOutcomeAsks: AskBid[] = [
-  { shares: "10.01", price: "0.31" },
-  { shares: "20.02", price: "0.35" },
-  { shares: "30.03", price: "0.40" },
+  { shares: "100.01", price: "0.31" },
+  { shares: "200.02", price: "0.35" },
+  { shares: "300.03", price: "0.40" },
 ];
 const singleOutcomeBids: AskBid[] = [
-  { shares: "10.01", price: "0.28" },
-  { shares: "20.02", price: "0.25" },
-  { shares: "30.03", price: "0.19" },
+  { shares: "100.01", price: "0.30" },
+  { shares: "200.02", price: "0.25" },
+  { shares: "300.03", price: "0.19" },
 ];
 const yesNoOrderBook: OrderBook = {
   2: {
@@ -271,14 +271,14 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     orderBook: {
       2: {
         buy: [
-          { shares: "10.01", price: "20" },
-          { shares: "20.01", price: "0" },
-          { shares: "3.01", price: "-5" },
+          { shares: "100.01", price: "24" },
+          { shares: "200.01", price: "0" },
+          { shares: "300.01", price: "-5" },
         ],
         sell: [
-          { shares: "10.01", price: "25" },
-          { shares: "20.01", price: "50" },
-          { shares: "30.01", price: "51" },
+          { shares: "100.01", price: "25" },
+          { shares: "200.01", price: "50" },
+          { shares: "300.01", price: "51" },
         ],
       },
     },
@@ -324,14 +324,14 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     orderBook: {
       2: {
         buy: [
-          { shares: "10.01", price: "2" },
-          { shares: "20.01", price: "18" },
-          { shares: "30.01", price: "15" },
+          { shares: "100.01", price: "20" },
+          { shares: "200.01", price: "18" },
+          { shares: "300.01", price: "15" },
         ],
         sell: [
-          { shares: "10.01", price: "23" },
-          { shares: "20.01", price: "26" },
-          { shares: "30.01", price: "29" },
+          { shares: "100.01", price: "21" },
+          { shares: "200.01", price: "26" },
+          { shares: "300.01", price: "29" },
         ],
       },
     },
@@ -361,7 +361,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         buy: [
             { shares: "10.01", price: "100" },
             { shares: "20.01", price: "150" },
-            { shares: "30.01", price: "200" },
+            { shares: "30.01", price: "220" },
         ],
         sell: [
             { shares: "10.01", price: "225" },
