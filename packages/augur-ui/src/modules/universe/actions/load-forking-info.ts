@@ -11,6 +11,7 @@ import { AppState } from 'store';
 import { Action } from 'redux';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { ForkingInfo } from 'modules/types';
+import { NULL_ADDRESS } from 'modules/common/constants';
 
 export function loadUniverseForkingInfo(
   incomingUniverse: string,
@@ -24,7 +25,7 @@ export function loadUniverseForkingInfo(
     if (universe && universe.id && universe.id !== incomingUniverse) return;
     const forkingMarket = forkingMarketId || (await getForkingMarket());
     const isForking =
-      forkingMarket !== '0x0000000000000000000000000000000000000000';
+      forkingMarket !== NULL_ADDRESS;
     if (isForking) {
       const forkEndTime = await getForkEndTime();
       const forkAttoReputationGoal = await getForkReputationGoal();
