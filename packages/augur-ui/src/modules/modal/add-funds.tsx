@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import {
   ExternalLinkButton,
   PrimaryButton,
+  CloseButton,
+  BackButton,
 } from 'modules/common/buttons';
-import {
-  AccountAddressDisplay,
-} from 'modules/modal/common';
-import formatAddress from "modules/auth/helpers/format-address";
+import { AccountAddressDisplay, FundsHelp } from 'modules/modal/common';
+import formatAddress from 'modules/auth/helpers/format-address';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
-import { XIcon, BackIcon } from 'modules/common/icons';
+import { BackIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 
 interface AddFundsProps {
@@ -22,42 +22,49 @@ interface AddFundsProps {
 export const AddFunds = ({ closeAction, address }: AddFundsProps) => {
   const [selectedOption, setSelectedOption] = useState(null);
   return (
-    <div className={classNames(Styles.AddFunds, {[Styles.ShowSelected]: selectedOption})}>
+    <div
+      className={classNames(Styles.AddFunds, {
+        [Styles.ShowSelected]: selectedOption,
+      })}
+    >
       <div>
-        <h1>Add Funds</h1>
-        <h2>Choose a method</h2>
-        <RadioTwoLineBarGroup
-          radioButtons={[
-            {
-              header: 'Credit/debit card',
-              description: 'Add Funds instantly using a credit/debit card',
-              value: '0',
-            },
-            {
-              header: 'Coinbase',
-              description: 'Add funds using a Coinbase account',
-              value: '1',
-            },
-            {
-              header: 'Transfer',
-              description: 'Transfer funds to your account address',
-              value: '2',
-            },
-          ]}
-          defaultSelected={selectedOption}
-          hideRadioButton
-          onChange={value => {
-            setSelectedOption(() => value && value.toString());
-          }}
-        />
-        <span>Need help?</span>
-        <span>Learn how to buy DAI and transfer it into your account.</span>
-        <ExternalLinkButton label="Learn More" />
+        <div>
+          <CloseButton action={() => closeAction()} />
+        </div>
+        <div>
+          <h1>Add Funds</h1>
+          <h2>Choose a method</h2>
+          <RadioTwoLineBarGroup
+            radioButtons={[
+              {
+                header: 'Credit/debit card',
+                description: 'Add Funds instantly using a credit/debit card',
+                value: '0',
+              },
+              {
+                header: 'Coinbase',
+                description: 'Add funds using a Coinbase account',
+                value: '1',
+              },
+              {
+                header: 'Transfer',
+                description: 'Transfer funds to your account address',
+                value: '2',
+              },
+            ]}
+            defaultSelected={selectedOption}
+            hideRadioButton
+            onChange={value => {
+              setSelectedOption(() => value && value.toString());
+            }}
+          />
+          <FundsHelp />
+        </div>
       </div>
       <div>
         <div>
-            <button onClick={() => setSelectedOption(() => null)}>{BackIcon} back</button>
-            <button onClick={() => closeAction}>{XIcon}</button>
+          <BackButton action={() => setSelectedOption(() => null)} />
+          <CloseButton action={() => closeAction()} />
         </div>
         <div>
           {selectedOption === '0' && (
@@ -89,7 +96,10 @@ export const AddFunds = ({ closeAction, address }: AddFundsProps) => {
                 <li>Send the DAI to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
-              <AccountAddressDisplay copyable address={address ? formatAddress(address) : '-'} />
+              <AccountAddressDisplay
+                copyable
+                address={address ? formatAddress(address) : '-'}
+              />
             </>
           )}
           {selectedOption === '2' && (
@@ -103,16 +113,15 @@ export const AddFunds = ({ closeAction, address }: AddFundsProps) => {
                 <li>Transfer the DAI to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
-              <AccountAddressDisplay copyable address={address ? formatAddress(address) : '-'} />
+              <AccountAddressDisplay
+                copyable
+                address={address ? formatAddress(address) : '-'}
+              />
               <ExternalLinkButton label="popular services for buying dai" />
             </>
           )}
         </div>
-        <div>
-            <span>Need help?</span>
-            <span>Learn how to buy DAI and transfer it into your account.</span>
-            <ExternalLinkButton label="Learn More" />
-        </div>
+        <FundsHelp />
       </div>
     </div>
   );

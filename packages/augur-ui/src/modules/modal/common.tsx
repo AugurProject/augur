@@ -488,6 +488,16 @@ export class AccountAddressDisplay extends Component<
   }
 }
 
+interface FundsHelpProps {}
+
+export const FundsHelp = (props: FundsHelpProps) =>(
+  <div className={Styles.FundsHelp}>
+    <span>Need help?</span>
+    <span>Learn how to buy DAI and transfer it into your account.</span>
+    <ExternalLinkButton label="Learn More" />
+  </div>
+ );
+
 // tslint:disable-next-line: max-classes-per-file
 export class MarketReview extends Component<
   MarketReviewProps,

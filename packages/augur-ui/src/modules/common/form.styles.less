@@ -41,12 +41,12 @@
     }
 
     > div,
-    > div[class*="Normal"] {
+    > div[class*='Normal'] {
       min-width: 252px;
       width: 252px;
     }
 
-    > div[class*="TextInput"] {
+    > div[class*='TextInput'] {
       position: relative;
       align-items: flex-start;
     }
@@ -66,13 +66,11 @@
       &:nth-of-type(2) {
         grid-template-columns: @size-24 auto;
         grid-gap: @size-12;
-
       }
 
       &:nth-of-type(3) {
         grid-template-columns: @size-24 @size-24 auto;
         grid-gap: @size-12;
-
 
         > svg {
           grid-column: 2 / span 1;
@@ -80,16 +78,16 @@
       }
 
       > div,
-      > div[class*="Normal"] {
+      > div[class*='Normal'] {
         min-width: 100%;
       }
 
-      > div[class*="TextInput"],
-      > div[class*="TextInput"] > div {
+      > div[class*='TextInput'],
+      > div[class*='TextInput'] > div {
         min-width: 100%;
       }
 
-      > div[class*="TextInput"] {
+      > div[class*='TextInput'] {
         grid-column: 2 / span 1;
       }
     }
@@ -157,7 +155,7 @@
     height: @size-16;
 
     > path {
-       fill: @color-primary-action;
+      fill: @color-primary-action;
     }
   }
 
@@ -376,6 +374,10 @@
     > h5 {
       margin-top: @size-16;
     }
+
+    @media @breakpoint-mobile-mid {
+      width: unset;
+    }
   }
 
   &.Checked {
@@ -474,7 +476,7 @@
 
 .RadioCardGroup {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-row-gap: 20px;
 
   > div:not(:last-of-type) {
@@ -482,7 +484,7 @@
   }
 
   @media @breakpoint-mobile-mid {
-    grid-template-columns: repeat(1,1fr);
+    grid-template-columns: repeat(1, 1fr);
 
     > div:not(:last-of-type) {
       margin-right: 0;
@@ -736,7 +738,7 @@
       min-width: 150px;
 
       &::placeholder {
-        color:@color-secondary-text;
+        color: @color-secondary-text;
       }
 
       &:hover {
@@ -797,7 +799,7 @@
         &::before {
           background-color: fade(@color-primary-action, 10%);
           bottom: 0;
-          content: "";
+          content: '';
           height: 1px;
           left: @size-12;
           position: absolute;
@@ -827,8 +829,8 @@
       margin-left: @size-24;
     }
 
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
@@ -888,7 +890,7 @@
       }
     }
 
-    > button[class*="SelectedLabel"] {
+    > button[class*='SelectedLabel'] {
       color: @color-primary-text;
     }
 
@@ -1045,8 +1047,8 @@ div.FormDropdownActive {
     appearance: textfield;
   }
 
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
   }
@@ -1181,7 +1183,6 @@ div.FormDropdownActive {
       background-color: @color-dark-grey;
       color: @color-primary-text;
       border: 1px solid @color-secondary-action-outline;
-
     }
 
     .DateInput_1 {
@@ -1561,8 +1562,8 @@ div.FormDropdownActive {
     }
   }
 
-  > input[type=number]::-webkit-inner-spin-button,
-  > input[type=number]::-webkit-outer-spin-button {
+  > input[type='number']::-webkit-inner-spin-button,
+  > input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
@@ -1676,7 +1677,6 @@ div.error > div > div > div > div > input {
   position: relative;
 }
 
-
 .CategoryRow {
   display: flex;
   flex-direction: row;
@@ -1740,5 +1740,7 @@ div.error > div > div > div > div > input {
 }
 
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }

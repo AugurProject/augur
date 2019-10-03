@@ -104,6 +104,38 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.FundsHelp {
+  > span {
+    display: flex;
+  }
+
+  > span:first-of-type {
+    .text-12-bold;
+
+    color: @color-primary-text;
+    margin: 50px 0 @size-8;
+  }
+
+  > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-secondary-text;
+    line-height: 140%;
+    margin-bottom: @size-3;
+  }
+
+  @media @breakpoint-mobile-new {
+    flex-direction: column;
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
+
+    > button {
+      justify-content: flex-start;
+    }
+  }
+}
+
 .AddFunds {
   .Container;
 
@@ -115,40 +147,29 @@ div.ButtonsRow:last-of-type {
   }
 
   > div:first-of-type {
-    background: #1b1a1e;
+    background: @color-module-background;
     padding: @size-32;
 
-    > h1 {
-      .text-24-bold;
-
-      color: @color-primary-text;
-      margin: 0;
+    > div:first-of-type {
+      > button {
+        display: none;
+      }
     }
 
-    > h2 {
-      .text-14;
+    > div:last-of-type {
+      > h1 {
+        .text-24-bold;
 
-      margin: @size-4 0 @size-24;
-      color: @color-secondary-text;
-    }
+        color: @color-primary-text;
+        margin: 0;
+      }
 
-    > span {
-      display: flex;
-    }
+      > h2 {
+        .text-14;
 
-    > span:first-of-type {
-      .text-12-bold;
-
-      color: @color-primary-text;
-      margin: 50px 0 @size-8;
-    }
-
-    > span:nth-of-type(2) {
-      .text-12;
-
-      color: @color-secondary-text;
-      line-height: 140%;
-      margin-bottom: @size-3;
+        margin: @size-4 0 @size-24;
+        color: @color-secondary-text;
+      }
     }
   }
 
@@ -163,45 +184,10 @@ div.ButtonsRow:last-of-type {
       > button:first-of-type {
         display: none;
       }
-
-      > button:last-of-type {
-        justify-content: flex-end;
-        display: flex;
-        flex: 1;
-
-        > svg {
-          height: @size-16;
-          width: @size-16;
-
-          > path {
-            stroke: @color-primary-text;
-          }
-        }
-      }
     }
 
     > div:last-of-type {
       display: none;
-      > span {
-        display: flex;
-      }
-
-      > span:first-of-type {
-        .text-12-bold;
-
-        color: @color-primary-text;
-        margin: 50px 0 @size-8;
-        flex: 1;
-        align-items: flex-end;
-      }
-
-      > span:nth-of-type(2) {
-        .text-12;
-
-        color: @color-secondary-text;
-        line-height: 140%;
-        margin-bottom: @size-3;
-      }
     }
 
     > div:nth-of-type(2) {
@@ -276,7 +262,7 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile-new {
     flex: 1;
-    padding: @size-20 @size-8;
+    padding: 0;
     max-width: unset;
     max-height: unset;
 
@@ -284,14 +270,21 @@ div.ButtonsRow:last-of-type {
       display: flex;
       flex-direction: column;
       padding: @size-24;
+      flex: 1;
 
-      > span:first-of-type {
-        flex: 1;
-        align-items: flex-end;
+      > div:first-of-type {
+        justify-content: flex-end;
+        display: flex;
+
+        > button {
+          display: flex;
+        }
       }
 
-      > button {
-        justify-content: flex-start;
+      > div:nth-of-type(2) {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
     }
 
@@ -304,8 +297,13 @@ div.ButtonsRow:last-of-type {
         flex-direction: row;
         margin-bottom: @size-16;
 
-        > button {
-          justify-content: flex-start;
+        > button:last-of-type {
+          justify-content: flex-end;
+        }
+
+        > button:first-of-type,
+        > button:last-of-type {
+          display: flex;
         }
 
         > span:first-of-type {
@@ -320,16 +318,6 @@ div.ButtonsRow:last-of-type {
 
       > div:last-of-type {
         display: flex;
-        flex-direction: column;
-        flex: 1;
-
-        > span:first-of-type {
-          flex: 1;
-        }
-
-        > button {
-          justify-content: flex-start;
-        }
       }
     }
 
@@ -340,28 +328,6 @@ div.ButtonsRow:last-of-type {
 
       > div:last-of-type {
         display: flex;
-
-        > div:first-of-type {
-          > button:first-of-type {
-            .mono-12;
-
-            text-transform: uppercase;
-            display: flex;
-            color: @color-primary-text;
-            display: flex;
-            align-items: center;
-
-            > svg {
-              width: @size-16;
-              height: @size-16;
-              margin-right: @size-5;
-
-              > path {
-                fill: @color-primary-text;
-              }
-            }
-          }
-        }
       }
     }
   }
@@ -384,8 +350,9 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-
-.SignIn, .Connect, .Loading {
+.SignIn,
+.Connect,
+.Loading {
   .Container;
 
   background: @color-module-background;
@@ -481,7 +448,8 @@ div.ButtonsRow:last-of-type {
     justify-content: center;
     margin: @size-32 0;
 
-    &:before,  &:after {
+    &:before,
+    &:after {
       content: '';
 
       border: 1px solid @color-secondary-action-outline;
@@ -506,7 +474,7 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: #0095A3;
+    background: #0095a3;
   }
 
   > button:last-of-type {
@@ -599,10 +567,10 @@ div.ButtonsRow:last-of-type {
 
 @keyframes spin {
   from {
-      transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-      transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
