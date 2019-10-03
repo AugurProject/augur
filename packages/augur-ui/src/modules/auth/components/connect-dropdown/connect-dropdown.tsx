@@ -1,302 +1,180 @@
-import React, { Component } from "react";
-import classNames from "classnames";
-import { PulseLoader } from "react-spinners";
+import React, { useState } from 'react';
+import { ACCOUNT_TYPES } from 'modules/common/constants';
 import {
-  ITEMS,
-  WALLET_TYPE,
-  ACCOUNT_TYPES,
-  ERROR_TYPES,
-} from "modules/common/constants";
-import isMetaMaskPresent from "modules/auth/helpers/is-meta-mask";
-import { LogoutIcon } from "modules/common/icons";
+  LogoutIcon,
+  DaiLogoIcon,
+  RepLogoIcon,
+  EthIcon,
+  Pencil,
+  Open,
+  DirectionArrow,
+} from 'modules/common/icons';
+import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { formatRep, formatEther, formatDai } from 'utils/format-number';
+import { AccountBalances } from 'modules/types';
 
-import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles.less";
-import Ledger from "modules/auth/containers/ledger-connect";
-import Trezor from "modules/auth/containers/trezor-connect";
-import ErrorContainer from "modules/auth/components/common/error-container";
+import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
-  connectMetaMask: Function;
-  connectPortis: Function;
-  connectFortmatic: Function;
-  toggleDropdown: Function;
   logout: Function;
-  edgeLoginLink: Function;
-  history: History;
+  accountMeta: {
+    accountType: string;
+    openWallet: Function;
+    email?: string;
+  };
+  balances: AccountBalances;
+  gasModal: Function;
+  userDefinedGasPrice: string;
+  gasPriceSpeed: number;
 }
 
 interface ConnectDropdownState {
-  selectedOption: null | string;
-  showAdvanced: boolean;
-  error: object | null | undefined;
-  isLedgerLoading: boolean;
-  isTrezorLoading: boolean;
-  showAdvancedButton: boolean;
+  showMetaMaskHelper: boolean;
 }
 
-export default class ConnectDropdown extends Component<ConnectDropdownProps, ConnectDropdownState> {
-  constructor(props) {
-    super(props);
+const ConnectDropdown = (props: ConnectDropdownProps) => {
+  const {
+    isLogged,
+    userDefinedGasPrice,
+    accountMeta,
+    gasPriceSpeed,
+    gasModal,
+    balances,
+  } = props;
 
-    this.state = {
-      selectedOption: null,
-      showAdvanced: false,
-      error: null,
-      isLedgerLoading: true,
-      isTrezorLoading: true,
-      showAdvancedButton: false,
-    };
+  if (!isLogged) return null;
 
-    this.showAdvanced = this.showAdvanced.bind(this);
-    this.connect = this.connect.bind(this);
-    this.logout = this.logout.bind(this);
-    this.setIsLedgerLoading = this.setIsLedgerLoading.bind(this);
-    this.setIsTrezorLoading = this.setIsTrezorLoading.bind(this);
-    this.setShowAdvancedButton = this.setShowAdvancedButton.bind(this);
-    this.selectOption = this.selectOption.bind(this);
-    this.clearState = this.clearState.bind(this);
-    this.closeMenu = this.closeMenu.bind(this);
-    this.hideError = this.hideError.bind(this);
-    this.showError = this.showError.bind(this);
-  }
+  const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
-    if (nextProps.isLogged !== this.props.isLogged) {
-      this.clearState();
-    }
-  }
+  const logout = () => {
+    const { logout } = props;
+    logout();
+  };
 
-  setIsLedgerLoading(isLedgerLoading) {
-    this.setState({ isLedgerLoading });
-  }
-
-  setIsTrezorLoading(isTrezorLoading) {
-    this.setState({ isTrezorLoading });
-  }
-
-  setShowAdvancedButton(showAdvancedButton) {
-    this.setState({ showAdvancedButton });
-  }
-
-  clearState() {
-    this.setState({
-      selectedOption: null,
-      showAdvancedButton: false,
-    });
-  }
-
-  closeMenu() {
-    this.props.toggleDropdown();
-    this.clearState();
-  }
-
-  showAdvanced(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({ showAdvanced: !this.state.showAdvanced });
-  }
-
-  connect(param) {
-    const { connectMetaMask, connectFortmatic, connectPortis, edgeLoginLink } = this.props;
-    if (param === ACCOUNT_TYPES.METAMASK) {
-      if (!isMetaMaskPresent()) {
-        this.showError(ERROR_TYPES.UNABLE_TO_CONNECT);
-        return;
-      }
-      connectMetaMask((err, res) => {
-        if (err) {
-          this.showError(ERROR_TYPES.NOT_SIGNED_IN);
-        }
-      });
-    } else if (param === ACCOUNT_TYPES.EDGE) {
-      edgeLoginLink();
-      this.closeMenu();
-    } else if (param === ACCOUNT_TYPES.PORTIS) {
-      connectPortis((err, res) => {
-        if (err) {
-          console.error(err);
-          this.showError({
-            header: "Unable To Connect",
-            subheader: err,
-          });
-        }
-      });
-    } else if (param === ACCOUNT_TYPES.FORTMATIC) {
-      connectFortmatic((err, res) => {
-        if (err) {
-          console.error(err);
-          this.showError({
-            header: "Unable To Connect",
-            subheader: err,
-          });
-
-        }
-      });
-    }
-  }
-
-  showError(error) {
-    this.setState({ error });
-  }
-
-  hideError() {
-    this.setState({ error: null });
-  }
-
-  selectOption(param) {
-    const prevSelected = this.state.selectedOption;
-
-    this.setState({
-      error: null,
-      showAdvanced: false,
-      isLedgerLoading: true,
-      isTrezorLoading: true,
-      selectedOption: null
-    });
-
-    if (prevSelected !== param) {
-      // new selection being made
-      this.setState({ selectedOption: param });
-      this.connect(param);
-    } else {
-      // deselection is being done
-      this.setState({ selectedOption: null });
-    }
-  }
-
-  logout() {
-    const { toggleDropdown, logout } = this.props;
-    toggleDropdown(() => {
-      setTimeout(() => {
-        // need to wait for animation to be done
-        logout();
-      }, 500);
-    });
-  }
-
-  render() {
-    const { isLogged } = this.props;
-    const s = this.state;
-
-    return (
-      <div className={Styles.ConnectDropdown}>
-        {isLogged && (
-          <div>
-            <div
-              className={classNames(Styles.ConnectDropdown__item)}
-              onClick={() => this.logout()}
-              role="button"
-              tabIndex={-1}
-            >
-              <div className={Styles.ConnectDropdown__icon}>{LogoutIcon()}</div>
-              <div className={Styles.ConnectDropdown__title}>Logout</div>
-            </div>
-          </div>
-        )}
-        {!isLogged && (
-          <div
-            className={classNames(
-              Styles.ConnectDropdown__item,
-              Styles.ConnectDropdown_explanation,
-            )}
-          >
-            Connect a wallet to log into Augur.{" "}
-            {!process.env.AUGUR_HOSTED
-              ? "Use Edge to login with a username and password."
-              : null}
-          </div>
-        )}
-        {!isLogged &&
-          ITEMS.map((item) => (
-            <div key={item.param}>
-              <div
-                className={classNames(Styles.ConnectDropdown__item, {
-                  [Styles.ConnectDropdown__itemSelected]:
-                    s.selectedOption === item.param,
-                  [Styles.ConnectDropdown__itemHardwareSelected]:
-                    s.selectedOption === item.param &&
-                    ((item.type === WALLET_TYPE.HARDWARE &&
-                      (s.showAdvancedButton ||
-                        !s.isLedgerLoading ||
-                        !s.isTrezorLoading)) ||
-                      s.error),
-                })}
-                onClick={() => this.selectOption(item.param)}
-                role="button"
-                tabIndex={-1}
-              >
-                <div className={Styles.ConnectDropdown__icon}>{item.icon}</div>
-                <div className={Styles.ConnectDropdown__title}>
-                  {item.title}
-                  {s.selectedOption === item.param &&
-                   !s.error &&
-                   !s.showAdvancedButton && (
-                    <div style={{ marginLeft: "8px" }}>
-                      <PulseLoader
-                        color="#FFF"
-                        sizeUnit="px"
-                        size={8}
-                        loading
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {s.selectedOption === item.param &&
-                  item.type === WALLET_TYPE.HARDWARE &&
-                  s.showAdvancedButton && (
-                    <button
-                      style={{ padding: "10px" }}
-                      onClick={this.showAdvanced}
-                    >
-                      <div className={Styles.ConnectDropdown__advanced}>
-                        Advanced
-                      </div>
-                    </button>
-                  )}
-              </div>
-              {item.type === WALLET_TYPE.HARDWARE &&
-                item.param === "ledger" && (
-                  <Ledger
-                    dropdownItem={item}
-                    showAdvanced={
-                      s.selectedOption === "ledger" && s.showAdvanced
-                    }
-                    error={Boolean(s.selectedOption === item.param && s.error)}
-                    showError={this.showError}
-                    hideError={this.hideError}
-                    setIsLoading={this.setIsLedgerLoading}
-                    isClicked={s.selectedOption === item.param}
-                    isLoading={s.isLedgerLoading}
-                    setShowAdvancedButton={this.setShowAdvancedButton}
-                  />
-                )}
-              {item.type === WALLET_TYPE.HARDWARE &&
-                item.param === "trezor" && (
-                  <Trezor
-                    dropdownItem={item}
-                    showAdvanced={
-                      s.selectedOption === "trezor" && s.showAdvanced
-                    }
-                    error={Boolean(s.selectedOption === item.param && s.error)}
-                    showError={this.showError}
-                    hideError={this.hideError}
-                    setIsLoading={this.setIsTrezorLoading}
-                    onSuccess={() => this.closeMenu()}
-                    isClicked={s.selectedOption === item.param}
-                    isLoading={s.isTrezorLoading}
-                    setShowAdvancedButton={this.setShowAdvancedButton}
-                  />
-                )}
-              <ErrorContainer
-                error={s.error}
-                connect={this.connect}
-                isSelected={s.selectedOption === item.param}
-              />
-            </div>
-          ))}
+  const MetaMaskHelper = (
+    <div
+      onClick={() => setShowMetaMaskHelper(false)}
+      className={Styles.MetaMaskHelper}
+    >
+      <div>
+        <img src="assets/images/metamask-help.png" />
       </div>
-    );
-  }
-}
+      <div>Click the Metamask logo to open your wallet</div>
+      <div>{DirectionArrow}</div>
+    </div>
+  );
+
+  const accountFunds = [
+    {
+      value: formatDai(balances.dai, {
+        zeroStyled: false,
+        decimalsRounded: 2,
+      }).formattedValue,
+      name: 'DAI',
+      logo: DaiLogoIcon,
+    },
+    {
+      value: formatEther(balances.eth, {
+        zeroStyled: false,
+        decimalsRounded: 4,
+      }).formattedValue,
+      name: 'ETH',
+      logo: EthIcon,
+    },
+    {
+      name: 'REP',
+      logo: RepLogoIcon,
+      value: formatRep(balances.rep, {
+        zeroStyled: false,
+        decimalsRounded: 4,
+      }).formattedValue,
+    },
+  ];
+
+  const walletProviders = [
+    {
+      accountType: ACCOUNT_TYPES.PORTIS,
+      action: () => accountMeta.openWallet(),
+    },
+    {
+      accountType: ACCOUNT_TYPES.FORTMATIC,
+      action: () => accountMeta.openWallet(),
+    },
+    {
+      accountType: ACCOUNT_TYPES.TORUS,
+      action: () => accountMeta.openWallet(),
+    },
+    {
+      accountType: ACCOUNT_TYPES.METAMASK,
+      action: () => setShowMetaMaskHelper(true),
+    },
+  ];
+
+  return (
+    <div>
+      {showMetaMaskHelper && MetaMaskHelper}
+      <div className={Styles.AccountInfo}>
+        <div className={Styles.AddFunds}>
+          <div>Your account</div>
+          <PrimaryButton action={() => null} disabled text="Add Funds" />
+        </div>
+
+        {accountFunds.map((fundType, idx) => (
+          <div key={idx} className={Styles.AccountFunds}>
+            <div>
+              {fundType.logo} {fundType.name}
+            </div>
+            <div>
+              {fundType.value} {fundType.name}
+            </div>
+          </div>
+        ))}
+
+        {walletProviders
+          .filter(wallet => wallet.accountType === accountMeta.accountType)
+          .map((wallet, idx) => {
+            return (
+              <div key={idx} className={Styles.WalletProvider}>
+                <div>
+                  <div>Wallet provider</div>
+                  <div>
+                    {wallet.accountType}{' '}
+                    {accountMeta.email ? `(${accountMeta.email})` : null}
+                  </div>
+                </div>
+                <SecondaryButton
+                  action={() => wallet.action()}
+                  text="OPEN"
+                  icon={Open}
+                />
+              </div>
+            );
+          })}
+
+        <div className={Styles.WalletProvider}>
+          <div>
+            <div>Gas price</div>
+            <div>
+              {userDefinedGasPrice} GWEI ({gasPriceSpeed})
+            </div>
+          </div>
+          <SecondaryButton
+            action={() => gasModal()}
+            text="EDIT"
+            icon={Pencil}
+          />
+        </div>
+
+        <div className={Styles.Logout}>
+          <div onClick={() => logout()}>
+            <div>Logout</div>
+            <div>{LogoutIcon()}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ConnectDropdown;

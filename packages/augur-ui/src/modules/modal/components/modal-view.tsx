@@ -36,6 +36,9 @@ import ModalMarketType from "modules/modal/containers/modal-market-type";
 import ModalDrQuickGuide from "modules/modal/containers/modal-dr-quick-guide";
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
+import ModalSignin from "modules/modal/containers/modal-signin";
+import ModalConnect from "modules/modal/containers/modal-connect";
+import ModalLoading from "modules/modal/containers/modal-loading";
 
 import * as TYPES from "modules/common/constants";
 
@@ -118,6 +121,14 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDrQuickGuide />;
     case TYPES.MODAL_MIGRATE_MARKET:
       return <ModalMigrateMarket {...modal} />;
+    case TYPES.MODAL_LOGIN:
+      return <ModalSignin isLogin />
+    case TYPES.MODAL_SIGNUP:
+      return <ModalSignin isLogin={false} />
+    case TYPES.MODAL_CONNECT:
+      return <ModalConnect />
+    case TYPES.MODAL_LOADING:
+      return <ModalLoading />
     default:
       return <div />;
   }
