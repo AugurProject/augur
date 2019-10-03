@@ -9,7 +9,7 @@ import {
 } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { filterMarketsByReportingState, OutcomeParam, OrderState, Order } from "./Trading";
+import { OrderState, Order } from "./Trading";
 import { StoredOrder } from "../db/ZeroXOrders";
 
 import * as t from "io-ts";
@@ -59,14 +59,11 @@ export class ZeroXOrdersGetters {
       throw new Error("'getOrders' requires 'marketId' param be provided");
     }
 
-    const market = augur.contracts.marketFromAddress(params.marketId);
-    const token = await market.getZeroXTradeToken_();
-
     const outcome = params.outcome ? `0x0${params.outcome.toString()}` : undefined;
     const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
     const request = {
       selector: {
-        token,
+        market: params.marketId,
         outcome,
         orderType,
       },

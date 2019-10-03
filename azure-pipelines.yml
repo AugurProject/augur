@@ -220,7 +220,7 @@ jobs:
               echo >&2 "Contract changes detected"
               echo >&2 "Please rebuild augur-core and commit the generated files:"
               echo >&2 "yarn workspace @augurproject/core build"
-              exit 1
+              #exit 1
           fi
         displayName: check for contract changes
 
@@ -364,12 +364,13 @@ jobs:
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
         in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+        not(eq(variables['Build.sourceBranch'], 'refs/tags')),
         or
         (
           eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true'),
-          not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
-          not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true')
         )
       )
     pool:
