@@ -49,6 +49,7 @@ import {
   reloadDisputingPage,
 } from 'modules/reporting/actions/update-reporting-list';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
+import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 
 const handleAlert = (
   log: any,
@@ -442,6 +443,8 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   getState: () => AppState
 ) => {
   console.log('handleUniverseForkedLog');
+  const { universe, forkingMarket } = log;
+  dispatch(loadUniverseForkingInfo(universe, forkingMarket));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
