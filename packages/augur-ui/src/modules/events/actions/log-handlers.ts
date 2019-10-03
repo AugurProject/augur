@@ -160,6 +160,7 @@ export const handleMarketsUpdatedLog = (
   console.log('handleMarketsUpdatedChangedLog', log);
   if (log && log.data) {
     dispatch(loadMarketsInfo(log.data.map(d => d.market)));
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage());
   }
 };
 
