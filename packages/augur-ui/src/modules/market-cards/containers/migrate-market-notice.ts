@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import {
   MODAL_MIGRATE_MARKET,
   MODAL_REPORTING,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -19,9 +20,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
     state.blockchain.currentAugurTimestamp * 1000,
     market.endTime
   );
-  const show = !!(state.universe.forkingInfo && state.universe.forkingInfo.winningChildUniverseId);
-  // in local fake time, reporting state never chagnes to awaiting fork migration
-  // market.reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION;
+  const show =
+    !!(
+      state.universe.forkingInfo &&
+      state.universe.forkingInfo.winningChildUniverseId
+    ) && market.reportingState !== REPORTING_STATE.FINALIZED;
+
   let title =
     'Fork has finalized. Please migrate this market to the new universe.';
   let buttonText = 'Migrate Market';
