@@ -33,7 +33,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
-import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+import { convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {

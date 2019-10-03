@@ -409,6 +409,12 @@ export class ContractAPI {
     return reputationToken.migrateOutByPayout(payoutNumerators, attotokens);
   }
 
+  migrateOutByPayoutNumerators(payoutNumerators: BigNumber[], attotokens: BigNumber) {
+    const reputationToken = this.augur.contracts.getReputationToken();
+    return reputationToken.migrateOutByPayout(payoutNumerators, attotokens);
+  }
+
+
   async getNumSharesInMarket(market: ContractInterfaces.Market, outcome: BigNumber): Promise<BigNumber> {
     const shareTokenAddress = await market.getShareToken_(outcome);
     const shareToken = this.augur.contracts.shareTokenFromAddress(shareTokenAddress);
