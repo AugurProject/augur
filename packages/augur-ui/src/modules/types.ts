@@ -539,6 +539,9 @@ export interface LoginAccount {
     address: string;
     signer: any | EthersSigner;
     isWeb3: boolean;
+    profileImage?: string;
+    email?: string;
+    openWallet?: Function;
   };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;

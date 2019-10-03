@@ -8,16 +8,13 @@ import formatAddress from 'modules/auth/helpers/format-address';
 
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
+import { LoginAccount } from 'modules/types';
 
 interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
-  userInfo: {
-    email?: string;
-    profileImage?: string;
-    address: string;
-  };
+  userInfo: LoginAccount['meta'];
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {

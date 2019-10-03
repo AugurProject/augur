@@ -22,13 +22,10 @@ export function logout() {
       await windowRef.torus.cleanUp();
     }
 
-
     if (windowRef.portis) {
       await windowRef.portis.logout();
       document.querySelector('.por_portis-container').remove();
     }
-
-
 
     if (windowRef.fm) {
       await windowRef.fm.user.logout();
