@@ -90,6 +90,10 @@ contract Augur is IAugur {
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp);
     event TimestampSet(uint256 newTimestamp);
+    event ValidityBondChanged(address indexed universe, uint256 validityBond);
+    event DesignatedReportStakeChanged(address indexed universe, uint256 designatedReportStake);
+    event NoShowBondChanged(address indexed universe, uint256 noShowBond);
+    event ReportingFeeChanged(address indexed universe, uint256 reportingFee);
 
     mapping(address => bool) private markets;
     mapping(address => bool) private universes;
@@ -109,7 +113,7 @@ contract Augur is IAugur {
     int256 private constant DEFAULT_MAX_PRICE = 1 ether;
 
     modifier onlyUploader() {
-        require(msg.sender == uploader, "Augur: Uploader only function called by non-uploader");
+        require(msg.sender == uploader);
         _;
     }
 
@@ -160,8 +164,7 @@ contract Augur is IAugur {
     }
 
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse) {
-        IUniverse _parentUniverse = IUniverse(msg.sender);
-        require(isKnownUniverse(_parentUniverse));
+        IUniverse _parentUniverse = getAndValidateUniverse(msg.sender);
         return createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
     }
 
@@ -257,7 +260,7 @@ contract Augur is IAugur {
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes) public view returns (bytes32) {
         uint256 _sum = 0;
         // This is to force an Invalid report to be entirely payed out to Invalid
-        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks, "Augur.derivePayoutDistributionHash: Malformed Invalid payout");
+        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks);
         require(_payoutNumerators.length == _numOutcomes, "Augur.derivePayoutDistributionHash: Malformed payout length");
         for (uint256 i = 0; i < _payoutNumerators.length; i++) {
             uint256 _value = _payoutNumerators[i];
@@ -272,8 +275,7 @@ contract Augur is IAugur {
     //
 
     function logCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] memory _outcomes) public returns (bool) {
-        IUniverse _universe = IUniverse(msg.sender);
-        require(isKnownUniverse(_universe));
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         int256[] memory _prices = new int256[](2);
@@ -284,8 +286,7 @@ contract Augur is IAugur {
     }
 
     function logYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) public returns (bool) {
-        IUniverse _universe = IUniverse(msg.sender);
-        require(isKnownUniverse(_universe));
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         int256[] memory _prices = new int256[](2);
@@ -296,8 +297,7 @@ contract Augur is IAugur {
     }
 
     function logScalarMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] memory _prices, uint256 _numTicks)  public returns (bool) {
-        IUniverse _universe = IUniverse(msg.sender);
-        require(isKnownUniverse(_universe));
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
         recordMarketShareTokens(_market);
@@ -598,5 +598,35 @@ contract Augur is IAugur {
         require(msg.sender == registry["ProfitLoss"]);
         emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds, _realizedCost, getTimestamp());
         return true;
+    }
+
+    function logValidityBondChanged(uint256 _validityBond) public returns (bool) {
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
+        emit ValidityBondChanged(address(_universe), _validityBond);
+        return true;
+    }
+
+    function logDesignatedReportStakeChanged(uint256 _designatedReportStake) public returns (bool) {
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
+        emit DesignatedReportStakeChanged(address(_universe), _designatedReportStake);
+        return true;
+    }
+
+    function logNoShowBondChanged(uint256 _noShowBond) public returns (bool) {
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
+        emit NoShowBondChanged(address(_universe), _noShowBond);
+        return true;
+    }
+
+    function logReportingFeeChanged(uint256 _reportingFee) public returns (bool) {
+        IUniverse _universe = getAndValidateUniverse(msg.sender);
+        emit ReportingFeeChanged(address(_universe), _reportingFee);
+        return true;
+    }
+
+    function getAndValidateUniverse(address _untrustedUniverse) internal view returns (IUniverse) {
+        IUniverse _universe = IUniverse(_untrustedUniverse);
+        require(isKnownUniverse(_universe));
+        return _universe;
     }
 }

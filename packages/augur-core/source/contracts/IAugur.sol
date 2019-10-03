@@ -60,4 +60,8 @@ contract IAugur {
     function getMaximumMarketEndDate() public returns (uint256);
     function isKnownMarket(IMarket _market) public view returns (bool);
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 numOutcomes) public view returns (bytes32);
+    function logValidityBondChanged(uint256 _validityBond) public returns (bool);
+    function logDesignatedReportStakeChanged(uint256 _designatedReportStake) public returns (bool);
+    function logNoShowBondChanged(uint256 _noShowBond) public returns (bool);
+    function logReportingFeeChanged(uint256 _reportingFee) public returns (bool);
 }
