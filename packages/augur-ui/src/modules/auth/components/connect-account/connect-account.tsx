@@ -9,11 +9,16 @@ import formatAddress from 'modules/auth/helpers/format-address';
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { LoginAccount } from 'modules/types';
+import { MOBILE_MENU_STATES } from 'modules/common/constants';
 
 interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
+  updateMobileMenuState: Function;
+  isMobile: boolean;
+  mobileMenuState: boolean;
+  sidebarStatus: oject;
   userInfo: LoginAccount['meta'];
 }
 
@@ -21,9 +26,29 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectAccount;
   connectDropdown;
 
-  toggleDropdown(cb?: Functio) {
-    const { updateConnectionTray, isConnectionTrayOpen } = this.props;
-    updateConnectionTray(!isConnectionTrayOpen);
+  mobileMenuButtonClick() {
+    const { sidebarStatus, updateMobileMenuState } = this.props;
+    const { mobileMenuState: menuState } = sidebarStatus;
+
+    switch (menuState) {
+      case MOBILE_MENU_STATES.CLOSED:
+        updateMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
+        break;
+      default:
+        updateMobileMenuState(menuState - 1);
+        break;
+    }
+  }
+
+  toggleDropdown(cb?: Function) {
+    const { updateConnectionTray, isConnectionTrayOpen, toggleSidebar, isMobile, mobileMenuState } = this.props;
+    if (isMobile) {
+      this.mobileMenuButtonClick();
+      updateConnectionTray(!isConnectionTrayOpen);
+    } else {
+      updateConnectionTray(!isConnectionTrayOpen);
+    }
+
     if (cb && typeof cb === "function") cb();
   }
 
@@ -87,6 +112,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             }
           )}
         >
+          {/* TODO styles to hide on mobile */}
           <ConnectDropdown toggleDropdown={(cb) => this.toggleDropdown(cb)} />
         </div>
       </div>

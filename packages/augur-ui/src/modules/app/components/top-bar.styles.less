@@ -44,9 +44,17 @@
     justify-content: flex-end;
     max-height: @top-bar-height;
 
+    > div:first-of-type {
+      > div:last-of-type {
+        @media @breakpoint-mobile {
+          display: none;
+        }
+      }
+    }
+
     > div {
       @media @breakpoint-mobile {
-        display: none;
+        // display: none;
       }
     }
 
@@ -57,6 +65,9 @@
 }
 
 .Logo {
+  @media @breakpoint-mobile-new {
+    display: none !important;
+  }
 
   div {
     width: @size-24;
@@ -74,6 +85,10 @@
 }
 
 .statsContainer {
+  @media @breakpoint-mobile-new {
+    display: none !important;
+  }
+
   // Funds
   > div:first-of-type {
     display: flex;

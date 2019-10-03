@@ -5,6 +5,11 @@
   box-sizing: border-box;
   border-radius: @size-3;
   min-width: @account-details-menu-width;
+
+  @media @breakpoint-mobile {
+    padding-top: 5rem; // topBar height
+    border: none;
+  }
 }
 
 .WalletProvider, .TxFee, .Logout, .AddFunds, .AccountFunds  {
@@ -18,6 +23,10 @@
 }
 
 .AddFunds {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
   > div {
     .mono-11-bold;
 
@@ -62,6 +71,8 @@
 
   > div:last-of-type {
     .mono-11-bold;
+
+    color: @color-primary-text;
   }
 }
 
@@ -69,6 +80,7 @@
   > div > div:first-of-type {
     .mono-9-bold;
 
+    color: @color-secondary-text;
     text-transform: uppercase;
   }
 
@@ -94,7 +106,29 @@
   }
 }
 
+.MobileAddFunds {
+  display: none;
+
+  @media @breakpoint-mobile {
+    display: flex;
+    width: 100%;
+    padding: 16px 12px;
+    background: #1B1A1E;
+    border-bottom: 1px solid #0E0E0F;
+    flex-direction: row;
+    justify-content: space-between;
+
+    > button {
+      width: 100%;
+    }
+  }
+}
+
 .Logout {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
   justify-content: flex-end;
 
   > div {

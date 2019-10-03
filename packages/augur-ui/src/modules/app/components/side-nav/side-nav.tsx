@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 import makePath from "modules/routes/helpers/make-path";
-import ConnectAccount from "modules/auth/containers/connect-account";
+import ConnectDropdown from "modules/auth/containers/connect-dropdown";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
 
 import { MARKETS } from "modules/routes/constants/views";
@@ -11,14 +11,15 @@ import Styles from "modules/app/components/side-nav/side-nav.styles.less";
 
 interface SideNavProps {
   defaultMobileClick: Function;
-  isLogged: Boolean;
-  menuData: Array<Object>;
-  mobileShow: Boolean;
+  isLogged: boolean;
+  menuData: object[];
+  mobileShow: boolean;
   currentBasePath?: string;
+  isConnectionTrayOpen: boolean;
 };
 
 interface SideNavState {
-  selectedItem: null | Object;
+  selectedItem: null | object;
   selectedKey: null | string;
 }
 
@@ -73,7 +74,8 @@ export default class SideNav extends Component<SideNavProps, SideNavState> {
       isLogged,
       defaultMobileClick,
       menuData,
-      mobileShow
+      mobileShow,
+      isConnectionTrayOpen,
     } = this.props;
 
     const accessFilteredMenu = menuData.filter(
@@ -87,6 +89,7 @@ export default class SideNav extends Component<SideNavProps, SideNavState> {
         })}
       >
         <div className={Styles.SideNav__container}>
+          {isConnectionTrayOpen &&  <ConnectDropdown /> }
           <ul className={Styles.SideNav__nav}>
             {accessFilteredMenu.map((item, index) => {
               const Icon = item.icon;
@@ -117,15 +120,15 @@ export default class SideNav extends Component<SideNavProps, SideNavState> {
               );
             })}
           </ul>
-          {isLogged && (
+          {/* {isLogged && (
             <div className={Styles.SideNav__hideForMidScreens}>
               <GasPriceEdit />
               <div className={Styles.SideNav__amt}>
                 <div className={Styles.SideNav__nav__separator} />
               </div>
-              <ConnectAccount />
+              <ConnectDropdown />
             </div>
-          )}
+          )} */}
         </div>
       </aside>
     );

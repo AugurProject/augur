@@ -131,6 +131,10 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
         ))}
 
+        <div className={Styles.MobileAddFunds}>
+          <PrimaryButton action={() => null} disabled text="Add Funds" />
+        </div>
+
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {
@@ -165,6 +169,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             icon={Pencil}
           />
         </div>
+
 
         <div className={Styles.Logout}>
           <div onClick={() => logout()}>

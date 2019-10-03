@@ -271,8 +271,10 @@ export default class AppView extends Component<AppProps> {
   }
 
   mobileMenuButtonClick() {
-    const { sidebarStatus, updateMobileMenuState } = this.props;
+    const { sidebarStatus, updateMobileMenuState, updateConnectionTray } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
+
+    updateConnectionTray(false);
 
     switch (menuState) {
       case MOBILE_MENU_STATES.CLOSED:
@@ -329,7 +331,8 @@ export default class AppView extends Component<AppProps> {
       sidebarStatus,
       updateMobileMenuState,
       alerts,
-      toasts
+      toasts,
+      isConnectionTrayOpen,
     } = this.props;
 
     const { unseenCount } = alerts;
@@ -376,6 +379,7 @@ export default class AppView extends Component<AppProps> {
               }
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
+              isConnectionTrayOpen={isConnectionTrayOpen}
             />
 
             {/* HIDDEN ON MOBILE */}
