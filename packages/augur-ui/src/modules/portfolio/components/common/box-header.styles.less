@@ -65,6 +65,20 @@
   display: flex;
   justify-content: flex-end;
   padding: 0 @size-8;
+
+  @media @breakpoint-max-tablet {
+    padding: 0;
+  }
+}
+
+.RightContent {
+  @media @breakpoint-tablet {
+    margin-top: @size-8;
+  }
+
+  @media @breakpoint-mobile-new {
+    margin-top: @size-16;
+  }
 }
 
 .MostRightContent {
@@ -75,9 +89,18 @@
   margin-bottom: @size-12;
 }
 
-.BottomContent {
-  background: @color-dark-grey;
+.DisputeTabs {
+  background: @color-table-header;
+  border: 1px solid @color-dark-grey;
   margin-top: @size-16;
+
+  @media @breakpoint-tablet {
+    margin-top: 0;
+  }
+
+  @media @breakpoint-mobile-new {
+    margin-top: 0;
+  }
 }
 
 .noBackground {
@@ -117,7 +140,7 @@
   }
 }
 
-@media @breakpoint-mobile-mid {
+@media @breakpoint-max-tablet {
   .ShowOnMobile {
     display: flex;
     flex: 1;
@@ -126,7 +149,7 @@
     > div:first-of-type {
       display: flex;
       justify-content: flex-end;
-      margin-top: @size-10;
+      margin-top: @size-8;
 
       > div:first-of-type {
         flex: 1;
@@ -144,5 +167,13 @@
 
   .HideOnMobile {
     display: none;
+  }
+}
+
+@media @breakpoint-tablet {
+  .ShowOnMobile {
+    > div:first-of-type {
+      margin-top: 0;
+    }
   }
 }

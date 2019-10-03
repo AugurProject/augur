@@ -3,11 +3,11 @@
 .SwitchLabelsGroup {
   display: flex;
   flex: 1;
-  padding-top: @size-10;
+  justify-content: flex-start;
+  padding: @size-10 @size-10 0 @size-10;
 
-  @media @breakpoint-mobile-mid {
-    padding: @size-12 @size-10 0 @size-10;
-    justify-content: space-evenly;
+  @media @breakpoint-min-desktop-min {
+    padding: @size-10 0 0 0;
   }
 
   > label {
@@ -81,14 +81,13 @@
     }
 
     &:not(:last-of-type) {
-      margin-right: 10%;
+      margin-right: @size-20;
     }
 
     &:not(:first-of-type) {
       margin-left: 0;
     }
   }
-
 }
 
 .Open {

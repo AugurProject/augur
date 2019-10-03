@@ -88,22 +88,24 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         [Styles[`Outcome-${props.index}`]]: !props.invalid,
       })}
     >
-      <span>{props.description}</span>
-      {props.stake && props.stake.tentativeWinning ? (
-        <span>tentative winner</span>
-      ) : (
-        <Percent
-          percent={
-            props.stake
-              ? calculatePosition(
-                  ZERO,
-                  createBigNumber(bondSizeCurrent.value),
-                  stakeCurrent
-                )
-              : 0
-          }
-        />
-      )}
+      <div>
+        <span>{props.description}</span>
+        {props.stake && props.stake.tentativeWinning ? (
+          <span>tentative winner</span>
+        ) : (
+          <Percent
+            percent={
+              props.stake
+                ? calculatePosition(
+                    ZERO,
+                    createBigNumber(bondSizeCurrent.value),
+                    stakeCurrent
+                  )
+                : 0
+            }
+          />
+        )}
+      </div>
       <div>
         <div>
           <span>
