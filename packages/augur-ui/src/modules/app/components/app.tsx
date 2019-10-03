@@ -40,6 +40,7 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
+import { Universe } from 'modules/types';
 
 interface AppProps {
   blockchain: Object;
@@ -51,7 +52,7 @@ interface AppProps {
   location: Object;
   loginAccount: Object;
   modal: Object;
-  universe: Object;
+  universe: Universe;
   updateIsMobile: Function;
   updateIsMobileSmall: Function;
   updateModal: Function;
@@ -119,7 +120,7 @@ export default class AppView extends Component<AppProps> {
       icon: NavCreateIcon,
       route: CREATE_MARKET,
       requireLogin: true,
-      disabled: this.props.universe.isForking,
+      disabled: this.props.universe.forkingInfo,
     },
     {
       title: 'Logout',
@@ -189,8 +190,8 @@ export default class AppView extends Component<AppProps> {
     if (isMobile !== nextProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-    if (universe.isForking !== nextProps.universe.isForking) {
-      this.sideNavMenuData[1].disabled = nextProps.universe.isForking;
+    if (universe.forkingInfo !== nextProps.universe.forkingInfo) {
+      this.sideNavMenuData[1].disabled = nextProps.universe.forkingInfo;
     }
 
     if (location !== nextProps.location) {

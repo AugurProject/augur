@@ -43,7 +43,7 @@ const mapStateToProps = (state, ownProps) => {
         market.expirySource,
     currentTime: (state.blockchain || {}).currentAugurTimestamp,
     isLogged: state.authStatus.isLogged,
-    isForking: state.universe.isForking,
+    isForking: state.universe.forkingInfo,
     market,
     isFavorite: !!state.favorites[ownProps.marketId],
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
