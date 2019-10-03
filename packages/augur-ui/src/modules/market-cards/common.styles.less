@@ -65,7 +65,7 @@
 	> span:first-of-type {
 		.text-12-bold;
 
-		color: @color-primary-text;
+    color: @color-primary-text;
 	}
 
 	> span:nth-of-type(2) {
@@ -110,7 +110,11 @@
 	}
 
 	> div:first-of-type {
-		margin-bottom: 0;
+    margin-bottom: 0;
+
+    &.blank {
+      padding-top: @size-16;
+    }
 	}
 
 	> div:not(:last-of-type) {

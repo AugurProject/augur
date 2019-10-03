@@ -65,12 +65,15 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'write-artifacts',
+        abbr: 'w',
         description: 'Overwrite addresses.json.',
         flag: true,
       },
       {
         name: 'time-controlled',
+        abbr: 't',
         description: 'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
+        flag: true,
       },
       {
         name: 'useSdk',
@@ -85,11 +88,11 @@ export function addScripts(flash: FlashSession) {
 
       const config = {
         writeArtifacts: args.write_artifacts as boolean,
+        useNormalTime: true,
       };
-      if (args.time_controlled === 'true') {
+
+      if (args.time_controlled) {
         config['useNormalTime'] = false;
-      } else if (args.time_controlled === 'false') {
-        config['useNormalTime'] = true;
       }
 
       const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
@@ -107,6 +110,7 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'amount',
+        abbr: 'a',
         description: 'Quantity of Cash.',
         required: true,
       },
@@ -128,6 +132,7 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'amount',
+        abbr: 'a',
         description: 'Quantity of REP.',
         required: true,
       },
@@ -205,9 +210,18 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets-and-orders',
     async call(this: FlashSession) {
       const user = await this.ensureUser();
+      await user.repFaucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
       await user.approve(new BigNumber(10).pow(18).multipliedBy(1000000));
       return createCannedMarketsAndOrders(user);
+    },
+  });
+
+  flash.addScript({
+    name: 'deploy-all',
+    async call(this: FlashSession) {
+      await this.call('deploy', {write_artifacts: true, time_controlled: true});
+      await this.call('create-canned-markets-and-orders', {});
     },
   });
 

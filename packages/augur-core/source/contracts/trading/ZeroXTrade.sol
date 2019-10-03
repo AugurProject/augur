@@ -15,7 +15,7 @@ import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 
 
-contract ZeroXTrade is Initializable, IZeroXTrade {
+contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     using SafeMathUint256 for uint256;
 
     bool transferFromAllowed = false;
@@ -66,14 +66,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
 
     ICreateOrder public createOrder;
     IFillOrder public fillOrder;
-    IExchange public exchange;
     ICash public cash;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         createOrder = ICreateOrder(_augur.lookup("CreateOrder"));
         fillOrder = IFillOrder(_augur.lookup("FillOrder"));
-        exchange = IExchange(_augur.lookup("ZeroXExchange"));
         cash = ICash(_augur.lookup("Cash"));
 
         EIP712_DOMAIN_HASH = keccak256(
@@ -85,6 +83,89 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
             )
         );
     }
+
+    // ERC1155 Implementation
+    /// @notice Transfers value amount of an _id from the _from address to the _to address specified.
+    /// @dev MUST emit TransferSingle event on success.
+    /// @param from    Source address
+    /// @param to      Target address
+    /// @param id      ID of the token type
+    /// @param value   Transfer amount
+    /// @param data    Additional data with no specified format, sent in call to `_to`
+    function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes calldata data) external {
+        require(transferFromAllowed);
+        emit TransferSingle(msg.sender, from, to, id, value);
+    }
+
+    /// @notice Send multiple types of Tokens from a 3rd party in one transfer (with safety call).
+    /// @dev MUST emit TransferBatch event on success.
+    /// @param from    Source addresses
+    /// @param to      Target addresses
+    /// @param ids     IDs of each token type
+    /// @param values  Transfer amounts per token type
+    /// @param data    Additional data with no specified format, sent in call to `_to`
+    function safeBatchTransferFrom(address from, address to, uint256[] calldata ids, uint256[] calldata values, bytes calldata data) external {
+        require(transferFromAllowed);
+        emit TransferBatch(msg.sender, from, to, ids, values);
+    }
+
+    /// @notice Get the balance of an account's Tokens.
+    /// @param owner  The address of the token holder
+    /// @param id     ID of the Token
+    /// @return       The _owner's balance of the Token type requested
+    function balanceOf(address owner, uint256 id) external view returns (uint256) {
+        (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(id);
+        Order.Types _orderType = Order.Types(_type);
+        if (_orderType == Order.Types.Ask) {
+            return askBalance(owner, IMarket(_market), _outcome, _price);
+        } else if (_orderType == Order.Types.Bid) {
+            return bidBalance(owner, IMarket(_market), _outcome, _price);
+        }
+    }
+
+    function bidBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
+        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
+        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
+        uint256 _attoSharesOwned = 2**254;
+        for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
+            if (_i != _outcome) {
+                uint256 _creatorShareTokenBalance = _market.getShareToken(_i).balanceOf(_owner);
+                _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
+            }
+        }
+
+        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
+
+        return _attoSharesOwned.add(_attoSharesPurchasable);
+    }
+
+    function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
+        uint256 _attoSharesOwned = _market.getShareToken(_outcome).balanceOf(_owner);
+        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_market.getNumTicks().sub(_price));
+
+        return _attoSharesOwned.add(_attoSharesPurchasable);
+    }
+
+    /// @notice Get the balance of multiple account/token pairs
+    /// @param owners The addresses of the token holders
+    /// @param ids    ID of the Tokens
+    /// @return        The _owner's balance of the Token types requested
+    function balanceOfBatch(address[] calldata owners, uint256[] calldata ids) external view returns (uint256[] memory balances_) {
+        balances_ = new uint256[](owners.length);
+        for (uint256 _i = 0; _i < owners.length; _i++) {
+            balances_[_i] = this.balanceOf(owners[_i], ids[_i]);
+        }
+    }
+
+    function setApprovalForAll(address operator, bool approved) external {
+        revert("Not supported");
+    }
+
+    function isApprovedForAll(address owner, address operator) external view returns (bool) {
+        return true;
+    }
+
+    // Trade functions
 
     /**
      * Perform Augur Trades using 0x signed orders
@@ -113,9 +194,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
             IExchange.Order memory _order = _orders[i];
+            validateOrder(_order);
+            IExchange _exchange = getExchangeFromAssetData(_order.makerAssetData);
 
             // Update 0x. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = exchange.fillOrderNoThrow(
+            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow(
                 _order,
                 _fillAmountRemaining,
                 _signatures[i]
@@ -132,6 +215,15 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         transferFromAllowed = false;
 
         return _fillAmountRemaining;
+    }
+
+    function validateOrder(IExchange.Order memory _order) internal pure {
+        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
+        (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
+        require(_zeroXTradeToken == _zeroXTradeTokenTaker);
+        require(_tokenId == _tokenIdTaker);
+        // XXX: Needs merge from master to work
+        // XXX require(_zeroXTradeToken == this);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
@@ -151,8 +243,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
     }
 
     function creatorHasFundsForTrade(IExchange.Order memory _order, uint256 _amount) public view returns (bool) {
-        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order);
-        return _amount <= _zeroXTradeToken.balanceOf(_order.makerAddress, _tokenId);
+        uint256 _tokenId = getTokenIdFromOrder(_order);
+        return _amount <= this.balanceOf(_order.makerAddress, _tokenId);
     }
 
     function getTransferFromAllowed() public view returns (bool) {
@@ -171,7 +263,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         uint256 _price,
         uint8 _outcome,
         uint8 _type,
-        IERC20 _kycToken
+        IERC20 _kycToken,
+        IExchange _exchange
     )
         public
         view
@@ -180,35 +273,36 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         uint256[] memory _tokenIds = new uint256[](1);
         uint256[] memory _tokenValues = new uint256[](1);
 
-        address _tokenAddress = address(_market.getZeroXTradeToken());
-        uint256 _tokenId = getTokenId(_price, _outcome, _type);
+        uint256 _tokenId = getTokenId(address(_market), _price, _outcome, _type);
         _tokenIds[0] = _tokenId;
         _tokenValues[0] = 1;
         bytes memory _callbackData = new bytes(0);
         _assetData = abi.encodeWithSelector(
             ERC1155_PROXY_ID,
-            _tokenAddress,
+            address(this),
             _tokenIds,
             _tokenValues,
             _callbackData,
-            _kycToken
+            _kycToken,
+            _exchange
         );
         return _assetData;
     }
 
-    function getTokenId(uint256 _price, uint8 _outcome, uint8 _type) public pure returns (uint256 _tokenId) {
-        // NOTE: we're assuming no one needs a full uint256 for the price value here and cutting to uint240 so we can pack this in a uint256.
-        bytes memory _tokenIdBytes = abi.encodePacked(uint240(_price), _outcome, _type);
+    function getTokenId(address _market, uint256 _price, uint8 _outcome, uint8 _type) public pure returns (uint256 _tokenId) {
+        // NOTE: we're assuming no one needs a full uint256 for the price value here and cutting to uint80 so we can pack this in a uint256.
+        bytes memory _tokenIdBytes = abi.encodePacked(_market, uint80(_price), _outcome, _type);
         assembly {
             _tokenId := mload(add(_tokenIdBytes, add(0x20, 0)))
         }
     }
 
-    function unpackTokenId(uint256 _tokenId) public pure returns (uint256 _price, uint8 _outcome, uint8 _type) {
+    function unpackTokenId(uint256 _tokenId) public pure returns (address _market, uint256 _price, uint8 _outcome, uint8 _type) {
         assembly {
-            _price := shr(16, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000))
+            _market := shr(96, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000))
+            _price := shr(16,  and(_tokenId, 0x0000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFF0000))
             _outcome := shr(8, and(_tokenId, 0x000000000000000000000000000000000000000000000000000000000000FF00))
-            _type := and(_tokenId, 0x00000000000000000000000000000000000000000000000000000000000000FF)
+            _type :=           and(_tokenId, 0x00000000000000000000000000000000000000000000000000000000000000FF)
         }
     }
 
@@ -230,7 +324,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
             uint256[] memory _tokenIds,
             uint256[] memory _tokenValues,
             bytes memory _callbackData,
-            address _kycToken
+            address _kycToken,
+            IExchange _exchange
         )
     {
         assembly {
@@ -238,14 +333,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
             _assetData := add(_assetData, 36)
             // Read the value of the first parameter:
             _tokenAddress := mload(_assetData)
-            // Point to the next parameter's data:
             _tokenIds := add(_assetData, mload(add(_assetData, 32)))
-            // Point to the next parameter's data:
             _tokenValues := add(_assetData, mload(add(_assetData, 64)))
-            // Point to the next parameter's data:
             _callbackData := add(_assetData, mload(add(_assetData, 96)))
-            // Point to the next parameter's data:
             _kycToken := mload(add(_assetData, 128))
+            _exchange := mload(add(_assetData, 160))
         }
 
         return (
@@ -254,29 +346,40 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
             _tokenIds,
             _tokenValues,
             _callbackData,
-            _kycToken
+            _kycToken,
+            _exchange
         );
     }
 
+    function getExchangeFromAssetData(bytes memory _assetData) public pure returns (IExchange _exchange) {
+        assembly {
+            _assetData := add(_assetData, 36)
+            _exchange := mload(add(_assetData, 160))
+        }
+    }
+
     function parseOrderData(IExchange.Order memory _order) public view returns (AugurOrderData memory _data) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
-        (uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIds[0]);
-        _data.marketAddress = IZeroXTradeToken(_tokenAddress).getMarket();
-        require(IMarket(_data.marketAddress).getZeroXTradeToken() == IZeroXTradeToken(_tokenAddress));
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken, IExchange _exchange) = decodeAssetData(_order.makerAssetData);
+        (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIds[0]);
+        _data.marketAddress = _market;
         _data.price = _price;
         _data.orderType = _type;
         _data.outcome = _outcome;
         _data.kycToken = _kycToken;
     }
 
-    function getZeroXTradeTokenData(IExchange.Order memory _order) public pure returns (IERC1155 _token, uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
+    function getZeroXTradeTokenData(bytes memory _assetData) public pure returns (IERC1155 _token, uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken, IExchange _exchange) = decodeAssetData(_assetData);
         _token = IERC1155(_tokenAddress);
+    }
+
+    function getTokenIdFromOrder(IExchange.Order memory _order) public pure returns (uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken, IExchange _exchange) = decodeAssetData(_order.makerAssetData);        
         _tokenId = _tokenIds[0];
     }
 
-    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
-        bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken));
+    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, IExchange _exchange, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+        bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken), _exchange);
         _zeroXOrder.makerAddress = msg.sender;
         _zeroXOrder.takerAddress = address(0);
         _zeroXOrder.feeRecipientAddress = address(0);
@@ -289,6 +392,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         _zeroXOrder.salt = _salt;
         _zeroXOrder.makerAssetData = _assetData;
         _zeroXOrder.takerAssetData = _assetData;
-        _orderHash = exchange.getOrderInfo(_zeroXOrder).orderHash;
+        _orderHash = _exchange.getOrderInfo(_zeroXOrder).orderHash;
     }
 }

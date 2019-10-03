@@ -32,12 +32,30 @@
       display: flex;
       flex: 1;
       flex-wrap: wrap;
-      margin-right: @size-20;
-      max-width: 654px;
-      padding-top: @size-12;
+      margin-right: @size-8;
+      padding-top: @size-8;
+      align-items: center;
 
-      > span {
-        margin: 0 @size-8 0 0;
+      > div:first-of-type {
+        height: fit-content;
+        > span {
+          margin: 0 @size-8 0 0;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        flex: 1;
+        justify-content: flex-end;
+        display: flex;
+
+        > svg {
+          cursor: pointer;
+        }
+      }
+
+      > div:last-of-type {
+        display: flex;
+        margin-left: @size-8;
       }
     }
 
@@ -52,22 +70,6 @@
       margin: 0 @size-8 0 0;
     }
   }
-}
-
-.TimeSection {
-  background: @color-module-background;
-  border-left: 1px solid @color-dark-grey;
-  max-width: 240px;
-  width: 200px;
-  padding: @size-12 @size-16;
-
-  > div:first-of-type {
-    margin-bottom: @size-8;
-  }
-}
-
-.ScalarBox {
-  border-top: 1px solid @color-dark-grey;
 }
 
 div.Toggle {
@@ -131,13 +133,13 @@ div.Toggle {
   background: none;
   border: 0;
   margin: 0;
-  margin-top: -@size-10;
-  max-height: 30px;
+  max-height: @size-16;
   overflow: hidden;
   resize: none;
   text-transform: none;
   transition: max-height 0.15s ease-out;
   white-space: pre-wrap;
+  margin-bottom: @size-12;
 
   > p {
     margin-top: 0;
@@ -184,8 +186,7 @@ div.Toggle {
 
   > div:first-of-type {
     flex: 1;
-    margin-right: @size-20;
-    max-width: 654px;
+    margin-right: @size-8;
 
     &.Collapsed {
       display: flex;
@@ -275,6 +276,18 @@ div.Toggle {
       }
     }
   }
+
+  @media @breakpoint-mobile {
+    > div {
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: @size-12;
+
+      > label {
+        margin-bottom: @size-8;
+      }
+    }
+  }
 }
 
 .Properties {
@@ -284,25 +297,13 @@ div.Toggle {
   display: flex;
   flex: 1;
   flex-direction: column;
-}
-
-.Core {
-  display: flex;
-  flex: 1;
-
-  > div:first-of-type {
-    @media @breakpoint-mobile {
-      padding-top: @size-16;
-    }
-  }
-
-  > div {
-    flex: 1;
-  }
+  max-width: 630px;
 }
 
 @media @breakpoint-mobile {
   .MarketHeader {
+    border-radius: 1px;
+    
     > h1 {
       .text-18-bold;
 
@@ -313,23 +314,24 @@ div.Toggle {
 
     > div:first-of-type {
       align-items: normal;
-      margin-left: @size-8;
+      padding-left: @size-14;
       overflow: auto;
+      margin-bottom: @size-5;
 
       div.Properties {
         display: none;
       }
 
       > div:first-of-type {
-        padding-top: 0;
-        margin-top: -@size-8;
+        padding-top: @size-12;
+        align-items: flex-start;
 
-        > span {
-          margin: @size-8 @size-8 0 0;
-        }
+        > div:first-of-type {
+          flex-direction: column;
 
-        > button {
-          margin-top: @size-8;
+          > span {
+            margin: 0 0 @size-8;
+          }
         }
       }
     }
@@ -350,23 +352,23 @@ div.Toggle {
 
   .MainValues {
     flex-direction: column;
+    padding-left: 0;
 
     > .Properties {
-      border-bottom: 1px solid @color-dark-grey;
+      border-left: 0;
       margin-left: 0;
 
       > section {
         display: flex;
+        margin-left: @size-14;
       }
     }
 
     > div:first-of-type {
-      > h1 {
-        display: none;
-      }
+      padding-left: @size-12;
 
-      > div {
-        margin: @size-12 0 @size-10 @size-8;
+      > h1 {
+        margin-bottom: @size-12;
       }
     }
   }
@@ -378,7 +380,7 @@ div.Toggle {
     padding: @size-16;
   }
 
-  .Toggle {
+  div.Toggle {
     display: none;
   }
 }

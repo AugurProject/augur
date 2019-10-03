@@ -4,9 +4,9 @@ import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
-import { RadioBarGroup } from 'modules/common/form';
+import { ReportingRadioBarGroup, ReportingRadioBarProps } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE } from 'modules/common/constants';
+import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE, INVALID_OUTCOME_NAME } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
@@ -31,9 +31,10 @@ interface ModalReportingState {
   checked: string;
   preFilledStake: string;
   disputeStake: DisputeInputtedValues;
-  scalarOutcome: string;
+  inputScalarOutcome: string;
   isReporting: boolean;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
+  radioButtons: ReportingRadioBarProps[];
 }
 
 export default class ModalReporting extends Component<
@@ -43,13 +44,14 @@ export default class ModalReporting extends Component<
   state: ModalReportingState = {
     checked: this.props.selectedOutcome
       ? this.props.selectedOutcome.toString()
-      : '',
+      : null,
     preFilledStake: '',
     disputeStake: { inputStakeValue: '', inputToAttoRep: '' },
-    scalarOutcome: '',
+    inputScalarOutcome: '',
     isReporting: this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
     this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
     userCurrentDisputeRound: [],
+    radioButtons: []
   };
 
   componentDidMount = () => {
@@ -62,19 +64,94 @@ export default class ModalReporting extends Component<
         userCurrentDisputeRound: userCurrentDisputeRound ? userCurrentDisputeRound : []
       })
     })
+    this.setState({ radioButtons: this.buildRadioButtonCollection() })
   }
 
-  updateChecked = (checked: string) => {
+  updateChecked = (selected: string, isInvalid: boolean = false) => {
+    const { radioButtons } = this.state;
     this.updateDisputeStake({ inputStakeValue: '', inputToAttoRep: '' });
+    radioButtons.map(r =>
+      r.id === selected && r.isInvalid === isInvalid
+        ? (r.checked = true)
+        : (r.checked = false)
+    );
+    const radioValue = radioButtons.find(r => r.checked);
     this.updatePreFilledStake('');
-    this.updateScalarOutcome('');
-
-    this.setState({ checked });
+    this.updateScalarOutcome(String(radioValue.value) ? String(radioValue.value) : '');
+    this.setState({ radioButtons, checked: selected });
   };
 
   updatePreFilledStake = (preFilledStake: string) => {
     this.setState({ preFilledStake });
   };
+
+  buildRadioButtonCollection = () => {
+    const { market, selectedOutcome } = this.props;
+    const {
+      checked,
+    } = this.state;
+    const {
+      marketType,
+      outcomesFormatted,
+      disputeInfo,
+      minPrice,
+      maxPrice
+    } = market;
+
+    let sortedOutcomes = outcomesFormatted;
+    if (selectedOutcome !== null) {
+      const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
+      if (selected) {
+        sortedOutcomes = [selected, ...outcomesFormatted.filter(o => o.id !== Number(selectedOutcome))]
+      }
+    }
+
+    let radioButtons = sortedOutcomes
+      .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
+      .map(outcome => {
+        let stake = disputeInfo.stakes.find(
+          stake => parseFloat(stake.outcome) === outcome.id
+        );
+
+        return {
+          id: String(outcome.id),
+          header: outcome.description,
+          value: outcome.id,
+          description: stake.outcome,
+          checked: checked === outcome.id.toString(),
+          isInvalid: outcome.id === 0,
+          preFilledStake: formatAttoRep(stake.stakeCurrent).formatted,
+          stake,
+        };
+      });
+
+    if (marketType === SCALAR) {
+      if (selectedOutcome && String(selectedOutcome) !== 'null')
+        this.updateScalarOutcome(String(selectedOutcome));
+      radioButtons = [];
+      const denomination = market.scalarDenomination;
+      disputeInfo.stakes.forEach(stake => {
+        const populatedHeader = stake.isInvalidOutcome
+          ? INVALID_OUTCOME_NAME
+          : `${stake.outcome} ${denomination}`;
+        radioButtons.push({
+          id: String(stake.outcome),
+          header: stake.outcome
+            ? populatedHeader
+            : `Enter a range from ${minPrice} to ${maxPrice}`,
+          value: stake.outcome ? Number(stake.outcome) : null,
+          description: stake.outcome,
+          checked: checked === stake.outcome,
+          isInvalid: stake.isInvalidOutcome,
+          preFilledStake: formatAttoRep(
+            stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent
+          ).formatted,
+          stake,
+        });
+      });
+    }
+    return radioButtons;
+  }
 
   reportingAction = () => {
     const {
@@ -87,10 +164,14 @@ export default class ModalReporting extends Component<
       disputeInfo,
     } = this.props.market;
     const { isReporting } = this.state;
-    let outcomeId = parseInt(this.state.checked, 10);
+    let outcomeId = null;
+    const selectedRadio = this.state.radioButtons.find(r => r.checked);
+    // for cat and binary markets id is outcomeId
+    outcomeId = selectedRadio.id;
+    let isInvalid = selectedRadio.isInvalid;
     if (marketType === SCALAR) {
       // checked might be invalid outcome
-      outcomeId = parseFloat(this.state.scalarOutcome || this.state.checked);
+      outcomeId = parseFloat(this.state.inputScalarOutcome || this.state.checked);
     }
 
     if (isReporting) {
@@ -106,7 +187,7 @@ export default class ModalReporting extends Component<
         description: '',
         attoRepAmount,
         outcomeId,
-        isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+        isInvalid,
       });
       // wait a moment before closing the form.
       // need to either give user wait indicator in form
@@ -115,14 +196,23 @@ export default class ModalReporting extends Component<
       setTimeout(() => this.props.closeAction(), 1000);
     } else {
       // disputing
-      const tentativeWinningStake = disputeInfo.stakes.find(
+      let tentativeWinningStake = disputeInfo.stakes.find(
         s => s.tentativeWinning
       );
+      if (isInvalid) {
+        tentativeWinningStake = disputeInfo.stakes.find(
+          s => s.isInvalidOutcome
+        );
+        // only one outcome can be invalid. if choosen match outcomeIds
+        outcomeId = tentativeWinningStake.outcome;
+      }
       let tentativeOutcomeId = parseInt(tentativeWinningStake.outcome, 10);
       if (marketType === SCALAR) {
         tentativeOutcomeId = parseFloat(tentativeWinningStake.outcome);
       }
-      if (tentativeOutcomeId && tentativeOutcomeId === outcomeId) {
+      if (
+        tentativeOutcomeId === outcomeId
+      ) {
         addRepToTentativeWinningOutcome({
           marketId,
           maxPrice,
@@ -133,7 +223,7 @@ export default class ModalReporting extends Component<
           description: '',
           attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
-          isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+          isInvalid,
         });
       } else {
         contribute({
@@ -146,7 +236,7 @@ export default class ModalReporting extends Component<
           description: '',
           attoRepAmount: this.state.disputeStake.inputToAttoRep,
           outcomeId,
-          isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+          isInvalid,
         });
       }
 
@@ -158,19 +248,20 @@ export default class ModalReporting extends Component<
     this.setState({ disputeStake });
   };
 
-  updateScalarOutcome = (scalarOutcome: string) => {
-    this.setState({ scalarOutcome });
+  updateScalarOutcome = (inputScalarOutcome: string) => {
+    this.setState({ inputScalarOutcome });
   };
 
   render() {
-    const { closeAction, title, market, rep, selectedOutcome } = this.props;
+    const { closeAction, title, market, rep } = this.props;
     const {
       checked,
       isReporting,
       preFilledStake,
-      scalarOutcome,
+      inputScalarOutcome,
       disputeStake,
       userCurrentDisputeRound,
+      radioButtons,
     } = this.state;
     const {
       description,
@@ -179,58 +270,7 @@ export default class ModalReporting extends Component<
       details,
       creationTimeFormatted,
       endTimeFormatted,
-      outcomesFormatted,
-      disputeInfo,
     } = market;
-
-    // todo: need to add already staked outcomes for scalar markets for disputing
-    let sortedOutcomes = outcomesFormatted;
-    if (selectedOutcome || selectedOutcome == 0) {
-      const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
-      if (selected) {
-        sortedOutcomes = [selected, ...outcomesFormatted.filter(o => o.id !== Number(selectedOutcome))]
-      }
-    }
-
-    let radioButtons = sortedOutcomes
-      .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
-      .map(outcome => {
-        let stake = disputeInfo.stakes.find(
-          stake => parseFloat(stake.outcome) === outcome.id
-        );
-        if (!stake) {
-          stake = {
-            outcome: outcome.id.toString(),
-            bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
-            stakeCurrent: '0',
-            stakeRemaining: disputeInfo.bondSizeOfNewStake,
-            isInvalidOutcome: false,
-            isMalformedOutcome: false,
-            tentativeWinning: false,
-          };
-        }
-        return {
-          header: outcome.description,
-          value: outcome.id,
-          checked: checked === outcome.id.toString(),
-          isInvalid: outcome.id === 0,
-          preFilledStake: formatAttoRep(stake.stakeCurrent).formatted,
-          stake,
-        };
-      });
-
-    if (marketType === SCALAR) {
-      disputeInfo.stakes.forEach(stake => {
-        radioButtons.push({
-          header: stake.outcome,
-          value: Number(stake.outcome),
-          checked: checked === stake.outcome.toString(),
-          isInvalid: stake.outcome === String(INVALID_OUTCOME_ID),
-          preFilledStake: formatAttoRep(stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent).formatted,
-          stake,
-        })
-      })
-    }
 
     return (
       <div className={Styles.ModalReporting}>
@@ -269,18 +309,18 @@ export default class ModalReporting extends Component<
             </div>
           )}
           <div>
-            <RadioBarGroup
-              onChange={this.updateChecked}
+            <ReportingRadioBarGroup
               market={market}
               radioButtons={radioButtons}
-              defaultSelected={checked}
-              updatePreFilledStake={this.updatePreFilledStake}
-              preFilledStake={preFilledStake}
-              updateDisputeStake={this.updateDisputeStake}
-              disputeStake={disputeStake}
+              selected={checked}
+              updateChecked={this.updateChecked}
               reportAction={this.reportingAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={this.updatePreFilledStake}
+              disputeStake={disputeStake}
+              updateDisputeStake={this.updateDisputeStake}
               updateScalarOutcome={this.updateScalarOutcome}
-              scalarOutcome={scalarOutcome}
+              inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}
             />
           </div>

@@ -2,21 +2,18 @@ import { WordTrail } from 'modules/common/labels';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import {
-  BackArrow,
   ChevronDown,
   ChevronUp,
-  TwoArrows,
   TwoArrowsOutline,
   LeftChevron,
+  CopyAlternateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import ChevronFlip from 'modules/common/chevron-flip';
-import { MarketTypeLabel, TimeLabel } from 'modules/common/labels';
-import { MarketHeaderCollapsed } from 'modules/market/components/market-header/market-header-collapsed';
+import { MarketTypeLabel } from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
@@ -26,45 +23,12 @@ import {
   COPY_AUTHOR,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
-import { MarketTimeline } from 'modules/common/progress';
-import { convertUnixToFormattedDate } from 'utils/format-date';
-import { PaperClip, Person } from 'modules/common/icons';
 import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints } from 'modules/types';
 import Clipboard from 'clipboard';
-import { DotSelection } from 'modules/common/selection';
-import MarketScalarOutcomeDisplay from '../market-scalar-outcome-display/market-scalar-outcome-display';
 
-const OVERFLOW_DETAILS_LENGTH = 50; // in px, overflow limit to trigger MORE details
-
-// TODO: add this to top left -- refactor into it's own component:
-// clipboardMarketId: any = new Clipboard("#copy_marketId");
-// clipboardAuthor: any = new Clipboard("#copy_author");
-// {addToFavorites && (
-//   <div>
-//     <FavoritesButton
-//       action={() => addToFavorites()}
-//       isFavorite={isFavorite}
-//       hideText
-//       disabled={!isLogged}
-//     />
-//   </div>
-// )}
-// <DotSelection>
-//   <div
-//     id="copy_marketId"
-//     data-clipboard-text={marketId}
-//   >
-//     {PaperClip} {COPY_MARKET_ID}
-//   </div>
-//   <div
-//     id="copy_author"
-//     data-clipboard-text={author}
-//   >
-//     {Person} {COPY_AUTHOR}
-//   </div>
-// </DotSelection>
+const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
 interface MarketHeaderProps {
   description: string;
@@ -81,6 +45,7 @@ interface MarketHeaderProps {
   isFavorite: boolean;
   history: History;
   preview?: boolean;
+  reportingBarShowing: boolean;
 }
 
 interface MarketHeaderState {
@@ -102,6 +67,7 @@ export default class MarketHeader extends Component<
     toggleFavorite: () => {},
   };
   detailsContainer: any;
+  clipboardMarketId: any = new Clipboard('#copy_marketId');
 
   constructor(props) {
     super(props);
@@ -172,6 +138,8 @@ export default class MarketHeader extends Component<
       isFavorite,
       history,
       preview,
+      reportingBarShowing,
+      toggleFavorite,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -212,15 +180,30 @@ export default class MarketHeader extends Component<
         {!headerCollapsed && (
           <>
             <div>
-              <WordTrail items={[...categoriesWithClick]}>
-                <button
-                  className={Styles.BackButton}
-                  onClick={() => history.goBack()}
-                >
-                  {LeftChevron} Back
-                </button>
-                <MarketTypeLabel marketType={marketType} />
-              </WordTrail>
+              <div>
+                <WordTrail items={[...categoriesWithClick]}>
+                  <button
+                    className={Styles.BackButton}
+                    onClick={() => history.goBack()}
+                  >
+                    {LeftChevron} Back
+                  </button>
+                  <MarketTypeLabel marketType={marketType} />
+                </WordTrail>
+                <div id="copy_marketId" data-clipboard-text={market.id}>
+                  {CopyAlternateIcon}
+                </div>
+                {toggleFavorite && (
+                  <div>
+                    <FavoritesButton
+                      action={() => this.addToFavorites()}
+                      isFavorite={isFavorite}
+                      hideText
+                      disabled={!isLogged}
+                    />
+                  </div>
+                )}
+              </div>
               <div className={Styles.Properties}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
@@ -280,35 +263,18 @@ export default class MarketHeader extends Component<
                     endTimeFormatted={market.endTimeFormatted}
                   />
                 )}
-                {/* <MarketHeaderReporting
-                marketId={market.id}
-                preview={preview}
-                market={preview && market}
-              /> */}
-                <div className={Styles.Core}>
-                  {(market.id || preview) && <CoreProperties market={market} />}
-                  <div className={Styles.TimeSection}>
-                    <TimeLabel
-                      label="Date Created"
-                      time={market.creationTimeFormatted}
-                      showLocal
-                    />
-                    <TimeLabel
-                      label="Reporting Starts"
-                      time={market.endTimeFormatted}
-                    />
-                  </div>
-                </div>
-                {market.marketType === SCALAR &&
-                  <div className={Styles.ScalarBox}>
-                    <MarketScalarOutcomeDisplay
-                      outcomes={market.outcomes}
-                      scalarDenomination={market.scalarDenomination}
-                      min={market.minPriceBigNumber}
-                      max={market.maxPriceBigNumber}
-                    />
-                  </div>
-                }
+                <MarketHeaderReporting
+                  marketId={market.id}
+                  preview={preview}
+                  market={preview && market}
+                />
+                {(market.id || preview) && (
+                  <CoreProperties
+                    market={market}
+                    alternateView
+                    reportingBarShowing={reportingBarShowing}
+                  />
+                )}
               </div>
             </div>
           </>

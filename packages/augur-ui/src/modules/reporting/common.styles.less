@@ -1,11 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
 .DismissableNotice {
-  margin: @size-16 0;
+  margin: @size-16 0 0;
 
   > div {
-    .mono-10-bold;
-
     align-items: center;
     background: @color-dismissable-notice-background;
     border: 1px solid @color-outcome-two;
@@ -15,10 +13,25 @@
     justify-content: flex-start;
     line-height: @size-12;
     padding: @size-8 @size-16;
-    text-transform: uppercase;
     width: 100%;
 
+    > div > div:first-of-type {
+      .mono-10-bold;
+
+      display: flex;
+      line-height: @size-12;
+      text-transform: uppercase;
+    }
+
+    > div > div:last-of-type {
+      .text-11;
+
+      display: flex;
+      line-height: @size-13;
+    }
+
     > span:first-of-type {
+      align-items: flex-end;
       display: flex;
       margin: 0 @size-16 0 0;
 
@@ -34,15 +47,22 @@
       }
     }
 
-    > span:last-of-type {
+    > div > span:last-of-type {
+      .mono-10-bold;
+
       color: @color-module-background;
+      text-transform: uppercase;
+    }
+
+    > button {
+      .mono-12-bold;
+      margin-left: auto;
     }
 
     > .close {
       background-color: transparent;
       height: @size-10;
       line-height: @size-10;
-      margin-left: auto;
       width: @size-10;
 
       > svg > path {

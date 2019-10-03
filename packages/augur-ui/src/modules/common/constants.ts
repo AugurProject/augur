@@ -348,6 +348,7 @@ export const MARKET_FULLY_LOADED = 'MARKET_FULLY_LOADED';
 
 // # Market Outcome Constants
 export const INVALID_OUTCOME_ID = 0;
+export const INVALID_OUTCOME_NAME = 'Invalid';
 export const YES_NO_NO_ID = 1;
 export const YES_NO_NO_OUTCOME_NAME = 'No';
 export const YES_NO_YES_ID = 2;
@@ -511,6 +512,7 @@ export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
+
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_TRADING_OVERLAY = 'MODAL_TRADING_OVERLAY';
@@ -525,6 +527,12 @@ export const MODAL_MARKET_REVIEW_TRADE = 'MODAL_MARKET_REVIEW_TRADE';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
+export const MODAL_MIGRATE_MARKET = 'MODAL_MIGRATE_MARKET';
+export const MODAL_LOGIN = 'MODAL_LOGIN';
+export const MODAL_SIGNUP = 'MODAL_SIGNUP';
+export const MODAL_CONNECT = 'MODAL_CONNECT';
+export const MODAL_LOADING = 'MODAL_LOADING';
+
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
 export const TX_ORDER_IDS = '_orderIds';
@@ -654,6 +662,7 @@ export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
+export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
 export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(3000000);

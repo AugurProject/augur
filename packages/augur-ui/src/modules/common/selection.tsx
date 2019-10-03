@@ -4,6 +4,7 @@ import Styles from "modules/common/selection.styles";
 import { ThickChevron, Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
+import { MARKET_TEMPLATES } from "modules/create-market/constants";
 
 export interface NameValuePair {
   label: string;
@@ -407,3 +408,31 @@ export class DotSelection extends React.Component<
     );
   }
 }
+
+export interface CategorySelectorProps {
+  action: Function;
+  selected: string;
+}
+
+export const CategorySelector = ({
+  action,
+  selected,
+}: CategorySelectorProps) => {
+  const options = [{ value: 'all', header: 'All' }].concat(MARKET_TEMPLATES);
+  return (
+    <div className={Styles.CategorySelector}>
+      {options.map((item, idx) => {
+        const option = item.value.toLowerCase();
+        return (
+          <div
+            key={idx}
+            onClick={() => action(option)}
+            className={selected === option ? Styles.selected : null}
+          >
+            {item.header}
+          </div>
+        );
+      })}
+    </div>
+  );
+};

@@ -1,6 +1,5 @@
 import React, { Component, useState } from 'react';
 import classNames from 'classnames';
-import { calculatePosition } from 'modules/market-cards/common';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   ZERO,
@@ -32,11 +31,22 @@ import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters, convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
+import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
-interface DismissableNoticeProps {
-  content: JSX.Element;
+export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
+  BUTTON = 'PrimaryButton',
+  CLOSE = 'close'
+}
+
+export interface DismissableNoticeProps {
+  title: string;
+  description: string;
+  buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES;
+  buttonText?: string;
+  buttonAction?: Function;
   show: boolean;
 }
 
@@ -50,14 +60,28 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
           <span>
             {ExclamationCircle}
           </span>
-          {props.content}
-          <button
-            type='button'
-            className={Styles.close}
-            onClick={() => setShow(() => false)}
-          >
-            {XIcon}
-          </button>
+          <div>
+            <div>{props.title}</div>
+            <div>{props.description}</div>
+          </div>
+          {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON &&
+            <button
+              type='button'
+              className={ButtonStyles.PrimaryButton}
+              onClick={props.buttonAction}
+            >
+              {props.buttonText}
+            </button>
+          }
+          {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE &&
+            <button
+              type='button'
+              className={Styles.close}
+              onClick={() => setShow(() => false)}
+            >
+              {XIcon}
+            </button>
+          }
         </div>
       ) : null}
     </div>
@@ -173,7 +197,7 @@ interface PreFilledStakeProps {
 }
 
 export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
-  changeStake = stake => {
+  updateDisputeStake = stake => {
     this.props.updatePreFilledStake(stake);
   };
 
@@ -206,19 +230,19 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
             <TextInput
               placeholder={'0.0000'}
               value={preFilledStake}
-              onChange={value => this.changeStake(value)}
+              onChange={value => this.updateDisputeStake(value)}
               errorMessage={stakeError}
               innerLabel="REP"
             />
             <div>
               <CancelTextButton
                 noIcon
-                action={() => this.changeStake(threshold.toString())}
+                action={() => this.updateDisputeStake(threshold.toString())}
                 text={'MAX (REP THRESHOLD)'}
               />
               <CancelTextButton
                 noIcon
-                action={() => this.changeStake('')}
+                action={() => this.updateDisputeStake('')}
                 text={'CLEAR'}
               />
             </div>
@@ -264,8 +288,8 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
 );
 
 export interface ScalarOutcomeViewProps {
-  rangeValue: string;
-  changeRange: Function;
+  inputScalarOutcome: string;
+  updateScalarOutcome: Function;
   scalarDenomination: string;
   scalarError?: string;
 }
@@ -274,8 +298,8 @@ export const ScalarOutcomeView = (props: ScalarOutcomeViewProps) => (
   <div className={Styles.ScalarOutcomesView}>
     <TextInput
       placeholder={'Enter a number'}
-      value={props.rangeValue}
-      onChange={value => props.changeRange(value)}
+      value={props.inputScalarOutcome}
+      onChange={value => props.updateScalarOutcome(value)}
       errorMessage={props.scalarError}
     />
     <h2>{props.scalarDenomination}</h2>
@@ -284,12 +308,13 @@ export const ScalarOutcomeView = (props: ScalarOutcomeViewProps) => (
 
 export interface DisputingBondsViewProps {
   market: MarketData;
-  rangeValue: string;
-  changeRange: Function;
+  id: string;
+  checked: string;
+  isInvalid: boolean;
+  inputScalarOutcome: string;
+  updateScalarOutcome: Function;
   stakeValue: string;
-  changeStake: Function;
-  updateScalarOutcome?: Function;
-  scalarOutcome?: string;
+  updateDisputeStake: Function;
   userAvailableRep: number;
   stakeRemaining?: string;
   tentativeWinning?: boolean;
@@ -314,8 +339,8 @@ export class DisputingBondsView extends Component<
     isScalar: this.props.market.marketType === SCALAR,
   };
 
-  changeRange = (range: string) => {
-    const { market, changeRange, stakeValue } = this.props;
+  updateScalarOutcome = (range: string) => {
+    const { market, updateScalarOutcome, stakeValue } = this.props;
 
     if (
       createBigNumber(range).lt(createBigNumber(market.minPrice)) ||
@@ -333,17 +358,18 @@ export class DisputingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    changeRange(range);
+    updateScalarOutcome(range);
   };
 
-  changeStake = (inputStakeValue: string) => {
+  updateDisputeStake = (inputStakeValue: string) => {
     const {
       market,
-      changeStake,
-      rangeValue,
+      updateDisputeStake,
+      inputScalarOutcome,
       userAvailableRep,
       stakeRemaining,
       tentativeWinning,
+      isInvalid
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar } = this.state;
@@ -360,7 +386,7 @@ export class DisputingBondsView extends Component<
       inputStakeValue === '0.'
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-      return changeStake({inputStakeValue, inputToAttoRep});
+      return updateDisputeStake({inputStakeValue, inputToAttoRep});
     } else if (
       createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
     ) {
@@ -392,37 +418,37 @@ export class DisputingBondsView extends Component<
       this.setState({ stakeError: '' });
       if (
         this.state.scalarError === '' &&
-        ((isScalar && rangeValue !== '') || !isScalar)
+        ((isScalar && inputScalarOutcome !== '') || isInvalid) || (!isScalar)
       ) {
         this.setState({ disabled: false });
       }
     }
-    changeStake({inputStakeValue, inputToAttoRep});
+    updateDisputeStake({inputStakeValue, inputToAttoRep});
   };
 
   render() {
     const {
       market,
-      rangeValue,
+      inputScalarOutcome,
       stakeValue,
       stakeRemaining,
       tentativeWinning,
       reportAction,
+      id
     } = this.props;
 
     const { disabled, scalarError, stakeError, isScalar } = this.state;
     const min = convertAttoValueToDisplayValue(createBigNumber(market.noShowBondAmount));
     const remaining = convertAttoValueToDisplayValue(createBigNumber(stakeRemaining));
+    // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div
-        className={classNames(Styles.DisputingBondsView, {
-          [Styles.Scalar]: isScalar,
-        })}
+        className={classNames(Styles.DisputingBondsView)}
       >
-        {isScalar && (
+        {isScalar && id === "null" && (
           <ScalarOutcomeView
-            rangeValue={rangeValue}
-            changeRange={this.changeRange}
+            inputScalarOutcome={inputScalarOutcome}
+            updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
           />
@@ -430,7 +456,7 @@ export class DisputingBondsView extends Component<
         <TextInput
           placeholder={'0.0000'}
           value={String(stakeValue)}
-          onChange={value => this.changeStake(value)}
+          onChange={value => this.updateDisputeStake(value)}
           errorMessage={stakeError}
           innerLabel="REP"
         />
@@ -438,13 +464,13 @@ export class DisputingBondsView extends Component<
           <section>
             <CancelTextButton
               noIcon
-              action={() => this.changeStake(String(min))}
+              action={() => this.updateDisputeStake(String(min))}
               text={'MIN'}
             />
             |
             <CancelTextButton
               noIcon
-              action={() => this.changeStake(String(remaining))}
+              action={() => this.updateDisputeStake(String(remaining))}
               text={'FILL DISPUTE BOND'}
             />
           </section>
@@ -452,8 +478,8 @@ export class DisputingBondsView extends Component<
         <span>Review</span>
         <LinearPropertyLabel
           key="disputeRoundStake"
-          label="Dispute Round Stake"
-          value={formatAttoRep(stakeValue).formatted + ' REP'}
+          label={tentativeWinning ? "Contribute to Next Round" : "Dispute Round Stake"}
+          value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
@@ -472,14 +498,13 @@ export class DisputingBondsView extends Component<
 
 export interface ReportingBondsViewProps {
   market: MarketData;
-  rangeValue: string;
-  changeRange: Function;
+  id: string;
+  updateScalarOutcome: Function;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
   preFilledStake?: string;
   updatePreFilledStake?: Function;
-  updateScalarOutcome?: Function;
-  scalarOutcome?: string;
+  inputScalarOutcome?: string;
   userAvailableRep: number;
 }
 
@@ -507,8 +532,8 @@ export class ReportingBondsView extends Component<
     this.setState({ showInput: !this.state.showInput });
   };
 
-  changeRange = (range: string) => {
-    const { market, changeRange } = this.props;
+  updateScalarOutcome = (range: string) => {
+    const { market, updateScalarOutcome } = this.props;
 
     if (
       createBigNumber(range).lt(createBigNumber(market.minPrice)) ||
@@ -526,13 +551,13 @@ export class ReportingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    changeRange(range);
+    updateScalarOutcome(range);
   };
 
   updatePreFilledStake = (stake: string) => {
     const {
       updatePreFilledStake,
-      rangeValue,
+      inputScalarOutcome,
       userAvailableRep,
     } = this.props;
     const { isScalar } = this.state;
@@ -548,7 +573,7 @@ export class ReportingBondsView extends Component<
       this.setState({ stakeError: '' });
       if (
         this.state.scalarError === '' &&
-        ((isScalar && rangeValue !== '') || !isScalar)
+        ((isScalar && inputScalarOutcome !== '') || !isScalar)
       ) {
         this.setState({ disabled: false });
       }
@@ -559,27 +584,28 @@ export class ReportingBondsView extends Component<
   render() {
     const {
       market,
-      rangeValue,
+      inputScalarOutcome,
       reportingGasFee,
       reportAction,
       preFilledStake,
       userAvailableRep,
+      id,
     } = this.props;
 
     const { showInput, disabled, scalarError, stakeError, isScalar } = this.state;
-
     const preFilled = preFilledStake || '0';
 
+    // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
           [Styles.Scalar]: isScalar,
         })}
       >
-        {isScalar && (
+        {isScalar && id === "null" && (
           <ScalarOutcomeView
-            rangeValue={rangeValue}
-            changeRange={this.changeRange}
+            inputScalarOutcome={inputScalarOutcome}
+            updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
           />

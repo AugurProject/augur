@@ -7,7 +7,7 @@ import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import MarketLink from 'modules/market/components/market-link/market-link';
-import { CATEGORICAL, COPY_MARKET_ID, COPY_AUTHOR, REPORTING_STATE } from 'modules/common/constants';
+import { COPY_MARKET_ID, COPY_AUTHOR, REPORTING_STATE } from 'modules/common/constants';
 import { FavoritesButton } from 'modules/common/buttons';
 import Clipboard from 'clipboard';
 import { DotSelection } from 'modules/common/selection';
@@ -16,6 +16,7 @@ import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
 import { formatAttoRep } from 'utils/format-number';
+import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
 
 import Styles from 'modules/market-cards/market-card.styles.less';
 
@@ -35,12 +36,14 @@ interface MarketCardProps {
   hasPosition?: boolean;
   hasStaked?: boolean;
   dispute: Function;
+  migrateMarketModal: Function;
 }
 
 interface MarketCardState {
   expanded: boolean;
 }
-
+const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
+const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
 export default class MarketCard extends React.Component<
   MarketCardProps,
   MarketCardState
@@ -164,6 +167,17 @@ export default class MarketCard extends React.Component<
       }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    const inDispute =
+      reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+      reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
+    const showOutcomeNumber = inDispute
+      ? MARKET_CARD_FOLD_OUTCOME_COUNT
+      : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+    const canDispute =
+      inDispute &&
+      reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
+      isLogged;
+    const marketAwaitingForkMigration = reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION;
 
     return (
       <div
@@ -266,9 +280,11 @@ export default class MarketCard extends React.Component<
                   reportingState={reportingState}
                   stakes={disputeInfo.stakes}
                   dispute={dispute}
-                  isLogged={isLogged}
+                  inDispute={inDispute}
+                  showOutcomeNumber={showOutcomeNumber}
+                  canDispute={canDispute}
                 />
-                {marketType === CATEGORICAL && outcomesFormatted && outcomesFormatted.length > 3 && !expandedView &&
+                {outcomesFormatted && outcomesFormatted.length > showOutcomeNumber && !expandedView &&
                   <button onClick={this.expand}>
                     <ChevronFlip
                       stroke='#fff'
@@ -283,6 +299,16 @@ export default class MarketCard extends React.Component<
               </>
               :
               <div style={{ display: 'none' }}></div>
+            }
+            {marketAwaitingForkMigration &&
+              <DismissableNotice
+                show={true}
+                buttonAction={this.props.migrateMarketModal}
+                buttonText='Migrate Market'
+                buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+                title='Fork has finalized. Please migrate this market to the new universe.'
+                description='Message about migrating, gas cost etc.'
+              />
             }
             {marketResolved &&
               <ResolvedOutcomes

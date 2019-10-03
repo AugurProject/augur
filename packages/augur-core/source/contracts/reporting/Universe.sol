@@ -473,6 +473,7 @@ contract Universe is IUniverse {
         _currentValidityBondInAttoCash = formulas.calculateValidityBond(_previousDisputeWindow, previousValidityBondInAttoCash);
         validityBondInAttoCash[address(_disputeWindow)] = _currentValidityBondInAttoCash;
         previousValidityBondInAttoCash = _currentValidityBondInAttoCash;
+        augur.logValidityBondChanged(_currentValidityBondInAttoCash);
         return _currentValidityBondInAttoCash;
     }
 
@@ -493,6 +494,7 @@ contract Universe is IUniverse {
         _currentDesignatedReportStakeInAttoRep = formulas.calculateDesignatedReportStake(_previousDisputeWindow, previousDesignatedReportStakeInAttoRep, initialReportMinValue);
         designatedReportStakeInAttoRep[address(_disputeWindow)] = _currentDesignatedReportStakeInAttoRep;
         previousDesignatedReportStakeInAttoRep = _currentDesignatedReportStakeInAttoRep;
+        augur.logDesignatedReportStakeChanged(_currentDesignatedReportStakeInAttoRep);
         return _currentDesignatedReportStakeInAttoRep;
     }
 
@@ -512,6 +514,7 @@ contract Universe is IUniverse {
         _currentDesignatedReportNoShowBondInAttoRep = formulas.calculateDesignatedReportNoShowBond(_previousDisputeWindow, previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue);
         designatedReportNoShowBondInAttoRep[address(_disputeWindow)] = _currentDesignatedReportNoShowBondInAttoRep;
         previousDesignatedReportNoShowBondInAttoRep = _currentDesignatedReportNoShowBondInAttoRep;
+        augur.logNoShowBondChanged(_currentDesignatedReportNoShowBondInAttoRep);
         return _currentDesignatedReportNoShowBondInAttoRep;
     }
 
@@ -537,6 +540,7 @@ contract Universe is IUniverse {
 
         shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
         previousReportingFeeDivisor = _currentFeeDivisor;
+        augur.logReportingFeeChanged(_currentFeeDivisor);
         return _currentFeeDivisor;
     }
 

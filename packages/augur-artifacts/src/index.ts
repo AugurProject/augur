@@ -44,6 +44,7 @@ export interface ContractAddresses {
     GnosisSafe?: string;
     ProxyFactory?: string;
     ZeroXTrade?: string;
+    ZeroXExchange?: string;
     BuyParticipationTokens?: string;
     RedeemStake?: string;
     CashFaucet?: string;

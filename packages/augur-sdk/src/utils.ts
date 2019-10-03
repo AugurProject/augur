@@ -147,7 +147,7 @@ export function calculatePayoutNumeratorsValue(
       return { outcome: '0', invalid: true };
     }
 
-    const longPayout = new BigNumber(payout[1]);
+    const longPayout = new BigNumber(payout[2]);
     const priceRange = new BigNumber(displayMaxPrice, 10).minus(
       new BigNumber(displayMinPrice, 10)
     );
@@ -187,11 +187,10 @@ export function getOutcomeValue(market: MarketData, payoutNumerators: string[]):
   const maxPrice = new BigNumber(market['prices'][1]);
   const minPrice = new BigNumber(market['prices'][0]);
   const numTicks = new BigNumber(market['numTicks']);
-  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
   const marketType = marketTypeToName(market.marketType);
   return calculatePayoutNumeratorsValue(
-    convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
-    convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+    convertAttoValueToDisplayValue(maxPrice).toString(),
+    convertAttoValueToDisplayValue(minPrice).toString(),
     numTicks.toString(),
     marketType,
     payoutNumerators

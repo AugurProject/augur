@@ -7,20 +7,21 @@ import {
   YES_NO,
   REPORTING_STATE,
   ZERO,
-  INVALID_OUTCOME_ID,
+  SCALAR_UP_ID,
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { CheckCircleIcon } from 'modules/common/icons';
 import { OutcomeFormatted, FormattedNumber, MarketData } from 'modules/types';
-import { formatDai, formatAttoRep } from 'utils/format-number';
+import { formatDai, formatAttoRep, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
+import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 
 export interface PercentProps {
   percent: number;
@@ -73,7 +74,7 @@ export interface DisputeOutcomeProps {
   stake: Getters.Markets.StakeDetails | null;
   dispute: Function;
   id: number;
-  isLogged: boolean;
+  canDispute: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -125,7 +126,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
         </div>
         <SecondaryButton
           small
-          disabled={!props.isLogged}
+          disabled={!props.canDispute}
           text={
             props.stake && props.stake.tentativeWinning
               ? 'Support Tentative Winner'
@@ -141,6 +142,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
 interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
   dispute: Function;
+  canDispute: boolean;
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -148,12 +150,13 @@ export const ScalarBlankDisputeOutcome = (
 ) => (
   <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
     <span>{`Dispute current Tentative Winner with new ${props.denomination} value`}</span>
-    <div>
+    <div className={Styles.blank}>
       <div></div>
       <SecondaryButton
         small
+        disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
-        action={() => props.dispute("1")}
+        action={() => props.dispute(null)}
       />
     </div>
   </div>
@@ -164,21 +167,6 @@ export interface ScalarOutcomeProps {
   min: BigNumber;
   max: BigNumber;
   lastPrice?: FormattedNumber;
-}
-
-export function calculatePosition(
-  min: BigNumber,
-  max: BigNumber,
-  lastPrice: FormattedNumber
-) {
-  const range = max.minus(min);
-  const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
-    .minus(min)
-    .dividedBy(range)
-    .times(createBigNumber(100))
-    .toNumber();
-
-  return lastPrice === null ? 50 : pricePercentage;
 }
 
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
@@ -213,19 +201,19 @@ export interface OutcomeGroupProps {
   reportingState: string;
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
-  isLogged: boolean;
+  inDispute?: boolean;
+  showOutcomeNumber: number;
+  canDispute: boolean;
 }
-const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
-const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
+
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     props.marketType,
     props.outcomes,
     props.stakes
   );
-  const inDispute =
-    props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE;
-  const showOutcomeNumber = inDispute ? MARKET_CARD_FOLD_OUTCOME_COUNT : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+
+  const { inDispute, showOutcomeNumber } = props;
   let dipsutingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
@@ -260,7 +248,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             min={props.min}
             max={props.max}
             lastPrice={
-              outcomesShow[0].price ? outcomesShow[0].lastPricePercent : null
+              props.outcomes[SCALAR_UP_ID].price ? formatNumber(props.outcomes[SCALAR_UP_ID].price) : null
             }
             scalarDenomination={props.scalarDenomination}
           />
@@ -293,7 +281,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 )}
                 dispute={props.dispute}
                 id={outcome.id}
-                isLogged={props.isLogged}
+                canDispute={props.canDispute}
               />
             ) : (
               <Outcome
@@ -312,6 +300,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
         <ScalarBlankDisputeOutcome
           denomination={props.scalarDenomination}
           dispute={props.dispute}
+          canDispute={props.canDispute}
         />
       )}
     </div>

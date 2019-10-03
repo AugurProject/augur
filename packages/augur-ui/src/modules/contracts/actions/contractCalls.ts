@@ -292,7 +292,7 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(report);
-  return await market.doInitialReport(
+  return market.doInitialReport(
     payoutNumerators,
     report.description,
     createBigNumber(report.attoRepAmount || '0')
@@ -305,7 +305,7 @@ export async function addRepToTentativeWinningOutcome(
   const market = getMarket(addStake.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(addStake);
-  return await market.contributeToTentative(
+  return market.contributeToTentative(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
     addStake.description
@@ -316,7 +316,7 @@ export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
-  return await market.contribute(payoutNumerators, createBigNumber(dispute.attoRepAmount), dispute.description);
+  return market.contribute(payoutNumerators, createBigNumber(dispute.attoRepAmount), dispute.description);
 }
 
 function getMarket(marketId) {
@@ -655,4 +655,24 @@ export async function claimMarketsProceeds(
       affiliateAddress
     );
   }
+}
+
+export async function migrateThroughOneForkEstimateGas(
+  marketId: string,
+  payoutNumerators: BigNumber[],
+  description: string
+): Promise<BigNumber> {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(marketId);
+  return market.migrateThroughOneFork_estimateGas(payoutNumerators, description);
+}
+
+export async function migrateThroughOneFork(
+  marketId: string,
+  payoutNumerators: BigNumber[],
+  description: string
+) {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(marketId);
+  return market.migrateThroughOneFork(payoutNumerators, description);
 }
