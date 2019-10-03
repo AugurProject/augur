@@ -37,26 +37,21 @@
     }
   }
 
+  // LOGIN/SIGNUP ACCOUNT / ALERTS
   > div:last-of-type {
     align-items: center;
     flex: 1;
     justify-content: flex-end;
     max-height: @top-bar-height;
 
-    @media @breakpoint-mobile {
-      flex: unset;
-    }
-
     > div {
-      height: 100%;
-    }
-  }
-
-  > div.TopBar_blockGasAcccount_HideMobile {
-    @media @breakpoint-mobile {
-      > div {
+      @media @breakpoint-mobile {
         display: none;
       }
+    }
+
+    > button {
+      margin-right: @size-12;
     }
   }
 }
@@ -211,32 +206,4 @@
 
 .alertsDark {
   background-color: @color-module-background;
-}
-
-div.tooltip {
-  margin-top: -@size-16 !important;
-  padding: @size-12 @size-12 @size-8 !important;
-
-  &::before {
-    margin-left: -0.5625rem !important;
-  }
-
-  > h4 {
-    .text-10;
-
-    color: @color-inactive-text;
-    line-height: normal;
-    margin-bottom: 2px;
-  }
-
-  > p {
-    color: @color-primary-text;
-    font-size: @size-12;
-    line-height: normal;
-    margin-bottom: @size-8;
-  }
-}
-
-.tooltip-denomination {
-  font-size: @size-9;
 }
