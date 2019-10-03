@@ -75,12 +75,17 @@ export interface DisputeOutcomeProps {
   dispute: Function;
   id: number;
   canDispute: boolean;
+  canSupport: boolean;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
   const stakeCurrent = props.stake && formatAttoRep(props.stake.stakeCurrent);
   const bondSizeCurrent =
     props.stake && formatAttoRep(props.stake.bondSizeCurrent);
+
+  const showButton =
+    !props.stake.tentativeWinning ||
+    (props.canSupport && props.stake.tentativeWinning);
 
   return (
     <div
@@ -124,16 +129,18 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
             </span>
           )}
         </div>
-        <SecondaryButton
-          small
-          disabled={!props.canDispute}
-          text={
-            props.stake && props.stake.tentativeWinning
-              ? 'Support Tentative Winner'
-              : 'Dispute Tentative Winner'
-          }
-          action={() => props.dispute(props.id.toString())}
-        />
+        {showButton &&
+          <SecondaryButton
+            small
+            disabled={!props.canDispute}
+            text={
+              props.stake && props.stake.tentativeWinning
+                ? 'Support Tentative Winner'
+                : 'Dispute Tentative Winner'
+            }
+            action={() => props.dispute(props.id.toString())}
+          />
+        }
       </div>
     </div>
   );
@@ -204,6 +211,7 @@ export interface OutcomeGroupProps {
   inDispute?: boolean;
   showOutcomeNumber: number;
   canDispute: boolean;
+  canSupport: boolean;
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
@@ -282,6 +290,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 dispute={props.dispute}
                 id={outcome.id}
                 canDispute={props.canDispute}
+                canSupport={props.canSupport}
               />
             ) : (
               <Outcome

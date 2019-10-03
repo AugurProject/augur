@@ -6,7 +6,7 @@ import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import { ReportingRadioBarGroup, ReportingRadioBarProps } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE, INVALID_OUTCOME_NAME } from 'modules/common/constants';
+import { SCALAR, REPORTING_STATE, INVALID_OUTCOME_NAME } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,

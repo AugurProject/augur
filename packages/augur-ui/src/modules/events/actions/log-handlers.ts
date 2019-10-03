@@ -49,6 +49,7 @@ import {
   reloadDisputingPage,
 } from 'modules/reporting/actions/update-reporting-list';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
+import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 
 const handleAlert = (
   log: any,
@@ -160,6 +161,7 @@ export const handleMarketsUpdatedLog = (
   console.log('handleMarketsUpdatedChangedLog', log);
   if (log && log.data) {
     dispatch(loadMarketsInfo(log.data.map(d => d.market)));
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage());
   }
 };
 
@@ -441,6 +443,8 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   getState: () => AppState
 ) => {
   console.log('handleUniverseForkedLog');
+  const { universe, forkingMarket } = log;
+  dispatch(loadUniverseForkingInfo(universe, forkingMarket));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
