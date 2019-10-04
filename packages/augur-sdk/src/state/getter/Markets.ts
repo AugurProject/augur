@@ -1,33 +1,33 @@
-import { BigNumber } from 'bignumber.js';
-import { SearchResults } from 'flexsearch';
-import { DB } from '../db/DB';
-import { MarketFields } from '../db/SyncableFlexSearch';
-import { Getter } from './Router';
-import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
+import { BigNumber } from "bignumber.js";
+import { SearchResults } from "flexsearch";
+import { DB } from "../db/DB";
+import { MarketFields } from "../db/SyncableFlexSearch";
+import { Getter } from "./Router";
+import { Order, Orders, OrderState, OutcomeParam, Trading } from "./Trading";
 import {
   Address,
-  DisputeDoc, MarketCreatedLogExtraInfo,
+  DisputeDoc,
   MarketData,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog
 } from "../logs/types";
-import { sortOptions } from './types';
-import { MarketReportingState } from '../../constants';
+import { sortOptions } from "./types";
+import { MarketReportingState } from "../../constants";
 import {
   Augur,
-  numTicksToTickSize,
-  QUINTILLION,
-  convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
+  convertOnChainPriceToDisplayPrice,
   marketTypeToName,
-} from '../../index';
-import { getOutcomeValue, convertPayoutNumeratorsToStrings, calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
-import { OrderBook } from '../../api/Liquidity';
-import * as _ from 'lodash';
-import * as t from 'io-ts';
-import { pipe } from 'fp-ts/lib/pipeable'
-import { fold } from 'fp-ts/lib/Either'
+  numTicksToTickSize,
+  QUINTILLION
+} from "../../index";
+import { calculatePayoutNumeratorsValue, getOutcomeValue, PayoutNumeratorValue } from "../../utils";
+import { OrderBook } from "../../api/Liquidity";
+import * as _ from "lodash";
+import * as t from "io-ts";
+import { pipe } from "fp-ts/lib/pipeable";
+import { fold } from "fp-ts/lib/Either";
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -228,6 +228,7 @@ export interface CategoryStats {
     category: string;
     numberOfMarkets: number;
     volume: string;
+    openInterest: string;
   }
 }
 
@@ -256,7 +257,15 @@ export class Markets {
     }),
   ]);
 
-  static getCategoriesParams = t.type({ universe: t.string });
+  static getCategoriesParams = t.intersection([
+    t.type({
+      universe: t.string,
+    }),
+    t.partial({
+      reportingStates: t.array(t.string)
+    }),
+  ]);
+
   static getCategoryStatsParams = t.type({
     universe: t.string,
     categories: t.array(t.string),
@@ -722,22 +731,30 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getCategoriesParams>
   ): Promise<string[]> {
-    const marketCreatedLogs = await db.findMarketCreatedLogs({
-      selector: { universe: params.universe },
+    const { universe, reportingStates } = params;
+
+    const marketLogs = await db.findMarkets({
+      selector: {
+        universe,
+        ...(reportingStates ? { // optionally filter on reporting state
+          reportingState: { $in: reportingStates}
+        } : {}),
+      },
+      fields: [ 'extraInfo' ]
     });
-    const allCategories: any = {};
-    for (let i = 0; i < marketCreatedLogs.length; i++) {
-      if (marketCreatedLogs[i].extraInfo) {
-        let categories: string[] = [];
-        const extraInfo = JSON.parse(marketCreatedLogs[i].extraInfo);
-        categories = extraInfo.categories ? extraInfo.categories : [];
-        for (let j = 0; j < categories.length; j++) {
-          if (!allCategories[categories[j]]) {
-            allCategories[categories[j]] = null;
+
+    const allCategories: {[category: string]: null} = {};
+    marketLogs.forEach((log) => {
+      const extraInfo = parseExtraInfo(log.extraInfo);
+      if (extraInfo) {
+        const categories = Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
+        categories.forEach((category) => {
+          if (!allCategories[category]) {
+            allCategories[category] = null;
           }
-        }
+        });
       }
-    }
+    });
     return Object.keys(allCategories);
   }
 
@@ -752,7 +769,14 @@ export class Markets {
     const allMarkets = await db.findMarkets({
       selector: {
         universe,
+        reportingState: {
+          $not: { $in: [
+              MarketReportingState.AwaitingFinalization,
+              MarketReportingState.Finalized
+          ]}
+        }
       },
+      fields: [ 'extraInfo', 'volume', 'marketOI' ],
     });
 
     const markets = allMarkets.map((market) => {
@@ -762,6 +786,7 @@ export class Markets {
       return {
         categories: extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [],
         volume: market.volume,
+        marketOI: market.marketOI,
       };
     });
 
@@ -770,6 +795,7 @@ export class Markets {
         category,
         numberOfMarkets: 0,
         volume: '0',
+        openInterest: '0',
       };
       return stats;
     }, {} as CategoryStats);
@@ -780,9 +806,14 @@ export class Markets {
           const stats = categoryStats[category];
           stats.numberOfMarkets++;
           stats.volume = new BigNumber(stats.volume).plus(market.volume).toString();
+          stats.openInterest = new BigNumber(stats.openInterest).plus(market.marketOI).toString();
         }
       });
     });
+
+    const formattedStats = categoryStats.map((stats) => {
+      
+    })
 
     return categoryStats;
   }
