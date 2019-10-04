@@ -4,10 +4,11 @@
   height: 100%;
   overflow: auto;
   position: relative;
+  background: @color-dark-grey;
+  padding-bottom: @size-32;
 }
 
 .InnerNav__menu {
-  height: 100%;
   list-style: none;
   margin: 0;
   overflow-x: hidden;
@@ -135,9 +136,12 @@
         width: 100%;
         z-index: @mask-above;
 
+        > span {
+          margin: auto;
+        }
+
         > button {
           height: @size-16;
-          margin-left: auto;
           margin-right: @size-16;
           width: @size-16;
         }

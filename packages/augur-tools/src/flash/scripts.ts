@@ -148,6 +148,34 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'migrate-rep',
+    description: 'migrate rep to universe.',
+    options: [
+      {
+        name: 'payoutNumerators',
+        abbr: 'p',
+        description: 'payout numerators of child unverse.',
+        required: true,
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'Quantity of REP.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+      const amount = Number(args.amount);
+      const atto = new BigNumber(amount).times(_1_ETH);
+      const payout = String(args.payoutNumerators).split(',').map(i => new BigNumber(i));
+      console.log(payout);
+      await user.migrateOutByPayoutNumerators(payout, atto);
+    },
+  });
+
+  flash.addScript({
     name: 'gas-limit',
     async call(this: FlashSession): Promise<number | undefined> {
       if (this.noProvider()) return undefined;

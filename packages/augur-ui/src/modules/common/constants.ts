@@ -55,6 +55,7 @@ export const ETHEREUM_NODE_WS = 'ethereum_node_ws';
 // # Auth Types
 export const REGISTER = 'register';
 export const LOGIN = 'login';
+export const SIGNUP = 'signup';
 export const LOGOUT = 'logout';
 export const IMPORT = 'import';
 export const FUND_ACCOUNT = 'fund_account';
@@ -71,14 +72,15 @@ const SECONDS_PER_DAY = 3600 * 24;
 
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
-// # Connect Nav Constants
+// # Connect Constants
 export const ACCOUNT_TYPES = {
-  EDGE: 'edge',
-  PORTIS: 'portis',
-  FORTMATIC: 'fortmatic',
-  LEDGER: 'ledger',
-  METAMASK: 'metaMask',
-  TREZOR: 'trezor',
+  EDGE: 'Edge',
+  PORTIS: 'Portis',
+  FORTMATIC: 'Fortmatic',
+  TORUS: 'Torus',
+  LEDGER: 'Ledger',
+  METAMASK: 'MetaMask',
+  TREZOR: 'Trezor',
   UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
 };
 
@@ -86,6 +88,12 @@ export const WALLET_TYPE = {
   SOFTWARE: 'software',
   HARDWARE: 'hardware',
 };
+
+export const SIGNIN_LOADING_TEXT = 'Sit tight - we are loading your account.';
+export const SIGNIN_LOADING_TEXT_PORTIS = 'Follow instructions in the Portis window.';
+export const SIGNIN_LOADING_TEXT_FORTMATIC = 'Follow instructions in the Fortmatic window.';
+export const SIGNIN_LOADING_TEXT_TORUS = 'Follow instructions in the Tor.us window.';
+export const SIGNIN_SIGN_WALLET = 'Your wallet will ask you to digitally sign in to link it with Augur';
 
 export const ERROR_TYPES = {
   UNABLE_TO_CONNECT: {
@@ -512,6 +520,7 @@ export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
+export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';

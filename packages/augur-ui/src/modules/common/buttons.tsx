@@ -1,16 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  NEUTRAL,
-  ASCENDING,
-  DESCENDING,
-  BUY,
-  SELL,
-} from 'modules/common/constants';
+import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
 import {
   StarIcon,
-  XIcon,
   SortIcon,
   PercentIcon,
   QRCodeIcon,
@@ -23,14 +16,14 @@ import {
   RotatableChevron,
   Filter,
   TwoArrowsOutline,
+  XIcon,
+  BackIcon,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { MARKETS } from 'modules/routes/constants/views';
-import makePath from 'modules/routes/helpers/make-path';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -41,6 +34,7 @@ export interface DefaultButtonProps {
   icon?: any;
   small?: boolean;
   noIcon?: boolean;
+  subText?: string;
 }
 
 export interface SortButtonProps {
@@ -96,6 +90,7 @@ export interface ExternalLinkButtonProps {
   showNonLink?: boolean;
   action?: Function;
   URL?: string;
+  light?: boolean;
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
@@ -120,6 +115,52 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
   >
     {!!props.icon && props.icon}
     {props.text}
+  </button>
+);
+
+export const PrimarySignInButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.PrimarySignInButton}
+    disabled={props.disabled}
+    title={props.title || props.text}
+  >
+    <div>
+      <div>{props.icon}</div>
+      <div>
+        <div>{props.text}</div>
+        <div>{props.subText}</div>
+      </div>
+    </div>
+  </button>
+);
+
+export const CloseButton = (props: DefaultButtonProps) => (
+  <button className={Styles.CloseButton} onClick={e => props.action(e)} disabled={props.disabled}>
+    {XIcon}
+  </button>
+);
+
+export const BackButton = (props: DefaultButtonProps) => (
+  <button className={Styles.BackButton} onClick={e => props.action(e)} disabled={props.disabled}>{BackIcon} back</button>
+);
+
+export const SecondarySignInButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={classNames(Styles.SecondarySignInButton, {
+      [Styles.Small]: props.small,
+    })}
+    disabled={props.disabled}
+    title={props.title || props.text}
+  >
+    <div>
+      <div>{props.icon}</div>
+      <div>
+        <div>{props.text}</div>
+        <div>{props.subText}</div>
+      </div>
+    </div>
   </button>
 );
 
@@ -330,16 +371,16 @@ export const ViewTransactionDetailsButton = (
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
   <button
-    className={Styles.ExternalLinkButton}
+    className={classNames(Styles.ExternalLinkButton, {[Styles.LightAlternate]: props.light})}
     onClick={e => props.action && props.action(e)}
   >
-    {!props.showNonLink && ViewIcon}
     {props.URL && (
       <a href={props.URL} target="blank">
         {props.label}
       </a>
     )}
     {!props.URL && <span>{props.label}</span>}
+    {!props.showNonLink && ViewIcon}
   </button>
 );
 

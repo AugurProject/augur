@@ -237,6 +237,20 @@ export default function setAlertText(alert: any, callback: Function) {
         const payoutNums = convertPayoutNumeratorsToStrings(
           alert.params._payoutNumerators || alert.params.payoutNumerators
         );
+        const repAmount = formatRep(
+          createBigNumber(
+            alert.params.preFilled
+              ? alert.params._additionalStake
+              : alert.params._amount
+          ).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
+        ).formatted
+
+        if (!marketId) {
+          alert.details = `${
+            repAmount
+          } REP contributed"`;
+          break;
+        }
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
@@ -263,20 +277,16 @@ export default function setAlertText(alert: any, callback: Function) {
                   payoutNumeratorResultObject.invalid
                 );
             alert.description = marketInfo.description;
-            alert.details = `${
-              formatRep(
-                createBigNumber(
-                  alert.params.preFilled
-                    ? alert.params._additionalStake
-                    : alert.params._amount
-                ).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
-              ).formatted
-            } REP added to "${outcomeDescription}"`;
+            alert.details = `${repAmount} REP added to "${outcomeDescription}"`;
           })
         );
         break;
       case DOINITIALREPORT:
         alert.title = 'Market Reported';
+        if (!marketId) {
+          alert.description = 'Initial Report'
+          break;
+        }
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);

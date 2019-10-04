@@ -65,21 +65,21 @@ export default class Disputing extends Component<DisputingProps> {
                 </ModulePane>
               </ModuleTabs>
             ) : (
-            <>
-              <MarketsInDispute />
-              <div>
-                <ReportingModalButton
-                  text="Need Help? Disputing Quick Guide"
-                  action={() => console.log('TODO add popup')}
-                />
-                <UserRepDisplay />
-              </div>
-              <DisputeWindowProgress />
-              <ParticipationTokensView />
-            </>
-          )
-        }
-      </Media>
+              <>
+                <MarketsInDispute />
+                <div>
+                  <ReportingModalButton
+                    text="Need Help? Disputing Quick Guide"
+                    action={() => console.log('TODO add popup')}
+                  />
+                  <UserRepDisplay />
+                </div>
+                <DisputeWindowProgress />
+                <ParticipationTokensView />
+              </>
+            )
+          }
+        </Media>
       </section>
     );
   }

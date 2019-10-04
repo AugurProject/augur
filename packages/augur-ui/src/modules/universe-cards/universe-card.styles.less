@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared';
+
+.UniverseCard {
+  background-color: @color-module-background;
+  border: 0.0625rem solid @color-dark-grey;
+
+  > div {
+    padding: @size-19 @size-24;
+
+    > span {
+      .mono-10;
+
+      border: 1px solid transparent;
+      clear: both;
+      color: @color-positive;
+      display: inline-block;
+      line-height: @size-11;
+      padding: 0 1px;
+      position: relative;
+      border-radius: @border-radius-default;
+      text-transform: uppercase;
+      background: fade(@color-open, 15%);
+      margin-bottom: @size-19;
+    }
+
+    > div {
+      > h1 {
+        .mono-9-bold;
+
+        color: @color-secondary-text;
+        margin-bottom: @size-4;
+        text-transform: uppercase;
+      }
+
+      > .creationTimestamp {
+        .text-10-bold;
+
+        color: @color-primary-text;
+        margin-bottom: @size-19;
+      }
+
+      > .outcomeName {
+        .text-18-bold;
+
+        color: @color-primary-text;
+        margin-bottom: @size-19;
+      }
+    }
+  }
+}

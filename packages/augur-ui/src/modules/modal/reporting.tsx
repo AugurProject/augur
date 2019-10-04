@@ -4,19 +4,30 @@ import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
-import { ReportingRadioBarGroup, ReportingRadioBarProps } from 'modules/common/form';
+import {
+  ReportingRadioBarGroup,
+  ReportingRadioBarProps,
+  MigrateRepInfo,
+} from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR, INVALID_OUTCOME_ID, REPORTING_STATE, INVALID_OUTCOME_NAME } from 'modules/common/constants';
+import {
+  SCALAR,
+  REPORTING_STATE,
+  INVALID_OUTCOME_NAME,
+} from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
   addRepToTentativeWinningOutcome,
+  migrateRepToUniverse,
+  reportAndMigrateMarket,
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertDisplayValuetoAttoValue, Getters } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
+import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
@@ -25,6 +36,8 @@ interface ModalReportingProps {
   selectedOutcome?: number;
   reportAction: Function;
   userAccount?: string;
+  migrateRep: boolean;
+  migrateMarket: boolean;
 }
 
 interface ModalReportingState {
@@ -33,7 +46,9 @@ interface ModalReportingState {
   disputeStake: DisputeInputtedValues;
   inputScalarOutcome: string;
   isReporting: boolean;
-  userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
+  userCurrentDisputeRound:
+    | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
+    | [];
   radioButtons: ReportingRadioBarProps[];
 }
 
@@ -48,24 +63,34 @@ export default class ModalReporting extends Component<
     preFilledStake: '',
     disputeStake: { inputStakeValue: '', inputToAttoRep: '' },
     inputScalarOutcome: '',
-    isReporting: this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
+    isReporting:
+      this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+      this.props.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING,
     userCurrentDisputeRound: [],
-    radioButtons: []
+    radioButtons: [],
   };
 
   componentDidMount = () => {
-    const { market, userAccount} = this.props;
-    loadAccountCurrentDisputeHistory(market.marketId, userAccount, (err, userCurrentDisputeRound) => {
-      if (err) {
-        return console.error("could not get user current dispute round values", err);
+    const { market, userAccount } = this.props;
+    loadAccountCurrentDisputeHistory(
+      market.marketId,
+      userAccount,
+      (err, userCurrentDisputeRound) => {
+        if (err) {
+          return console.error(
+            'could not get user current dispute round values',
+            err
+          );
+        }
+        this.setState({
+          userCurrentDisputeRound: userCurrentDisputeRound
+            ? userCurrentDisputeRound
+            : [],
+        });
       }
-      this.setState({
-        userCurrentDisputeRound: userCurrentDisputeRound ? userCurrentDisputeRound : []
-      })
-    })
-    this.setState({ radioButtons: this.buildRadioButtonCollection() })
-  }
+    );
+    this.setState({ radioButtons: this.buildRadioButtonCollection() });
+  };
 
   updateChecked = (selected: string, isInvalid: boolean = false) => {
     const { radioButtons } = this.state;
@@ -77,7 +102,9 @@ export default class ModalReporting extends Component<
     );
     const radioValue = radioButtons.find(r => r.checked);
     this.updatePreFilledStake('');
-    this.updateScalarOutcome(String(radioValue.value) ? String(radioValue.value) : '');
+    this.updateScalarOutcome(
+      String(radioValue.value) ? String(radioValue.value) : ''
+    );
     this.setState({ radioButtons, checked: selected });
   };
 
@@ -87,22 +114,25 @@ export default class ModalReporting extends Component<
 
   buildRadioButtonCollection = () => {
     const { market, selectedOutcome } = this.props;
-    const {
-      checked,
-    } = this.state;
+    const { checked } = this.state;
     const {
       marketType,
       outcomesFormatted,
       disputeInfo,
       minPrice,
-      maxPrice
+      maxPrice,
     } = market;
 
     let sortedOutcomes = outcomesFormatted;
     if (selectedOutcome !== null) {
-      const selected = outcomesFormatted.find(o => o.id === Number(selectedOutcome))
+      const selected = outcomesFormatted.find(
+        o => o.id === Number(selectedOutcome)
+      );
       if (selected) {
-        sortedOutcomes = [selected, ...outcomesFormatted.filter(o => o.id !== Number(selectedOutcome))]
+        sortedOutcomes = [
+          selected,
+          ...outcomesFormatted.filter(o => o.id !== Number(selectedOutcome)),
+        ];
       }
     }
 
@@ -151,9 +181,10 @@ export default class ModalReporting extends Component<
       });
     }
     return radioButtons;
-  }
+  };
 
   reportingAction = () => {
+    const { migrateMarket, migrateRep, market } = this.props;
     const {
       marketId,
       maxPrice,
@@ -162,86 +193,57 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       disputeInfo,
-    } = this.props.market;
+    } = market;
     const { isReporting } = this.state;
     let outcomeId = null;
     const selectedRadio = this.state.radioButtons.find(r => r.checked);
     // for cat and binary markets id is outcomeId
     outcomeId = selectedRadio.id;
-    let isInvalid = selectedRadio.isInvalid;
+    let isSelectedOutcomeInvalid = selectedRadio.isInvalid;
     if (marketType === SCALAR) {
       // checked might be invalid outcome
-      outcomeId = parseFloat(this.state.inputScalarOutcome || this.state.checked);
+      outcomeId = parseFloat(
+        this.state.inputScalarOutcome || this.state.checked
+      );
     }
 
-    if (isReporting) {
+    const report = {
+      marketId,
+      maxPrice,
+      minPrice,
+      numTicks,
+      numOutcomes,
+      marketType,
+      description: '',
+      attoRepAmount: this.state.disputeStake.inputToAttoRep,
+      outcomeId,
+      isInvalid: isSelectedOutcomeInvalid,
+    };
+    if (migrateRep) {
+      migrateRepToUniverse(report);
+    } else if (migrateMarket) {
+      reportAndMigrateMarket(report);
+    } else if (isReporting) {
       const { preFilledStake } = this.state;
-      const attoRepAmount = convertDisplayValuetoAttoValue(createBigNumber(preFilledStake || '0')).toString();
-      doInitialReport({
-        marketId,
-        maxPrice,
-        minPrice,
-        numTicks,
-        numOutcomes,
-        marketType,
-        description: '',
-        attoRepAmount,
-        outcomeId,
-        isInvalid,
-      });
-      // wait a moment before closing the form.
-      // need to either give user wait indicator in form
-      // or in the Reporting page
-      // or in the market card, depending where they triggered the form modal
-      setTimeout(() => this.props.closeAction(), 1000);
+      report.attoRepAmount = convertDisplayValuetoAttoValue(
+        createBigNumber(preFilledStake || '0')
+      ).toString();
+      doInitialReport(report);
     } else {
       // disputing
-      let tentativeWinningStake = disputeInfo.stakes.find(
+      let contributeToTentativeWinner = false;
+      const tentativeWinningStake = disputeInfo.stakes.find(
         s => s.tentativeWinning
       );
-      if (isInvalid) {
-        tentativeWinningStake = disputeInfo.stakes.find(
-          s => s.isInvalidOutcome
-        );
-        // only one outcome can be invalid. if choosen match outcomeIds
-        outcomeId = tentativeWinningStake.outcome;
-      }
-      let tentativeOutcomeId = parseInt(tentativeWinningStake.outcome, 10);
-      if (marketType === SCALAR) {
-        tentativeOutcomeId = parseFloat(tentativeWinningStake.outcome);
-      }
-      if (
-        tentativeOutcomeId === outcomeId
-      ) {
-        addRepToTentativeWinningOutcome({
-          marketId,
-          maxPrice,
-          minPrice,
-          numTicks,
-          numOutcomes,
-          marketType,
-          description: '',
-          attoRepAmount: this.state.disputeStake.inputToAttoRep,
-          outcomeId,
-          isInvalid,
-        });
-      } else {
-        contribute({
-          marketId,
-          maxPrice,
-          minPrice,
-          numTicks,
-          numOutcomes,
-          marketType,
-          description: '',
-          attoRepAmount: this.state.disputeStake.inputToAttoRep,
-          outcomeId,
-          isInvalid,
-        });
+      if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
+        contributeToTentativeWinner = true;
       }
 
-      setTimeout(() => this.props.closeAction(), 1000);
+      contributeToTentativeWinner
+        ? addRepToTentativeWinningOutcome(report)
+        : contribute(report);
     }
+    setTimeout(() => this.props.closeAction(), 1000);
   };
 
   updateDisputeStake = (disputeStake: DisputeInputtedValues) => {
@@ -253,10 +255,10 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep } = this.props;
+    const { closeAction, title, market, rep, migrateRep, migrateMarket } = this.props;
     const {
       checked,
-      isReporting,
+      isDisputing,
       preFilledStake,
       inputScalarOutcome,
       disputeStake,
@@ -277,6 +279,9 @@ export default class ModalReporting extends Component<
         <Title title={title} closeAction={closeAction} bright />
         <main>
           <div>
+            {migrateRep &&
+              <MigrateRepInfo />
+            }
             <MarketTypeLabel marketType={marketType} />
             <span>{description}</span>
             <Subheaders
@@ -302,12 +307,13 @@ export default class ModalReporting extends Component<
               />
             </div>
           </div>
-          {!isReporting && (
+          {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
               <SecondaryButton text="Get REP" action={null} />
             </div>
           )}
+          <ReleasableRepNotice />
           <div>
             <ReportingRadioBarGroup
               market={market}
@@ -322,6 +328,7 @@ export default class ModalReporting extends Component<
               updateScalarOutcome={this.updateScalarOutcome}
               inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}
+              isDisputing={isDisputing}
             />
           </div>
         </main>

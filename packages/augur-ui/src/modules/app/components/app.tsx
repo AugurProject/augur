@@ -22,7 +22,7 @@ import {
   NavCreateIcon,
   NavMarketsIcon,
   NavPortfolioIcon,
-  NavReportingIcon
+  NavReportingIcon,
 } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
@@ -35,30 +35,31 @@ import {
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
-  MOBILE_MENU_STATES
+  MOBILE_MENU_STATES,
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
+import { Universe } from 'modules/types';
 
 interface AppProps {
   blockchain: Object;
   env: Object;
   history: Object;
   initAugur: Function;
-  isLogged: Boolean;
-  isMobile: Boolean;
+  isLogged: boolean;
+  isMobile: boolean;
   location: Object;
   loginAccount: Object;
   modal: Object;
-  universe: Object;
+  universe: Universe;
   updateIsMobile: Function;
   updateIsMobileSmall: Function;
   updateModal: Function;
   finalizeMarket: Function;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
-  useWeb3Transport: Boolean;
+  useWeb3Transport: boolean;
   logout: Function;
   sidebarStatus: Object;
   updateCurrentBasePath: Function;
@@ -88,7 +89,7 @@ export default class AppView extends Component<AppProps> {
       iconName: 'nav-account-icon',
       icon: NavAccountIcon,
       route: ACCOUNT_SUMMARY,
-      requireLogin: true
+      requireLogin: true,
     },
     {
       title: 'Portfolio',
@@ -119,7 +120,7 @@ export default class AppView extends Component<AppProps> {
       icon: NavCreateIcon,
       route: CREATE_MARKET,
       requireLogin: true,
-      disabled: this.props.universe.isForking,
+      disabled: this.props.universe.forkingInfo,
     },
     {
       title: 'Logout',
@@ -153,10 +154,10 @@ export default class AppView extends Component<AppProps> {
         useWeb3Transport,
       },
       (err: any, res: any) => {
-        if (err || (res && !res.ethereumNode) || (res)) {
+        if (err || (res && !res.ethereumNode) || res) {
           updateModal({
             type: MODAL_NETWORK_CONNECT,
-            isInitialConnection: true
+            isInitialConnection: true,
           });
         }
       }
@@ -189,8 +190,8 @@ export default class AppView extends Component<AppProps> {
     if (isMobile !== nextProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-    if (universe.isForking !== nextProps.universe.isForking) {
-      this.sideNavMenuData[1].disabled = nextProps.universe.isForking;
+    if (universe.forkingInfo !== nextProps.universe.forkingInfo) {
+      this.sideNavMenuData[1].disabled = nextProps.universe.forkingInfo;
     }
 
     if (location !== nextProps.location) {
@@ -231,15 +232,14 @@ export default class AppView extends Component<AppProps> {
   changeMenu(nextBasePath: string) {
     if (nextBasePath === MARKETS) {
       this.props.updateCurrentInnerNavType(MarketsInnerNavContainer);
-    }
-    else {
+    } else {
       this.props.updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
   }
 
   handleWindowResize = () => {
     this.checkIsMobile();
-  }
+  };
 
   checkIsMobile = () => {
     const { updateIsMobile, updateIsMobileSmall } = this.props;
@@ -260,7 +260,7 @@ export default class AppView extends Component<AppProps> {
 
     updateIsMobile(isMobile);
     updateIsMobileSmall(isMobileSmall);
-  }
+  };
 
   toggleAlerts() {
     const { isLogged, sidebarStatus, updateIsAlertVisible } = this.props;
@@ -290,11 +290,9 @@ export default class AppView extends Component<AppProps> {
     let icon: any = null;
     if (menuState === MOBILE_MENU_STATES.CLOSED) {
       icon = <MobileNavHamburgerIcon />;
-    }
-    else if (menuState === MOBILE_MENU_STATES.SIDEBAR_OPEN) {
+    } else if (menuState === MOBILE_MENU_STATES.SIDEBAR_OPEN) {
       icon = <MobileNavCloseIcon />;
-    }
-    else if (menuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+    } else if (menuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
       icon = <MobileNavBackIcon />;
     }
     // remove back icon for markets on mobile
@@ -307,7 +305,7 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <button
-        type='button'
+        type="button"
         className={Styles['SideBar__mobile-bars']}
         onClick={() => this.mobileMenuButtonClick()}
       >
@@ -328,7 +326,7 @@ export default class AppView extends Component<AppProps> {
       sidebarStatus,
       updateMobileMenuState,
       alerts,
-      toasts
+      toasts,
     } = this.props;
 
     const { unseenCount } = alerts;
@@ -337,11 +335,11 @@ export default class AppView extends Component<AppProps> {
     return (
       <main>
         <Helmet
-          defaultTitle='Decentralized Prediction Markets | Augur'
-          titleTemplate='%s | Augur'
+          defaultTitle="Decentralized Prediction Markets | Augur"
+          titleTemplate="%s | Augur"
         />
         {Object.keys(modal).length !== 0 && <Modal />}
-        {toasts.length > 0 && <ToastsContainer toasts={toasts}/>}
+        {toasts.length > 0 && <ToastsContainer toasts={toasts} />}
         <div
           className={classNames({
             [Styles['App--blur']]: Object.keys(modal).length !== 0,
@@ -351,65 +349,70 @@ export default class AppView extends Component<AppProps> {
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
               onClick={this.mainSectionClickHandler}
-              role='presentation'
+              role="presentation"
             >
               <TopBar />
             </section>
 
             <section
-            className={Styles.SideBar}
-            onClick={e => this.mainSectionClickHandler(e, false)}
-            role='presentation'
-          >
-            {this.renderMobileMenuButton(unseenCount)}
+              className={Styles.SideBar}
+              onClick={e => this.mainSectionClickHandler(e, false)}
+              role="presentation"
+            >
+              {this.renderMobileMenuButton(unseenCount)}
 
-            {/* HIDDEN ON DESKTOP */}
-            <SideNav
-              defaultMobileClick={() =>
-                updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
-              }
-              isLogged={isLogged}
-              mobileShow={
-                sidebarStatus.mobileMenuState ===
-                MOBILE_MENU_STATES.SIDEBAR_OPEN
-              }
-              menuData={this.sideNavMenuData}
-              currentBasePath={sidebarStatus.currentBasePath}
-            />
+              {/* HIDDEN ON DESKTOP */}
+              <SideNav
+                defaultMobileClick={() =>
+                  updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
+                }
+                isLogged={isLogged}
+                mobileShow={
+                  sidebarStatus.mobileMenuState ===
+                  MOBILE_MENU_STATES.SIDEBAR_OPEN
+                }
+                menuData={this.sideNavMenuData}
+                currentBasePath={sidebarStatus.currentBasePath}
+              />
 
-            {/* HIDDEN ON MOBILE */}
-            <TopNav
-              isLogged={isLogged}
-              menuData={this.sideNavMenuData}
-              currentBasePath={sidebarStatus.currentBasePath}
-            />
-          </section>
+              {/* HIDDEN ON MOBILE */}
+              <TopNav
+                isLogged={isLogged}
+                isDisabled={!!universe.forkingInfo}
+                menuData={this.sideNavMenuData}
+                currentBasePath={sidebarStatus.currentBasePath}
+              />
+            </section>
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
             />
-            {universe.forkEndTime &&
-              universe.forkEndTime !== '0' &&
+            {universe.forkingInfo &&
+              universe.forkingInfo.forkEndTime &&
+              universe.forkingInfo.forkEndTime !== 0 &&
               blockchain &&
               blockchain.currentAugurTimestamp && (
-                <section className={Styles.TopBar}>
-                </section>
+                <section className={Styles.TopBar}></section>
               )}
             <section
               className={classNames(Styles.Main__wrap, {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
               })}
             >
-             { currentPath === MARKETS ?  <MarketsInnerNavContainer
+              {currentPath === MARKETS ? (
+                <MarketsInnerNavContainer
                   location={location}
                   history={history}
                   mobileMenuState={sidebarStatus.mobileMenuState}
-             /> : <div className='no-nav-placehold' /> }
+                />
+              ) : (
+                <div className="no-nav-placehold" />
+              )}
 
               <section
                 className={Styles.Main__content}
                 onClick={this.mainSectionClickHandler}
-                role='presentation'
+                role="presentation"
               >
                 <Routes isLogged={isLogged} />
               </section>

@@ -13,12 +13,12 @@
       grid-column: 1;
       max-width: 100vw;
 
-      >div[class*='Content'] {
+      > div[class*='Content'] {
         display: grid;
         grid-gap: @size-16;
         grid-template-columns: auto;
         padding: @size-8;
-        justify-content: center;
+        justify-content: stretch;
 
         > div[class*='UserRepDisplay'] {
           grid-row: 1;
@@ -54,6 +54,7 @@
         display: grid;
         grid-gap: @size-16;
         grid-template-columns: 1fr minmax(369px, 376px) minmax(369px, 376px) 1fr;
+        padding: @size-8;
 
         > div[class*='UserRepDisplay'],
         > div[class*='WindowProgress'],
@@ -99,6 +100,10 @@
   > div {
     grid-column: 2;
     margin-bottom: @size-16;
+
+    @media @breakpoint-max-tablet {
+      margin: 0 -1rem 1rem;
+    }
 
     > button:first-child {
       height: @size-40;
