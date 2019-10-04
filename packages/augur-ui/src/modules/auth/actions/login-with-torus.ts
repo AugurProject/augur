@@ -19,7 +19,7 @@ const getTorusNetwork = (networkId): string => {
   }
 };
 
-export const loginWithTorus = () => async (
+export const loginWithTorus = (showConnectingModal: Function) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const networkId = getNetworkId();
@@ -44,6 +44,8 @@ export const loginWithTorus = () => async (
 
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
+
+      showConnectingModal();
 
       const accountObject = {
         address: account,
