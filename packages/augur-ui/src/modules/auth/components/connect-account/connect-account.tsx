@@ -5,15 +5,18 @@ import Blockies from 'react-blockies';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
 import formatAddress from 'modules/auth/helpers/format-address';
+import { LoginAccount } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { LoginAccount } from 'modules/types';
 
 interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
+  updateMobileMenuState: Function;
+  isMobile: boolean;
+  mobileMenuState: number;
   userInfo: LoginAccount['meta'];
 }
 
@@ -21,10 +24,22 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectAccount;
   connectDropdown;
 
-  toggleDropdown(cb?: Functio) {
-    const { updateConnectionTray, isConnectionTrayOpen } = this.props;
-    updateConnectionTray(!isConnectionTrayOpen);
-    if (cb && typeof cb === "function") cb();
+
+  toggleDropdown(cb?: Function) {
+    const { updateConnectionTray, updateMobileMenuState, isConnectionTrayOpen, isMobile, mobileMenuState } = this.props;
+    if (isMobile) {
+      if (mobileMenuState > 0) {
+        updateConnectionTray(!isConnectionTrayOpen);
+      }
+      else {
+        updateMobileMenuState(1);
+        updateConnectionTray(!isConnectionTrayOpen);
+      }
+    } else {
+      updateConnectionTray(!isConnectionTrayOpen);
+    }
+
+    if (cb && typeof cb === 'function') cb();
   }
 
   render() {
@@ -87,7 +102,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             }
           )}
         >
-          <ConnectDropdown toggleDropdown={(cb) => this.toggleDropdown(cb)} />
+          <ConnectDropdown />
         </div>
       </div>
     );

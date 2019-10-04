@@ -8,6 +8,11 @@
   position: relative;
   z-index: @above-all-content-above;
 
+  @media @breakpoint-mobile {
+    display: flex;
+    height: 100%;
+  }
+
   &:hover {
     background-color: @color-module-background;
   }
@@ -33,10 +38,6 @@
         > span {
           display: inline-block;
           margin-top: -@size-8;
-        }
-
-        @media @breakpoint-mobile {
-          display: none;
         }
       }
     }

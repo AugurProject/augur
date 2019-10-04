@@ -1,133 +1,82 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import classNames from "classnames";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 
-import makePath from "modules/routes/helpers/make-path";
-import ConnectAccount from "modules/auth/containers/connect-account";
-import GasPriceEdit from "modules/app/containers/gas-price-edit";
+import makePath from 'modules/routes/helpers/make-path';
+import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
+import { LogoutIcon } from 'modules/common/icons';
+import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 
-import { MARKETS } from "modules/routes/constants/views";
-import Styles from "modules/app/components/side-nav/side-nav.styles.less";
+interface MenuData {
+  requireLogin: boolean;
+  disabled: boolean;
+  route: string;
+  title: string;
+  mobileClick?: Function;
+}
 
 interface SideNavProps {
   defaultMobileClick: Function;
-  isLogged: Boolean;
-  menuData: Array<Object>;
-  mobileShow: Boolean;
-  currentBasePath?: string;
+  isLogged: boolean;
+  menuData: MenuData[];
+  currentBasePath: string;
+  isConnectionTrayOpen: boolean;
+  logout: Function;
+  showNav: boolean;
+}
+
+const SideNav = ({
+  isLogged,
+  defaultMobileClick,
+  menuData,
+  isConnectionTrayOpen,
+  logout,
+  currentBasePath,
+  showNav,
+}: SideNavProps) => {
+  const accessFilteredMenu = menuData.filter(
+    item => !(item.requireLogin && !isLogged)
+  );
+
+  return (
+    <aside
+      className={classNames(Styles.SideNav, {
+        [Styles.showNav]: showNav,
+      })}
+    >
+      <div className={Styles.SideNav__container}>
+        {isConnectionTrayOpen && <ConnectDropdown />}
+        <ul
+          className={classNames({
+            [Styles.accountDetailsOpen]: isConnectionTrayOpen,
+          })}
+        >
+          {accessFilteredMenu.map((item, idx) => (
+            <li
+              key={idx}
+              className={classNames({
+                [Styles.disabled]: item.disabled,
+                [Styles.selected]: item.route === currentBasePath,
+              })}
+            >
+              <Link
+                to={item.route ? makePath(item.route) : null}
+                onClick={() => defaultMobileClick()}
+              >
+                <span>{item.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <footer>
+          {isLogged && (
+            <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
+          )}
+        </footer>
+      </div>
+    </aside>
+  );
 };
 
-interface SideNavState {
-  selectedItem: null | Object;
-  selectedKey: null | string;
-}
-
-export default class SideNav extends Component<SideNavProps, SideNavState> {
-  static defaultProps = {
-    currentBasePath: null,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedItem: null,
-      selectedKey: null,
-    };
-  }
-
-  UNSAFE_componentWillReceiveProps(newProps) {
-    if (newProps.currentBasePath === MARKETS) {
-      this.setState({ selectedItem: null, selectedKey: null });
-    }
-  }
-
-  isCurrentItem(item) {
-    const { currentBasePath } = this.props;
-    const selected =
-      (this.state.selectedKey && this.state.selectedKey === item.title) ||
-      item.route === currentBasePath;
-    return selected;
-  }
-
-  itemClick(item) {
-    if (this.isCurrentItem(item)) return;
-    const clickCallback = item.onClick;
-    if (clickCallback && typeof clickCallback === "function") {
-      clickCallback();
-    }
-    if (
-      this.state.selectedItem &&
-      this.state.selectedItem.onBlur &&
-      typeof this.state.selectedItem.onBlur === "function"
-    ) {
-      this.state.selectedItem.onBlur();
-    }
-
-    // don't modify selected item if mobile
-    // mobile menu state works differently
-    return;
-  }
-
-  render() {
-    const {
-      isLogged,
-      defaultMobileClick,
-      menuData,
-      mobileShow
-    } = this.props;
-
-    const accessFilteredMenu = menuData.filter(
-      item =>
-        !(item.requireLogin && !isLogged));
-
-    return (
-      <aside
-        className={classNames(Styles.SideNav, {
-          [`${Styles.mobileShow}`]: mobileShow,
-        })}
-      >
-        <div className={Styles.SideNav__container}>
-          <ul className={Styles.SideNav__nav}>
-            {accessFilteredMenu.map((item, index) => {
-              const Icon = item.icon;
-
-              const linkClickHandler = () => {
-                if (item.mobileClick) {
-                  item.mobileClick();
-                } else {
-                  defaultMobileClick();
-                }
-              };
-
-              return (
-                <li
-                  className={item.disabled ? Styles.disabled : ""}
-                  key={item.title}
-                  id="side-nav-items"
-                >
-                  <Link
-                    to={item.route ? makePath(item.route) : null}
-                    onClick={linkClickHandler}
-                    disabled={item.disabled}
-                  >
-                    <Icon />
-                    <span className={Styles["item-title"]}>{item.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          {isLogged && (
-            <div className={Styles.SideNav__hideForMidScreens}>
-              <GasPriceEdit />
-              <div className={Styles.SideNav__amt}>
-                <div className={Styles.SideNav__nav__separator} />
-              </div>
-              <ConnectAccount />
-            </div>
-          )}
-        </div>
-      </aside>
-    );
-  }
-}
+export default SideNav;

@@ -54,7 +54,7 @@ export const loginWithTorus = (showConnectingModal: Function) => async (
           address: account,
           email: null,
           profileImage: null,
-          openWallet: () => torus.showWallet('home'),
+          openWallet: (goto = 'home') => torus.showWallet(goto),
           signer: provider.getSigner(),
           accountType: ACCOUNT_TYPES.TORUS,
           isWeb3,

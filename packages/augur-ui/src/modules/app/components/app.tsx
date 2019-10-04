@@ -17,12 +17,6 @@ import {
   MobileNavHamburgerIcon,
   MobileNavCloseIcon,
   MobileNavBackIcon,
-  LogoutIcon,
-  NavAccountIcon,
-  NavCreateIcon,
-  NavMarketsIcon,
-  NavPortfolioIcon,
-  NavReportingIcon,
 } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
@@ -43,15 +37,15 @@ import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import { Universe } from 'modules/types';
 
 interface AppProps {
-  blockchain: Object;
-  env: Object;
-  history: Object;
+  blockchain: object;
+  env: object;
+  history: object;
   initAugur: Function;
   isLogged: boolean;
   isMobile: boolean;
-  location: Object;
-  loginAccount: Object;
-  modal: Object;
+  location: object;
+  loginAccount: object;
+  modal: object;
   universe: Universe;
   updateIsMobile: Function;
   updateIsMobileSmall: Function;
@@ -61,14 +55,16 @@ interface AppProps {
   ethereumNodeWs: string;
   useWeb3Transport: boolean;
   logout: Function;
-  sidebarStatus: Object;
+  sidebarStatus: object;
   updateCurrentBasePath: Function;
   updateCurrentInnerNavType: Function;
   updateMobileMenuState: Function;
   updateIsAlertVisible: Function;
   updateSidebarStatus: Function;
-  alerts: Object;
-  toasts: Array<any>;
+  alerts: object;
+  toasts: any[];
+  updateConnectionTray: Function;
+  isConnectionTrayOpen: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -81,55 +77,31 @@ export default class AppView extends Component<AppProps> {
   sideNavMenuData = [
     {
       title: 'Markets',
-      icon: NavMarketsIcon,
       route: MARKETS,
     },
     {
       title: 'Account Summary',
-      iconName: 'nav-account-icon',
-      icon: NavAccountIcon,
       route: ACCOUNT_SUMMARY,
       requireLogin: true,
     },
     {
       title: 'Portfolio',
-      iconName: 'nav-portfolio-icon',
-      icon: NavPortfolioIcon,
       route: MY_POSITIONS,
       requireLogin: true,
     },
     {
       title: 'Disputing',
-      iconName: 'nav-reporting-icon',
-      icon: NavReportingIcon,
-      mobileClick: () =>
-        this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
       route: DISPUTING,
     },
     {
       title: 'Reporting',
-      iconName: 'nav-reporting-icon',
-      icon: NavReportingIcon,
-      mobileClick: () =>
-        this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
       route: REPORTING,
     },
     {
       title: 'Create',
-      iconName: 'nav-create-icon',
-      icon: NavCreateIcon,
       route: CREATE_MARKET,
       requireLogin: true,
       disabled: this.props.universe.forkingInfo,
-    },
-    {
-      title: 'Logout',
-      iconName: 'nav-logout-icon',
-      icon: LogoutIcon,
-      mobileClick: () => this.props.logout(),
-      route: MARKETS,
-      requireLogin: true,
-      onlyForMobile: true,
     },
   ];
 
@@ -270,9 +242,11 @@ export default class AppView extends Component<AppProps> {
   }
 
   mobileMenuButtonClick() {
-    const { sidebarStatus, updateMobileMenuState } = this.props;
+    const { sidebarStatus, updateMobileMenuState, updateConnectionTray } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
 
+
+    updateConnectionTray(false);
     switch (menuState) {
       case MOBILE_MENU_STATES.CLOSED:
         updateMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
@@ -327,6 +301,8 @@ export default class AppView extends Component<AppProps> {
       updateMobileMenuState,
       alerts,
       toasts,
+      isConnectionTrayOpen,
+      updateConnectionTray,
     } = this.props;
 
     const { unseenCount } = alerts;
@@ -348,41 +324,40 @@ export default class AppView extends Component<AppProps> {
           <section className={Styles.Main}>
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
-              onClick={this.mainSectionClickHandler}
-              role="presentation"
+              onClick={() => null}
+              role='presentation'
             >
               <TopBar />
             </section>
 
             <section
-              className={Styles.SideBar}
-              onClick={e => this.mainSectionClickHandler(e, false)}
-              role="presentation"
-            >
-              {this.renderMobileMenuButton(unseenCount)}
+            className={Styles.SideBar}
+            onClick={e => this.mainSectionClickHandler(e, false)}
+            role='presentation'
+          >
+            {this.renderMobileMenuButton(unseenCount)}
 
-              {/* HIDDEN ON DESKTOP */}
-              <SideNav
-                defaultMobileClick={() =>
-                  updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
-                }
-                isLogged={isLogged}
-                mobileShow={
-                  sidebarStatus.mobileMenuState ===
-                  MOBILE_MENU_STATES.SIDEBAR_OPEN
-                }
-                menuData={this.sideNavMenuData}
-                currentBasePath={sidebarStatus.currentBasePath}
-              />
+            {/* HIDDEN ON DESKTOP */}
+            <SideNav
+              showNav={ sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN}
+              defaultMobileClick={() => {
+                updateConnectionTray(false);
+                updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+              }}
+              isLogged={isLogged}
+              menuData={this.sideNavMenuData}
+              currentBasePath={sidebarStatus.currentBasePath}
+              isConnectionTrayOpen={isConnectionTrayOpen}
+              logout={() => this.props.logout()}
+            />
 
-              {/* HIDDEN ON MOBILE */}
-              <TopNav
-                isLogged={isLogged}
-                isDisabled={!!universe.forkingInfo}
-                menuData={this.sideNavMenuData}
-                currentBasePath={sidebarStatus.currentBasePath}
-              />
-            </section>
+            {/* HIDDEN ON MOBILE */}
+            <TopNav
+              isLogged={isLogged}
+              menuData={this.sideNavMenuData}
+              currentBasePath={sidebarStatus.currentBasePath}
+            />
+          </section>
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
