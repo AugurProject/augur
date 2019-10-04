@@ -681,12 +681,12 @@ describe('State API :: Accounts :: ', () => {
 
     // Transfer cash to dispute window (so participation tokens can be redeemed -- normally this would come from fees)
     await john.augur.contracts.cash.transfer(
-      disputeWindow.address,
+      curDisputeWindow.address,
       new BigNumber(1)
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(curDisputeWindow.address, john.account.publicKey);
 
     // Claim initial reporter
     const initialReporter = await john.getInitialReporter(johnYesNoMarket);
