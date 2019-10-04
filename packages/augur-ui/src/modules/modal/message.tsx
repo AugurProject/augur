@@ -22,7 +22,6 @@ import {
   Content,
   ContentProps,
   Subheader,
-  LargeSubheader
 } from "modules/modal/common";
 import {
   LinearPropertyLabelProps,
