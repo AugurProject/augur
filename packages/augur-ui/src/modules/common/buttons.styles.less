@@ -38,6 +38,41 @@
   }
 }
 
+.CloseButton {
+  justify-content: flex-end;
+  display: flex;
+  flex: 1;
+
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    > path {
+      stroke: @color-primary-text;
+    }
+  }
+}
+
+.BackButton {
+  .mono-12;
+
+  text-transform: uppercase;
+  display: flex;
+  color: @color-primary-text;
+  display: flex;
+  align-items: center;
+
+  > svg {
+    width: @size-16;
+    height: @size-16;
+    margin-right: @size-5;
+
+    > path {
+      fill: @color-primary-text;
+    }
+  }
+}
+
 .PrimarySignInButton {
   .Button;
 
@@ -821,11 +856,10 @@
 
 @keyframes colorchange {
   0% {
-    background-color: fade(@color-secondary-action-outline, 70)
+    background-color: fade(@color-secondary-action-outline, 70);
   }
 
   100% {
-    background-color: fade(@color-secondary-action-outline, 100)
+    background-color: fade(@color-secondary-action-outline, 100);
   }
 }
-

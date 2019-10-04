@@ -23,7 +23,7 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
   }
 };
 
-export const loginWithPortis = (forceRegisterPage = false) => async (
+export const loginWithPortis = (forceRegisterPage = false, showConnectingModal) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const networkId = getNetworkId();
@@ -50,6 +50,8 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
 
         const accounts = await web3.eth.getAccounts();
         const account = accounts[0];
+
+        showConnectingModal();
 
         const accountObject = {
           address: account,

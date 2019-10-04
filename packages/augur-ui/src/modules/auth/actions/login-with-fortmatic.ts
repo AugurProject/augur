@@ -19,7 +19,7 @@ const getFormaticNetwork = (networkId: string): false | string   => {
   }
 };
 
-export const loginWithFortmatic = () => async (
+export const loginWithFortmatic = (showConnectingModal: FUnction) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
 
@@ -36,6 +36,9 @@ export const loginWithFortmatic = () => async (
 
       const accounts = await web3.currentProvider.enable();
       const account = accounts[0];
+
+      showConnectingModal();
+
       const accountObject = {
         address: account,
         mixedCaseAddress: toChecksumAddress(account),

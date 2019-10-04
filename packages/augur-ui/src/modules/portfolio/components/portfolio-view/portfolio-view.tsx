@@ -7,7 +7,7 @@ import OpenOrders from 'modules/portfolio/containers/open-orders';
 import FilledOrders from 'modules/portfolio/containers/filled-orders';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import { SMALL_MOBILE } from 'modules/common/constants';
+import { SMALL_MOBILE, TABLET_MAX } from 'modules/common/constants';
 
 import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
 
@@ -47,7 +47,7 @@ export default class PortfolioView extends React.Component<
 
     return (
       <div className={Styles.PortfolioView}>
-        <Media query={SMALL_MOBILE}>
+        <Media query={TABLET_MAX}>
           {matches =>
             matches ? (
               <ModuleTabs selected={0} fillWidth noBorder>

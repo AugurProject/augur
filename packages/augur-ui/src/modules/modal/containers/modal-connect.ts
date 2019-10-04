@@ -11,15 +11,20 @@ import {
   MODAL_SIGNUP,
   MODAL_LOADING,
   ACCOUNT_TYPES,
+  SIGNIN_LOADING_TEXT,
+  SIGNIN_SIGN_WALLET,
+  SIGNIN_LOADING_TEXT_PORTIS,
+  SIGNIN_LOADING_TEXT_TORUS,
+  SIGNIN_LOADING_TEXT_FORTMATIC,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
-import { defaultMessage } from 'modules/modal/containers/modal-signin';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
+import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -29,12 +34,22 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
-  loadingModal: (message, callback) =>
-    dispatch(updateModal({ type: MODAL_LOADING, message, callback })),
+  loadingModal: (message, callback, showMetaMaskHelper = false) =>
+    dispatch(
+      updateModal({
+        type: MODAL_LOADING,
+        message,
+        showMetaMaskHelper,
+        callback,
+      })
+    ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: () => dispatch(loginWithPortis(false)),
-  connectFortmatic: () => dispatch(loginWithFortmatic()),
-  connectTorus: () => dispatch(loginWithTorus()),
+  connectPortis: showConnectingModal =>
+    dispatch(loginWithPortis(false, showConnectingModal)),
+  connectTorus: showConnectingModal =>
+    dispatch(loginWithTorus(showConnectingModal)),
+  connectFortmatic: showConnectingModal =>
+    dispatch(loginWithFortmatic(showConnectingModal)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -42,6 +57,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     console.error(`ERROR:${accountType}`, error);
     dP.closeModal();
   };
+
+  const showConnectingModal = () =>
+    dP.loadingModal(SIGNIN_LOADING_TEXT, () => redirect());
 
   const redirect = () => {
     dP.closeModal();
@@ -53,9 +71,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       type: ACCOUNT_TYPES.PORTIS,
       hidden: false,
       action: async () => {
-        dP.loadingModal(defaultMessage(ACCOUNT_TYPES.PORTIS), () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => redirect());
         try {
-          await dP.connectPortis(oP.isLogin ? false : true);
+          await dP.connectPortis(() => showConnectingModal());
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -65,9 +83,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       type: ACCOUNT_TYPES.TORUS,
       hidden: false,
       action: async () => {
-        dP.loadingModal(defaultMessage(ACCOUNT_TYPES.TORUS), () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => redirect());
         try {
-          await dP.connectTorus();
+          await dP.connectTorus(() => showConnectingModal());
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
         }
@@ -77,11 +95,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       type: ACCOUNT_TYPES.FORTMATIC,
       hidden: false,
       action: async () => {
-        dP.loadingModal(defaultMessage(ACCOUNT_TYPES.FORTMATIC), () =>
-          redirect()
-        );
+        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => redirect());
         try {
-          await dP.connectFortmatic();
+          await dP.connectFortmatic(() => showConnectingModal());
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
@@ -92,9 +108,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       disabled: false,
       hidden: !isMetaMaskPresent(),
       action: async () => {
-        dP.loadingModal('Sit tight - we are loading your account.', () =>
-          redirect()
-        );
+        const accounts =
+          windowRef.ethereum && windowRef.ethereum.selectedAddress;
+        const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
+        dP.loadingModal(msg, () => redirect(), accounts ? false : true);
         try {
           await dP.connectMetaMask();
         } catch (error) {

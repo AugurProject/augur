@@ -3,6 +3,7 @@ import { clearUserTx } from 'modules/contracts/actions/contractCalls';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
+import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -16,6 +17,9 @@ export function logout() {
       localStorageRef.removeItem('loggedInAccountType');
     }
     dispatch(clearLoginAccount());
+
+    // Close Mobile Menu
+    dispatch(updateMobileMenuState(0));
 
     // Clean up web3 wallets
     if (windowRef.torus) {
