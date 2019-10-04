@@ -33,16 +33,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP, dP, oP) => {
   const { migrateMarket, migrateRep, market } = sP;
-  const isReporting =
-    market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
+  const isDisputing =
+    !migrateRep &&
+    !migrateMarket &&
+    market.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE;
   let title = 'Dispute or Support this market’s tenatative winning Outcome';
-  if (isReporting) {
-    title = 'Report on this market';
-  } else if (migrateRep) {
+  if (migrateRep) {
     title = 'Augur is Forking';
   } else if (migrateMarket) {
     title = 'Report and Migrate market';
+  } else if (!isDisputing) {
+    title = 'Report on this market';
   }
 
   return {
@@ -55,6 +56,7 @@ const mergeProps = (sP, dP, oP) => {
     },
     ...oP,
     ...sP,
+    isDisputing,
   };
 };
 

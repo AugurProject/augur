@@ -27,6 +27,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertDisplayValuetoAttoValue, Getters } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
+import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
@@ -257,7 +258,7 @@ export default class ModalReporting extends Component<
     const { closeAction, title, market, rep, migrateRep, migrateMarket } = this.props;
     const {
       checked,
-      isReporting,
+      isDisputing,
       preFilledStake,
       inputScalarOutcome,
       disputeStake,
@@ -306,12 +307,13 @@ export default class ModalReporting extends Component<
               />
             </div>
           </div>
-          {!isReporting && (
+          {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
               <SecondaryButton text="Get REP" action={null} />
             </div>
           )}
+          <ReleasableRepNotice />
           <div>
             <ReportingRadioBarGroup
               market={market}
@@ -326,6 +328,7 @@ export default class ModalReporting extends Component<
               updateScalarOutcome={this.updateScalarOutcome}
               inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}
+              isDisputing={isDisputing}
             />
           </div>
         </main>

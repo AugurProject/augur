@@ -705,6 +705,7 @@ interface ReportingRadioGroupProps {
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[];
+  isDisputing: boolean;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -720,11 +721,9 @@ export const ReportingRadioBarGroup = ({
   inputScalarOutcome,
   updateScalarOutcome,
   userCurrentDisputeRound,
+  isDisputing,
 }: ReportingRadioGroupProps) => {
-  const { reportingState, disputeInfo } = market;
-  const isReporting =
-    reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
+  const { disputeInfo } = market;
   const tentativeWinning = radioButtons.find(
     radioButton => radioButton.stake.tentativeWinning
   );
@@ -745,7 +744,7 @@ export const ReportingRadioBarGroup = ({
 
   return (
     <div className={Styles.ReportingRadioBarGroup}>
-      {!isReporting && tentativeWinning && (
+      {isDisputing && tentativeWinning && (
         <section>
           <span>Tentative Outcome</span>
           <span>
@@ -774,13 +773,13 @@ export const ReportingRadioBarGroup = ({
           />
         </section>
       )}
-      <span>{isReporting ? 'Outcomes' : 'Other Outcomes'}</span>
+      <span>{!isDisputing ? 'Outcomes' : 'Other Outcomes'}</span>
       <span>
-        {isReporting
+        {!isDisputing
           ? 'Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake.'
           : 'If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome.'}
       </span>
-      {!isReporting && notNewTentativeWinner && tentativeWinning.id !== selected && (
+      {isDisputing && notNewTentativeWinner && tentativeWinning.id !== selected && (
         <Error
           header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
           subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
@@ -789,7 +788,7 @@ export const ReportingRadioBarGroup = ({
       {radioButtons.map(
         (radio, index) =>
           !radio.isInvalid &&
-          !radio.stake.tentativeWinning && (
+          (!isDisputing || !radio.stake.tentativeWinning) && (
             <ReportingRadioBar
               market={market}
               key={`${index}${radio.value}`}
@@ -812,7 +811,7 @@ export const ReportingRadioBarGroup = ({
           )
       )}
       <span>
-        {isReporting
+        {!isDisputing
           ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
           : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
       </span>
