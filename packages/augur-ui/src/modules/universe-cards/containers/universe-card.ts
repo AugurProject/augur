@@ -7,9 +7,9 @@ import { formatDai, formatAttoRep } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const universe = state.universe;
+  const universe = ownProps.universe;
   return {
-    universeId: universe.address,
+    universeId: universe.id,
     creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp).formattedLocalShortTime,
     outcomeName: universe.outcomeName,
     currentUniverse: state.universe.id,

@@ -9,20 +9,31 @@ import formatAddress from 'modules/auth/helpers/format-address';
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { LoginAccount } from 'modules/types';
+import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 
 interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
   userInfo: LoginAccount['meta'];
+  accountAddress: string;
+  universeId: string;
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectAccount;
   connectDropdown;
 
-  toggleDropdown(cb?: Functio) {
-    const { updateConnectionTray, isConnectionTrayOpen } = this.props;
+  toggleDropdown(cb?: Function) {
+    const {
+      updateConnectionTray,
+      isConnectionTrayOpen,
+      loadUniverseDetails,
+      userInfo,
+      universeId,
+    } = this.props;
+
+    loadUniverseDetails(universeId, userInfo.address);
     updateConnectionTray(!isConnectionTrayOpen);
     if (cb && typeof cb === "function") cb();
   }

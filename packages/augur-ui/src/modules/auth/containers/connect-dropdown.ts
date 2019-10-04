@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
 import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
 
 const mapStateToProps = state => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
@@ -16,6 +16,8 @@ const mapStateToProps = state => {
   }
 
   return {
+    universe: state.universe,
+    loginAccountAddress: state.loginAccount.address,
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     isLogged: state.authStatus.isLogged,
@@ -29,6 +31,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
   gasModal: () => dispatch(updateModal({ type: MODAL_GAS_PRICE })),
+  universeSelectorModal: () => dispatch(updateModal({ type: MODAL_UNIVERSE_SELECTOR })),
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
 });
 

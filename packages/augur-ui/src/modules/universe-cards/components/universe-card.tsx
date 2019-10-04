@@ -19,31 +19,30 @@ interface UniverseCardProps {
   breakdown?: LinearPropertyLabelProps[];
 }
 
-export const UniverseCard = ({
-  universeId,
-  creationTimestamp,
-  outcomeName,
-  currentUniverse,
-  breakdown,
-  buttons
-}: UniverseCardProps) => {
-
+export const UniverseCard = (
+  {
+    universeId,
+    creationTimestamp,
+    outcomeName,
+    currentUniverse,
+    breakdown,
+    buttons
+  }: UniverseCardProps
+) => {
   return (
     <div className={Styles.UniverseCard}>
+      {universeId === currentUniverse &&
+        <span>Current Universe</span>
+      }
       <div>
-        {universeId === currentUniverse &&
-          <span>Current Universe</span>
-        }
-        <div>
-          <h1>Universe</h1>
-          <div>{outcomeName}</div>
-        </div>
-        <div>
-          <h1>Date Created</h1>
-          <div>{creationTimestamp}</div>
-        </div>
-        <Breakdown rows={breakdown} />
+        <h1>Universe</h1>
+        <div>{outcomeName}</div>
       </div>
+      <div>
+        <h1>Date Created</h1>
+        <div>{creationTimestamp}</div>
+      </div>
+      <Breakdown rows={breakdown} />
       {universeId !== currentUniverse &&
         <ButtonsRow buttons={buttons} />
       }

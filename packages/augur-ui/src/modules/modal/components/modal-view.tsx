@@ -39,6 +39,7 @@ import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
 import ModalSignin from "modules/modal/containers/modal-signin";
 import ModalConnect from "modules/modal/containers/modal-connect";
 import ModalLoading from "modules/modal/containers/modal-loading";
+import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 
 import * as TYPES from "modules/common/constants";
 
@@ -129,6 +130,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalConnect />
     case TYPES.MODAL_LOADING:
       return <ModalLoading />
+    case TYPES.MODAL_UNIVERSE_SELECTOR:
+      return <ModalUniverseSelector />
     default:
       return <div />;
   }

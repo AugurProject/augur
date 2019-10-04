@@ -320,6 +320,10 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.trade.simulateTradeGasLimit(params);
   }
 
+  getUniverseChildren = (params: Parameters<typeof Universe.getUniverseChildren>[2]) => {
+    return this.bindTo(Universe.getUniverseChildren)(params);
+  }
+
   private registerTransactionStatusEvents() {
     this.registerTransactionStatusCallback("Transaction Status Handler", (transaction, status, hash) => {
 

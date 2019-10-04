@@ -11,7 +11,7 @@ import {
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatRep, formatEther, formatDai } from 'utils/format-number';
-import { AccountBalances } from 'modules/types';
+import { AccountBalances, Universe } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
@@ -29,6 +29,8 @@ interface ConnectDropdownProps {
   userDefinedGasPrice: string;
   gasPriceSpeed: number;
   showAddFundsModal: Function;
+  universeSelectorModal: Function;
+  universe: Universe;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -40,6 +42,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     gasModal,
     balances,
     showAddFundsModal,
+    universeSelectorModal,
+    universe,
   } = props;
 
   if (!isLogged) return null;
@@ -149,6 +153,17 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             action={() => gasModal()}
             text="EDIT"
             icon={Pencil}
+          />
+        </div>
+
+        <div className={Styles.WalletProvider}>
+          <div>
+            <div>Universe</div>
+            <div>{universe.outcomeName}</div>
+          </div>
+          <SecondaryButton
+            action={() => universeSelectorModal()}
+            text='CHANGE UNIVERSE'
           />
         </div>
 
