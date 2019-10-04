@@ -32,15 +32,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const migrateRep = sP.market.id === sP.forkingMarket;
+  const { migrateMarket, migrateRep, market } = sP;
   const isReporting =
-    sP.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    sP.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
+    market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+    market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
   let title = 'Dispute or Support this market’s tenatative winning Outcome';
   if (isReporting) {
     title = 'Report on this market';
   } else if (migrateRep) {
     title = 'Augur is Forking';
+  } else if (migrateMarket) {
+    title = 'Report and Migrate market';
   }
 
   return {

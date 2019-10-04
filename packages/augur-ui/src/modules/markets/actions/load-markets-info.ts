@@ -21,6 +21,8 @@ export const loadMarketsInfo = (
   }
   const augur = augurSdk.get();
   const marketInfoArray = await augur.getMarketsInfo({ marketIds });
+  const m = marketInfoArray.find(m => m.id === "0xDD1078992545921526D7E9139d6374Ce615a7AdE");
+  if (m) console.error("forking market reporting state", m.reportingState);
   if (marketInfoArray == null || !marketInfoArray.length)
     return callback("no markets data received");
   const universeId = getState().universe.id;

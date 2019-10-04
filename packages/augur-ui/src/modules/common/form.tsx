@@ -2201,3 +2201,35 @@ export const CategoryRow = ({
     {!loading && <span>{count}</span>}
   </div>
 );
+
+export const MigrateRepInfo = () => (
+         <section className={Styles.MigrateRepInfo}>
+           <span>A note on Forking</span>
+           <p>
+             Augur is now in a state of Forking. The fork state is a special
+             state that can last up to 60 days. Forking is the market resolution
+             method of last resort; it is a very disruptive process and is
+             intended to be a rare occurrence. The market below is the forking
+             market, as it has implications for the other markets that currenty
+             exist. When a fork is innitiated, disputing for all other
+             non-resolved markets are put on hold until this fork resolves. The
+             forking period is much longer than the usual fee window because the
+             platform needs to provide ample time for REP holders and service
+             providers (such as wallets and exchanges) to prepare. A fork’s
+             final outcome cannot be disputed.
+           </p>
+           <p>
+             Every Augur market and all REP tokens exist in some universe.
+             Currently there is only one universe - the genesis universe - since
+             there has never been a fork. REP tokens can be used to report on
+             outcomes (and thus earn fees) only for markets that exist in the
+             same universe as the REP tokens. When a market forks, new universes
+             are created. Forking creates a new child universe for each possible
+             outcome of the forking market (including Invalid).
+           </p>
+           <p>
+             NEED TO ADD MORE INFO HERE. POSSIBLY MAKE THIS A SCROLLABLE BOX.
+             CHECKBOX TO CONFIRM THEY HAVE READ IT?
+           </p>
+         </section>
+       );
