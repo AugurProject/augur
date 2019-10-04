@@ -16,7 +16,7 @@ import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
 import { formatAttoRep } from 'utils/format-number';
-import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
+import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
 
 import Styles from 'modules/market-cards/market-card.styles.less';
 
@@ -178,7 +178,6 @@ export default class MarketCard extends React.Component<
       reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
       isLogged;
     const canSupport = !disputeInfo.disputePacingOn
-    const marketAwaitingForkMigration = reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION;
 
     return (
       <div
@@ -302,16 +301,9 @@ export default class MarketCard extends React.Component<
               :
               <div style={{ display: 'none' }}></div>
             }
-            {marketAwaitingForkMigration &&
-              <DismissableNotice
-                show={true}
-                buttonAction={this.props.migrateMarketModal}
-                buttonText='Migrate Market'
-                buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-                title='Fork has finalized. Please migrate this market to the new universe.'
-                description='Message about migrating, gas cost etc.'
-              />
-            }
+            <MigrateMarketNotice
+              marketId={id}
+            />
             {marketResolved &&
               <ResolvedOutcomes
                 outcomes={outcomesFormatted}

@@ -11,7 +11,7 @@ import Styles from "modules/create-market/components/create-market-view/create-m
 interface CreateMarketViewProps {
 }
 
-interface CreateMarketViewPState {
+interface CreateMarketViewState {
   selected: number;
   page: number;
 }

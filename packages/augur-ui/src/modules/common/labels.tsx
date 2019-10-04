@@ -39,6 +39,7 @@ export interface MarketStatusProps {
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
+  marketStatus: string;
   disputeInfo: Getters.Markets.DisputeInfo;
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
