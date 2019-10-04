@@ -1,10 +1,8 @@
-import logError from 'utils/log-error';
 import { windowRef } from 'utils/window-ref';
 import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
 import { Web3Provider } from 'ethers/providers';
 import {
   ACCOUNT_TYPES,
@@ -21,16 +19,15 @@ export const forceLoginWithInjectedWeb3 = account => (
 };
 
 // MetaMask, dapper, Mobile wallets
-export const loginWithInjectedWeb3 = (
-  callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  const failure = () => callback('NOT_SIGNED_IN');
+export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, Action>) => {
+  const failure = () => {
+    throw Error('NOT_SIGNED_IN');
+  };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure();
     if (refresh) dispatch(updateAuthStatus(IS_LOGGED, false));
 
     dispatch(login(account));
-
     window.web3.currentProvider.publicConfigStore.on('update', config => {
       if (augurSdk.networkId !== config.networkVersion) {
         console.log('web3 updated, network changed to', config.networkVersion);
@@ -65,11 +62,12 @@ const login = (account: string) => (
     meta: {
       address: account,
       signer: provider.getSigner(),
-      // TODO change constant for METAMASK, account for other injected web3 clients (i.e, dapper, coinbase wallet)
+      email: null,
+      profileImage: null,
+      openWallet: null,
       accountType: ACCOUNT_TYPES.METAMASK,
       isWeb3: true,
     },
   };
-
   dispatch(updateSdk(accountObject, networkId));
 };
