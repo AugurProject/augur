@@ -13,6 +13,8 @@ contract GnosisSafeRegistry {
     bytes32 public proxyCodeHash;
     address public gnosisSafeMasterCopy;
 
+    uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
+
     function initialize(IAugur _augur) public returns (bool) {
         augur = _augur;
         gnosisSafeMasterCopy = _augur.lookup("GnosisSafe");
@@ -22,7 +24,8 @@ contract GnosisSafeRegistry {
     }
 
     // The misdirection here is because this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
-    function callRegister(address _gnosisSafeRegistry) public {
+    function callRegister(address _gnosisSafeRegistry, address _augur, IERC20 _cash) public {
+        _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
         GnosisSafeRegistry _gnosisSafeRegistry = GnosisSafeRegistry(_gnosisSafeRegistry);
         _gnosisSafeRegistry.register();
     }

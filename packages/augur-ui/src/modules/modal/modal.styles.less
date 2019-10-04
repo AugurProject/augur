@@ -121,6 +121,228 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+
+.SignIn, .Connect, .Loading {
+  .Container;
+
+  background: @color-module-background;
+  border: none;
+  border-radius: @size-8;
+  box-shadow: 0px @size-4 @size-4 rgba(0, 0, 0, 0.25);
+  max-width: @login-signup-modal-width;
+  padding: 48px 56px;
+
+  @media @breakpoint-mobile {
+    padding: @size-24;
+  }
+}
+
+.CloseButton {
+  cursor: pointer;
+  height: @size-12;
+  position: absolute;
+  right: 17px;
+  top: 17px;
+  width: @size-12;
+
+  > svg {
+    fill: @color-primary-text;
+  }
+}
+
+.SignIn {
+  @media @breakpoint-mobile {
+    padding-top: 57px;
+  }
+
+  > div:first-of-type {
+    .CloseButton;
+  }
+
+  > header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: @size-32;
+
+    @media @breakpoint-mobile {
+      align-items: end;
+      flex-direction: column;
+    }
+
+    > div:first-of-type {
+      .text-24-bold;
+
+      color: @color-primary-text;
+
+      @media @breakpoint-mobile {
+        margin-bottom: @size-4;
+      }
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+
+      > span {
+        color: @color-primary-action;
+        cursor: pointer;
+      }
+    }
+  }
+
+  > footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    > div:first-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+
+      > span {
+        color: @color-primary-action;
+        cursor: pointer;
+      }
+    }
+  }
+
+  > div:nth-of-type(2) {
+    .text-12;
+
+    align-items: center;
+    color: @color-secondary-text;
+    display: flex;
+    justify-content: center;
+    margin: @size-32 0;
+
+    &:before,  &:after {
+      content: '';
+
+      border: 1px solid @color-secondary-action-outline;
+      width: 100%;
+    }
+
+    &:before {
+      margin: 0 0 0 21px;
+    }
+
+    &:after {
+      margin: 0 21px 0 0;
+    }
+  }
+
+  > button {
+    .text-14-bold;
+
+    margin: 0 0 @size-8 0;
+    text-align: left;
+  }
+
+  > button:first-of-type {
+    margin: 0;
+    background: #0095A3;
+  }
+
+  > button:last-of-type {
+    margin: 0 0 32px 0;
+  }
+}
+
+.Connect {
+  @media @breakpoint-mobile {
+    padding-top: 57px;
+  }
+
+  > div:first-of-type {
+    .mono-12;
+
+    color: @color-primary-text;
+    cursor: pointer;
+    position: absolute;
+    top: 23px;
+
+    > svg {
+      height: @size-7;
+      fill: @color-primary-text;
+    }
+  }
+
+  > div:last-of-type {
+    .CloseButton;
+
+    display: block;
+  }
+
+  > header {
+    margin: 0 0 @size-24 0;
+
+    > div:first-of-type {
+      .text-24-bold;
+
+      color: @color-primary-text;
+      margin-bottom: @size-8;
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+    }
+  }
+
+  > button {
+    .text-14-bold;
+
+    color: @color-primary-text;
+    margin: 0 0 @size-8 0;
+    min-height: 52px;
+    text-align: left;
+  }
+
+  > button:last-of-type {
+    margin: 0;
+  }
+}
+
+.Loading {
+  .Container;
+
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  max-width: @login-signup-modal-height;
+  min-height: @login-signup-modal-width;
+
+  > svg {
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-name: spin;
+    animation-timing-function: linear;
+    height: @size-32;
+    width: @size-32;
+  }
+
+  > div {
+    .text-14;
+
+    color: @color-secondary-text;
+    text-align: center;
+    margin-top: @size-28;
+  }
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
+}
+
 .CreateMarketMessage {
   .Container;
 

@@ -33,6 +33,7 @@ export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 
 export interface IBlockAndLogStreamerListener {
   listenForEvent(eventName: string | string[], onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
+  listenForAllEvents(onLogsAdded: LogCallbackType): void;
   listenForBlockRemoved(callback: (blockNumber: number) => void): void;
   listenForBlockAdded(callback: (block: Block) => void): void;
   startBlockStreamListener(): void;
@@ -50,6 +51,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
   private address: string;
   private currentFilterUUID: string;
   private logCallbackMetaData:LogCallbackMetaData[] = [];
+  private allLogsCallbackMetaData:LogCallbackType[] = [];
 
   constructor(private deps: BlockAndLogStreamerListenerDependencies) {
     this.address = deps.address;
@@ -116,6 +118,14 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     });
   }
 
+  /**
+   * @description Register a callback that will receive the sum total of all registered filters.
+   * @param {LogCallbackType} onLogsAdded
+   */
+  listenForAllEvents(onLogsAdded: LogCallbackType): void {
+    this.allLogsCallbackMetaData.push(onLogsAdded);
+  }
+
   listenForBlockAdded(callback: BlockCallback): void {
     const wrapper = (callback: BlockCallback) => (block: Block) => {
       callback(block);
@@ -146,7 +156,12 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
 
       const logCallbackPromises = this.logCallbackMetaData.map((cb) => cb.onLogsAdded(blockNumber, logs));
 
+      // Assuming all db updates will be complete when these promises resolve.
       await Promise.all(logCallbackPromises);
+
+      // Fire this after all "filtered" log callbacks are processed.
+      const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map((cb) => cb(blockNumber, logs));
+      await Promise.all(allLogsCallbackMetaDataPromises);
 
       // let the controller know a new block was added so it can update the UI
       augurEmitter.emit('controller:new:block', block);

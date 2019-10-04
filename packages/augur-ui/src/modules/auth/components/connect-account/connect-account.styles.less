@@ -12,105 +12,70 @@
     background-color: @color-module-background;
   }
 
-  @media @breakpoint-mobile-extra-small {
-    max-width: 12.5rem;
-  }
-}
+  > div:first-of-type {
+    cursor: pointer;
+    display: flex;
+    padding: @size-12;
 
-.ConnectAccountLoggedIn {
-  @media @breakpoint-mobile-mid {
-    pointer-events: none;
+    &:focus {
+      outline: none;
+    }
 
-    &:hover {
-      background-color: unset;
+    > div:first-of-type {
+      display: flex;
+      align-items: center;
+
+      > span {
+        margin-left: @size-16;
+        margin-top: -@size-3;
+        max-width: @size-12;
+
+        > span {
+          display: inline-block;
+          margin-top: -@size-8;
+        }
+
+        @media @breakpoint-mobile {
+          display: none;
+        }
+      }
     }
   }
 }
 
-.selected {
-  background-color: @color-module-background;
-}
-
-.container {
-  cursor: pointer;
-  display: flex;
-  flex: 1;
-  padding: @size-12;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.containerLoggedIn {
-  @media @breakpoint-mobile-mid {
-    padding-top: @size-18;
-  }
-}
-
-.status {
-  .mono-10;
-
-  color: @color-negative;
-  margin-bottom: @size-4;
-}
-
-.statusIndicator {
-  background-color: @color-negative;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: @size-5;
-  min-height: @size-8;
-  min-width: @size-8;
-  text-transform: uppercase;
-}
-
-.logged {
-  color: @color-positive;
-
-  > div {
-    background-color: @color-positive;
-  }
-}
-
-.title {
-  .mono-12;
-
-  display: flex;
-}
-
-.arrow {
-  margin-left: @size-16;
-  margin-top: -3px;
-  max-width: @size-12;
-
-  > span {
-    display: inline-block;
-    margin-top: -@size-8;
-  }
-}
-
-.arrowHide {
-  @media @breakpoint-mobile-mid {
-    display: none;
-  }
-}
-
-.connectDropdown {
-  background-color: @color-module-background;
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
-  box-shadow: 0 3px @size-4 -@size-4 rgba(0, 0, 0, 0.5);
-  height: 0;
+.ConnectDropdown {
   position: absolute;
   right: 0;
-  text-align: left;
-  top: 100%;
-  width: 308px;
   z-index: @above-all-content;
+}
 
-  @media @breakpoint-mobile {
-    right: 0;
+.AccountInfo {
+  align-items: center;
+  display: flex;
+  user-select: none;
+
+  > img, > canvas {
+    border-radius: 50%;
+    height: @size-32;
+    width: @size-32;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    margin-left: @size-8;
+
+    > div:first-of-type {
+      .mono-9-bold;
+
+      color: @color-secondary-text;
+      text-transform: uppercase;
+    }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-primary-text;
+    }
   }
 }

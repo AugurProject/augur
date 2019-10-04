@@ -5,7 +5,7 @@ from pytest import raises, fixture as pytest_fixture
 from utils import nullAddress
 
 
-def test_gnosis_safe_registry(contractsFixture, augur, universe, gnosisSafeRegistry, gnosisSafeMaster, proxyFactory):
+def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSafeRegistry, gnosisSafeMaster, proxyFactory):
     account = contractsFixture.accounts[0]
 
     assert gnosisSafeRegistry.getSafe(account) == nullAddress
@@ -16,7 +16,7 @@ def test_gnosis_safe_registry(contractsFixture, augur, universe, gnosisSafeRegis
 
     saltNonce = 42
 
-    gnosisSafeRegistryData = gnosisSafeRegistry.callRegister_encode(gnosisSafeRegistry.address)
+    gnosisSafeRegistryData = gnosisSafeRegistry.callRegister_encode(gnosisSafeRegistry.address, augur.address, cash.address)
 
     gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, 0, nullAddress)
     gnosisSafeAddress = proxyFactory.createProxyWithNonce(gnosisSafeMaster.address, gnosisSafeData, saltNonce)
@@ -27,6 +27,8 @@ def test_gnosis_safe_registry(contractsFixture, augur, universe, gnosisSafeRegis
     assert gnosisSafe.getThreshold() == 1
 
     assert gnosisSafeRegistry.getSafe(account) == gnosisSafe.address
+
+    assert cash.allowance(gnosisSafe.address, augur.address, 2 ** 256 - 1)
 
 
 @pytest_fixture

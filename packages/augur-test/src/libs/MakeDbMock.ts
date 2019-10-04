@@ -84,6 +84,7 @@ export function makeDbMock(prefix:string = uuid.v4()) {
       listenForBlockRemoved: jest.fn(),
       listenForBlockAdded: jest.fn(),
       listenForEvent: jest.fn(),
+      listenForAllEvents: jest.fn(),
       startBlockStreamListener: jest.fn(),
     };
   }

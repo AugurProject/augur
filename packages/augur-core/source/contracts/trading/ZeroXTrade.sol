@@ -194,6 +194,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
             IExchange.Order memory _order = _orders[i];
+            validateOrder(_order);
             IExchange _exchange = getExchangeFromAssetData(_order.makerAssetData);
 
             // Update 0x. This will also validate signatures and order state for us.
@@ -216,6 +217,15 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return _fillAmountRemaining;
     }
 
+    function validateOrder(IExchange.Order memory _order) internal pure {
+        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
+        (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
+        require(_zeroXTradeToken == _zeroXTradeTokenTaker);
+        require(_tokenId == _tokenIdTaker);
+        // XXX: Needs merge from master to work
+        // XXX require(_zeroXTradeToken == this);
+    }
+
     function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
         // parseOrderData will validate that the token being traded is the leigitmate one for the market
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
@@ -235,6 +245,10 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     function creatorHasFundsForTrade(IExchange.Order memory _order, uint256 _amount) public view returns (bool) {
         uint256 _tokenId = getTokenIdFromOrder(_order);
         return _amount <= this.balanceOf(_order.makerAddress, _tokenId);
+    }
+
+    function getTransferFromAllowed() public view returns (bool) {
+        return transferFromAllowed;
     }
 
     /// @dev Encode ERC-1155 asset data into the format described in the AssetProxy contract specification.
@@ -352,6 +366,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _data.orderType = _type;
         _data.outcome = _outcome;
         _data.kycToken = _kycToken;
+    }
+
+    function getZeroXTradeTokenData(bytes memory _assetData) public pure returns (IERC1155 _token, uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken, IExchange _exchange) = decodeAssetData(_assetData);
+        _token = IERC1155(_tokenAddress);
     }
 
     function getTokenIdFromOrder(IExchange.Order memory _order) public pure returns (uint256 _tokenId) {
