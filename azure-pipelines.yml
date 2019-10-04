@@ -43,21 +43,25 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-artifacts/.* ]]
               then
                 echo "found an artifacts change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
-              if [[ $f == .*augur-tools/docker-builder/* ]]
+              if [[ $f =~ .*augur-tools/docker-builder/* ]]
               then
                 echo "found a docker-builder change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_DOCKER_BUILDER;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
               then
                 echo "found a change in geth-poa: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_GETH_POA;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-ui.* ]]
               then
@@ -360,18 +364,11 @@ jobs:
     condition: |
       and
       (
-        succeeded(),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
-        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
-        not(eq(variables['Build.sourceBranch'], 'refs/tags')),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true')
-        )
+        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool:
       vmImage: 'Ubuntu 16.04'
