@@ -1,13 +1,11 @@
 import React from 'react';
 import {
   Breakdown,
-  ButtonsRow,
 } from 'modules/modal/common';
-import { DefaultButtonProps } from 'modules/common/buttons';
 import {
   LinearPropertyLabelProps,
 } from 'modules/common/labels';
-
+import { PrimaryButton } from 'modules/common/buttons';
 import Styles from 'modules/universe-cards/universe-card.styles.less';
 
 interface UniverseCardProps {
@@ -15,8 +13,8 @@ interface UniverseCardProps {
   creationTimestamp: string;
   outcomeName: string;
   currentUniverse: string;
-  buttons: DefaultButtonProps[];
   breakdown?: LinearPropertyLabelProps[];
+  switchUniverse: Function;
 }
 
 export const UniverseCard = (
@@ -26,7 +24,7 @@ export const UniverseCard = (
     outcomeName,
     currentUniverse,
     breakdown,
-    buttons
+    switchUniverse,
   }: UniverseCardProps
 ) => {
   return (
@@ -44,7 +42,7 @@ export const UniverseCard = (
       </div>
       <Breakdown rows={breakdown} />
       {universeId !== currentUniverse &&
-        <ButtonsRow buttons={buttons} />
+        <PrimaryButton text='Switch to this Universe' action={switchUniverse(universeId)} />
       }
     </div>
   );

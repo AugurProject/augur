@@ -32,16 +32,9 @@ export const ModalUniverseSelector = ({
       <Title title={title} closeAction={closeAction} />
       <Description description={description} />
       <main>
-        <div>
-          <UniverseCard
-            universe={universeDetails}
-          />
-        </div>
-        <div>
-        {universeDetails.children.map((childUniverse: UniverseDetails) => (
-          <UniverseCard {...childUniverse} />
-        ))}
-        </div>
+        <UniverseCard
+          universe={universeDetails}
+        />
       </main>
       <ButtonsRow buttons={buttons} />
     </div>

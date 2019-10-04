@@ -18,29 +18,8 @@ const mapStateToProps = (state: AppState) => {
       totalRepSupply: universe.totalRepSupply,
       totalOpenInterest: universe.totalOpenInterest,
       numberOfMarkets: universe.numberOfMarkets,
-      // children: universe.children,
-      children: [
-        {
-          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC53',
-          children: [],
-          creationTimestamp: 1570216208,
-          outcomeName: 'No',
-          usersRep: '1000000000000000000000001',
-          numberOfMarkets: 20,
-          totalOpenInterest: "0",
-          totalRepSupply: "1000006993611653645833341",
-        },
-        {
-          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC53',
-          children: [],
-          creationTimestamp: 1570216208,
-          outcomeName: 'Yes',
-          usersRep: '1000000000000000000000001',
-          numberOfMarkets: 20,
-          totalOpenInterest: "0",
-          totalRepSupply: "1000006993611653645833341",
-        },
-    },
+      children: universe.children,
+    }
   };
 };
 
