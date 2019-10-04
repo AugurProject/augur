@@ -27,6 +27,7 @@ const BaseInnerNavPure = ({
     >
       {showMainMenu && (
         <div>
+          <span>Filters</span>
           <button
             onClick={() => updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)}
           >

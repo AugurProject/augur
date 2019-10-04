@@ -271,6 +271,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
+  hideButton?: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -769,6 +770,7 @@ export const ReportingRadioBarGroup = ({
             userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
               d => d.outcome === String(tentativeWinning.value)
             )}
+            hideButton={disputeInfo.disputePacingOn}
           />
         </section>
       )}
@@ -900,6 +902,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       inputScalarOutcome,
       updateScalarOutcome,
       userOutcomeCurrentRoundDispute,
+      hideButton,
     } = this.props;
 
     let { stake } = this.props;
@@ -932,9 +935,10 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.RadioBarError]: error,
           [Styles.Invalid]: isInvalid,
           [Styles.Checked]: checked,
+          [Styles.Hide]: hideButton
         })}
         role="button"
-        onClick={e => updateChecked(id, isInvalid)}
+        onClick={e => { !hideButton && updateChecked(id, isInvalid)}}
       >
         {checked ? FilledRadio : EmptyRadio}
         <h5>

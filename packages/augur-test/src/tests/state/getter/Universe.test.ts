@@ -17,6 +17,7 @@ describe('State API :: Universe :: ', () => {
   let api: API;
   let john: ContractAPI;
   let mary: ContractAPI;
+  let bob: ContractAPI;
 
   // Normally these calls are in beforeAll but these tests affect the same state,
   // on-chain and in-middleware, so both need to be rebuilt between each test.
@@ -26,12 +27,14 @@ describe('State API :: Universe :: ', () => {
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, seed.addresses);
 
     db = mock.makeDB(john.augur, ACCOUNTS);
 
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
+    await bob.approveCentralAuthority();
   }, 120000);
 
   test.skip('getDisputeWindow', async () => {
@@ -322,68 +325,118 @@ describe('State API :: Universe :: ', () => {
   }, 200000);
 
   test('getUniverseChildren : Genesis', async () => {
-    const universe = john.augur.contracts.universe;
+    const genesisUniverse = john.augur.contracts.universe;
     const actualDB = await db;
 
+    let johnRep = new BigNumber(1); // we faucet 1 attoREP for john during deployment
+    let maryRep = new BigNumber(0);
+    const bobRep = new BigNumber(0);
+    let totalRep = johnRep.plus(maryRep).plus(bobRep);
+
+    await john.repFaucet(new BigNumber(91));
+    johnRep = johnRep.plus(91);
+    await mary.repFaucet(new BigNumber(19));
+    maryRep = maryRep.plus(19);
+    totalRep = totalRep.plus(91).plus(19);
+
+    // Verify from John's perspective.
+
+    console.log("Verify from John's perspective.");
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     let universeChildren: UniverseDetails = await api.route('getUniverseChildren', {
-      universe: universe.address,
+      universe: genesisUniverse.address,
+      account: john.account.publicKey,
     });
 
     expect(universeChildren).toMatchObject({
-      address: universe.address,
+      address: genesisUniverse.address,
       outcomeName: 'Genesis',
-      totalRepSupply: '1', // we faucet 1 attoREP for john during deployment
+      usersRep: johnRep.toString(),
+      totalRepSupply: totalRep.toString(),
       totalOpenInterest: '0',
       numberOfMarkets: 0,
       children: [],
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
 
-    // Now create a market to see how that affects numberOfMarkets.
+    // Verify from Bob's perspective.
+    // Tests case where there aren't any TokenBalanceChanged logs.
 
-    const repBond = await universe.getOrCacheMarketRepBond_();
+    console.log("Verify from Bob's perspective.");
+    await actualDB.sync(bob.augur, mock.constants.chunkSize, 0);
+    universeChildren = await api.route('getUniverseChildren', {
+      universe: genesisUniverse.address,
+      account: bob.account.publicKey,
+    });
+
+    expect(universeChildren).toMatchObject({
+      address: genesisUniverse.address,
+      outcomeName: 'Genesis',
+      usersRep: bobRep.toString(), // aka zero
+      totalRepSupply: totalRep.toString(),
+      totalOpenInterest: '0',
+      numberOfMarkets: 0,
+      children: [],
+    });
+    expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
+
+    // Create a market to see how that affects numberOfMarkets.
+
+    console.log('Create a market to see how that affects numberOfMarkets.');
+    const repBond = await genesisUniverse.getOrCacheMarketRepBond_();
     const market = await john.createReasonableScalarMarket();
+    totalRep = totalRep.plus(repBond); // not added to john because he put it in the market
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     universeChildren = await api.route('getUniverseChildren', {
-      universe: universe.address,
+      universe: genesisUniverse.address,
+      account: john.account.publicKey,
     });
     expect(universeChildren).toMatchObject({
-      address: universe.address,
+      address: genesisUniverse.address,
       outcomeName: 'Genesis',
-      totalRepSupply: repBond.plus(1).toString(),
+      usersRep: johnRep.toString(),
+      totalRepSupply: totalRep.toString(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
       children: [],
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
 
-    // Now fork to see how that affects the children.
+    // Fork to see how that affects the children.
 
+    console.log('Fork to see how that affects the children.');
     const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
     await fork(john, marketInfo);
+    const SOME_REP = new BigNumber(1e18).times(6e7); // from fork()
+    johnRep = johnRep.plus(SOME_REP);
+    totalRep = totalRep.plus(SOME_REP);
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
-    await john.repFaucet(new BigNumber(1e21));
-    await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
+    // Create child universe
+    const childUniverseRep = new BigNumber(1e21);
+    await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep);
+    johnRep = johnRep.minus(childUniverseRep);
+    totalRep = totalRep.minus(childUniverseRep);
 
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     universeChildren = await api.route('getUniverseChildren', {
-      universe: universe.address,
+      universe: genesisUniverse.address,
+      account: john.account.publicKey,
     });
 
     expect(universeChildren).toMatchObject({
-      address: universe.address,
+      address: genesisUniverse.address,
       outcomeName: 'Genesis',
-      totalRepSupply: repBond.plus(1).plus(6e25).toString(),
+      totalRepSupply: totalRep.toString(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
       children: [
         {
           outcomeName: 'Invalid',
-          totalRepSupply: '1000000000000000000000',
+          usersRep: childUniverseRep.toString(),
+          totalRepSupply: childUniverseRep.toString(),
           totalOpenInterest: '0',
           numberOfMarkets: 0,
           children: [],
@@ -393,6 +446,10 @@ describe('State API :: Universe :: ', () => {
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].address).not.toEqual(NULL_ADDRESS);
+    // John's REP is hard to calculate because contributing during a fork has caps
+    // that we're exceeding, so it rounds down to the cap.
+    expect(Number(universeChildren.usersRep)).toBeGreaterThan(0);
+    expect(Number(universeChildren.usersRep)).toBeLessThan(totalRep.toNumber());
   });
 
 });
