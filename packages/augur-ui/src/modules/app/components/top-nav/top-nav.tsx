@@ -23,6 +23,7 @@ interface TopNavProps {
   isLogged: boolean;
   menuData: TopNavMenuItem[];
   currentBasePath: string;
+  isDisabled: boolean;
 }
 
 const TopNav = (props: TopNavProps) => {
@@ -45,7 +46,11 @@ const TopNav = (props: TopNavProps) => {
             return (
               <div className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route ? makePath(item.route) : null}>
-                  <SecondaryButton text={'Create Market'} action={() => null} />
+                  <SecondaryButton
+                    disabled={props.isDisabled}
+                    text={'Create Market'}
+                    action={() => null}
+                  />
                 </Link>
               </div>
             );

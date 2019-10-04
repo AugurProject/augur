@@ -13,7 +13,7 @@ import UniverseCard from 'modules/universe-cards/containers/universe-card';
 interface CreateMarketViewProps {
 }
 
-interface CreateMarketViewPState {
+interface CreateMarketViewState {
   selected: number;
   page: number;
 }
