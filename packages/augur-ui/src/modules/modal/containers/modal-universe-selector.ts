@@ -7,9 +7,40 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => {
+  const universe = state.universe;
   return {
     modal: state.modal,
-    universeDetails: state.universe
+    universeDetails: {
+      address: universe.address,
+      creationTimestamp: universe.creationTimestamp,
+      outcomeName: universe.outcomeName,
+      usersRep: universe.usersRep,
+      totalRepSupply: universe.totalRepSupply,
+      totalOpenInterest: universe.totalOpenInterest,
+      numberOfMarkets: universe.numberOfMarkets,
+      // children: universe.children,
+      children: [
+        {
+          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC53',
+          children: [],
+          creationTimestamp: 1570216208,
+          outcomeName: 'No',
+          usersRep: '1000000000000000000000001',
+          numberOfMarkets: 20,
+          totalOpenInterest: "0",
+          totalRepSupply: "1000006993611653645833341",
+        },
+        {
+          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC53',
+          children: [],
+          creationTimestamp: 1570216208,
+          outcomeName: 'Yes',
+          usersRep: '1000000000000000000000001',
+          numberOfMarkets: 20,
+          totalOpenInterest: "0",
+          totalRepSupply: "1000006993611653645833341",
+        },
+    },
   };
 };
 

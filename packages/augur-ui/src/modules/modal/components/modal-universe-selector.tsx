@@ -10,11 +10,12 @@ import { Universe } from 'modules/types';
 import UniverseCard from 'modules/universe-cards/containers/universe-card';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { UniverseDetails } from '@augurproject/sdk/src/state/getter/Universe';
 
 interface ModalUniverseSelectorProps {
   title: string;
   description: string;
-  universeDetails: Universe
+  universeDetails: UniverseDetails,
   buttons: DefaultButtonProps[];
   closeAction: Function;
 }
@@ -35,6 +36,11 @@ export const ModalUniverseSelector = ({
           <UniverseCard
             universe={universeDetails}
           />
+        </div>
+        <div>
+        {universeDetails.children.map((childUniverse: UniverseDetails) => (
+          <UniverseCard {...childUniverse} />
+        ))}
         </div>
       </main>
       <ButtonsRow buttons={buttons} />
