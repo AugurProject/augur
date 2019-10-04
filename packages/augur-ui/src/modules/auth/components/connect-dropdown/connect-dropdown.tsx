@@ -14,6 +14,7 @@ import { formatRep, formatEther, formatDai } from 'utils/format-number';
 import { AccountBalances } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -27,10 +28,6 @@ interface ConnectDropdownProps {
   gasModal: Function;
   userDefinedGasPrice: string;
   gasPriceSpeed: number;
-}
-
-interface ConnectDropdownState {
-  showMetaMaskHelper: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -51,19 +48,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     const { logout } = props;
     logout();
   };
-
-  const MetaMaskHelper = (
-    <div
-      onClick={() => setShowMetaMaskHelper(false)}
-      className={Styles.MetaMaskHelper}
-    >
-      <div>
-        <img src="assets/images/metamask-help.png" />
-      </div>
-      <div>Click the Metamask logo to open your wallet</div>
-      <div>{DirectionArrow}</div>
-    </div>
-  );
 
   const accountFunds = [
     {
@@ -113,7 +97,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   return (
     <div>
-      {showMetaMaskHelper && MetaMaskHelper}
+      {showMetaMaskHelper && <ModalMetaMaskFinder handleClick={() => setShowMetaMaskHelper(false)} />}
       <div className={Styles.AccountInfo}>
         <div className={Styles.AddFunds}>
           <div>Your account</div>

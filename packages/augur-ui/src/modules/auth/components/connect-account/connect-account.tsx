@@ -112,7 +112,6 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             }
           )}
         >
-          {/* TODO styles to hide on mobile */}
           <ConnectDropdown toggleDropdown={(cb) => this.toggleDropdown(cb)} />
         </div>
       </div>
