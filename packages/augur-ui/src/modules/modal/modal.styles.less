@@ -104,6 +104,235 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.FundsHelp {
+  > span {
+    display: flex;
+  }
+
+  > span:first-of-type {
+    .text-12-bold;
+
+    color: @color-primary-text;
+    margin: 50px 0 @size-8;
+  }
+
+  > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-secondary-text;
+    line-height: 140%;
+    margin-bottom: @size-3;
+  }
+
+  @media @breakpoint-mobile-new {
+    flex-direction: column;
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
+
+    > button {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.AddFunds {
+  .Container;
+
+  flex-direction: row;
+  max-width: 800px;
+
+  > div {
+    flex: 1;
+  }
+
+  > div:first-of-type {
+    background: @color-module-background;
+    padding: @size-32;
+
+    > div:first-of-type {
+      > button {
+        display: none;
+      }
+    }
+
+    > div:last-of-type {
+      > h1 {
+        .text-24-bold;
+
+        color: @color-primary-text;
+        margin: 0;
+      }
+
+      > h2 {
+        .text-14;
+
+        margin: @size-4 0 @size-24;
+        color: @color-secondary-text;
+      }
+    }
+  }
+
+  > div:last-of-type {
+    background: @color-page-background;
+    padding: @size-16 @size-16 @size-32 @size-32;
+    flex-direction: column;
+
+    > div:first-of-type {
+      display: flex;
+
+      > button:first-of-type {
+        display: none;
+      }
+    }
+
+    > div:last-of-type {
+      display: none;
+    }
+
+    > div:nth-of-type(2) {
+      padding-right: @size-16;
+      > h1 {
+        .text-16-bold;
+
+        color: @color-primary-text;
+        margin: 0;
+      }
+
+      > h2 {
+        .text-12;
+
+        color: @color-secondary-text;
+        margin: @size-4 0 @size-24;
+      }
+
+      > h3 {
+        .mono-11-bold;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+        margin-bottom: @size-8;
+      }
+
+      > h4 {
+        .text-12;
+
+        color: @color-inactive-text;
+        line-height: 140%;
+        display: flex;
+        margin-top: @size-12;
+      }
+
+      > div,
+      > span {
+        margin-bottom: @size-24;
+      }
+
+      > ol {
+        margin: 0 0 @size-24;
+        padding: 0;
+        list-style: none;
+        counter-reset: custom-counter;
+
+        > li {
+          .text-14;
+
+          line-height: 140%;
+          color: @color-secondary-text;
+          counter-increment: custom-counter;
+
+          &:not(:first-of-type) {
+            margin-top: @size-12;
+          }
+
+          > a {
+            color: @color-primary-action;
+          }
+
+          &::before {
+            .text-14-bold;
+
+            color: @color-primary-text;
+            content: counter(custom-counter) '. ';
+          }
+        }
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    flex: 1;
+    padding: 0;
+    max-width: unset;
+    max-height: unset;
+
+    > div:first-of-type {
+      display: flex;
+      flex-direction: column;
+      padding: @size-24;
+      flex: 1;
+
+      > div:first-of-type {
+        justify-content: flex-end;
+        display: flex;
+
+        > button {
+          display: flex;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    > div:last-of-type {
+      display: none;
+      flex-direction: column;
+      padding: @size-16 @size-16 @size-24 @size-24;
+
+      > div:first-of-type {
+        flex-direction: row;
+        margin-bottom: @size-16;
+
+        > button:last-of-type {
+          justify-content: flex-end;
+        }
+
+        > button:first-of-type,
+        > button:last-of-type {
+          display: flex;
+        }
+
+        > span:first-of-type {
+          flex: 1;
+          align-items: flex-end;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        flex-direction: column;
+      }
+
+      > div:last-of-type {
+        display: flex;
+      }
+    }
+
+    &.ShowSelected {
+      > div:first-of-type {
+        display: none;
+      }
+
+      > div:last-of-type {
+        display: flex;
+      }
+    }
+  }
+}
+
 .CondensedContainer {
   .Container;
 
@@ -121,8 +350,9 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-
-.SignIn, .Connect, .Loading {
+.SignIn,
+.Connect,
+.Loading {
   .Container;
 
   background: @color-module-background;
@@ -134,6 +364,9 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile {
     padding: @size-24;
+    flex: 1;
+    max-width: unset;
+    max-height: unset;
   }
 }
 
@@ -144,6 +377,11 @@ div.ButtonsRow:last-of-type {
   right: 17px;
   top: 17px;
   width: @size-12;
+
+  @media @breakpoint-mobile {
+    height: @size-16;
+    width: @size-16;
+  }
 
   > svg {
     fill: @color-primary-text;
@@ -218,7 +456,8 @@ div.ButtonsRow:last-of-type {
     justify-content: center;
     margin: @size-32 0;
 
-    &:before,  &:after {
+    &:before,
+    &:after {
       content: '';
 
       border: 1px solid @color-secondary-action-outline;
@@ -243,7 +482,7 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: #0095A3;
+    background: #0095a3;
   }
 
   > button:last-of-type {
@@ -325,6 +564,10 @@ div.ButtonsRow:last-of-type {
     width: @size-32;
   }
 
+  > article {
+    right: 50px;
+  }
+
   > div {
     .text-14;
 
@@ -336,10 +579,10 @@ div.ButtonsRow:last-of-type {
 
 @keyframes spin {
   from {
-      transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-      transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -857,10 +1100,10 @@ div.ButtonsRow:last-of-type {
   }
 
   > span:last-of-type {
-  display: flex;
-  flex-flow: row-reverse;
-  padding: 0 @size-24 @size-24;
-}
+    display: flex;
+    flex-flow: row-reverse;
+    padding: 0 @size-24 @size-24;
+  }
 }
 
 .DescriptionMessage {
@@ -1232,54 +1475,44 @@ div.ButtonsRow:last-of-type {
   .mono-12;
 
   align-items: center;
-  border: 1px solid @color-secondary-action-outline;
+  border: 1px solid @color-secondary-action;
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
-  height: 2.5rem;
-  line-height: @size-16;
+  height: @size-40;
+  line-height: @size-14;
   margin: @size-18 0;
-  padding-left: @size-12;
+  padding: @size-12;
+  padding-right: @size-8;
+  justify-content: space-between;
+  background: @color-dark-grey;
 
   @media @breakpoint-mobile {
     .mono-10;
 
-    height: 2.25rem;
+    height: @size-40;
     line-height: @size-14;
-    padding-left: @size-8;
   }
 
   > button {
+    .mono-10;
+
     align-items: center;
-    background: @color-secondary-action;
     color: @color-inactive-text;
     display: flex;
-    height: 100%;
-    line-height: @size-14;
     margin-left: @size-8;
-    padding: @size-12 @size-16;
+    padding: @size-5;
     text-transform: uppercase;
+    color: @color-primary-text;
+    background: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
 
     @media @breakpoint-mobile {
       line-height: @size-10;
       margin-left: @size-4;
-      padding: @size-12 @size-14;
-    }
-
-    > svg {
-      fill: none;
-      height: @size-14;
-      width: @size-12;
-
-      @media @breakpoint-mobile {
-        height: @size-10;
-        width: @size-8;
-      }
-
-      > path {
-        fill: @color-inactive-text;
-      }
+      padding: @size-6;
     }
   }
 }
@@ -1529,7 +1762,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div:nth-of-type(2) {
-      padding: @size-16;
+        padding: @size-16;
       }
 
       > div:last-of-type {
@@ -1568,7 +1801,6 @@ div.ButtonsRow:last-of-type {
         margin-bottom: @size-16;
       }
 
-
       > div:nth-of-type(3) {
         display: flex;
         margin-bottom: @size-32;
@@ -1601,7 +1833,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div:nth-of-type(2) {
-      padding: @size-16;
+        padding: @size-16;
       }
 
       > div:last-of-type {
