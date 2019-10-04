@@ -646,7 +646,7 @@ export class ReportingBondsView extends Component<
             updateStakeAmount={this.updateInputtedStake}
             stakeError={stakeError}
             max={String(userAvailableRep)}
-            maxLabel='MAX'
+            maxLabel="MAX"
           />
         )}
         <span>Review</span>
@@ -660,15 +660,18 @@ export class ReportingBondsView extends Component<
           label="Transaction Fee"
           value={reportingGasFee}
         />
-        {migrateRep && createBigNumber(inputtedReportingStake).lt(createBigNumber(userAvailableRep)) &&
-          <DismissableNotice
-            show={true}
-            description=''
-            title='Are you sure you only want to migrate a portion of your REP to this universe?
-            If not, Go back and select the ‘MAx’ button underneath the amount input to migrate your Full REP Amount.'
-            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          />
-        }
+        {migrateRep &&
+          createBigNumber(inputtedReportingStake).lt(
+            createBigNumber(userAvailableRep)
+          ) && (
+            <DismissableNotice
+              show={true}
+              description=""
+              title="Are you sure you only want to migrate a portion of your REP to this universe?
+            If not, go back and select the ‘MAx’ button to migrate your full REP amount."
+              buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+            />
+          )}
         {initialReport && (
           <PreFilledStake
             showInput={showInput}
