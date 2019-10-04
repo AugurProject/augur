@@ -40,11 +40,11 @@
   &.ExtraTitlePadding {
     > div:first-of-type > div:first-of-type {
       margin-left: @size-16;
-    } 
+    }
   }
 
   &.NoBorders {
-    > div:first-of-type { 
+    > div:first-of-type {
       border-bottom: 0;
       padding-bottom: @size-18;
     }
@@ -66,19 +66,19 @@
   justify-content: flex-end;
   padding: 0 @size-8;
 
-  @media @breakpoint-max-tablet {
-    padding: 0;
-  }
-}
-
-.RightContent {
-  @media @breakpoint-tablet {
-    margin-top: @size-8;
-  }
-
-  @media @breakpoint-mobile-new {
-    margin-top: @size-16;
-  }
+//  @media @breakpoint-max-tablet {
+//    padding: 0;
+//  }
+//}
+//
+//.RightContent {
+//  @media @breakpoint-tablet {
+//    margin-top: @size-8;
+//  }
+//
+//  @media @breakpoint-mobile-new {
+//    margin-top: @size-16;
+//  }
 }
 
 .MostRightContent {
@@ -94,13 +94,13 @@
   border: 1px solid @color-dark-grey;
   margin-top: @size-16;
 
-  @media @breakpoint-tablet {
-    margin-top: 0;
-  }
-
-  @media @breakpoint-mobile-new {
-    margin-top: 0;
-  }
+  //@media @breakpoint-tablet {
+  //  margin-top: 0;
+  //}
+  //
+  //@media @breakpoint-mobile-new {
+  //  margin-top: 0;
+  //}
 }
 
 .noBackground {
@@ -129,7 +129,7 @@
 .Toggle {
   margin-left: @size-16;
   display: flex;
-  
+
   > svg {
     width: @size-12;
     height: @size-22;
@@ -140,7 +140,7 @@
   }
 }
 
-@media @breakpoint-max-tablet {
+@media @breakpoint-mobile-mid {
   .ShowOnMobile {
     display: flex;
     flex: 1;
@@ -170,10 +170,10 @@
   }
 }
 
-@media @breakpoint-tablet {
-  .ShowOnMobile {
-    > div:first-of-type {
-      margin-top: 0;
-    }
-  }
-}
+//@media @breakpoint-tablet {
+//  .ShowOnMobile {
+//    > div:first-of-type {
+//      margin-top: 0;
+//    }
+//  }
+//}
