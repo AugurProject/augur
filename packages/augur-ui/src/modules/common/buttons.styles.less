@@ -662,14 +662,32 @@
     color: @color-primary-text;
   }
 
-  > svg > path {
-    &:nth-child(odd) {
-      fill: @color-primary-action;
-      stroke: none;
-    }
+  > svg {
+    margin-left: @size-4;
+    > path {
+      &:nth-child(odd) {
+        fill: @color-primary-action;
+        stroke: none;
+      }
 
-    &:nth-child(even) {
-      stroke: @color-primary-action;
+      &:nth-child(even) {
+        stroke: @color-primary-action;
+      }
+    }
+  }
+
+  &.LightAlternate {
+    color: @color-outcome-seven;
+
+    > svg > path {
+      &:nth-child(odd) {
+        fill: @color-outcome-seven;
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: @color-outcome-seven;
+      }
     }
   }
 }
