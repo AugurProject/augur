@@ -34,14 +34,6 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS, LANDING_PAGE } from 'modules/routes/constants/views';
 import { windowRef } from 'utils/window-ref';
 
-export const defaultMessage = accountType => {
-  const loggedInAccount = window.localStorage.getItem('loggedInAccount');
-  if (loggedInAccount) {
-    return `Sit tight - we are loading your ${accountType} account.`;
-  }
-  return `Follow instructions in the ${accountType} window.`;
-};
-
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   account: state.loginAccount,
@@ -65,10 +57,12 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: (showRegister, callback) =>
-    dispatch(loginWithPortis(showRegister, callback)),
-  connectTorus: (callback) => dispatch(loginWithTorus(callback)),
-  connectFortmatic: (callback) => dispatch(loginWithFortmatic(callback)),
+  connectPortis: (showRegister, showConnectingModal) =>
+    dispatch(loginWithPortis(showRegister, showConnectingModal)),
+  connectTorus: showConnectingModal =>
+    dispatch(loginWithTorus(showConnectingModal)),
+  connectFortmatic: showConnectingModal =>
+    dispatch(loginWithFortmatic(showConnectingModal)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -79,7 +73,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     dP.closeModal();
   };
 
-  const showConnectingModal = () => dP.loadingModal(SIGNIN_LOADING_TEXT, () => redirect());
+  const showConnectingModal = () =>
+    dP.loadingModal(SIGNIN_LOADING_TEXT, () => redirect());
 
   const redirect = () => {
     dP.closeModal();
@@ -103,7 +98,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => redirect());
         try {
           const forceRegisterPage = oP.isLogin ? false : true;
-          await dP.connectPortis(forceRegisterPage, () => showConnectingModal());
+          await dP.connectPortis(forceRegisterPage, () =>
+            showConnectingModal()
+          );
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -147,10 +144,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       disabled: false,
       hidden: !isMetaMaskPresent(),
       action: async () => {
-        const accounts = windowRef.ethereum && windowRef.ethereum.selectedAddress;
-        const msg = accounts
-          ? SIGNIN_LOADING_TEXT
-          : SIGNIN_SIGN_WALLET;
+        const accounts =
+          windowRef.ethereum && windowRef.ethereum.selectedAddress;
+        const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
         dP.loadingModal(msg, () => redirect(), accounts ? false : true);
         try {
           await dP.connectMetaMask();
