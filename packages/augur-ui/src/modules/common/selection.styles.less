@@ -166,10 +166,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding: @size-6 0;
+      padding: @size-6 @size-8 @size-6 0;
       border-right: 1px solid @color-secondary-action-outline;
       flex: 1;
       display: flex;
+    }
+
+    @media @breakpoint-mobile-new {
+      line-height: @size-18;
     }
   }
 

@@ -69,8 +69,8 @@
   background: @color-dark-grey;
   transition: background 0.25s ease-in;
   width: 100%;
-  margin-left: @size-24;
-  padding: @size-6 @size-12;
+  margin-left: 0;
+  padding: @size-8 @size-12;
 
   > span {
     display: none;
@@ -130,5 +130,10 @@
         padding-right: 1rem;
       }
     }
+  }
+
+  @media @breakpoint-mobile-new {
+    padding: @size-8 @size-12;
+    margin-left: 0;
   }
 }
