@@ -528,6 +528,7 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  attoRep: string;
 }
 export interface LoginAccount {
   address?: string;
