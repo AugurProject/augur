@@ -14,6 +14,7 @@ import {
   SCALAR,
   REPORTING_STATE,
   INVALID_OUTCOME_NAME,
+  ZERO,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -24,8 +25,7 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { createBigNumber } from 'utils/create-big-number';
-import { convertDisplayValuetoAttoValue, Getters } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 interface ModalReportingProps {
@@ -38,12 +38,12 @@ interface ModalReportingProps {
   userAccount?: string;
   migrateRep: boolean;
   migrateMarket: boolean;
+  isDisputing: boolean;
 }
 
 interface ModalReportingState {
   checked: string;
-  preFilledStake: string;
-  disputeStake: DisputeInputtedValues;
+  inputtedReportingStake: DisputeInputtedValues;
   inputScalarOutcome: string;
   isReporting: boolean;
   userCurrentDisputeRound:
@@ -60,8 +60,7 @@ export default class ModalReporting extends Component<
     checked: this.props.selectedOutcome
       ? this.props.selectedOutcome.toString()
       : null,
-    preFilledStake: '',
-    disputeStake: { inputStakeValue: '', inputToAttoRep: '' },
+    inputtedReportingStake: { inputStakeValue: '', inputToAttoRep: '' },
     inputScalarOutcome: '',
     isReporting:
       this.props.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
@@ -94,22 +93,17 @@ export default class ModalReporting extends Component<
 
   updateChecked = (selected: string, isInvalid: boolean = false) => {
     const { radioButtons } = this.state;
-    this.updateDisputeStake({ inputStakeValue: '', inputToAttoRep: '' });
+    this.updateInputtedStake({ inputStakeValue: '', inputToAttoRep: '' });
     radioButtons.map(r =>
       r.id === selected && r.isInvalid === isInvalid
         ? (r.checked = true)
         : (r.checked = false)
     );
     const radioValue = radioButtons.find(r => r.checked);
-    this.updatePreFilledStake('');
     this.updateScalarOutcome(
       String(radioValue.value) ? String(radioValue.value) : ''
     );
     this.setState({ radioButtons, checked: selected });
-  };
-
-  updatePreFilledStake = (preFilledStake: string) => {
-    this.setState({ preFilledStake });
   };
 
   buildRadioButtonCollection = () => {
@@ -150,7 +144,6 @@ export default class ModalReporting extends Component<
           description: stake.outcome,
           checked: checked === outcome.id.toString(),
           isInvalid: outcome.id === 0,
-          preFilledStake: formatAttoRep(stake.stakeCurrent).formatted,
           stake,
         };
       });
@@ -173,9 +166,6 @@ export default class ModalReporting extends Component<
           description: stake.outcome,
           checked: checked === stake.outcome,
           isInvalid: stake.isInvalidOutcome,
-          preFilledStake: formatAttoRep(
-            stake.stakeCurrent === '-' ? '0' : stake.stakeCurrent
-          ).formatted,
           stake,
         });
       });
@@ -215,7 +205,7 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       description: '',
-      attoRepAmount: this.state.disputeStake.inputToAttoRep,
+      attoRepAmount: this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
     };
@@ -224,10 +214,6 @@ export default class ModalReporting extends Component<
     } else if (migrateMarket) {
       reportAndMigrateMarket(report);
     } else if (isReporting) {
-      const { preFilledStake } = this.state;
-      report.attoRepAmount = convertDisplayValuetoAttoValue(
-        createBigNumber(preFilledStake || '0')
-      ).toString();
       doInitialReport(report);
     } else {
       // disputing
@@ -246,8 +232,8 @@ export default class ModalReporting extends Component<
     setTimeout(() => this.props.closeAction(), 1000);
   };
 
-  updateDisputeStake = (disputeStake: DisputeInputtedValues) => {
-    this.setState({ disputeStake });
+  updateInputtedStake = (inputtedReportingStake: DisputeInputtedValues) => {
+    this.setState({ inputtedReportingStake });
   };
 
   updateScalarOutcome = (inputScalarOutcome: string) => {
@@ -255,13 +241,11 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, migrateRep, migrateMarket } = this.props;
+    const { closeAction, title, market, rep, migrateRep, isDisputing, migrateMarket } = this.props;
     const {
       checked,
-      isDisputing,
-      preFilledStake,
       inputScalarOutcome,
-      disputeStake,
+      inputtedReportingStake,
       userCurrentDisputeRound,
       radioButtons,
     } = this.state;
@@ -321,10 +305,8 @@ export default class ModalReporting extends Component<
               selected={checked}
               updateChecked={this.updateChecked}
               reportAction={this.reportingAction}
-              preFilledStake={preFilledStake}
-              updatePreFilledStake={this.updatePreFilledStake}
-              disputeStake={disputeStake}
-              updateDisputeStake={this.updateDisputeStake}
+              inputtedReportingStake={inputtedReportingStake}
+              updateInputtedStake={this.updateInputtedStake}
               updateScalarOutcome={this.updateScalarOutcome}
               inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}

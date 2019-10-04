@@ -13,6 +13,7 @@ import {
 import { AppState } from 'store';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
+import { formatAttoRep } from 'utils/format-number';
 
 export const updateAssets = (
   callback: NodeStyleCallback = logError
@@ -35,10 +36,11 @@ function updateBalances(
     getDaiBalance(address),
     getEthBalance(address),
   ]).then(amounts => {
-    const rep = amounts[0];
+    const attoRep = amounts[0].toString();
+    const rep = formatAttoRep(attoRep).value;
     const dai = amounts[1];
     const eth = amounts[2];
-    dispatch(updateLoginAccount({ balances: { rep, dai, eth } }));
+    dispatch(updateLoginAccount({ balances: { attoRep, rep, dai, eth } }));
     return callback(null, { rep, dai, eth });
   });
 }
