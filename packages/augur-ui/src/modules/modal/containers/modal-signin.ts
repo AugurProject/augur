@@ -14,6 +14,11 @@ import {
   MODAL_CONNECT,
   MODAL_LOADING,
   ACCOUNT_TYPES,
+  SIGNIN_LOADING_TEXT_PORTIS,
+  SIGNIN_LOADING_TEXT,
+  SIGNIN_LOADING_TEXT_TORUS,
+  SIGNIN_LOADING_TEXT_FORTMATIC,
+  SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -27,7 +32,7 @@ import {
 } from 'modules/common/icons';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS, LANDING_PAGE } from 'modules/routes/constants/views';
-
+import { windowRef } from 'utils/window-ref';
 
 export const defaultMessage = accountType => {
   const loggedInAccount = window.localStorage.getItem('loggedInAccount');
@@ -50,12 +55,20 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   connectModal: loginOrSignup =>
     dispatch(updateModal({ type: MODAL_CONNECT, loginOrSignup })),
-  loadingModal: (message, callback) =>
-    dispatch(updateModal({ type: MODAL_LOADING, message, callback })),
+  loadingModal: (message, callback, showMetaMaskHelper = false) =>
+    dispatch(
+      updateModal({
+        type: MODAL_LOADING,
+        message,
+        showMetaMaskHelper,
+        callback,
+      })
+    ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: showRegister => dispatch(loginWithPortis(showRegister)),
-  connectTorus: () => dispatch(loginWithTorus()),
-  connectFortmatic: () => dispatch(loginWithFortmatic()),
+  connectPortis: (showRegister, callback) =>
+    dispatch(loginWithPortis(showRegister, callback)),
+  connectTorus: (callback) => dispatch(loginWithTorus(callback)),
+  connectFortmatic: (callback) => dispatch(loginWithFortmatic(callback)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -65,6 +78,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     console.error(`ERROR:${accountType}`, error);
     dP.closeModal();
   };
+
+  const showConnectingModal = () => dP.loadingModal(SIGNIN_LOADING_TEXT, () => redirect());
 
   const redirect = () => {
     dP.closeModal();
@@ -85,9 +100,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hidden: false,
       primary: true,
       action: async () => {
-        dP.loadingModal(defaultMessage(ACCOUNT_TYPES.PORTIS), () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => redirect());
         try {
-          await dP.connectPortis(oP.isLogin ? false : true);
+          const forceRegisterPage = oP.isLogin ? false : true;
+          await dP.connectPortis(forceRegisterPage, () => showConnectingModal());
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -100,9 +116,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: `Powered by ${ACCOUNT_TYPES.TORUS}`,
       hidden: false,
       action: async () => {
-        dP.loadingModal(defaultMessage(ACCOUNT_TYPES.TORUS), () => redirect());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => redirect());
         try {
-          await dP.connectTorus();
+          await dP.connectTorus(() => showConnectingModal());
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
         }
@@ -115,11 +131,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
       action: async () => {
-        dP.loadingModal(defaultMessage(ACCOUNT_TYPES.FORTMATIC), () =>
-          redirect()
-        );
+        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => redirect());
         try {
-          await dP.connectFortmatic();
+          await dP.connectFortmatic(() => showConnectingModal());
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
@@ -133,9 +147,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       disabled: false,
       hidden: !isMetaMaskPresent(),
       action: async () => {
-        dP.loadingModal('Sit tight - we are loading your account.', () =>
-          redirect()
-        );
+        const accounts = windowRef.ethereum && windowRef.ethereum.selectedAddress;
+        const msg = accounts
+          ? SIGNIN_LOADING_TEXT
+          : SIGNIN_SIGN_WALLET;
+        dP.loadingModal(msg, () => redirect(), accounts ? false : true);
         try {
           await dP.connectMetaMask();
         } catch (error) {
@@ -162,12 +178,3 @@ export default withRouter(
     mergeProps
   )(SignIn)
 );
-
-// If required, follow any instructions in the ${accountType} window.
-// -  const loggedInAccount = window.localStorage.getItem('loggedInAccount');
-// -  if (loggedInAccount) {
-// -    return `Sit tight - we are loading your ${accountType} account.`;
-// -  }
-// -  return `Follow instructions in the ${accountType} window.`;
-// +  return `Sit tight - we are loading your ${accountType} account.`;
-//  };

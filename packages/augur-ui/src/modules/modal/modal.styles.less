@@ -134,6 +134,9 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile {
     padding: @size-24;
+    flex: 1;
+    max-width: unset;
+    max-height: unset;
   }
 }
 
@@ -144,6 +147,11 @@ div.ButtonsRow:last-of-type {
   right: 17px;
   top: 17px;
   width: @size-12;
+
+  @media @breakpoint-mobile {
+    height: @size-16;
+    width: @size-16;
+  }
 
   > svg {
     fill: @color-primary-text;
@@ -323,6 +331,10 @@ div.ButtonsRow:last-of-type {
     animation-timing-function: linear;
     height: @size-32;
     width: @size-32;
+  }
+
+  > article {
+    right: 50px;
   }
 
   > div {

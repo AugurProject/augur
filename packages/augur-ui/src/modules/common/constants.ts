@@ -72,7 +72,7 @@ const SECONDS_PER_DAY = 3600 * 24;
 
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
-// # Connect Nav Constants
+// # Connect Constants
 export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
   PORTIS: 'Portis',
@@ -88,6 +88,12 @@ export const WALLET_TYPE = {
   SOFTWARE: 'software',
   HARDWARE: 'hardware',
 };
+
+export const SIGNIN_LOADING_TEXT = 'Sit tight - we are loading your account.';
+export const SIGNIN_LOADING_TEXT_PORTIS = 'Follow instructions in the Portis window.';
+export const SIGNIN_LOADING_TEXT_FORTMATIC = 'Follow instructions in the Fortmatic window.';
+export const SIGNIN_LOADING_TEXT_TORUS = 'Follow instructions in the Tor.us window. Your browser may block the Tor.us popup.';
+export const SIGNIN_SIGN_WALLET = 'Your wallet will ask you to digitally sign in to link it with Augur';
 
 export const ERROR_TYPES = {
   UNABLE_TO_CONNECT: {
