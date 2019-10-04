@@ -5,6 +5,7 @@
   color: @color-primary-text;
   flex-direction: column;
   justify-content: center;
+  margin-left: @size-1;
   position: relative;
   z-index: @above-all-content-above;
 
@@ -17,10 +18,30 @@
     background-color: @color-module-background;
   }
 
+  &.selected {
+    > div:first-of-type {
+      background-color: @color-module-background;
+      border: 1px solid @color-secondary-action-outline;
+      border-bottom: 0;
+
+      @media @breakpoint-mobile {
+        border: none;
+      }
+    }
+  }
+
   > div:first-of-type {
     cursor: pointer;
+
+    background: @color-dark-grey;
+    border: 1px solid @color-dark-grey;
+    border-bottom: 0;
     display: flex;
     padding: @size-12;
+
+    @media @breakpoint-mobile {
+      border: none;
+    }
 
     &:focus {
       outline: none;
@@ -46,8 +67,9 @@
 
 .ConnectDropdown {
   position: absolute;
-  right: 0;
-  z-index: @above-all-content;
+  right: -1px;
+  top: 56px;
+  z-index: -1;
 }
 
 .AccountInfo {

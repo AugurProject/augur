@@ -53,7 +53,9 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
 
     return (
       <div
-        className={Styles.ConnectAccount}
+        className={classNames(Styles.ConnectAccount, {
+          [Styles.selected]: isConnectionTrayOpen,
+        })}
         ref={connectAccount => {
           this.connectAccount = connectAccount;
         }}
