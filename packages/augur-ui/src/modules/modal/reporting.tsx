@@ -7,6 +7,7 @@ import { Subheaders } from 'modules/reporting/common';
 import {
   ReportingRadioBarGroup,
   ReportingRadioBarProps,
+  MigrateRepInfo,
 } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
 import {
@@ -26,6 +27,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertDisplayValuetoAttoValue, Getters } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
+import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
@@ -197,7 +199,7 @@ export default class ModalReporting extends Component<
     const selectedRadio = this.state.radioButtons.find(r => r.checked);
     // for cat and binary markets id is outcomeId
     outcomeId = selectedRadio.id;
-    let isInvalid = selectedRadio.isInvalid;
+    let isSelectedOutcomeInvalid = selectedRadio.isInvalid;
     if (marketType === SCALAR) {
       // checked might be invalid outcome
       outcomeId = parseFloat(
@@ -215,7 +217,7 @@ export default class ModalReporting extends Component<
       description: '',
       attoRepAmount: this.state.disputeStake.inputToAttoRep,
       outcomeId,
-      isInvalid,
+      isInvalid: isSelectedOutcomeInvalid,
     };
     if (migrateRep) {
       migrateRepToUniverse(report);
@@ -229,22 +231,15 @@ export default class ModalReporting extends Component<
       doInitialReport(report);
     } else {
       // disputing
-      let tentativeWinningStake = disputeInfo.stakes.find(
+      let contributeToTentativeWinner = false;
+      const tentativeWinningStake = disputeInfo.stakes.find(
         s => s.tentativeWinning
       );
-      if (isInvalid) {
-        tentativeWinningStake = disputeInfo.stakes.find(
-          s => s.isInvalidOutcome
-        );
-        // only one outcome can be invalid. if choosen match outcomeIds
-        outcomeId = tentativeWinningStake.outcome;
-      }
-      let tentativeOutcomeId = parseInt(tentativeWinningStake.outcome, 10);
-      if (marketType === SCALAR) {
-        tentativeOutcomeId = parseFloat(tentativeWinningStake.outcome);
+      if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
+        contributeToTentativeWinner = true;
       }
 
-      tentativeOutcomeId === outcomeId
+      contributeToTentativeWinner
         ? addRepToTentativeWinningOutcome(report)
         : contribute(report);
     }
@@ -260,10 +255,10 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep } = this.props;
+    const { closeAction, title, market, rep, migrateRep, migrateMarket } = this.props;
     const {
       checked,
-      isReporting,
+      isDisputing,
       preFilledStake,
       inputScalarOutcome,
       disputeStake,
@@ -284,6 +279,9 @@ export default class ModalReporting extends Component<
         <Title title={title} closeAction={closeAction} bright />
         <main>
           <div>
+            {migrateRep &&
+              <MigrateRepInfo />
+            }
             <MarketTypeLabel marketType={marketType} />
             <span>{description}</span>
             <Subheaders
@@ -309,12 +307,13 @@ export default class ModalReporting extends Component<
               />
             </div>
           </div>
-          {!isReporting && (
+          {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
               <SecondaryButton text="Get REP" action={null} />
             </div>
           )}
+          <ReleasableRepNotice />
           <div>
             <ReportingRadioBarGroup
               market={market}
@@ -329,6 +328,7 @@ export default class ModalReporting extends Component<
               updateScalarOutcome={this.updateScalarOutcome}
               inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}
+              isDisputing={isDisputing}
             />
           </div>
         </main>
