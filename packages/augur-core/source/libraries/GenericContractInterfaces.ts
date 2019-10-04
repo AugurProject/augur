@@ -53,7 +53,7 @@ export interface EventDescription {
 
 export const eventDescriptions: { [signatureHash: string]: EventDescription } = {
 	'0xea17ae24b0d40ea7962a6d832db46d1f81eaec1562946d0830d1c21d4c000ec1': {"name":"MarketCreated","signature":"MarketCreated(address,uint256,string,address,address,address,uint256,int256[],uint8,uint256,bytes32[],uint256,uint256)","signatureHash":"0xea17ae24b0d40ea7962a6d832db46d1f81eaec1562946d0830d1c21d4c000ec1","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":false,"name":"endTime","type":"uint256"},{"indexed":false,"name":"extraInfo","type":"string"},{"indexed":false,"name":"market","type":"address"},{"indexed":true,"name":"marketCreator","type":"address"},{"indexed":false,"name":"designatedReporter","type":"address"},{"indexed":false,"name":"feePerCashInAttoCash","type":"uint256"},{"indexed":false,"name":"prices","type":"int256[]"},{"indexed":false,"name":"marketType","type":"uint8"},{"indexed":false,"name":"numTicks","type":"uint256"},{"indexed":false,"name":"outcomes","type":"bytes32[]"},{"indexed":false,"name":"noShowBond","type":"uint256"},{"indexed":false,"name":"timestamp","type":"uint256"}]},
-	'0x7c400e1872c548f60689a26cba728e5e1c132d7f7d4bc18b60df3542995a52b0': {"name":"InitialReportSubmitted","signature":"InitialReportSubmitted(address,address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)","signatureHash":"0x7c400e1872c548f60689a26cba728e5e1c132d7f7d4bc18b60df3542995a52b0","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"reporter","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"amountStaked","type":"uint256"},{"indexed":false,"name":"isDesignatedReporter","type":"bool"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"description","type":"string"},{"indexed":false,"name":"nextWindowStartTime","type":"uint256"},{"indexed":false,"name":"nextWindowEndTime","type":"uint256"},{"indexed":false,"name":"timestamp","type":"uint256"}]},
+	'0xc3ebb227c22e7644e9bef8822009f746a72c86f239760124d67fdc2c302b3115': {"name":"InitialReportSubmitted","signature":"InitialReportSubmitted(address,address,address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)","signatureHash":"0xc3ebb227c22e7644e9bef8822009f746a72c86f239760124d67fdc2c302b3115","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"reporter","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"initialReporter","type":"address"},{"indexed":false,"name":"amountStaked","type":"uint256"},{"indexed":false,"name":"isDesignatedReporter","type":"bool"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"description","type":"string"},{"indexed":false,"name":"nextWindowStartTime","type":"uint256"},{"indexed":false,"name":"nextWindowEndTime","type":"uint256"},{"indexed":false,"name":"timestamp","type":"uint256"}]},
 	'0xf9a0b30bcf861874bf36630742f0d56b22648898d7cdd0cd785d74acd17e0d44': {"name":"DisputeCrowdsourcerCreated","signature":"DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256,uint256)","signatureHash":"0xf9a0b30bcf861874bf36630742f0d56b22648898d7cdd0cd785d74acd17e0d44","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"disputeCrowdsourcer","type":"address"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"size","type":"uint256"},{"indexed":false,"name":"disputeRound","type":"uint256"}]},
 	'0xe7f47639cdf56ec6c5451df334b73c9ca5cccd20da2c0f4e390e9bb71a6f672a': {"name":"DisputeCrowdsourcerContribution","signature":"DisputeCrowdsourcerContribution(address,address,address,address,uint256,string,uint256[],uint256,uint256,uint256,uint256)","signatureHash":"0xe7f47639cdf56ec6c5451df334b73c9ca5cccd20da2c0f4e390e9bb71a6f672a","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"reporter","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"disputeCrowdsourcer","type":"address"},{"indexed":false,"name":"amountStaked","type":"uint256"},{"indexed":false,"name":"description","type":"string"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"currentStake","type":"uint256"},{"indexed":false,"name":"stakeRemaining","type":"uint256"},{"indexed":false,"name":"disputeRound","type":"uint256"},{"indexed":false,"name":"timestamp","type":"uint256"}]},
 	'0xbbd17f11324f5c3548eaf137b3e63d51ea06adb345d7bffd6dde64f264915153': {"name":"DisputeCrowdsourcerCompleted","signature":"DisputeCrowdsourcerCompleted(address,address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256)","signatureHash":"0xbbd17f11324f5c3548eaf137b3e63d51ea06adb345d7bffd6dde64f264915153","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"disputeCrowdsourcer","type":"address"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"nextWindowStartTime","type":"uint256"},{"indexed":false,"name":"nextWindowEndTime","type":"uint256"},{"indexed":false,"name":"pacingOn","type":"bool"},{"indexed":false,"name":"totalRepStakedInPayout","type":"uint256"},{"indexed":false,"name":"totalRepStakedInMarket","type":"uint256"},{"indexed":false,"name":"disputeRound","type":"uint256"}]},
@@ -467,25 +467,6 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_winningPayoutNumerators","type":"uint256[]"}],"name":"logMarketFinalized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [universe, winningPayoutNumerators], options.sender)
-		return <boolean>result[0]
-	}
-
-	public logInitialReportSubmitted = async (universe: string, reporter: string, market: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, nextWindowStartTime: TBigNumber, nextWindowEndTime: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_reporter","type":"address"},{"name":"_market","type":"address"},{"name":"_amountStaked","type":"uint256"},{"name":"_isDesignatedReporter","type":"bool"},{"name":"_payoutNumerators","type":"uint256[]"},{"name":"_description","type":"string"},{"name":"_nextWindowStartTime","type":"uint256"},{"name":"_nextWindowEndTime","type":"uint256"}],"name":"logInitialReportSubmitted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [universe, reporter, market, amountStaked, isDesignatedReporter, payoutNumerators, description, nextWindowStartTime, nextWindowEndTime], 'logInitialReportSubmitted', options.sender)
-	}
-	
-	public logInitialReportSubmitted_estimateGas = async (universe: string, reporter: string, market: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, nextWindowStartTime: TBigNumber, nextWindowEndTime: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_reporter","type":"address"},{"name":"_market","type":"address"},{"name":"_amountStaked","type":"uint256"},{"name":"_isDesignatedReporter","type":"bool"},{"name":"_payoutNumerators","type":"uint256[]"},{"name":"_description","type":"string"},{"name":"_nextWindowStartTime","type":"uint256"},{"name":"_nextWindowEndTime","type":"uint256"}],"name":"logInitialReportSubmitted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [universe, reporter, market, amountStaked, isDesignatedReporter, payoutNumerators, description, nextWindowStartTime, nextWindowEndTime], 'logInitialReportSubmitted', options.sender)
-	}
-
-	public logInitialReportSubmitted_ = async (universe: string, reporter: string, market: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, nextWindowStartTime: TBigNumber, nextWindowEndTime: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_reporter","type":"address"},{"name":"_market","type":"address"},{"name":"_amountStaked","type":"uint256"},{"name":"_isDesignatedReporter","type":"bool"},{"name":"_payoutNumerators","type":"uint256[]"},{"name":"_description","type":"string"},{"name":"_nextWindowStartTime","type":"uint256"},{"name":"_nextWindowEndTime","type":"uint256"}],"name":"logInitialReportSubmitted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [universe, reporter, market, amountStaked, isDesignatedReporter, payoutNumerators, description, nextWindowStartTime, nextWindowEndTime], options.sender)
 		return <boolean>result[0]
 	}
 
@@ -1207,6 +1188,25 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_target","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_totalSupply","type":"uint256"},{"name":"_balance","type":"uint256"}],"name":"logReputationTokensMinted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [universe, target, amount, totalSupply, balance], options.sender)
+		return <boolean>result[0]
+	}
+
+	public logInitialReportSubmitted = async (universe: string, reporter: string, market: string, initialReporter: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, nextWindowStartTime: TBigNumber, nextWindowEndTime: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_reporter","type":"address"},{"name":"_market","type":"address"},{"name":"_initialReporter","type":"address"},{"name":"_amountStaked","type":"uint256"},{"name":"_isDesignatedReporter","type":"bool"},{"name":"_payoutNumerators","type":"uint256[]"},{"name":"_description","type":"string"},{"name":"_nextWindowStartTime","type":"uint256"},{"name":"_nextWindowEndTime","type":"uint256"}],"name":"logInitialReportSubmitted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [universe, reporter, market, initialReporter, amountStaked, isDesignatedReporter, payoutNumerators, description, nextWindowStartTime, nextWindowEndTime], 'logInitialReportSubmitted', options.sender)
+	}
+	
+	public logInitialReportSubmitted_estimateGas = async (universe: string, reporter: string, market: string, initialReporter: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, nextWindowStartTime: TBigNumber, nextWindowEndTime: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_reporter","type":"address"},{"name":"_market","type":"address"},{"name":"_initialReporter","type":"address"},{"name":"_amountStaked","type":"uint256"},{"name":"_isDesignatedReporter","type":"bool"},{"name":"_payoutNumerators","type":"uint256[]"},{"name":"_description","type":"string"},{"name":"_nextWindowStartTime","type":"uint256"},{"name":"_nextWindowEndTime","type":"uint256"}],"name":"logInitialReportSubmitted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [universe, reporter, market, initialReporter, amountStaked, isDesignatedReporter, payoutNumerators, description, nextWindowStartTime, nextWindowEndTime], 'logInitialReportSubmitted', options.sender)
+	}
+
+	public logInitialReportSubmitted_ = async (universe: string, reporter: string, market: string, initialReporter: string, amountStaked: TBigNumber, isDesignatedReporter: boolean, payoutNumerators: Array<TBigNumber>, description: string, nextWindowStartTime: TBigNumber, nextWindowEndTime: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_reporter","type":"address"},{"name":"_market","type":"address"},{"name":"_initialReporter","type":"address"},{"name":"_amountStaked","type":"uint256"},{"name":"_isDesignatedReporter","type":"bool"},{"name":"_payoutNumerators","type":"uint256[]"},{"name":"_description","type":"string"},{"name":"_nextWindowStartTime","type":"uint256"},{"name":"_nextWindowEndTime","type":"uint256"}],"name":"logInitialReportSubmitted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [universe, reporter, market, initialReporter, amountStaked, isDesignatedReporter, payoutNumerators, description, nextWindowStartTime, nextWindowEndTime], options.sender)
 		return <boolean>result[0]
 	}
 
@@ -4564,22 +4564,22 @@ export class DisputeWindowFactory<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
-	public createDisputeWindow = async (augur: string, disputeWindowId: TBigNumber, windowDuration: TBigNumber, startTime: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+	public createDisputeWindow = async (augur: string, disputeWindowId: TBigNumber, windowDuration: TBigNumber, startTime: TBigNumber, participationTokensEnabled: boolean, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_windowDuration","type":"uint256"},{"name":"_startTime","type":"uint256"}],"name":"createDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [augur, disputeWindowId, windowDuration, startTime], 'createDisputeWindow', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_windowDuration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_participationTokensEnabled","type":"bool"}],"name":"createDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [augur, disputeWindowId, windowDuration, startTime, participationTokensEnabled], 'createDisputeWindow', options.sender)
 	}
 	
-	public createDisputeWindow_estimateGas = async (augur: string, disputeWindowId: TBigNumber, windowDuration: TBigNumber, startTime: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public createDisputeWindow_estimateGas = async (augur: string, disputeWindowId: TBigNumber, windowDuration: TBigNumber, startTime: TBigNumber, participationTokensEnabled: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_windowDuration","type":"uint256"},{"name":"_startTime","type":"uint256"}],"name":"createDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [augur, disputeWindowId, windowDuration, startTime], 'createDisputeWindow', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_windowDuration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_participationTokensEnabled","type":"bool"}],"name":"createDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [augur, disputeWindowId, windowDuration, startTime, participationTokensEnabled], 'createDisputeWindow', options.sender)
 	}
 
-	public createDisputeWindow_ = async (augur: string, disputeWindowId: TBigNumber, windowDuration: TBigNumber, startTime: TBigNumber, options?: { sender?: string }): Promise<string> => {
+	public createDisputeWindow_ = async (augur: string, disputeWindowId: TBigNumber, windowDuration: TBigNumber, startTime: TBigNumber, participationTokensEnabled: boolean, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_windowDuration","type":"uint256"},{"name":"_startTime","type":"uint256"}],"name":"createDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [augur, disputeWindowId, windowDuration, startTime], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_windowDuration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_participationTokensEnabled","type":"bool"}],"name":"createDisputeWindow","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [augur, disputeWindowId, windowDuration, startTime, participationTokensEnabled], options.sender)
 		return <string>result[0]
 	}
 }
@@ -5511,6 +5511,13 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public participationTokensEnabled_ = async (options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"participationTokensEnabled","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <boolean>result[0]
+	}
+
 	public decimals_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -5783,22 +5790,22 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public initialize = async (augur: string, universe: string, disputeWindowId: TBigNumber, duration: TBigNumber, startTime: TBigNumber, erc1820RegistryAddress: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public initialize = async (augur: string, universe: string, disputeWindowId: TBigNumber, participationTokensEnabled: boolean, duration: TBigNumber, startTime: TBigNumber, erc1820RegistryAddress: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_duration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_erc1820RegistryAddress","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [augur, universe, disputeWindowId, duration, startTime, erc1820RegistryAddress], 'initialize', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_participationTokensEnabled","type":"bool"},{"name":"_duration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_erc1820RegistryAddress","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [augur, universe, disputeWindowId, participationTokensEnabled, duration, startTime, erc1820RegistryAddress], 'initialize', options.sender)
 	}
 	
-	public initialize_estimateGas = async (augur: string, universe: string, disputeWindowId: TBigNumber, duration: TBigNumber, startTime: TBigNumber, erc1820RegistryAddress: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public initialize_estimateGas = async (augur: string, universe: string, disputeWindowId: TBigNumber, participationTokensEnabled: boolean, duration: TBigNumber, startTime: TBigNumber, erc1820RegistryAddress: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_duration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_erc1820RegistryAddress","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [augur, universe, disputeWindowId, duration, startTime, erc1820RegistryAddress], 'initialize', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_participationTokensEnabled","type":"bool"},{"name":"_duration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_erc1820RegistryAddress","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [augur, universe, disputeWindowId, participationTokensEnabled, duration, startTime, erc1820RegistryAddress], 'initialize', options.sender)
 	}
 
-	public initialize_ = async (augur: string, universe: string, disputeWindowId: TBigNumber, duration: TBigNumber, startTime: TBigNumber, erc1820RegistryAddress: string, options?: { sender?: string }): Promise<void> => {
+	public initialize_ = async (augur: string, universe: string, disputeWindowId: TBigNumber, participationTokensEnabled: boolean, duration: TBigNumber, startTime: TBigNumber, erc1820RegistryAddress: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_duration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_erc1820RegistryAddress","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [augur, universe, disputeWindowId, duration, startTime, erc1820RegistryAddress], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"},{"name":"_disputeWindowId","type":"uint256"},{"name":"_participationTokensEnabled","type":"bool"},{"name":"_duration","type":"uint256"},{"name":"_startTime","type":"uint256"},{"name":"_erc1820RegistryAddress","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [augur, universe, disputeWindowId, participationTokensEnabled, duration, startTime, erc1820RegistryAddress], options.sender)
 	}
 
 	public isOver_ = async (options?: { sender?: string }): Promise<boolean> => {
