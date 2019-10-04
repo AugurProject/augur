@@ -101,7 +101,7 @@ export const AddFunds = ({
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
                 <a href="https://wallet.portis.io/buy/" target="_blank">
                   <PrimaryButton
-                    action={null}
+                    action={() => null}
                     text={`Buy with ${accountMeta.accountType}`}
                   />
                 </a>
