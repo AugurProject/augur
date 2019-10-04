@@ -1,6 +1,4 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from "react";
 
 import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
@@ -11,17 +9,14 @@ import SavedDrafts from "modules/create-market/containers/saved-drafts";
 import Styles from "modules/create-market/landing.styles";
 
 interface LandingProps {
-  newMarket: Object;
+  newMarket: object;
   updateNewMarket: Function;
-  address: String;
+  address: string;
   updatePage: Function;
   clearNewMarket: Function;
 }
 
-export default class Landing extends React.Component<
-  LandingProps,
-  {}
-> {
+export default class Landing extends React.Component<LandingProps> {
 
   componentDidMount() {
     this.node.scrollIntoView();
@@ -37,7 +32,7 @@ export default class Landing extends React.Component<
     const s = this.state;
 
     return (
-      <div 
+      <div
         ref={node => {
           this.node = node;
         }}
@@ -48,7 +43,7 @@ export default class Landing extends React.Component<
         </XLargeSubheaders>
 
         <div>
-          <SavedDrafts updatePage={updatePage}/>
+          <SavedDrafts updatePage={updatePage} />
 
           <ContentBlock>
             <LargeSubheaders
@@ -61,7 +56,7 @@ export default class Landing extends React.Component<
             <section>
               <RadioCardGroup
                 onChange={(value: string) => {
-                  const updatedNewMarket = {...newMarket};
+                  const updatedNewMarket = { ...newMarket };
                   updatedNewMarket.categories[0] = value;
                   updatedNewMarket.currentStep = 1;
                   updateNewMarket(updatedNewMarket);
@@ -69,7 +64,7 @@ export default class Landing extends React.Component<
                 }}
                 radioButtons={MARKET_TEMPLATES}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine /> 
+                <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>
@@ -80,8 +75,8 @@ export default class Landing extends React.Component<
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />
-            <SecondaryButton 
-              text="Create a custom market" 
+            <SecondaryButton
+              text="Create a custom market"
               action={() => {
                 clearNewMarket();
                 updatePage(SCRATCH);

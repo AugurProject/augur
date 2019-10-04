@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { CompactButton } from "modules/common/buttons";
@@ -59,7 +58,7 @@ function renderToggleContent(market) {
 }
 
 interface PositionsProps {
-  markets: Array<MarketData>;
+  markets: MarketData[];
   toggle: Function;
   hide: boolean;
   extend: boolean;
@@ -70,12 +69,13 @@ interface PositionsState {
 }
 
 export default class Positions extends Component<PositionsProps, PositionsState> {
+  state: {
+    showCurrentValue: false,
+  };
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      showCurrentValue: false,
-    };
 
     this.updateRightContentValue = this.updateRightContentValue.bind(this);
     this.renderRightContent = this.renderRightContent.bind(this);
@@ -91,17 +91,17 @@ export default class Positions extends Component<PositionsProps, PositionsState>
     return showCurrentValue ? (
       market.myPositionsSummary && market.myPositionsSummary.currentValue.formatted
     ) : (
-      <div className={Styles.Column}>
-        <span>{market.myPositionsSummary && market.myPositionsSummary.totalReturns.formatted}</span>
-        <MovementLabel
-          showPercent
-          showPlusMinus
-          showColors
-          size={SizeTypes.SMALL}
-          value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
-        />
-      </div>
-    );
+        <div className={Styles.Column}>
+          <span>{market.myPositionsSummary && market.myPositionsSummary.totalReturns.formatted}</span>
+          <MovementLabel
+            showPercent
+            showPlusMinus
+            showColors
+            size={SizeTypes.SMALL}
+            value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
+          />
+        </div>
+      );
   }
 
   render() {

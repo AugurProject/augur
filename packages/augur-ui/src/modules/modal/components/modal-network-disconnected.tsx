@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalLoading from "modules/modal/components/common/modal-loading";
@@ -23,12 +22,12 @@ interface ModalNetworkDisconnectedState {
 }
 
 export default class ModalNetworkDisconnected extends Component<ModalNetworkDisconnectedProps, ModalNetworkDisconnectedState> {
+  state: {
+    showEnvForm: false,
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      showEnvForm: false,
-    };
 
     this.showForm = this.showForm.bind(this);
     this.submitForm = this.submitForm.bind(this);

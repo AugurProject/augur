@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
 import moment, { Moment } from "moment";
 
 import {
@@ -61,7 +59,7 @@ interface TimeSelectorParams {
 export default class FormDetails extends React.Component<
   FormDetailsProps,
   FormDetailsState
-> {
+  > {
   state: FormDetailsState = {
     dateFocused: false,
     timeFocused: false,
@@ -145,7 +143,7 @@ export default class FormDetails extends React.Component<
                 day.isBefore(moment(currentTimestamp * 1000))
               }
               numberOfMonths={1}
-              onFocusChange= {({ focused }) => {
+              onFocusChange={({ focused }) => {
                 if (setEndTime === null) {
                   onChange("setEndTime", currentTimestamp);
                 }
@@ -164,7 +162,7 @@ export default class FormDetails extends React.Component<
               onChange={(label: string, value: number) => {
                 onChange(label, value)
               }}
-              onFocusChange= {(focused: Boolean) => {
+              onFocusChange={(focused: Boolean) => {
                 const timeSelector: TimeSelectorParams = {}
                 if (!hour) {
                   timeSelector.hour = "12";
@@ -183,7 +181,7 @@ export default class FormDetails extends React.Component<
               errorMessage={validations[currentStep].hour}
             />
             <TimezoneDropdown onChange={(offsetName: string, offset: number, timezone: string) => {
-              const timezoneParams = {offset, timezone, offsetName};
+              const timezoneParams = { offset, timezone, offsetName };
               onChange("timezoneDropdown", timezoneParams);
             }} timestamp={setEndTime} timezone={timezone} />
           </span>
@@ -242,7 +240,7 @@ export default class FormDetails extends React.Component<
                     if (!checkValidNumber(value)) onChange("maxPriceBigNumber", createBigNumber(value));
                     onError("minPrice", "");
                   }}
-                  trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
+                  trailingLabel={scalarDenomination !== "" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
                   errorMessage={validations[currentStep].maxPrice}
                 />
@@ -252,7 +250,7 @@ export default class FormDetails extends React.Component<
                 type="number"
                 placeholder="0"
                 onChange={(value: string) => onChange("tickSize", value)}
-                trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
+                trailingLabel={scalarDenomination !== "" ? scalarDenomination : "Denomination"}
                 value={tickSize}
                 errorMessage={validations[currentStep].tickSize}
               />
@@ -273,7 +271,7 @@ export default class FormDetails extends React.Component<
         <div>
           <Header text="Resolution information" />
 
-          <Subheaders header="Resolution source" subheader="Describe what users need to know in order to resolve the market." link/>
+          <Subheaders header="Resolution source" subheader="Describe what users need to know in order to resolve the market." link />
           <RadioBarGroup
             radioButtons={[
               {
@@ -300,11 +298,12 @@ export default class FormDetails extends React.Component<
                 onChange(EXPIRY_SOURCE, "");
                 onError(EXPIRY_SOURCE, "");
               }
-              onChange("expirySourceType", value)}
+              onChange("expirySourceType", value)
+            }
             }
           />
 
-          <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
+          <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link />
           <TextInput
             type="textarea"
             placeholder="Describe how the event should be resolved under different scenarios."
@@ -313,7 +312,7 @@ export default class FormDetails extends React.Component<
             onChange={(value: string) => onChange("detailsText", value)}
           />
 
-          <Subheaders header="Designated reporter" subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)." link/>
+          <Subheaders header="Designated reporter" subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)." link />
           <RadioBarGroup
             radioButtons={[
               {
@@ -336,7 +335,8 @@ export default class FormDetails extends React.Component<
                 onChange(DESIGNATED_REPORTER_ADDRESS, "");
                 onError(DESIGNATED_REPORTER_ADDRESS, "");
               }
-              onChange("designatedReporterType", value)}
+              onChange("designatedReporterType", value)
+            }
             }
           />
         </div>

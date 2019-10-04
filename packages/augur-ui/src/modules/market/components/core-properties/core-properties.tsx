@@ -16,8 +16,13 @@ import MarketScalarOutcomeDisplay from '../market-scalar-outcome-display/market-
 import ChevronFlip from 'modules/common/chevron-flip';
 import classNames from 'classnames';
 
+interface CorePropertiesProps {
+  market: any;
+  reportingBarShowing?: boolean;
+}
+
 // TODO: Get market 24 hour volume, currently just using volume
-const CoreProperties = ({ market, reportingBarShowing }) => {
+const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarShowing }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
 
   return (
@@ -140,11 +145,6 @@ const CoreProperties = ({ market, reportingBarShowing }) => {
         )}
     </div>
   );
-};
-
-CoreProperties.propTypes = {
-  market: PropTypes.object.isRequired,
-  reportingBarShowing: PropTypes.bool,
 };
 
 export default CoreProperties;

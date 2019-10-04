@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-
-import PropTypes from 'prop-types';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import {
   TYPE_DISPUTE,
@@ -12,29 +10,30 @@ import {
 import { PrimaryButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
-export default class MarketHeaderReporting extends Component {
-  static propTypes = {
-    market: PropTypes.object.isRequired,
-    isDesignatedReporter: PropTypes.bool,
-    claimMarketsProceeds: PropTypes.func.isRequired,
-    tentativeWinner: PropTypes.object,
-    isLogged: PropTypes.bool,
-    location: PropTypes.object.isRequired,
-    canClaimProceeds: PropTypes.bool,
-  };
+interface MarketHeaderReportingProps {
+  market: object;
+  isDesignatedReporter?: boolean;
+  claimMarketsProceeds: Function;
+  tentativeWinner?: object;
+  isLogged?: boolean;
+  location: object;
+  canClaimProceeds?: boolean;
+}
 
+interface MarketHeaderReportingState {
+  disableFinalize: boolean;
+}
+
+export default class MarketHeaderReporting extends Component<MarketHeaderReportingProps, MarketHeaderReportingState> {
   static defaultProps = {
     isDesignatedReporter: false,
     tentativeWinner: {},
     isLogged: false,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      disableFinalize: false,
-    };
-  }
+  state = {
+    disableFinalize: false,
+  };
 
   render() {
     const {
@@ -82,28 +81,28 @@ export default class MarketHeaderReporting extends Component {
           <div>
             <span>Tentative Winner</span>
             {tentativeWinner &&
-            (tentativeWinner.outcome || tentativeWinner.isInvalidOutcome) ? (
-              <span>
-                {tentativeWinner &&
-                  (tentativeWinner.isInvalidOutcome
-                    ? 'Invalid'
-                    : market.marketType === SCALAR
-                    ? tentativeWinner.outcome
-                    : getOutcomeNameWithOutcome(
-                        market,
-                        tentativeWinner.outcome,
-                        tentativeWinner.isInvalid
-                      ))}
-              </span>
-            ) : (
-              <div style={{ minHeight: '20px' }} />
-            )}
+              (tentativeWinner.outcome || tentativeWinner.isInvalidOutcome) ? (
+                <span>
+                  {tentativeWinner &&
+                    (tentativeWinner.isInvalidOutcome
+                      ? 'Invalid'
+                      : market.marketType === SCALAR
+                        ? tentativeWinner.outcome
+                        : getOutcomeNameWithOutcome(
+                          market,
+                          tentativeWinner.outcome,
+                          tentativeWinner.isInvalid
+                        ))}
+                </span>
+              ) : (
+                <div style={{ minHeight: '20px' }} />
+              )}
           </div>
           {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
             <PrimaryButton
               id="button"
               text="Support or Dispute Outcome"
-              action={() => {}}
+              action={() => { }}
               action={() => showReportingModal()}
               disabled={!isLogged}
             />

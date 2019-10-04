@@ -1,14 +1,18 @@
 /* eslint react/no-array-index-key: 0 */
 
 import React from "react";
-import PropTypes from "prop-types";
 
 import FilledOrder from "modules/portfolio/containers/filled-order";
 import FilledOrdersHeader from "modules/portfolio/components/common/filled-orders-header";
 
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";
 
-const FilledOrdersTable = ({ filledOrders, scalarDenomination }) => (
+interface FilledOrdersTableProps {
+  filledOrders?: any[];
+  scalarDenomination?: string;
+};
+
+const FilledOrdersTable: React.FC<FilledOrdersTableProps> = ({ filledOrders, scalarDenomination }) => (
   <>
     <div className={Styles.Table}>
       <FilledOrdersHeader extendedView />
@@ -23,11 +27,6 @@ const FilledOrdersTable = ({ filledOrders, scalarDenomination }) => (
     </div>
   </>
 );
-
-FilledOrdersTable.propTypes = {
-  filledOrders: PropTypes.array,
-  scalarDenomination: PropTypes.string
-};
 
 FilledOrdersTable.defaultProps = {
   filledOrders: [],

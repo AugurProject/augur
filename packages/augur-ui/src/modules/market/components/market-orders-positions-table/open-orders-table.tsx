@@ -1,7 +1,6 @@
 /* eslint react/no-array-index-key: 0 */
 
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from 'classnames';
 
 import OpenOrder from "modules/portfolio/containers/open-order";
@@ -9,7 +8,11 @@ import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-he
 
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";
 
-const OpenOrdersTable = ({ openOrders }) => (
+interface OpenOrdersTableProps {
+  openOrders?: any[];
+}
+
+const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => (
   <div className={classNames(Styles.Table, Styles.TableHeight)}>
     <OpenOrdersHeader extendedView />
     <div>
@@ -19,10 +22,6 @@ const OpenOrdersTable = ({ openOrders }) => (
     </div>
   </div>
 );
-
-OpenOrdersTable.propTypes = {
-  openOrders: PropTypes.array
-};
 
 OpenOrdersTable.defaultProps = {
   openOrders: []
