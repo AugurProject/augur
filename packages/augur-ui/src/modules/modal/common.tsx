@@ -463,24 +463,9 @@ export class AccountAddressDisplay extends Component<
               id="copy_address"
               data-clipboard-text={address}
               onClick={this.copyClicked}
-              data-tip
-              data-for="AccountAddressDisplay_copy_tooltip"
             >
               Copy
             </button>
-            {isCopied && (
-              <ReactTooltip
-                id="AccountAddressDisplay_copy_tooltip"
-                className={TooltipStyles.Tooltip}
-                effect="solid"
-                place="top"
-                type="light"
-                event="mouseover"
-                eventOff="mouseleave"
-              >
-                Copied
-              </ReactTooltip>
-            )}
           </>
         )}
       </span>

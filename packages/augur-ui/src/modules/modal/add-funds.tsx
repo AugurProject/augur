@@ -11,7 +11,6 @@ import formatAddress from 'modules/auth/helpers/format-address';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
-import { BackIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 
 interface AddFundsProps {
