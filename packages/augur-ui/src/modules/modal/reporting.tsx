@@ -9,12 +9,10 @@ import {
   ReportingRadioBarProps,
   MigrateRepInfo,
 } from 'modules/common/form';
-import { formatAttoRep } from 'utils/format-number';
 import {
   SCALAR,
   REPORTING_STATE,
   INVALID_OUTCOME_NAME,
-  ZERO,
 } from 'modules/common/constants';
 import {
   doInitialReport,
