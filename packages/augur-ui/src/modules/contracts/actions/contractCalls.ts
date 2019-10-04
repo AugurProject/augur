@@ -677,6 +677,13 @@ export async function migrateThroughOneFork(
   return market.migrateThroughOneFork(payoutNumerators, description);
 }
 
+export async function reportAndMigrateMarket(migration: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(migration.marketId);
+  const payoutNumerators = getPayoutNumerators(migration);
+  return market.migrateThroughOneFork(payoutNumerators, migration.description);
+}
+
 export async function migrateRepToUniverseEstimateGas(
   migration: doReportDisputeAddStake
 ): Promise<BigNumber> {

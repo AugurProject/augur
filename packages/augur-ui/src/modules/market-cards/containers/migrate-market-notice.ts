@@ -16,15 +16,20 @@ import { DismissableNotice } from 'modules/reporting/common';
 const mapStateToProps = (state: AppState, ownProps) => {
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
+  const { endTime, reportingState } = market;
+
   const hasPassed = dateHasPassed(
     state.blockchain.currentAugurTimestamp * 1000,
-    market.endTime
+    endTime
   );
+
   const show =
     !!(
       state.universe.forkingInfo &&
       state.universe.forkingInfo.winningChildUniverseId
-    ) && market.reportingState !== REPORTING_STATE.FINALIZED;
+    ) &&
+    (reportingState !== REPORTING_STATE.FINALIZED ||
+      reportingState !== REPORTING_STATE.AWAITING_FINALIZATION);
 
   let title =
     'Fork has finalized. Please migrate this market to the new universe.';

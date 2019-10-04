@@ -8,28 +8,38 @@ import { REPORTING_STATE } from 'modules/common/constants';
 import { formatRep } from 'utils/format-number';
 import { AppState } from 'store';
 
-const mapStateToProps = (state: AppState, ownProps) => ({
-  modal: state.modal,
-  market: ownProps.market,
-  rep: formatRep(state.loginAccount.balances.rep).formatted,
-  userAccount: state.loginAccount.address,
-  forkingMarket:
-    state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket,
-});
+const mapStateToProps = (state: AppState, ownProps) => {
+  const { universe, modal, loginAccount } = state;
+  const { market } = ownProps;
+  const hasForked = !!state.universe.forkingInfo;
+  const migrateRep =
+    hasForked && universe.forkingInfo.forkingMarket === market.id;
+  const migrateMarket =
+    hasForked && !!universe.forkingInfo.winningChildUniverseId;
+
+  return {
+    modal: modal,
+    market,
+    rep: formatRep(loginAccount.balances.rep).formatted,
+    userAccount: loginAccount.address,
+    migrateRep,
+    migrateMarket,
+  };
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const isForkingMarket = sP.market.id === sP.forkingMarket;
+  const migrateRep = sP.market.id === sP.forkingMarket;
   const isReporting =
     sP.market.reportingState === REPORTING_STATE.OPEN_REPORTING ||
     sP.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
   let title = 'Dispute or Support this market’s tenatative winning Outcome';
   if (isReporting) {
     title = 'Report on this market';
-  } else if (isForkingMarket) {
+  } else if (migrateRep) {
     title = 'Augur is Forking';
   }
 
@@ -43,7 +53,6 @@ const mergeProps = (sP, dP, oP) => {
     },
     ...oP,
     ...sP,
-    isForkingMarket,
   };
 };
 

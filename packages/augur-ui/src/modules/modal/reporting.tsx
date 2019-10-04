@@ -19,6 +19,7 @@ import {
   contribute,
   addRepToTentativeWinningOutcome,
   migrateRepToUniverse,
+  reportAndMigrateMarket,
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -33,7 +34,8 @@ interface ModalReportingProps {
   selectedOutcome?: number;
   reportAction: Function;
   userAccount?: string;
-  isForkingMarket?: boolean;
+  migrateRep: boolean;
+  migrateMarket: boolean;
 }
 
 interface ModalReportingState {
@@ -180,7 +182,7 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = () => {
-    const { isForkingMarket, market } = this.props;
+    const { migrateMarket, migrateRep, market } = this.props;
     const {
       marketId,
       maxPrice,
@@ -215,10 +217,11 @@ export default class ModalReporting extends Component<
       outcomeId,
       isInvalid,
     };
-    if (isForkingMarket) {
-      return migrateRepToUniverse(report);
-    }
-    if (isReporting) {
+    if (migrateRep) {
+      migrateRepToUniverse(report);
+    } else if (migrateMarket) {
+      reportAndMigrateMarket(report);
+    } else if (isReporting) {
       const { preFilledStake } = this.state;
       report.attoRepAmount = convertDisplayValuetoAttoValue(
         createBigNumber(preFilledStake || '0')
@@ -244,9 +247,8 @@ export default class ModalReporting extends Component<
       tentativeOutcomeId === outcomeId
         ? addRepToTentativeWinningOutcome(report)
         : contribute(report);
-
-      setTimeout(() => this.props.closeAction(), 1000);
     }
+    setTimeout(() => this.props.closeAction(), 1000);
   };
 
   updateDisputeStake = (disputeStake: DisputeInputtedValues) => {
