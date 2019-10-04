@@ -38,7 +38,8 @@ import { calculatePosition } from 'modules/market/components/market-scalar-outco
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
-  CLOSE = 'close'
+  CLOSE = 'close',
+  NONE = 'none',
 }
 
 export interface DismissableNoticeProps {
