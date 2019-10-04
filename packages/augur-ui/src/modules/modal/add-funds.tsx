@@ -12,6 +12,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
+import { LoginAccount } from 'modules/types';
 
 interface AddFundsProps {
   closeAction: Function;
@@ -25,7 +26,6 @@ export const AddFunds = ({
   address,
 }: AddFundsProps) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  console.log('accountMeta', accountMeta);
 
   let addFundsOptions = [
     {

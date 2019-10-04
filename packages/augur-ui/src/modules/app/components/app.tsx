@@ -34,10 +34,10 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
-import { Universe } from 'modules/types';
+import { Universe, Blockchain } from 'modules/types';
 
 interface AppProps {
-  blockchain: object;
+  blockchain: Blockchain;
   env: object;
   history: object;
   initAugur: Function;
@@ -327,7 +327,6 @@ export default class AppView extends Component<AppProps> {
           <section className={Styles.Main}>
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
-              onClick={() => null}
               role='presentation'
             >
               <TopBar />
@@ -369,8 +368,7 @@ export default class AppView extends Component<AppProps> {
               universe.forkEndTime !== '0' &&
               blockchain &&
               blockchain.currentAugurTimestamp && (
-                <section className={Styles.TopBar}>
-                </section>
+                <section className={Styles.TopBar} />
               )}
             <section
               className={classNames(Styles.Main__wrap, {
