@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  ASCENDING,
-  DESCENDING,
-  BUY,
-} from 'modules/common/constants';
+import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
 import {
   StarIcon,
   SortIcon,
@@ -20,6 +16,8 @@ import {
   RotatableChevron,
   Filter,
   TwoArrowsOutline,
+  XIcon,
+  BackIcon,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -134,6 +132,16 @@ export const PrimarySignInButton = (props: DefaultButtonProps) => (
       </div>
     </div>
   </button>
+);
+
+export const CloseButton = (props: DefaultButtonProps) => (
+  <button className={Styles.CloseButton} onClick={e => props.action(e)} disabled={props.disabled}>
+    {XIcon}
+  </button>
+);
+
+export const BackButton = (props: DefaultButtonProps) => (
+  <button className={Styles.BackButton} onClick={e => props.action(e)} disabled={props.disabled}>{BackIcon} back</button>
 );
 
 export const SecondarySignInButton = (props: DefaultButtonProps) => (

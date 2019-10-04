@@ -151,5 +151,53 @@ describe("BlockstreamListener", () => {
         );
       });
     });
+
+    describe("Subscribe to all logs", () => {
+      beforeEach(() => {
+        blockAndLogStreamerListener.listenForAllEvents(onNewLogCallback);
+      });
+
+      test('should pass logs to callback', async () => {
+        await blockAndLogStreamerListener.onLogsAdded("1234", sampleLogs);
+
+        expect(onNewLogCallback).toHaveBeenCalledWith(1234,
+          [
+            expect.objectContaining({
+              transactionHash: "HASHONE",
+            }),
+            expect.objectContaining({
+              transactionHash: "HASHTWO",
+            }),
+          ]
+        );
+      });
+
+      test('should emit an event with all logs', async () => {
+        // Calling same callback twice to ensure order.
+        blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback)
+
+        await blockAndLogStreamerListener.onLogsAdded("1234", sampleLogs);
+
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(1, 1234,
+          [
+            expect.objectContaining({
+              transactionHash: "HASHONE",
+            }),
+          ]
+        );
+
+        // "All logs"
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(2, 1234,
+          [
+            expect.objectContaining({
+              transactionHash: "HASHONE",
+            }),
+            expect.objectContaining({
+              transactionHash: "HASHTWO",
+            }),
+          ]
+        );
+      });
+    });
   });
 });
