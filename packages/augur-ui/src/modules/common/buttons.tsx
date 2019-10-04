@@ -90,6 +90,7 @@ export interface ExternalLinkButtonProps {
   showNonLink?: boolean;
   action?: Function;
   URL?: string;
+  light?: boolean;
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
@@ -370,16 +371,16 @@ export const ViewTransactionDetailsButton = (
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
   <button
-    className={Styles.ExternalLinkButton}
+    className={classNames(Styles.ExternalLinkButton, {[Styles.LightAlternate]: props.light})}
     onClick={e => props.action && props.action(e)}
   >
-    {!props.showNonLink && ViewIcon}
     {props.URL && (
       <a href={props.URL} target="blank">
         {props.label}
       </a>
     )}
     {!props.URL && <span>{props.label}</span>}
+    {!props.showNonLink && ViewIcon}
   </button>
 );
 
