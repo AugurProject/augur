@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       state.universe.forkingInfo &&
       state.universe.forkingInfo.winningChildUniverseId
     ) &&
-    (reportingState !== REPORTING_STATE.FINALIZED ||
+    (reportingState !== REPORTING_STATE.FINALIZED &&
       reportingState !== REPORTING_STATE.AWAITING_FINALIZATION);
 
   let title =
