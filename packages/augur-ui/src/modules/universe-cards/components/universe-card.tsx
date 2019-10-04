@@ -36,11 +36,11 @@ export const UniverseCard = ({
         }
         <div>
           <h1>Universe</h1>
-          <div className={Styles.outcomeName}>{outcomeName}</div>
+          <div>{outcomeName}</div>
         </div>
         <div>
           <h1>Date Created</h1>
-          <div className={Styles.creationTimestamp}>{creationTimestamp}</div>
+          <div>{creationTimestamp}</div>
         </div>
         <Breakdown rows={breakdown} />
       </div>
