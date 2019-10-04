@@ -1,10 +1,12 @@
-import { Augur } from "../Augur";
-import { DB } from "./db/DB";
-import { IBlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
-import { Block } from "ethers/providers";
-import { augurEmitter } from "../events";
-import { SubscriptionEventName } from "../constants";
-import { Subscriptions } from "../subscriptions";
+import { ParsedLog } from '@augurproject/types';
+import { Block } from 'ethers/providers';
+import * as fp from 'lodash/fp';
+import { Augur } from '../Augur';
+import { SubscriptionEventName } from '../constants';
+import { augurEmitter } from '../events';
+import { Subscriptions } from '../subscriptions';
+import { IBlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
+import { DB } from './db/DB';
 
 const settings = require('./settings.json');
 
@@ -24,6 +26,7 @@ export class Controller {
   async run(): Promise<void> {
     try {
       this.events.subscribe('controller:new:block', this.notifyNewBlockEvent.bind(this));
+      this.blockAndLogStreamerListener.listenForAllEvents(this.updateMarketsData);
 
       const db = await this.db;
       await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
@@ -36,6 +39,22 @@ export class Controller {
       console.log(err);
     }
   }
+
+  private updateMarketsData = async (blockNumber: number, allLogs: ParsedLog[]) => {
+    // Grab market ids from all logs.
+    // Compose applies operations from bottom to top.
+    const logMarketIds = fp.compose(
+      fp.uniq,
+      fp.map('market')
+    )(allLogs);
+
+    if(logMarketIds.length === 0) return;
+
+    const marketsInfo = await this.augur.getMarketsInfo({
+      marketIds: logMarketIds
+    });
+    augurEmitter.emit(SubscriptionEventName.MarketsUpdated, marketsInfo);
+  };
 
   private notifyNewBlockEvent = async (): Promise<void> => {
     let lowestBlock = await (await this

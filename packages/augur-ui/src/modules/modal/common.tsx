@@ -463,30 +463,25 @@ export class AccountAddressDisplay extends Component<
               id="copy_address"
               data-clipboard-text={address}
               onClick={this.copyClicked}
-              data-tip
-              data-for="AccountAddressDisplay_copy_tooltip"
             >
-              {isCopied ? CheckCircleIcon : CopyIcon}
+              Copy
             </button>
-            {isCopied && (
-              <ReactTooltip
-                id="AccountAddressDisplay_copy_tooltip"
-                className={TooltipStyles.Tooltip}
-                effect="solid"
-                place="top"
-                type="light"
-                event="mouseover"
-                eventOff="mouseleave"
-              >
-                Copied
-              </ReactTooltip>
-            )}
           </>
         )}
       </span>
     );
   }
 }
+
+interface FundsHelpProps {}
+
+export const FundsHelp = (props: FundsHelpProps) =>(
+  <div className={Styles.FundsHelp}>
+    <span>Need help?</span>
+    <span>Learn how to buy DAI and transfer it into your account.</span>
+    <ExternalLinkButton label="Learn More" />
+  </div>
+ );
 
 // tslint:disable-next-line: max-classes-per-file
 export class MarketReview extends Component<
