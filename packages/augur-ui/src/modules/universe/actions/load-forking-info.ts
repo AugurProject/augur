@@ -21,7 +21,7 @@ export function loadUniverseForkingInfo(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { universe, blockchain } = getState();
+    const { universe } = getState();
     if (universe && universe.id && universe.id !== incomingUniverse) return;
     const forkingMarket = forkingMarketId || (await getForkingMarket());
     const isForking =
