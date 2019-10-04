@@ -65,20 +65,6 @@
   display: flex;
   justify-content: flex-end;
   padding: 0 @size-8;
-
-//  @media @breakpoint-max-tablet {
-//    padding: 0;
-//  }
-//}
-//
-//.RightContent {
-//  @media @breakpoint-tablet {
-//    margin-top: @size-8;
-//  }
-//
-//  @media @breakpoint-mobile-new {
-//    margin-top: @size-16;
-//  }
 }
 
 .MostRightContent {
@@ -93,14 +79,6 @@
   background: @color-table-header;
   border: 1px solid @color-dark-grey;
   margin-top: @size-16;
-
-  //@media @breakpoint-tablet {
-  //  margin-top: 0;
-  //}
-  //
-  //@media @breakpoint-mobile-new {
-  //  margin-top: 0;
-  //}
 }
 
 .noBackground {
@@ -155,7 +133,7 @@
         flex: 1;
       }
 
-      > div::nth-of-type(2) {
+      > div:nth-of-type(2) {
         flex: 0;
       }
     }
@@ -169,11 +147,3 @@
     display: none;
   }
 }
-
-//@media @breakpoint-tablet {
-//  .ShowOnMobile {
-//    > div:first-of-type {
-//      margin-top: 0;
-//    }
-//  }
-//}
