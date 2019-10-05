@@ -8,6 +8,7 @@ import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
+  universeId: state.universe.id,
   userInfo: state.loginAccount.meta,
   isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
   mobileMenuState: state.sidebarStatus.mobileMenuState,
@@ -21,5 +22,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ConnectAccount);

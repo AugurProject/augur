@@ -23,9 +23,13 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectAccount;
   connectDropdown;
 
-
   toggleDropdown(cb?: Function) {
-    const { updateConnectionTray, updateMobileMenuState, isConnectionTrayOpen, mobileMenuState } = this.props;
+    const {
+      updateConnectionTray,
+      updateMobileMenuState,
+      isConnectionTrayOpen,
+      mobileMenuState,
+    } = this.props;
     if (mobileMenuState > 0) {
       updateConnectionTray(!isConnectionTrayOpen);
     }

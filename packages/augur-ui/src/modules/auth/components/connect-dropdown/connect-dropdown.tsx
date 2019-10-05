@@ -11,7 +11,7 @@ import {
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatRep, formatEther, formatDai } from 'utils/format-number';
-import { AccountBalances } from 'modules/types';
+import { AccountBalances, Universe } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
@@ -29,6 +29,10 @@ interface ConnectDropdownProps {
   userDefinedGasPrice: string;
   gasPriceSpeed: number;
   showAddFundsModal: Function;
+  universeSelectorModal: Function;
+  universeOutcomeName: string;
+  parentUniverseId: string;
+  universeHasChildren: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -40,6 +44,10 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     gasModal,
     balances,
     showAddFundsModal,
+    universeSelectorModal,
+    universeOutcomeName,
+    parentUniverseId,
+    universeHasChildren,
   } = props;
 
   if (!isLogged) return null;
@@ -155,6 +163,19 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             icon={Pencil}
           />
         </div>
+
+        {(parentUniverseId !== null || universeHasChildren) &&
+          <div className={Styles.WalletProvider}>
+            <div>
+              <div>Universe</div>
+              <div>{universeOutcomeName}</div>
+            </div>
+            <SecondaryButton
+              action={() => universeSelectorModal()}
+              text='CHANGE UNIVERSE'
+            />
+          </div>
+        }
 
         <div className={Styles.Logout}>
           <div onClick={() => logout()}>

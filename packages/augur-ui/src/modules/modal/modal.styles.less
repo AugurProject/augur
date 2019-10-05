@@ -1878,6 +1878,49 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.ModalUniverseSelector {
+  .Container;
+
+  max-width: 50rem;
+
+  > div:first-of-type {
+    align-items: flex-start;
+    display: flex;
+    padding: @size-24;
+
+    > h1 {
+      color: @color-primary-text;
+      margin-bottom: 0;
+    }
+  }
+
+  > p {
+    .text-12;
+
+    color: @color-secondary-text;
+    padding: 0 @size-24;
+  }
+
+  > main {
+    align-items: flex-start;
+    display: flex;
+
+    > div:first-of-type {
+      flex: 1;
+    }
+
+    > div::nth-of-type(2) {
+      flex: 1;
+      padding-left: @size-24;
+    }
+  }
+
+  @media @breakpoint-mobile-mid {
+    > main {
+    }
+  }
+}
+
 .ModalReporting {
   .Message;
 

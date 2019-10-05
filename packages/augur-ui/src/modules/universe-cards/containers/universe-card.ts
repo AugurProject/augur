@@ -7,9 +7,9 @@ import { formatDai, formatAttoRep } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const universe = state.universe;
+  const universe = ownProps.universe;
   return {
-    universeId: universe.address,
+    universeId: universe.id,
     creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp).formattedLocalShortTime,
     outcomeName: universe.outcomeName,
     currentUniverse: state.universe.id,
@@ -40,26 +40,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-const mergeProps = (sP: any, dP: any, oP: any) => {
-  return {
-    ...oP,
-    ...sP,
-    ...dP,
-    buttons: [
-      {
-        text: 'Switch to this Universe',
-        action: () => {
-          dP.switchUniverse(sP.universeId)
-        },
-      },
-    ],
-  };
-}
-
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
+    mapDispatchToProps
   )(UniverseCard)
 );
