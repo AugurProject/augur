@@ -1881,34 +1881,16 @@ div.ButtonsRow:last-of-type {
 .ModalUniverseSelector {
   .Container;
 
-  flex-direction: row;
   max-width: 50rem;
 
-  > div {
-    flex: 1;
-  }
-
   > div:first-of-type {
-    background: @color-module-background;
-    padding: @size-32;
+    align-items: flex-start;
+    display: flex;
+    padding: @size-24;
 
-    > div:first-of-type {
-      height: @size-16;
-    }
-
-    > div:last-of-type {
-      > h1 {
-        .text-24-bold;
-
-        color: @color-primary-text;
-        margin: 0;
-      }
-    }
-  }
-
-  > header {
     > h1 {
-      .text-24;
+      color: @color-primary-text;
+      margin-bottom: 0;
     }
   }
 
@@ -1929,6 +1911,7 @@ div.ButtonsRow:last-of-type {
 
     > div::nth-of-type(2) {
       flex: 1;
+      padding-left: @size-24;
     }
   }
 

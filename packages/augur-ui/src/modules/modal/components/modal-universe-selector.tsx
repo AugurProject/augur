@@ -18,24 +18,20 @@ export const ModalUniverseSelector = ({
   return(
     <div className={Styles.ModalUniverseSelector}>
       <div>
-        <div>
-          <CloseButton action={() => closeAction()} />
-        </div>
-        <div>
-          <h1>Add Funds</h1>
-          <p>A few lines of copy explaining what Augur universes are.</p>
-          <main>
-            <UniverseCard
-              universe={universeDetails}
-            />
-            <div>
-              {universeDetails.children.map((childUniverse: UniverseDetails) => (
-                <UniverseCard universe={childUniverse} />
-              ))}
-            </div>
-          </main>
-        </div>
+        <CloseButton action={() => closeAction()} />
+        <h1>Augur Universe Picker</h1>
       </div>
+      <p>A few lines of copy explaining what Augur universes are.</p>
+      <main>
+        <UniverseCard
+          universe={universeDetails}
+        />
+        <div>
+          {universeDetails.children.map((childUniverse: UniverseDetails) => (
+            <UniverseCard universe={childUniverse} />
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
