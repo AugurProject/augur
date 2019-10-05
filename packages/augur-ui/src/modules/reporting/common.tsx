@@ -661,7 +661,7 @@ export class ReportingBondsView extends Component<
         )}
         {migrateRep && (
           <InputRepStake
-            stakeAmount={String(inputtedReportingStake)}
+            stakeAmount={String(inputtedReportingStake.inputStakeValue)}
             updateStakeAmount={this.updateInputtedStake}
             stakeError={stakeError}
             max={String(userAttoRep)}
