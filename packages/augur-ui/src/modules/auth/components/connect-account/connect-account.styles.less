@@ -14,10 +14,6 @@
     height: 100%;
   }
 
-  &:hover {
-    background-color: @color-module-background;
-  }
-
   &.selected {
     > div:first-of-type {
       background-color: @color-module-background;
@@ -32,6 +28,10 @@
 
   > div:first-of-type {
     cursor: pointer;
+
+    &:hover {
+      background-color: @color-module-background;
+    }
 
     background: @color-dark-grey;
     border: 1px solid @color-dark-grey;
