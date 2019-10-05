@@ -1,42 +1,41 @@
 import React from 'react';
 
-import { DefaultButtonProps } from 'modules/common/buttons';
-import {
-  Title,
-  Description,
-  ButtonsRow,
-} from 'modules/modal/common';
-import { Universe } from 'modules/types';
+import { CloseButton } from 'modules/common/buttons';
+import { UniverseDetails } from '@augurproject/sdk/src/state/getter/Universe';
 import UniverseCard from 'modules/universe-cards/containers/universe-card';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { UniverseDetails } from '@augurproject/sdk/src/state/getter/Universe';
 
 interface ModalUniverseSelectorProps {
-  title: string;
-  description: string;
   universeDetails: UniverseDetails,
-  buttons: DefaultButtonProps[];
   closeAction: Function;
 }
 
 export const ModalUniverseSelector = ({
-  title,
-  description,
   universeDetails,
-  buttons,
   closeAction
 }: ModalUniverseSelectorProps) => {
   return(
     <div className={Styles.ModalUniverseSelector}>
-      <Title title={title} closeAction={closeAction} />
-      <Description description={description} />
-      <main>
-        <UniverseCard
-          universe={universeDetails}
-        />
-      </main>
-      <ButtonsRow buttons={buttons} />
+      <div>
+        <div>
+          <CloseButton action={() => closeAction()} />
+        </div>
+        <div>
+          <h1>Add Funds</h1>
+          <p>A few lines of copy explaining what Augur universes are.</p>
+          <main>
+            <UniverseCard
+              universe={universeDetails}
+            />
+            <div>
+              {universeDetails.children.map((childUniverse: UniverseDetails) => (
+                <UniverseCard universe={childUniverse} />
+              ))}
+            </div>
+          </main>
+        </div>
+      </div>
     </div>
   );
 }

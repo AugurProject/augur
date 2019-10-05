@@ -18,7 +18,29 @@ const mapStateToProps = (state: AppState) => {
       totalRepSupply: universe.totalRepSupply,
       totalOpenInterest: universe.totalOpenInterest,
       numberOfMarkets: universe.numberOfMarkets,
-      children: universe.children,
+      // children: universe.children,
+      children: [
+        {
+          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC51',
+          children: [],
+          creationTimestamp: 1570216208,
+          outcomeName: 'No',
+          usersRep: '1000000000000000000000001',
+          numberOfMarkets: 20,
+          totalOpenInterest: "0",
+          totalRepSupply: "1000006993611653645833341",
+        },
+        {
+          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC52',
+          children: [],
+          creationTimestamp: 1570216208,
+          outcomeName: 'Yes',
+          usersRep: '1000000000000000000000001',
+          numberOfMarkets: 20,
+          totalOpenInterest: "0",
+          totalRepSupply: "1000006993611653645833341",
+        },
+      ],
     }
   };
 };
@@ -29,18 +51,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   return {
-    ...sP,
-    ...dP,
+    closeAction: () => {
+      if (sP.modal.cb) {
+        sP.modal.cb();
+      }
+      dP.closeModal();
+    },
     ...oP,
-    title: 'Augur Universe Picker',
-    description: ['A few lines of copy explaining what Augur universes are.'],
-    closeModal: () => dP.closeModal(),
-    buttons: [
-      {
-        text: 'Close',
-        action: () => dP.closeModal(),
-      },
-    ],
+    ...sP,
   };
 }
 

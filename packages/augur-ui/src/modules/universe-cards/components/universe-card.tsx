@@ -27,6 +27,10 @@ export const UniverseCard = (
     switchUniverse,
   }: UniverseCardProps
 ) => {
+  let primaryButtonText = 'Switch to this Universe';
+  if (universeId === currentUniverse) {
+    primaryButtonText = 'Switch to this Universe\'s Parent Universe';
+  }
   return (
     <div className={Styles.UniverseCard}>
       {universeId === currentUniverse &&
@@ -41,9 +45,12 @@ export const UniverseCard = (
         <div>{creationTimestamp}</div>
       </div>
       <Breakdown rows={breakdown} />
-      {universeId !== currentUniverse &&
-        <PrimaryButton text='Switch to this Universe' action={switchUniverse(universeId)} />
-      }
+      <PrimaryButton
+        text='Switch to this Universe'
+        action={(universeId) => {
+          switchUniverse(universeId)
+        }}
+      />
     </div>
   );
 };
