@@ -14,6 +14,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { LANDING_PAGE } from 'modules/routes/constants/views';
+import { HelpResources } from 'modules/app/components/help-resources';
 
 interface TopBarProps {
   alertsVisible: boolean;
@@ -70,6 +71,7 @@ const TopBar = ({
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
 
+        {isLogged && <HelpResources />}
         <ConnectAccount />
 
         {isLogged && (

@@ -48,7 +48,7 @@ export default class MarketHeaderReporting extends Component {
     } = this.props;
     const { reportingState, id, consensusFormatted: consensus } = market;
     let content = null;
-
+    const slowDisputing = market.disputeInfo && market.disputeInfo.disputePacingOn;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
         <div className={classNames(Styles.Content, Styles.Set)}>
@@ -102,8 +102,7 @@ export default class MarketHeaderReporting extends Component {
           {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
             <PrimaryButton
               id="button"
-              text="Support or Dispute Outcome"
-              action={() => {}}
+              text={slowDisputing ? "Dispute Outcome" : "Support or Dispute Outcome"}
               action={() => showReportingModal()}
               disabled={!isLogged}
             />
