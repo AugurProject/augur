@@ -31,7 +31,7 @@ interface ConnectDropdownProps {
   showAddFundsModal: Function;
   universeSelectorModal: Function;
   universeOutcomeName: string;
-  parentUniverse: string;
+  parentUniverseId: string;
   universeHasChildren: boolean;
 }
 
