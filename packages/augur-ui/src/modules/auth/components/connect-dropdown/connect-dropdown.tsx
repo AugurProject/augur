@@ -46,7 +46,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     showAddFundsModal,
     universeSelectorModal,
     universeOutcomeName,
-    parentUniverse,
+    parentUniverseId,
     universeHasChildren,
   } = props;
 
