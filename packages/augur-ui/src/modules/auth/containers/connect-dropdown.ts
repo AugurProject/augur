@@ -18,7 +18,7 @@ const mapStateToProps = state => {
   return {
     universeOutcomeName: state.universe.outcomeName ? state.universe.outcomeName : null,
     parentUniverseId: state.universe.parentId ? state.universe.parentId : null,
-    universeHasChildren: state.universe.children.length > 0 ? true : false,
+    universeHasChildren: state.universe.children && state.universe.children.length > 0 ? true : false,
     loginAccountAddress: state.loginAccount.address,
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
