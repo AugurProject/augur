@@ -53,6 +53,112 @@
   }
 }
 
+.LargeSubheader {
+  .text-24-bold;
+
+  color: @color-primary-text;
+  justify-content: center;
+  display: flex;
+}
+
+.SmallSubheader {
+  .text-14;
+
+  color: @color-secondary-text;
+  justify-content: center;
+  margin-top: @size-4;
+  display: flex;
+}
+
+.MediumSubheader {
+  .text-16-bold;
+
+  color: @color-primary-text;
+}
+
+.DaiGraphic {
+  margin: @size-42 0 @size-36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    > span {
+      .text-18-bold;
+
+      color: @color-primary-text;
+      margin-top: @size-14;
+      text-transform: uppercase;
+    }
+  }
+
+  > div:first-of-type {
+    > svg {
+      height: @size-64;
+      width: @size-64;
+
+      > path {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+
+  > div:last-of-type {
+    > svg {
+      height: @size-64;
+      width: 52px;
+
+      > path {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+
+  > span {
+    .text-28-bold;
+
+    color: @color-primary-text;
+    margin: 0 @size-32;
+  }
+}
+
+.LinkContentSection {
+  .text-12;
+
+  margin: @size-8 0 @size-28;
+  color: @color-secondary-text;
+  line-height: 140%;
+
+  > a {
+    color: @color-primary-action;
+    margin-left: @size-4;
+  }
+}
+
+div.Onboarding {
+  .Message;
+
+  padding: @size-32 @size-40;
+
+  > main {
+    padding: 0;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  > div:last-of-type {
+    border-top: 0;
+    padding: 0;
+  }
+
+  @media @breakpoint-mobile-new {
+    padding: @size-24;
+  }
+}
+
 .TitleHeader {
   align-items: center;
   border-bottom: 1px solid fade(@color-dark-grey, 50%);
