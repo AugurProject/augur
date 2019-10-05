@@ -10,9 +10,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const universe = ownProps.universe;
   return {
     universeId: universe.id,
-    creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp).formattedLocalShortTime,
+    currentUniverseId: state.universe.id,
+    parentUniverseId: state.universe.parentUniverseId,
+    creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp)
+      .formattedLocalShortTime,
     outcomeName: universe.outcomeName,
-    currentUniverse: state.universe.id,
+    account: state.loginAccount.address,
     breakdown: [
       {
         label: 'Your REP',
@@ -34,11 +37,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    switchUniverse: (universeId: string) => dispatch(switchUniverse(universeId)),
-  };
-};
+const mapDispatchToProps = dispatch => ({
+    switchUniverse: (universeId: string, account: string) =>
+      dispatch(switchUniverse(universeId, account)),
+});
 
 export default withRouter(
   connect(

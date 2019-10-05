@@ -10,9 +10,11 @@ import Styles from 'modules/universe-cards/universe-card.styles.less';
 
 interface UniverseCardProps {
   universeId: string;
+  currentUniverseId: string;
+  parentUniverseId: string | null;
   creationTimestamp: string;
   outcomeName: string;
-  currentUniverse: string;
+  account: string;
   breakdown?: LinearPropertyLabelProps[];
   switchUniverse: Function;
 }
@@ -20,20 +22,27 @@ interface UniverseCardProps {
 export const UniverseCard = (
   {
     universeId,
+    currentUniverseId,
+    parentUniverseId,
     creationTimestamp,
     outcomeName,
-    currentUniverse,
+    account,
     breakdown,
     switchUniverse,
   }: UniverseCardProps
 ) => {
-  let primaryButtonText = 'Switch to this Universe';
-  if (universeId === currentUniverse) {
+  let primaryButtonText = '';
+  let desiredUniverseId = null;
+  if (universeId === currentUniverseId && parentUniverseId !== null) {
     primaryButtonText = 'Switch to this Universe\'s Parent Universe';
-  }
+    desiredUniverseId = parentUniverseId;
+  } else if (universeId !== currentUniverseId) {
+    primaryButtonText = 'Switch to this Universe';
+    desiredUniverseId = universeId;
+  };
   return (
     <div className={Styles.UniverseCard}>
-      {universeId === currentUniverse &&
+      {universeId === currentUniverseId &&
         <span>Current Universe</span>
       }
       <div>
@@ -45,12 +54,12 @@ export const UniverseCard = (
         <div>{creationTimestamp}</div>
       </div>
       <Breakdown rows={breakdown} />
-      <PrimaryButton
-        text={primaryButtonText}
-        action={(universeId) => {
-          switchUniverse(universeId)
-        }}
-      />
+      {desiredUniverseId !== null &&
+        <PrimaryButton
+          text={primaryButtonText}
+          action={() => switchUniverse(desiredUniverseId, account)}
+        />
+      }
     </div>
   );
 };
