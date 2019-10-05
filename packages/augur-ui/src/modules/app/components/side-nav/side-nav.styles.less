@@ -2,236 +2,99 @@
 
 .SideNav {
   display: none;
-  background: @color-dark-grey;
-  flex-flow: column nowrap;
 
   @media @breakpoint-mobile {
-    display: flex;
-  }
-}
-
-.SideNav__nav {
-  border: 0.0625rem solid @color-dark-grey;
-  border-left: none;
-  border-right: none;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  > li {
-    border-bottom: 0.0625rem solid @color-dark-grey;
-
-    &:last-child { border: none; }
-  }
-
-  .disabled {
-    pointer-events: none;
-
-    > li,
-    > a,
-    > button {
-      span {
-        color: @color-inactive-text;
-      }
-
-      svg {
-        g {
-          stroke: @color-inactive-text;
-        }
-      }
-    }
-  }
-
-  > li a,
-  > li button {
-    background: none;
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 0.625rem;
-    justify-content: center;
-    margin: 0;
-    padding: 0.95rem 0 1rem;
-    text-align: center;
-    width: 100%;
-
-    &.selected {
-      background: @color-module-background;
-    }
-
-    &:hover {
-      background: @color-module-background;
-      cursor: pointer;
-    }
-
-    &:last-child { border: none; }
-
-    > span {
-      color: @color-primary-text;
-      display: block;
-      font-size: 0.6875rem;
-      font-weight: 400;
-      letter-spacing: 0.01875rem;
-      text-align: center;
-      text-transform: capitalize;
-      width: 100%;
-    }
-
-    > svg {
-      display: block;
-      height: 1.5rem;
-      margin-bottom: 0.4rem;
-      width: 1.5rem;
-    }
-
-    svg.nav-create-icon {
-      margin-top: 0.125rem;
-      transform: translateY(0.5rem) scale(0.85);
-    }
-
-    svg.nav-portfolio-icon {
-      transform: translateY(0.5rem) scale(0.95);
-    }
-
-    svg.nav-logout-icon {
-      height: 1.2rem;
-      margin-left: 0.2rem;
-      width: 1.2rem;
-    }
-  }
-}
-
-.SideNav__item--selected {
-  background: @color-table-header;
-}
-
-.SideNav__container {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: min-content;
-  overflow: auto;
-}
-
-.SideNav__hideForMidScreens {
-  display: none;
-  flex-direction: column;
-  flex-grow: 1;
-  justify-content: flex-end;
-}
-
-@media @breakpoint-mobile {
-  .SideNav {
     display: flex;
     flex-flow: column nowrap;
     height: 100vh;
     left: -100%;
     overflow: auto;
-    z-index: @mask-above;
     position: absolute;
     transition: left 0.2s ease-in-out;
     width: 100%;
+    z-index: @mask-above;
 
-    &.mobileShow {
+    &.showNav {
       left: 0;
     }
   }
+}
 
-  .SideNav__nav__separator {
-    background: @color-module-background;
-    height: 0.0625rem;
-  }
+.SideNav__container {
+  background: @color-module-background;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: min-content;
+  overflow: auto;
 
-  .SideNav__stat-label {
-    color: @color-primary-text;
-    display: flex;
-    flex-direction: row;
-    font-size: @size-10;
-    font-weight: 400;
-    max-width: 100%;
-    overflow: hidden;
-    padding-bottom: 0.5rem;
-    text-overflow: ellipsis;
-  }
+  > ul {
+    background: @color-page-background;
+    height: 100vh;
+    padding-bottom: @top-bar-height-mobile;
+    padding-top: 27px;
+    margin-top: @top-bar-height-mobile;
 
-  .SideNav__stat-value {
-    color: @color-primary-text;
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    font-size: @size-14;
-    font-weight: 700;
-    justify-content: flex-end;
-  }
-
-  .SideName__placement {
-    padding: 16px 24px;
-  }
-
-  .SideNav__stat-unit {
-    align-items: flex-end;
-    display: flex;
-    font-size: @size-10;
-    margin-bottom: 2px;
-    margin-left: 0.25rem;
-  }
-
-  .SideNav__amt {
-    align-self: flex-end;
-    display: none;
-    font-size: 0.925rem;
-    width: 100%;
-  }
-
-  .SideNav__nav {
-    border: none;
-    padding-top: 5rem;
+    &.accountDetailsOpen {
+      margin-top: 0;
+    }
 
     > li {
-      border: none;
-      padding: 0;
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.25;
+      }
+
+      &.selected {
+        span {
+          .text-11-bold;
+
+          border-bottom: 2px solid @color-primary-action;
+          padding-bottom: @size-5;
+          color: @color-primary-text;
+          width: fit-content;
+        }
+      }
 
       a,
       button {
-        align-items: center;
-        flex-wrap: nowrap;
-        font-size: 0.75rem;
-        justify-content: flex-start;
-        padding: 1rem;
-
-        &:hover { background: none; }
-
-        > svg {
-          display: inline-block;
-          margin-bottom: 0;
-        }
+        display: flex;
+        padding: @size-21 @size-24;
 
         > span {
-          display: inline-block;
-          font-weight: 500;
-          margin-left: 1rem;
-          text-align: left;
-          width: auto;
+          .text-11-bold;
+
+          align-items: center;
+          color: @color-inactive-text;
+          display: flex;
+          margin-left: @size-8;
+          text-transform: uppercase;
         }
       }
     }
   }
-}
 
-@media @breakpoint-mobile-mid {
-  .SideNav__hideForMidScreens {
+  > footer {
+    align-items: center;
+    background: @color-module-background;
+    bottom: 0px;
     display: flex;
-  }
+    height: @top-bar-height-mobile;
+    justify-content: flex-start;
+    padding-left: @size-22;
+    position: fixed;
+    width: 100%;
 
-  .SideNav__amt {
-    display: block;
-  }
-}
+    > div {
+      .mono-10;
 
-@media @breakpoint-mobile-small-height {
-  .SideNav__nav {
-    > li {
-      a {
-        padding: 0.75rem;
+      display: flex;
+      color: @color-primary-text;
+      text-transform: uppercase;
+
+      > svg {
+        width: @size-9;
+        height: @size-13;
       }
     }
   }

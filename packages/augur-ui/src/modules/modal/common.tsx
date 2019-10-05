@@ -29,6 +29,7 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
+import formatAddress from 'modules/auth/helpers/format-address';
 
 export interface TitleProps {
   title: string;
@@ -496,8 +497,8 @@ export class AccountAddressDisplay extends Component<
     isCopied: false,
   };
 
-  public componentWrapper: any = null;
-  public clipboard: any = new Clipboard('#copy_address');
+  componentWrapper: any = null;
+  clipboard: any = new Clipboard("#copy_address");
 
   copyClicked = () => {
     this.setState({ isCopied: true }, () => {
@@ -517,7 +518,7 @@ export class AccountAddressDisplay extends Component<
         }}
         className={Styles.AccountAddressDisplay}
       >
-        {address}
+        {address ? formatAddress(address) : '-'}
         {copyable && (
           <>
             <button
