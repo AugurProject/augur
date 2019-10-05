@@ -9,7 +9,7 @@ import { AppState } from 'store';
 const mapStateToProps = (state: AppState) => {
   const {address, fees, purchased} = state.universe && state.universe.disputeWindow;
   const {participationTokens} = state.loginAccount && state.loginAccount.reporting;
-  const tokenAmount = address && participationTokens && participationTokens.totalClaimable || ZERO;
+  const tokenAmount = address && participationTokens && (participationTokens.contracts.find(c => !c.isClaimable) || {}).amount || ZERO;
   const purchasedTokens = purchased || 0;
   const purchasedParticipationTokens = formatAttoRep(purchasedTokens);
   const ONE_HUNDRED_BECAUSE_PERCENTAGES = 100;
