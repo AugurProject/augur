@@ -22,17 +22,25 @@ const TAB_CURRENT = 'current';
 const TAB_AWAITING = 'awaiting';
 const SORT_REP_STAKED = 'totalRepStakedInMarket';
 const SORT_DISPUTE_ROUND = 'disputeRound';
+const defaultTabs = {
+  [TAB_CURRENT]: [],
+  [TAB_AWAITING]: [],
+};
 const DEFAULT_PAGINATION = {
   limit: ITEMS_PER_SECTION,
   offset: DEFAULT_PAGE,
   isLoadingMarkets: true,
-  filteredData: [],
+  filteredData: defaultTabs,
 };
 
 interface DisputingMarkets {
   [reportingState: string]: MarketData[];
 }
 
+interface FilteredData {
+  [TAB_CURRENT]: MarketData[];
+  [TAB_AWAITING]: MarketData[];
+}
 interface MarketsInDisputeProps {
   isConnected: boolean;
   userAddress: string;
@@ -45,10 +53,7 @@ interface MarketsInDisputeState {
   search: string;
   selectedTab: string;
   tabs: Tab[];
-  filteredData: {
-    [TAB_CURRENT]: MarketData[];
-    [TAB_AWAITING]: MarketData[];
-  };
+  filteredData: FilteredData;
   sortBy: string;
   offset: number;
   limit: number;
@@ -69,10 +74,6 @@ const sortByOptions = [
   },
 ];
 
-const defaultTabs = {
-  [TAB_CURRENT]: [],
-  [TAB_AWAITING]: []
- };
 export default class MarketsInDispute extends Component<
   MarketsInDisputeProps,
   MarketsInDisputeState
@@ -130,6 +131,10 @@ export default class MarketsInDispute extends Component<
     if (markets !== prevProps.markets) {
       this.getFilteredDataMarkets(markets);
     }
+  }
+
+  componentWillUnmount() {
+    console.log("component has unmounted");
   }
 
   componentDidMount() {
@@ -207,7 +212,11 @@ export default class MarketsInDispute extends Component<
   };
 
   setOffset = offset => {
-    this.setState({ offset, isLoadingMarkets: true, filteredData: defaultTabs });
+    this.setState({
+      offset,
+      isLoadingMarkets: true,
+      filteredData: defaultTabs,
+    });
   };
 
   selectTab = (selectedTab: string) => {
@@ -234,8 +243,8 @@ export default class MarketsInDispute extends Component<
   getFilteredDataMarkets = (markets: DisputingMarkets) => {
     const filteredData = {
       [TAB_CURRENT]: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE],
-      [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW]
-    }
+      [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW],
+    };
     this.setState({ filteredData });
   };
 
