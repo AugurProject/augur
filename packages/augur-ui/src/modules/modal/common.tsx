@@ -1,31 +1,34 @@
-import React, { Component } from "react";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import classNames from 'classnames';
 
-import QRCode from "qrcode.react";
-import Clipboard from "clipboard";
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles";
-import { Checkbox, TextInput, InputDropdown } from "modules/common/form";
+import QRCode from 'qrcode.react';
+import Clipboard from 'clipboard';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles';
+import { Checkbox, TextInput, InputDropdown } from 'modules/common/form';
 import {
   XIcon,
   CopyIcon,
   CheckCircleIcon,
-} from "modules/common/icons";
+  LargeDollarIcon,
+  LargeDaiIcon,
+} from 'modules/common/icons';
 import {
   DefaultButtonProps,
   PrimaryButton,
   SecondaryButton,
   SubmitTextButton,
   ExternalLinkButton,
-} from "modules/common/buttons";
+} from 'modules/common/buttons';
 import {
   LinearPropertyLabel,
   LinearPropertyLabelProps,
   PendingLabel,
   ConfirmedLabel,
-} from "modules/common/labels";
-import Styles from "modules/modal/modal.styles.less";
-import { PENDING, SUCCESS } from "modules/common/constants";
+} from 'modules/common/labels';
+import Styles from 'modules/modal/modal.styles.less';
+import { PENDING, SUCCESS } from 'modules/common/constants';
+import { LinkContent } from 'modules/types';
 
 export interface TitleProps {
   title: string;
@@ -62,6 +65,10 @@ export interface SubheaderProps {
   subheaderContent: SubheaderContent;
 }
 
+export interface BaseSubheaderProps {
+  text: string;
+}
+
 export interface CallToActionProps {
   callToAction: string;
 }
@@ -93,7 +100,7 @@ export interface ActionRow {
   value: string;
   action: Function;
   status: typeof PENDING | typeof SUCCESS;
-  properties: Array<{ value: string, label: string, addExtraSpace: boolean }>;
+  properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
 }
 
 export interface ActionRowsProps {
@@ -173,10 +180,13 @@ export interface CategorySelectionState {
   subCategory: string;
 }
 
-export class CategorySelection extends Component<CategorySelectionProps, CategorySelectionState> {
+export class CategorySelection extends Component<
+  CategorySelectionProps,
+  CategorySelectionState
+> {
   state: CategorySelectionState = {
     showText: false,
-    subCategory: ""
+    subCategory: '',
   };
 
   onChange(subCategory) {
@@ -196,8 +206,8 @@ export class CategorySelection extends Component<CategorySelectionProps, Categor
           label="Select sub-category"
           options={categoriesList}
           isMobileSmall={false}
-          onChange={(subCategory) => {
-            if (subCategory === "Other") {
+          onChange={subCategory => {
+            if (subCategory === 'Other') {
               this.setState({ showText: true });
             } else {
               save(subCategory);
@@ -205,21 +215,25 @@ export class CategorySelection extends Component<CategorySelectionProps, Categor
             }
           }}
         />
-        {showText && <TextInput onChange={v => (this.onChange(v))} placeholder="Enter a sub-category" />}
+        {showText && (
+          <TextInput
+            onChange={v => this.onChange(v)}
+            placeholder="Enter a sub-category"
+          />
+        )}
       </div>
     );
   }
-};
+}
 
 export const Content = ({ content }: ContentProps) => (
   <div className={Styles.Content}>
     {content.map(item => (
-      <React.Fragment key={item.paragraphs[0].slice(20).replace(/\s+/g, "-")}>
+      <React.Fragment key={item.paragraphs[0].slice(20).replace(/\s+/g, '-')}>
         {!!item.header && <h5>{item.header}</h5>}
         {item.paragraphs.map(text => (
-            <p key={text.slice(15).replace(/\s+/g, "_")}>{text}</p>
-          ))
-        }
+          <p key={text.slice(15).replace(/\s+/g, '_')}>{text}</p>
+        ))}
       </React.Fragment>
     ))}
   </div>
@@ -229,7 +243,7 @@ export const Examples = ({ header, previews }: ExamplesProps) => (
   <div className={Styles.Examples}>
     <h5>{header}</h5>
     {previews.map(item => (
-      <div key={item.title.slice(20).replace(/\s+/g, "-")}>
+      <div key={item.title.slice(20).replace(/\s+/g, '-')}>
         <h6>{item.title}</h6>
         <p>{item.description}</p>
       </div>
@@ -238,7 +252,11 @@ export const Examples = ({ header, previews }: ExamplesProps) => (
 );
 
 export const Title = (props: TitleProps) => (
-  <header className={classNames(Styles.TitleHeader, {[Styles.Bright]: props.bright})}>
+  <header
+    className={classNames(Styles.TitleHeader, {
+      [Styles.Bright]: props.bright,
+    })}
+  >
     <h1>{props.title}</h1>
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
@@ -248,7 +266,9 @@ export const Title = (props: TitleProps) => (
 
 export const Description = (props: DescriptionProps) =>
   props.description.map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(/\s+/g, "-")}>{descriptionText}</p>
+    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+      {descriptionText}
+    </p>
   ));
 
 export const ButtonsRow = (props: ButtonsRowProps) => (
@@ -262,7 +282,7 @@ export const ButtonsRow = (props: ButtonsRowProps) => (
 
 export const DescriptionMessage = (props: DescriptionMessageProps) => (
   <div className={Styles.DescriptionMessage}>
-    {props.messages.map((message) => (
+    {props.messages.map(message => (
       <span key={message.boldText || message.key}>
         {message.preText}
         {message.boldText && (
@@ -281,20 +301,61 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
 export const Subheader = (props: SubheaderProps) => (
   <div className={Styles.Subheader}>
     <span>{props.subheaderContent.header}</span>
-    {props.subheaderContent.numbered &&
+    {props.subheaderContent.numbered && (
       <ol>
         {props.subheaderContent.subheaders.map((subheader, index) => (
-          <li key={index}>
-            {subheader}
-          </li>
+          <li key={index}>{subheader}</li>
         ))}
       </ol>
-    }
-    {!props.subheaderContent.numbered && props.subheaderContent.subheaders.map((subheader, index) => (
-      <span key={index}>
-        {subheader}
-      </span>
+    )}
+    {!props.subheaderContent.numbered &&
+      props.subheaderContent.subheaders.map((subheader, index) => (
+        <span key={index}>{subheader}</span>
+      ))}
+  </div>
+);
+
+export const LargeSubheader = (props: BaseSubheaderProps) => (
+  <div className={Styles.LargeSubheader}>{props.text}</div>
+);
+
+export const SmallSubheader = (props: BaseSubheaderProps) => (
+  <div className={Styles.SmallSubheader}>{props.text}</div>
+);
+
+export const MediumSubheader = (props: BaseSubheaderProps) => (
+  <div className={Styles.MediumSubheader}>{props.text}</div>
+);
+
+interface LinkContentSectionProps {
+  linkContent: LinkContent[];
+}
+export const LinkContentSection = (props: LinkContentSectionProps) => (
+  <div className={Styles.LinkContentSection}>
+    {props.linkContent.map(content => (
+      <>
+        {content.link && (
+          <a href={content.link} target="_blank">
+            {content.content}
+          </a>
+        )}
+        {!content.link && <span>{content.content}</span>}
+      </>
     ))}
+  </div>
+);
+
+export const DaiGraphic = () => (
+  <div className={Styles.DaiGraphic}>
+    <div>
+      {LargeDaiIcon}
+      <span>1 dai</span>
+    </div>
+    <span>=</span>
+    <div>
+      {LargeDollarIcon}
+      <span>1 USD</span>
+    </div>
   </div>
 );
 
@@ -334,7 +395,7 @@ export const Breakdown = (props: BreakdownProps) => (
   <div
     className={classNames({
       [Styles.ShortBreakdown]: props.short,
-      [Styles.ReverseBreakdown]: props.reverse
+      [Styles.ReverseBreakdown]: props.reverse,
     })}
   >
     {props.title && <h4>{props.title}</h4>}
@@ -350,8 +411,8 @@ export const ActionRows = (props: ActionRowsProps) =>
       <section>
         <MarketTitle title={row.title} />
         <div>
-          {row.properties.map((property) => (
-            <React.Fragment key={row.title + " " + property.label}>
+          {row.properties.map(property => (
+            <React.Fragment key={row.title + ' ' + property.label}>
               <LinearPropertyLabel
                 label={property.label}
                 value={property.value}
@@ -379,7 +440,7 @@ export const ReadableAddress = (props: ReadableAddressProps) => (
     {props.showQR && (
       <QRCode
         value={props.address}
-        style={{ width: "120px", height: "120px" }}
+        style={{ width: '120px', height: '120px' }}
       />
     )}
     <AccountAddressDisplay address={props.address} copyable={props.copyable} />
@@ -394,11 +455,11 @@ export const DepositInfo = (props: DepositInfoProps) => (
     <h3>How to (ETH):</h3>
     <ul>
       <li>
-        Buy ETH using{" "}
+        Buy ETH using{' '}
         <ExternalLinkButton
           label="Coinbase"
           URL="https://www.coinbase.com/buy/ETH"
-        />{" "}
+        />{' '}
         or <ExternalLinkButton label="WYRE" URL="http://www.sendwyre.com/" /> or
         another provider
       </li>
@@ -408,14 +469,14 @@ export const DepositInfo = (props: DepositInfoProps) => (
     <h3>How to (REP):</h3>
     <ul>
       <li>
-        Buy REP using{" "}
+        Buy REP using{' '}
         {props.show0xInstant && (
           <ExternalLinkButton
             label="0x Instant"
             action={props.openZeroExInstant}
           />
         )}
-        {props.show0xInstant && props.showAirSwap && " or "}
+        {props.show0xInstant && props.showAirSwap && ' or '}
         {props.showAirSwap && (
           <ExternalLinkButton label="AirSwap" action={props.airSwapOnClick} />
         )}
@@ -436,7 +497,7 @@ export class AccountAddressDisplay extends Component<
   };
 
   public componentWrapper: any = null;
-  public clipboard: any = new Clipboard("#copy_address");
+  public clipboard: any = new Clipboard('#copy_address');
 
   copyClicked = () => {
     this.setState({ isCopied: true }, () => {
@@ -451,7 +512,7 @@ export class AccountAddressDisplay extends Component<
     const { address, copyable } = this.props;
     return (
       <span
-        ref={(container) => {
+        ref={container => {
           this.componentWrapper = container;
         }}
         className={Styles.AccountAddressDisplay}
@@ -475,13 +536,13 @@ export class AccountAddressDisplay extends Component<
 
 interface FundsHelpProps {}
 
-export const FundsHelp = (props: FundsHelpProps) =>(
+export const FundsHelp = (props: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
     <span>Learn how to buy DAI and transfer it into your account.</span>
     <ExternalLinkButton label="Learn More" />
   </div>
- );
+);
 
 // tslint:disable-next-line: max-classes-per-file
 export class MarketReview extends Component<
@@ -489,7 +550,7 @@ export class MarketReview extends Component<
   MarketReviewState
 > {
   state = {
-    readMore: false
+    readMore: false,
   };
 
   render() {
@@ -499,10 +560,8 @@ export class MarketReview extends Component<
     const showReadMore = details && details.length > 126;
     const readMoreSection = showReadMore && (
       <div>
-        {`${details.substr(0, 126)}...`}{" "}
-        <button
-          onClick={() => this.setState({ readMore: true })}
-        >
+        {`${details.substr(0, 126)}...`}{' '}
+        <button onClick={() => this.setState({ readMore: true })}>
           Read more
         </button>
       </div>
@@ -510,31 +569,31 @@ export class MarketReview extends Component<
 
     return (
       <section className={Styles.ModalMarketReview}>
+        <div>
+          <p>Market Question</p>
+          {description}
+        </div>
+
+        {details && (
           <div>
-            <p>Market Question</p>
-            {description}
+            <p>Additional details</p>
+            {showReadMore && !readMore && readMoreSection}
+            {(!showReadMore || readMore) && <div>{details}</div>}
           </div>
+        )}
 
-          {details && (
-            <div>
-              <p>Additional details</p>
-              {showReadMore && !readMore && readMoreSection}
-              {(!showReadMore || readMore) && <div>{details}</div>}
-            </div>
-          )}
-
-          {endTime && (
-            <div>
-              <p>Reporting starts</p>
-              <div>{endTime.formattedUtc}</div>
-              <div>{endTime.formattedTimezone}</div>
-            </div>
-          )}
-
+        {endTime && (
           <div>
-            <p>Resolution source</p>
-            {resolutionSource || "General knowledge"}
+            <p>Reporting starts</p>
+            <div>{endTime.formattedUtc}</div>
+            <div>{endTime.formattedTimezone}</div>
           </div>
+        )}
+
+        <div>
+          <p>Resolution source</p>
+          {resolutionSource || 'General knowledge'}
+        </div>
       </section>
     );
   }

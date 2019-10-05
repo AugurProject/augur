@@ -335,6 +335,12 @@ export interface NewMarket {
   offset: number;
   timezone: string;
 }
+
+export interface LinkContent {
+  content: string;
+  link?: string;
+};
+
 export interface Draft {
   uniqueId: number;
   created: number;
