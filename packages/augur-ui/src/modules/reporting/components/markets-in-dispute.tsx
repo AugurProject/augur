@@ -134,7 +134,7 @@ export default class MarketsInDispute extends Component<
   }
 
   componentWillUnmount() {
-    console.log("component has unmounted");
+    console.log('component has unmounted');
   }
 
   componentDidMount() {
