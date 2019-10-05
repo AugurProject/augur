@@ -21,6 +21,7 @@ interface ConnectAccountProps {
   userInfo: LoginAccount['meta'];
   accountAddress: string;
   universeId: string;
+  loadUniverseDetails: Function;
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {
@@ -29,7 +30,15 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
 
 
   toggleDropdown(cb?: Function) {
-    const { updateConnectionTray, updateMobileMenuState, isConnectionTrayOpen, mobileMenuState } = this.props;
+    const {
+      updateConnectionTray,
+      updateMobileMenuState,
+      isConnectionTrayOpen,
+      mobileMenuState,
+      loadUniverseDetails,
+      userInfo,
+      universeId
+    } = this.props;
     if (mobileMenuState > 0) {
       updateConnectionTray(!isConnectionTrayOpen);
     }
@@ -37,6 +46,8 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
       updateMobileMenuState(1);
       updateConnectionTray(!isConnectionTrayOpen);
     }
+
+    loadUniverseDetails(universeId, userInfo.address);
 
     if (cb && typeof cb === 'function') cb();
   }
