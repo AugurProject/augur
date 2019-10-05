@@ -279,7 +279,11 @@ describe('State API :: Users :: ', () => {
     await john.setTimestamp(newTime);
 
     // Purchase participation tokens
-    await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
+    let curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(false);
+    let curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
+      curDisputeWindowAddress
+    );
+    await john.buyParticipationTokens(curDisputeWindow.address, new BigNumber(1));
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -628,7 +632,11 @@ describe('State API :: Users :: ', () => {
     await john.setTimestamp(newTime);
 
     // Purchase participation tokens
-    await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
+    curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(false);
+    curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
+      curDisputeWindowAddress
+    );
+    await john.buyParticipationTokens(curDisputeWindow.address, new BigNumber(1));
 
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
