@@ -5,6 +5,7 @@ import Blockies from 'react-blockies';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
 import formatAddress from 'modules/auth/helpers/format-address';
+import { LoginAccount } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
@@ -15,6 +16,8 @@ interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
+  updateMobileMenuState: Function;
+  mobileMenuState: number;
   userInfo: LoginAccount['meta'];
   accountAddress: string;
   universeId: string;
@@ -25,17 +28,16 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectDropdown;
 
   toggleDropdown(cb?: Function) {
-    const {
-      updateConnectionTray,
-      isConnectionTrayOpen,
-      loadUniverseDetails,
-      userInfo,
-      universeId,
-    } = this.props;
+    const { updateConnectionTray, updateMobileMenuState, isConnectionTrayOpen, mobileMenuState } = this.props;
+    if (mobileMenuState > 0) {
+      updateConnectionTray(!isConnectionTrayOpen);
+    }
+    else {
+      updateMobileMenuState(1);
+      updateConnectionTray(!isConnectionTrayOpen);
+    }
 
-    loadUniverseDetails(universeId, userInfo.address);
-    updateConnectionTray(!isConnectionTrayOpen);
-    if (cb && typeof cb === "function") cb();
+    if (cb && typeof cb === 'function') cb();
   }
 
   render() {
@@ -49,7 +51,9 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
 
     return (
       <div
-        className={Styles.ConnectAccount}
+        className={classNames(Styles.ConnectAccount, {
+          [Styles.selected]: isConnectionTrayOpen,
+        })}
         ref={connectAccount => {
           this.connectAccount = connectAccount;
         }}
@@ -98,7 +102,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             }
           )}
         >
-          <ConnectDropdown toggleDropdown={(cb) => this.toggleDropdown(cb)} />
+          <ConnectDropdown />
         </div>
       </div>
     );

@@ -31,7 +31,6 @@ describe('State API :: Accounts :: ', () => {
     await mary.approveCentralAuthority();
   });
 
-  /*
   test(':getAccountTransactionHistory', async () => {
     // Create markets with multiple users
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -596,7 +595,11 @@ describe('State API :: Accounts :: ', () => {
     await john.setTimestamp(newTime);
 
     // Purchase participation tokens
-    await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
+    const curDisputeWindowAddress = await john.getOrCreateCurrentDisputeWindow(false);
+    const curDisputeWindow = await john.augur.contracts.disputeWindowFromAddress(
+      curDisputeWindowAddress
+    );
+    await john.buyParticipationTokens(curDisputeWindow.address, new BigNumber(1));
 
     await john.repFaucet(new BigNumber(1e25));
     await mary.repFaucet(new BigNumber(1e25));
@@ -678,12 +681,12 @@ describe('State API :: Accounts :: ', () => {
 
     // Transfer cash to dispute window (so participation tokens can be redeemed -- normally this would come from fees)
     await john.augur.contracts.cash.transfer(
-      disputeWindow.address,
+      curDisputeWindow.address,
       new BigNumber(1)
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(curDisputeWindow.address, john.account.publicKey);
 
     // Claim initial reporter
     const initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -799,18 +802,6 @@ describe('State API :: Accounts :: ', () => {
         action: 'CLAIM_TRADING_PROCEEDS',
         coin: 'ETH',
         details: 'Claimed trading proceeds',
-        fee: '2200000000000',
-        marketDescription: 'description',
-        outcome: 1,
-        outcomeDescription: 'No',
-        price: '22',
-        quantity: '100000000000',
-        total: '0',
-      },
-      {
-        action: 'CLAIM_TRADING_PROCEEDS',
-        coin: 'ETH',
-        details: 'Claimed trading proceeds',
         fee: '-7699000000000',
         marketDescription: 'description',
         outcome: 2,
@@ -818,6 +809,18 @@ describe('State API :: Accounts :: ', () => {
         price: '22',
         quantity: '100000000000',
         total: '9899000000000',
+      },
+      {
+        action: 'CLAIM_TRADING_PROCEEDS',
+        coin: 'ETH',
+        details: 'Claimed trading proceeds',
+        fee: '2200000000000',
+        marketDescription: 'description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '22',
+        quantity: '100000000000',
+        total: '0',
       },
     ]);
 
@@ -985,7 +988,6 @@ describe('State API :: Accounts :: ', () => {
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
   });
-  */
 
   test(':getUserCurrentDisputeStake', async () => {
     // Create market, do an initial report, and then dispute to multiple outcomes and multiple times
@@ -1048,6 +1050,5 @@ describe('State API :: Accounts :: ', () => {
       payoutNumerators: ["0", "100", "0"],
       userStakeCurrent: "12",
     });
-
   });
 });

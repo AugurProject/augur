@@ -148,7 +148,7 @@ contract Market is Initializable, Ownable, IMarket {
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         disputeWindow = universe.getOrCreateNextDisputeWindow(true);
         _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _initialReportStake);
-        augur.logInitialReportSubmitted(universe, _reporter, address(this), _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description, disputeWindow.getStartTime(), disputeWindow.getEndTime());
+        augur.logInitialReportSubmitted(universe, _reporter, address(this), address(_initialReporter), _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description, disputeWindow.getStartTime(), disputeWindow.getEndTime());
     }
 
     function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {

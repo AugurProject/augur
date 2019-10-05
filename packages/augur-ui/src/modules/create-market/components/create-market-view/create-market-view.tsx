@@ -28,6 +28,10 @@ export default class CreateMarketView extends React.Component<
     this.setState({page});
   }
 
+  componentDidMount() {
+    window.scrollTo(0,0);
+  }
+
   render() {
     const { page } = this.state;
 
