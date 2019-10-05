@@ -40,7 +40,6 @@ const mapStateToProps = state => {
     isMobileSmall: state.appStatus.isMobileSmall,
     loginAccount: state.loginAccount,
     modal: state.modal,
-    alerts,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
     url: state.url,

@@ -10,7 +10,6 @@ const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
   userInfo: state.loginAccount.meta,
   isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
-  isMobile: state.appStatus.isMobile,
   mobileMenuState: state.sidebarStatus.mobileMenuState,
 });
 

@@ -34,17 +34,17 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
-import { Universe, Blockchain } from 'modules/types';
+import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
 
 interface AppProps {
   blockchain: Blockchain;
-  env: object;
-  history: object;
+  env: EnvObject;
+  history: History;
   initAugur: Function;
   isLogged: boolean;
   isMobile: boolean;
-  location: object;
-  loginAccount: object;
+  location: Location;
+  loginAccount: LoginAccount;
   modal: object;
   universe: Universe;
   updateIsMobile: Function;
@@ -55,13 +55,16 @@ interface AppProps {
   ethereumNodeWs: string;
   useWeb3Transport: boolean;
   logout: Function;
-  sidebarStatus: object;
+  sidebarStatus: {
+    mobileMenuState: number;
+    isAlertsVisible: boolean;
+    currentBasePath: string;
+  };
   updateCurrentBasePath: Function;
   updateCurrentInnerNavType: Function;
   updateMobileMenuState: Function;
   updateIsAlertVisible: Function;
   updateSidebarStatus: Function;
-  alerts: object;
   toasts: any[];
   updateConnectionTray: Function;
   isConnectionTrayOpen: boolean;
@@ -258,7 +261,7 @@ export default class AppView extends Component<AppProps> {
     }
   }
 
-  renderMobileMenuButton(unseenCount: number) {
+  renderMobileMenuButton() {
     const { sidebarStatus } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
 
@@ -296,19 +299,16 @@ export default class AppView extends Component<AppProps> {
       blockchain,
       history,
       isLogged,
-      isMobile,
       location,
       modal,
       universe,
       sidebarStatus,
       updateMobileMenuState,
-      alerts,
       toasts,
       isConnectionTrayOpen,
       updateConnectionTray,
     } = this.props;
 
-    const { unseenCount } = alerts;
     const currentPath = parsePath(location.pathname)[0];
 
     return (
@@ -337,7 +337,7 @@ export default class AppView extends Component<AppProps> {
             onClick={e => this.mainSectionClickHandler(e, false)}
             role='presentation'
           >
-            {this.renderMobileMenuButton(unseenCount)}
+            {this.renderMobileMenuButton()}
 
             {/* HIDDEN ON DESKTOP */}
             <SideNav

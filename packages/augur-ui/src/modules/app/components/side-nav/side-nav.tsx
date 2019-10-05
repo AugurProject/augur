@@ -5,20 +5,13 @@ import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import { LogoutIcon } from 'modules/common/icons';
+import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
-
-interface MenuData {
-  requireLogin: boolean;
-  disabled: boolean;
-  route: string;
-  title: string;
-  mobileClick?: Function;
-}
 
 interface SideNavProps {
   defaultMobileClick: Function;
   isLogged: boolean;
-  menuData: MenuData[];
+  menuData: NavMenuItem[];
   currentBasePath: string;
   isConnectionTrayOpen: boolean;
   logout: Function;
