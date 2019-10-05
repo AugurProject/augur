@@ -335,6 +335,12 @@ export interface NewMarket {
   offset: number;
   timezone: string;
 }
+
+export interface LinkContent {
+  content: string;
+  link?: string;
+};
+
 export interface Draft {
   uniqueId: number;
   created: number;
@@ -528,6 +534,7 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  attoRep: string;
 }
 export interface LoginAccount {
   address?: string;
