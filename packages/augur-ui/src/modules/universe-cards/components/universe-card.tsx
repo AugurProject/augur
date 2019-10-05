@@ -46,7 +46,7 @@ export const UniverseCard = (
       </div>
       <Breakdown rows={breakdown} />
       <PrimaryButton
-        text='Switch to this Universe'
+        text={primaryButtonText}
         action={(universeId) => {
           switchUniverse(universeId)
         }}

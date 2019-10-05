@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     universeDetails: {
-      address: universe.address,
+      id: universe.id,
       creationTimestamp: universe.creationTimestamp,
       outcomeName: universe.outcomeName,
       usersRep: universe.usersRep,
@@ -21,7 +21,17 @@ const mapStateToProps = (state: AppState) => {
       // children: universe.children,
       children: [
         {
-          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC51',
+          id: '0x161C723Cac007e4283CEe4ba11B15277e46eeC54',
+          children: [],
+          creationTimestamp: 1570216208,
+          outcomeName: 'Invalid',
+          usersRep: '1000000000000000000000001',
+          numberOfMarkets: 20,
+          totalOpenInterest: "0",
+          totalRepSupply: "1000006993611653645833341",
+        },
+        {
+          id: '0x161C723Cac007e4283CEe4ba11B15277e46eeC55',
           children: [],
           creationTimestamp: 1570216208,
           outcomeName: 'No',
@@ -31,7 +41,7 @@ const mapStateToProps = (state: AppState) => {
           totalRepSupply: "1000006993611653645833341",
         },
         {
-          address: '0x161C723Cac007e4283CEe4ba11B15277e46eeC52',
+          id: '0x161C723Cac007e4283CEe4ba11B15277e46eeC56',
           children: [],
           creationTimestamp: 1570216208,
           outcomeName: 'Yes',
