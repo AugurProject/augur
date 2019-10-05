@@ -205,12 +205,16 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
-    (False, True),
-    (True, False),
-    (False, False),
+    #(False, True),
+    #(True, False),
+    #(False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
     claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
+
+    time = localFixture.contracts["Time"].getTimestamp()
+    farOutEndTime = time + (365 * 24 * 60 * 60)
+    farOutMarket = localFixture.createYesNoMarket(universe, farOutEndTime, 0, 0, localFixture.accounts[0])
 
     # Let's go into the one dispute round for the categorical market
     proceedToNextRound(localFixture, categoricalMarket)
@@ -294,6 +298,9 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     expectedNoPayout = expectedNoOutcomePayout * noShare.balanceOf(localFixture.accounts[1]) * .98 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
         claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+
+    # Migrate a market that has not ended yet
+    assert farOutMarket.migrateThroughOneFork([], "")
 
     # buy some complete sets to change OI of the cat market
     numSets = 10

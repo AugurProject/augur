@@ -25,6 +25,7 @@ import {
   updateSidebarStatus
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
+import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
 
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
@@ -39,12 +40,12 @@ const mapStateToProps = state => {
     isMobileSmall: state.appStatus.isMobileSmall,
     loginAccount: state.loginAccount,
     modal: state.modal,
-    alerts,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
     url: state.url,
     useWeb3Transport: isGlobalWeb3(),
-    sidebarStatus: state.sidebarStatus
+    sidebarStatus: state.sidebarStatus,
+    isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
   }
 };
 
@@ -63,6 +64,8 @@ const mapDispatchToProps = dispatch => ({
   updateIsAlertVisible: data => dispatch(updateIsAlertVisible(data)),
   updateSidebarStatus: data => dispatch(updateSidebarStatus(data)),
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
+  updateConnectionTray: value =>
+  dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
 });
 
 const AppContainer = compose(

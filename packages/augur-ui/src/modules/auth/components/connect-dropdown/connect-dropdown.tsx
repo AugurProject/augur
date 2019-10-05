@@ -121,6 +121,10 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
         ))}
 
+        <div className={Styles.MobileAddFunds}>
+          <PrimaryButton action={() => showAddFundsModal()} text="Add Funds" />
+        </div>
+
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {

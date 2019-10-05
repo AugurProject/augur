@@ -122,6 +122,7 @@ export interface ForkingInfo {
 export interface Universe extends Getters.Universe.UniverseDetails {
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
+  forkEndTime?: string;
 }
 
 export interface Versions {
@@ -334,6 +335,12 @@ export interface NewMarket {
   offset: number;
   timezone: string;
 }
+
+export interface LinkContent {
+  content: string;
+  link?: string;
+};
+
 export interface Draft {
   uniqueId: number;
   created: number;
@@ -680,4 +687,11 @@ export interface MarketReportClaimableContracts {
 export interface DisputeInputtedValues {
   inputStakeValue: string;
   inputToAttoRep: string;
+}
+
+export interface NavMenuItem {
+  route: string;
+  title: string;
+  requireLogin?: boolean;
+  disabled?: boolean;
 }
