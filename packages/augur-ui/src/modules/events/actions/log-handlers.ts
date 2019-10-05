@@ -460,7 +460,15 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
 export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
-) => dispatch(loadMarketsInfo([log.market]));
+) => {
+  const { universe } = getState();
+  dispatch(loadMarketsInfo([log.market]));
+  if (universe.forkingInfo) {
+    if (log.market === universe.forkingInfo.forkingMarket) {
+      dispatch(loadUniverseForkingInfo(universe.id))
+    }
+  }
+}
 
 // ---- disputing ----- //
 export const handleDisputeCrowdsourcerCreatedLog = (
