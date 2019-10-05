@@ -164,7 +164,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           />
         </div>
 
-        {parentUniverseId || universeHasChildren
+        {(parentUniverseId !== null || universeHasChildren) &&
           <div className={Styles.WalletProvider}>
             <div>
               <div>Universe</div>
