@@ -350,6 +350,7 @@ describe('State API :: Universe :: ', () => {
 
     expect(universeChildren).toMatchObject({
       id: genesisUniverse.address,
+      parentUniverseId: null,
       outcomeName: 'Genesis',
       usersRep: johnRep.toString(),
       totalRepSupply: totalRep.toString(),
@@ -371,6 +372,7 @@ describe('State API :: Universe :: ', () => {
 
     expect(universeChildren).toMatchObject({
       id: genesisUniverse.address,
+      parentUniverseId: null,
       outcomeName: 'Genesis',
       usersRep: bobRep.toString(), // aka zero
       totalRepSupply: totalRep.toString(),
@@ -393,6 +395,7 @@ describe('State API :: Universe :: ', () => {
     });
     expect(universeChildren).toMatchObject({
       id: genesisUniverse.address,
+      parentUniverseId: null,
       outcomeName: 'Genesis',
       usersRep: johnRep.toString(),
       totalRepSupply: totalRep.toString(),
@@ -434,6 +437,7 @@ describe('State API :: Universe :: ', () => {
       numberOfMarkets: 1,
       children: [
         {
+          parentUniverseId: null,
           outcomeName: 'Invalid',
           usersRep: childUniverseRep.toString(),
           totalRepSupply: childUniverseRep.toString(),

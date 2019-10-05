@@ -35,11 +35,7 @@ export const loadAccountData = (
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
-  // Only call loadUniverseDetails (to display Universe Picker in
-  // account dropdown) if a fork has actually occurred
-  if (universe.forkingInfo !== null) {
-    dispatch(loadUniverseDetails(universe.id,loginAccount.address));
-  }
+  dispatch(loadUniverseDetails(universe.id, address));
 //  dispatch(loadReportingWindowBounds());
 //  dispatch(loadDesignatedReporterMarkets());
 //  dispatch(loadDisputing());

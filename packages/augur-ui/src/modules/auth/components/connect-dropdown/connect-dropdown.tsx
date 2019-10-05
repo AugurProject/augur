@@ -30,7 +30,9 @@ interface ConnectDropdownProps {
   gasPriceSpeed: number;
   showAddFundsModal: Function;
   universeSelectorModal: Function;
-  universe: Universe;
+  universeOutcomeName: string;
+  parentUniverse: string;
+  universeHasChildren: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -43,7 +45,9 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     balances,
     showAddFundsModal,
     universeSelectorModal,
-    universe,
+    universeOutcomeName,
+    parentUniverse,
+    universeHasChildren,
   } = props;
 
   if (!isLogged) return null;
@@ -160,11 +164,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           />
         </div>
 
-        {universe.forkingInfo &&
+        {parentUniverseId || universeHasChildren
           <div className={Styles.WalletProvider}>
             <div>
               <div>Universe</div>
-              <div>{universe.outcomeName}</div>
+              <div>{universeOutcomeName}</div>
             </div>
             <SecondaryButton
               action={() => universeSelectorModal()}

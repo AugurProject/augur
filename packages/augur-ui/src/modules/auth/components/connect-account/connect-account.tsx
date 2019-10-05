@@ -17,8 +17,6 @@ interface ConnectAccountProps {
   updateMobileMenuState: Function;
   mobileMenuState: number;
   userInfo: LoginAccount['meta'];
-  accountAddress: string;
-  universeId: string;
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {
