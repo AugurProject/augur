@@ -12,75 +12,75 @@ pytestmark = mark.skip(reason="Just for testing gas cost")
 # Trading Max Costs
 
 CREATE_ORDER_BEST_CASE    =   [
-    419554,
-    426592,
-    433630,
-    440604,
-    447706,
-    454744,
+    430071,
+    436547,
+    443151,
+    449691,
+    456231,
+    462771,
 ]
 
 CREATE_ORDER_MAXES    =   [
-    570869,
-    636034,
-    701199,
-    766300,
-    831529,
-    896694,
+    581805,
+    631614,
+    681551,
+    731424,
+    781297,
+    831170,
 ]
 
 CANCEL_ORDER_MAXES    =   [
-    188999,
-    227018,
-    266072,
-    322309,
-    378482,
-    434783,
+    224469,
+    257363,
+    290322,
+    323248,
+    369149,
+    415202,
 ]
 
 FILL_ORDER_TAKE_SHARES   =   [
-    450047,
-    471232,
-    492418,
-    513540,
-    534790,
-    555976,
+    492104,
+    518174,
+    544307,
+    570505,
+    596644,
+    622784,
 ]
 
 FILL_ORDER_BOTH_ETH    =   [
-    752650,
-    876629,
-    1000609,
-    1124461,
-    1248569,
-    1372549,
+    705752,
+    802294,
+    898837,
+    995379,
+    1091926,
+    1188474,
 ]
 
 FILL_ORDER_MAKER_REVERSE_POSITION    =   [
-    747843,
-    874486,
-    1001130,
-    1127774,
-    1254354,
-    1381062,
+    756240,
+    858547,
+    960981,
+    1063352,
+    1165728,
+    1268105,
 ]
 
 FILL_ORDER_TAKER_REVERSE_POSITION    =   [
-    1637106,
-    1798606,
-    1960107,
-    2121608,
-    2283045,
-    2444610,
+    1359009,
+    1461898,
+    1564915,
+    1667869,
+    1770823,
+    1873778,
 ]
 
 FILL_ORDER_DOUBLE_REVERSE_POSITION    =   [
-    1637106,
-    1798606,
-    1960107,
-    2121608,
-    2283045,
-    2444610,
+    1359009,
+    1461898,
+    1564915,
+    1667869,
+    1770823,
+    1873778,
 ]
 
 @mark.parametrize('numOutcomes', range(2,8))
@@ -98,7 +98,7 @@ def test_order_creation_best_case(numOutcomes, localFixture, markets):
     localFixture.contracts["Cash"].faucet(fix(1, 50))
 
     with PrintGasUsed(localFixture, "ORDER CREATION BEST: %i" % numOutcomes, CREATE_ORDER_BEST_CASE[numOutcomes-2]):
-        orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+        orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_orderCreationMax(numOutcomes, localFixture, markets):
@@ -118,7 +118,7 @@ def test_orderCreationMax(numOutcomes, localFixture, markets):
 
     localFixture.contracts["Cash"].faucet(fix(1, 50))
     with PrintGasUsed(localFixture, "ORDER CREATION MAX: %i" % numOutcomes, CREATE_ORDER_MAXES[numOutcomes-2]):
-        orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+        orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_orderCancelationMax(numOutcomes, localFixture, markets):
@@ -135,7 +135,7 @@ def test_orderCancelationMax(numOutcomes, localFixture, markets):
     shareToken.transfer(localFixture.accounts[7], 100)
 
     localFixture.contracts["Cash"].faucet(fix(1, 50))
-    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     with PrintGasUsed(localFixture, "CANCEL ORDER: %i" % numOutcomes, CANCEL_ORDER_MAXES[numOutcomes-2]):
         cancelOrder.cancelOrder(orderID)
@@ -154,12 +154,12 @@ def test_order_filling_take_shares(numOutcomes, localFixture, markets):
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, 100)
     outcome = 0
-    orderID = createOrder.publicCreateOrder(ASK, 100, 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), False, nullAddress)
+    orderID = createOrder.publicCreateOrder(ASK, 100, 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), nullAddress)
 
     cost = 50000
     localFixture.contracts["Cash"].faucet(cost, sender=localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER TAKE SHARES: %i" % numOutcomes, FILL_ORDER_TAKE_SHARES[numOutcomes-2]):
-        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
+        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_both_eth(numOutcomes, localFixture, markets):
@@ -174,11 +174,11 @@ def test_order_filling_both_eth(numOutcomes, localFixture, markets):
 
     outcome = 0
     localFixture.contracts["Cash"].faucet(fix(1, 50))
-    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     localFixture.contracts["Cash"].faucet(cost, sender = localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER BOTH ETH: %i" % numOutcomes, FILL_ORDER_BOTH_ETH[numOutcomes-2]):
-        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
+        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_maker_reverse(numOutcomes, localFixture, markets):
@@ -197,11 +197,11 @@ def test_order_filling_maker_reverse(numOutcomes, localFixture, markets):
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[2], 100)
     localFixture.contracts["Cash"].faucet(cost)
-    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     localFixture.contracts["Cash"].faucet(cost, sender = localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER MAKER REVERSE: %i" % numOutcomes, FILL_ORDER_MAKER_REVERSE_POSITION[numOutcomes-2]):
-        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
+        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_taker_reverse(numOutcomes, localFixture, markets):
@@ -220,11 +220,11 @@ def test_order_filling_taker_reverse(numOutcomes, localFixture, markets):
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[1], 100)
     localFixture.contracts["Cash"].faucet(cost)
-    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     localFixture.contracts["Cash"].faucet(cost, sender = localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER TAKER REVERSE: %i" % numOutcomes, FILL_ORDER_TAKER_REVERSE_POSITION[numOutcomes-2]):
-        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
+        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
@@ -243,11 +243,11 @@ def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[1], 100)
     localFixture.contracts["Cash"].faucet(cost)
-    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", False, nullAddress)
+    orderID = createOrder.publicCreateOrder(BID, fix(1), 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     localFixture.contracts["Cash"].faucet(cost, sender = localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER BOTH REVERSE: %i" % numOutcomes, FILL_ORDER_DOUBLE_REVERSE_POSITION[numOutcomes-2]):
-        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
+        fillOrder.publicFillOrder(orderID, fix(1), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[1])
 
 
 @fixture(scope="session")
