@@ -990,7 +990,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               inputScalarOutcome={inputScalarOutcome}
               updateScalarOutcome={updateScalarOutcome}
               reportAction={reportAction}
-              inputtedReportingStake={inputtedReportingStake.inputStakeValue}
+              inputtedReportingStake={inputtedReportingStake}
               updateInputtedStake={updateInputtedStake}
               reportingGasFee={reportingGasFee}
             />

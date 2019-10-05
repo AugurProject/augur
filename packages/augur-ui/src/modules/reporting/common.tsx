@@ -8,7 +8,7 @@ import {
   REPORTING_STATE,
   SCALAR,
 } from 'modules/common/constants';
-import { FormattedNumber, SizeTypes, MarketData } from 'modules/types';
+import { FormattedNumber, SizeTypes, MarketData, DisputeInputtedValues } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
   SecondaryButton,
@@ -35,6 +35,7 @@ import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
+import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -194,7 +195,7 @@ interface PreFilledStakeProps {
   preFilledStake?: string;
   updateInputtedStake: Function;
   stakeError?: string;
-  threshold: number;
+  threshold: string;
 }
 
 export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
@@ -226,7 +227,7 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
               stakeAmount={preFilledStake}
               updateStakeAmount={updateInputtedStake}
               stakeError={stakeError}
-              max={threshold.toString()}
+              max={threshold}
               maxLabel='MAX (REP THRESHOLD)'
             />
             <span>Review Pre-Filled Stake</span>
@@ -517,14 +518,14 @@ export interface ReportingBondsViewProps {
   updateScalarOutcome: Function;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
-  inputtedReportingStake: string;
+  inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
-  userAvailableRep: number;
   initialReport: boolean;
   migrateMarket: boolean;
   migrateRep: boolean;
   userAttoRep: BigNumber;
+  owesRep: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -533,6 +534,7 @@ interface ReportingBondsViewState {
   scalarError: string;
   stakeError: string;
   isScalar: boolean;
+  threshold: string;
 }
 
 export class ReportingBondsView extends Component<
@@ -545,7 +547,15 @@ export class ReportingBondsView extends Component<
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
+    threshold: this.props.userAttoRep.toString(),
   };
+
+  async componentDidMount() {
+    if (this.props.initialReport) {
+      const threshold = await getRepThresholdForPacing();
+      this.setState({ threshold: String(convertAttoValueToDisplayValue(threshold)) });
+    }
+  }
 
   toggleInput = () => {
     this.setState({ showInput: !this.state.showInput });
@@ -577,13 +587,13 @@ export class ReportingBondsView extends Component<
     const {
       updateInputtedStake,
       inputScalarOutcome,
-      userAvailableRep,
+      userAttoRep,
     } = this.props;
     const { isScalar } = this.state;
 
     if (isNaN(Number(inputStakeValue))) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-    } else if (createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))) {
+    } else if (createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))) {
       this.setState({
         stakeError: 'Value is bigger than user REP balance',
         disabled: true,
@@ -597,9 +607,9 @@ export class ReportingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    let inputToAttoRep = null;
-    if (!isNaN(Number(inputStakeValue))) {
-      inputToAttoRep = convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue));
+    let inputToAttoRep = '0';
+    if (!isNaN(Number(inputStakeValue)) && inputStakeValue !== '') {
+      inputToAttoRep = String(convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue)));
     }
     updateInputtedStake({inputToAttoRep, inputStakeValue});
   };
@@ -611,17 +621,25 @@ export class ReportingBondsView extends Component<
       reportingGasFee,
       reportAction,
       inputtedReportingStake,
-      userAvailableRep,
+      userAttoRep,
       id,
       migrateRep,
-      migrateMarket,
       initialReport,
+      owesRep,
     } = this.props;
 
-    const { showInput, disabled, scalarError, stakeError, isScalar } = this.state;
-    const preFilled = inputtedReportingStake || '0';
+    const { showInput, disabled, scalarError, stakeError, isScalar, threshold } = this.state;
 
-    const repAmount = migrateRep ? formatRep(preFilled).formatted : formatAttoRep(market.noShowBondAmount).formatted;
+    const repAmount = migrateRep ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted : formatAttoRep(market.noShowBondAmount).formatted;
+    let repLabel = migrateRep ? 'REP to migrate' : 'open reporter winning Stake'
+    if (owesRep) {
+      repLabel = 'REP needed'
+    }
+    const totalRep = owesRep
+      ? formatAttoRep(
+          createBigNumber(inputtedReportingStake.inputToAttoRep).plus(market.noShowBondAmount)
+        ).formatted
+      : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep)).formatted;
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div
@@ -629,7 +647,6 @@ export class ReportingBondsView extends Component<
           [Styles.Scalar]: isScalar,
           [Styles.InitialReport]: initialReport,
           [Styles.MigrateRep]: migrateRep,
-          [Styles.MigrateMarket]: migrateMarket,
         })}
       >
         {isScalar && id === 'null' && (
@@ -642,17 +659,17 @@ export class ReportingBondsView extends Component<
         )}
         {migrateRep && (
           <InputRepStake
-            stakeAmount={String(inputtedReportingStake)}
+            stakeAmount={String(inputtedReportingStake.inputStakeValue)}
             updateStakeAmount={this.updateInputtedStake}
             stakeError={stakeError}
-            max={String(userAvailableRep)}
+            max={String(userAttoRep)}
             maxLabel="MAX"
           />
         )}
         <span>Review</span>
         <LinearPropertyLabel
           key="initial"
-          label={migrateRep ? 'REP to migrate' : 'open reporter winning Stake'}
+          label={repLabel}
           value={`${repAmount} REP`}
         />
         <LinearPropertyLabel
@@ -661,8 +678,8 @@ export class ReportingBondsView extends Component<
           value={reportingGasFee}
         />
         {migrateRep &&
-          createBigNumber(inputtedReportingStake).lt(
-            createBigNumber(userAvailableRep)
+          createBigNumber(inputtedReportingStake.inputToAttoRep).lt(
+            createBigNumber(userAttoRep)
           ) && (
             <DismissableNotice
               show={true}
@@ -677,9 +694,9 @@ export class ReportingBondsView extends Component<
             showInput={showInput}
             toggleInput={this.toggleInput}
             updateInputtedStake={this.updateInputtedStake}
-            preFilledStake={inputtedReportingStake}
+            preFilledStake={inputtedReportingStake.inputStakeValue}
             stakeError={stakeError}
-            threshold={userAvailableRep}
+            threshold={threshold}
           />
         )}
 
@@ -687,18 +704,12 @@ export class ReportingBondsView extends Component<
           <div>
             <span>Totals</span>
             <span>
-              Sum total of Initial Reporter Stake and Pre-Filled Stake
+              Sum total of Pre-Filled Stake
             </span>
             <LinearPropertyLabel
               key="totalRep"
               label="Total rep"
-              value={
-                formatAttoRep(
-                  createBigNumber(preFilled).plus(
-                    createBigNumber(market.noShowBondAmount)
-                  )
-                ).formatted
-              }
+              value={totalRep}
             />
           </div>
         )}
@@ -860,7 +871,6 @@ export class UserRepDisplay extends Component<
     return (
       <div
         className={classNames(Styles.UserRepDisplay, {
-          [Styles.loggedOut]: isLoggedIn,
           [Styles.HideForMobile]: s.toggle,
         })}
       >
@@ -939,9 +949,10 @@ export interface ParticipationTokensViewProps {
   openModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
-  participationTokens: object;
   tokensOwned: FormattedNumber;
   percentageOfTotalFees: FormattedNumber;
+  participationTokensClaimable: FormattedNumber,
+  participationTokensClaimableFees: FormattedNumber,
 }
 
 export const ParticipationTokensView = (
@@ -953,6 +964,8 @@ export const ParticipationTokensView = (
     purchasedParticipationTokens,
     tokensOwned,
     percentageOfTotalFees,
+    participationTokensClaimable,
+    participationTokensClaimableFees,
   } = props;
 
   return (
@@ -998,12 +1011,12 @@ export const ParticipationTokensView = (
       <Subheaders
         info
         header="Participation Tokens Purchased"
-        subheader="0.0000"
+        subheader={participationTokensClaimable.formatted}
       />
       <Subheaders
         info
         header="My Portion of Reporting Fees"
-        subheader="0.0000"
+        subheader={participationTokensClaimableFees.formatted}
         secondSubheader="DAI"
       />
 

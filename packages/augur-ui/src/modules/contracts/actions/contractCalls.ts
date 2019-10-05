@@ -150,6 +150,12 @@ export async function sendRep(address: string, amount: string) {
   return RepToken.transfer(address, onChainAmount);
 }
 
+export async function getRepThresholdForPacing() {
+  const { contracts } = augurSdk.get();
+  const threshold = await contracts.universe.getDisputeThresholdForDisputePacing_();
+  return threshold;
+}
+
 export async function getDisputeThresholdForFork() {
   const { contracts } = augurSdk.get();
   const disputeThresholdForFork = await contracts.universe.getDisputeThresholdForFork_();
