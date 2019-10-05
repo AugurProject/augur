@@ -9,8 +9,6 @@ import { LoginAccount } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { LoginAccount } from 'modules/types';
-import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 
 interface ConnectAccountProps {
   isLogged: boolean;
@@ -21,13 +19,11 @@ interface ConnectAccountProps {
   userInfo: LoginAccount['meta'];
   accountAddress: string;
   universeId: string;
-  loadUniverseDetails: Function;
 }
 
 export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectAccount;
   connectDropdown;
-
 
   toggleDropdown(cb?: Function) {
     const {
@@ -35,9 +31,6 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
       updateMobileMenuState,
       isConnectionTrayOpen,
       mobileMenuState,
-      loadUniverseDetails,
-      userInfo,
-      universeId
     } = this.props;
     if (mobileMenuState > 0) {
       updateConnectionTray(!isConnectionTrayOpen);
@@ -46,8 +39,6 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
       updateMobileMenuState(1);
       updateConnectionTray(!isConnectionTrayOpen);
     }
-
-    loadUniverseDetails(universeId, userInfo.address);
 
     if (cb && typeof cb === 'function') cb();
   }

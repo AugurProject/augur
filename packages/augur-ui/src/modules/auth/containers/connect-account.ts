@@ -23,7 +23,19 @@ const mapDispatchToProps = dispatch => ({
     dispatch(loadUniverseDetails(universe, account))
 });
 
+const mergeProps = (sP: any, dP: any, oP: any) => {
+  if (sP.isLogged) {
+    dP.loadUniverseDetails(sP.universeId, sP.userInfo.address);
+  }
+  return {
+    ...oP,
+    ...sP,
+    ...dP,
+  };
+}
+
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(ConnectAccount);

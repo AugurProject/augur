@@ -160,16 +160,18 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           />
         </div>
 
-        <div className={Styles.WalletProvider}>
-          <div>
-            <div>Universe</div>
-            <div>{universe.outcomeName}</div>
+        {universe.forkingInfo &&
+          <div className={Styles.WalletProvider}>
+            <div>
+              <div>Universe</div>
+              <div>{universe.outcomeName}</div>
+            </div>
+            <SecondaryButton
+              action={() => universeSelectorModal()}
+              text='CHANGE UNIVERSE'
+            />
           </div>
-          <SecondaryButton
-            action={() => universeSelectorModal()}
-            text='CHANGE UNIVERSE'
-          />
-        </div>
+        }
 
         <div className={Styles.Logout}>
           <div onClick={() => logout()}>
