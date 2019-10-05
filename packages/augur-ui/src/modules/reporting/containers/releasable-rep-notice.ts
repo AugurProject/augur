@@ -18,16 +18,18 @@ const mapStateToProps = (state: AppState) => {
     if (reporting) {
       if (
         (reporting.reporting &&
-          createBigNumber(reporting.reporting.totalAmount).gt(ZERO)) ||
+          createBigNumber(reporting.reporting.totalStaked).gt(ZERO)) ||
         (reporting.disputing &&
-          createBigNumber(reporting.disputing.totalAmount).gt(ZERO)) ||
+          createBigNumber(reporting.disputing.totalStaked).gt(ZERO)) ||
         (reporting.participationTokens &&
-          createBigNumber(reporting.participationTokens.totalAmount).gt(ZERO))
+          createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO))
       )
         hasStakedRep = true;
     }
   }
   if (hasForked  && hasStakedRep) show = true;
+
+  if (!show) return null;
 
   return {
     show,

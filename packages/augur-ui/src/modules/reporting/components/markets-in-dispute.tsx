@@ -45,7 +45,10 @@ interface MarketsInDisputeState {
   search: string;
   selectedTab: string;
   tabs: Tab[];
-  filteredData: MarketData[];
+  filteredData: {
+    [TAB_CURRENT]: MarketData[];
+    [TAB_AWAITING]: MarketData[];
+  };
   sortBy: string;
   offset: number;
   limit: number;
@@ -66,6 +69,10 @@ const sortByOptions = [
   },
 ];
 
+const defaultTabs = {
+  [TAB_CURRENT]: [],
+  [TAB_AWAITING]: []
+ };
 export default class MarketsInDispute extends Component<
   MarketsInDisputeProps,
   MarketsInDisputeState
@@ -88,7 +95,7 @@ export default class MarketsInDispute extends Component<
           num: 0,
         },
       ],
-      filteredData: [],
+      filteredData: defaultTabs,
       isLoadingMarkets: true,
       marketCount: 0,
       showPagination: false,
@@ -134,7 +141,12 @@ export default class MarketsInDispute extends Component<
     const { tabs } = this.state;
     const filterOptions = this.getLoadMarketsFiltersOptions();
     this.getLoadMarketsMethods().map(loader =>
-      this.loadDisputeTypeMarkets(loader.method, filterOptions, tabs, loader.tabName)
+      this.loadDisputeTypeMarkets(
+        loader.method,
+        filterOptions,
+        tabs,
+        loader.tabName
+      )
     );
   };
 
@@ -174,13 +186,7 @@ export default class MarketsInDispute extends Component<
 
   getLoadMarketsFiltersOptions = () => {
     const { userAddress } = this.props;
-    const {
-      limit,
-      offset,
-      filterByMyPortfolio,
-      sortBy,
-      search,
-    } = this.state;
+    const { limit, offset, filterByMyPortfolio, sortBy, search } = this.state;
 
     let filterOptions = {
       limit,
@@ -201,7 +207,7 @@ export default class MarketsInDispute extends Component<
   };
 
   setOffset = offset => {
-    this.setState({ offset, isLoadingMarkets: true, filteredData: [] });
+    this.setState({ offset, isLoadingMarkets: true, filteredData: defaultTabs });
   };
 
   selectTab = (selectedTab: string) => {
@@ -226,10 +232,10 @@ export default class MarketsInDispute extends Component<
   };
 
   getFilteredDataMarkets = (markets: DisputingMarkets) => {
-    const { selectedTab } = this.state;
-    let filteredData = markets[REPORTING_STATE.CROWDSOURCING_DISPUTE];
-    if (selectedTab === TAB_AWAITING)
-      filteredData = markets[REPORTING_STATE.AWAITING_NEXT_WINDOW];
+    const filteredData = {
+      [TAB_CURRENT]: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE],
+      [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW]
+    }
     this.setState({ filteredData });
   };
 
@@ -287,7 +293,7 @@ export default class MarketsInDispute extends Component<
         }
         content={
           <div className={Styles.MarketCards}>
-            {!isLoadingMarkets && filteredData.length === 0 && (
+            {!isLoadingMarkets && filteredData[selectedTab].length === 0 && (
               <EmptyDisplay
                 selectedTab={label}
                 filterLabel={''}
@@ -295,14 +301,14 @@ export default class MarketsInDispute extends Component<
               />
             )}
             {isLoadingMarkets &&
-              filteredData.length === 0 &&
+              filteredData[selectedTab].length === 0 &&
               new Array(NUM_LOADING_CARDS)
                 .fill(null)
                 .map((prop, index) => (
                   <LoadingMarketCard key={`${index}-loading`} />
                 ))}
-            {filteredData.length > 0 &&
-              filteredData.map(market => (
+            {filteredData[selectedTab].length > 0 &&
+              filteredData[selectedTab].map(market => (
                 <MarketCard key={market.id} market={market} />
               ))}
             {showPagination && (

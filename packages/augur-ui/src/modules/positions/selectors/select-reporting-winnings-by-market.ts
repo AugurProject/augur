@@ -12,19 +12,14 @@ import {
   MarketReportClaimableContracts,
   marketsReportingCollection,
 } from 'modules/types';
-import {
-  formatAttoDai,
-  formatAttoRep,
-} from 'utils/format-number';
+import { formatAttoDai, formatAttoRep } from 'utils/format-number';
 
 export const selectReportingWinningsByMarket = createSelector(
   selectLoginAccountReportingState,
   selectMarketInfosState,
-  selectDisputeWindowStats,
   (
     userReporting,
-    marketInfos, // this is needed to trigger the selector if marketInfos changes
-    disputeWindow
+    marketInfos // this is needed to trigger the selector if marketInfos changes
   ): MarketReportClaimableContracts => {
     let claimableMarkets = {
       unclaimedRep: ZERO,
@@ -42,15 +37,14 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.participationTokens.contracts.length > 0
     ) {
       const calcUnclaimed = userReporting.participationTokens.contracts.reduce(
-        (p, c) => {
-          // filter out current dispute window rep staking
-          if (c.address === disputeWindow.address) return p;
-          return {
-            contracts: [...p.contracts, c.address],
-            dai: p.dai.plus(c.amountFees),
-            rep: p.rep.plus(createBigNumber(c.amount)),
-          };
-        },
+        (p, c) =>
+          c.isClaimable
+            ? {
+                contracts: [...p.contracts, c.address],
+                dai: p.dai.plus(c.amountFees),
+                rep: p.rep.plus(createBigNumber(c.amount)),
+              }
+            : p,
         { contracts: [], dai: ZERO, rep: ZERO }
       );
       participationContracts = {
@@ -64,22 +58,28 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.reporting &&
       userReporting.reporting.contracts.length > 0
     ) {
-      claimableMarkets = userReporting.reporting.contracts.reduce(
-        (p, contract) =>
-          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
-        claimableMarkets
+      const claimable = userReporting.reporting.contracts.filter(
+        contract => contract.isClaimable
       );
+      claimableMarkets = {
+        unclaimedRep: createBigNumber(userReporting.reporting.totalClaimable),
+        marketContracts: claimable,
+      };
     }
     if (
       userReporting &&
       userReporting.disputing &&
       userReporting.disputing.contracts.length > 0
     ) {
-      claimableMarkets = userReporting.disputing.contracts.reduce(
-        (p, contract) =>
-          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
-        claimableMarkets
+      const claimable = userReporting.disputing.contracts.filter(
+        contract => contract.isClaimable
       );
+      claimableMarkets = {
+        unclaimedRep: claimableMarkets.unclaimedRep.plus(
+          createBigNumber(userReporting.disputing.totalClaimable)
+        ),
+        marketContracts: [...claimableMarkets.marketContracts, ...claimable],
+      };
     }
     const totalUnclaimedDai = participationContracts.unclaimedDai;
     const totalUnclaimedRep = participationContracts.unclaimedRep.plus(
@@ -95,46 +95,3 @@ export const selectReportingWinningsByMarket = createSelector(
     };
   }
 );
-
-function sumClaims(
-  contractInfo: Getters.Accounts.ContractInfo,
-  marketsCollection: marketsReportingCollection
-): marketsReportingCollection {
-  const marketId = contractInfo.marketId;
-  let addedValue = ZERO;
-  const found = marketsCollection.marketContracts.find(
-    c => c.marketId === marketId
-  );
-  if (found) {
-    found.totalAmount = createBigNumber(found.totalAmount).plus(
-      createBigNumber(contractInfo.amount)
-    );
-    found.contracts = [...found.contracts, contractInfo.address];
-    addedValue = createBigNumber(contractInfo.amount);
-  } else {
-    addedValue = createBigNumber(contractInfo.amount);
-    marketsCollection.marketContracts = [
-      ...marketsCollection.marketContracts,
-      {
-        ...contractInfo,
-        contracts: [contractInfo.address],
-        totalAmount: contractInfo.amount,
-        marketObject: selectMarket(contractInfo.marketId)
-      },
-    ];
-  }
-  marketsCollection.unclaimedRep = marketsCollection.unclaimedRep.plus(
-    addedValue
-  );
-  return marketsCollection;
-}
-
-function isClaimable(marketId: string, amount: BigNumber) {
-  if (createBigNumber(amount).lte(ZERO)) return false;
-  const market = selectMarket(marketId);
-  if (!market) return false;
-  return (
-    market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
-    market.reportingState === REPORTING_STATE.FINALIZED
-  );
-}
