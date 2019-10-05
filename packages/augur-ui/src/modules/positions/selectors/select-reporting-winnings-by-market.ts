@@ -2,29 +2,23 @@ import { createSelector } from 'reselect';
 import {
   selectMarketInfosState,
   selectLoginAccountReportingState,
-  selectDisputeWindowStats,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { ZERO, REPORTING_STATE } from 'modules/common/constants';
+import { createBigNumber } from 'utils/create-big-number';
+import { ZERO } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import {
   MarketReportClaimableContracts,
   marketsReportingCollection,
 } from 'modules/types';
-import {
-  formatAttoDai,
-  formatAttoRep,
-} from 'utils/format-number';
+import { formatAttoDai, formatAttoRep } from 'utils/format-number';
 
 export const selectReportingWinningsByMarket = createSelector(
   selectLoginAccountReportingState,
   selectMarketInfosState,
-  selectDisputeWindowStats,
   (
     userReporting,
-    marketInfos, // this is needed to trigger the selector if marketInfos changes
-    disputeWindow
+    marketInfos // this is needed to trigger the selector if marketInfos changes
   ): MarketReportClaimableContracts => {
     let claimableMarkets = {
       unclaimedRep: ZERO,
@@ -42,15 +36,14 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.participationTokens.contracts.length > 0
     ) {
       const calcUnclaimed = userReporting.participationTokens.contracts.reduce(
-        (p, c) => {
-          // filter out current dispute window rep staking
-          if (c.address === disputeWindow.address) return p;
-          return {
-            contracts: [...p.contracts, c.address],
-            dai: p.dai.plus(c.amountFees),
-            rep: p.rep.plus(createBigNumber(c.amount)),
-          };
-        },
+        (p, c) =>
+          c.isClaimable
+            ? {
+                contracts: [...p.contracts, c.address],
+                dai: p.dai.plus(c.amountFees),
+                rep: p.rep.plus(createBigNumber(c.amount)),
+              }
+            : p,
         { contracts: [], dai: ZERO, rep: ZERO }
       );
       participationContracts = {
@@ -65,8 +58,7 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.reporting.contracts.length > 0
     ) {
       claimableMarkets = userReporting.reporting.contracts.reduce(
-        (p, contract) =>
-          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
+        (p, contract) => (contract.isClaimable ? sumClaims(contract, p) : p),
         claimableMarkets
       );
     }
@@ -76,8 +68,7 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.disputing.contracts.length > 0
     ) {
       claimableMarkets = userReporting.disputing.contracts.reduce(
-        (p, contract) =>
-          isClaimable(contract.marketId, contract.amount) ? sumClaims(contract, p) : p,
+        (p, contract) => (contract.isClaimable ? sumClaims(contract, p) : p),
         claimableMarkets
       );
     }
@@ -118,8 +109,8 @@ function sumClaims(
       {
         ...contractInfo,
         contracts: [contractInfo.address],
-        totalAmount: contractInfo.amount,
-        marketObject: selectMarket(contractInfo.marketId)
+        totalAmount: createBigNumber(contractInfo.amount),
+        marketObject: selectMarket(contractInfo.marketId),
       },
     ];
   }
@@ -127,14 +118,4 @@ function sumClaims(
     addedValue
   );
   return marketsCollection;
-}
-
-function isClaimable(marketId: string, amount: BigNumber) {
-  if (createBigNumber(amount).lte(ZERO)) return false;
-  const market = selectMarket(marketId);
-  if (!market) return false;
-  return (
-    market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
-    market.reportingState === REPORTING_STATE.FINALIZED
-  );
 }

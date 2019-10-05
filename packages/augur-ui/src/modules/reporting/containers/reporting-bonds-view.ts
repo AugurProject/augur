@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasForked && !!universe.forkingInfo.winningChildUniverseId;
   const initialReport = !migrateMarket && !migrateRep;
   const openReporting = market.reportingState === REPORTING_STATE.OPEN_REPORTING;
-  const owesRep = !openReporting && !isSameAddress(market.designatedReporter, loginAccount.address);
+  const owesRep = migrateMarket || (!openReporting && !isSameAddress(market.designatedReporter, loginAccount.address));
 
   return {
     owesRep,

@@ -624,7 +624,6 @@ export class ReportingBondsView extends Component<
       userAttoRep,
       id,
       migrateRep,
-      migrateMarket,
       initialReport,
       owesRep,
     } = this.props;
@@ -634,7 +633,7 @@ export class ReportingBondsView extends Component<
     const repAmount = migrateRep ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted : formatAttoRep(market.noShowBondAmount).formatted;
     let repLabel = migrateRep ? 'REP to migrate' : 'open reporter winning Stake'
     if (owesRep) {
-      repLabel = 'REP owned'
+      repLabel = 'REP needed'
     }
     const totalRep = owesRep
       ? formatAttoRep(
@@ -648,7 +647,6 @@ export class ReportingBondsView extends Component<
           [Styles.Scalar]: isScalar,
           [Styles.InitialReport]: initialReport,
           [Styles.MigrateRep]: migrateRep,
-          [Styles.MigrateMarket]: migrateMarket,
         })}
       >
         {isScalar && id === 'null' && (
@@ -951,9 +949,10 @@ export interface ParticipationTokensViewProps {
   openModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
-  participationTokens: object;
   tokensOwned: FormattedNumber;
   percentageOfTotalFees: FormattedNumber;
+  participationTokensClaimable: FormattedNumber,
+  participationTokensClaimableFees: FormattedNumber,
 }
 
 export const ParticipationTokensView = (
@@ -965,6 +964,8 @@ export const ParticipationTokensView = (
     purchasedParticipationTokens,
     tokensOwned,
     percentageOfTotalFees,
+    participationTokensClaimable,
+    participationTokensClaimableFees,
   } = props;
 
   return (
@@ -1010,12 +1011,12 @@ export const ParticipationTokensView = (
       <Subheaders
         info
         header="Participation Tokens Purchased"
-        subheader="0.0000"
+        subheader={participationTokensClaimable.formatted}
       />
       <Subheaders
         info
         header="My Portion of Reporting Fees"
-        subheader="0.0000"
+        subheader={participationTokensClaimableFees.formatted}
         secondSubheader="DAI"
       />
 
