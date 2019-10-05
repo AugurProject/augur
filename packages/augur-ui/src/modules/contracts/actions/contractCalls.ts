@@ -104,11 +104,11 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string): Promise<number> {
+export async function getRepBalance(address: string): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
   const RepToken = contracts.getReputationToken();
   const balance = await RepToken.balanceOf_(address);
-  return formatAttoRep(balance).value;
+  return balance;
 }
 
 export async function getEthBalance(address: string): Promise<number> {
@@ -659,8 +659,8 @@ export async function claimMarketsProceeds(
 
 export async function migrateThroughOneForkEstimateGas(
   marketId: string,
-  payoutNumerators: BigNumber[],
-  description: string
+  payoutNumerators: BigNumber[] = [],
+  description: string = ''
 ): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(marketId);
@@ -669,10 +669,38 @@ export async function migrateThroughOneForkEstimateGas(
 
 export async function migrateThroughOneFork(
   marketId: string,
-  payoutNumerators: BigNumber[],
-  description: string
+  payoutNumerators: BigNumber[] = [],
+  description: string = ''
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(marketId);
   return market.migrateThroughOneFork(payoutNumerators, description);
+}
+
+export async function reportAndMigrateMarket(migration: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(migration.marketId);
+  const payoutNumerators = getPayoutNumerators(migration);
+  return market.migrateThroughOneFork(payoutNumerators, migration.description);
+}
+
+export async function migrateRepToUniverseEstimateGas(
+  migration: doReportDisputeAddStake
+): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  const payoutNumerators = getPayoutNumerators(migration);
+  const gas = await contracts.reputationToken.migrateOutByPayout_estimateGas(
+    payoutNumerators,
+    createBigNumber(migration.attoRepAmount)
+  );
+  return gas;
+}
+
+export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
+  const { contracts } = augurSdk.get();
+  const payoutNumerators = getPayoutNumerators(migration);
+  return contracts.reputationToken.migrateOutByPayout(
+    payoutNumerators,
+    createBigNumber(migration.attoRepAmount)
+  );
 }

@@ -14,7 +14,8 @@ const mapDispatchToProps = () => ({});
 const mergeProps = (sP: any) => ({
   shouldClose: sP.isLogged,
   message: sP.modal.message,
-  callback: sP.modal.callback
+  callback: sP.modal.callback,
+  showMetaMaskHelper: sP.modal.showMetaMaskHelper,
 });
 
 export default withRouter(

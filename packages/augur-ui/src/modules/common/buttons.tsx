@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  ASCENDING,
-  DESCENDING,
-  BUY,
-} from 'modules/common/constants';
+import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
 import {
   StarIcon,
   SortIcon,
@@ -20,6 +16,8 @@ import {
   RotatableChevron,
   Filter,
   TwoArrowsOutline,
+  XIcon,
+  BackIcon,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -92,6 +90,7 @@ export interface ExternalLinkButtonProps {
   showNonLink?: boolean;
   action?: Function;
   URL?: string;
+  light?: boolean;
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
@@ -134,6 +133,16 @@ export const PrimarySignInButton = (props: DefaultButtonProps) => (
       </div>
     </div>
   </button>
+);
+
+export const CloseButton = (props: DefaultButtonProps) => (
+  <button className={Styles.CloseButton} onClick={e => props.action(e)} disabled={props.disabled}>
+    {XIcon}
+  </button>
+);
+
+export const BackButton = (props: DefaultButtonProps) => (
+  <button className={Styles.BackButton} onClick={e => props.action(e)} disabled={props.disabled}>{BackIcon} back</button>
 );
 
 export const SecondarySignInButton = (props: DefaultButtonProps) => (
@@ -362,16 +371,16 @@ export const ViewTransactionDetailsButton = (
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
   <button
-    className={Styles.ExternalLinkButton}
+    className={classNames(Styles.ExternalLinkButton, {[Styles.LightAlternate]: props.light})}
     onClick={e => props.action && props.action(e)}
   >
-    {!props.showNonLink && ViewIcon}
     {props.URL && (
       <a href={props.URL} target="blank">
         {props.label}
       </a>
     )}
     {!props.URL && <span>{props.label}</span>}
+    {!props.showNonLink && ViewIcon}
   </button>
 );
 

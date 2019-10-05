@@ -40,11 +40,11 @@
   &.ExtraTitlePadding {
     > div:first-of-type > div:first-of-type {
       margin-left: @size-16;
-    } 
+    }
   }
 
   &.NoBorders {
-    > div:first-of-type { 
+    > div:first-of-type {
       border-bottom: 0;
       padding-bottom: @size-18;
     }
@@ -76,7 +76,8 @@
 }
 
 .BottomContent {
-  background: @color-dark-grey;
+  background: @color-table-header;
+  border: 1px solid @color-dark-grey;
   margin-top: @size-16;
 }
 
@@ -106,7 +107,7 @@
 .Toggle {
   margin-left: @size-16;
   display: flex;
-  
+
   > svg {
     width: @size-12;
     height: @size-22;
@@ -126,13 +127,13 @@
     > div:first-of-type {
       display: flex;
       justify-content: flex-end;
-      margin-top: @size-10;
+      margin-top: @size-8;
 
       > div:first-of-type {
         flex: 1;
       }
 
-      > div::nth-of-type(2) {
+      > div:nth-of-type(2) {
         flex: 0;
       }
     }

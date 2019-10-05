@@ -1819,7 +1819,7 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@toruslabs/torus-embed@^0.1.2":
+"@toruslabs/torus-embed@0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@toruslabs/torus-embed/-/torus-embed-0.1.2.tgz#5ab940d39296b340787255eb3ab8ea38e400b834"
   integrity sha512-/1bKFaC9+TwsQ0ylKiOaBNGtzfHBbFnyfaLKQSCv0E21c+zHWhiLYS6jKb3D5ECeVyE21g/eNxkimDxf9qGNhQ==
@@ -17085,7 +17085,7 @@ react-addons-shallow-compare@15.6.2, react-addons-shallow-compare@^15.5.2:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-blockies@^1.4.1:
+react-blockies@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/react-blockies/-/react-blockies-1.4.1.tgz#d4f0faf95ac197213a297a370a4d7f77ea3d0b08"
   integrity sha512-4N015X5oPNnD3xQPsiqolOFzPZSSWyc5mJhJUZShUCHtiGUxVN+1qsWTcglkHMNySux9hUofaispqcw9QkWP5Q==

@@ -39,6 +39,7 @@ export class FlashSession {
   accounts: Account[];
   user?: ContractAPI;
   api?: API;
+  db?: Promise<DB>;
   readonly scripts: { [name: string]: FlashScript } = {};
   log: Logger = console.log;
   network?: NetworkConfiguration;
@@ -131,7 +132,7 @@ export class FlashSession {
 
     if (wireUpSdk) this.usingSdk = true;
 
-    const connector: BaseConnector = wireUpSdk ? new Connectors.SEOConnector() : new EmptyConnector();
+    const connector: BaseConnector = wireUpSdk ? new Connectors.DirectConnector() : new EmptyConnector();
 
     this.user = await ContractAPI.userWrapper(
       this.getAccount(),
@@ -145,7 +146,8 @@ export class FlashSession {
       if (!network) throw Error('Cannot wire up sdk if network is not set.');
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
-      this.api = new API(this.user.augur, this.makeDB());
+      this.db = this.makeDB();
+      this.api = new API(this.user.augur, this.db);
     }
 
     if (approveCentralAuthority) {

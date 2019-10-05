@@ -1,0 +1,81 @@
+@import (reference) '~assets/styles/shared';
+
+.HelpResources {
+  color: @color-primary-text;
+  position: relative;
+  display: flex;
+  flex: 1;
+  max-width: 57px;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
+  > span {
+    padding: @size-18;
+    display: flex;
+    cursor: pointer;
+    border: 1px solid @color-dark-grey;
+    border-bottom: 0;
+
+    > svg {
+      width: @size-20;
+      height: @size-20;
+
+      > path {
+        fill: @color-primary-text;
+      }
+    }
+
+    &:hover {
+      border: 1px solid @color-module-background;
+      border-bottom: 0;
+      background: @color-module-background;
+    }
+  }
+
+  > div {
+    position: absolute;
+    top: 0;
+    background: @color-module-background;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+    width: 210px;
+    top: 100%;
+    right: -1px;
+    margin-top: -1px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .mono-11-bold;
+
+      text-transform: uppercase;
+      padding: @size-22 @size-16;
+      color: @color-primary-text;
+      background: @color-module-background;
+    }
+
+    > span:not(:first-of-type) {
+      padding: @size-13 @size-16;
+      background: @color-table-header;
+      border-top: 1px solid @color-dark-grey;
+    }
+
+    > span:last-of-type {
+      border-bottom-left-radius: @border-radius-default;
+      border-bottom-right-radius: @border-radius-default;
+    }
+  }
+
+  &.Open {
+    > span {
+      border: 1px solid @color-secondary-action-outline;
+      border-bottom: 0;
+      background: @color-module-background;
+      z-index: @above-all-content;
+    }
+  }
+}

@@ -5,17 +5,44 @@
   color: @color-primary-text;
   flex-direction: column;
   justify-content: center;
+  margin-left: @size-1;
   position: relative;
   z-index: @above-all-content-above;
 
-  &:hover {
-    background-color: @color-module-background;
+  @media @breakpoint-mobile {
+    display: flex;
+    height: 100%;
+  }
+
+  &.selected {
+    > div:first-of-type {
+      background-color: @color-module-background;
+      border: 1px solid @color-secondary-action-outline;
+      border-bottom: 0;
+
+      @media @breakpoint-mobile {
+        border: none;
+      }
+    }
   }
 
   > div:first-of-type {
     cursor: pointer;
+
+    &:hover {
+      background-color: @color-module-background;
+    }
+
+    background: @color-dark-grey;
+    border: 1px solid @color-dark-grey;
+    border-bottom: 0;
     display: flex;
     padding: @size-12;
+
+    @media @breakpoint-mobile {
+      padding: @size-16 @size-12;
+      border: none;
+    }
 
     &:focus {
       outline: none;
@@ -34,10 +61,6 @@
           display: inline-block;
           margin-top: -@size-8;
         }
-
-        @media @breakpoint-mobile {
-          display: none;
-        }
       }
     }
   }
@@ -45,8 +68,8 @@
 
 .ConnectDropdown {
   position: absolute;
-  right: 0;
-  z-index: @above-all-content;
+  right: 0px;
+  top: 56px;
 }
 
 .AccountInfo {

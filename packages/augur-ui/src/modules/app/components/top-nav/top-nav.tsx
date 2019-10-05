@@ -6,34 +6,23 @@ import makePath from 'modules/routes/helpers/make-path';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
-
-interface TopNavMenuItem {
-  icon: ReactNode;
-  route: string;
-  title: string;
-  iconName?: string;
-  requireLogin?: boolean;
-  onlyForMobile?: boolean;
-  mobileClick?: Function;
-  onClick?: Function;
-  disabled?: boolean;
-}
+import { NavMenuItem } from 'modules/types';
 
 interface TopNavProps {
   isLogged: boolean;
-  menuData: TopNavMenuItem[];
+  menuData: NavMenuItem[];
   currentBasePath: string;
+  isDisabled?: boolean;
 }
 
-const TopNav = (props: TopNavProps) => {
-  const { isLogged, menuData, currentBasePath } = props;
+const TopNav = ({ isLogged, isDisabled = false, menuData, currentBasePath }: TopNavProps) => {
 
   const isCurrentItem = item => {
     return item.route === currentBasePath;
   };
 
   const accessFilteredMenu = menuData.filter(
-    item => !(item.requireLogin && !isLogged) && !item.onlyForMobile
+    item => !(item.requireLogin && !isLogged)
   );
 
   return (
@@ -45,7 +34,11 @@ const TopNav = (props: TopNavProps) => {
             return (
               <div className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route ? makePath(item.route) : null}>
-                  <SecondaryButton text={'Create Market'} action={() => null} />
+                  <SecondaryButton
+                    disabled={isDisabled}
+                    text={'Create Market'}
+                    action={() => null}
+                  />
                 </Link>
               </div>
             );

@@ -8,43 +8,16 @@
   height: 100%;
   justify-content: flex-end;
 
-  > div {
-    display: flex;
-  }
-
-  // AUGUR LOGO
-  > div:first-of-type {
-    border-right: 1px solid @color-module-background;
-    padding: 0 @size-20 0 @size-16;
-
-    @media @breakpoint-mobile {
-      align-items: center;
-      border: 0;
-      display: flex;
-      height: 100%;
-    }
-  }
-
-  // CORE STATS
-  > div:nth-of-type(2) {
-    align-items: center;
-    height: 100%;
-
-    @media @breakpoint-mobile {
-      width: 100%;
-      justify-content: flex-end;
-      border-right: 1px solid @color-module-background;
-    }
-  }
 
   // LOGIN/SIGNUP ACCOUNT / ALERTS
   > div:last-of-type {
     align-items: center;
+    display: flex;
     flex: 1;
     justify-content: flex-end;
-    max-height: @top-bar-height;
+    height: 100%;
 
-    > div {
+    > div > div:last-of-type {
       @media @breakpoint-mobile {
         display: none;
       }
@@ -57,24 +30,27 @@
 }
 
 .Logo {
+  border-right: 1px solid @color-module-background;
+  padding: 0 @size-20 0 @size-16;
 
   div {
     width: @size-24;
   }
 
   @media @breakpoint-mobile {
-    background: @color-dark-grey;
-    margin-left: @size-48;
-    margin-right: auto;
-
-    div {
-      width: @size-40;
-    }
+    display: none;
   }
 }
 
 .statsContainer {
-  // Funds
+  align-items: center;
+  display: flex;
+  height: 100%;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
   > div:first-of-type {
     display: flex;
     flex-direction: column;
@@ -119,28 +95,6 @@
         content:'$';
       }
     }
-
-    @media @breakpoint-mobile {
-      border: 0;
-      margin: @size-8 @size-12;
-      max-width: 180px;
-
-      > span {
-        display: flex;
-
-        > div {
-          > span:first-of-type {
-            .mono-9-bold;
-
-            color: @color-secondary-text;
-          }
-
-          > svg {
-            display: none;
-          }
-        }
-      }
-    }
   }
 
   // P/I
@@ -166,10 +120,6 @@
 
     > div {
       justify-content: flex-start;
-    }
-
-    @media @breakpoint-mobile {
-      display: none;
     }
   }
 }

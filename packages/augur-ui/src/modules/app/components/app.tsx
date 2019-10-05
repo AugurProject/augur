@@ -17,12 +17,6 @@ import {
   MobileNavHamburgerIcon,
   MobileNavCloseIcon,
   MobileNavBackIcon,
-  LogoutIcon,
-  NavAccountIcon,
-  NavCreateIcon,
-  NavMarketsIcon,
-  NavPortfolioIcon,
-  NavReportingIcon
 } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
@@ -40,18 +34,18 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
-import { Universe } from 'modules/types';
+import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
 
 interface AppProps {
-  blockchain: Object;
-  env: Object;
-  history: Object;
+  blockchain: Blockchain;
+  env: EnvObject;
+  history: History;
   initAugur: Function;
-  isLogged: Boolean;
-  isMobile: Boolean;
-  location: Object;
-  loginAccount: Object;
-  modal: Object;
+  isLogged: boolean;
+  isMobile: boolean;
+  location: Location;
+  loginAccount: LoginAccount;
+  modal: object;
   universe: Universe;
   updateIsMobile: Function;
   updateIsMobileSmall: Function;
@@ -59,16 +53,21 @@ interface AppProps {
   finalizeMarket: Function;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
-  useWeb3Transport: Boolean;
+  useWeb3Transport: boolean;
   logout: Function;
-  sidebarStatus: Object;
+  sidebarStatus: {
+    mobileMenuState: number;
+    isAlertsVisible: boolean;
+    currentBasePath: string;
+  };
   updateCurrentBasePath: Function;
   updateCurrentInnerNavType: Function;
   updateMobileMenuState: Function;
   updateIsAlertVisible: Function;
   updateSidebarStatus: Function;
-  alerts: Object;
-  toasts: Array<any>;
+  toasts: any[];
+  updateConnectionTray: Function;
+  isConnectionTrayOpen: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -81,55 +80,31 @@ export default class AppView extends Component<AppProps> {
   sideNavMenuData = [
     {
       title: 'Markets',
-      icon: NavMarketsIcon,
       route: MARKETS,
     },
     {
       title: 'Account Summary',
-      iconName: 'nav-account-icon',
-      icon: NavAccountIcon,
       route: ACCOUNT_SUMMARY,
       requireLogin: true
     },
     {
       title: 'Portfolio',
-      iconName: 'nav-portfolio-icon',
-      icon: NavPortfolioIcon,
       route: MY_POSITIONS,
       requireLogin: true,
     },
     {
       title: 'Disputing',
-      iconName: 'nav-reporting-icon',
-      icon: NavReportingIcon,
-      mobileClick: () =>
-        this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
       route: DISPUTING,
     },
     {
       title: 'Reporting',
-      iconName: 'nav-reporting-icon',
-      icon: NavReportingIcon,
-      mobileClick: () =>
-        this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
       route: REPORTING,
     },
     {
       title: 'Create',
-      iconName: 'nav-create-icon',
-      icon: NavCreateIcon,
       route: CREATE_MARKET,
       requireLogin: true,
       disabled: this.props.universe.forkingInfo,
-    },
-    {
-      title: 'Logout',
-      iconName: 'nav-logout-icon',
-      icon: LogoutIcon,
-      mobileClick: () => this.props.logout(),
-      route: MARKETS,
-      requireLogin: true,
-      onlyForMobile: true,
     },
   ];
 
@@ -271,9 +246,11 @@ export default class AppView extends Component<AppProps> {
   }
 
   mobileMenuButtonClick() {
-    const { sidebarStatus, updateMobileMenuState } = this.props;
+    const { sidebarStatus, updateMobileMenuState, updateConnectionTray } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
 
+
+    updateConnectionTray(false);
     switch (menuState) {
       case MOBILE_MENU_STATES.CLOSED:
         updateMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
@@ -284,7 +261,7 @@ export default class AppView extends Component<AppProps> {
     }
   }
 
-  renderMobileMenuButton(unseenCount: number) {
+  renderMobileMenuButton() {
     const { sidebarStatus } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
 
@@ -322,17 +299,16 @@ export default class AppView extends Component<AppProps> {
       blockchain,
       history,
       isLogged,
-      isMobile,
       location,
       modal,
       universe,
       sidebarStatus,
       updateMobileMenuState,
-      alerts,
-      toasts
+      toasts,
+      isConnectionTrayOpen,
+      updateConnectionTray,
     } = this.props;
 
-    const { unseenCount } = alerts;
     const currentPath = parsePath(location.pathname)[0];
 
     return (
@@ -351,7 +327,6 @@ export default class AppView extends Component<AppProps> {
           <section className={Styles.Main}>
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
-              onClick={this.mainSectionClickHandler}
               role='presentation'
             >
               <TopBar />
@@ -362,20 +337,20 @@ export default class AppView extends Component<AppProps> {
             onClick={e => this.mainSectionClickHandler(e, false)}
             role='presentation'
           >
-            {this.renderMobileMenuButton(unseenCount)}
+            {this.renderMobileMenuButton()}
 
             {/* HIDDEN ON DESKTOP */}
             <SideNav
-              defaultMobileClick={() =>
-                updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
-              }
+              showNav={ sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN}
+              defaultMobileClick={() => {
+                updateConnectionTray(false);
+                updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+              }}
               isLogged={isLogged}
-              mobileShow={
-                sidebarStatus.mobileMenuState ===
-                MOBILE_MENU_STATES.SIDEBAR_OPEN
-              }
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
+              isConnectionTrayOpen={isConnectionTrayOpen}
+              logout={() => this.props.logout()}
             />
 
             {/* HIDDEN ON MOBILE */}
@@ -393,8 +368,7 @@ export default class AppView extends Component<AppProps> {
               universe.forkEndTime !== '0' &&
               blockchain &&
               blockchain.currentAugurTimestamp && (
-                <section className={Styles.TopBar}>
-                </section>
+                <section className={Styles.TopBar} />
               )}
             <section
               className={classNames(Styles.Main__wrap, {

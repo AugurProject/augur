@@ -123,6 +123,7 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   id: string;
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
+  forkEndTime?: string;
 }
 
 export interface Versions {
@@ -335,6 +336,12 @@ export interface NewMarket {
   offset: number;
   timezone: string;
 }
+
+export interface LinkContent {
+  content: string;
+  link?: string;
+};
+
 export interface Draft {
   uniqueId: number;
   created: number;
@@ -528,6 +535,7 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  attoRep: string;
 }
 export interface LoginAccount {
   address?: string;
@@ -557,7 +565,9 @@ export interface Web3 {
 export interface WindowApp extends Window {
   app: object;
   web3: Web3;
-  ethereum: object;
+  ethereum: {
+    selectedAddress
+  };
   localStorage: Storage;
   integrationHelpers: any;
   fm?: any;
@@ -678,4 +688,11 @@ export interface MarketReportClaimableContracts {
 export interface DisputeInputtedValues {
   inputStakeValue: string;
   inputToAttoRep: string;
+}
+
+export interface NavMenuItem {
+  route: string;
+  title: string;
+  requireLogin?: boolean;
+  disabled?: boolean;
 }

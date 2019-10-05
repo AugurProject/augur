@@ -19,7 +19,7 @@ const getTorusNetwork = (networkId): string => {
   }
 };
 
-export const loginWithTorus = () => async (
+export const loginWithTorus = (showConnectingModal: Function) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const networkId = getNetworkId();
@@ -45,6 +45,8 @@ export const loginWithTorus = () => async (
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
 
+      showConnectingModal();
+
       const accountObject = {
         address: account,
         mixedCaseAddress: toChecksumAddress(account),
@@ -52,7 +54,7 @@ export const loginWithTorus = () => async (
           address: account,
           email: null,
           profileImage: null,
-          openWallet: () => torus.showWallet('home'),
+          openWallet: (goto = 'home') => torus.showWallet(goto),
           signer: provider.getSigner(),
           accountType: ACCOUNT_TYPES.TORUS,
           isWeb3,

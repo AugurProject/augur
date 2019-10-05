@@ -57,6 +57,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   nextWindowStartTime: Timestamp;
   nextWindowEndTime: Timestamp;
   pacingOn: boolean;
+  payoutNumerators: PayoutNumerators;
 }
 
 export interface DisputeCrowdsourcerContributionLog
@@ -78,6 +79,7 @@ export interface DisputeCrowdsourcerCreatedLog extends Log, Doc {
   disputeCrowdsourcer: Address;
   payoutNumerators: PayoutNumerators;
   size: string;
+  disputeRound: string;
 }
 
 export interface DisputeCrowdsourcerRedeemedLog extends Log, Doc, Timestamped {
@@ -113,6 +115,7 @@ export interface InitialReportSubmittedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
+  initialReporter: Address;
   amountStaked: string;
   isDesignatedReporter: boolean;
   payoutNumerators: PayoutNumerators;

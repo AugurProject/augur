@@ -28,11 +28,12 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     ICash public cash;
     address public buyParticipationTokens;
     uint256 private startTime;
+    bool public participationTokensEnabled;
 
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -41,6 +42,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         cash = ICash(augur.lookup("Cash"));
         buyParticipationTokens = augur.lookup("BuyParticipationTokens");
         startTime = _startTime;
+        participationTokensEnabled = _participationTokensEnabled;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
     }
@@ -95,6 +97,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     }
 
     function buyInternal(address _buyer, uint256 _attotokens) private {
+        require(participationTokensEnabled, "Cannot buy Participation tokens in initial market dispute windows");
         require(_attotokens > 0, "DisputeWindow.buy: amount cannot be 0");
         require(isActive(), "DisputeWindow.buy: window is not active");
         require(!universe.isForking(), "DisputeWindow.buy: universe is forking");

@@ -5,6 +5,10 @@
   display: flex;
   flex: 1;
   justify-content: flex-end;
+
+  @media @breakpoint-max-tablet {
+    justify-content: space-between;
+  }
   
   &.HideDropdown {
     > div:first-of-type {

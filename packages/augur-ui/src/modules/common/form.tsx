@@ -222,14 +222,13 @@ interface RadioGroupProps {
   defaultSelected?: string | null;
   children?: any[];
   reportAction: Function;
-  preFilledStake?: string;
-  updatePreFilledStake?: Function;
-  disputeStake?: DisputeInputtedValues;
-  updateDisputeStake?: Function;
+  inputtedReportingStake?: DisputeInputtedValues;
+  updateInputtedStake?: Function;
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   stake?: Getters.Markets.StakeDetails;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
+  hideRadioButton?: boolean;
 }
 
 export interface RadioGroupState {
@@ -262,15 +261,14 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   error?: boolean;
   stake: Getters.Markets.StakeDetails | null;
   isInvalid?: boolean;
-  preFilledStake?: string;
-  updatePreFilledStake?: Function;
-  disputeStake?: DisputeInputtedValues;
-  updateDisputeStake?: Function;
+  inputtedReportingStake?: DisputeInputtedValues;
+  updateInputtedStake?: Function;
   reportAction: Function;
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
+  isDisputing: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -279,6 +277,7 @@ export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   value: string;
   onChange: Function;
   error?: boolean;
+  hideRadioButton?: boolean;
 }
 
 interface CheckboxBarProps extends BaseRadioButtonProp {
@@ -696,13 +695,12 @@ interface ReportingRadioGroupProps {
   selected: string | null;
   updateChecked: Function;
   reportAction: Function;
-  preFilledStake?: string;
-  updatePreFilledStake?: Function;
-  disputeStake?: DisputeInputtedValues;
-  updateDisputeStake?: Function;
+  inputtedReportingStake?: DisputeInputtedValues;
+  updateInputtedStake?: Function;
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[];
+  isDisputing: boolean;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -711,18 +709,14 @@ export const ReportingRadioBarGroup = ({
   selected,
   updateChecked,
   reportAction,
-  preFilledStake,
-  updatePreFilledStake,
-  disputeStake,
-  updateDisputeStake,
+  inputtedReportingStake,
+  updateInputtedStake,
   inputScalarOutcome,
   updateScalarOutcome,
   userCurrentDisputeRound,
+  isDisputing,
 }: ReportingRadioGroupProps) => {
-  const { reportingState, disputeInfo } = market;
-  const isReporting =
-    reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
+  const { disputeInfo } = market;
   const tentativeWinning = radioButtons.find(
     radioButton => radioButton.stake.tentativeWinning
   );
@@ -743,7 +737,7 @@ export const ReportingRadioBarGroup = ({
 
   return (
     <div className={Styles.ReportingRadioBarGroup}>
-      {!isReporting && tentativeWinning && (
+      {isDisputing && tentativeWinning && (
         <section>
           <span>Tentative Outcome</span>
           <span>
@@ -754,11 +748,9 @@ export const ReportingRadioBarGroup = ({
             market={market}
             expandable
             {...tentativeWinning}
-            preFilledStake={preFilledStake}
-            updatePreFilledStake={updatePreFilledStake}
-            disputeStake={disputeStake}
+            inputtedReportingStake={inputtedReportingStake}
             inputScalarOutcome={inputScalarOutcome}
-            updateDisputeStake={updateDisputeStake}
+            updateInputtedStake={updateInputtedStake}
             isInvalid={tentativeWinning.isInvalid}
             updateScalarOutcome={updateScalarOutcome}
             updateChecked={(selected, isInvalid )=> {
@@ -769,16 +761,17 @@ export const ReportingRadioBarGroup = ({
               d => d.outcome === String(tentativeWinning.value)
             )}
             hideButton={disputeInfo.disputePacingOn}
+            isDisputing={isDisputing}
           />
         </section>
       )}
-      <span>{isReporting ? 'Outcomes' : 'Other Outcomes'}</span>
+      <span>{!isDisputing ? 'Outcomes' : 'Other Outcomes'}</span>
       <span>
-        {isReporting
+        {!isDisputing
           ? 'Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake.'
           : 'If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome.'}
       </span>
-      {!isReporting && notNewTentativeWinner && tentativeWinning.id !== selected && (
+      {isDisputing && notNewTentativeWinner && tentativeWinning.id !== selected && (
         <Error
           header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
           subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
@@ -787,7 +780,7 @@ export const ReportingRadioBarGroup = ({
       {radioButtons.map(
         (radio, index) =>
           !radio.isInvalid &&
-          !radio.stake.tentativeWinning && (
+          (!isDisputing || !radio.stake.tentativeWinning) && (
             <ReportingRadioBar
               market={market}
               key={`${index}${radio.value}`}
@@ -797,20 +790,19 @@ export const ReportingRadioBarGroup = ({
                 updateChecked(selected, isInvalid);
               }}
               reportAction={reportAction}
-              preFilledStake={preFilledStake}
               inputScalarOutcome={inputScalarOutcome}
-              updatePreFilledStake={updatePreFilledStake}
               updateScalarOutcome={updateScalarOutcome}
-              disputeStake={disputeStake}
-              updateDisputeStake={updateDisputeStake}
+              inputtedReportingStake={inputtedReportingStake}
+              updateInputtedStake={updateInputtedStake}
               userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
                 d => d.outcome === String(radio.value)
               )}
+              isDisputing={isDisputing}
             />
           )
       )}
       <span>
-        {isReporting
+        {!isDisputing
           ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
           : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
       </span>
@@ -827,15 +819,14 @@ export const ReportingRadioBarGroup = ({
                 updateChecked(selected, isInvalid);
               }}
               reportAction={reportAction}
-              preFilledStake={preFilledStake}
               inputScalarOutcome={inputScalarOutcome}
-              updatePreFilledStake={updatePreFilledStake}
               updateScalarOutcome={updateScalarOutcome}
-              disputeStake={disputeStake}
-              updateDisputeStake={updateDisputeStake}
+              inputtedReportingStake={inputtedReportingStake}
+              updateInputtedStake={updateInputtedStake}
               userOutcomeCurrentRoundDispute={userCurrentDisputeRound.find(
                 d => d.outcome === String(radio.value)
               )}
+              isDisputing={isDisputing}
             />
           )
       )}
@@ -892,23 +883,19 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       checked,
       error,
       isInvalid,
-      preFilledStake,
-      updatePreFilledStake,
-      disputeStake,
-      updateDisputeStake,
+      inputtedReportingStake,
+      updateInputtedStake,
       reportAction,
       inputScalarOutcome,
       updateScalarOutcome,
       userOutcomeCurrentRoundDispute,
       hideButton,
+      isDisputing,
     } = this.props;
 
     let { stake } = this.props;
     const { disputeInfo, reportingState, marketType } = market;
     const isScalar = marketType === SCALAR;
-    const isReporting =
-      reportingState === REPORTING_STATE.OPEN_REPORTING ||
-      reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
     if (isScalar) {
       for (const index in disputeInfo.stakes) {
         if (disputeInfo.stakes[index].outcome === inputScalarOutcome) {
@@ -923,8 +910,8 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     const reportingGasFee = formatNumber('0'); // TODO: get actual gas cost
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
-      stake && disputeStake
-        ? createBigNumber(stake.stakeCurrent).plus(disputeStake.inputToAttoRep || ZERO)
+      stake && inputtedReportingStake
+        ? createBigNumber(stake.stakeCurrent).plus(inputtedReportingStake.inputToAttoRep || ZERO)
         : '0';
 
     return (
@@ -943,7 +930,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           {header}
         </h5>
         <div onClick={e => e.stopPropagation()}>
-          {!isReporting && ( // for disputing or for scalar
+          {isDisputing && ( // for disputing or for scalar
             <>
               {!stake.tentativeWinning && checked && (
                 <DisputingButtonView
@@ -958,8 +945,8 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   )}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
                   inputtedStake={formatAttoRep(
-                    disputeStake && disputeStake.inputToAttoRep && checked
-                      ? disputeStake.inputToAttoRep
+                    inputtedReportingStake && inputtedReportingStake.inputToAttoRep && checked
+                      ? inputtedReportingStake.inputToAttoRep
                       : ZERO
                   )}
                   userValue={
@@ -987,8 +974,8 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   isInvalid={isInvalid}
                   inputScalarOutcome={inputScalarOutcome}
                   updateScalarOutcome={updateScalarOutcome}
-                  stakeValue={disputeStake.inputStakeValue}
-                  updateDisputeStake={updateDisputeStake}
+                  stakeValue={inputtedReportingStake.inputStakeValue}
+                  updateInputtedStake={updateInputtedStake}
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
@@ -996,15 +983,15 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               )}
             </>
           )}
-          {isReporting && checked && (
+          {!isDisputing && checked && (
             <ReportingBondsView
               market={market}
               id={id}
               inputScalarOutcome={inputScalarOutcome}
               updateScalarOutcome={updateScalarOutcome}
               reportAction={reportAction}
-              preFilledStake={preFilledStake}
-              updatePreFilledStake={updatePreFilledStake}
+              inputtedReportingStake={inputtedReportingStake.inputStakeValue}
+              updateInputtedStake={updateInputtedStake}
               reportingGasFee={reportingGasFee}
             />
           )}
@@ -1073,8 +1060,19 @@ export class RadioTwoLineBarGroup extends Component<
     selected: this.props.defaultSelected || null,
   };
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultSelected !== this.props.defaultSelected) {
+      this.updateChecked(nextProps.defaultSelected);
+    }
+  }
+
+  updateChecked = selected => {
+    this.props.onChange(selected);
+    this.setState({ selected });
+  };
+
   render() {
-    const { radioButtons, onChange } = this.props;
+    const { radioButtons, onChange, hideRadioButton } = this.props;
     const { selected } = this.state;
     return (
       <div>
@@ -1083,8 +1081,9 @@ export class RadioTwoLineBarGroup extends Component<
             key={radio.value}
             {...radio}
             checked={radio.value === selected}
+            hideRadioButton={hideRadioButton}
             onChange={selected => {
-              this.props.onChange(selected);
+              onChange(selected);
               this.setState({ selected });
             }}
           />
@@ -1101,15 +1100,18 @@ export const RadioTwoLineBar = ({
   value,
   error,
   description,
+  hideRadioButton
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
+      [Styles.HideRadioButton]: hideRadioButton,
+      [Styles.Checked]: hideRadioButton && checked
     })}
     role='button'
     onClick={e => onChange(value)}
   >
-    {checked ? FilledRadio : EmptyRadio}
+    {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
     <p>{description}</p>
   </div>
@@ -2184,3 +2186,35 @@ export const CategoryRow = ({
     {!loading && <span>{count}</span>}
   </div>
 );
+
+export const MigrateRepInfo = () => (
+         <section className={Styles.MigrateRepInfo}>
+           <span>A note on Forking</span>
+           <p>
+             Augur is now in a state of Forking. The fork state is a special
+             state that can last up to 60 days. Forking is the market resolution
+             method of last resort; it is a very disruptive process and is
+             intended to be a rare occurrence. The market below is the forking
+             market, as it has implications for the other markets that currenty
+             exist. When a fork is innitiated, disputing for all other
+             non-resolved markets are put on hold until this fork resolves. The
+             forking period is much longer than the usual fee window because the
+             platform needs to provide ample time for REP holders and service
+             providers (such as wallets and exchanges) to prepare. A fork’s
+             final outcome cannot be disputed.
+           </p>
+           <p>
+             Every Augur market and all REP tokens exist in some universe.
+             Currently there is only one universe - the genesis universe - since
+             there has never been a fork. REP tokens can be used to report on
+             outcomes (and thus earn fees) only for markets that exist in the
+             same universe as the REP tokens. When a market forks, new universes
+             are created. Forking creates a new child universe for each possible
+             outcome of the forking market (including Invalid).
+           </p>
+           <p>
+             NEED TO ADD MORE INFO HERE. POSSIBLY MAKE THIS A SCROLLABLE BOX.
+             CHECKBOX TO CONFIRM THEY HAVE READ IT?
+           </p>
+         </section>
+       );

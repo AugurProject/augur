@@ -5,6 +5,12 @@
   box-sizing: border-box;
   border-radius: @size-3;
   min-width: @account-details-menu-width;
+
+  @media @breakpoint-mobile {
+    padding-top: @top-bar-height-mobile;
+    border: none;
+    min-width: 100%;
+  }
 }
 
 .WalletProvider, .TxFee, .Logout, .AddFunds, .AccountFunds  {
@@ -14,10 +20,14 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: @size-20 @size-16 @size-20 @size-13;
+  padding: @size-20 @size-16;
 }
 
 .AddFunds {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
   > div {
     .mono-11-bold;
 
@@ -62,6 +72,8 @@
 
   > div:last-of-type {
     .mono-11-bold;
+
+    color: @color-primary-text;
   }
 }
 
@@ -69,6 +81,7 @@
   > div > div:first-of-type {
     .mono-9-bold;
 
+    color: @color-secondary-text;
     text-transform: uppercase;
   }
 
@@ -94,7 +107,29 @@
   }
 }
 
+.MobileAddFunds {
+  display: none;
+
+  @media @breakpoint-mobile {
+    background: @color-module-background;
+    border-bottom: 1px solid @color-dark-grey;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: @size-16 @size-12;
+    width: 100%;
+
+    > button {
+      width: 100%;
+    }
+  }
+}
+
 .Logout {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
   justify-content: flex-end;
 
   > div {
@@ -117,51 +152,5 @@
       }
     }
 
-  }
-}
-
-.MetaMaskHelper {
-  background: @color-secondary-action-outline;
-  border-top-left-radius: 38px;
-  border-bottom-left-radius: 38px;
-  display: flex;
-  position: fixed;
-  top: @size-12;
-
-  > div:first-of-type {
-    border: 3px solid @color-secondary-action-outline;
-    border-radius: 50%;
-    height: 80px;
-    overflow: hidden;
-    width: 80px;
-
-    > img {
-      height: 200px;
-      margin: -80%;
-    }
-  }
-
-  > div:nth-of-type(2) {
-    .text-14-bold;
-
-    align-items: center;
-    display: flex;
-    color: @color-primary-text;
-    justify-content: center;
-    line-height: @size-18;
-    margin: 0 @size-24;
-    max-width: 157px;
- }
-
-  > div:last-of-type {
-    align-items: center;
-    display: flex;
-    margin-right: @size-24;
-
-    > svg {
-      fill: @color-primary-text;
-      height: @size-36;
-      transform: rotate(-90deg);
-    }
   }
 }

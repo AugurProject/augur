@@ -91,7 +91,7 @@ h6 {
   > section {
     margin: 0 @size-64;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-max-tablet {
       margin: 0 @size-16;
     }
   }
@@ -110,7 +110,6 @@ h6 {
   position: absolute;
   top: 0;
   left: 0;
-  background: @color-dark-grey;
   border-bottom: 1px solid @color-module-background;
   display: none;
   height: @top-bar-height-mobile;
@@ -126,8 +125,11 @@ h6 {
   }
 
   @media @breakpoint-mobile {
-    border-bottom: 1px solid @color-dark-grey;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    border: none;
 
     > svg > g {
       stroke-width: 1.5;
@@ -153,7 +155,6 @@ svg.SideBar__mobile-bars-unseen {
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
-    border-bottom: 1px solid @color-dark-grey;
     position: absolute;
     top: 0;
     width: 100%;
