@@ -2,11 +2,10 @@ import { createSelector } from 'reselect';
 import {
   selectMarketInfosState,
   selectLoginAccountReportingState,
-  selectDisputeWindowStats,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { ZERO, REPORTING_STATE } from 'modules/common/constants';
+import { createBigNumber } from 'utils/create-big-number';
+import { ZERO } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import {
   MarketReportClaimableContracts,
@@ -19,7 +18,7 @@ export const selectReportingWinningsByMarket = createSelector(
   selectMarketInfosState,
   (
     userReporting,
-    marketInfos, // this is needed to trigger the selector if marketInfos changes
+    marketInfos // this is needed to trigger the selector if marketInfos changes
   ): MarketReportClaimableContracts => {
     let claimableMarkets = {
       unclaimedRep: ZERO,
