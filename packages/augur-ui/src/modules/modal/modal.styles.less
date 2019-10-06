@@ -1909,14 +1909,15 @@ div.ButtonsRow:last-of-type {
       flex: 1;
     }
 
-    > div::nth-of-type(2) {
+    > div:nth-of-type(2) {
       flex: 1;
       padding-left: @size-24;
     }
   }
 
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-small {
     > main {
+      display: block;
     }
   }
 }
