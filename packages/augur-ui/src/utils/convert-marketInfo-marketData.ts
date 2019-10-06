@@ -174,7 +174,7 @@ function processDisputeInfo(
     .reduce(
       (p, id) =>
         p.includes(String(id))
-          ? p.filter(pid => pid === String(id))
+          ? p.filter(pid => pid !== String(id))
           : [...p, String(id)],
       disputeInfo.stakes.map(s => s.outcome)
     );
