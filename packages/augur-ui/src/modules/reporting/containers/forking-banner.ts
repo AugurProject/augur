@@ -20,13 +20,13 @@ const mapStateToProps = (state: AppState) => {
   let hasStakedRep = false;
   if (reporting) {
     hasStakedRep = !hasStakedRep
-      ? createBigNumber(reporting.disputing.totalAmount).gt(ZERO)
+      ? createBigNumber(reporting.disputing.totalStaked).gt(ZERO)
       : hasStakedRep;
     hasStakedRep = !hasStakedRep
-      ? createBigNumber(reporting.reporting.totalAmount).gt(ZERO)
+      ? createBigNumber(reporting.reporting.totalStaked).gt(ZERO)
       : hasStakedRep;
     hasStakedRep = !hasStakedRep
-      ? createBigNumber(reporting.participationTokens.totalAmount).gt(ZERO)
+      ? createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO)
       : hasStakedRep;
   }
   const hasRepBalance = balances && createBigNumber(balances.rep).gt(ZERO);
