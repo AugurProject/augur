@@ -121,7 +121,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       ],
       action: () => {
         const RedeemStakeOptions = {
-          disputeWindows: sP.accountReporting.participationTokens.contracts,
+          disputeWindows: claimReportingFees.participationContracts.contracts,
           reportingParticipants: [],
         };
         dP.redeemStake(RedeemStakeOptions);
