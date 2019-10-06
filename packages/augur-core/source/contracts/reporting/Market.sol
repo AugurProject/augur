@@ -440,6 +440,9 @@ contract Market is Initializable, Ownable, IMarket {
         }
         universe.migrateMarketOut(_destinationUniverse);
         universe = _destinationUniverse;
+        for (uint256 i = 0; i < numOutcomes; i++) {
+            shareTokens[i].setUniverse(_destinationUniverse);
+        }
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();

@@ -20,6 +20,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     string constant public symbol = "SHARE";
 
     IMarket private market;
+    IUniverse private universe;
     uint256 private outcome;
 
     IAugur public augur;
@@ -41,6 +42,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external beforeInitialized {
         endInitialization();
         market = _market;
+        universe = _market.getUniverse();
         outcome = _outcome;
         augur = _augur;
         shouldUpdatePL = true;
@@ -52,6 +54,11 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+    }
+
+    function setUniverse(IUniverse _universe) external {
+        require(msg.sender == address(market));
+        universe = _universe;
     }
 
     function createShares(address _owner, uint256 _fxpValue) external returns(bool) {
@@ -104,14 +111,14 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         if (shouldUpdatePL) {
             profitLoss.recordExternalTransfer(_from, _to, _value);
         }
-        augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value, balances[_from], balances[_to], outcome);
+        augur.logShareTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to], outcome);
     }
 
     function onMint(address _target, uint256 _amount) internal {
-        augur.logShareTokensMinted(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
+        augur.logShareTokensMinted(universe, _target, _amount, totalSupply(), balances[_target], outcome);
     }
 
     function onBurn(address _target, uint256 _amount) internal {
-        augur.logShareTokensBurned(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
+        augur.logShareTokensBurned(universe, _target, _amount, totalSupply(), balances[_target], outcome);
     }
 }
