@@ -125,6 +125,7 @@ export const handleSDKReadyEvent = () => (
   augurSdk.subscribe(dispatch);
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
+  dispatch(loadUniverseForkingInfo());
 };
 
 export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
@@ -452,8 +453,8 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   getState: () => AppState
 ) => {
   console.log('handleUniverseForkedLog');
-  const { universe, forkingMarket } = log;
-  dispatch(loadUniverseForkingInfo(universe, forkingMarket));
+  const { forkingMarket } = log;
+  dispatch(loadUniverseForkingInfo(forkingMarket));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
@@ -465,7 +466,7 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch(loadMarketsInfo([log.market]));
   if (universe.forkingInfo) {
     if (log.market === universe.forkingInfo.forkingMarket) {
-      dispatch(loadUniverseForkingInfo(universe.id))
+      dispatch(loadUniverseForkingInfo())
     }
   }
 }
@@ -519,6 +520,7 @@ export const handleDisputeWindowCreatedLog = (
   log: Logs.DisputeWindowCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadDisputeWindow());
+  dispatch(loadAccountReportingHistory());
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 

@@ -24,32 +24,31 @@ export const selectReportingBalances = createSelector(
       reporting,
       disputing,
       participationTokens,
-      profitAmount,
-      profitLoss,
     } = accountReporting;
     let hasStakedRep = false;
     const repBalanceFormatted = formatRep(accountBalances.rep);
+    // TODO: need to get profit for staking when available on getter
     const repProfitLossPercentageFormatted = formatPercent(
-      createBigNumber(profitLoss || ZERO).times(100),
+      createBigNumber(ZERO).times(100),
       { decimalsRounded: 2 }
     );
-    const repProfitAmountFormatted = formatAttoRep(profitAmount || ZERO);
+    const repProfitAmountFormatted = formatAttoRep(ZERO);
     let participationAmountFormatted = formatAttoRep(ZERO);
     let reportingAmountFormatted = formatAttoRep(ZERO);
     let disputingAmountFormatted = formatAttoRep(ZERO);
 
-    if (participationTokens && participationTokens.totalAmount) {
+    if (participationTokens && participationTokens.totalStaked) {
       participationAmountFormatted = formatAttoRep(
-        participationTokens.totalAmount
+        participationTokens.totalStaked
       );
       if (!hasStakedRep) hasStakedRep = true;
     }
-    if (reporting && reporting.totalAmount) {
-      reportingAmountFormatted = formatAttoRep(reporting.totalAmount);
+    if (reporting && reporting.totalStaked) {
+      reportingAmountFormatted = formatAttoRep(reporting.totalStaked);
       if (!hasStakedRep) hasStakedRep = true;
     }
-    if (disputing && disputing.totalAmount) {
-      disputingAmountFormatted = formatAttoRep(disputing.totalAmount);
+    if (disputing && disputing.totalStaked) {
+      disputingAmountFormatted = formatAttoRep(disputing.totalStaked);
       if (!hasStakedRep) hasStakedRep = true;
     }
 

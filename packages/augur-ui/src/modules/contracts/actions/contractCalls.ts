@@ -275,10 +275,15 @@ export async function redeemUserStakes(
   disputeWindows: string[]
 ) {
   const { contracts } = augurSdk.get();
-  return contracts.redeemStake.redeemStake(
-    reportingParticipantsContracts,
-    disputeWindows
-  );
+  try {
+    contracts.redeemStake.redeemStake(
+      reportingParticipantsContracts,
+      disputeWindows
+    );
+  } catch (e) {
+    console.error("Could not redeem REP", e);
+  }
+
 }
 
 export interface doReportDisputeAddStake {
@@ -322,7 +327,11 @@ export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
-  return market.contribute(payoutNumerators, createBigNumber(dispute.attoRepAmount), dispute.description);
+  return market.contribute(
+    payoutNumerators,
+    createBigNumber(dispute.attoRepAmount),
+    dispute.description
+  );
 }
 
 function getMarket(marketId) {
@@ -670,7 +679,10 @@ export async function migrateThroughOneForkEstimateGas(
 ): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(marketId);
-  return market.migrateThroughOneFork_estimateGas(payoutNumerators, description);
+  return market.migrateThroughOneFork_estimateGas(
+    payoutNumerators,
+    description
+  );
 }
 
 export async function migrateThroughOneFork(
@@ -680,14 +692,24 @@ export async function migrateThroughOneFork(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(marketId);
-  return market.migrateThroughOneFork(payoutNumerators, description);
+  try {
+    market.migrateThroughOneFork(payoutNumerators, description);
+  } catch (e) {
+    console.error('Could not migrate market', e);
+  }
 }
 
-export async function reportAndMigrateMarket(migration: doReportDisputeAddStake) {
+export async function reportAndMigrateMarket(
+  migration: doReportDisputeAddStake
+) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
   const payoutNumerators = getPayoutNumerators(migration);
-  return market.migrateThroughOneFork(payoutNumerators, migration.description);
+  try {
+    market.migrateThroughOneFork(payoutNumerators, migration.description);
+  } catch (e) {
+    console.error('Could not report and migrate market', e);
+  }
 }
 
 export async function migrateRepToUniverseEstimateGas(
@@ -705,8 +727,12 @@ export async function migrateRepToUniverseEstimateGas(
 export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   const { contracts } = augurSdk.get();
   const payoutNumerators = getPayoutNumerators(migration);
-  return contracts.reputationToken.migrateOutByPayout(
-    payoutNumerators,
-    createBigNumber(migration.attoRepAmount)
-  );
+  try {
+    contracts.reputationToken.migrateOutByPayout(
+      payoutNumerators,
+      createBigNumber(migration.attoRepAmount)
+    );
+  } catch (e) {
+    console.error('Could not migrate REP to universe', e);
+  }
 }

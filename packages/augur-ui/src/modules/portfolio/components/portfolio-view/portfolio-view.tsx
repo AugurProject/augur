@@ -8,7 +8,6 @@ import FilledOrders from 'modules/portfolio/containers/filled-orders';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import { SMALL_MOBILE, TABLET_MAX } from 'modules/common/constants';
-
 import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
 
 interface PortfolioViewProps {}
@@ -50,6 +49,7 @@ export default class PortfolioView extends React.Component<
         <Media query={TABLET_MAX}>
           {matches =>
             matches ? (
+              <>
               <ModuleTabs selected={0} fillWidth noBorder>
                 <ModulePane label="Positions">
                   <MyPositions />
@@ -64,6 +64,7 @@ export default class PortfolioView extends React.Component<
                   <MyMarkets />
                 </ModulePane>
               </ModuleTabs>
+              </>
             ) : (
               <section>
                 <div>
