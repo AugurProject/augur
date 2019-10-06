@@ -5,6 +5,7 @@ import { ExclamationCircle } from 'modules/common/icons';
 import { CountdownProgress, formatTime } from 'modules/common/progress';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { DateFormattedObject } from 'modules/types';
+import { SIXTY_DAYS } from 'modules/common/constants';
 
 interface ForkingProps {
   show: boolean;
@@ -50,6 +51,7 @@ export const Forking = (props: ForkingProps) => (
         label={'Time remaining in Fork Window'}
         time={props.forkTime}
         currentTime={props.currentTime}
+        countdownBreakpoint={SIXTY_DAYS}
       />
     </div>
   </section>

@@ -6,8 +6,8 @@
   border: 1px solid @color-error;
   border-left-width: @size-4;
   display: flex;
-  padding: @size-12;
-  padding-left: @size-8;
+  margin: @size-24;
+  padding: @size-12 @size-16;
 
   &.Hide {
     display: none;
@@ -51,7 +51,7 @@
     flex-direction: column;
 
     > span:first-of-type {
-      .mono-10-bold;
+      .mono-14-bold;
 
       color: @color-primary-text;
       text-transform: uppercase;
@@ -74,11 +74,26 @@
   }
 
   > div:last-of-type {
-    display: flex;
     align-items: center;
-    width: fit-content;
-    margin-left: @size-30;
-    padding: @size-12;
     border: 1px solid @color-error;
+    display: flex;
+    margin: @size-16;
+    padding: @size-16;
+    width: fit-content;
+
+    > span {
+      > span:first-of-type {
+        .text-10;
+
+        color: @color-primary-text;
+      }
+
+      > span:nth-of-type(2) {
+        .text-14;
+
+        color: @color-error;
+        line-height: @size-19;
+      }
+    }
   }
 }
