@@ -427,15 +427,8 @@ contract Augur is IAugur {
 
     function logMarketOIChanged(IUniverse _universe, IMarket _market) public returns (bool) {
         require(msg.sender == registry["CompleteSets"]);
-        emit MarketOIChanged(address(_universe), address(_market), getMarketOpenInterest(_market));
+        emit MarketOIChanged(address(_universe), address(_market), _market.getOpenInterest());
         return true;
-    }
-
-    function getMarketOpenInterest(IMarket _market) public view returns (uint256) {
-        if (_market.isFinalized()) {
-            return 0;
-        }
-        return _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
     }
 
     function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {

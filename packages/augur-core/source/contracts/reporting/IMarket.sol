@@ -48,4 +48,5 @@ contract IMarket is IOwnable {
     function designatedReporterShowed() public view returns (bool);
     function isFinalized() public view returns (bool);
     function assertBalances() public view returns (bool);
+    function getOpenInterest() public view returns (uint256);
 }

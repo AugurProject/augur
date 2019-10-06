@@ -766,4 +766,11 @@ contract Market is Initializable, Ownable, IMarket {
     function getWinningChildPayout(uint256 _outcome) public view returns (uint256) {
         return universe.getWinningChildPayoutNumerator(_outcome);
     }
+
+    function getOpenInterest() public view returns (uint256) {
+        if (isFinalized()) {
+            return 0;
+        }
+        return shareTokens[0].totalSupply().mul(numTicks);
+    }
 }
