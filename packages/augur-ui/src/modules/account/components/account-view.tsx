@@ -18,7 +18,6 @@ import {
 
 import Styles from 'modules/account/components/account-view.styles.less';
 import classNames from 'classnames';
-import Forking from "modules/reporting/forking";
 
 export interface AccountViewProps {
   newNotifications?: boolean;
@@ -92,7 +91,6 @@ export default class AccountView extends React.Component<
                   [Styles.HideActiveMarkets]: s.extendNotifications,
                 })}
               >
-                <Forking />
                 <div>
                   <div>
                     <Notifications

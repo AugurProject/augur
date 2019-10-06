@@ -17,6 +17,7 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
+import ForkingBanner from 'modules/reporting/forking-banner';
 
 const PAGINATION_COUNT = 10;
 
@@ -235,6 +236,7 @@ export default class MarketsView extends Component<
           this.componentWrapper = componentWrapper;
         }}
       >
+        <ForkingBanner />
         <Helmet>
           <title>Markets</title>
         </Helmet>

@@ -41,6 +41,7 @@ import {
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import { Universe } from 'modules/types';
+import ForkingBanner from 'modules/reporting/forking-banner';
 
 interface AppProps {
   blockchain: Object;
@@ -406,7 +407,10 @@ export default class AppView extends Component<AppProps> {
                   mobileMenuState={sidebarStatus.mobileMenuState}
                 />
               ) : (
+                <>
                 <div className="no-nav-placehold" />
+                <ForkingBanner />
+                </>
               )}
 
               <section
