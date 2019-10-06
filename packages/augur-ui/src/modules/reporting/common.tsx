@@ -953,6 +953,8 @@ export interface ParticipationTokensViewProps {
   percentageOfTotalFees: FormattedNumber;
   participationTokensClaimable: FormattedNumber,
   participationTokensClaimableFees: FormattedNumber,
+  disablePurchaseButton: boolean,
+  hasRedeemable: boolean,
 }
 
 export const ParticipationTokensView = (
@@ -966,6 +968,8 @@ export const ParticipationTokensView = (
     percentageOfTotalFees,
     participationTokensClaimable,
     participationTokensClaimableFees,
+    disablePurchaseButton,
+    hasRedeemable
   } = props;
 
   return (
@@ -998,7 +1002,7 @@ export const ParticipationTokensView = (
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
       />
 
-      <PrimaryButton text="Get Participation Tokens" action={openModal} />
+      <PrimaryButton disabled={disablePurchaseButton} text="Get Participation Tokens" action={openModal} />
 
       <section />
 
@@ -1020,7 +1024,7 @@ export const ParticipationTokensView = (
         secondSubheader="DAI"
       />
 
-      <PrimaryButton text="Redeem Past Participation Tokens" action={null} />
+      <PrimaryButton disabled={!hasRedeemable} text="Redeem Past Participation Tokens" action={null} />
     </div>
   );
 };

@@ -375,12 +375,15 @@ export default class AppView extends Component<AppProps> {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
               })}
             >
-             { currentPath === MARKETS ?  <MarketsInnerNavContainer
+             { currentPath === MARKETS ?  (<MarketsInnerNavContainer
                   location={location}
                   history={history}
                   mobileMenuState={sidebarStatus.mobileMenuState}
-             /> : <div className='no-nav-placehold' /> }
 
+                />
+              ) : (
+                <div className="no-nav-placehold" />
+              )}
               <section
                 className={Styles.Main__content}
                 onClick={this.mainSectionClickHandler}
