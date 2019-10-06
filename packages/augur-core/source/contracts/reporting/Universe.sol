@@ -692,8 +692,10 @@ contract Universe is IUniverse {
         uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (_market.isFinalized()) {
-            for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
-                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_market.getWinningPayoutNumerator(i)));
+            IShareToken[] memory _shareTokens = _market.getShareTokens();
+            uint256 _numOutcomes = _shareTokens.length;
+            for (uint256 i = 0; i < _numOutcomes; i++) {
+                _expectedBalance = _expectedBalance.add(_shareTokens[i].totalSupply().mul(_market.getWinningPayoutNumerator(i)));
             }
         } else {
             _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));

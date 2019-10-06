@@ -138,14 +138,18 @@ library Trade {
 
     function getSharesAvailable(IMarket _market, Order.Types _orderType, uint256 _outcome, uint256 _amount, address _creator) private view returns (uint256) {
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
-        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
         uint256 _attosharesHeld = 2**254;
         if (_orderType == Order.Types.Bid) {
-            for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
-                if (_i != _outcome) {
-                    uint256 _creatorShareTokenBalance = _market.getShareToken(_i).balanceOf(_creator);
-                    _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
-                }
+            IShareToken[] memory _shareTokens = _market.getShareTokens();
+            uint256 _numOutcomes = _shareTokens.length;
+            uint256 _i = 0;
+            for (; _i < _outcome; _i++) {
+                uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_creator);
+                _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
+            }
+            for (_i++; _i < _numOutcomes; _i++) {
+                uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_creator);
+                _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
             }
         } else {
             _attosharesHeld = _market.getShareToken(_outcome).balanceOf(_creator);
@@ -377,14 +381,17 @@ library Trade {
     }
 
     function getShortShareTokens(IMarket _market, uint256 _longOutcome) private view returns (IShareToken[] memory) {
-        IShareToken[] memory _shortShareTokens = new IShareToken[](_market.getNumberOfOutcomes() - 1);
-        for (uint256 _outcome = 0; _outcome < _shortShareTokens.length + 1; ++_outcome) {
-            if (_outcome == _longOutcome) {
-                continue;
-            }
-            uint256 _index = (_outcome < _longOutcome) ? _outcome : _outcome - 1;
-            _shortShareTokens[_index] = _market.getShareToken(_outcome);
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
+        uint256 _numOutcomes = _shareTokens.length;
+        IShareToken[] memory _shortShareTokens = new IShareToken[](_numOutcomes - 1);
+        uint256 _outcome = 0;
+        for (; _outcome < _longOutcome; ++_outcome) {
+            _shortShareTokens[_outcome] = _shareTokens[_outcome];
         }
+        for (++_outcome; _outcome < _numOutcomes; ++_outcome) {
+            _shortShareTokens[_outcome - 1] = _shareTokens[_outcome];
+        }
+
         return _shortShareTokens;
     }
 
@@ -498,11 +505,14 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         address _creator = _tradeData.creator.participantAddress;
         IMarket _market = _tradeData.contracts.market;
 
-        uint256 _fillerCompleteSets = _market.getShareToken(0).balanceOf(_filler);
-        uint256 _creatorCompleteSets = _market.getShareToken(0).balanceOf(_creator);
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
+        uint256 _numOutcomes = _shareTokens.length;
 
-        for (uint256 _outcome = 1; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
-            IShareToken _shareToken = _market.getShareToken(_outcome);
+        uint256 _fillerCompleteSets = _shareTokens[0].balanceOf(_filler);
+        uint256 _creatorCompleteSets = _shareTokens[0].balanceOf(_creator);
+
+        for (uint256 _outcome = 1; _outcome < _numOutcomes; ++_outcome) {
+            IShareToken _shareToken = _shareTokens[_outcome];
             _creatorCompleteSets = _creatorCompleteSets.min(_shareToken.balanceOf(_creator));
             _fillerCompleteSets = _fillerCompleteSets.min(_shareToken.balanceOf(_filler));
         }

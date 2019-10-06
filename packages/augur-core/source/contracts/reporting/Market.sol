@@ -678,6 +678,10 @@ contract Market is Initializable, Ownable, IMarket {
         return shareTokens[_outcome];
     }
 
+    function getShareTokens() public view returns (IShareToken[] memory) {
+        return shareTokens;
+    }
+
     /**
      * @return The uint256 timestamp for when the designated reporting period is over and anyone may report
      */

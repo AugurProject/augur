@@ -82,13 +82,14 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         if (_sharesEscrowed > 0) {
             // Return to user sharesEscrowed that weren't filled yet for all outcomes except the order outcome
             if (_type == Order.Types.Bid) {
-                uint256 _numOutcomes = _market.getNumberOfOutcomes();
+                IShareToken[] memory _shareTokens = _market.getShareTokens();
+                uint256 _numOutcomes = _shareTokens.length;
                 uint256 _i = 0;
                 for (; _i < _outcome; ++_i) {
-                    _market.getShareToken(_i).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                    _shareTokens[_i].trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
                 }
                 for (++_i; _i < _numOutcomes; ++_i) {
-                    _market.getShareToken(_i).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                    _shareTokens[_i].trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
                 }
             // Shares refund if has shares escrowed for this outcome
             } else {

@@ -118,25 +118,33 @@ library Order {
         require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForBid: New order had money escrowed. This should not be possible");
         require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForBid: New order had shares escrowed. This should not be possible");
         uint256 _attosharesToCover = _orderData.amount;
-        uint256 _numberOfOutcomes = _orderData.market.getNumberOfOutcomes();
 
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
         uint256 _attosharesHeld = 2**254;
-        for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
-            if (_i != _orderData.outcome) {
-                uint256 _creatorShareTokenBalance = _orderData.market.getShareToken(_i).balanceOf(_orderData.creator);
-                _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
-            }
+        IShareToken[] memory _shareTokens = _orderData.market.getShareTokens();
+        uint256 _numOutcomes = _shareTokens.length;
+
+        uint256 _i = 0;
+        for (; _i < _orderData.outcome; _i++) {
+            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_orderData.creator);
+            _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
+        }
+        for (_i++; _i < _numOutcomes; _i++) {
+            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_orderData.creator);
+            _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
         }
 
         // Take shares into escrow if they have any almost-complete-sets
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-            for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
-                if (_i != _orderData.outcome) {
-                    _orderData.market.getShareToken(_i).trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
-                }
+            
+            _i = 0;
+            for (; _i < _orderData.outcome; _i++) {
+                _shareTokens[_i].trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
+            }
+            for (_i++; _i < _numOutcomes; _i++) {
+                _shareTokens[_i].trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
             }
         }
 
