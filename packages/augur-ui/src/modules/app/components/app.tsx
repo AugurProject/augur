@@ -34,7 +34,6 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
-import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
 
 interface AppProps {
@@ -383,10 +382,7 @@ export default class AppView extends Component<AppProps> {
 
                 />
               ) : (
-                <>
                 <div className="no-nav-placehold" />
-                <ForkingBanner />
-                </>
               )}
               <section
                 className={Styles.Main__content}

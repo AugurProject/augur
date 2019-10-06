@@ -37,8 +37,8 @@ const mapStateToProps = (state: AppState) => {
         ? createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO)
         : hasStakedRep;
   }
-  const hasRepBalance = balances && createBigNumber(balances.rep).gt(ZERO);
   const market = selectMarket(forkingInfo.forkingMarket);
+  const hasRepBalance = market !== null && balances && createBigNumber(balances.rep).gt(ZERO);
   const releasableRep = selectReportingWinningsByMarket(state);
 
   return {
@@ -69,15 +69,13 @@ const mapDispatchToProps = dispatch => ({
     ),
 });
 
-const mergeProps = (sP, dP, oP) => {
-  return {
-    ...oP,
-    ...sP,
-    ...dP,
-    hasRepMigrationAction: () => dP.migrateRep(sP.market),
-    hasStakedRepAction: () => dP.releaseReportingRep(sP.releasableRep),
-  };
-};
+const mergeProps = (sP, dP, oP) => ({
+  ...oP,
+  ...sP,
+  ...dP,
+  hasStakedRepAction: () => dP.releaseReportingRep(sP.releasableRep),
+  hasRepMigrationAction: () => dP.migrateRep(sP.market),
+});
 
 const ForkContainer = withRouter(
   connect(

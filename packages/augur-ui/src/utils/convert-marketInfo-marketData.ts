@@ -132,13 +132,13 @@ function processOutcomes(
   }));
 }
 
-function getEmptyStake(outcomeId: number | null, bondSizeOfNewStake: string) {
+function getEmptyStake(outcomeId: string | null, bondSizeOfNewStake: string) {
   return {
-    outcome: outcomeId !== null ? String(outcomeId) : null,
+    outcome: outcomeId !== null ? outcomeId : null,
     bondSizeCurrent: bondSizeOfNewStake,
     stakeCurrent: '0',
     stakeRemaining: bondSizeOfNewStake,
-    isInvalidOutcome: outcomeId === INVALID_OUTCOME_ID,
+    isInvalidOutcome: outcomeId === String(INVALID_OUTCOME_ID),
     isMalformedOutcome: false,
     tentativeWinning: false,
   };
@@ -149,7 +149,7 @@ function processDisputeInfo(
   marketType: string,
   disputeInfo: Getters.Markets.DisputeInfo,
   outcomes: Getters.Markets.MarketInfoOutcome[],
-  isReporting: boolean,
+  isReporting: boolean
 ): Getters.Markets.DisputeInfo {
   if (!disputeInfo || !isReporting) return disputeInfo;
   if (marketType === SCALAR) {
@@ -157,31 +157,41 @@ function processDisputeInfo(
       s => Number(s.outcome) === INVALID_OUTCOME_ID
     );
     // add blank outcome
-    const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake)
-    if (invalidIncluded) return {...disputeInfo, stakes: [...disputeInfo.stakes, blankStake]};
-    return {
-      ...disputeInfo,
-      stakes: [
-        ...disputeInfo.stakes,
-        getEmptyStake(INVALID_OUTCOME_ID, disputeInfo.bondSizeOfNewStake),
-        blankStake
-      ],
-    };
+    const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake);
+    if (invalidIncluded) {
+      return { ...disputeInfo, stakes: [...disputeInfo.stakes, blankStake] };
+    } else {
+      return {
+        ...disputeInfo,
+        stakes: [
+          ...disputeInfo.stakes,
+          getEmptyStake(
+            String(INVALID_OUTCOME_ID),
+            disputeInfo.bondSizeOfNewStake
+          ),
+          blankStake,
+        ],
+      };
+    }
   }
 
-  const stakes = disputeInfo.stakes
+  const outcomesNotStaked = outcomes
+    .map(o => o.id)
     .reduce(
-      (p, s) => p.filter(o => o !== Number(s.outcome)),
-      outcomes.map(o => o.id)
-    )
-    .reduce(
-      (p, o) => [...p, getEmptyStake(o, disputeInfo.bondSizeOfNewStake)],
-      disputeInfo.stakes
+      (p, id) =>
+        p.includes(String(id))
+          ? p.filter(pid => pid === String(id))
+          : [...p, String(id)],
+      disputeInfo.stakes.map(s => s.outcome)
     );
+
+  const addedStakes = outcomesNotStaked.map(o =>
+    getEmptyStake(String(o), disputeInfo.bondSizeOfNewStake)
+  );
 
   return {
     ...disputeInfo,
-    stakes,
+    stakes: [...disputeInfo.stakes, ...addedStakes],
   };
 }
 

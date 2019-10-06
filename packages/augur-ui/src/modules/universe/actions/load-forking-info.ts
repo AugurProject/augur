@@ -12,20 +12,18 @@ import { Action } from 'redux';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { ForkingInfo } from 'modules/types';
 import { NULL_ADDRESS } from 'modules/common/constants';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
 export function loadUniverseForkingInfo(
-  incomingUniverse: string,
   forkingMarketId?: string
 ) {
   return async (
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { universe } = getState();
-    if (universe && universe.id && universe.id !== incomingUniverse) return;
+    // assuming SDK is already connected to univese
     const forkingMarket = forkingMarketId || (await getForkingMarket());
-    const isForking =
-      forkingMarket !== NULL_ADDRESS;
+    const isForking = forkingMarket !== NULL_ADDRESS;
     if (isForking) {
       const forkEndTime = await getForkEndTime();
       const forkAttoReputationGoal = await getForkReputationGoal();
@@ -43,6 +41,7 @@ export function loadUniverseForkingInfo(
         isForkingMarketFinalized,
         winningChildUniverseId,
       };
+      dispatch(loadMarketsInfo([forkingMarket]));
       dispatch(updateUniverse({ forkingInfo }));
     }
   };

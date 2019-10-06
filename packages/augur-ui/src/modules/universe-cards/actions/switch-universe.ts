@@ -11,7 +11,7 @@ export const switchUniverse = (
   getState
 ) => {
   dispatch(loadUniverseDetails(universeId, account));
-  dispatch(loadUniverseForkingInfo(universeId));
+  dispatch(loadUniverseForkingInfo());
   dispatch(loadDisputeWindow());
   return;
 }
