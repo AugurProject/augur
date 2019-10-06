@@ -257,9 +257,7 @@ export class Augur<TProvider extends Provider = Provider> {
     }
   }
 
-  getMarkets = (params: Parameters<typeof Markets.getMarkets>[2]) => {
-    return this.bindTo(Markets.getMarkets)(params);
-  }
+  getMarkets = this.bindTo(Markets.getMarkets);
 
   getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
 
@@ -291,7 +289,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getProfitLoss = this.bindTo(Users.getProfitLoss);
   getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
-  getAccountReportingHistory = this.bindTo(Accounts.getAccountReportingHistory);
+  getAccountRepStakeSummary = this.bindTo(Accounts.getAccountRepStakeSummary);
   getUserCurrentDisputeStake = this.bindTo(Accounts.getUserCurrentDisputeStake);
   getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
   getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
@@ -319,6 +317,8 @@ export class Augur<TProvider extends Provider = Provider> {
   async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
     return this.trade.simulateTradeGasLimit(params);
   }
+
+  getUniverseChildren = this.bindTo(Universe.getUniverseChildren);
 
   private registerTransactionStatusEvents() {
     this.registerTransactionStatusCallback("Transaction Status Handler", (transaction, status, hash) => {

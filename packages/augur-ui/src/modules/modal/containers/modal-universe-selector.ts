@@ -1,23 +1,24 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AddFunds } from 'modules/modal/add-funds';
-import { AppState } from 'store';
+import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
 import { closeModal } from 'modules/modal/actions/close-modal';
+import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import getValue from 'utils/get-value';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
-  address: getValue(state, 'loginAccount.address'),
-  accountMeta: getValue(state, 'loginAccount.meta'),
-});
+const mapStateToProps = (state: AppState) => {
+  const universe = state.universe;
+  return {
+    modal: state.modal,
+    universeDetails: universe,
+  };
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });
 
-const mergeProps = (sP, dP, oP) => {
+const mergeProps = (sP: any, dP: any, oP: any) => {
   return {
     closeAction: () => {
       if (sP.modal.cb) {
@@ -28,13 +29,12 @@ const mergeProps = (sP, dP, oP) => {
     ...oP,
     ...sP,
   };
-};
-
+}
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(AddFunds)
+    mergeProps,
+  )(ModalUniverseSelector)
 );

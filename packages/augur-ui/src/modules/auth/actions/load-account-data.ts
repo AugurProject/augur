@@ -2,6 +2,7 @@ import { loadAccountDataFromLocalStorage } from 'modules/auth/actions/load-accou
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
+import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { windowRef } from 'utils/window-ref';
 import getValue from 'utils/get-value';
@@ -17,7 +18,7 @@ export const loadAccountData = (
   callback: NodeStyleCallback = logError
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { loginAccount } = getState();
+  const { loginAccount, universe } = getState();
   const { address } = loginAccount;
   if (!address) return callback('account address required');
   const windowApp = windowRef as WindowApp;
@@ -34,6 +35,7 @@ export const loadAccountData = (
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
+  dispatch(loadUniverseDetails(universe.id, address));
 //  dispatch(loadReportingWindowBounds());
 //  dispatch(loadDesignatedReporterMarkets());
 //  dispatch(loadDisputing());

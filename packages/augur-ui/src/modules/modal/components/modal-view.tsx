@@ -18,6 +18,7 @@ import ModalNetworkMismatch from "modules/modal/containers/modal-mismatch";
 import ModalNetworkDisconnected from "modules/modal/containers/modal-network-disconnected";
 import ModalApproval from "modules/modal/containers/modal-approval";
 import ModalFinalize from "modules/modal/containers/modal-finalize";
+import ModalBuyDai from "modules/modal/containers/modal-buy-dai";
 import ModalDiscard from "modules/modal/containers/modal-discard";
 import ModalMarketReview from "modules/modal/containers/modal-market-review";
 import ModalMarketReviewTrade from "modules/modal/containers/modal-market-review-trade";
@@ -39,6 +40,7 @@ import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
 import ModalSignin from "modules/modal/containers/modal-signin";
 import ModalConnect from "modules/modal/containers/modal-connect";
 import ModalLoading from "modules/modal/containers/modal-loading";
+import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 
 import * as TYPES from "modules/common/constants";
 
@@ -99,6 +101,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalNetworkDisconnected {...props} />;
     case TYPES.MODAL_FINALIZE_MARKET:
       return <ModalFinalize />;
+    case TYPES.MODAL_BUY_DAI:
+      return <ModalBuyDai />;
     case TYPES.MODAL_DISCARD:
       return <ModalDiscard />;
     case TYPES.MODAL_MARKET_REVIEW:
@@ -129,6 +133,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalConnect />
     case TYPES.MODAL_LOADING:
       return <ModalLoading />
+    case TYPES.MODAL_UNIVERSE_SELECTOR:
+      return <ModalUniverseSelector />
     default:
       return <div />;
   }

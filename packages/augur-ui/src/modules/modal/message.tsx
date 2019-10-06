@@ -21,7 +21,7 @@ import {
   CheckboxCTAProps,
   Content,
   ContentProps,
-  Subheader
+  Subheader,
 } from "modules/modal/common";
 import {
   LinearPropertyLabelProps,
@@ -60,7 +60,7 @@ export const Message = ({
   content,
   buttons,
   subheader,
-  subheader_2
+  subheader_2,
 }: MessageProps) => (
   <div className={Styles.Message}>
     <Title title={title} closeAction={closeAction} />

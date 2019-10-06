@@ -104,11 +104,11 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string): Promise<number> {
+export async function getRepBalance(address: string): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
   const RepToken = contracts.getReputationToken();
   const balance = await RepToken.balanceOf_(address);
-  return formatAttoRep(balance).value;
+  return balance;
 }
 
 export async function getEthBalance(address: string): Promise<number> {
@@ -148,6 +148,12 @@ export async function sendRep(address: string, amount: string) {
     TEN_TO_THE_EIGHTEENTH_POWER
   );
   return RepToken.transfer(address, onChainAmount);
+}
+
+export async function getRepThresholdForPacing() {
+  const { contracts } = augurSdk.get();
+  const threshold = await contracts.universe.getDisputeThresholdForDisputePacing_();
+  return threshold;
 }
 
 export async function getDisputeThresholdForFork() {

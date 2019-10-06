@@ -4,6 +4,7 @@ import { Universe, BaseAction } from 'modules/types';
 
 const DEFAULT_STATE: Universe = {
   id: null,
+  parentUniverseId: null,
   forkingInfo: null,
   disputeWindow: {
     address: null,
