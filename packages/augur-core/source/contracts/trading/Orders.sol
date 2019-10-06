@@ -120,6 +120,16 @@ contract Orders is IOrders, Initializable {
         return orders[_orderId].moneyEscrowed;
     }
 
+    function getOrderDataForCancel(bytes32 _orderId) public view returns (uint256 _moneyEscrowed, uint256 _sharesEscrowed, Order.Types _type, IMarket _market, uint256 _outcome, address _creator) {
+        Order.Data storage _order = orders[_orderId];
+        _moneyEscrowed = _order.moneyEscrowed;
+        _sharesEscrowed = _order.sharesEscrowed;
+        _type = _order.orderType;
+        _market = _order.market;
+        _outcome = _order.outcome;
+        _creator = _order.creator;
+    }
+    
     function getOrderDataForLogs(bytes32 _orderId) public view returns (Order.Types _type, address[] memory _addressData, uint256[] memory _uint256Data) {
         Order.Data storage _order = orders[_orderId];
         _addressData = new address[](3);

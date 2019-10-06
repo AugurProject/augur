@@ -17,6 +17,7 @@ contract IOrders {
     function getOrderCreator(bytes32 _orderId) public view returns (address);
     function getOrderSharesEscrowed(bytes32 _orderId) public view returns (uint256);
     function getOrderMoneyEscrowed(bytes32 _orderId) public view returns (uint256);
+    function getOrderDataForCancel(bytes32 _orderId) public view returns (uint256, uint256, Order.Types, IMarket, uint256, address);
     function getOrderDataForLogs(bytes32 _orderId) public view returns (Order.Types, address[] memory _addressData, uint256[] memory _uint256Data);
     function getBetterOrderId(bytes32 _orderId) public view returns (bytes32);
     function getWorseOrderId(bytes32 _orderId) public view returns (bytes32);
