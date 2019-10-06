@@ -519,6 +519,7 @@ export const handleDisputeWindowCreatedLog = (
   log: Logs.DisputeWindowCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadDisputeWindow());
+  dispatch(loadAccountReportingHistory());
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 

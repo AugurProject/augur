@@ -17,7 +17,7 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
-import ForkingBanner from 'modules/reporting/forking-banner';
+import ForkingBanner from 'modules/reporting/containers/forking-banner';
 
 const PAGINATION_COUNT = 10;
 

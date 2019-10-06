@@ -3,7 +3,11 @@ import { withRouter } from 'react-router-dom';
 
 import ForkingBanner from 'modules/reporting/forking-banner';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_REPORTING, ZERO, MODAL_CLAIM_FEES } from 'modules/common/constants';
+import {
+  MODAL_REPORTING,
+  ZERO,
+  MODAL_CLAIM_FEES,
+} from 'modules/common/constants';
 import { AppState } from 'store';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
@@ -15,31 +19,36 @@ const mapStateToProps = (state: AppState) => {
   const { universe, loginAccount, blockchain } = state;
   const { forkingInfo } = universe;
   const isForking = forkingInfo !== null;
-  // if (!isForking) return null;
+  if (!isForking) return { show: false };
+
   const { reporting, balances } = loginAccount;
   let hasStakedRep = false;
   if (reporting) {
-    hasStakedRep = !hasStakedRep
-      ? createBigNumber(reporting.disputing.totalStaked).gt(ZERO)
-      : hasStakedRep;
-    hasStakedRep = !hasStakedRep
-      ? createBigNumber(reporting.reporting.totalStaked).gt(ZERO)
-      : hasStakedRep;
-    hasStakedRep = !hasStakedRep
-      ? createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO)
-      : hasStakedRep;
+    hasStakedRep =
+      !hasStakedRep && reporting.disputing
+        ? createBigNumber(reporting.disputing.totalStaked).gt(ZERO)
+        : hasStakedRep;
+    hasStakedRep =
+      !hasStakedRep && reporting.reporting
+        ? createBigNumber(reporting.reporting.totalStaked).gt(ZERO)
+        : hasStakedRep;
+    hasStakedRep =
+      !hasStakedRep && reporting.participationTokens
+        ? createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO)
+        : hasStakedRep;
   }
   const hasRepBalance = balances && createBigNumber(balances.rep).gt(ZERO);
   const market = selectMarket(forkingInfo.forkingMarket);
   const releasableRep = selectReportingWinningsByMarket(state);
 
   return {
+    show: true,
     hasStakedRep,
     hasRepBalance,
     market,
     releasableRep,
     forkTime: convertUnixToFormattedDate(forkingInfo.forkEndTime),
-    currentTime: convertUnixToFormattedDate(blockchain.currentAugurTimestamp)
+    currentTime: convertUnixToFormattedDate(blockchain.currentAugurTimestamp),
   };
 };
 
@@ -61,7 +70,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-
   return {
     ...oP,
     ...sP,

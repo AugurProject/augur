@@ -34,7 +34,7 @@ import {
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
-import ForkingBanner from 'modules/reporting/forking-banner';
+import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
 
 interface AppProps {
@@ -376,11 +376,11 @@ export default class AppView extends Component<AppProps> {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
               })}
             >
-             { currentPath === MARKETS ?  <MarketsInnerNavContainer
+             { currentPath === MARKETS ?  (<MarketsInnerNavContainer
                   location={location}
                   history={history}
                   mobileMenuState={sidebarStatus.mobileMenuState}
-<<<<<<< HEAD
+
                 />
               ) : (
                 <>
@@ -388,10 +388,6 @@ export default class AppView extends Component<AppProps> {
                 <ForkingBanner />
                 </>
               )}
-=======
-             /> : <div className='no-nav-placehold' /> }
->>>>>>> master
-
               <section
                 className={Styles.Main__content}
                 onClick={this.mainSectionClickHandler}
