@@ -27,8 +27,8 @@ export const ModalUniverseSelector = ({
           universe={universeDetails}
         />
         <div>
-          {universeDetails.children.map((childUniverse: UniverseDetails) => (
-            <UniverseCard universe={childUniverse} />
+          {universeDetails.children.map(childUniverse => (
+            <UniverseCard key={childUniverse.id} universe={childUniverse} />
           ))}
         </div>
       </main>
