@@ -111,14 +111,14 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         if (shouldUpdatePL) {
             profitLoss.recordExternalTransfer(_from, _to, _value);
         }
-        augur.logShareTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to], outcome);
+        augur.logShareTokensTransferred(universe, market, _from, _to, _value, balances[_from], balances[_to], outcome);
     }
 
     function onMint(address _target, uint256 _amount) internal {
-        augur.logShareTokensMinted(universe, _target, _amount, totalSupply(), balances[_target], outcome);
+        augur.logShareTokensMinted(universe, market, _target, _amount, totalSupply(), balances[_target], outcome);
     }
 
     function onBurn(address _target, uint256 _amount) internal {
-        augur.logShareTokensBurned(universe, _target, _amount, totalSupply(), balances[_target], outcome);
+        augur.logShareTokensBurned(universe, market, _target, _amount, totalSupply(), balances[_target], outcome);
     }
 }
