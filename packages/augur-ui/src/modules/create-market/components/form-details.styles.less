@@ -16,21 +16,6 @@
 			}
 		}
 
-		> span {
-			display: flex;
-			justify-content: space-between;
-
-			@media @breakpoint-mobile-mid {
-				display: grid;
-			    grid-template-columns: repeat(1, 1fr);
-			    grid-gap: @size-12;
-
-			    > div > div > div > div {
-			    	min-width: 100%;
-			    }
-			}
-		}
-
 		> div > div > input {
 			max-width: 210px;
 		}
@@ -39,5 +24,18 @@
     > div {
     	display: flex;
     	flex-direction: column;
-    }
+	}
+	
+	&.Template {
+		> div:first-of-type {
+			> div:first-of-type {
+				display: grid;
+				grid-template-columns: repeat(3,1fr);
+			}
+
+			> div:nth-of-type(3) > h1 {
+				margin-top: 0;
+			}
+		}
+	}
 }
