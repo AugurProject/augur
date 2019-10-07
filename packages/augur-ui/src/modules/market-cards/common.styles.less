@@ -232,7 +232,6 @@
 
 .OutcomeGroup {
   display: grid;
-  grid-column: 1 / span 3;
   grid-gap: @size-6;
   margin-right: -@size-16;
 
@@ -277,8 +276,13 @@
 		}
 	}
 
-    @media @breakpoint-mobile-mid {
-			grid-template-columns: repeat(1, 1fr);
+  @media @breakpoint-max-tablet {
+    grid-column: 1 / span 2;
+    margin-right: -@size-14;
+  }
+
+  @media @breakpoint-mobile-mid {
+    grid-template-columns: repeat(1, 1fr);
 	}
 }
 
