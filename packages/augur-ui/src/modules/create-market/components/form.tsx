@@ -10,6 +10,7 @@ import {
   TEMPLATE_CONTENT_PAGES,
   REVIEW,
   FORM_DETAILS,
+  TEMPLATE_FORM_DETAILS,
   LANDING,
   FEES_LIQUIDITY,
   DESCRIPTION,
@@ -49,6 +50,7 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
+import TemplateFormDetails from 'modules/create-market/containers/template-form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
@@ -69,7 +71,7 @@ import {
   checkAddress,
   dividedBy,
   dateGreater,
-  isValidFee
+  isValidFee,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
@@ -268,9 +270,8 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   isValid = currentStep => {
     const { newMarket } = this.props;
-    const validations = newMarket.validations[currentStep];
-    const validationsArray = Object.keys(validations);
-    return validationsArray.every(key => validations[key] === '');
+    const validations = newMarket.validations;
+    return validations.every(key => validations[key] === '');
   };
 
   saveDraft = () => {
@@ -344,7 +345,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkDecimals,
       decimals,
       checkForAddress,
-      checkFee
+      checkFee,
     } = validationsObj;
 
     const checkValidations = [
@@ -361,11 +362,13 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkLessThan
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
-      checkFee
-        ? isValidFee(value, readableName, newMarket.affiliateFee)
+      checkFee ? isValidFee(value, readableName, newMarket.affiliateFee) : '',
+      checkDividedBy
+        ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice)
         : '',
-      checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
-      checkDateGreater ? dateGreater(value, currentTimestamp, checkDateGreaterMessage) : '',
+      checkDateGreater
+        ? dateGreater(value, currentTimestamp, checkDateGreaterMessage)
+        : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
@@ -380,7 +383,9 @@ export default class Form extends React.Component<FormProps, FormState> {
         newMarket.offsetName,
         newMarket.offset
       );
-      checkValidations.push(dateGreater(endTimeFormatted.timestamp, currentTimestamp));
+      checkValidations.push(
+        dateGreater(endTimeFormatted.timestamp, currentTimestamp)
+      );
     }
 
     const errorMsg = checkValidations.find(validation => validation !== '');
@@ -395,7 +400,11 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   onChange = (name, value, callback) => {
-    const { updateNewMarket, newMarket, removeAllOrdersFromNewMarket } = this.props;
+    const {
+      updateNewMarket,
+      newMarket,
+      removeAllOrdersFromNewMarket,
+    } = this.props;
     updateNewMarket({ [name]: value });
 
     if (name === 'outcomes') {
@@ -412,7 +421,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         });
       } else if (newMarket.marketType === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
-        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
+        outcomesFormatted[1].description =
+          newMarket.scalarDenomination === ''
+            ? NON_EXISTENT
+            : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
@@ -426,7 +438,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         }));
       } else if (value === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
-        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
+        outcomesFormatted[1].description =
+          newMarket.scalarDenomination === ''
+            ? NON_EXISTENT
+            : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
@@ -435,7 +450,12 @@ export default class Form extends React.Component<FormProps, FormState> {
         this.onError('maxPrice', '');
         this.onError('scalarDenomination', '');
         this.onError('tickSize', '');
-        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: ZERO, maxPriceBigNumber: ONE });
+        updateNewMarket({
+          minPrice: 0,
+          maxPrice: 1,
+          minPriceBigNumber: ZERO,
+          maxPriceBigNumber: ONE,
+        });
       }
       if (value !== CATEGORICAL) {
         this.onError('outcomes', '');
@@ -455,8 +475,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       name === 'timeSelector'
     ) {
       // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
-      const setEndTime =
-        name === 'setEndTime' ? value : newMarket.setEndTime;
+      const setEndTime = name === 'setEndTime' ? value : newMarket.setEndTime;
       let hour = name === 'hour' ? value : newMarket.hour;
       let minute = name === 'minute' ? value : newMarket.minute;
       let meridiem = name === 'meridiem' ? value : newMarket.meridiem;
@@ -464,13 +483,13 @@ export default class Form extends React.Component<FormProps, FormState> {
       let offsetName = newMarket.offsetName;
       let timezone = newMarket.timezone;
 
-      if (name === "timeSelector") {
+      if (name === 'timeSelector') {
         hour = value.hour || hour;
         minute = value.minute || minute;
         meridiem = value.meridiem || meridiem;
         this.onError('hour', '');
       }
-      if (name === "timezoneDropdown") {
+      if (name === 'timezoneDropdown') {
         offset = value.offset;
         offsetName = value.offsetName;
         timezone = value.timezone;
@@ -484,7 +503,16 @@ export default class Form extends React.Component<FormProps, FormState> {
         offset
       );
 
-      updateNewMarket({ endTimeFormatted, setEndTime, hour, minute, meridiem, offset, offsetName, timezone });
+      updateNewMarket({
+        endTimeFormatted,
+        setEndTime,
+        hour,
+        minute,
+        meridiem,
+        offset,
+        offsetName,
+        timezone,
+      });
     }
     this.onError(name, '');
     if (callback) callback(name);
@@ -495,7 +523,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     const { currentStep, validations } = newMarket;
     const updatedValidations = validations;
 
-    updatedValidations[currentStep][name] = error;
+    updatedValidations[name] = error;
     updateNewMarket({ validations: updatedValidations });
   };
 
@@ -534,17 +562,13 @@ export default class Form extends React.Component<FormProps, FormState> {
     const disabledSave =
       savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(
-      (validations && validations[currentStep]) || {}
-    ).every(field =>
+    const noErrors = Object.values(validations || {}).every(field =>
       Array.isArray(field)
         ? field.every(val => val === '' || !val)
         : !field || field === ''
     );
     const saveDraftError =
-      validations &&
-      validations[currentStep] &&
-      validations[currentStep].description === draftError;
+      validations && validations.description === draftError;
 
     return (
       <div
@@ -580,6 +604,13 @@ export default class Form extends React.Component<FormProps, FormState> {
               {mainContent === FORM_DETAILS && (
                 <FormDetails onChange={this.onChange} onError={this.onError} />
               )}
+              {mainContent === TEMPLATE_FORM_DETAILS && (
+                <FormDetails
+                  template
+                  onChange={this.onChange}
+                  onError={this.onError}
+                />
+              )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
                   onChange={this.onChange}
@@ -588,7 +619,12 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
-              {mainContent === MARKET_TYPE && <MarketType updateNewMarket={updateNewMarket} marketType={marketType} />}
+              {mainContent === MARKET_TYPE && (
+                <MarketType
+                  updateNewMarket={updateNewMarket}
+                  marketType={marketType}
+                />
+              )}
               {saveDraftError && (
                 <Error
                   header="Unable to save draft"
@@ -606,29 +642,39 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  {!template && <SecondaryButton
-                    text={disabledSave ? 'Saved' : 'Save draft'}
-                    disabled={disabledSave}
-                    action={this.saveDraft}
-                  />}
+                  {!template && (
+                    <SecondaryButton
+                      text={disabledSave ? 'Saved' : 'Save draft'}
+                      disabled={disabledSave}
+                      action={this.saveDraft}
+                    />
+                  )}
                   {secondButton === NEXT && (
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}
                   {secondButton === CREATE && (
-                    <PrimaryButton text="Create" action={() => {
-                      openCreateMarketModal(() => {
-                        this.setState({blockShown: true}, () => {
-                          history.push({
-                            pathname: makePath(MY_POSITIONS, null),
+                    <PrimaryButton
+                      text="Create"
+                      action={() => {
+                        openCreateMarketModal(() => {
+                          this.setState({ blockShown: true }, () => {
+                            history.push({
+                              pathname: makePath(MY_POSITIONS, null),
+                            });
                           });
                         });
-                      })
-                    }} />
+                      }}
+                    />
                   )}
                 </div>
               </div>
               {secondButton === CREATE && (
-                  <BulkTxLabel className={Styles.MultipleTransactions} buttonName={"Create"} count={1} needsApproval={needsApproval}/>
+                <BulkTxLabel
+                  className={Styles.MultipleTransactions}
+                  buttonName={'Create'}
+                  count={1}
+                  needsApproval={needsApproval}
+                />
               )}
             </ContentBlock>
           </>

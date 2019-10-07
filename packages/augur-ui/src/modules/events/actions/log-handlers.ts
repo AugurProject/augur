@@ -162,7 +162,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-  marketsData: Getters.Markets.MarketInfo[]
+  marketsData: Getters.Markets.MarketInfo[] = []
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
