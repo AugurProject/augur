@@ -722,7 +722,7 @@ export class Markets {
     const markets = await db.findMarkets({ selector: { market: { $in: params.marketIds } }});
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
-    return await getMarketsInfo(db, markets, reportingFeeDivisor);
+    return getMarketsInfo(db, markets, reportingFeeDivisor);
   }
 
   @Getter('getCategoriesParams')
@@ -736,9 +736,8 @@ export class Markets {
     const marketLogs = await db.findMarkets({
       selector: {
         universe,
-        ...(reportingStates ? { // optionally filter on reporting state
-          reportingState: { $in: reportingStates}
-        } : {}),
+        // optionally filter on reporting state
+        ...(reportingStates ? { reportingState: { $in: reportingStates }} : {}),
       },
       fields: [ 'extraInfo' ]
     });
@@ -749,9 +748,7 @@ export class Markets {
       if (extraInfo) {
         const categories = Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
         categories.forEach((category) => {
-          if (!allCategories[category]) {
-            allCategories[category] = null;
-          }
+          allCategories[category] = null
         });
       }
     });
@@ -770,11 +767,11 @@ export class Markets {
       selector: {
         universe,
         reportingState: {
-          $not: { $in: [
+          $nin: [
               MarketReportingState.AwaitingFinalization,
               MarketReportingState.Finalized
-          ]}
-        }
+          ],
+        },
       },
       fields: [ 'extraInfo', 'volume', 'marketOI' ],
     });
@@ -811,12 +808,22 @@ export class Markets {
       });
     });
 
-    const formattedStats = categoryStats.map((stats) => {
-      
-    })
+    const formattedStats = _.mapValues(categoryStats, (stats) => {
+      return {
+        category: stats.category,
+        numberOfMarkets: stats.numberOfMarkets,
+        volume: convertAttoDaiToDisplay(new BigNumber(stats.volume)),
+        openInterest: convertAttoDaiToDisplay(new BigNumber(stats.openInterest)),
+      }
+    });
 
-    return categoryStats;
+    return formattedStats;
   }
+}
+
+// Converts atto-dai into regular dai and formats as a string up to n decimal places.
+function convertAttoDaiToDisplay(atto: BigNumber, decimalPlaces = 2): string {
+  return Number(atto.div(1e18).toString()).toFixed(decimalPlaces);
 }
 
 const extraInfoType = t.intersection([
