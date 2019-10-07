@@ -618,7 +618,7 @@ export class CategoryMultiSelect extends Component<
           staticLabel='Primary Category'
           onChangeDropdown={choice => this.onChangeDropdown(choice, 0)}
           options={primaryOptions}
-          errorMessage={errorMessage[0]}
+          errorMessage={errorMessage && errorMessage[0]}
           value={values[0]}
           placeholder='Custom Primary Category'
           onChangeInput={v =>
@@ -634,7 +634,7 @@ export class CategoryMultiSelect extends Component<
             staticLabel='Secondary Category'
             onChangeDropdown={choice => this.onChangeDropdown(choice, 1)}
             options={secondaryOptions}
-            errorMessage={errorMessage[1]}
+            errorMessage={errorMessage && errorMessage[1]}
             value={values[1]}
             placeholder='Custom Secondary Category'
             onChangeInput={v =>
