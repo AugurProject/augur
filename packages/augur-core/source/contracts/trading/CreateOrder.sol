@@ -59,7 +59,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         Order.Data memory _orderData = Order.create(augur, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _kycToken);
         Order.escrowFunds(_orderData);
         require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0, "Createorder.createOrder: Order duplication in same block");
-        profitLoss.recordFrozenFundChange(_market, _creator, _outcome, int256(_orderData.moneyEscrowed));
+        profitLoss.recordFrozenFundChange(_market.getUniverse(), _market, _creator, _outcome, int256(_orderData.moneyEscrowed));
         return Order.saveOrder(_orderData, _tradeGroupId);
     }
 
@@ -79,11 +79,12 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(msg.sender) > 0, "Createorder.publicCreateOrders: KYC token failure");
         _orders = new bytes32[]( _types.length);
 
+        IUniverse _universe = _market.getUniverse();
         for (uint256 i = 0; i <  _types.length; i++) {
             Order.Data memory _orderData = Order.create(augur, msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _kycToken);
             Order.escrowFunds(_orderData);
             require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0, "Createorder.publicCreateOrders: Order duplication in same block");
-            profitLoss.recordFrozenFundChange(_market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
+            profitLoss.recordFrozenFundChange(_universe, _market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
             _orders[i] = Order.saveOrder(_orderData, _tradeGroupId);
         }
 

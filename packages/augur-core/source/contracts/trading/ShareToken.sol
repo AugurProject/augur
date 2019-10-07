@@ -109,7 +109,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         if (shouldUpdatePL) {
-            profitLoss.recordExternalTransfer(_from, _to, _value);
+            profitLoss.recordExternalTransfer(universe, market, outcome, _from, _to, _value);
         }
         augur.logShareTokensTransferred(universe, market, _from, _to, _value, balances[_from], balances[_to], outcome);
     }

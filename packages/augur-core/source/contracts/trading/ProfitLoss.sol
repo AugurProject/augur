@@ -43,18 +43,18 @@ contract ProfitLoss is Initializable {
         orders = IOrders(augur.lookup("Orders"));
     }
 
-    function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public returns (bool) {
+    function recordFrozenFundChange(IUniverse _universe, IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public returns (bool) {
         require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders) || msg.sender == fillOrder);
         OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
         _outcomeData.frozenFunds += _frozenFundDelta;
-        augur.logProfitLossChanged(_market, _account, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
+        augur.logProfitLossChanged(_universe, _market, _account, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
         return true;
     }
 
-    function recordExternalTransfer(address _source, address _destination, uint256 _value) public returns (bool) {
+    function recordExternalTransfer(IUniverse _universe, IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _value) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(augur.isKnownShareToken(_shareToken));
-        this.recordTrade(_shareToken.getMarket(), _destination, _source, _shareToken.getOutcome(), int256(_value), 0, 0, 0, 0, _value);
+        this.recordTrade(_universe, _market, _destination, _source, _outcome, int256(_value), 0, 0, 0, 0, _value);
         return true;
     }
 
@@ -63,17 +63,17 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordTrade(IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) public returns (bool) {
+    function recordTrade(IUniverse _universe, IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) public returns (bool) {
         require(msg.sender == fillOrder || msg.sender == address(this));
         int256 _numTicks = int256(_market.getNumTicks());
         int256  _longFrozenTokenDelta = int256(_numLongTokens).sub(int256(_numLongShares).mul(_numTicks.sub(_price)));
         int256  _shortFrozenTokenDelta = int256(_numShortTokens).sub(int256(_numShortShares).mul(_price));
-        adjustForTrader(_market, _shortAddress, _outcome, -_amount, _price, _shortFrozenTokenDelta);
-        adjustForTrader(_market, _longAddress, _outcome, _amount, _price, _longFrozenTokenDelta);
+        adjustForTrader(_universe, _market, _shortAddress, _outcome, -_amount, _price, _shortFrozenTokenDelta);
+        adjustForTrader(_universe, _market, _longAddress, _outcome, _amount, _price, _longFrozenTokenDelta);
         return true;
     }
 
-    function adjustForTrader(IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) public returns (bool) {
+    function adjustForTrader(IUniverse _universe, IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) public returns (bool) {
         OutcomeData storage _outcomeData = profitLossData[_address][address(_market)][_outcome];
         int256 _newNetPosition = _outcomeData.netPosition.add(_amount);
         bool _sold = _outcomeData.netPosition < 0 &&  _amount > 0 || _outcomeData.netPosition > 0 &&  _amount < 0;
@@ -91,7 +91,7 @@ contract ProfitLoss is Initializable {
         if (_newNetPosition == 0) {
             _outcomeData.avgPrice = 0;
             _outcomeData.netPosition = 0;
-            augur.logProfitLossChanged(_market, _address, _outcome, 0, 0, _outcomeData.realizedProfit, _outcomeData.frozenFunds, _outcomeData.realizedCost);
+            augur.logProfitLossChanged(_universe, _market, _address, _outcome, 0, 0, _outcomeData.realizedProfit, _outcomeData.frozenFunds, _outcomeData.realizedCost);
             return true;
         }
 
@@ -104,13 +104,14 @@ contract ProfitLoss is Initializable {
         }
 
         _outcomeData.netPosition = _newNetPosition;
-        augur.logProfitLossChanged(_market, _address, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
+        augur.logProfitLossChanged(_universe, _market, _address, _outcome, _outcomeData.netPosition, uint256(_outcomeData.avgPrice), _outcomeData.realizedProfit, _outcomeData.frozenFunds,  _outcomeData.realizedCost);
         return true;
     }
 
     function recordClaim(IMarket _market, address _account, uint256[] memory _outcomeFees) public returns (bool) {
         require(msg.sender == claimTradingProceeds);
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
+        IUniverse _universe = _market.getUniverse();
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
             OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
             if (_outcomeData.netPosition == 0) {
@@ -124,7 +125,7 @@ contract ProfitLoss is Initializable {
             _outcomeData.avgPrice = 0;
             _outcomeData.frozenFunds = 0;
             _outcomeData.netPosition = 0;
-            augur.logProfitLossChanged(_market, _account, _outcome, 0, 0, _outcomeData.realizedProfit, 0, _outcomeData.realizedCost);
+            augur.logProfitLossChanged(_universe, _market, _account, _outcome, 0, 0, _outcomeData.realizedProfit, 0, _outcomeData.realizedCost);
         }
         return true;
     }

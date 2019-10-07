@@ -61,10 +61,18 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
         IOrders _orders = orders;
         // Look up the order the sender wants to cancel
-        (uint256 _moneyEscrowed, uint256 _sharesEscrowed, Order.Types _type, IMarket _market, uint256 _outcome, address _creator) = _orders.getOrderDataForCancel(_orderId);
-
-        // Check that the order ID is correct and that the sender owns the order
-        require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+        uint256 _moneyEscrowed;
+        uint256 _sharesEscrowed;
+        Order.Types _type;
+        IMarket _market;
+        uint256 _outcome;
+        // Check creator in inner scope to reduce stack depth
+        {
+            address _creator;
+            (_moneyEscrowed, _sharesEscrowed, _type, _market, _outcome, _creator) = _orders.getOrderDataForCancel(_orderId);
+            // Check that the order ID is correct and that the sender owns the order
+            require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+        }
 
         // Clear the order first
         _orders.removeOrder(_orderId);
@@ -72,8 +80,9 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
         _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), _market, _creator, _moneyEscrowed, _sharesEscrowed, _orderId);
-        profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
+        IUniverse _universe = _market.getUniverse();
+        augur.logOrderCanceled(_universe, _market, _sender, _moneyEscrowed, _sharesEscrowed, _orderId);
+        profitLoss.recordFrozenFundChange(_universe, _market, _sender, _outcome, -int256(_moneyEscrowed));
 
         return true;
     }

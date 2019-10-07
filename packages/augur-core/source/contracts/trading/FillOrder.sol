@@ -495,7 +495,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         }
         updateProfitLoss(_tradeData, _amountFilled);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
-            profitLoss.recordFrozenFundChange(_tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
+            profitLoss.recordFrozenFundChange(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
         }
         return _amountRemainingFillerWants;
     }
@@ -570,7 +570,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? 0 : _tradeData.getFillerTokensDepleted();
         uint256 _numLongShares = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
         uint256 _numShortShares = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
-        profitLoss.recordTrade(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
+        profitLoss.recordTrade(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
         return true;
     }
 }
