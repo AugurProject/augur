@@ -362,7 +362,7 @@ export const DaiGraphic = () => (
 
 export const TestBet = () => (
   <div className={Styles.TestBet}>
-    <img src='assets/images/test-bet-placeholder' />
+    <img src='assets/images/test-bet-placeholder.png' />
   </div>
 );
 
