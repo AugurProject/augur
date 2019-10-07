@@ -10,7 +10,7 @@ interface HelpResourcesProps {}
 
 const HELP_LINKS = [
   {
-    label: 'help centre',
+    label: 'help center',
     link: 'https://docs.augur.net',
   },
   {
