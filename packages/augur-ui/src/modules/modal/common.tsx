@@ -333,15 +333,15 @@ interface LinkContentSectionProps {
 }
 export const LinkContentSection = (props: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map(content => (
-      <>
+    {props.linkContent.map((content, idx) => (
+      <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
             {content.content}
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
-      </>
+      </div>
     ))}
   </div>
 );
@@ -357,6 +357,12 @@ export const DaiGraphic = () => (
       {LargeDollarIcon}
       <span>1 USD</span>
     </div>
+  </div>
+);
+
+export const TestBet = () => (
+  <div className={Styles.TestBet}>
+    <img src='assets/images/test-bet-placeholder' />
   </div>
 );
 
