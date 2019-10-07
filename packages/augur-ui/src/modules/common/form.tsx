@@ -168,9 +168,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
         value={value}
         placeholder={UTC_Default}
         autoCompleteList={timezones.timezones}
-        onChange={() => {
-          
-        }}
+        onChange={() => {}}
         onAutoCompleteListSelected={timezone => {
           const parse = /\(UTC (.*)\)/i;
           if (timezone !== '') {
