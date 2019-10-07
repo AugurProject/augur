@@ -5,12 +5,11 @@ import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 
 export const switchUniverse = (
   universeId: string,
-  account: string
 ): ThunkAction<any, any, any, any> => async (
   dispatch,
   getState
 ) => {
-  dispatch(loadUniverseDetails(universeId, account));
+  dispatch(loadUniverseDetails(universeId));
   dispatch(loadUniverseForkingInfo());
   dispatch(loadDisputeWindow());
   return;

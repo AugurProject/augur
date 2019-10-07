@@ -3,12 +3,12 @@ import { ThunkAction } from 'redux-thunk';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 
 export const loadUniverseDetails = (
-  universe: string,
-  account: string
+  universe: string
 ): ThunkAction<any, any, any, any> => async (
   dispatch,
   getState
 ) => {
+  const account = getState().loginAccount.address;
   const augur = augurSdk.get();
   const universeDetails= await augur.getUniverseChildren
   ({
