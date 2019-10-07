@@ -16,48 +16,107 @@ import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { DismissableNotice } from 'modules/reporting/common';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { MarketReportClaimableContracts } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState, ownProps) => {
+  const { universe, blockchain } = state;
+  const { forkingInfo } = universe;
+  const isForking = forkingInfo !== null;
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
-  const { endTime, reportingState } = market;
+  const { reportingState, endTime } = market;
 
-  const hasPassed = dateHasPassed(
+  let show = isForking;
+  let canMigrateMarkets = false;
+  let hasReleaseRepOnThisMarket = false;
+
+  const hasMarketEnded = dateHasPassed(
     state.blockchain.currentAugurTimestamp * 1000,
     endTime
   );
+
+  const hasForkPassed =
+    isForking &&
+    dateHasPassed(
+      blockchain.currentAugurTimestamp * 1000,
+      forkingInfo.forkEndTime
+    );
+
+  if (isForking && forkingInfo.winningChildUniverseId) {
+    const winning = universe.children.find(
+      c => c.id === forkingInfo.winningChildUniverseId
+    );
+    if (createBigNumber(winning.usersRep || ZERO).gt(ZERO)) {
+      canMigrateMarkets = true;
+    }
+  }
+
+  const marketNeedsMigrating =
+    hasForkPassed &&
+    reportingState !== REPORTING_STATE.FINALIZED &&
+    reportingState !== REPORTING_STATE.AWAITING_FINALIZATION;
+
   const releasableRep = selectReportingWinningsByMarket(state);
   let hasReleaseRep = releasableRep.totalUnclaimedRep.gt(ZERO);
-  if (hasReleaseRep && releasableRep.claimableMarkets && releasableRep.claimableMarkets.unclaimedRep) {
-    hasReleaseRep = releasableRep.claimableMarkets.marketContracts.filter(c => c.marketId === marketId).length > 0;
-  }
-  const show =
-    !!(
-      state.universe.forkingInfo &&
-      (state.universe.forkingInfo.winningChildUniverseId || hasReleaseRep)
-    ) &&
-    (reportingState !== REPORTING_STATE.FINALIZED &&
-      reportingState !== REPORTING_STATE.AWAITING_FINALIZATION);
 
+  if (
+    hasReleaseRep &&
+    releasableRep.claimableMarkets &&
+    releasableRep.claimableMarkets.unclaimedRep
+  ) {
+    hasReleaseRepOnThisMarket =
+      releasableRep.claimableMarkets.marketContracts.filter(
+        c => c.marketId === marketId
+      ).length > 0;
+  }
   let title =
-    'Fork has finalized. Please migrate this market to the new universe.';
-  let buttonText = 'Migrate Market';
+    'Fork has been initiated. Fork needs to be resolved before migrating this market to the new universe.';
+  let buttonText = '';
+  let description = '';
+  let buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
 
-  if (hasPassed) {
-    title =
-      'Fork has finalized. This market needs initial report to migrate to new universe.';
-    buttonText = 'Report and Migrate Market';
+  if (marketNeedsMigrating && canMigrateMarkets) {
+    title = 'Fork has finalized. Please migrate this market to the new universe.';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
+    if (hasMarketEnded) {
+      buttonText = 'Report and Migrate Market';
+    } else {
+      buttonText = 'Migrate Market';
+    }
   }
+
+  if (marketNeedsMigrating && !canMigrateMarkets) {
+    title =
+      'Fork has finalized. REP on Winning Univese is needed to migrate markets ';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
+  }
+
+  if (hasReleaseRepOnThisMarket) {
+    title =
+      'Disputing is paused on this market. Disputing can continue once the fork has finalised.';
+    description =
+      'As you hold REP in this market’s dispute, please release it now to migrate in the fork.';
+    buttonText = 'Release REP';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
+  }
+
+  if (isForking && forkingInfo.forkingMarket === market.id) {
+    title = 'Forking Market, This market can not be migrated';
+    description = '';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
+  }
+
   return {
     market,
-    hasPassed,
     show,
     buttonText,
-    buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON,
+    buttonType,
     title,
-    description: 'migrate market to new universe',
+    description,
+    hasMarketEnded,
     releasableRep,
     hasReleaseRep,
+    canMigrateMarkets,
   };
 };
 
@@ -86,12 +145,16 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  let action = sP.hasPassed
-    ? () => dP.report(sP.market)
-    : () => dP.migrate(sP.market);
+  let action = null;
+  if (sP.canMigrateMarkets) {
+    action = sP.hasMarketEnded
+      ? () => dP.report(sP.market)
+      : () => dP.migrate(sP.market);
+  }
   action = sP.hasReleaseRep
     ? () => dP.releaseReportingRep(sP.releasableRep)
     : action;
+
   return {
     ...sP,
     ...dP,
