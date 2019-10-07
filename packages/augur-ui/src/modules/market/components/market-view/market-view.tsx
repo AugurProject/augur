@@ -32,6 +32,7 @@ import { MarketData, OutcomeFormatted } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { SquareDropdown } from 'modules/common/selection';
+import ForkingBanner from "modules/reporting/containers/forking-banner";
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -332,6 +333,7 @@ export default class MarketView extends Component<
           [Styles.Inactive]: preview,
         })}
       >
+        <ForkingBanner />
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>

@@ -57,6 +57,7 @@ export default class AccountView extends React.Component<
 
     return (
       <>
+        <ForkingBanner />
         <Media query={SMALL_MOBILE}>
           {matches =>
             matches ? (
@@ -91,7 +92,6 @@ export default class AccountView extends React.Component<
                   [Styles.HideActiveMarkets]: s.extendNotifications,
                 })}
               >
-                <ForkingBanner />
                 <div>
                   <div>
                     <Notifications

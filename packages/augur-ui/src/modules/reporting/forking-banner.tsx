@@ -18,7 +18,7 @@ interface ForkingProps {
 }
 
 export const Forking = (props: ForkingProps) => (
-  <section
+  <header
     className={classNames(Styles.ForkingLabel, {
       [Styles.Hide]: !props.show,
     })}
@@ -54,7 +54,7 @@ export const Forking = (props: ForkingProps) => (
         countdownBreakpoint={SIXTY_DAYS}
       />
     </div>
-  </section>
+  </header>
 );
 
 export default Forking;

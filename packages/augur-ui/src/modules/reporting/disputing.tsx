@@ -12,6 +12,7 @@ import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 
 import Styles from 'modules/reporting/disputing.styles.less';
+import ForkingBanner from "modules/reporting/containers/forking-banner";
 
 interface DisputingProps {
   isConnected: boolean;
@@ -39,48 +40,51 @@ export default class Disputing extends Component<DisputingProps> {
 
   render() {
     return (
-      <section className={Styles.Disputing}>
-        <Helmet>
-          <title>Disputing</title>
-        </Helmet>
-        <Media query={TABLET_MAX}>
-          {(matches) =>
-            matches ? (
-              <ModuleTabs selected={0} fillWidth noBorder>
-                <ModulePane label="disputing overview">
-                  <UserRepDisplay />
-                  <ParticipationTokensView />
-                  <DisputeWindowProgress />
-                  <ReportingModalButton
-                    text="Need Help? Disputing Quick Guide"
-                    action={() => console.log('TODO add popup')}
-                  />
-                </ModulePane>
-                <ModulePane label="markets in dispute">
+      <>
+        <ForkingBanner />
+        <section className={Styles.Disputing}>
+          <Helmet>
+            <title>Disputing</title>
+          </Helmet>
+          <Media query={TABLET_MAX}>
+            {(matches) =>
+              matches ? (
+                <ModuleTabs selected={0} fillWidth noBorder>
+                  <ModulePane label="disputing overview">
+                    <UserRepDisplay />
+                    <ParticipationTokensView />
+                    <DisputeWindowProgress />
+                    <ReportingModalButton
+                      text="Need Help? Disputing Quick Guide"
+                      action={() => console.log('TODO add popup')}
+                    />
+                  </ModulePane>
+                  <ModulePane label="markets in dispute">
+                    <MarketsInDispute />
+                    <ReportingModalButton
+                      text="Need Help? Disputing Quick Guide"
+                      action={() => console.log('TODO add popup')}
+                    />
+                  </ModulePane>
+                </ModuleTabs>
+              ) : (
+                <>
                   <MarketsInDispute />
-                  <ReportingModalButton
-                    text="Need Help? Disputing Quick Guide"
-                    action={() => console.log('TODO add popup')}
-                  />
-                </ModulePane>
-              </ModuleTabs>
-            ) : (
-              <>
-                <MarketsInDispute />
-                <div>
-                  <ReportingModalButton
-                    text="Need Help? Disputing Quick Guide"
-                    action={() => console.log('TODO add popup')}
-                  />
-                  <UserRepDisplay />
-                </div>
-                <DisputeWindowProgress />
-                <ParticipationTokensView />
-              </>
-            )
-          }
-        </Media>
-      </section>
+                  <div>
+                    <ReportingModalButton
+                      text="Need Help? Disputing Quick Guide"
+                      action={() => console.log('TODO add popup')}
+                    />
+                    <UserRepDisplay />
+                  </div>
+                  <DisputeWindowProgress />
+                  <ParticipationTokensView />
+                </>
+              )
+            }
+          </Media>
+        </section>
+      </>
     );
   }
 }

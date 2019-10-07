@@ -7,8 +7,9 @@ import OpenOrders from 'modules/portfolio/containers/open-orders';
 import FilledOrders from 'modules/portfolio/containers/filled-orders';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import { SMALL_MOBILE, TABLET_MAX } from 'modules/common/constants';
+import { TABLET_MAX } from 'modules/common/constants';
 import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
+import ForkingBanner from "modules/reporting/containers/forking-banner";
 
 interface PortfolioViewProps {}
 
@@ -45,65 +46,68 @@ export default class PortfolioView extends React.Component<
     const s = this.state;
 
     return (
-      <div className={Styles.PortfolioView}>
-        <Media query={TABLET_MAX}>
-          {matches =>
-            matches ? (
-              <>
-              <ModuleTabs selected={0} fillWidth noBorder>
-                <ModulePane label="Positions">
-                  <MyPositions />
-                </ModulePane>
-                <ModulePane label="Open Orders">
-                  <OpenOrders />
-                </ModulePane>
-                <ModulePane label="Filled Orders">
-                  <FilledOrders />
-                </ModulePane>
-                <ModulePane label="My Created Markets">
-                  <MyMarkets />
-                </ModulePane>
-              </ModuleTabs>
-              </>
-            ) : (
-              <section>
-                <div>
-                  <MyPositions
-                    toggle={() =>
-                      this.toggle('extendPositions', 'extendMarkets')
-                    }
-                    extend={s.extendPositions}
-                    hide={s.extendMarkets}
-                  />
-                  <MyMarkets
-                    toggle={() =>
-                      this.toggle('extendMarkets', 'extendPositions')
-                    }
-                    extend={s.extendMarkets}
-                    hide={s.extendPositions}
-                  />
-                </div>
-                <div>
-                  <OpenOrders
-                    toggle={() =>
-                      this.toggle('extendOpenOrders', 'extendFilledOrders')
-                    }
-                    extend={s.extendOpenOrders}
-                    hide={s.extendFilledOrders}
-                  />
-                  <FilledOrders
-                    toggle={() =>
-                      this.toggle('extendFilledOrders', 'extendOpenOrders')
-                    }
-                    extend={s.extendFilledOrders}
-                    hide={s.extendOpenOrders}
-                  />
-                </div>
-              </section>
-            )
-          }
-        </Media>
-      </div>
+      <>
+        <ForkingBanner />
+        <div className={Styles.PortfolioView}>
+          <Media query={TABLET_MAX}>
+            {matches =>
+              matches ? (
+                <>
+                <ModuleTabs selected={0} fillWidth noBorder>
+                  <ModulePane label="Positions">
+                    <MyPositions />
+                  </ModulePane>
+                  <ModulePane label="Open Orders">
+                    <OpenOrders />
+                  </ModulePane>
+                  <ModulePane label="Filled Orders">
+                    <FilledOrders />
+                  </ModulePane>
+                  <ModulePane label="My Created Markets">
+                    <MyMarkets />
+                  </ModulePane>
+                </ModuleTabs>
+                </>
+              ) : (
+                <section>
+                  <div>
+                    <MyPositions
+                      toggle={() =>
+                        this.toggle('extendPositions', 'extendMarkets')
+                      }
+                      extend={s.extendPositions}
+                      hide={s.extendMarkets}
+                    />
+                    <MyMarkets
+                      toggle={() =>
+                        this.toggle('extendMarkets', 'extendPositions')
+                      }
+                      extend={s.extendMarkets}
+                      hide={s.extendPositions}
+                    />
+                  </div>
+                  <div>
+                    <OpenOrders
+                      toggle={() =>
+                        this.toggle('extendOpenOrders', 'extendFilledOrders')
+                      }
+                      extend={s.extendOpenOrders}
+                      hide={s.extendFilledOrders}
+                    />
+                    <FilledOrders
+                      toggle={() =>
+                        this.toggle('extendFilledOrders', 'extendOpenOrders')
+                      }
+                      extend={s.extendFilledOrders}
+                      hide={s.extendOpenOrders}
+                    />
+                  </div>
+                </section>
+              )
+            }
+          </Media>
+        </div>
+      </>
     );
   }
 }
