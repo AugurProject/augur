@@ -449,9 +449,10 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
      * @return The amount remaining the filler wants
      */
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
-        uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _affiliateAddress);
-        IMarket _market = orders.getMarket(_orderId);
-        _market.assertBalances();
+        address _filler = msg.sender;
+        Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _affiliateAddress);
+        uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
+        _tradeData.contracts.market.assertBalances();
         return _result;
     }
 
