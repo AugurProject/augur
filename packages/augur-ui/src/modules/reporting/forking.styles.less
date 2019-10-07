@@ -5,31 +5,20 @@
   border-radius: @border-radius-default;
   border: 1px solid @color-error;
   border-left-width: @size-4;
-  display: flex;
-  margin: @size-24;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto;
+  margin: @size-24 0 0;
   padding: @size-12 @size-16;
 
   &.Hide {
     display: none;
   }
 
-  @media @breakpoint-mobile-mid {
-    flex-direction: column;
-
-    div:first-of-type {
-      order: 2;
-    }
-
-    div:last-of-type {
-      order: 1;
-      margin-left: 0;
-    }
-  }
-
   > svg {
+    height: @size-16;
     margin-right: @size-6;
-    width: @size-12;
-    height: @size-12;
+    width: @size-16;
 
     > circle {
       fill: fade(@color-error, 20%);
@@ -93,6 +82,32 @@
 
         color: @color-error;
         line-height: @size-19;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-mid {
+    grid-template-columns: @size-28 auto @size-28;
+
+    > svg {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    > div:first-of-type {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    > div:last-of-type {
+      grid-column: 2;
+      grid-row: 1;
+      margin: 0 0 @size-16;
+      width: 100%;
+
+      span {
+        text-align: center;
+        width: 100%;
       }
     }
   }
