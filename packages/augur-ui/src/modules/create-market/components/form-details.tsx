@@ -13,7 +13,6 @@ import {
   TimezoneDropdown,
   CategoryMultiSelect
 } from "modules/common/form";
-import { setCategories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList, DateTimeHeaders } from "modules/create-market/components/common";
 import {
   YES_NO,
@@ -39,6 +38,7 @@ import { checkValidNumber } from 'modules/common/validations';
 
 import Styles from "modules/create-market/components/form-details.styles.less";
 import { createBigNumber } from "utils/create-big-number";
+import { setCategories } from "modules/create-market/set-categories";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
