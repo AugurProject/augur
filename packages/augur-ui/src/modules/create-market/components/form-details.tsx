@@ -46,6 +46,7 @@ interface FormDetailsProps {
   currentTimestamp: number;
   onChange: Function;
   onError: Function;
+  template?: boolean;
 }
 
 interface FormDetailsState {
@@ -72,7 +73,8 @@ export default class FormDetails extends React.Component<
       newMarket,
       currentTimestamp,
       onChange,
-      onError
+      onError,
+      template
     } = this.props;
     const s = this.state;
 
@@ -96,10 +98,12 @@ export default class FormDetails extends React.Component<
       designatedReporterAddress,
       designatedReporterType,
       validations,
-      currentStep,
       timezone,
       endTimeFormatted
     } = newMarket;
+
+    let { currentStep } = newMarket;
+    if (template) currentStep = currentStep - 4;
 
     return (
       <div className={Styles.FormDetails}>

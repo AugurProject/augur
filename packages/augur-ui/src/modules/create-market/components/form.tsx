@@ -10,6 +10,7 @@ import {
   TEMPLATE_CONTENT_PAGES,
   REVIEW,
   FORM_DETAILS,
+  TEMPLATE_FORM_DETAILS,
   LANDING,
   FEES_LIQUIDITY,
   DESCRIPTION,
@@ -49,6 +50,7 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
+import TemplateFormDetails from 'modules/create-market/containers/template-form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
@@ -579,6 +581,9 @@ export default class Form extends React.Component<FormProps, FormState> {
             <ContentBlock noDarkBackground={noDarkBackground}>
               {mainContent === FORM_DETAILS && (
                 <FormDetails onChange={this.onChange} onError={this.onError} />
+              )}
+              {mainContent === TEMPLATE_FORM_DETAILS && (
+                <FormDetails template onChange={this.onChange} onError={this.onError} />
               )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
