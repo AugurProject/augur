@@ -2,13 +2,35 @@ import { CATEGORICAL } from 'modules/common/constants';
 
 export enum TemplateInputType {
   TEXT = 'TEXT',
-  DATE = 'DATE',
+  DATEYEAR = 'DATEYEAR',
   DATETIME = 'DATETIME',
   DROPDOWN = 'DROPDOWN',
   ADDED_OUTCOME = 'ADDED_OUTCOME',
   USER_OUTCOME = 'USER_OUTCOME',
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
 }
+
+export interface UserInputText {
+  value: string;
+}
+
+export interface UserInputDateYear extends UserInputText {}
+export interface UserInputDateTime {
+  year: string;
+  day: string;
+  minute: string;
+  timezone: string;
+}
+export interface UserInputDropdown extends UserInputText {}
+export interface UserInputUserOutcome extends UserInputText {}
+
+export type UserInputtedType =
+  | UserInputText
+  | UserInputDateYear
+  | UserInputDateTime
+  | UserInputDropdown
+  | UserInputUserOutcome;
+
 interface CategoryTemplate {
   templates: Template[];
   children: CategoryTemplate[];
@@ -26,6 +48,7 @@ export interface TemplateInput {
   type: TemplateInputType;
   placeholder: string;
   tooltip?: string;
+  userInput: UserInputtedType;
 }
 
 export interface Categories {
