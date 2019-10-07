@@ -7,7 +7,7 @@ export enum TemplateInputType {
   DROPDOWN = 'DROPDOWN',
   ADDED_OUTCOME = 'ADDED_OUTCOME',
   USER_OUTCOME = 'USER_OUTCOME',
-  SUBSITUTE_USER_OUTCOME = 'SUBSITUTE_USER_OUTCOME',
+  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
 }
 interface CategoryTemplate {
   templates: Template[];
@@ -116,11 +116,11 @@ const templates = {
                 placeholder: `No Winner`,
               },
               {
-                type: TemplateInputType.SUBSITUTE_USER_OUTCOME,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Over ({[2] + .5})`,
               },
               {
-                type: TemplateInputType.SUBSITUTE_USER_OUTCOME,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Under ({[2] - .5})`,
               },
             ],
