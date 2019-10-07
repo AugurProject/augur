@@ -230,119 +230,117 @@ export default class MarketsView extends Component<
     }
 
     return (
-      <>
-        <section
-          className={Styles.MarketsView}
-          ref={componentWrapper => {
-            this.componentWrapper = componentWrapper;
-          }}
-        >
-          <ForkingBanner />
-          <Helmet>
-            <title>Markets</title>
-          </Helmet>
-          <MarketsHeader
-            location={location}
+      <section
+        className={Styles.MarketsView}
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
+        <ForkingBanner />
+        <Helmet>
+          <title>Markets</title>
+        </Helmet>
+        <MarketsHeader
+          location={location}
+          isSearchingMarkets={isSearching}
+          filter={marketFilter}
+          sort={marketSort}
+          history={history}
+          selectedCategory={selectedCategories}
+          search={search}
+          updateMobileMenuState={updateMobileMenuState}
+        />
+
+        <div className={classNames({
+          [Styles.Disabled]: isSearching,
+        })}>
+          <MarketTypeFilter
             isSearchingMarkets={isSearching}
-            filter={marketFilter}
-            sort={marketSort}
-            history={history}
-            selectedCategory={selectedCategories}
-            search={search}
-            updateMobileMenuState={updateMobileMenuState}
+            marketCount={this.state.marketCount}
+            updateMarketsFilter={updateMarketsFilter}
+            marketFilter={marketFilter}
           />
 
-          <div className={classNames({
-            [Styles.Disabled]: isSearching,
-          })}>
-            <MarketTypeFilter
-              isSearchingMarkets={isSearching}
-              marketCount={this.state.marketCount}
-              updateMarketsFilter={updateMarketsFilter}
-              marketFilter={marketFilter}
-            />
-
-            <MarketCardFormatSwitcher
-              marketCardFormat={marketCardFormat}
-              updateMarketsListCardFormat={updateMarketsListCardFormat}
-            />
-
-            <FilterDropDowns />
-          </div>
-
-          <FilterTags
-            maxLiquiditySpread={this.props.maxLiquiditySpread}
-            maxFee={this.props.maxFee}
-            removeFeeFilter={this.props.removeFeeFilter}
-            removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
-            updateQuery={(param, value) =>
-              updateQuery(param, value, this.props.location, this.props.history)
-            }
-          />
-
-          <FilterNotice
-            color="red"
-            show={this.props.includeInvalidMarkets === 'show'}
-            content={
-              <span>
-                Invalid markets are no longer hidden. This puts you at risk of
-                trading on invalid markets.{' '}
-                <a href='https://augur.net' target='_blank'>
-                  Learn more
-                </a>
-              </span>
-            }
-          />
-
-          <FilterNotice
-            color="red"
-            show={!displayFee || !displayLiquiditySpread}
-            content={
-              <span>
-                {feesLiquidityMessage}{' '}
-                <a href='https://augur.net' target='_blank'>
-                  Learn more
-                </a>
-              </span>
-            }
-          />
-
-          <MarketsList
-            testid='markets'
-            isLogged={isLogged}
-            markets={markets}
-            showPagination={showPagination && !isSearching}
-            filteredMarkets={filterSortedMarkets}
-            marketCount={marketCount}
-            location={location}
-            history={history}
-            toggleFavorite={toggleFavorite}
-            loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
-            linkType={TYPE_TRADE}
-            isMobile={isMobile}
-            limit={limit}
-            updateLimit={this.updateLimit}
-            offset={offset}
-            setOffset={this.setPageNumber}
-            isSearchingMarkets={isSearching}
+          <MarketCardFormatSwitcher
             marketCardFormat={marketCardFormat}
+            updateMarketsListCardFormat={updateMarketsListCardFormat}
           />
 
-          <FilterNotice
-            show={
-              !this.props.isSearching &&
-              this.props.filteredOutCount &&
-              this.props.filteredOutCount > 0
-            }
-            content={
-              <span>
-                There are {this.props.filteredOutCount} additional markets outside
-                of the current filters applied. Edit filters to view all markets{' '}
-              </span>
-            }
-          />
-        </section>
-      </>
+          <FilterDropDowns />
+        </div>
+
+        <FilterTags
+          maxLiquiditySpread={this.props.maxLiquiditySpread}
+          maxFee={this.props.maxFee}
+          removeFeeFilter={this.props.removeFeeFilter}
+          removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
+          updateQuery={(param, value) =>
+            updateQuery(param, value, this.props.location, this.props.history)
+          }
+        />
+
+        <FilterNotice
+          color="red"
+          show={this.props.includeInvalidMarkets === 'show'}
+          content={
+            <span>
+              Invalid markets are no longer hidden. This puts you at risk of
+              trading on invalid markets.{' '}
+              <a href='https://augur.net' target='_blank'>
+                Learn more
+              </a>
+            </span>
+          }
+        />
+
+        <FilterNotice
+          color="red"
+          show={!displayFee || !displayLiquiditySpread}
+          content={
+            <span>
+              {feesLiquidityMessage}{' '}
+              <a href='https://augur.net' target='_blank'>
+                Learn more
+              </a>
+            </span>
+          }
+        />
+
+        <MarketsList
+          testid='markets'
+          isLogged={isLogged}
+          markets={markets}
+          showPagination={showPagination && !isSearching}
+          filteredMarkets={filterSortedMarkets}
+          marketCount={marketCount}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
+          linkType={TYPE_TRADE}
+          isMobile={isMobile}
+          limit={limit}
+          updateLimit={this.updateLimit}
+          offset={offset}
+          setOffset={this.setPageNumber}
+          isSearchingMarkets={isSearching}
+          marketCardFormat={marketCardFormat}
+        />
+
+        <FilterNotice
+          show={
+            !this.props.isSearching &&
+            this.props.filteredOutCount &&
+            this.props.filteredOutCount > 0
+          }
+          content={
+            <span>
+              There are {this.props.filteredOutCount} additional markets outside
+              of the current filters applied. Edit filters to view all markets{' '}
+            </span>
+          }
+        />
+      </section>
     );
   }
 }
