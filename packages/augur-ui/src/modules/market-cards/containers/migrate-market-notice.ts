@@ -146,14 +146,15 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP, dP, oP) => {
   let action = null;
+  action = sP.hasReleaseRep
+  ? () => dP.releaseReportingRep(sP.releasableRep)
+  : action;
+
   if (sP.canMigrateMarkets) {
     action = sP.hasMarketEnded
       ? () => dP.report(sP.market)
       : () => dP.migrate(sP.market);
   }
-  action = sP.hasReleaseRep
-    ? () => dP.releaseReportingRep(sP.releasableRep)
-    : action;
 
   return {
     ...sP,
