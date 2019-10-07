@@ -118,7 +118,6 @@ export default class FeesLiquidity extends React.Component<
       affiliateFee,
       orderBook,
       validations,
-      currentStep
     } = newMarket;
 
     return (
@@ -137,7 +136,7 @@ export default class FeesLiquidity extends React.Component<
             type="number"
             placeholder="0"
             innerLabel="%"
-            errorMessage={validations[currentStep].settlementFee}
+            errorMessage={validations.settlementFee}
             onChange={(value: string) => onChange("settlementFee", value)}
           />
         </div>
@@ -156,7 +155,7 @@ export default class FeesLiquidity extends React.Component<
             value={affiliateFee}
             innerLabel="%"
             trailingLabel="of market creator fees"
-            errorMessage={validations[currentStep].affiliateFee}
+            errorMessage={validations.affiliateFee}
           />
         </div>
 

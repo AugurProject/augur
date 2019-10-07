@@ -35,7 +35,7 @@ export const loadAccountData = (
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
-  dispatch(loadUniverseDetails(universe.id, address));
+  dispatch(loadUniverseDetails(universe.id));
 //  dispatch(loadReportingWindowBounds());
 //  dispatch(loadDesignatedReporterMarkets());
 //  dispatch(loadDisputing());
