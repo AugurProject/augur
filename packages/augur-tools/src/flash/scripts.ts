@@ -246,9 +246,17 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'deploy-all',
+    name: 'fake-all',
     async call(this: FlashSession) {
       await this.call('deploy', {write_artifacts: true, time_controlled: true});
+      await this.call('create-canned-markets-and-orders', {});
+    },
+  });
+
+  flash.addScript({
+    name: 'normal-all',
+    async call(this: FlashSession) {
+      await this.call('deploy', {write_artifacts: true, time_controlled: false});
       await this.call('create-canned-markets-and-orders', {});
     },
   });
