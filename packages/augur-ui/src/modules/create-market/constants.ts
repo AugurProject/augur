@@ -19,6 +19,7 @@ export const MARKET_CREATION_PAGES = [LANDING, SCRATCH, TEMPLATE];
 export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
+export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
 
 const EventDetailsContent = {
   title: 'Event details',
@@ -75,7 +76,18 @@ export const TEMPLATE_CONTENT_PAGES = [
   },
   { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
   { title: 'Template', firstButton: BACK, secondButton: NEXT },
-  { title: 'Event Details', firstButton: BACK, secondButton: NEXT },
+  { 
+    title: 'Event Details', 
+    largeHeader: "Enter the event details", 
+    explainerBlockTitle: "A note on choosing a market",
+    explainerBlockSubtexts: [
+      "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
+      "A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid."
+    ],
+    mainContent: TEMPLATE_FORM_DETAILS,
+    firstButton: BACK, 
+    secondButton: NEXT 
+  },
   LiquidityContent,
   ReviewContent,
 ];
