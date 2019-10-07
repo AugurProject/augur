@@ -36,6 +36,7 @@ interface CategoryTemplate {
   children: CategoryTemplate[];
 }
 export interface Template {
+  templateid: string;
   categories: Categories;
   marketType: string;
   question: string;
@@ -45,10 +46,11 @@ export interface Template {
 }
 
 export interface TemplateInput {
+  id: number;
   type: TemplateInputType;
   placeholder: string;
   tooltip?: string;
-  userInput: UserInputtedType;
+  userInput?: UserInputtedType;
 }
 
 export interface Categories {
@@ -91,23 +93,28 @@ const templates = {
       soccer: {
         templates: [
           {
+            templateid: `teamVsteam`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], [2]`,
             example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [
               {
+                id: 0,
                 type: TemplateInputType.USER_OUTCOME,
                 placeholder: `Team A`,
               },
               {
+                id: 1,
                 type: TemplateInputType.USER_OUTCOME,
                 placeholder: `Team B`,
               },
               {
+                id: 2,
                 type: TemplateInputType.DATETIME,
                 placeholder: `Estimated scheduled start time`,
               },
               {
+                id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other`,
                 tooltip: `A team not listed as an outcome wins the event`,
@@ -118,31 +125,38 @@ const templates = {
             ],
           },
           {
+            templateid: `overUnder`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5`,
             example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5`,
             inputs: [
               {
+                id: 1,
                 type: TemplateInputType.TEXT,
                 placeholder: `Team A`,
               },
               {
+                id: 2,
                 type: TemplateInputType.TEXT,
                 placeholder: `Team B`,
               },
               {
+                id: 3,
                 type: TemplateInputType.TEXT,
                 placeholder: `Whole #`,
               },
               {
+                id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `No Winner`,
               },
               {
+                id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Over ({[2] + .5})`,
               },
               {
+                id: 6,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Under ({[2] - .5})`,
               },
