@@ -1,5 +1,5 @@
 import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
-import * as icons from 'modules/categories/icons';
+import * as icons from 'modules/common/icons';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -86,8 +86,8 @@ export const TEMPLATE_CONTENT_PAGES = [
       "A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid."
     ],
     mainContent: TEMPLATE_FORM_DETAILS,
-    firstButton: BACK, 
-    secondButton: NEXT 
+    firstButton: BACK,
+    secondButton: NEXT
   },
   LiquidityContent,
   ReviewContent,

@@ -1,5 +1,4 @@
 import React from 'react';
-import { setCategories } from 'modules/categories/set-categories';
 import {
   CategorySingleSelect,
   createGroups,
@@ -12,6 +11,7 @@ import { MARKET_SUB_TEMPLATES } from 'modules/create-market/constants';
 import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
 import { CUSTOM } from 'modules/common/constants';
+import { setCategories } from 'modules/create-market/set-categories';
 
 export const SubCategories = ({
     newMarket,
