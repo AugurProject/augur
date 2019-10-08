@@ -50,7 +50,7 @@ export class SDK {
       account
     );
 
-    const connector = (iOSSafari ? new SingleThreadConnector(): new WebWorkerConnector());
+    const connector = (new WebWorkerConnector());
     connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http
@@ -62,7 +62,7 @@ export class SDK {
       ethersProvider,
       contractDependencies,
       Addresses[this.networkId],
-      connector
+      connector,
     );
 
     window.AugurSDK = this.sdk;

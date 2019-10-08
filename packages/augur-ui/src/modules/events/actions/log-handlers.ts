@@ -55,6 +55,7 @@ import {
 } from 'modules/reporting/actions/update-reporting-list';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
+import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 
 const handleAlert = (
   log: any,
@@ -162,7 +163,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-  marketsData: Getters.Markets.MarketInfo[]
+  marketsData: Getters.Markets.MarketInfo[] = []
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
@@ -199,11 +200,13 @@ export const handleMarketMigratedLog = (log: any) => (
   getState: () => AppState
 ) => {
   const universeId = getState().universe.id;
+  const userAddress = getState().loginAccount.address;
   if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market));
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }
+  dispatch(loadUniverseDetails(universeId));
 };
 
 export const handleTokensTransferredLog = (log: any) => (
@@ -527,14 +530,24 @@ export const handleDisputeWindowCreatedLog = (
 export const handleTokensMintedLog = (
   log: Logs.TokensMinted
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const userAddress = getState().loginAccount.address;
   if(log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(
       log.target,
-      getState().loginAccount.address
+      userAddress
     );
     if (isUserDataUpdate) {
       dispatch(loadAccountReportingHistory());
     }
     dispatch(loadDisputeWindow());
+  }
+  if (log.tokenType === Logs.TokenType.ReputationToken) {
+    const isUserDataUpdate = isSameAddress(
+      log.target,
+      userAddress
+    );
+    if (isUserDataUpdate) {
+      dispatch(loadUniverseDetails(log.universe))
+    }
   }
 };
