@@ -13,7 +13,6 @@ import {
   TimezoneDropdown,
   CategoryMultiSelect,
 } from 'modules/common/form';
-import { setCategories } from 'modules/categories/set-categories';
 import {
   Header,
   Subheaders,
@@ -45,7 +44,7 @@ import {
 } from 'modules/create-market/constants';
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 import { checkValidNumber } from 'modules/common/validations';
-
+import { setCategories } from "modules/create-market/set-categories";
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 

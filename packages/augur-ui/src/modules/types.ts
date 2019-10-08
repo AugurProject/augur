@@ -695,3 +695,10 @@ export interface NavMenuItem {
   requireLogin?: boolean;
   disabled?: boolean;
 }
+
+export interface SortedGroup {
+  value: string;
+  label: string;
+  subGroup?: Array<SortedGroup>;
+  autoCompleteList?: Array<SortedGroup>;
+}
