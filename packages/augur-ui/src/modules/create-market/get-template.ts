@@ -31,12 +31,27 @@ export type UserInputtedType =
   | UserInputDropdown
   | UserInputUserOutcome;
 
+export interface CategoryList {
+  [category: string]: [
+    {
+      [category: string]: [
+        {
+          [index: number]: string;
+        }
+      ];
+    }
+  ];
+}
+
+interface TemplateChildren {
+  [category: string] : CategoryTemplate;
+}
 interface CategoryTemplate {
   templates: Template[];
-  children: CategoryTemplate[];
+  children: TemplateChildren;
 }
 export interface Template {
-  templateid: string;
+  templateId: string;
   categories: Categories;
   marketType: string;
   question: string;
@@ -59,23 +74,33 @@ export interface Categories {
   tertiary: string;
 }
 
+export const getTemplateCategories = () => {
+  const category = Object.keys(templates)
+  .map(c => templates[c].children);
+
+}
+
+const getSubCategories = (category: CategoryTemplate) => {
+  const categories = Object.keys(category.children);
+}
+
 export const getTemplates = (
   categories: Categories,
   marketType: string
 ): Template[] => {
   if (!marketType) return [];
-  let categoryTemplates = templates[categories.primary];
+  let categoryTemplates: CategoryTemplate = templates[categories.primary];
 
   if (!categoryTemplates) return [];
   if (!categories.secondary)
     return getTemplatesByMarketType(categoryTemplates.templates, marketType);
 
-  categoryTemplates = categoryTemplates[categories.secondary];
+  categoryTemplates = categoryTemplates.children[categories.secondary];
   if (!categoryTemplates) return [];
   if (!categories.tertiary)
     return getTemplatesByMarketType(categoryTemplates.templates, marketType);
 
-  categoryTemplates = categoryTemplates[categories.tertiary];
+  categoryTemplates = categoryTemplates.children[categories.tertiary];
   return getTemplatesByMarketType(categoryTemplates.templates, marketType);
 };
 
@@ -83,7 +108,8 @@ const getTemplatesByMarketType = (
   categoryTemplates: Template[],
   marketType
 ) => {
-  return categoryTemplates.filter(c => c.marketType === marketType);
+  const values = categoryTemplates.filter(t => t.marketType === marketType)
+  return values;
 };
 
 const templates = {
@@ -93,7 +119,7 @@ const templates = {
       soccer: {
         templates: [
           {
-            templateid: `teamVsteam`,
+            templateId: `soccer-teamVsteam`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], [2]`,
             example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -125,7 +151,7 @@ const templates = {
             ],
           },
           {
-            templateid: `overUnder`,
+            templateId: `soccer-overUnder`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5`,
             example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5`,
