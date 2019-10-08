@@ -31,6 +31,7 @@ import {
   SUB_CATEGORIES,
   MARKET_TYPE,
   EMPTY_STATE,
+  TEMPLATE_PICKER,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -73,7 +74,7 @@ import {
   isValidFee,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
-import { createBigNumber } from 'utils/create-big-number';
+import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
@@ -617,6 +618,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && <Review />}
+              {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
               {mainContent === MARKET_TYPE && (
                 <MarketType
