@@ -15,7 +15,6 @@ import { NewMarket, BaseAction, LiquidityOrder } from 'modules/types';
 import { formatShares, formatDai } from 'utils/format-number';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 
-const bob = JSON.parse(JSON.stringify(EMPTY_STATE));
 export default function(
   newMarket: NewMarket = JSON.parse(JSON.stringify(EMPTY_STATE)),
   { type, data }: BaseAction
