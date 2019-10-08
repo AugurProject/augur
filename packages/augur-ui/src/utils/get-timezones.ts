@@ -1,6 +1,5 @@
 import moment from 'moment-timezone';
-import { SortedGroup } from 'modules/categories/set-categories';
-import { Moment } from 'moment';
+import { SortedGroup } from 'modules/types';
 
 const MINUTES_IN_HOUR = 60;
 
