@@ -38,7 +38,7 @@ export interface LoadMarketsFilterOptions {
 export const loadMarketsByFilter = (
   filterOptions: LoadMarketsFilterOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, any> => async (
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
   dispatch,
   getState
 ) => {
