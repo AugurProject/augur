@@ -112,6 +112,12 @@ const getTemplatesByMarketType = (
   return values;
 };
 
+export const getTemplateReadableDescription = (
+  template: Template
+) => {
+  return template.question;
+};
+
 const templates = {
   sports: {
     templates: [],
@@ -152,6 +158,7 @@ const templates = {
           },
           {
             templateId: `soccer-overUnder`,
+
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5`,
             example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5`,
