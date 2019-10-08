@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+
 import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
@@ -8,7 +9,6 @@ import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/const
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 
 import Styles from "modules/create-market/landing.styles";
-import { CategoryStats } from "@augurproject/sdk/src/state/getter/Markets";
 
 interface LandingProps {
   newMarket: Object;
@@ -16,9 +16,6 @@ interface LandingProps {
   address: String;
   updatePage: Function;
   clearNewMarket: Function;
-  categoryStats: {
-    [categoryName: string]: CategoryStats;
-  };
 }
 
 export default class Landing extends React.Component<
@@ -35,18 +32,9 @@ export default class Landing extends React.Component<
       updatePage,
       updateNewMarket,
       newMarket,
-      clearNewMarket,
-      categoryStats,
+      clearNewMarket
     } = this.props;
     const s = this.state;
-
-    const categoryTemplates = MARKET_TEMPLATES.map((categoryTemplate) => {
-      const categoryName = categoryTemplate.value.toLowerCase();
-      if (categoryStats && categoryStats[categoryName]) {
-        categoryTemplate.description = `${categoryStats[categoryName].numberOfMarkets} Markets  |  $${categoryStats[categoryName].volume}`;
-      }
-      return categoryTemplate;
-    }, {});
 
     return (
       <div
@@ -79,7 +67,7 @@ export default class Landing extends React.Component<
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE)
                 }}
-                radioButtons={categoryTemplates}
+                radioButtons={MARKET_TEMPLATES}
               >
                 <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>

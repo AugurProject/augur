@@ -2,21 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
-import { Getters } from '@augurproject/sdk';
-
 import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
+
 import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
 
 interface CreateMarketViewProps {
-  getCategoryStats: Function;
 }
 
 interface CreateMarketViewState {
   selected: number;
   page: number;
-  categoryStats: Getters.Markets.CategoryStats | null;
 }
 
 export default class CreateMarketView extends React.Component<
@@ -33,14 +30,6 @@ export default class CreateMarketView extends React.Component<
 
   componentDidMount() {
     window.scrollTo(0,0);
-      this.props.getCategoryStats(
-        (err, result: Getters.Markets.CategoryStats) => {
-          if (err) return console.log('Error getCategoryStats:', err);
-          this.setState({
-            categoryStats: result,
-          });
-        }
-      );
   }
 
   render() {
@@ -52,9 +41,9 @@ export default class CreateMarketView extends React.Component<
           <title>Create Market</title>
         </Helmet>
         {page === LANDING &&
-          <Landing updatePage={this.updatePage} categoryStats={this.state.categoryStats} />
+          <Landing updatePage={this.updatePage} />
         }
-        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} categoryStats={this.state.categoryStats} />}
+        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );

@@ -80,7 +80,6 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { CategoryStats } from '@augurproject/sdk/src/state/getter/Markets';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -97,9 +96,6 @@ interface FormProps {
   openCreateMarketModal: Function;
   currentTimestamp: number;
   needsApproval: boolean;
-  categoryStats?: {
-    [categoryName: string]: CategoryStats;
-  }
 }
 
 interface FormState {
@@ -546,7 +542,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       history,
       needsApproval,
       template,
-      categoryStats,
     } = this.props;
     const { contentPages } = this.state;
 
@@ -624,7 +619,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={this.props.categoryStats} />}
+              {mainContent === SUB_CATEGORIES && <SubCategories />}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}

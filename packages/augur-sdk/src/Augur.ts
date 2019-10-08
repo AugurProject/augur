@@ -293,7 +293,6 @@ export class Augur<TProvider extends Provider = Provider> {
   getUserCurrentDisputeStake = this.bindTo(Accounts.getUserCurrentDisputeStake);
   getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
   getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
-  getCategoryStats = this.bindTo(Markets.getCategoryStats);
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
