@@ -590,6 +590,10 @@ export const setCategories: SortedGroup[] = [
             label: 'Charles Schwab Cup Championship',
           },
           {
+            value: 'Australian PGA Championship',
+            label: 'Australian PGA Championship',
+          },
+          {
             value: 'Omega Dubai Desert Classic',
             label: 'Omega Dubai Desert Classic',
           },
