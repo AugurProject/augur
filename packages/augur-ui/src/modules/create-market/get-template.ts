@@ -86,6 +86,12 @@ const getTemplatesByMarketType = (
   return categoryTemplates.filter(c => c.marketType === marketType);
 };
 
+export const getTemplateReadableDescription = (
+  template: Template
+) => {
+  return template.question;
+};
+
 const templates = {
   sports: {
     templates: [],
@@ -93,7 +99,7 @@ const templates = {
       soccer: {
         templates: [
           {
-            templateid: `teamVsteam`,
+            templateId: `teamVsteam`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], [2]`,
             example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -125,7 +131,7 @@ const templates = {
             ],
           },
           {
-            templateid: `overUnder`,
+            templateId: `overUnder`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5`,
             example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5`,
