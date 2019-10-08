@@ -30,6 +30,7 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
+  TEMPLATE_PICKER,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -80,6 +81,7 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import { TemplatePicker } from './template-picker';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -618,6 +620,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && <Review />}
+              {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
               {mainContent === MARKET_TYPE && (
                 <MarketType
