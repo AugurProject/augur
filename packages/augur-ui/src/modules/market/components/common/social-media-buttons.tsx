@@ -31,14 +31,12 @@ export class SocialMediaButtons extends Component<SocialMediaButtonsProps> {
     return (
       <>
         <button
-          className={Styles.facebookButton}
           id='facebookButton'
           onClick={() => this.showFacebookShare(encodedMarketUrl, encodedMarketDescription)}
         >
           {FacebookButton}
         </button>
         <button
-          className={Styles.twitterButton}
           id='twitterButton'
           onClick={() => this.showTwitterShare(encodedMarketUrl, encodedMarketDescription)}
         >
