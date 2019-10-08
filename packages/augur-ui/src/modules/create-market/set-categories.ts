@@ -1,5 +1,5 @@
-import { CUSTOM } from 'modules/common/constants';
-import { SortedGroup } from 'modules/types';
+import { SortedGroup } from "modules/types";
+import { CUSTOM } from "modules/common/constants";
 
 export const setCategories: SortedGroup[] = [
   {
@@ -588,10 +588,6 @@ export const setCategories: SortedGroup[] = [
           {
             value: 'Charles Schwab Cup Championship',
             label: 'Charles Schwab Cup Championship',
-          },
-          {
-            value: 'Australian PGA Championship',
-            label: 'Australian PGA Championship',
           },
           {
             value: 'Omega Dubai Desert Classic',

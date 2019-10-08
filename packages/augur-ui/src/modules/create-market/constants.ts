@@ -1,6 +1,17 @@
-import { YES_NO, SCALAR, CATEGORICAL, YES_NO_OUTCOMES, EXPIRY_SOURCE_GENERIC, DESIGNATED_REPORTER_SELF, SETTLEMENT_FEE_DEFAULT, AFFILIATE_FEE_DEFAULT, ZERO, ONE } from 'modules/common/constants';
-import * as icons from 'modules/categories/icons';
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL,
+  YES_NO_OUTCOMES,
+  EXPIRY_SOURCE_GENERIC,
+  DESIGNATED_REPORTER_SELF,
+  SETTLEMENT_FEE_DEFAULT,
+  AFFILIATE_FEE_DEFAULT,
+  ZERO,
+  ONE,
+} from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
+import * as icons from 'modules/common/icons';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
