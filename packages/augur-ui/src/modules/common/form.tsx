@@ -162,18 +162,23 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
     props.timezone ? setValue(props.timezone): setValue(UTC_Default);
     setTimezones(getTimezones(props.timestamp));
   }, [props.timezone, props.timestamp]);
+
   return (
     <section className={Styles.Timezones}>
       <TextInput
-        value={value}
+        value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
         autoCompleteList={timezones.timezones}
         onChange={() => {}}
         onAutoCompleteListSelected={timezone => {
           const parse = /\(UTC (.*)\)/i;
-          const offset = timezone.match(parse)[1];
-          const offsetName = timezone.split(')')[1].trim();
-          props.onChange(offsetName, offset, timezone);
+          if (timezone !== '') {
+            const offset = timezone.match(parse)[1];
+            const offsetName = timezone.split(')')[1].trim();
+            props.onChange(offsetName, offset, timezone);
+          } else {
+            props.onChange(null, 0, null);
+          }
           setValue(timezone);
         }}
       />
@@ -1225,11 +1230,13 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   toggleList = () => {
     let value = this.state.value;
     const showList = this.props.autoCompleteList && !this.state.showList;
-    if (showList) value = '';
+    if (showList) {
+      value = '';
+    }
     this.setState({
       value,
       showList,
-    });
+    }, () => showList && this.props.onAutoCompleteListSelected(value));
   };
 
   onChange = (e: any) => {
@@ -1259,7 +1266,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const { showList } = this.state;
 
     const filteredList = autoCompleteList.filter(item =>
-      item.label.toLowerCase().includes(this.state.value.toLowerCase())
+      (item.label.toLowerCase().includes(this.state.value.toLowerCase()))
         ? item
         : null
     );
