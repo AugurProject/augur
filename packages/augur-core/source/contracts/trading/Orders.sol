@@ -271,25 +271,32 @@ contract Orders is IOrders, Initializable {
         return true;
     }
 
-    function saveOrder(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, IERC20 _kycToken) external returns (bytes32 _orderId) {
+    // _amount = _uints[0]
+    // _price = _uints[1]
+    // _outcome = _uints[2]
+    // _moneyEscrowed = _uints[3]
+    // _sharesEscrowed = _uints[4]
+    // _betterOrderId = _bytes32s[0]
+    // _worseOrderId = _bytes32s[1]
+    // _tradeGroupId = _bytes32s[2]
+    function saveOrder(uint256[5] calldata _uints, bytes32[3] calldata _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) external returns (bytes32 _orderId) {
         require(msg.sender == createOrder || msg.sender == address(this));
-        require(_outcome < _market.getNumberOfOutcomes(), "Orders.saveOrder: Outcome not in market range");
-        _orderId = getOrderId(_type, _market, _amount, _price, _sender, block.number, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken);
+        require(_uints[2] < _market.getNumberOfOutcomes(), "Orders.saveOrder: Outcome not in market range");
+        _orderId = getOrderId(_type, _market, _uints[0], _uints[1], _sender, block.number, _uints[2], _uints[3], _uints[4], _kycToken);
         Order.Data storage _order = orders[_orderId];
-        _order.orders = this;
         _order.market = _market;
         _order.id = _orderId;
         _order.orderType = _type;
-        _order.outcome = _outcome;
-        _order.price = _price;
-        _order.amount = _amount;
+        _order.outcome = _uints[2];
+        _order.price = _uints[1];
+        _order.amount = _uints[0];
         _order.creator = _sender;
         _order.kycToken = _kycToken;
-        _order.moneyEscrowed = _moneyEscrowed;
-        marketOrderData[address(_market)].totalEscrowed += _moneyEscrowed;
-        _order.sharesEscrowed = _sharesEscrowed;
-        insertOrderIntoList(_order, _betterOrderId, _worseOrderId);
-        augur.logOrderCreated(_order.market.getUniverse(), _orderId, _tradeGroupId);
+        _order.moneyEscrowed = _uints[3];
+        marketOrderData[address(_market)].totalEscrowed += _uints[3];
+        _order.sharesEscrowed = _uints[4];
+        insertOrderIntoList(_order, _bytes32s[0], _bytes32s[1]);
+        augur.logOrderCreated(_order.market.getUniverse(), _orderId, _bytes32s[2]);
         return _orderId;
     }
 

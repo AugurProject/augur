@@ -29,7 +29,6 @@ library Order {
 
     struct Data {
         // Contracts
-        IOrders orders;
         IMarket market;
         IAugur augur;
         IERC20 kycToken;
@@ -56,10 +55,10 @@ library Order {
         require(_attoshares > 0, "Order.create: Cannot use amount of 0");
         require(_creator != address(0), "Order.create: Creator is 0x0");
 
-        IOrders _orders = IOrders(_augur.lookup("Orders"));
+        // IOrders _orders = IOrders(_augur.lookup("Orders"));
 
         return Data({
-            orders: _orders,
+            // orders: _orders,
             market: _market,
             augur: _augur,
             kycToken: _kycToken,
@@ -81,10 +80,10 @@ library Order {
     // "public" functions
     //
 
-    function getOrderId(Order.Data memory _orderData) internal view returns (bytes32) {
+    function getOrderId(Order.Data memory _orderData, IOrders _orders) internal view returns (bytes32) {
         if (_orderData.id == bytes32(0)) {
-            bytes32 _orderId = _orderData.orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
-            require(_orderData.orders.getAmount(_orderId) == 0, "Order.getOrderId: New order had amount. This should not be possible");
+            bytes32 _orderId = _orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
+            require(_orders.getAmount(_orderId) == 0, "Order.getOrderId: New order had amount. This should not be possible");
             _orderData.id = _orderId;
         }
         return _orderData.id;
@@ -106,8 +105,18 @@ library Order {
         }
     }
 
-    function saveOrder(Order.Data memory _orderData, bytes32 _tradeGroupId) internal returns (bytes32) {
-        return _orderData.orders.saveOrder(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.betterOrderId, _orderData.worseOrderId, _tradeGroupId, _orderData.kycToken);
+    function saveOrder(Order.Data memory _orderData, bytes32 _tradeGroupId, IOrders _orders) internal returns (bytes32) {
+        uint256[5] memory _uints;
+        _uints[0] = _orderData.amount;
+        _uints[1] = _orderData.price;
+        _uints[2] = _orderData.outcome;
+        _uints[3] = _orderData.moneyEscrowed;
+        _uints[4] = _orderData.sharesEscrowed;
+        bytes32[3] memory _bytes32s;
+        _bytes32s[0] = _orderData.betterOrderId;
+        _bytes32s[1] = _orderData.worseOrderId;
+        _bytes32s[2] = _tradeGroupId;
+        return _orders.saveOrder(_uints, _bytes32s, _orderData.orderType, _orderData.market, _orderData.creator, _orderData.kycToken);
     }
 
     //

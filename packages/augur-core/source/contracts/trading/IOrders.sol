@@ -7,7 +7,7 @@ import 'ROOT/libraries/token/IERC20.sol';
 
 
 contract IOrders {
-    function saveOrder(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, IERC20 _kycToken) external returns (bytes32 _orderId);
+    function saveOrder(uint256[5] calldata _uints, bytes32[3] calldata _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) external returns (bytes32 _orderId);
     function removeOrder(bytes32 _orderId) external returns (bool);
     function getMarket(bytes32 _orderId) public view returns (IMarket);
     function getOrderType(bytes32 _orderId) public view returns (Order.Types);
