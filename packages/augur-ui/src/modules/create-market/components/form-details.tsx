@@ -46,6 +46,7 @@ interface FormDetailsProps {
   currentTimestamp: number;
   onChange: Function;
   onError: Function;
+  template?: boolean;
 }
 
 interface FormDetailsState {
@@ -72,7 +73,8 @@ export default class FormDetails extends React.Component<
       newMarket,
       currentTimestamp,
       onChange,
-      onError
+      onError,
+      template
     } = this.props;
     const s = this.state;
 
@@ -96,10 +98,12 @@ export default class FormDetails extends React.Component<
       designatedReporterAddress,
       designatedReporterType,
       validations,
-      currentStep,
       timezone,
       endTimeFormatted
     } = newMarket;
+
+    let { currentStep } = newMarket;
+    if (template) currentStep = currentStep - 4;
 
     return (
       <div className={Styles.FormDetails}>
@@ -155,7 +159,7 @@ export default class FormDetails extends React.Component<
                 });
               }}
               focused={s.dateFocused}
-              errorMessage={validations[currentStep].setEndTime}
+              errorMessage={validations.setEndTime}
             />
             <TimeSelector
               hour={hour}
@@ -180,7 +184,7 @@ export default class FormDetails extends React.Component<
                 this.setState({ timeFocused: focused });
               }}
               focused={s.timeFocused}
-              errorMessage={validations[currentStep].hour}
+              errorMessage={validations.hour}
             />
             <TimezoneDropdown onChange={(offsetName: string, offset: number, timezone: string) => {
               const timezoneParams = {offset, timezone, offsetName};
@@ -194,7 +198,7 @@ export default class FormDetails extends React.Component<
             onChange={(value: string) => onChange("description", value)}
             rows="3"
             value={description}
-            errorMessage={validations[currentStep].description && (validations[currentStep].description.charAt(0).toUpperCase() + validations[currentStep].description.slice(1).toLowerCase())}
+            errorMessage={validations.description && (validations.description.charAt(0).toUpperCase() + validations.description.slice(1).toLowerCase())}
           />
 
           {marketType === CATEGORICAL &&
@@ -206,7 +210,7 @@ export default class FormDetails extends React.Component<
                 maxList={7}
                 placeholder={"Enter outcome"}
                 updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
-                errorMessage={validations[currentStep].outcomes}
+                errorMessage={validations.outcomes}
               />
             </>
           }
@@ -218,7 +222,7 @@ export default class FormDetails extends React.Component<
                 placeholder="Denomination"
                 onChange={(value: string) => onChange("scalarDenomination", value)}
                 value={scalarDenomination}
-                errorMessage={validations[currentStep].scalarDenomination}
+                errorMessage={validations.scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
@@ -231,7 +235,7 @@ export default class FormDetails extends React.Component<
                     onError("maxPrice", "");
                   }}
                   value={minPrice}
-                  errorMessage={validations[currentStep].minPrice}
+                  errorMessage={validations.minPrice}
                 />
                 <span>to</span>
                 <TextInput
@@ -244,7 +248,7 @@ export default class FormDetails extends React.Component<
                   }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
-                  errorMessage={validations[currentStep].maxPrice}
+                  errorMessage={validations.maxPrice}
                 />
               </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
@@ -254,7 +258,7 @@ export default class FormDetails extends React.Component<
                 onChange={(value: string) => onChange("tickSize", value)}
                 trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                 value={tickSize}
-                errorMessage={validations[currentStep].tickSize}
+                errorMessage={validations.tickSize}
               />
             </>
           }
@@ -266,7 +270,7 @@ export default class FormDetails extends React.Component<
             updateSelection={categoryArray =>
               onChange(CATEGORIES, categoryArray)
             }
-            errorMessage={validations[currentStep].categories}
+            errorMessage={validations.categories}
           />
         </div>
         <LineBreak />
@@ -287,7 +291,7 @@ export default class FormDetails extends React.Component<
                 placeholder: "Enter website",
                 textValue: expirySource,
                 onTextChange: (value: string) => onChange("expirySource", value),
-                errorMessage: validations[currentStep].expirySource,
+                errorMessage: validations.expirySource,
                 secondPlaceholder: "Back up website (optional)",
                 secondTextValue: backupSource,
                 secondHeader: "If the primary resolution source is not available",
@@ -327,7 +331,7 @@ export default class FormDetails extends React.Component<
                 placeholder: "Enter wallet address",
                 textValue: designatedReporterAddress,
                 onTextChange: (value: string) => onChange("designatedReporterAddress", value),
-                errorMessage: validations[currentStep].designatedReporterAddress
+                errorMessage: validations.designatedReporterAddress
               }
             ]}
             defaultSelected={designatedReporterType}

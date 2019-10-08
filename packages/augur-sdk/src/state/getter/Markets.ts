@@ -710,6 +710,8 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsInfoParams>
   ): Promise<MarketInfo[]> {
+    if(params.marketIds.length === 0) return [];
+
     const markets = await db.findMarkets({ selector: { market: { $in: params.marketIds } }});
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
