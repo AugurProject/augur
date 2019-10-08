@@ -29,7 +29,7 @@ export class SocialMediaButtons extends Component<SocialMediaButtonsProps> {
     const encodedMarketUrl = encodeURIComponent(`${window.location.origin}/#!/market?id=${this.props.marketAddress}`);
     const encodedMarketDescription = encodeURI(this.props.marketDescription);
     return (
-      <div>
+      <>
         <button
           className={Styles.facebookButton}
           id='facebookButton'
@@ -44,7 +44,7 @@ export class SocialMediaButtons extends Component<SocialMediaButtonsProps> {
         >
           {TwitterButton}
         </button>
-      </div>
+      </>
     );
   }
 }

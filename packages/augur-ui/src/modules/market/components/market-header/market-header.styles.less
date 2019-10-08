@@ -13,14 +13,6 @@
     margin-left: @size-8;
   }
 
-  .facebookButton {
-  margin-left: @size-8;
-  }
-
-  .twitterButton {
-    margin-left: @size-8;
-  }
-
   &.Collapsed {
     color: @color-secondary-text;
     display: flex;
@@ -48,7 +40,41 @@
       padding-top: @size-8;
       align-items: center;
 
+      > button:first-of-type {
+        justify-content: flex-end;
+        margin-left: auto;
+
+        > svg {
+          > path:first-of-type {
+            fill: #3B5998;
+          }
+
+          > path:last-of-type {
+            fill: #FFFFFF;
+          }
+        }
+      }
+
+      > button:last-of-type {
+        > svg {
+          > path:first-of-type {
+            fill: #55ACEE;
+          }
+
+          > path:last-of-type {
+            fill: #FFFFFF;
+          }
+        }
+      }
+
+      > button {
+        height: @size-20;
+        margin-left: @size-8;
+        width: @size-20;
+      }
+
       > div:first-of-type {
+        display: flex;
         height: fit-content;
         > span {
           margin: 0 @size-8 0 0;
@@ -56,9 +82,8 @@
       }
 
       > div:nth-of-type(2) {
-        flex: 1;
-        justify-content: flex-end;
         display: flex;
+        margin-left: @size-8;
 
         > svg {
           cursor: pointer;
