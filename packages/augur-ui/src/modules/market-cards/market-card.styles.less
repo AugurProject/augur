@@ -4,16 +4,15 @@
 	background: @color-module-background;
 	border-radius: @border-radius-default;
 	border: 1px solid @color-dark-grey;
-	display: flex;
 	margin: @size-4 0;
 	display: grid;
-	grid-template-columns: 111px auto;
+	grid-template-columns: 102px auto;
 	grid-template-rows: auto auto auto;
-	padding: 0 @size-16;
+	padding-right: @size-12;
 
 	> div:first-of-type,
 	> div:nth-of-type(2) {
-		margin-top: @size-12;
+		padding-top: @size-8;
 	}
 
 	> div:nth-of-type(2),
@@ -21,11 +20,12 @@
 	> span,
 	> button:last-of-type {
 		border-left: 1px solid @color-dark-grey;
-		padding-left: @size-16;
+		padding-left: @size-12;
 	}
 
 	> div:nth-of-type(3) {
 		grid-row: 2 / span 4;
+		padding: 0 @size-12;
 
 		> div {
 			flex-direction: column;
@@ -72,8 +72,8 @@
 		display: flex;
     align-items: center;
 
-		> span:nth-of-type(2) {
-			margin: 0 @size-10;
+		> span {
+			margin-right: @size-10;
 		}
 
 		> div:first-of-type {
@@ -129,9 +129,9 @@
 		align-self: flex-start;
 		color: @color-primary-text;
 		display: flex;
-		padding-bottom: @size-16;
 		text-transform: uppercase;
 		grid-column: 2;
+		padding: @size-4 @size-12;
 
 		> span {
 			margin-right: @size-6;
@@ -157,8 +157,7 @@
 		grid-template-columns: 82px auto 96px;
 		grid-row-gap: @size-19;
 		grid-column-gap: @size-12;
-		padding-top: @size-16;
-		padding-bottom: @size-16;
+		padding: @size-12;
 
 		> div {
 			animation: colorchange 0.5s infinite;
@@ -225,10 +224,9 @@
 		> div:nth-of-type(3) {
 			display: flex;
 			grid-column: 1 / span 2;
-			grid-row: -1;
+			grid-row: 6;
 			justify-content: space-between;
-			margin: @size-42 -@size-12 -@size-12 -@size-12;
-			padding: @size-12;
+			padding: @size-12 0;
 
 			> div:nth-of-type(2) {
 				display: none;
@@ -261,7 +259,7 @@
 
 			> div:first-of-type {
 				grid-row: 2;
-				grid-column: 2 / span 4;
+				grid-column: 1 / span 4;
 				margin-top: 0;
 			}
 
@@ -269,7 +267,7 @@
 				> div {
 					align-items: flex-end;
 					display: flex;
-					margin-right: .5rem;
+					margin-right: @size-8;
 				}
 
 				grid-column: 4;
@@ -303,8 +301,8 @@
     margin-top: 0;
 
     @media @breakpoint-max-tablet {
-      margin-top: @size-16;
-      grid-row: -1;
+      // margin-top: @size-16;
+      grid-row: 5;
     }
 	}
 }
