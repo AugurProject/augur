@@ -418,17 +418,11 @@ describe('State API :: Universe :: ', () => {
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     // Create child universe
-    const goal = await john.augur.contracts.universe.getForkReputationGoal_();
-
-    console.log('total rep', (await repToken.totalSupply_()).toString());
-    console.log('john rep', johnRep.toString());
-    console.log('goal', goal.toString());
-    // const childUniverseRep = goal;
-    // const childUniverseRep = goal.minus(1);
     const childUniverseRep = johnRep;
-    console.log('migrated', childUniverseRep.toString());
 
-    await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep);
+    // Call twice because there's a bug when the first migration meets the goal.
+    await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1));
+    await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep.minus(1));
     johnRep = johnRep.minus(childUniverseRep);
     totalRep = totalRep.minus(childUniverseRep);
 
@@ -444,6 +438,7 @@ describe('State API :: Universe :: ', () => {
     expect(universeChildren).toMatchObject({
       id: genesisUniverse.address,
       outcomeName: 'Genesis',
+      usersRep: '0', // all all migrated out
       totalRepSupply: totalRep.toString(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
@@ -462,10 +457,6 @@ describe('State API :: Universe :: ', () => {
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].id).not.toEqual(NULL_ADDRESS);
-    // John's REP is hard to calculate because contributing during a fork has caps
-    // that we're exceeding, so it rounds down to the cap.
-    expect(Number(universeChildren.usersRep)).toBeGreaterThan(0);
-    expect(Number(universeChildren.usersRep)).toBeLessThan(totalRep.toNumber());
   });
 
 });
