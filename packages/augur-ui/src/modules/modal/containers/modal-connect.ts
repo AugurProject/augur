@@ -104,7 +104,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
     },
     {
-      type: ACCOUNT_TYPES.METAMASK,
+      type: ACCOUNT_TYPES.WEB3WALLET,
       disabled: false,
       hidden: !isMetaMaskPresent(),
       action: async () => {
@@ -115,7 +115,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         try {
           await dP.connectMetaMask();
         } catch (error) {
-          onError(error, ACCOUNT_TYPES.METAMASK);
+          onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }
       },
     },
