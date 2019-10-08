@@ -168,32 +168,32 @@ const templates = {
             example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5`,
             inputs: [
               {
-                id: 1,
+                id: 0,
                 type: TemplateInputType.TEXT,
                 placeholder: `Team A`,
               },
               {
-                id: 2,
+                id: 1,
                 type: TemplateInputType.TEXT,
                 placeholder: `Team B`,
               },
               {
-                id: 3,
+                id: 2,
                 type: TemplateInputType.TEXT,
                 placeholder: `Whole #`,
               },
               {
-                id: 4,
+                id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `No Winner`,
               },
               {
-                id: 5,
+                id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Over ({[2] + .5})`,
               },
               {
-                id: 6,
+                id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Under ({[2] - .5})`,
               },
