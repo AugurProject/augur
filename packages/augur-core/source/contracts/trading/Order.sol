@@ -30,9 +30,7 @@ library Order {
     struct Data {
         // Contracts
         IMarket market;
-        IAugur augur;
         IERC20 kycToken;
-        ICash cash;
 
         // Order
         bytes32 id;
@@ -48,21 +46,16 @@ library Order {
     }
 
     // No validation is needed here as it is simply a library function for organizing data
-    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, IERC20 _kycToken) internal view returns (Data memory) {
+    function create(address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, IERC20 _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes(), "Order.create: Outcome is not within market range");
         require(_price != 0, "Order.create: Price may not be 0");
         require(_price < _market.getNumTicks(), "Order.create: Price is outside of market range");
         require(_attoshares > 0, "Order.create: Cannot use amount of 0");
         require(_creator != address(0), "Order.create: Creator is 0x0");
 
-        // IOrders _orders = IOrders(_augur.lookup("Orders"));
-
         return Data({
-            // orders: _orders,
             market: _market,
-            augur: _augur,
             kycToken: _kycToken,
-            cash: ICash(_augur.lookup("Cash")),
             id: 0,
             creator: _creator,
             outcome: _outcome,

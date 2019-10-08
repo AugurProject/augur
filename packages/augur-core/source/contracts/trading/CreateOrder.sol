@@ -58,7 +58,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         require(augur.isKnownMarket(_market));
         require(_kycToken == IERC20(0) || _kycToken.balanceOf(_creator) > 0, "Createorder.createOrder: KYC token failure");
         require(msg.sender == ZeroXTrade || msg.sender == trade || msg.sender == address(this));
-        Order.Data memory _orderData = Order.create(augur, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _kycToken);
+        Order.Data memory _orderData = Order.create(_creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _kycToken);
         Order.escrowFunds(_orderData);
         profitLoss.recordFrozenFundChange(_market.getUniverse(), _market, _creator, _outcome, int256(_orderData.moneyEscrowed));
         {
@@ -86,7 +86,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
         IUniverse _universe = _market.getUniverse();
         for (uint256 i = 0; i < _types.length; i++) {
-            Order.Data memory _orderData = Order.create(augur, msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _kycToken);
+            Order.Data memory _orderData = Order.create(msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _kycToken);
             Order.escrowFunds(_orderData);
             profitLoss.recordFrozenFundChange(_universe, _market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
             {
