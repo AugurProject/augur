@@ -1,72 +1,40 @@
 import React from 'react';
-import { setCategories } from 'modules/categories/set-categories';
-import {
-  CategorySingleSelect,
-  createGroups,
-} from 'modules/common/form';
-import {
-  LargeSubheaders,
-  SmallHeaderLink,
-} from 'modules/create-market/components/common';
+import { LargeSubheaders } from 'modules/create-market/components/common';
 import { MARKET_SUB_TEMPLATES } from 'modules/create-market/constants';
 import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/template-picker.styles.less';
-import { CUSTOM } from 'modules/common/constants';
+import { getTemplates } from 'modules/create-market/get-template';
+import { YES_NO, SCALAR } from 'modules/common/constants';
 
-export const TemplatePicker = ({
-    newMarket,
-    updateNewMarket,
-  }) => {
-  const { categories } = newMarket;
-  const {
-    tertiaryOptions,
-    tertiaryAutoComplete,
-  } = createGroups(setCategories, categories, categories);
+export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
+  const { categories, marketType } = newMarket;
+  const categoriesFormatted = {
+    primary: categories[0].toLowerCase(),
+    secondary: categories[1].toLowerCase(),
+    tertiary: categories[2].toLowerCase(),
+  };
+  const templates = getTemplates(
+    categoriesFormatted,
+    marketType
+  );
 
-  const tertiarySelected = categories[2].length > 0;
-  const categorySelected = tertiaryOptions.map(options => options.value).includes(categories[2]);
-  const isCustomSelected = tertiaryOptions.length === 0 || !categorySelected && tertiaryOptions.length > 0;
-  const customOption = { label: CUSTOM, value: CUSTOM };
+  console.log(categoriesFormatted);
+  console.log(templates);
+
+  let subheader = `Popular ${categories[0]} templates with up to 8 possible outcomes.`;
+  if (marketType === YES_NO) {
+    subheader = `Popular Yes/No ${categories[0]} templates.`;
+  } else if (marketType === SCALAR) {
+    subheader = `Popular Scalar ${categories[0]} templates.`;
+  }
 
   return (
     <section className={Styles.TemplatePicker}>
       <LargeSubheaders
-        header='Choose a sub-category'
-        subheader='Sub-categories help users find your market.'
+        header="Choose a template"
+        subheader={subheader}
       />
-      <section>
-        <RadioCardGroup
-          defaultSelected={categories[1] ? categories[1] : null}
-          onChange={(value: string) => {
-            const updatedNewMarket = { ...newMarket };
-            updatedNewMarket.categories[1] = value;
-            updatedNewMarket.categories[2] = '';
-            updateNewMarket(updatedNewMarket);
-          }}
-          radioButtons={MARKET_SUB_TEMPLATES[newMarket.categories[0]]}
-        >
-          <SmallHeaderLink text="Don't see your category?" link ownLine />
-        </RadioCardGroup>
-      </section>
-      <section>
-        <LargeSubheaders
-          header='Choose a further sub-category'
-          subheader='Optionally select another sub-category to help users find your market.'
-        />
-        <CategorySingleSelect
-          options={tertiaryOptions.length > 0 ? tertiaryOptions : [customOption] }
-          autoCompleteList={tertiaryAutoComplete}
-          initialSelected={isCustomSelected ? CUSTOM : categories[2]}
-          initialValue={isCustomSelected ? tertiarySelected ? categories[2] : '' : categories[2]}
-          staticLabel='Tertiary Category (optional)'
-          placeholder='Custom Tertiary Category'
-          updateSelection={(value: string) => {
-            const updatedNewMarket = { ...newMarket };
-            updatedNewMarket.categories[2] = value;
-            updateNewMarket(updatedNewMarket);
-          }}
-        />
-      </section>
+      <section></section>
     </section>
   );
 };
