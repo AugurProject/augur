@@ -192,7 +192,7 @@ export default class MarketHeader extends Component<
                   <MarketTypeLabel marketType={marketType} />
                 </WordTrail>
                 <SocialMediaButtons marketAddress={market.id} marketDescription={description} />
-                <div className={Styles.copy_marketId} id="copy_marketId" data-clipboard-text={market.id}>
+                <div id="copy_marketId" data-clipboard-text={market.id}>
                   {CopyAlternateIcon}
                 </div>
                 {toggleFavorite && (
