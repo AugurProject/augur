@@ -1,3 +1,4 @@
+import { Augur, Provider } from '@augurproject/sdk';
 import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
@@ -24,11 +25,10 @@ import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback, WindowApp, LoginAccount } from 'modules/types';
+import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { forceLoginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
-import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -126,13 +126,12 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     connect(
       env,
-      async (err: any) => {
+      async (err: any, sdk:Augur<Provider> ) => {
         if (err) {
           return callback(err, null);
         }
-        const Augur = augurSdk.get();
         const windowApp = windowRef as WindowApp;
-        let universeId = env.universe || Augur.contracts.universe.address;
+        let universeId = env.universe || sdk.contracts.universe.address;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
@@ -157,7 +156,6 @@ export function connectAugur(
           );
         } else {
           dispatch(updateUniverse({ id: universeId }));
-          dispatch(loadUniverseForkingInfo(universeId));
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {
@@ -168,7 +166,7 @@ export function connectAugur(
         }
 
         // wire up start up events for sdk
-        dispatch(listenForStartUpEvents(Augur));
+        dispatch(listenForStartUpEvents(sdk));
       }
     );
   };

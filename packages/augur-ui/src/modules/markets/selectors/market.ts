@@ -36,17 +36,7 @@ export const selectMarket = (marketId): MarketData | null => {
 
 const assembleMarket = createSelector(
   selectMarketsDataStateMarket,
-  (marketData): MarketData => {
-    const market: MarketData = convertMarketInfoToMarketData(marketData);
-
-    // TODO: currently where this data comes from is unknown, need to have discussion about architecture.
-    market.unclaimedCreatorFees = formatDai(marketData.unclaimedCreatorFees);
-    market.marketCreatorFeesCollected = formatDai(
-      marketData.marketCreatorFeesCollected || 0
-    );
-
-    return market;
-  }
+  (marketData): MarketData => convertMarketInfoToMarketData(marketData)
 );
 
 export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {

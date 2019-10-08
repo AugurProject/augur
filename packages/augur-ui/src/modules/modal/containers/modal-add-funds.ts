@@ -6,12 +6,11 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import getValue from 'utils/get-value';
-import { submitNewMarket } from 'modules/markets/actions/submit-new-market';
-import { NewMarket, NodeStyleCallback } from 'modules/types';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   address: getValue(state, 'loginAccount.address'),
+  accountMeta: getValue(state, 'loginAccount.meta'),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

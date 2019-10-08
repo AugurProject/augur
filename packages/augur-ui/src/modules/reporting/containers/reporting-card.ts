@@ -5,8 +5,9 @@ import { MODAL_REPORTING } from "modules/common/constants";
 import { AppState } from 'store';
 
 const mapStateToProps = (state: AppState, ownProps) => {
+  const { universe } = state;
   return {
-    isLogged: state.authStatus.isLogged,
+    isLogged: state.authStatus.isLogged && !universe.forkingInfo,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime: state.universe.disputeWindow.endTime,
   };

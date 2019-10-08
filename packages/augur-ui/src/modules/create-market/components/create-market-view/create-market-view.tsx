@@ -8,8 +8,6 @@ import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
 
-import UniverseCard from 'modules/universe-cards/containers/universe-card';
-
 interface CreateMarketViewProps {
 }
 
@@ -30,10 +28,12 @@ export default class CreateMarketView extends React.Component<
     this.setState({page});
   }
 
+  componentDidMount() {
+    window.scrollTo(0,0);
+  }
+
   render() {
     const { page } = this.state;
-
-    const showUniverseCard = false;
 
     return (
       <section className={Styles.CreateMarketView}>
@@ -43,12 +43,7 @@ export default class CreateMarketView extends React.Component<
         {page === LANDING &&
           <Landing updatePage={this.updatePage} />
         }
-        {/* TODO: Remove once UniverseCard is moved to modal */}
-        {showUniverseCard &&
-          <UniverseCard
-            universe={this.props.universe.id}
-          />
-        }
+        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );

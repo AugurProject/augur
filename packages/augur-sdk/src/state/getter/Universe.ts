@@ -44,7 +44,8 @@ export interface MigrationOutcome {
 }
 
 export interface UniverseDetails {
-  address: string;
+  id: string;
+  parentUniverseId: string | null;
   creationTimestamp: number;
   outcomeName: string;
   usersRep: string;
@@ -152,7 +153,8 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const children = []; // don't recurse
 
   return {
-    address,
+    id: address,
+    parentUniverseId: null, // TBD
     creationTimestamp,
     outcomeName,
     usersRep,

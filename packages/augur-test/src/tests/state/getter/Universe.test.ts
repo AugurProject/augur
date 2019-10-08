@@ -349,7 +349,8 @@ describe('State API :: Universe :: ', () => {
     });
 
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
+      parentUniverseId: null,
       outcomeName: 'Genesis',
       usersRep: johnRep.toString(),
       totalRepSupply: totalRep.toString(),
@@ -370,7 +371,8 @@ describe('State API :: Universe :: ', () => {
     });
 
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
+      parentUniverseId: null,
       outcomeName: 'Genesis',
       usersRep: bobRep.toString(), // aka zero
       totalRepSupply: totalRep.toString(),
@@ -392,7 +394,8 @@ describe('State API :: Universe :: ', () => {
       account: john.account.publicKey,
     });
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
+      parentUniverseId: null,
       outcomeName: 'Genesis',
       usersRep: johnRep.toString(),
       totalRepSupply: totalRep.toString(),
@@ -427,13 +430,14 @@ describe('State API :: Universe :: ', () => {
     });
 
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
       outcomeName: 'Genesis',
       totalRepSupply: totalRep.toString(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
       children: [
         {
+          parentUniverseId: null,
           outcomeName: 'Invalid',
           usersRep: childUniverseRep.toString(),
           totalRepSupply: childUniverseRep.toString(),
@@ -445,7 +449,7 @@ describe('State API :: Universe :: ', () => {
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
-    expect(universeChildren.children[0].address).not.toEqual(NULL_ADDRESS);
+    expect(universeChildren.children[0].id).not.toEqual(NULL_ADDRESS);
     // John's REP is hard to calculate because contributing during a fork has caps
     // that we're exceeding, so it rounds down to the cap.
     expect(Number(universeChildren.usersRep)).toBeGreaterThan(0);

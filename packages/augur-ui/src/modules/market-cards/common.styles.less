@@ -87,7 +87,7 @@
 			display: flex;
 			flex-direction: column;
 			flex: 1;
- 
+
 			> span:first-of-type {
 				.mono-10;
 
@@ -231,8 +231,9 @@
 }
 
 .OutcomeGroup {
-	display: grid;
-    grid-gap: @size-6;
+  display: grid;
+  grid-gap: @size-6;
+  margin-right: -@size-16;
 
 	&.Categorical {
 		grid-template-columns: repeat(3, 1fr);
@@ -275,8 +276,13 @@
 		}
 	}
 
-    @media @breakpoint-mobile-mid {
-			grid-template-columns: repeat(1, 1fr);
+  @media @breakpoint-max-tablet {
+    grid-column: 1 / span 2;
+    margin: -@size-14 0;
+  }
+
+  @media @breakpoint-mobile-mid {
+    grid-template-columns: repeat(1, 1fr);
 	}
 }
 

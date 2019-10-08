@@ -55,6 +55,7 @@ import {
 } from 'modules/reporting/actions/update-reporting-list';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
+import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 
 const handleAlert = (
   log: any,
@@ -125,6 +126,7 @@ export const handleSDKReadyEvent = () => (
   augurSdk.subscribe(dispatch);
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
+  dispatch(loadUniverseForkingInfo());
 };
 
 export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
@@ -161,7 +163,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-  marketsData: Getters.Markets.MarketInfo[]
+  marketsData: Getters.Markets.MarketInfo[] = []
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
@@ -198,11 +200,13 @@ export const handleMarketMigratedLog = (log: any) => (
   getState: () => AppState
 ) => {
   const universeId = getState().universe.id;
+  const userAddress = getState().loginAccount.address;
   if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market));
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }
+  dispatch(loadUniverseDetails(universeId));
 };
 
 export const handleTokensTransferredLog = (log: any) => (
@@ -452,15 +456,23 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   getState: () => AppState
 ) => {
   console.log('handleUniverseForkedLog');
-  const { universe, forkingMarket } = log;
-  dispatch(loadUniverseForkingInfo(universe, forkingMarket));
+  const { forkingMarket } = log;
+  dispatch(loadUniverseForkingInfo(forkingMarket));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
-) => dispatch(loadMarketsInfo([log.market]));
+) => {
+  const { universe } = getState();
+  dispatch(loadMarketsInfo([log.market]));
+  if (universe.forkingInfo) {
+    if (log.market === universe.forkingInfo.forkingMarket) {
+      dispatch(loadUniverseForkingInfo())
+    }
+  }
+}
 
 // ---- disputing ----- //
 export const handleDisputeCrowdsourcerCreatedLog = (
@@ -511,20 +523,31 @@ export const handleDisputeWindowCreatedLog = (
   log: Logs.DisputeWindowCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadDisputeWindow());
+  dispatch(loadAccountReportingHistory());
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleTokensMintedLog = (
   log: Logs.TokensMinted
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const userAddress = getState().loginAccount.address;
   if(log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(
       log.target,
-      getState().loginAccount.address
+      userAddress
     );
     if (isUserDataUpdate) {
       dispatch(loadAccountReportingHistory());
     }
     dispatch(loadDisputeWindow());
+  }
+  if (log.tokenType === Logs.TokenType.ReputationToken) {
+    const isUserDataUpdate = isSameAddress(
+      log.target,
+      userAddress
+    );
+    if (isUserDataUpdate) {
+      dispatch(loadUniverseDetails(log.universe))
+    }
   }
 };

@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import classNames from 'classnames';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
   ZERO,
   MY_TOTOL_REP_STAKED,
@@ -8,7 +8,7 @@ import {
   REPORTING_STATE,
   SCALAR,
 } from 'modules/common/constants';
-import { FormattedNumber, SizeTypes, MarketData } from 'modules/types';
+import { FormattedNumber, SizeTypes, MarketData, DisputeInputtedValues } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
   SecondaryButton,
@@ -35,6 +35,7 @@ import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
 import { convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
+import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -192,24 +193,18 @@ interface PreFilledStakeProps {
   showInput: boolean;
   toggleInput: Function;
   preFilledStake?: string;
-  updatePreFilledStake: Function;
+  updateInputtedStake: Function;
   stakeError?: string;
-  threshold: number;
+  threshold: string;
 }
 
 export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
-  updateDisputeStake = stake => {
-    this.props.updatePreFilledStake(stake);
-  };
-
   changeShowInput = () => {
     this.props.toggleInput();
   };
 
   render() {
-    const s = this.state;
-
-    const { preFilledStake, stakeError, threshold } = this.props;
+    const { preFilledStake, stakeError, threshold, updateInputtedStake } = this.props;
 
     return (
       <div className={Styles.PreFilledStake}>
@@ -228,25 +223,13 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
         )}
         {this.props.showInput && (
           <>
-            <TextInput
-              placeholder={'0.0000'}
-              value={preFilledStake}
-              onChange={value => this.updateDisputeStake(value)}
-              errorMessage={stakeError}
-              innerLabel="REP"
+            <InputRepStake
+              stakeAmount={preFilledStake}
+              updateStakeAmount={updateInputtedStake}
+              stakeError={stakeError}
+              max={threshold}
+              maxLabel='MAX (REP THRESHOLD)'
             />
-            <div>
-              <CancelTextButton
-                noIcon
-                action={() => this.updateDisputeStake(threshold.toString())}
-                text={'MAX (REP THRESHOLD)'}
-              />
-              <CancelTextButton
-                noIcon
-                action={() => this.updateDisputeStake('')}
-                text={'CLEAR'}
-              />
-            </div>
             <span>Review Pre-Filled Stake</span>
             <LinearPropertyLabel
               key="totalRep"
@@ -259,7 +242,39 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
     );
   }
 }
+interface InputRepStakeProps {
+  stakeAmount?: string;
+  updateStakeAmount: Function;
+  stakeError?: string;
+  max: string;
+  maxLabel: string;
+}
 
+export const InputRepStake = (props: InputRepStakeProps) => {
+  return (
+    <div className={Styles.InputRepStake}>
+      <TextInput
+        placeholder={'0.0000'}
+        value={props.stakeAmount}
+        onChange={value => props.updateStakeAmount(value)}
+        errorMessage={props.stakeError}
+        innerLabel="REP"
+      />
+      <div>
+        <CancelTextButton
+          noIcon
+          action={() => props.updateStakeAmount(props.max)}
+          text={props.maxLabel}
+        />
+        <CancelTextButton
+          noIcon
+          action={() => props.updateStakeAmount('')}
+          text={'CLEAR'}
+        />
+      </div>
+    </div>
+  );
+};
 export interface DisputingButtonViewProps {
   fullBond: FormattedNumber;
   stakeCurrent: FormattedNumber;
@@ -315,7 +330,7 @@ export interface DisputingBondsViewProps {
   inputScalarOutcome: string;
   updateScalarOutcome: Function;
   stakeValue: string;
-  updateDisputeStake: Function;
+  updateInputtedStake: Function;
   userAvailableRep: number;
   stakeRemaining?: string;
   tentativeWinning?: boolean;
@@ -362,10 +377,10 @@ export class DisputingBondsView extends Component<
     updateScalarOutcome(range);
   };
 
-  updateDisputeStake = (inputStakeValue: string) => {
+  updateInputtedStake = (inputStakeValue: string) => {
     const {
       market,
-      updateDisputeStake,
+      updateInputtedStake,
       inputScalarOutcome,
       userAvailableRep,
       stakeRemaining,
@@ -387,7 +402,7 @@ export class DisputingBondsView extends Component<
       inputStakeValue === '0.'
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-      return updateDisputeStake({inputStakeValue, inputToAttoRep});
+      return updateInputtedStake({inputStakeValue, inputToAttoRep});
     } else if (
       createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
     ) {
@@ -424,7 +439,7 @@ export class DisputingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    updateDisputeStake({inputStakeValue, inputToAttoRep});
+    updateInputtedStake({inputStakeValue, inputToAttoRep});
   };
 
   render() {
@@ -457,7 +472,7 @@ export class DisputingBondsView extends Component<
         <TextInput
           placeholder={'0.0000'}
           value={String(stakeValue)}
-          onChange={value => this.updateDisputeStake(value)}
+          onChange={value => this.updateInputtedStake(value)}
           errorMessage={stakeError}
           innerLabel="REP"
         />
@@ -465,13 +480,13 @@ export class DisputingBondsView extends Component<
           <section>
             <CancelTextButton
               noIcon
-              action={() => this.updateDisputeStake(String(min))}
+              action={() => this.updateInputtedStake(String(min))}
               text={'MIN'}
             />
             |
             <CancelTextButton
               noIcon
-              action={() => this.updateDisputeStake(String(remaining))}
+              action={() => this.updateInputtedStake(String(remaining))}
               text={'FILL DISPUTE BOND'}
             />
           </section>
@@ -503,10 +518,14 @@ export interface ReportingBondsViewProps {
   updateScalarOutcome: Function;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
-  preFilledStake?: string;
-  updatePreFilledStake?: Function;
+  inputtedReportingStake: DisputeInputtedValues;
+  updateInputtedStake?: Function;
   inputScalarOutcome?: string;
-  userAvailableRep: number;
+  initialReport: boolean;
+  migrateMarket: boolean;
+  migrateRep: boolean;
+  userAttoRep: BigNumber;
+  owesRep: boolean;
 }
 
 interface ReportingBondsViewState {
@@ -515,6 +534,7 @@ interface ReportingBondsViewState {
   scalarError: string;
   stakeError: string;
   isScalar: boolean;
+  threshold: string;
 }
 
 export class ReportingBondsView extends Component<
@@ -527,7 +547,15 @@ export class ReportingBondsView extends Component<
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
+    threshold: this.props.userAttoRep.toString(),
   };
+
+  async componentDidMount() {
+    if (this.props.initialReport) {
+      const threshold = await getRepThresholdForPacing();
+      this.setState({ threshold: String(convertAttoValueToDisplayValue(threshold)) });
+    }
+  }
 
   toggleInput = () => {
     this.setState({ showInput: !this.state.showInput });
@@ -555,19 +583,19 @@ export class ReportingBondsView extends Component<
     updateScalarOutcome(range);
   };
 
-  updatePreFilledStake = (stake: string) => {
+  updateInputtedStake = (inputStakeValue: string) => {
     const {
-      updatePreFilledStake,
+      updateInputtedStake,
       inputScalarOutcome,
-      userAvailableRep,
+      userAttoRep,
     } = this.props;
     const { isScalar } = this.state;
 
-    if (isNaN(Number(stake))) {
+    if (isNaN(Number(inputStakeValue))) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
-    } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
+    } else if (createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))) {
       this.setState({
-        stakeError: 'Value is bigger than REP balance',
+        stakeError: 'Value is bigger than user REP balance',
         disabled: true,
       });
     } else {
@@ -579,7 +607,11 @@ export class ReportingBondsView extends Component<
         this.setState({ disabled: false });
       }
     }
-    updatePreFilledStake(stake);
+    let inputToAttoRep = '0';
+    if (!isNaN(Number(inputStakeValue)) && inputStakeValue !== '') {
+      inputToAttoRep = String(convertDisplayValuetoAttoValue(createBigNumber(inputStakeValue)));
+    }
+    updateInputtedStake({inputToAttoRep, inputStakeValue});
   };
 
   render() {
@@ -588,22 +620,36 @@ export class ReportingBondsView extends Component<
       inputScalarOutcome,
       reportingGasFee,
       reportAction,
-      preFilledStake,
-      userAvailableRep,
+      inputtedReportingStake,
+      userAttoRep,
       id,
+      migrateRep,
+      initialReport,
+      owesRep,
     } = this.props;
 
-    const { showInput, disabled, scalarError, stakeError, isScalar } = this.state;
-    const preFilled = preFilledStake || '0';
+    const { showInput, disabled, scalarError, stakeError, isScalar, threshold } = this.state;
 
+    const repAmount = migrateRep ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted : formatAttoRep(market.noShowBondAmount).formatted;
+    let repLabel = migrateRep ? 'REP to migrate' : 'open reporter winning Stake'
+    if (owesRep) {
+      repLabel = 'REP needed'
+    }
+    const totalRep = owesRep
+      ? formatAttoRep(
+          createBigNumber(inputtedReportingStake.inputToAttoRep).plus(market.noShowBondAmount)
+        ).formatted
+      : formatAttoRep(createBigNumber(inputtedReportingStake.inputToAttoRep)).formatted;
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
           [Styles.Scalar]: isScalar,
+          [Styles.InitialReport]: initialReport,
+          [Styles.MigrateRep]: migrateRep,
         })}
       >
-        {isScalar && id === "null" && (
+        {isScalar && id === 'null' && (
           <ScalarOutcomeView
             inputScalarOutcome={inputScalarOutcome}
             updateScalarOutcome={this.updateScalarOutcome}
@@ -611,45 +657,59 @@ export class ReportingBondsView extends Component<
             scalarError={scalarError}
           />
         )}
-        {market.reportingState === REPORTING_STATE.OPEN_REPORTING && (
-          <>
-            <span>Review Initial Reporting</span>
-            <LinearPropertyLabel
-              key="initial"
-              label="open reporter winning Stake"
-              value={`${formatAttoRep(market.noShowBondAmount).formatted} REP`}
-            />
-          </>
+        {migrateRep && (
+          <InputRepStake
+            stakeAmount={String(inputtedReportingStake.inputStakeValue)}
+            updateStakeAmount={this.updateInputtedStake}
+            stakeError={stakeError}
+            max={String(userAttoRep)}
+            maxLabel="MAX"
+          />
         )}
+        <span>Review</span>
+        <LinearPropertyLabel
+          key="initial"
+          label={repLabel}
+          value={`${repAmount} REP`}
+        />
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
           label="Transaction Fee"
           value={reportingGasFee}
         />
-        <PreFilledStake
-          showInput={showInput}
-          toggleInput={this.toggleInput}
-          updatePreFilledStake={this.updatePreFilledStake}
-          preFilledStake={preFilledStake}
-          stakeError={stakeError}
-          threshold={userAvailableRep}
-        />
+        {migrateRep &&
+          createBigNumber(inputtedReportingStake.inputToAttoRep).lt(
+            createBigNumber(userAttoRep)
+          ) && (
+            <DismissableNotice
+              show={true}
+              description=""
+              title="Are you sure you only want to migrate a portion of your REP to this universe?
+            If not, go back and select the ‘MAx’ button to migrate your full REP amount."
+              buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+            />
+          )}
+        {initialReport && (
+          <PreFilledStake
+            showInput={showInput}
+            toggleInput={this.toggleInput}
+            updateInputtedStake={this.updateInputtedStake}
+            preFilledStake={inputtedReportingStake.inputStakeValue}
+            stakeError={stakeError}
+            threshold={threshold}
+          />
+        )}
+
         {showInput && (
           <div>
             <span>Totals</span>
             <span>
-              Sum total of Initial Reporter Stake and Pre-Filled Stake
+              Sum total of Pre-Filled Stake
             </span>
             <LinearPropertyLabel
               key="totalRep"
               label="Total rep"
-              value={
-                formatAttoRep(
-                  createBigNumber(preFilled).plus(
-                    createBigNumber(market.noShowBondAmount)
-                  )
-                ).formatted
-              }
+              value={totalRep}
             />
           </div>
         )}
@@ -811,7 +871,6 @@ export class UserRepDisplay extends Component<
     return (
       <div
         className={classNames(Styles.UserRepDisplay, {
-          [Styles.loggedOut]: isLoggedIn,
           [Styles.HideForMobile]: s.toggle,
         })}
       >
@@ -890,9 +949,12 @@ export interface ParticipationTokensViewProps {
   openModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
-  participationTokens: object;
   tokensOwned: FormattedNumber;
   percentageOfTotalFees: FormattedNumber;
+  participationTokensClaimable: FormattedNumber,
+  participationTokensClaimableFees: FormattedNumber,
+  disablePurchaseButton: boolean,
+  hasRedeemable: boolean,
 }
 
 export const ParticipationTokensView = (
@@ -904,6 +966,10 @@ export const ParticipationTokensView = (
     purchasedParticipationTokens,
     tokensOwned,
     percentageOfTotalFees,
+    participationTokensClaimable,
+    participationTokensClaimableFees,
+    disablePurchaseButton,
+    hasRedeemable
   } = props;
 
   return (
@@ -936,7 +1002,7 @@ export const ParticipationTokensView = (
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
       />
 
-      <PrimaryButton text="Get Participation Tokens" action={openModal} />
+      <PrimaryButton disabled={disablePurchaseButton} text="Get Participation Tokens" action={openModal} />
 
       <section />
 
@@ -949,16 +1015,16 @@ export const ParticipationTokensView = (
       <Subheaders
         info
         header="Participation Tokens Purchased"
-        subheader="0.0000"
+        subheader={participationTokensClaimable.formatted}
       />
       <Subheaders
         info
         header="My Portion of Reporting Fees"
-        subheader="0.0000"
+        subheader={participationTokensClaimableFees.formatted}
         secondSubheader="DAI"
       />
 
-      <PrimaryButton text="Redeem Past Participation Tokens" action={null} />
+      <PrimaryButton disabled={!hasRedeemable} text="Redeem Past Participation Tokens" action={null} />
     </div>
   );
 };
