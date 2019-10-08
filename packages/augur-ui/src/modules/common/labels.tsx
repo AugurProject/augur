@@ -40,8 +40,6 @@ export interface MarketStatusProps {
 
 export interface InReportingLabelProps extends MarketStatusProps {
   disputeInfo: Getters.Markets.DisputeInfo;
-  endTimeFormatted: DateFormattedObject;
-  currentAugurTimestamp: number;
 }
 
 export interface MovementLabelProps {
@@ -592,9 +590,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 export const InReportingLabel = (props: InReportingLabelProps) => {
   const {
     reportingState,
-    disputeInfo,
-    endTimeFormatted,
-    currentAugurTimestamp,
+    disputeInfo
   } = props;
 
   const reportingStates = [
@@ -609,7 +605,8 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   }
 
   let reportingExtraText: string | null;
-  const text: string = constants.IN_REPORTING;
+  // const text: string = constants.IN_REPORTING;
+  const text = '';
   let customLabel: string | null = null;
 
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
@@ -636,7 +633,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       {text}
       {reportingExtraText && (
         <span className={Styles.InReporting_reportingDetails}>
-          {DoubleArrows}
+          {/* {DoubleArrows} */}
           {reportingExtraText}
         </span>
       )}
