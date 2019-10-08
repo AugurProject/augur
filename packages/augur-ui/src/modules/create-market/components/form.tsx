@@ -29,6 +29,7 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
+  MARKET_SUB_TEMPLATES,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -140,6 +141,19 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   componentDidMount() {
     this.node.scrollIntoView();
+    if (this.props.template) {
+      for (const categoryName in MARKET_SUB_TEMPLATES) {
+        if (MARKET_SUB_TEMPLATES.hasOwnProperty(categoryName)) {
+          MARKET_SUB_TEMPLATES[categoryName] = MARKET_SUB_TEMPLATES[categoryName].map((subcategoryTemplate) => {
+            const categoryKey = categoryName.toLowerCase();
+            const subcategoryKey = subcategoryTemplate.value;
+            if (this.state && this.state.categoryStats[categoryKey] && this.state.categoryStats[categoryKey][subcategoryKey]) {
+              subcategoryTemplate.description = `${this.state.categoryStats[categoryKey][subcategoryKey].numberOfMarkets} Markets  |  $${s.categoryStats[categoryKey][subcategoryKey].volume}`;
+            }
+          });
+         }
+      };
+    }
   }
 
   componentWillUnmount() {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-
+import { Getters } from '@augurproject/sdk';
 import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
@@ -16,6 +16,8 @@ interface LandingProps {
   address: String;
   updatePage: Function;
   clearNewMarket: Function;
+  universeId: string;
+  getCategoryStats: Function;
 }
 
 export default class Landing extends React.Component<
@@ -25,6 +27,15 @@ export default class Landing extends React.Component<
 
   componentDidMount() {
     this.node.scrollIntoView();
+    this.props.getCategoryStats(
+      this.props.universeId,
+      (err, result: Getters.Markets.CategoryStats) => {
+        if (err) return console.log('Error getCategoryStats:', err);
+        this.setState({
+          categoryStats: result,
+        });
+      }
+    );
   }
 
   render() {
@@ -32,12 +43,20 @@ export default class Landing extends React.Component<
       updatePage,
       updateNewMarket,
       newMarket,
-      clearNewMarket
+      clearNewMarket,
     } = this.props;
     const s = this.state;
 
+    const categoryTemplates = MARKET_TEMPLATES.map((categoryTemplate) => {
+      const categoryName = categoryTemplate.value.toLowerCase();
+      if (s && s.categoryStats[categoryName]) {
+        categoryTemplate.description = `${s.categoryStats[categoryName].numberOfMarkets} Markets  |  $${s.categoryStats[categoryName].volume}`;
+      }
+      return categoryTemplate;
+    }, {});
+
     return (
-      <div 
+      <div
         ref={node => {
           this.node = node;
         }}
@@ -67,9 +86,9 @@ export default class Landing extends React.Component<
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE)
                 }}
-                radioButtons={MARKET_TEMPLATES}
+                radioButtons={categoryTemplates}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine /> 
+                <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>
@@ -80,8 +99,8 @@ export default class Landing extends React.Component<
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />
-            <SecondaryButton 
-              text="Create a custom market" 
+            <SecondaryButton
+              text="Create a custom market"
               action={() => {
                 clearNewMarket();
                 updatePage(SCRATCH);
