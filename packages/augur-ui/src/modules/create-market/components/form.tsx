@@ -51,7 +51,6 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
-import TemplateFormDetails from 'modules/create-market/containers/template-form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
@@ -75,13 +74,12 @@ import {
   isValidFee,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
-import { createBigNumber } from 'utils/create-big-number';
+import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { TemplatePicker } from './template-picker';
 
 interface FormProps {
   newMarket: NewMarket;
