@@ -100,7 +100,7 @@ export function checkCategoriesArray(value) {
   if (errors[0] !== "" || errors[1] !== "") {
     return errors;
   } else {
-    return ['','',''];
+    return "";
   }
 }
 
