@@ -236,7 +236,6 @@ export default class MarketsView extends Component<
           this.componentWrapper = componentWrapper;
         }}
       >
-        <ForkingBanner />
         <Helmet>
           <title>Markets</title>
         </Helmet>
