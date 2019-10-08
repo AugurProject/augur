@@ -34,21 +34,9 @@ export default class Landing extends React.Component<
       newMarket,
       clearNewMarket
     } = this.props;
-    const s = this.state;
 
-<<<<<<< Updated upstream
-=======
-    const categoryTemplates = MARKET_TEMPLATES.map(categoryTemplate => {
-      const categoryName = categoryTemplate.value.toLowerCase();
-      if (categoryStats && categoryStats[categoryName]) {
-        categoryTemplate.description = `${categoryStats[categoryName].numberOfMarkets} Markets  |  $${categoryStats[categoryName].volume}`;
-      }
-      return categoryTemplate;
-    }, {});
-
->>>>>>> Stashed changes
     return (
-      <div 
+      <div
         ref={node => {
           this.node = node;
         }}
@@ -82,7 +70,7 @@ export default class Landing extends React.Component<
                 }}
                 radioButtons={MARKET_TEMPLATES}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine /> 
+                <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>
@@ -93,8 +81,8 @@ export default class Landing extends React.Component<
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />
-            <SecondaryButton 
-              text="Create a custom market" 
+            <SecondaryButton
+              text="Create a custom market"
               action={() => {
                 clearNewMarket();
                 updatePage(SCRATCH);
