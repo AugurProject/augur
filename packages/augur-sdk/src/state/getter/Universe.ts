@@ -135,10 +135,8 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const universeCreationLog = await getUniverseCreationLog(db, address);
   if (universeCreationLog === null) return null;
 
-  const { parentUniverse } = universeCreationLog;
-
   let outcomeName: string;
-  if (parentUniverse === NULL_ADDRESS) {
+  if (universeCreationLog.parentUniverse === NULL_ADDRESS) {
     outcomeName = GENESIS;
   } else {
     const universeForkedLog = await getUniverseForkedLog(db, universeCreationLog.parentUniverse);
@@ -156,7 +154,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
 
   return {
     id: address,
-    parentUniverseId: parentUniverse,
+    parentUniverseId: null, // TBD
     creationTimestamp,
     outcomeName,
     usersRep,
