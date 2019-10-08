@@ -314,7 +314,6 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <main>
-        <ForkingBanner />
         <Helmet
           defaultTitle='Decentralized Prediction Markets | Augur'
           titleTemplate='%s | Augur'
@@ -391,6 +390,8 @@ export default class AppView extends Component<AppProps> {
                 onClick={this.mainSectionClickHandler}
                 role='presentation'
               >
+                        <ForkingBanner />
+
                 <Routes isLogged={isLogged} />
               </section>
             </section>
