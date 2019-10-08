@@ -30,7 +30,6 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
-  MARKET_SUB_TEMPLATES,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -75,13 +74,12 @@ import {
   isValidFee,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
-import { createBigNumber } from 'utils/create-big-number';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { CategoryStats } from '@augurproject/sdk/src/state/getter/Markets';
+import { Getters } from '@augurproject/sdk';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -99,7 +97,7 @@ interface FormProps {
   currentTimestamp: number;
   needsApproval: boolean;
   categoryStats?: {
-    [categoryName: string]: CategoryStats;
+    [categoryName: string]: Getters.Markets.CategoryStats;
   }
 }
 
