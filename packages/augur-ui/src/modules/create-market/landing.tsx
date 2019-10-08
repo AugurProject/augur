@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Getters } from '@augurproject/sdk';
 import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
@@ -9,6 +8,7 @@ import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/const
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 
 import Styles from "modules/create-market/landing.styles";
+import { CategoryStats } from "@augurproject/sdk/src/state/getter/Markets";
 
 interface LandingProps {
   newMarket: Object;
@@ -16,8 +16,9 @@ interface LandingProps {
   address: String;
   updatePage: Function;
   clearNewMarket: Function;
-  universeId: string;
-  getCategoryStats: Function;
+  categoryStats: {
+    [categoryName: string]: CategoryStats;
+  };
 }
 
 export default class Landing extends React.Component<
@@ -27,15 +28,6 @@ export default class Landing extends React.Component<
 
   componentDidMount() {
     this.node.scrollIntoView();
-    this.props.getCategoryStats(
-      this.props.universeId,
-      (err, result: Getters.Markets.CategoryStats) => {
-        if (err) return console.log('Error getCategoryStats:', err);
-        this.setState({
-          categoryStats: result,
-        });
-      }
-    );
   }
 
   render() {
@@ -44,13 +36,14 @@ export default class Landing extends React.Component<
       updateNewMarket,
       newMarket,
       clearNewMarket,
+      categoryStats,
     } = this.props;
     const s = this.state;
 
     const categoryTemplates = MARKET_TEMPLATES.map((categoryTemplate) => {
       const categoryName = categoryTemplate.value.toLowerCase();
-      if (s && s.categoryStats[categoryName]) {
-        categoryTemplate.description = `${s.categoryStats[categoryName].numberOfMarkets} Markets  |  $${s.categoryStats[categoryName].volume}`;
+      if (categoryStats && categoryStats[categoryName]) {
+        categoryTemplate.description = `${categoryStats[categoryName].numberOfMarkets} Markets  |  $${categoryStats[categoryName].volume}`;
       }
       return categoryTemplate;
     }, {});

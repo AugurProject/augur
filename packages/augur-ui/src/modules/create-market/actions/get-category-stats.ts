@@ -10,7 +10,6 @@ export const getCategoryStats = (
   dispatch,
   getState
 ) => {
-console.log('universe', universe);
   const augur = augurSdk.get();
   let categoryStats = await augur.getCategoryStats({categories: POPULAR_CATEGORIES, universe});
   cb(null, categoryStats);

@@ -81,6 +81,7 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import { CategoryStats } from '@augurproject/sdk/src/state/getter/Markets';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -97,6 +98,9 @@ interface FormProps {
   openCreateMarketModal: Function;
   currentTimestamp: number;
   needsApproval: boolean;
+  categoryStats?: {
+    [categoryName: string]: CategoryStats;
+  }
 }
 
 interface FormState {
@@ -143,19 +147,6 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   componentDidMount() {
     this.node.scrollIntoView();
-    if (this.props.template) {
-      for (const categoryName in MARKET_SUB_TEMPLATES) {
-        if (MARKET_SUB_TEMPLATES.hasOwnProperty(categoryName)) {
-          MARKET_SUB_TEMPLATES[categoryName] = MARKET_SUB_TEMPLATES[categoryName].map((subcategoryTemplate) => {
-            const categoryKey = categoryName.toLowerCase();
-            const subcategoryKey = subcategoryTemplate.value;
-            if (this.state && this.state.categoryStats[categoryKey] && this.state.categoryStats[categoryKey][subcategoryKey]) {
-              subcategoryTemplate.description = `${this.state.categoryStats[categoryKey][subcategoryKey].numberOfMarkets} Markets  |  $${s.categoryStats[categoryKey][subcategoryKey].volume}`;
-            }
-          });
-         }
-      };
-    }
   }
 
   componentWillUnmount() {
@@ -556,6 +547,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       history,
       needsApproval,
       template,
+      categoryStats,
     } = this.props;
     const { contentPages } = this.state;
 
@@ -632,7 +624,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && <Review />}
-              {mainContent === SUB_CATEGORIES && <SubCategories />}
+              {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={this.props.categoryStats} />}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}

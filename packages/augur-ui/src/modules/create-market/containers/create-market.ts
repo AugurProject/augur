@@ -11,6 +11,7 @@ import { selectCurrentTimestamp } from "store/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 
 const mapStateToProps = state => ({
   universe: state.universe,
@@ -31,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
     dispatch(estimateSubmitNewMarket(data, callback)),
+  getCategoryStats: (universeId, cb) => dispatch(getCategoryStats(universeId, cb)),
 });
 
 const CreateMarket = withRouter(

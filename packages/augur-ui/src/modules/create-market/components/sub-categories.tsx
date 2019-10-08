@@ -16,6 +16,7 @@ import { CUSTOM } from 'modules/common/constants';
 export const SubCategories = ({
     newMarket,
     updateNewMarket,
+    categoryStats,
   }) => {
   const { categories } = newMarket;
   const {
@@ -27,6 +28,20 @@ export const SubCategories = ({
   const categorySelected = tertiaryOptions.map(options => options.value).includes(categories[2]);
   const isCustomSelected = tertiaryOptions.length === 0 || !categorySelected && tertiaryOptions.length > 0;
   const customOption = { label: CUSTOM, value: CUSTOM };
+
+  const subcategoryTemplates = {};
+  for (const categoryName in MARKET_SUB_TEMPLATES) {
+    if (MARKET_SUB_TEMPLATES.hasOwnProperty(categoryName)) {
+      subcategoryTemplates[categoryName] = MARKET_SUB_TEMPLATES[categoryName].map((subcategoryTemplate) => {
+        const categoryKey = categoryName.toLowerCase();
+        const subcategoryKey = subcategoryTemplate.value.toLowerCase();
+        if (categoryStats[categoryKey] && categoryStats[categoryKey][subcategoryKey]) {
+          subcategoryTemplate.description = `${categoryStats[categoryKey][subcategoryKey].numberOfMarkets} Markets  |  $${categoryStats[categoryKey][subcategoryKey].volume}`;
+        }
+        return subcategoryTemplate;
+      });
+    }
+  };
 
   return (
     <section className={Styles.SubCategories}>
@@ -43,7 +58,7 @@ export const SubCategories = ({
             updatedNewMarket.categories[2] = '';
             updateNewMarket(updatedNewMarket);
           }}
-          radioButtons={MARKET_SUB_TEMPLATES[newMarket.categories[0]]}
+          radioButtons={subcategoryTemplates[newMarket.categories[0]]}
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>
