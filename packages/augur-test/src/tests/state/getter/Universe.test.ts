@@ -417,17 +417,12 @@ describe('State API :: Universe :: ', () => {
     totalRep = await repToken.totalSupply_();
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
-    // Create child universe
     const childUniverseRep = johnRep;
-
     // Call twice because there's a bug when the first migration meets the goal.
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1));
     await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep.minus(1));
     johnRep = johnRep.minus(childUniverseRep);
     totalRep = totalRep.minus(childUniverseRep);
-
-    console.log('finalized', await market.isFinalized_());
-    console.log('forking', await john.augur.contracts.universe.isForking_());
 
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     universeChildren = await api.route('getUniverseChildren', {
