@@ -70,12 +70,12 @@ export const getTemplates = (
   if (!categories.secondary)
     return getTemplatesByMarketType(categoryTemplates.templates, marketType);
 
-  categoryTemplates = categoryTemplates[categories.secondary];
+  categoryTemplates = categoryTemplates.children[categories.secondary];
   if (!categoryTemplates) return [];
   if (!categories.tertiary)
     return getTemplatesByMarketType(categoryTemplates.templates, marketType);
 
-  categoryTemplates = categoryTemplates[categories.tertiary];
+  categoryTemplates = categoryTemplates.children[categories.tertiary];
   return getTemplatesByMarketType(categoryTemplates.templates, marketType);
 };
 
