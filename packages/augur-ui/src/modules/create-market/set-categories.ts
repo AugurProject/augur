@@ -1,5 +1,5 @@
-import { SortedGroup } from "modules/types";
-import { CUSTOM } from "modules/common/constants";
+import { SortedGroup } from 'modules/types';
+import { CUSTOM } from 'modules/common/constants';
 
 export const setCategories: SortedGroup[] = [
   {
