@@ -410,18 +410,30 @@ describe('State API :: Universe :: ', () => {
     console.log('Fork to see how that affects the children.');
     const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
     await fork(john, marketInfo);
-    const SOME_REP = new BigNumber(1e18).times(6e7); // from fork()
-    johnRep = johnRep.plus(SOME_REP);
-    totalRep = totalRep.plus(SOME_REP);
-
-    const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+    // The fork script faucets a lot of REP then uses up a difficult-to-predict amount.
+    johnRep = await repToken.balanceOf_(john.account.publicKey);
+    totalRep = await repToken.totalSupply_();
+
+    const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     // Create child universe
-    const childUniverseRep = new BigNumber(1e21);
+    const goal = await john.augur.contracts.universe.getForkReputationGoal_();
+
+    console.log('total rep', (await repToken.totalSupply_()).toString());
+    console.log('john rep', johnRep.toString());
+    console.log('goal', goal.toString());
+    // const childUniverseRep = goal;
+    // const childUniverseRep = goal.minus(1);
+    const childUniverseRep = johnRep;
+    console.log('migrated', childUniverseRep.toString());
+
     await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep);
     johnRep = johnRep.minus(childUniverseRep);
     totalRep = totalRep.minus(childUniverseRep);
+
+    console.log('finalized', await market.isFinalized_());
+    console.log('forking', await john.augur.contracts.universe.isForking_());
 
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     universeChildren = await api.route('getUniverseChildren', {
