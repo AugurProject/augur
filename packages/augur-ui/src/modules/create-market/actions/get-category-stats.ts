@@ -4,13 +4,13 @@ import { augurSdk } from 'services/augursdk';
 import { POPULAR_CATEGORIES } from 'modules/common/constants';
 
 export const getCategoryStats = (
-  universe: string,
   cb: Function = () => {}
 ): ThunkAction<void, AppState, void, any> => async (
   dispatch,
   getState
 ) => {
   const augur = augurSdk.get();
-  let categoryStats = await augur.getCategoryStats({categories: POPULAR_CATEGORIES, universe});
+  const { universe } = getState();
+  const categoryStats = await augur.getCategoryStats({categories: POPULAR_CATEGORIES, universe: universe.id});
   cb(null, categoryStats);
 };

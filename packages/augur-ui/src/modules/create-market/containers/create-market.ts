@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
     dispatch(estimateSubmitNewMarket(data, callback)),
-  getCategoryStats: (universeId, cb) => dispatch(getCategoryStats(universeId, cb)),
+  getCategoryStats: (cb) => dispatch(getCategoryStats(cb)),
 });
 
 const CreateMarket = withRouter(

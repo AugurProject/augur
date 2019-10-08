@@ -8,18 +8,15 @@ import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
 import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
-import { Universe } from "@augurproject/sdk/src/state/getter";
-import { CategoryStats } from "@augurproject/sdk/src/state/getter/Markets";
 
 interface CreateMarketViewProps {
-  universe: Universe;
   getCategoryStats: Function;
 }
 
 interface CreateMarketViewState {
   selected: number;
   page: number;
-  categoryStats: CategoryStats | null;
+  categoryStats: Getters.Markets.CategoryStats | null;
 }
 
 export default class CreateMarketView extends React.Component<
@@ -37,7 +34,6 @@ export default class CreateMarketView extends React.Component<
   componentDidMount() {
     window.scrollTo(0,0);
       this.props.getCategoryStats(
-        this.props.universe.id,
         (err, result: Getters.Markets.CategoryStats) => {
           if (err) return console.log('Error getCategoryStats:', err);
           this.setState({
