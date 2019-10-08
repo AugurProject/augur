@@ -37,7 +37,10 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
         <RadioTwoLineBarGroup
           radioButtons={templateOptions}
           onChange={value => {
-            //setSelectedOption(() => value && value.toString());
+            updateNewMarket({
+                ...newMarket,
+                template: templates[value]
+            })
           }}
         />
       </section>
