@@ -30,6 +30,7 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
+  TEMPLATE_PICKER,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -50,7 +51,6 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
-import TemplateFormDetails from 'modules/create-market/containers/template-form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
@@ -74,6 +74,7 @@ import {
   isValidFee,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
+import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
@@ -622,6 +623,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && <Review />}
+              {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={this.props.categoryStats} />}
               {mainContent === MARKET_TYPE && (
                 <MarketType
