@@ -44,7 +44,7 @@ export interface CategoryList {
 }
 
 interface TemplateChildren {
-  [category: string] : CategoryTemplate;
+  [category: string]: CategoryTemplate;
 }
 interface CategoryTemplate {
   templates: Template[];
@@ -75,14 +75,12 @@ export interface Categories {
 }
 
 export const getTemplateCategories = () => {
-  const category = Object.keys(templates)
-  .map(c => templates[c].children);
-
-}
+  const category = Object.keys(templates).map(c => templates[c].children);
+};
 
 const getSubCategories = (category: CategoryTemplate) => {
   const categories = Object.keys(category.children);
-}
+};
 
 export const getTemplates = (
   categories: Categories,
@@ -108,14 +106,20 @@ const getTemplatesByMarketType = (
   categoryTemplates: Template[],
   marketType
 ) => {
-  const values = categoryTemplates.filter(t => t.marketType === marketType)
+  const values = categoryTemplates.filter(t => t.marketType === marketType);
   return values;
 };
 
-export const getTemplateReadableDescription = (
-  template: Template
-) => {
-  return template.question;
+export const getTemplateReadableDescription = (template: Template) => {
+  let question = template.question;
+  const inputs = template.inputs;
+  for (const i in inputs) {
+    question = question.replace(
+      `[${inputs[i].id}]`,
+      `[${inputs[i].placeholder}]`
+    );
+  }
+  return question;
 };
 
 const templates = {
