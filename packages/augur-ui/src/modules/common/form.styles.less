@@ -323,9 +323,9 @@
 .RadioTwoLineBar {
   .RadioBar;
 
-  height: 82px;
-  grid-template-rows: @size-20 @size-19 @size-4 @size-19 @size-20;
   cursor: pointer;
+  height: unset;
+  grid-template-columns: 52px 1fr;
 
   @media @breakpoint-mobile-mid {
     height: 128px;
@@ -338,8 +338,10 @@
   }
 
   > h5 {
-    width: 236px;
+    .text-14;
+
     grid-row: 2;
+    margin-top: @size-20;
 
     @media @breakpoint-mobile-mid {
       .text-14;
@@ -354,7 +356,9 @@
     color: @color-secondary-text;
     grid-column: 2;
     grid-row: 4;
-    width: 236px;
+    margin: @size-4 0 @size-20;
+    padding: 0;
+    line-height: 160%;
 
     @media @breakpoint-mobile-mid {
       .text-12;

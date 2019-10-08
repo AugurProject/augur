@@ -65,6 +65,7 @@ export const CUSTOM_CONTENT_PAGES = [
 // template page content
 export const SUB_CATEGORIES = 'subCategories';
 export const MARKET_TYPE = 'marketType';
+export const TEMPLATE_PICKER = 'templatePicker';
 
 export const TEMPLATE_CONTENT_PAGES = [
   { title: 'Category' },
@@ -75,10 +76,10 @@ export const TEMPLATE_CONTENT_PAGES = [
     secondButton: NEXT,
   },
   { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
-  { title: 'Template', firstButton: BACK, secondButton: NEXT },
-  {
-    title: 'Event Details',
-    largeHeader: "Enter the event details",
+  { title: 'Template', mainContent: TEMPLATE_PICKER, firstButton: BACK, secondButton: NEXT },
+  { 
+    title: 'Event Details', 
+    largeHeader: "Enter the event details", 
     explainerBlockTitle: "A note on choosing a market",
     explainerBlockSubtexts: [
       "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
