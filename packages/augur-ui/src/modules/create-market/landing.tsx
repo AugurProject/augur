@@ -36,6 +36,17 @@ export default class Landing extends React.Component<
     } = this.props;
     const s = this.state;
 
+<<<<<<< Updated upstream
+=======
+    const categoryTemplates = MARKET_TEMPLATES.map(categoryTemplate => {
+      const categoryName = categoryTemplate.value.toLowerCase();
+      if (categoryStats && categoryStats[categoryName]) {
+        categoryTemplate.description = `${categoryStats[categoryName].numberOfMarkets} Markets  |  $${categoryStats[categoryName].volume}`;
+      }
+      return categoryTemplate;
+    }, {});
+
+>>>>>>> Stashed changes
     return (
       <div 
         ref={node => {
@@ -63,6 +74,8 @@ export default class Landing extends React.Component<
                 onChange={(value: string) => {
                   const updatedNewMarket = {...newMarket};
                   updatedNewMarket.categories[0] = value;
+                  updatedNewMarket.categories[1] = '';
+                  updatedNewMarket.categories[2] = '';
                   updatedNewMarket.currentStep = 1;
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE)

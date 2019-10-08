@@ -30,6 +30,7 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
+  EMPTY_STATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -50,14 +51,12 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
-import TemplateFormDetails from 'modules/create-market/containers/template-form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
 import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
-import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
 import {
   isBetween,
   isFilledNumber,
@@ -153,7 +152,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const savedDraft = drafts[newMarket.uniqueId];
 
-    let defaultState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    let defaultState = JSON.parse(JSON.stringify(EMPTY_STATE));
     defaultState.validations = [];
 
     let market = JSON.parse(JSON.stringify(newMarket));
@@ -284,7 +283,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateDraft,
     } = this.props;
 
-    if (newMarket.description === DEFAULT_STATE.description) {
+    if (newMarket.description === EMPTY_STATE.description) {
       this.onError('description', draftError);
       return;
     }
