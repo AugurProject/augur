@@ -23,7 +23,6 @@ import {
   Arrow,
   LoadingEllipse,
 } from 'modules/common/icons';
-import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import {
   CUSTOM,
