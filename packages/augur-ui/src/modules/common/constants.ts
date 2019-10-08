@@ -82,6 +82,7 @@ export const ACCOUNT_TYPES = {
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
+  WEB3WALLET: 'MetaMask / Web3', // Mobile Wallets + Extensions (MetaMask, Dapper, Trust, Coinbase)
   UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
 };
 
@@ -524,6 +525,7 @@ export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
 export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
 export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
+export const MODAL_TEST_BET = 'MODAL_TEST_BET';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
