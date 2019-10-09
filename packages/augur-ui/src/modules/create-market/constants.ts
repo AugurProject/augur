@@ -12,6 +12,7 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
+import { Popcorn } from 'modules/common/icons';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -373,6 +374,31 @@ export const MARKET_SUB_TEMPLATES = {
   ],
 };
 
+export const MARKET_TYPE_TEMPLATES = [
+  {
+    value: YES_NO,
+    header: 'Yes / No',
+    description: 'There are two possible outcomes: “Yes” or “No”',
+    icon: Popcorn,
+    useIconColors: true,
+  },
+  {
+    value: CATEGORICAL,
+    header: 'Multiple Choice',
+    description:
+      'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
+    icon: Popcorn,
+    useIconColors: true,
+  },
+  {
+    value: SCALAR,
+    header: 'Scalar',
+    description:
+      'A range of numeric outcomes: “USD range” between “1” and “100”.',
+    icon: Popcorn,
+    useIconColors: true,
+  },
+]
 export const DESCRIPTION_PLACEHOLDERS = {
   [YES_NO]: 'Example: Will [person] win the [year] [event]?',
   [SCALAR]: 'Example: Which Team will win: [Team A] vs [Team B] on [date]?',

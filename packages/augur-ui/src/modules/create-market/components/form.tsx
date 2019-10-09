@@ -619,11 +619,13 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && <SubCategories />}
+              {mainContent === SUB_CATEGORIES && <SubCategories nextPage={this.nextPage}/>}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
                   marketType={marketType}
+                  categories={newMarket.categories}
+                  nextPage={this.nextPage}
                 />
               )}
               {saveDraftError && (
