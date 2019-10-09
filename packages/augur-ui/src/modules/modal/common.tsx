@@ -591,7 +591,7 @@ export class MarketReview extends Component<
 
         {endTime && (
           <div>
-            <p>Reporting starts</p>
+            <p>Event Expiration</p>
             <div>{endTime.formattedUtc}</div>
             <div>{endTime.formattedTimezone}</div>
           </div>
