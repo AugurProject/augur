@@ -632,6 +632,8 @@ export const InputFactory = (props: InputFactoryProps) => {
     );
   } else if (input.type === TemplateInputType.DATETIME) {
     return <span>{input.placeholder}</span>;
+  } else {
+    return null;
   }
 };
 
