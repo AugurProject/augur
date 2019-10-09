@@ -49,7 +49,7 @@ const ReviewContent = {
 	previewButton: true,
 	explainerBlockTitle: "Double check the details",
 	explainerBlockSubtexts: [
-		"Reporting Start Time must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."
+		"Event expiration must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."
 	],
 	mainContent: REVIEW,
 	firstButton: BACK,
@@ -77,9 +77,9 @@ export const TEMPLATE_CONTENT_PAGES = [
   },
   { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
   { title: 'Template', mainContent: TEMPLATE_PICKER, firstButton: BACK, secondButton: NEXT },
-  { 
-    title: 'Event Details', 
-    largeHeader: "Enter the event details", 
+  {
+    title: 'Event Details',
+    largeHeader: "Enter the event details",
     explainerBlockTitle: "A note on choosing a market",
     explainerBlockSubtexts: [
       "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
