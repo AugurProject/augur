@@ -195,7 +195,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
             </>
           )}
 
-          {marketType === CATEGORICAL && (
+          {marketType === CATEGORICAL && !template && (
             <>
               <Subheaders
                 header="Outcomes"

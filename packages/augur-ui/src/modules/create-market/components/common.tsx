@@ -16,7 +16,14 @@ import { Error } from 'modules/common/form';
 import Styles from 'modules/create-market/components/common.styles.less';
 import { FormattedNumber, DateFormattedObject, NewMarket } from 'modules/types';
 import moment, { Moment } from 'moment';
-import { TemplateInputType } from 'modules/create-market/get-template';
+import {
+  TemplateInputType,
+  TemplateInput,
+  Template,
+} from 'modules/create-market/get-template';
+import { outcomes } from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import { CATEGORICAL } from 'modules/common/constants';
+import { string } from 'io-ts';
 
 export interface HeaderProps {
   text: string;
@@ -564,19 +571,66 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
   );
 };
 
+interface InputFactoryProps {
+  input: TemplateInput;
+  inputs: TemplateInput[];
+  inputIndex: number;
+  updateNewMarket: Function;
+  template: Template;
+}
+
+export const InputFactory = (props: InputFactoryProps) => {
+  const { input, inputs, inputIndex, updateNewMarket, template } = props;
+  if (input.type === TemplateInputType.TEXT) {
+    return (
+      <TextInput
+        placeholder={input.placeholder}
+        onChange={value => {
+          const newInputs = inputs;
+          newInputs[inputIndex].userInput = value;
+          updateNewMarket({
+            template: {
+              ...template,
+              inputs: newInputs,
+            },
+          });
+        }}
+        value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+    return (
+      <TextInput
+        placeholder={input.placeholder}
+        onChange={value => {
+          const newInputs = inputs;
+          newInputs[inputIndex].userInput = value;
+          const newOutcomes = outcomes;
+          newOutcomes[inputIndex] = value;
+          updateNewMarket({
+            outcomes: newOutcomes,
+            template: {
+              ...template,
+              inputs: newInputs,
+            },
+          });
+        }}
+        value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.DATETIME) {
+    return <span>{input.placeholder}</span>;
+  }
+};
+
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
-  const {
-    updateNewMarket,
-    newMarket
-  } = props;
-  const {
-    template
-  } = newMarket;
+  const { updateNewMarket, newMarket } = props;
+  const { template, outcomes, marketType, validations } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
 
@@ -600,31 +654,43 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             );
             if (inputIndex > -1) {
               const input = inputs[inputIndex];
-              if (input.type === TemplateInputType.TEXT) {
-                return (
-                  <TextInput
-                    key={word.id}
-                    placeholder={input.placeholder}
-                    onChange={value => {
-                      const newInputs = inputs;
-                      newInputs[inputIndex].userInput = value;
-                      updateNewMarket({
-                        template: {
-                          ...template,
-                          inputs: newInputs
-                        },
-                      });
-                    }}
-                    value={input.userInput}
-                  />
-                );
-              } else if (input.type === TemplateInputType.DATETIME) {
-                return <span key={word.id}>{input.placeholder}</span>;
-              }
+              return <InputFactory
+                key={inputIndex}
+                input={input}
+                inputs={inputs}
+                inputIndex={inputIndex}
+                updateNewMarket={updateNewMarket}
+                template={template}
+              />;
             }
           }
         })}
       </div>
+      {marketType === CATEGORICAL && (
+        <>
+          <Subheaders
+            header="Outcomes"
+            subheader="List the outcomes people can choose from."
+            link
+          />
+          <OutcomesList
+            outcomes={inputs
+              .filter(
+                input =>
+                  input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+                  input.type === TemplateInputType.ADDED_OUTCOME
+              )
+              .map(input => {
+                if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+                  return input.placeholder;
+                } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
+                  return input.placeholder;
+                }
+                return null;
+              })}
+          />
+        </>
+      )}
     </div>
   );
 };
