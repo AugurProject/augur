@@ -12,6 +12,7 @@ import TopNav from 'modules/app/components/top-nav/top-nav';
 import Routes from 'modules/routes/components/routes/routes';
 import AlertsContainer from 'modules/alerts/containers/alerts-view';
 import ToastsContainer from 'modules/alerts/containers/toasts-view';
+import { GlobalChat } from 'modules/common/global-chat.tsx';
 
 import {
   MobileNavHamburgerIcon,
@@ -390,13 +391,14 @@ export default class AppView extends Component<AppProps> {
                 onClick={this.mainSectionClickHandler}
                 role='presentation'
               >
-                        <ForkingBanner />
+                <ForkingBanner />
 
                 <Routes isLogged={isLogged} />
               </section>
             </section>
           </section>
         </div>
+        <GlobalChat />
       </main>
     );
   }

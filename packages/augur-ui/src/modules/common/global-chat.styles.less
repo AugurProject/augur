@@ -1,0 +1,31 @@
+@import (reference) '~assets/styles/shared';
+
+.GlobalChat {
+
+  bottom: @size-8;
+  position: fixed;
+  right: @size-22;
+
+  button {
+    .mono-9-bold;
+
+    align-items: center;
+    background: @color-module-background;
+    display: flex;
+    flex-direction: row-reverse;
+    text-transform: uppercase;
+
+    > svg {
+      fill: #FFFFFF;
+      height: @size-12;
+      margin-left: @size-8;
+      transform: rotate(180deg);
+      width: @size-12;
+    }
+  }
+
+  @media @breakpoint-max-tablet {
+    position: relative;
+    margin-left: auto;
+  }
+}

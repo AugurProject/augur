@@ -8,6 +8,7 @@ import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpResources } from '../help-resources';
+import { GlobalChat } from 'modules/common/global-chat.tsx';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -65,7 +66,10 @@ const SideNav = ({
 
         <footer>
           {isLogged && (
-            <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
+            <>
+              <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
+              <GlobalChat />
+            </>
           )}
 
           {isLogged && <HelpResources />}
