@@ -9,14 +9,20 @@
   flex-flow: column nowrap;
   white-space: nowrap;
 
+  > span:first-of-type {
+    margin-right: @size-4;
+    text-transform: uppercase;
+  }
+
   @media @breakpoint-mobile {
     .mono-9;
 
     color: @color-secondary-text;
-  }
 
-  > span:first-of-type {
-    text-transform: uppercase;
+    > span:first-of-type {
+      margin-right: 0;
+      text-transform: uppercase;
+    }
   }
 
   > span:last-of-type {
@@ -192,7 +198,7 @@
       top: 0;
       width: var(--percent-done);
     }
-  
+
     > span:last-of-type {
       background: @color-dark-grey;
       height: @size-10;
@@ -200,19 +206,19 @@
       top: 0;
       width: var(--percent-to-go);
     }
-  
-    @media @breakpoint-max-desktop-min { 
+
+    @media @breakpoint-max-desktop-min {
       flex: 1;
       flex-flow: row nowrap;
       height: @size-4;
       margin-top: @size-12;
       width: 100%;
-  
+
       > span:first-of-type {
         height: @size-2;
         width: var(--percent-done);
       }
-  
+
       > span:last-of-type {
         height: @size-2;
         width: var(--percent-to-go);
@@ -246,7 +252,7 @@
 
     &:first-of-type {
       .text-12;
-      
+
       color: @color-secondary-text;
       text-align: left;
     }

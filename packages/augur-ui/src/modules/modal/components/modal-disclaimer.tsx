@@ -41,12 +41,12 @@ export default class ModalDisclaimer extends Component<ModalDisclaimerProps, Mod
   }
 
   render() {
-    const { closeModal } = this.props;
+    const { closeModal, modal } = this.props;
     const { didScroll, didCheck } = this.state;
 
     return (
       <section className={Styles.ModalDisclaimer}>
-        <h1>Attention</h1>
+        <h1>Disclaimer</h1>
         <div
           ref="containerText"
           className={Styles.ModalDisclaimer__TextBox}
@@ -79,7 +79,7 @@ export default class ModalDisclaimer extends Component<ModalDisclaimerProps, Mod
 
           <p>
             The Forecast Foundation OU (the “<b>Foundation</b>
-            ”) is a not-for-profit entity. It does not own or lead Augur, but
+              ”) is a not-for-profit entity. It does not own or lead Augur, but
             rather supports and develops the free, open-source protocol that is
             Augur. Portions of the Augur Protocol are made available under the
             GNU General Public License and portions under the MIT license -- and
@@ -180,7 +180,10 @@ export default class ModalDisclaimer extends Component<ModalDisclaimerProps, Mod
               label: "I Agree and Accept the above",
               type: "purple",
               isDisabled: !didScroll || !didCheck,
-              action: closeModal,
+              action: () => {
+                closeModal();
+                modal.onApprove();
+              },
             },
           ]}
         />

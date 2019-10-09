@@ -1199,6 +1199,10 @@ export const LocationDisplay = ({
 );
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
+  static defaultProps = {
+    onAutoCompleteListSelected: () => {},
+  };
+
   state: TextInputState = {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,

@@ -85,16 +85,26 @@
     position: fixed;
     width: 100%;
 
-    > div {
+    > div:first-of-type {
       .mono-10;
 
       display: flex;
       color: @color-primary-text;
+      cursor: pointer;
       text-transform: uppercase;
 
       > svg {
         width: @size-9;
         height: @size-13;
+      }
+    }
+
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        bottom: 75px;
+        display: flex;
+        position: absolute;
+        right: 24px;
       }
     }
   }

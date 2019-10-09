@@ -1,4 +1,16 @@
-import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL,
+  YES_NO_OUTCOMES,
+  EXPIRY_SOURCE_GENERIC,
+  DESIGNATED_REPORTER_SELF,
+  SETTLEMENT_FEE_DEFAULT,
+  AFFILIATE_FEE_DEFAULT,
+  ZERO,
+  ONE,
+} from 'modules/common/constants';
+import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
@@ -20,6 +32,58 @@ export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
+
+
+export const EMPTY_STATE: NewMarket = {
+  isValid: false,
+  validations: {
+    description: null,
+    categories: ['', '', ''],
+    designatedReporterAddress: null,
+    expirySourceType: null,
+    setEndTime: null,
+    hour: null,
+    minute: null,
+    meridiem: null,
+    scalarDenomination: null,
+    outcomes: ['', ''],
+    settlementFee: '',
+  },
+  currentStep: 0,
+  marketType: YES_NO,
+  outcomes: ['', ''],
+  outcomesFormatted: YES_NO_OUTCOMES,
+  scalarSmallNum: '',
+  scalarBigNum: '',
+  scalarDenomination: '',
+  description: '',
+  expirySourceType: EXPIRY_SOURCE_GENERIC,
+  expirySource: '',
+  backupSource: '',
+  designatedReporterType: DESIGNATED_REPORTER_SELF,
+  designatedReporterAddress: '',
+  endTime: null,
+  setEndTime: null,
+  tickSize: 0.01,
+  hour: null,
+  minute: null,
+  meridiem: 'AM',
+  offset: 0,
+  offsetName: null,
+  timezone: null,
+  detailsText: '',
+  categories: ['', '', ''],
+  settlementFee: SETTLEMENT_FEE_DEFAULT,
+  affiliateFee: AFFILIATE_FEE_DEFAULT,
+  orderBook: {}, // for submit orders
+  orderBookSorted: {}, // for order book table
+  minPrice: '0',
+  maxPrice: '1',
+  minPriceBigNumber: ZERO,
+  maxPriceBigNumber: ONE,
+  initialLiquidityDai: ZERO,
+  initialLiquidityGas: ZERO,
+};
 
 const EventDetailsContent = {
   title: 'Event details',
@@ -49,7 +113,7 @@ const ReviewContent = {
 	previewButton: true,
 	explainerBlockTitle: "Double check the details",
 	explainerBlockSubtexts: [
-		"Reporting Start Time must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."
+		"Event expiration must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."
 	],
 	mainContent: REVIEW,
 	firstButton: BACK,
@@ -77,9 +141,9 @@ export const TEMPLATE_CONTENT_PAGES = [
   },
   { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
   { title: 'Template', mainContent: TEMPLATE_PICKER, firstButton: BACK, secondButton: NEXT },
-  { 
-    title: 'Event Details', 
-    largeHeader: "Enter the event details", 
+  {
+    title: 'Event Details',
+    largeHeader: "Enter the event details",
     explainerBlockTitle: "A note on choosing a market",
     explainerBlockSubtexts: [
       "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",

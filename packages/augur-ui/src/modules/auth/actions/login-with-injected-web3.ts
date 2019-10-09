@@ -65,7 +65,7 @@ const login = (account: string) => (
       email: null,
       profileImage: null,
       openWallet: null,
-      accountType: ACCOUNT_TYPES.METAMASK,
+      accountType: ACCOUNT_TYPES.WEB3WALLET,
       isWeb3: true,
     },
   };

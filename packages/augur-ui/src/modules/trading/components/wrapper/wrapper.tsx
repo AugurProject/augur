@@ -34,7 +34,9 @@ interface WrapperProps {
   allowanceBigNumber: BigNumber;
   market: MarketData;
   marketReviewTradeSeen: boolean;
+  disclaimerSeen: boolean;
   marketReviewTradeModal: Function;
+  disclaimerModal: Function;
   selectedOrderProperties: object;
   availableEth: BigNumber;
   availableDai: BigNumber;
@@ -375,7 +377,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gasPrice,
       updateSelectedOutcome,
       marketReviewTradeSeen,
+      disclaimerSeen,
       marketReviewTradeModal,
+      disclaimerModal,
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
@@ -513,13 +517,33 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else {
-                if (!marketReviewTradeSeen) {
-                  marketReviewTradeModal({
-                    marketId: market.id,
-                    cb: () => this.placeMarketTrade(market, selectedOutcome, s),
-                  });
-                } else {
+                if (disclaimerSeen && marketReviewTradeSeen) {
                   this.placeMarketTrade(market, selectedOutcome, s);
+                }
+                // Show Disclaimer AND Market Review before placing the trade
+                else if (!disclaimerSeen && !marketReviewTradeSeen) {
+                  disclaimerModal({
+                    onApprove: () => {
+                      marketReviewTradeModal({
+                        marketId: market.id,
+                        cb: () => this.placeMarketTrade(market, selectedOutcome, s),
+                      });
+                    },
+                  });
+                }
+                // Show Disclaimer OR Market Review before placing trade
+                else {
+                  if (!disclaimerSeen) {
+                    disclaimerModal({
+                      onApprove: () => this.placeMarketTrade(market, selectedOutcome, s),
+                    });
+                  }
+                  if (!marketReviewTradeSeen) {
+                    marketReviewTradeModal({
+                      marketId: market.id,
+                      cb: () => this.placeMarketTrade(market, selectedOutcome, s),
+                    });
+                  }
                 }
               }
             }}
