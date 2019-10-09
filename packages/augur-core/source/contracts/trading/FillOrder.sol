@@ -144,11 +144,11 @@ library Trade {
             IShareToken[] memory _shareTokens = _market.getShareTokens();
             uint256 _numOutcomes = _shareTokens.length;
             uint256 _i = 0;
-            for (; _i < _outcome; _i++) {
+            for (; _attosharesHeld > 0 && _i < _outcome; _i++) {
                 uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_creator);
                 _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
             }
-            for (_i++; _i < _numOutcomes; _i++) {
+            for (_i++; _attosharesHeld > 0 && _i < _numOutcomes; _i++) {
                 uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_creator);
                 _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
             }
@@ -408,7 +408,7 @@ library Trade {
         if (_fillerDirection == Direction.Short) {
             _sharesAvailable = _longShareToken.balanceOf(_filler);
         } else {
-            for (uint256 _outcome = 0; _outcome < _shortShareTokens.length; ++_outcome) {
+            for (uint256 _outcome = 0; _sharesAvailable > 0 && _outcome < _shortShareTokens.length; ++_outcome) {
                 _sharesAvailable = _shortShareTokens[_outcome].balanceOf(_filler).min(_sharesAvailable);
             }
         }
