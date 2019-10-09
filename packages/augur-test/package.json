@@ -9,7 +9,6 @@
     "tests": "src/tests"
   },
   "scripts": {
-    "version": "yarn rebuild",
     "lint": "tslint -c tslint.json -p . src/tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
