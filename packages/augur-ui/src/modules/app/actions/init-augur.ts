@@ -16,10 +16,8 @@ import { isEmpty } from 'utils/is-empty';
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
-  MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
-  DISCLAIMER_SEEN,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -41,7 +39,7 @@ function pollForAccount(
   const { loginAccount } = getState();
   let accountType =
     loginAccount && loginAccount.meta && loginAccount.meta.accountType;
-  let usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
+  let usingMetaMask = accountType === ACCOUNT_TYPES.WEB3WALLET;
   if (!accountType && isGlobalWeb3()) {
     usingMetaMask = true;
   }
@@ -58,19 +56,8 @@ function pollForAccount(
       } else {
         loggedInAccount = loginAccount.address;
       }
-      if (!authStatus.isLogged && usingMetaMask && loggedInAccount && loggedInAccountType === ACCOUNT_TYPES.METAMASK) {
+      if (!authStatus.isLogged && usingMetaMask && loggedInAccount && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
         autoLoginAccount(dispatch, loggedInAccount);
-      }
-      const disclaimerSeen =
-        windowApp &&
-        windowApp.localStorage &&
-        windowApp.localStorage.getItem(DISCLAIMER_SEEN);
-      if (!disclaimerSeen) {
-        dispatch(
-          updateModal({
-            type: MODAL_DISCLAIMER,
-          })
-        );
       }
     }
   }, ACCOUNTS_POLL_INTERVAL_DURATION);

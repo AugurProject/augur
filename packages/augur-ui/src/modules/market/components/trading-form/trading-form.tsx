@@ -19,7 +19,9 @@ interface TradingFormProps {
   isConnectionTrayOpen: boolean;
   market: MarketData;
   marketReviewTradeSeen: boolean;
+  disclaimerSeen: boolean;
   marketReviewTradeModal: Function;
+  disclaimerModal: Function;
   selectedOrderProperties: object;
   selectedOutcomeId: number;
   sortedOutcomes: OutcomeFormatted[];
@@ -97,7 +99,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       toggleConnectionTray,
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
+      disclaimerSeen,
       marketReviewTradeModal,
+      disclaimerModal,
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
@@ -144,6 +148,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           onSubmitPlaceTrade={onSubmitPlaceTrade}
           marketReviewTradeModal={marketReviewTradeModal}
           marketReviewTradeSeen={marketReviewTradeSeen}
+          disclaimerModal={disclaimerModal}
+          disclaimerSeen={disclaimerSeen}
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
           orderBook={orderBook}
