@@ -22,6 +22,7 @@ export enum TemplateInputType {
   DROPDOWN = 'DROPDOWN',
   ADDED_OUTCOME = 'ADDED_OUTCOME',
   USER_OUTCOME = 'USER_OUTCOME',
+  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
 }
 
@@ -302,12 +303,12 @@ const inputes = {
   [TemplateInputTypeNames.TEAM_VS_TEAM_CAT]: [
     {
       id: 0,
-      type: TemplateInputType.USER_OUTCOME,
+      type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
       placeholder: `Team A`,
     },
     {
       id: 1,
-      type: TemplateInputType.USER_OUTCOME,
+      type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
       placeholder: `Team B`,
     },
     {
