@@ -12,6 +12,9 @@ import {
   CheckCircleIcon,
   LargeDollarIcon,
   LargeDaiIcon,
+  DaiLogoIcon,
+  DaiLogoIcon,
+  EthIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -29,6 +32,7 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
+import { generateDaiTooltip } from 'modules/modal/add-funds';
 import formatAddress from 'modules/auth/helpers/format-address';
 
 export interface TitleProps {
@@ -333,15 +337,15 @@ interface LinkContentSectionProps {
 }
 export const LinkContentSection = (props: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map(content => (
-      <>
+    {props.linkContent.map((content, idx) => (
+      <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
             {content.content}
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
-      </>
+      </div>
     ))}
   </div>
 );
@@ -357,6 +361,24 @@ export const DaiGraphic = () => (
       {LargeDollarIcon}
       <span>1 USD</span>
     </div>
+  </div>
+);
+
+export interface DaiEthSelectorProps {
+  daiSelected: boolean;
+  handleClick: Function;
+}
+
+export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps) => (
+  <div className={Styles.DaiEthSelector}>
+    <div onClick={() => handleClick(true)} className={classNames({ [Styles.selected]: daiSelected })}>{DaiLogoIcon} DAI</div>
+    <div onClick={() => handleClick(false)} className={classNames({ [Styles.selected]: !daiSelected })}>{EthIcon} ETH</div>
+  </div>
+);
+
+export const TestBet = () => (
+  <div className={Styles.TestBet}>
+    <img src='assets/images/test-bet-placeholder.png' />
   </div>
 );
 
@@ -540,7 +562,7 @@ interface FundsHelpProps {}
 export const FundsHelp = (props: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy DAI and transfer it into your account.</span>
+    <span>Learn how to buy DAI {generateDaiTooltip()} and transfer it into your account.</span>
     <ExternalLinkButton label="Learn More" />
   </div>
 );
@@ -585,7 +607,7 @@ export class MarketReview extends Component<
 
         {endTime && (
           <div>
-            <p>Reporting starts</p>
+            <p>Event Expiration</p>
             <div>{endTime.formattedUtc}</div>
             <div>{endTime.formattedTimezone}</div>
           </div>

@@ -15,6 +15,7 @@ import { AccountBalances, Universe } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
+import classNames from 'classnames';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -100,13 +101,13 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       action: () => accountMeta.openWallet(),
     },
     {
-      accountType: ACCOUNT_TYPES.METAMASK,
+      accountType: ACCOUNT_TYPES.WEB3WALLET,
       action: () => setShowMetaMaskHelper(true),
     },
   ];
 
   return (
-    <div>
+    <div onClick={(event) => event.stopPropagation()}>
       {showMetaMaskHelper && <ModalMetaMaskFinder handleClick={() => setShowMetaMaskHelper(false)} />}
       <div className={Styles.AccountInfo}>
         <div className={Styles.AddFunds}>
@@ -133,7 +134,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {
             return (
-              <div key={idx} className={Styles.WalletProvider}>
+              <div
+                key={idx}
+                className={classNames(Styles.WalletProvider, {
+                  [Styles.MetaMask]: wallet.accountType === ACCOUNT_TYPES.WEB3WALLET,
+                })}>
                 <div>
                   <div>Wallet provider</div>
                   <div>
@@ -150,7 +155,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             );
           })}
 
-        <div className={Styles.WalletProvider}>
+        <div className={Styles.GasEdit}>
           <div>
             <div>Gas price</div>
             <div>

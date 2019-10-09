@@ -32,6 +32,16 @@
       border-bottom: 0;
       background: @color-module-background;
     }
+
+
+    @media @breakpoint-mobile {
+      border: none;
+
+      &:hover {
+        border: none;
+        background: @color-page-background;
+      }
+    }
   }
 
   > div {
@@ -68,6 +78,23 @@
       border-bottom-left-radius: @border-radius-default;
       border-bottom-right-radius: @border-radius-default;
     }
+
+    @media @breakpoint-mobile {
+      top: inherit;
+      bottom: 100%;
+      margin-bottom: -1px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+
+      > span:not(:first-of-type) {
+        border-bottom: 1px solid @color-dark-grey;
+      }
+
+      > span:last-of-type {
+        border-top-left-radius: @border-radius-default;
+        border-top-right-radius: @border-radius-default;
+      }
+    }
   }
 
   &.Open {
@@ -76,6 +103,11 @@
       border-bottom: 0;
       background: @color-module-background;
       z-index: @above-all-content;
+
+      @media @breakpoint-mobile {
+        border: 1px solid @color-secondary-action-outline;
+        border-top: 0;
+      }
     }
   }
 }
