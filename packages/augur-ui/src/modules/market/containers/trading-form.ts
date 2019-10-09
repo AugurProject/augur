@@ -8,6 +8,9 @@ import {
   MODAL_MARKET_REVIEW_TRADE,
   DISCLAIMER_SEEN,
   MODAL_DISCLAIMER,
+  MODAL_ADD_FUNDS,
+  MODAL_LOGIN,
+  MODAL_SIGNUP,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -83,6 +86,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         ...modal,
       })
     ),
+  addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
+  signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   onSubmitPlaceTrade: (
     marketId,
     outcomeId,

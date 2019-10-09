@@ -116,49 +116,6 @@ export const ERROR_TYPES = {
   },
 };
 
-const DEFAULT_ITEM_INDEX = 0;
-export const ITEMS = [
-  {
-    param: ACCOUNT_TYPES.PORTIS,
-    title: 'Portis',
-    icon: Portis,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.FORTMATIC,
-    title: 'Fortmatic',
-    icon: Fortmatic,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.METAMASK,
-    title: 'Metamask / Web 3 Provider',
-    icon: MetaMask,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.TREZOR,
-    title: 'Trezor',
-    icon: Trezor,
-    type: WALLET_TYPE.HARDWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.LEDGER,
-    title: 'Ledger',
-    icon: Ledger,
-    type: WALLET_TYPE.HARDWARE,
-  },
-];
-if (!process.env.AUGUR_HOSTED) {
-  ITEMS.unshift({
-    param: ACCOUNT_TYPES.EDGE,
-    title: 'Edge',
-    icon: Edge,
-    type: WALLET_TYPE.SOFTWARE,
-  });
-}
-ITEMS[DEFAULT_ITEM_INDEX].default = true;
-
 // sidebar related constants
 export const MOBILE_MENU_STATES = {
   CLOSED: 0,

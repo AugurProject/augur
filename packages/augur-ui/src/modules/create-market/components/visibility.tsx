@@ -130,11 +130,13 @@ export default class Visibility extends Component<
       marketType,
       outcomesFormatted,
       tickSize,
-      maxPriceBigNumber,
-      minPriceBigNumber,
+      maxPrice,
+      minPrice,
       orderBook,
       settlementFee,
     } = newMarket;
+    const minPriceBigNumber = createBigNumber(minPrice);
+    const maxPriceBigNumber = createBigNumber(maxPrice);
     const tickSizeBigNumber = createBigNumber(tickSize);
     const numTicks = tickSizeToNumTickWithDisplayPrices(
       tickSizeBigNumber,

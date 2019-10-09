@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: 'Finally, buy DAI & start betting',
+  largeHeader: 'Buy DAI to start betting',
   smallHeader: 'DAI is the currency Augur uses',
   daiGraphic: true,
   mediumHeader: 'What is DAI?',
