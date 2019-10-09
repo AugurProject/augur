@@ -33,6 +33,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
+import formatAddress from 'modules/auth/helpers/format-address';
 
 export interface TitleProps {
   title: string;
