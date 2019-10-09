@@ -12,6 +12,7 @@ import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
 import { CUSTOM } from 'modules/common/constants';
 import { setCategories } from 'modules/create-market/set-categories';
+import { getTemplateRadioCards } from '../get-template';
 
 export const SubCategories = ({
     newMarket,
@@ -31,8 +32,8 @@ export const SubCategories = ({
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
-        header='Choose a sub-category'
-        subheader='Sub-categories help users find your market.'
+        header="Choose a sub-category"
+        subheader="Sub-categories help users find your market."
       />
       <section>
         <RadioCardGroup
@@ -43,23 +44,35 @@ export const SubCategories = ({
             updatedNewMarket.categories[2] = '';
             updateNewMarket(updatedNewMarket);
           }}
-          radioButtons={MARKET_SUB_TEMPLATES[newMarket.categories[0]]}
+          radioButtons={getTemplateRadioCards({
+            primary: newMarket.categories[0],
+            secondary: '',
+            tertiary: '',
+          })}
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>
       </section>
       <section>
         <LargeSubheaders
-          header='Choose a further sub-category'
-          subheader='Optionally select another sub-category to help users find your market.'
+          header="Choose a further sub-category"
+          subheader="Optionally select another sub-category to help users find your market."
         />
         <CategorySingleSelect
-          options={tertiaryOptions.length > 0 ? tertiaryOptions : [customOption] }
+          options={
+            tertiaryOptions.length > 0 ? tertiaryOptions : [customOption]
+          }
           autoCompleteList={tertiaryAutoComplete}
           initialSelected={isCustomSelected ? CUSTOM : categories[2]}
-          initialValue={isCustomSelected ? tertiarySelected ? categories[2] : '' : categories[2]}
-          staticLabel='Tertiary Category (optional)'
-          placeholder='Custom Tertiary Category'
+          initialValue={
+            isCustomSelected
+              ? tertiarySelected
+                ? categories[2]
+                : ''
+              : categories[2]
+          }
+          staticLabel="Tertiary Category (optional)"
+          placeholder="Custom Tertiary Category"
           updateSelection={(value: string) => {
             const updatedNewMarket = { ...newMarket };
             updatedNewMarket.categories[2] = value;
