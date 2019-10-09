@@ -6,6 +6,8 @@ import { windowRef } from 'utils/window-ref';
 import {
   MARKET_REVIEW_TRADE_SEEN,
   MODAL_MARKET_REVIEW_TRADE,
+  DISCLAIMER_SEEN,
+  MODAL_DISCLAIMER,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -74,6 +76,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         ...modal,
       })
     ),
+  disclaimerModal: modal =>
+    dispatch(
+      updateModal({
+        type: MODAL_DISCLAIMER,
+        ...modal,
+      })
+    ),
   onSubmitPlaceTrade: (
     marketId,
     outcomeId,
@@ -100,11 +109,17 @@ const mergeProps = (sP, dP, oP) => {
     windowRef.localStorage &&
     windowRef.localStorage.getItem(MARKET_REVIEW_TRADE_SEEN);
 
+  const disclaimerSeen =
+    windowRef &&
+    windowRef.localStorage &&
+    windowRef.localStorage.getItem(DISCLAIMER_SEEN);
+
   return {
     ...oP,
     ...sP,
     ...dP,
     marketReviewTradeSeen: !!marketReviewTradeSeen,
+    disclaimerSeen: !!disclaimerSeen,
   };
 };
 
