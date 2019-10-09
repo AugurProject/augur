@@ -9,10 +9,6 @@ import {
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 
-export enum TEMPLATE_LIST_DROPDOWN {
-  YEARS = 'YEARS',
-}
-
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
   TEAM_VS_TEAM_CAT = 'TEAM_VS_TEAM_CAT',
