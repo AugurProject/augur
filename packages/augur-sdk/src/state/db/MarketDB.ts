@@ -232,7 +232,10 @@ export class MarketDB extends DerivedDB {
   protected processDoc(log: ParsedLog): ParsedLog {
     const processFunc = this.docProcessMap[log.name];
     if (processFunc) {
-      return processFunc(log);
+      console.log('MARINA', 'log in', JSON.stringify(log, null, 2));
+      const newLog = processFunc(log);
+      console.log('MARINA', 'log out', JSON.stringify(newLog, null, 2));
+      return newLog;
     }
     return log;
   }
@@ -270,6 +273,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
+    // XXX nextWindowStartTime is updated from this log
     const pacingOn: boolean = log['pacingOn'];
     log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
@@ -281,6 +285,7 @@ export class MarketDB extends DerivedDB {
     log['reportingState'] = MarketReportingState.Finalized;
     log['finalizationBlockNumber'] = log['blockNumber'];
     log['finalizationTime'] = log['timestamp'];
+    console.log('MARINA', 'processMarketFinalized', log);
     return log;
   }
 
@@ -305,6 +310,7 @@ export class MarketDB extends DerivedDB {
   }
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
+    console.log('MARINA', 'process timestamp', timestamp, blockNumber);
     const eligibleMarketDocs = await this.find({
       selector: {
         reportingState: { $in: [
@@ -322,6 +328,13 @@ export class MarketDB extends DerivedDB {
       let reportingState: MarketReportingState = null;
       const marketEnd = new BigNumber(marketData.endTime, 16);
       const openReportingStart = marketEnd.plus(SECONDS_IN_A_DAY).plus(1);
+
+      console.log('MARINA', 'process timestamp market', JSON.stringify(marketData, null, 2));
+      console.log(
+        'MARINA',
+        'also',
+        marketData.nextWindowStartTime,
+        marketData.nextWindowStartTime && timestamp >= new BigNumber(marketData.nextWindowStartTime, 16).toNumber())
 
       if (marketData.nextWindowEndTime && timestamp >= new BigNumber(marketData.nextWindowEndTime, 16).toNumber()) {
         reportingState = MarketReportingState.AwaitingFinalization;
@@ -343,8 +356,14 @@ export class MarketDB extends DerivedDB {
       }
     }
 
+    console.log('MARINA', 'process timestamp results', JSON.stringify(updateDocs, null, 2));
+
+    console.log('MARINA', 'begin bulk upsert in processTimestamp', timestamp, blockNumber)
+
     if (updateDocs.length > 0) {
       await this.bulkUpsertUnorderedDocuments(updateDocs);
     }
+
+    console.log('MARINA', 'finished bulk upsert in processTimestamp', timestamp, blockNumber)
   }
 }

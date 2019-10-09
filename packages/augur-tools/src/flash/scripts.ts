@@ -12,7 +12,6 @@ import {
   ContractInterfaces,
 } from '@augurproject/core';
 import moment from 'moment';
-
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
@@ -21,7 +20,8 @@ import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
 } from '@augurproject/sdk';
-import { fork } from "./fork";
+import { fork } from './fork';
+import { dispute } from './dispute';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -94,6 +94,8 @@ export function addScripts(flash: FlashSession) {
       if (args.time_controlled) {
         config['useNormalTime'] = false;
       }
+
+      console.log('ARIANA', args, args.time_controlled)
 
       const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
       flash.contractAddresses = addresses;
@@ -738,6 +740,35 @@ export function addScripts(flash: FlashSession) {
       } else {
         this.log('ERROR: forking failed.');
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'dispute',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'yes/no market to dispute. defaults to making one',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(this.network, true);
+      let marketId = args.marketId as string || null;
+
+      if (marketId === null) {
+        const market = await user.createReasonableYesNoMarket();
+        marketId = market.address;
+        this.log(`Created market ${marketId}`);
+      }
+
+      await (await this.db).sync(user.augur, 100000, 0);
+      const marketInfo = (await this.api.route('getMarketsInfo', {
+        marketIds: [marketId],
+      }))[0];
+
+      await dispute(user, marketInfo);
     },
   });
 }
