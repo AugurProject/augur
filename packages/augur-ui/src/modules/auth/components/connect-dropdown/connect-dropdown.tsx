@@ -107,7 +107,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   ];
 
   return (
-    <div>
+    <div onClick={(event) => event.stopPropagation()}>
       {showMetaMaskHelper && <ModalMetaMaskFinder handleClick={() => setShowMetaMaskHelper(false)} />}
       <div className={Styles.AccountInfo}>
         <div className={Styles.AddFunds}>
