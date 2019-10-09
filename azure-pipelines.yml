@@ -410,8 +410,9 @@ jobs:
           vstsFeed: npmPackages
       - script: |
           set -exuo pipefail
-          packages/augur-tools/docker-builder/ci-build.sh -n $(NETWORK_ID) -t $(NORMAL_TIME) $(IMAGE_NAME)
-        displayName: 'build and push $(IMAGE_NAME) image'
+          export DOCKER_BUILDKIT=1
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+        displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -422,7 +423,7 @@ jobs:
           set -exuo pipefail
           CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           docker images
-          docker tag augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}" augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
+          docker tag $(IMAGE_NAME) augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
           docker push augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
         displayName: Push Docker Images to hub
       - task: Docker@1

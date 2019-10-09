@@ -31,7 +31,7 @@ RUN yarn install --frozen-lockfile && yarn build
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
 
-RUN find /geth -name geth.ipc -delete
+#RUN find /geth -name geth.ipc -delete
 
 # create final image with no cruft
 FROM augurproject/dev-node-geth:latest
