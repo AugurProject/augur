@@ -739,7 +739,11 @@ export class ReportingBondsView extends Component<
         )}
         <PrimaryButton
           text={migrateRep ? "Confirm and Migrate REP" : "Confirm"}
-          disabled={migrateRep ? !readAndAgreedCheckbox : disabled}
+          disabled={
+            migrateRep
+              ? (disabled || (disabled || !readAndAgreedCheckbox))
+              : disabled
+          }
           action={() => reportAction()}
         />
       </div>
