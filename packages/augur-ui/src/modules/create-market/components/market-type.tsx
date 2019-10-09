@@ -7,6 +7,7 @@ interface MarketTypeProps {
   categories: string[];
   marketType: string;
   updateNewMarket: Function;
+  nextPage: Function;
 }
 
 export const MarketType = (props: MarketTypeProps) => (
@@ -19,7 +20,11 @@ export const MarketType = (props: MarketTypeProps) => (
     />
 
     <RadioCardGroup
-      onChange={value => props.updateNewMarket({ marketType: value })}
+      onChange={value => {
+          props.updateNewMarket({ marketType: value })
+          props.nextPage();
+        }
+      }
       defaultSelected={props.marketType}
       radioButtons={getTemplateRadioCardsMarketTypes({
         primary: props.categories[0],

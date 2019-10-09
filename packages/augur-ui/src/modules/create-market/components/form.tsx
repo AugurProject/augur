@@ -625,6 +625,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   updateNewMarket={updateNewMarket}
                   marketType={marketType}
                   categories={newMarket.categories}
+                  nextPage={this.nextPage}
                 />
               )}
               {saveDraftError && (

@@ -6,7 +6,7 @@ import {
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
-} from './constants';
+} from 'modules/create-market/constants';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -172,7 +172,7 @@ const getTemplatesByMarketType = (
 };
 
 const getInputsByType = (inputName: TemplateInputTypeNames) => {
-  return inputes[inputName];
+  return inputs[inputName];
 };
 export const getTemplateReadableDescription = (template: Template) => {
   let question = template.question;
@@ -260,7 +260,7 @@ const templates = {
   },
 };
 
-const inputes = {
+const inputs = {
   [TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN]: [
     {
       id: 0,
