@@ -281,7 +281,6 @@ export const MarketTimeline = (props: TimeProgressBarProps) => {
   const currentTimestamp = formattedCurrentTime.timestamp;
   const endTimestamp = formattedEndTime.timestamp;
   const hasPassed = currentTimestamp > endTimestamp;
-  const endLabel = hasPassed ? 'STARTED' : 'STARTS';
   return (
     <div className={Styles.MarketTimeline}>
       <div
@@ -291,7 +290,7 @@ export const MarketTimeline = (props: TimeProgressBarProps) => {
         })}
       >
         <span>Date Created</span>
-        <span>{`Reporting ${endLabel}`}</span>
+        <span>{`Event Expiration`}</span>
       </div>
       <TimeProgressBar {...props} />
       <div
