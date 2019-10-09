@@ -26,15 +26,9 @@ export async function dispute(user: ContractAPI, market: MarketInfo, slow: boole
   // pushing into next dispute round that takes additional stake into account.
   await user.contribute(marketContract, conflictNumerators, SOME_REP);
 
-  // TODO needed?
-  // Enter the dispute window.
-  const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await marketContract.getDisputeWindow_());
-  const disputeWindowStartTime = await disputeWindow.getStartTime_();
-  await user.setTimestamp(disputeWindowStartTime.plus(1));
-
   // With pre-filled stake in initial report, pacing requires just one more dispute to enter slow mode.
   if (slow) {
-    await user.contribute(marketContract, payoutNumerators, SOME_REP);
+    await user.contribute(marketContract, conflictNumerators, SOME_REP);
   }
 }
 

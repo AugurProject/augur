@@ -22,6 +22,7 @@ import {
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
+import { MarketList } from "@augurproject/sdk/build/state/getter/Markets";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -94,8 +95,6 @@ export function addScripts(flash: FlashSession) {
       if (args.time_controlled) {
         config['useNormalTime'] = false;
       }
-
-      console.log('ARIANA', args, args.time_controlled)
 
       const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
       flash.contractAddresses = addresses;
@@ -776,6 +775,21 @@ export function addScripts(flash: FlashSession) {
       }))[0];
 
       await dispute(user, marketInfo, slow);
+    },
+  });
+
+  flash.addScript({
+    name: 'markets',
+    async call(this: FlashSession): Promise<MarketList|null> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, true);
+
+      await (await this.db).sync(user.augur, 100000, 0);
+      const markets: MarketList = await this.api.route('getMarkets', {
+        universe: user.augur.contracts.universe.address,
+      });
+      console.log(JSON.stringify(markets, null, 2));
+      return markets;
     },
   });
 }
