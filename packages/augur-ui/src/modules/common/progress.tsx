@@ -108,7 +108,7 @@ const reportingStateToLabelTime = (
   let time: DateFormattedObject = null;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
-      label = 'Reporting Starts';
+      label = 'Event Expiration';
       time = endTimeFormatted;
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
