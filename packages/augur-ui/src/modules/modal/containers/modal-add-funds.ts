@@ -10,6 +10,7 @@ import getValue from 'utils/get-value';
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   address: getValue(state, 'loginAccount.address'),
+  isGnosis: getValue(state, 'loginAccount.isGnosis'),
   accountMeta: getValue(state, 'loginAccount.meta'),
 });
 

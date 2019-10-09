@@ -52,6 +52,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
 
     return (
       <div
+        onClick={(event) => event.stopPropagation()}
         className={classNames(Styles.ConnectAccount, {
           [Styles.selected]: isConnectionTrayOpen,
         })}
