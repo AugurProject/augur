@@ -1,4 +1,4 @@
-import { CATEGORICAL, YES_NO } from 'modules/common/constants';
+import { CATEGORICAL, YES_NO, SCALAR } from 'modules/common/constants';
 import {
   SOCCER,
   AMERICAN_FOOTBALL,
@@ -7,12 +7,21 @@ import {
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
 } from 'modules/create-market/constants';
+import { LIST_VALUES } from 'modules/create-market/template-list-values';
+
+export enum TEMPLATE_LIST_DROPDOWN {
+  YEARS = 'YEARS',
+}
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
   TEAM_VS_TEAM_CAT = 'TEAM_VS_TEAM_CAT',
   OVER_UNDER = 'OVER_UNDER',
   TEAM_VS_TEAM_POINTS_BIN = 'TEAM_VS_TEAM_POINTS_BIN',
+  TEAM_WINS_BIN_YEAR = 'TEAM_WINS_BIN_YEAR',
+  TEAM_WINS_EVENT = 'TEAM_WINS_EVENT',
+  PLAYER_AWARD = 'PLAYER_AWARD',
+  YEAR_EVENT = 'YEAR_EVENT',
 }
 
 export enum TemplateInputType {
@@ -168,12 +177,16 @@ const getTemplatesByMarketType = (
   marketType
 ) => {
   const values = categoryTemplates.filter(t => t.marketType === marketType);
-  return values.map(v => ({ ...v, inputs: getInputsByType(v.inputsType) }));
+  return values.map(v => ({
+    ...v,
+    inputs: v.inputs.length === 0 ? getInputsByType(v.inputsType) : v.inputs,
+  }));
 };
 
 const getInputsByType = (inputName: TemplateInputTypeNames) => {
   return inputs[inputName];
 };
+
 export const getTemplateReadableDescription = (template: Template) => {
   let question = template.question;
   const inputs = template.inputs;
@@ -206,8 +219,8 @@ const templates = {
           {
             templateId: `soccer-overUnder`,
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5`,
-            example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5`,
+            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [],
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: [
@@ -254,6 +267,114 @@ const templates = {
               `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
             ],
           },
+          {
+            templateId: `fb-teamVsteam-point-year`,
+            marketType: YES_NO,
+            question: `Will the [0] have [1] or more regular season wins in [2]?`,
+            example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_WINS_BIN_YEAR,
+            resolutionRules: [
+              `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+            ],
+          },
+          {
+            templateId: `fb-team-event`,
+            marketType: YES_NO,
+            question: `Will the [0] win SuperBowl [1]?`,
+            example: `Will the NY Giants win Superbowl LIV`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_WINS_EVENT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `fb-player-award`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2] award?`,
+            example: `Will Patrick Mahones win the 2019-20 MVP award?`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.PLAYER_AWARD,
+            resolutionRules: [],
+          },
+          {
+            templateId: `fb-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]`,
+            example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              `Include Regulation and Overtime`,
+              `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `fb-teamVsteam-coll`,
+            marketType: CATEGORICAL,
+            question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]`,
+            example: `Which College Football Team will win: Alabama vs Michigan Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              `Include Regulation and Overtime`,
+              `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `fb-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `fb-year-event`,
+            marketType: CATEGORICAL,
+            question: `Which NFL team will win the [0] [1]?`,
+            example: `Which NFL team will win the 2020 AFC Championship game`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.YEAR_EVENT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `fb-year-event-coll`,
+            marketType: CATEGORICAL,
+            question: `Which college football player will win the [0] Heisman Trophy?`,
+            example: `Which college football player will win the 2020 Heisman Trophy`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `fb-total-wins`,
+            marketType: SCALAR,
+            question: `Total number of wins [0] will finish [1] regular season with?`,
+            example: `Total number of wins NY Giants will finish 2019 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `YEAR`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
         ],
       },
     },
@@ -261,6 +382,69 @@ const templates = {
 };
 
 const inputs = {
+  [TemplateInputTypeNames.YEAR_EVENT]: [
+    {
+      id: 0,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `YEAR`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.FOOTBALL_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.PLAYER_AWARD]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Player`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Years`,
+      values: LIST_VALUES.YEAR_RANGE,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Award`,
+      values: LIST_VALUES.FOOTBALL_AWARDS,
+    },
+  ],
+  [TemplateInputTypeNames.TEAM_WINS_EVENT]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Team`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.TEXT,
+      placeholder: `Roman Num`,
+    },
+  ],
+  [TemplateInputTypeNames.TEAM_WINS_BIN_YEAR]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Team`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.TEXT,
+      placeholder: `Whole #`,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+  ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN]: [
     {
       id: 0,
@@ -319,8 +503,7 @@ const inputs = {
     {
       id: 3,
       type: TemplateInputType.ADDED_OUTCOME,
-      placeholder: `Other`,
-      tooltip: `A team not listed as an outcome wins the event`,
+      placeholder: `Draw/No Winner`,
     },
   ],
   [TemplateInputTypeNames.OVER_UNDER]: [
@@ -341,16 +524,21 @@ const inputs = {
     },
     {
       id: 3,
+      type: TemplateInputType.DATETIME,
+      placeholder: `Date time`,
+    },
+    {
+      id: 4,
       type: TemplateInputType.ADDED_OUTCOME,
       placeholder: `No Winner`,
     },
     {
-      id: 4,
+      id: 5,
       type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
       placeholder: `Over ({[2] + .5})`,
     },
     {
-      id: 5,
+      id: 6,
       type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
       placeholder: `Under ({[2] - .5})`,
     },
