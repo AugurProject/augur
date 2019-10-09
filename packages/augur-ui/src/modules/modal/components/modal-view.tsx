@@ -37,9 +37,9 @@ import ModalMarketType from 'modules/modal/containers/modal-market-type';
 import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
-import ModalSignin from "modules/modal/containers/modal-signin";
-import ModalConnect from "modules/modal/containers/modal-connect";
-import ModalLoading from "modules/modal/containers/modal-loading";
+import ModalSignin from 'modules/modal/containers/modal-signin';
+import ModalConnect from 'modules/modal/containers/modal-connect';
+import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
 
@@ -72,7 +72,15 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:
-      return <ModalAddFunds />;
+      return (
+        <>
+          {/* MOBILE */}
+          <ModalAddFunds />
+
+          {/* DESKTOP */}
+          <ModalAddFunds {...props} autoSelect />
+        </>
+      );
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
@@ -127,17 +135,17 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_MIGRATE_MARKET:
       return <ModalMigrateMarket {...modal} />;
     case TYPES.MODAL_LOGIN:
-      return <ModalSignin isLogin />;
+      return <ModalSignin {...props} isLogin />;
     case TYPES.MODAL_SIGNUP:
-      return <ModalSignin isLogin={false} />;
+      return <ModalSignin {...props} isLogin={false} />;
     case TYPES.MODAL_CONNECT:
       return <ModalConnect />;
     case TYPES.MODAL_LOADING:
-      return <ModalLoading />
+      return <ModalLoading />;
     case TYPES.MODAL_UNIVERSE_SELECTOR:
-      return <ModalUniverseSelector />
+      return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
-      return <ModalTestBet />
+      return <ModalTestBet />;
     default:
       return <div />;
   }
