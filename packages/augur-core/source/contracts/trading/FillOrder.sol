@@ -30,6 +30,7 @@ library Trade {
         ICash denominationToken;
         IShareToken longShareToken;
         IShareToken[] shortShareTokens;
+        IShareToken[] shareTokens;
         IAugur augur;
         IUniverse universe;
     }
@@ -321,13 +322,15 @@ library Trade {
 
     function getContracts(IAugur _augur, IMarket _market, uint256 _outcome) private view returns (Contracts memory) {
         IOrders _orders = IOrders(_augur.lookup("Orders"));
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
         return Contracts({
             orders: _orders,
             market: _market,
             completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
             denominationToken: ICash(_augur.lookup("Cash")),
-            longShareToken: _market.getShareToken(_outcome),
-            shortShareTokens: getShortShareTokens(_market, _outcome),
+            longShareToken: _shareTokens[_outcome],
+            shortShareTokens: getShortShareTokens(_market, _outcome, _shareTokens),
+            shareTokens: _shareTokens,
             augur: _augur,
             universe: _market.getUniverse()
         });
@@ -380,8 +383,7 @@ library Trade {
         return _numShares.mul((_direction == Direction.Long) ? _sharePriceLong : _sharePriceShort);
     }
 
-    function getShortShareTokens(IMarket _market, uint256 _longOutcome) private view returns (IShareToken[] memory) {
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
+    function getShortShareTokens(IMarket _market, uint256 _longOutcome, IShareToken[] memory _shareTokens) private view returns (IShareToken[] memory) {
         uint256 _numOutcomes = _shareTokens.length;
         IShareToken[] memory _shortShareTokens = new IShareToken[](_numOutcomes - 1);
         uint256 _outcome = 0;
@@ -506,17 +508,16 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         address _creator = _tradeData.creator.participantAddress;
         IMarket _market = _tradeData.contracts.market;
 
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
-        uint256 _numOutcomes = _shareTokens.length;
+        uint256 _numOutcomes = _tradeData.contracts.shareTokens.length;
 
-        uint256 _fillerCompleteSets = _shareTokens[0].balanceOf(_filler);
+        uint256 _fillerCompleteSets = _tradeData.contracts.shareTokens[0].balanceOf(_filler);
         for (uint256 _outcome = 1; _fillerCompleteSets > 0 && _outcome < _numOutcomes; ++_outcome) {
-            _fillerCompleteSets = _fillerCompleteSets.min(_shareTokens[_outcome].balanceOf(_filler));
+            _fillerCompleteSets = _fillerCompleteSets.min(_tradeData.contracts.shareTokens[_outcome].balanceOf(_filler));
         }
 
-        uint256 _creatorCompleteSets = _shareTokens[0].balanceOf(_creator);
+        uint256 _creatorCompleteSets = _tradeData.contracts.shareTokens[0].balanceOf(_creator);
         for (uint256 _outcome = 1; _creatorCompleteSets > 0 && _outcome < _numOutcomes; ++_outcome) {
-            _creatorCompleteSets = _creatorCompleteSets.min(_shareTokens[_outcome].balanceOf(_creator));
+            _creatorCompleteSets = _creatorCompleteSets.min(_tradeData.contracts.shareTokens[_outcome].balanceOf(_creator));
         }
 
         if (_fillerCompleteSets > 0) {
@@ -561,7 +562,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _fillerTokensDepleted = _tradeData.getFillerTokensDepleted();
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         if (marketOutcomeVolumes[address(_market)].length == 0) {
-            marketOutcomeVolumes[address(_market)].length = _market.getNumberOfOutcomes();
+            marketOutcomeVolumes[address(_market)].length = _tradeData.contracts.shareTokens.length;
         }
         marketOutcomeVolumes[address(_market)][_tradeData.order.outcome] = marketOutcomeVolumes[address(_market)][_tradeData.order.outcome].add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
         _tradeData.contracts.augur.logMarketVolumeChanged(_tradeData.contracts.universe, address(_market), marketOutcomeVolumes[address(_market)]);
