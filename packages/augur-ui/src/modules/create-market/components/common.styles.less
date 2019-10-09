@@ -396,3 +396,29 @@
     }
   }
 }
+
+.QuestionBuilder {
+  > div:nth-of-type(2) {
+    .text-14-medium;
+
+    color: @color-primary-text;
+    background: @color-dark-grey;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+    line-height: @size-18;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0 @size-20 @size-12;
+    align-items: center;
+
+    > span {
+      margin-right: @size-4;
+      margin-top: @size-12;
+    }
+
+    > div {
+      margin-right: @size-4;
+      margin-top: @size-12;
+    }
+  }
+}

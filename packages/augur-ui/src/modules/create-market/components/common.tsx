@@ -14,8 +14,9 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
 import { Error } from 'modules/common/form';
 import Styles from 'modules/create-market/components/common.styles.less';
-import { FormattedNumber, DateFormattedObject } from 'modules/types';
+import { FormattedNumber, DateFormattedObject, NewMarket } from 'modules/types';
 import moment, { Moment } from 'moment';
+import { TemplateInputType } from 'modules/create-market/get-template';
 
 export interface HeaderProps {
   text: string;
@@ -331,7 +332,6 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
               onChange('setEndTime', currentTimestamp);
             }
             setDateFocused(() => focused);
-
           }}
           focused={dateFocused}
           errorMessage={validations.setEndTime}
@@ -560,6 +560,71 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           subheader={`You have $${availableDaiFormatted.formatted} (DAI) of $${totalDai.formatted} (DAI) required to create this market`}
         />
       )}
+    </div>
+  );
+};
+
+export interface QuestionBuilderProps {
+  newMarket: NewMarket;
+  updateNewMarket: Function;
+}
+
+export const QuestionBuilder = (props: QuestionBuilderProps) => {
+  const {
+    updateNewMarket,
+    newMarket
+  } = props;
+  const {
+    template
+  } = newMarket;
+  const question = template.question.split(' ');
+  const inputs = template.inputs;
+
+  return (
+    <div className={Styles.QuestionBuilder}>
+      <Subheaders
+        header="Market question"
+        subheader="What do you want people to predict?"
+      />
+      <div>
+        {question.map(word => {
+          const bracketPos = word.indexOf('[');
+          const bracketPos2 = word.indexOf(']');
+
+          if (bracketPos === -1 || bracketPos === -1) {
+            return <span key={word.id}>{word}</span>;
+          } else {
+            const id = word.substring(bracketPos + 1, bracketPos2);
+            const inputIndex = inputs.findIndex(
+              findInput => findInput.id.toString() === id
+            );
+            if (inputIndex > -1) {
+              const input = inputs[inputIndex];
+              if (input.type === TemplateInputType.TEXT) {
+                return (
+                  <TextInput
+                    key={word.id}
+                    placeholder={input.placeholder}
+                    onChange={value => {
+                      const newInputs = inputs;
+                      newInputs[inputIndex].userInput = value;
+                      updateNewMarket({
+                        template: {
+                          ...template,
+                          inputs: newInputs
+                        },
+                      });
+                    }}
+                    value={input.userInput}
+                  />
+                );
+              } else if (input.type === TemplateInputType.DATETIME) {
+                return <span key={word.id}>{input.placeholder}</span>;
+              }
+            }
+          }
+        })}
+      </div>
     </div>
   );
 };
