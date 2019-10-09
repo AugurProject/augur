@@ -690,7 +690,8 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
               .filter(
                 input =>
                   input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
-                  input.type === TemplateInputType.ADDED_OUTCOME
+                  input.type === TemplateInputType.ADDED_OUTCOME || 
+                  input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
               )
               .map(input => {
                 if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
