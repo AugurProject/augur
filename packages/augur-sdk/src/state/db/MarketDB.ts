@@ -273,7 +273,7 @@ export class MarketDB extends DerivedDB {
     this.locks['processDisputeCrowdsourcerCompleted'] = true;
     const pacingOn: boolean = log['pacingOn'];
     log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
-    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
     log['totalRepStakedInMarket'] = padHex(log['totalRepStakedInMarket']);
     return log;
   }
@@ -306,10 +306,7 @@ export class MarketDB extends DerivedDB {
   };
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
-
-    while (this.locks['processDisputeCrowdsourcerCompleted']) {
-      await sleep(50);
-    }
+    await this.waitOnLock('processDisputeCrowdsourcerCompleted', 1000, 50);
 
     const eligibleMarketDocs = await this.find({
       selector: {

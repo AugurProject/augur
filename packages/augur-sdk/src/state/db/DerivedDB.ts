@@ -194,4 +194,14 @@ export class DerivedDB extends AbstractDB {
   protected processDoc(log: ParsedLog): ParsedLog {
     return log;
   }
+
+  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<boolean> {
+    for (let i = 0; i < (maxTimeMS / periodMS); i++) {
+      if (!this.locks[lock]) {
+        return true;
+      }
+      await sleep(periodMS);
+    }
+    return false; // timeout
+  }
 }
