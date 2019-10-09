@@ -22,7 +22,6 @@ import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
 import { Block } from 'ethereumjs-blockstream';
-import { sleep } from '../utils/utils';
 
 
 interface MarketOrderBookData {
