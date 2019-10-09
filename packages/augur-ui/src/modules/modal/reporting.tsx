@@ -284,7 +284,7 @@ export default class ModalReporting extends Component<
               />
               <Subheaders
                 small
-                header="Reporting Started"
+                header="Event Expiration"
                 subheader={endTimeFormatted.formattedUtc}
               />
             </div>

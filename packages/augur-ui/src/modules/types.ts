@@ -294,6 +294,7 @@ export interface NewMarketPropertyValidations {
   affiliateFee?: number;
 }
 export interface NewMarket {
+  uniqueId: number;
   isValid: boolean;
   validations:
     NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];

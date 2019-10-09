@@ -34,10 +34,9 @@ export default class Landing extends React.Component<
       newMarket,
       clearNewMarket
     } = this.props;
-    const s = this.state;
 
     return (
-      <div 
+      <div
         ref={node => {
           this.node = node;
         }}
@@ -63,13 +62,15 @@ export default class Landing extends React.Component<
                 onChange={(value: string) => {
                   const updatedNewMarket = {...newMarket};
                   updatedNewMarket.categories[0] = value;
+                  updatedNewMarket.categories[1] = '';
+                  updatedNewMarket.categories[2] = '';
                   updatedNewMarket.currentStep = 1;
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE)
                 }}
                 radioButtons={MARKET_TEMPLATES}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine /> 
+                <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>
@@ -80,8 +81,8 @@ export default class Landing extends React.Component<
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />
-            <SecondaryButton 
-              text="Create a custom market" 
+            <SecondaryButton
+              text="Create a custom market"
               action={() => {
                 clearNewMarket();
                 updatePage(SCRATCH);
