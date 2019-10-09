@@ -369,7 +369,7 @@ const templates = {
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `YEAR`,
+                placeholder: `Year`,
                 values: LIST_VALUES.YEARS,
               },
             ],
@@ -386,7 +386,7 @@ const inputs = {
     {
       id: 0,
       type: TemplateInputType.DROPDOWN,
-      placeholder: `YEAR`,
+      placeholder: `Year`,
       values: LIST_VALUES.YEARS,
     },
     {
@@ -403,13 +403,13 @@ const inputs = {
       placeholder: `Player`,
     },
     {
-      id: 2,
+      id: 1,
       type: TemplateInputType.DROPDOWN,
       placeholder: `Years`,
       values: LIST_VALUES.YEAR_RANGE,
     },
     {
-      id: 3,
+      id: 2,
       type: TemplateInputType.DROPDOWN,
       placeholder: `Award`,
       values: LIST_VALUES.FOOTBALL_AWARDS,
@@ -422,7 +422,7 @@ const inputs = {
       placeholder: `Team`,
     },
     {
-      id: 2,
+      id: 1,
       type: TemplateInputType.TEXT,
       placeholder: `Roman Num`,
     },
