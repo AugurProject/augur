@@ -35,6 +35,7 @@ import {
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
+import ForkingBanner from "modules/reporting/containers/forking-banner";
 
 interface AppProps {
   blockchain: Blockchain;
@@ -119,7 +120,13 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
+      updateConnectionTray
     } = this.props;
+
+    window.addEventListener('click', (e) => {
+      updateConnectionTray(false);
+    });
+
     initAugur(
       history,
       {
@@ -389,6 +396,8 @@ export default class AppView extends Component<AppProps> {
                 onClick={this.mainSectionClickHandler}
                 role='presentation'
               >
+                        <ForkingBanner />
+
                 <Routes isLogged={isLogged} />
               </section>
             </section>

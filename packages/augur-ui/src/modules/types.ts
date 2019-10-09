@@ -294,6 +294,7 @@ export interface NewMarketPropertyValidations {
   affiliateFee?: number;
 }
 export interface NewMarket {
+  uniqueId: number;
   isValid: boolean;
   validations:
     NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
@@ -694,4 +695,11 @@ export interface NavMenuItem {
   title: string;
   requireLogin?: boolean;
   disabled?: boolean;
+}
+
+export interface SortedGroup {
+  value: string;
+  label: string;
+  subGroup?: Array<SortedGroup>;
+  autoCompleteList?: Array<SortedGroup>;
 }

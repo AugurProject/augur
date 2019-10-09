@@ -130,11 +130,13 @@ export default class Visibility extends Component<
       marketType,
       outcomesFormatted,
       tickSize,
-      maxPriceBigNumber,
-      minPriceBigNumber,
+      maxPrice,
+      minPrice,
       orderBook,
       settlementFee,
     } = newMarket;
+    const minPriceBigNumber = createBigNumber(minPrice);
+    const maxPriceBigNumber = createBigNumber(maxPrice);
     const tickSizeBigNumber = createBigNumber(tickSize);
     const numTicks = tickSizeToNumTickWithDisplayPrices(
       tickSizeBigNumber,
@@ -212,8 +214,8 @@ export default class Visibility extends Component<
   componentDidUpdate(prevProps) {
     const { newMarket } = this.props;
     if (
-      prevProps.newMarket.initialLiquidityDai.comparedTo(
-        newMarket.initialLiquidityDai
+      createBigNumber(prevProps.newMarket.initialLiquidityDai).comparedTo(
+        createBigNumber(newMarket.initialLiquidityDai)
       ) !== 0
     ) {
       this.getRanking();

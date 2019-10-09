@@ -23,7 +23,6 @@ import {
   Arrow,
   LoadingEllipse,
 } from 'modules/common/icons';
-import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import {
   CUSTOM,
@@ -1200,6 +1199,10 @@ export const LocationDisplay = ({
 );
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
+  static defaultProps = {
+    onAutoCompleteListSelected: () => {},
+  };
+
   state: TextInputState = {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,

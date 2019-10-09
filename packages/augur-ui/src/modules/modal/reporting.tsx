@@ -222,6 +222,12 @@ export default class ModalReporting extends Component<
       if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
         contributeToTentativeWinner = true;
       }
+      if (marketType === SCALAR) {
+        const selectedOutcome = disputeInfo.stakes.find(
+          s => s.outcome === selectedRadio.id
+        );
+        if (selectedOutcome && selectedOutcome.tentativeWinning) contributeToTentativeWinner = true
+      }
 
       contributeToTentativeWinner
         ? addRepToTentativeWinningOutcome(report)
@@ -284,7 +290,7 @@ export default class ModalReporting extends Component<
               />
               <Subheaders
                 small
-                header="Reporting Started"
+                header="Event Expiration"
                 subheader={endTimeFormatted.formattedUtc}
               />
             </div>

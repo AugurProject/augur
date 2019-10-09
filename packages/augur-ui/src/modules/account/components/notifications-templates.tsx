@@ -125,7 +125,9 @@ const Counter = (props: CounterProps) => {
   ];
 
   if (props.market && notificationsWithCountdown.includes(props.type)) {
-    const { endTimeFormatted, reportingState, finalizationTimeFormatted } = props.market;
+    const { endTime, reportingState, finalizationTime } = props.market;
+    const endTimeFormatted = formatTime(endTime);
+    const finalizationTimeFormatted = formatTime(finalizationTime);
 
     if (props.type === NOTIFICATION_TYPES.proceedsToClaim && finalizationTimeFormatted && props.currentTime) {
       counter = (
