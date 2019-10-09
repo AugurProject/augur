@@ -510,12 +510,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _numOutcomes = _shareTokens.length;
 
         uint256 _fillerCompleteSets = _shareTokens[0].balanceOf(_filler);
-        uint256 _creatorCompleteSets = _shareTokens[0].balanceOf(_creator);
+        for (uint256 _outcome = 1; _fillerCompleteSets > 0 && _outcome < _numOutcomes; ++_outcome) {
+            _fillerCompleteSets = _fillerCompleteSets.min(_shareTokens[_outcome].balanceOf(_filler));
+        }
 
-        for (uint256 _outcome = 1; _outcome < _numOutcomes; ++_outcome) {
-            IShareToken _shareToken = _shareTokens[_outcome];
-            _creatorCompleteSets = _creatorCompleteSets.min(_shareToken.balanceOf(_creator));
-            _fillerCompleteSets = _fillerCompleteSets.min(_shareToken.balanceOf(_filler));
+        uint256 _creatorCompleteSets = _shareTokens[0].balanceOf(_creator);
+        for (uint256 _outcome = 1; _creatorCompleteSets > 0 && _outcome < _numOutcomes; ++_outcome) {
+            _creatorCompleteSets = _creatorCompleteSets.min(_shareTokens[_outcome].balanceOf(_creator));
         }
 
         if (_fillerCompleteSets > 0) {
