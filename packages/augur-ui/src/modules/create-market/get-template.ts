@@ -230,7 +230,7 @@ const templates = {
           {
             templateId: `fb-teamVsteam`,
             marketType: YES_NO,
-            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
             example: `Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
@@ -266,7 +266,7 @@ const templates = {
           {
             templateId: `fb-teamVsteam-point-year`,
             marketType: YES_NO,
-            question: `Will the [0] have [1] or more regular season wins in [2]?`,
+            question: `Will the [0] have [1] or more regular season wins in [2]`,
             example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_WINS_BIN_YEAR,
@@ -277,7 +277,7 @@ const templates = {
           {
             templateId: `fb-team-event`,
             marketType: YES_NO,
-            question: `Will the [0] win SuperBowl [1]?`,
+            question: `Will the [0] win SuperBowl [1]`,
             example: `Will the NY Giants win Superbowl LIV`,
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_WINS_EVENT,
@@ -286,7 +286,7 @@ const templates = {
           {
             templateId: `fb-player-award`,
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2] award?`,
+            question: `Will [0] win the [1] [2] award`,
             example: `Will Patrick Mahones win the 2019-20 MVP award?`,
             inputs: [],
             inputsType: TemplateInputTypeNames.PLAYER_AWARD,
@@ -330,7 +330,7 @@ const templates = {
           {
             templateId: `fb-year-event`,
             marketType: CATEGORICAL,
-            question: `Which NFL team will win the [0] [1]?`,
+            question: `Which NFL team will win the [0] [1]`,
             example: `Which NFL team will win the 2020 AFC Championship game`,
             inputs: [],
             inputsType: TemplateInputTypeNames.YEAR_EVENT,
@@ -339,7 +339,7 @@ const templates = {
           {
             templateId: `fb-year-event-coll`,
             marketType: CATEGORICAL,
-            question: `Which college football player will win the [0] Heisman Trophy?`,
+            question: `Which college football player will win the [0] Heisman Trophy`,
             example: `Which college football player will win the 2020 Heisman Trophy`,
             inputs: [
               {
@@ -354,7 +354,7 @@ const templates = {
           {
             templateId: `fb-total-wins`,
             marketType: SCALAR,
-            question: `Total number of wins [0] will finish [1] regular season with?`,
+            question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Giants will finish 2019 regular season with`,
             inputs: [
               {
