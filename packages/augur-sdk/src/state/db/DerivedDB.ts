@@ -21,6 +21,10 @@ export class DerivedDB extends AbstractDB {
   private name: string;
   private updatingHighestSyncBlock = false;
   protected requiresOrder: boolean = false;
+  // For preventing race conditions between log-processing events and other
+  // events like controller:new:block, with the assumption that log processing
+  // should happen first.
+  protected locks: {[name: string]: boolean} = {};
 
   constructor(
     db: DB,
@@ -149,9 +153,8 @@ export class DerivedDB extends AbstractDB {
 
       // NOTE: "!syncing" is because during bulk sync we can rely on the order of events provided as they are handled in sequence
       if (this.requiresOrder && !syncing) documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex']);
-      console.log('MARINA', 'begin bulk upsert of docs', blocknumber, logs.map(l => l.name));
       success = await this.bulkUpsertUnorderedDocuments(documentsByIdByTopic);
-      console.log('MARINA', 'finished bulk upsert of docs', blocknumber, logs.map(l => l.name));
+      this.locks = {}; // Clear locks
     }
 
     if (success) {

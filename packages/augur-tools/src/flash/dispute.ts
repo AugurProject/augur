@@ -4,7 +4,7 @@ import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 import { MarketTypeName } from '@augurproject/sdk/build/state/logs/types';
 
-export async function dispute(user: ContractAPI, market: MarketInfo): Promise<void> {
+export async function dispute(user: ContractAPI, market: MarketInfo, slow: boolean): Promise<void> {
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
   const payoutNumerators = getPayoutNumerators(market, 'invalid');
@@ -19,7 +19,8 @@ export async function dispute(user: ContractAPI, market: MarketInfo): Promise<vo
   await user.setTimestamp(new BigNumber(market.endTime + 1));
 
   // Do the initial report, creating the first dispute window.
-  await user.doInitialReport(marketContract, payoutNumerators, '', SOME_REP.toString());
+  const extraStake = slow ? SOME_REP.toString() : '0';
+  await user.doInitialReport(marketContract, payoutNumerators, '', extraStake);
 
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.
@@ -31,8 +32,10 @@ export async function dispute(user: ContractAPI, market: MarketInfo): Promise<vo
   const disputeWindowStartTime = await disputeWindow.getStartTime_();
   await user.setTimestamp(disputeWindowStartTime.plus(1));
 
-  // TODO use market.getDisputePacingOn and iteration like in fork() to enter slow pacing if param slow=true
-  // apparently just needs one more dispute to go slow!
+  // With pre-filled stake in initial report, pacing requires just one more dispute to enter slow mode.
+  if (slow) {
+    await user.contribute(marketContract, payoutNumerators, SOME_REP);
+  }
 }
 
 export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid'): BigNumber[] {

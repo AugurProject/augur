@@ -751,12 +751,19 @@ export function addScripts(flash: FlashSession) {
         abbr: 'm',
         description: 'yes/no market to dispute. defaults to making one',
       },
+      {
+        name: 'slow',
+        abbr: 's',
+        description: 'puts market into slow pacing mode immediately',
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser(this.network, true);
-      let marketId = args.marketId as string || null;
+      const slow = args.slow as boolean;
 
+      let marketId = args.marketId as string || null;
       if (marketId === null) {
         const market = await user.createReasonableYesNoMarket();
         marketId = market.address;
@@ -768,7 +775,7 @@ export function addScripts(flash: FlashSession) {
         marketIds: [marketId],
       }))[0];
 
-      await dispute(user, marketInfo);
+      await dispute(user, marketInfo, slow);
     },
   });
 }
