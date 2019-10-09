@@ -1,49 +1,39 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import { Onboarding } from 'modules/modal/onboarding';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_ADD_FUNDS, MODAL_TEST_BET } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  addFunds: callback =>
-    dispatch(updateModal({ type: MODAL_ADD_FUNDS, cb: callback })),
-  testBet: () => dispatch(updateModal({ type: MODAL_TEST_BET })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: 'Buy DAI to start betting',
-  smallHeader: 'DAI is the currency Augur uses',
-  daiGraphic: true,
-  mediumHeader: 'What is DAI?',
+  largeHeader: 'Learn how to place a bet on Augur ',
+  testBet: true,
+  mediumHeader: 'Place a test bet',
   linkContent: [
     {
       content:
-        'DAI is a pegged currency that mirrors the value of the US dollar. This means that 1 DAI is equivalent to 1 USD.',
-    },
-    {
-      content: 'Learn more about DAI',
-      link: 'https://docs.augur.net',
+        'Want some guidance on how to place a bet on Augur? Place a test bet right now to see how it works. You’ll get guidance and tips to help you get started.',
     },
   ],
   buttons: [
     {
-      text: 'Buy DAI',
+      text: 'Place test bet',
+      disabled: true,
       action: () => {
-        dP.addFunds(() => setTimeout(() => dP.testBet()));
+        dP.closeModal();
       },
     },
     {
       text: 'Do it later',
       action: () => {
-        dP.testBet();
+        dP.closeModal();
       },
     },
   ],

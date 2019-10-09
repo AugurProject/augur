@@ -308,7 +308,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     <div className={Styles.DateTimeSelector}>
       <Subheaders
         header="Reporting start date and time"
-        subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "
+        subheader="Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "
         link
       />
       <span>
@@ -331,7 +331,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
               onChange('setEndTime', currentTimestamp);
             }
             setDateFocused(() => focused);
-           
+
           }}
           focused={dateFocused}
           errorMessage={validations.setEndTime}
