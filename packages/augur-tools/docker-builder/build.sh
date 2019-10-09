@@ -1,13 +1,15 @@
 #!/bin/bash
 set -Eeuxo pipefail
 
+export DOCKER_BUILDKIT=1
+
 # Make sure you're up to date
 #docker pull augurproject/dev-node-geth:latest
 MONO_ROOT=../../
 CONTRACT_SHA=$(scripts/get-contract-hashes.js)
 # Build and copy to merge with current address.json/upload-block-numbers.json
 IMAGE_NAME=augurproject/dev-pop-geth-v2
-docker build --no-cache=true -f docker-builder/Dockerfile --build-arg normal_time=false --build-arg network_id=102 -t $IMAGE_NAME $MONO_ROOT
+docker build --progress=plain --no-cache=true -f docker-builder/Dockerfile --build-arg normal_time=false --build-arg network_id=102 -t $IMAGE_NAME $MONO_ROOT
 #scripts/copy-docker-files.sh $IMAGE_NAME
 docker tag $IMAGE_NAME $IMAGE_NAME:$CONTRACT_SHA
 

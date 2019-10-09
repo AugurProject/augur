@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     alpine-sdk \
     bash \
     curl \
+    eudev-dev \
     git \
     libstdc++ \
     linux-headers \
@@ -25,6 +26,7 @@ COPY . /augur
 
 WORKDIR /augur
 
+
 RUN yarn install --frozen-lockfile && yarn build
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
@@ -36,8 +38,7 @@ FROM augurproject/dev-node-geth:latest
 
 RUN apk add --no-cache \
     bash \
-    coreutils \
-    tini
+    coreutils
 
 WORKDIR /
 COPY --from=geth /geth /geth
@@ -46,4 +47,4 @@ COPY --from=geth /augur/*.txt /augur/
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp
 
-ENTRYPOINT ["/tini", "--", "/start.sh" ]
+ENTRYPOINT ["/start.sh" ]
