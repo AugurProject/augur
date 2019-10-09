@@ -57,7 +57,6 @@ contract IUniverse {
     function incrementOpenInterest(uint256 _amount) public returns (bool);
     function getWinningChildUniverse() public view returns (IUniverse);
     function isForking() public view returns (bool);
-    function assertMarketBalance() public view returns (bool);
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool);
     function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool);
 }

@@ -37,7 +37,7 @@ contract Market is Initializable, Ownable, IMarket {
     IDisputeWindow private disputeWindow;
     ICash private cash;
     IAugur public augur;
-    MapFactory public mapFactory;
+    MapFactory private mapFactory;
 
     // Attributes
     uint256 private numTicks;
@@ -64,24 +64,24 @@ contract Market is Initializable, Ownable, IMarket {
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
-        require(msg.sender == augur.lookup("MarketFactory"));
+        require(msg.sender == _augur.lookup("MarketFactory"));
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
-        cash = ICash(augur.lookup("Cash"));
+        cash = ICash(_augur.lookup("Cash"));
         owner = _creator;
         repBondOwner = owner;
-        cash.approve(address(augur), MAX_APPROVAL_AMOUNT);
+        cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
         numTicks = _numTicks;
         feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
-        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
-        mapFactory = MapFactory(augur.lookup("MapFactory"));
+        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
+        participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
+        mapFactory = MapFactory(_augur.lookup("MapFactory"));
         clearCrowdsourcers();
-        for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
+        for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
         approveSpenders();
@@ -755,7 +755,20 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function assertBalances() public view returns (bool) {
-        universe.assertMarketBalance();
+        // Escrowed funds for open orders
+        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
+        // Market Open Interest. If we're finalized we need actually calculate the value
+        if (isFinalized()) {
+            IShareToken[] memory _shareTokens = shareTokens;
+            uint256 _numOutcomes = _shareTokens.length;
+            for (uint256 i = 0; i < _numOutcomes; i++) {
+                _expectedBalance = _expectedBalance.add(_shareTokens[i].totalSupply().mul(getWinningPayoutNumerator(i)));
+            }
+        } else {
+            _expectedBalance = _expectedBalance.add(shareTokens[0].totalSupply().mul(numTicks));
+        }
+
+        assert(universe.marketBalance(address(this)) >= _expectedBalance);
         return true;
     }
 
