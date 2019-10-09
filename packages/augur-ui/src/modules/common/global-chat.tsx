@@ -10,7 +10,6 @@ interface GlobalChatProps {
 
 export const GlobalChat = (props: GlobalChatProps) => {
   const toggleGlobalChat = () => {
-    console.log('toggle chat!');
   };
 
   return (
