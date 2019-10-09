@@ -34,7 +34,6 @@ export default class Landing extends React.Component<
       newMarket,
       clearNewMarket
     } = this.props;
-    const s = this.state;
 
     return (
       <div
@@ -63,6 +62,8 @@ export default class Landing extends React.Component<
                 onChange={(value: string) => {
                   const updatedNewMarket = {...newMarket};
                   updatedNewMarket.categories[0] = value;
+                  updatedNewMarket.categories[1] = '';
+                  updatedNewMarket.categories[2] = '';
                   updatedNewMarket.currentStep = 1;
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE)
