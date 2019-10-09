@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ethersjs-provider",
-  "version": "10.0.0-alpha.1",
+  "version": "2.0.0-alpha.1",
   "description": "Ethers.JS Provider Implementation for Augur API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "10.0.0-alpha.1",
-    "@augurproject/sdk": "10.0.0-alpha.1",
-    "@augurproject/types": "10.0.0-alpha.1",
-    "contract-dependencies": "10.0.0-alpha.1",
-    "contract-dependencies-ethers": "10.0.0-alpha.1",
-    "ethers": "4.0.37",
-    "ethereum-types": "2.1.6"
+    "@augurproject/artifacts": "2.0.0-alpha.1",
+    "@augurproject/sdk": "2.0.0-alpha.1",
+    "@augurproject/types": "2.0.0-alpha.1",
+    "contract-dependencies": "2.0.0-alpha.1",
+    "contract-dependencies-ethers": "2.0.0-alpha.1",
+    "ethereum-types": "2.1.6",
+    "ethers": "4.0.37"
   },
   "devDependencies": {
     "ts-node": "7.0.1"
