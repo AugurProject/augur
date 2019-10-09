@@ -399,6 +399,7 @@ export const MARKET_TYPE_TEMPLATES = [
     useIconColors: true,
   },
 ]
+
 export const DESCRIPTION_PLACEHOLDERS = {
   [YES_NO]: 'Example: Will [person] win the [year] [event]?',
   [SCALAR]: 'Example: Which Team will win: [Team A] vs [Team B] on [date]?',
