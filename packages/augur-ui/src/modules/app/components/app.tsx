@@ -121,7 +121,13 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
+      updateConnectionTray
     } = this.props;
+
+    window.addEventListener('click', (e) => {
+      updateConnectionTray(false);
+    });
+
     initAugur(
       history,
       {

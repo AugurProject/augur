@@ -10,7 +10,7 @@
 
   > div {
     .text-24;
-    
+
     align-items: center;
     background: fade(@color-dark-grey, 80%);
     bottom: 0;
@@ -27,6 +27,12 @@
 
     > p {
       line-height: @size-24;
+    }
+
+    > div {
+      > button:last-of-type {
+        margin-left: @size-12;
+      }
     }
   }
 }
