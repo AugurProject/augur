@@ -404,8 +404,13 @@ export interface NumberedInputProps {
   errorMessage?: strinng;
 }
 
+interface NumberedListOutcomes {
+  value: string;
+  editable: boolean;
+}
+
 export interface NumberedListProps {
-  initialList: Array<string>;
+  initialList: NumberedListOutcomes[];
   minShown: number;
   maxList: number;
   placeholder: string;
@@ -414,7 +419,7 @@ export interface NumberedListProps {
 }
 
 export interface NumberedListState {
-  list: Array<string>;
+  list: NumberedListOutcomes[];
   isFull: boolean;
   isMin: boolean;
 }
@@ -453,22 +458,22 @@ export class NumberedList extends Component<
   onChange = (value, index) => {
     const { updateList } = this.props;
     const { list } = this.state;
-    list[index] = value;
-    this.setState({ list }, () => updateList(list));
+    list[index].value = value;
+    this.setState({ list }, () => updateList(list.map(item => item.value)));
   };
 
   addItem = () => {
     const { isFull, list } = this.state;
     const { maxList, minShown, updateList } = this.props;
     if (!isFull) {
-      list.push('');
+      list.push({value: '', editable: true});
       this.setState(
         {
           list,
           isFull: list.length === maxList,
           isMin: list.length === minShown,
         },
-        () => updateList(list)
+        () => updateList(list.map(item => item.value)))
       );
     }
   };
@@ -484,7 +489,7 @@ export class NumberedList extends Component<
           isMin: list.length === minShown,
           isFull: list.length === maxList,
         },
-        () => updateList(list)
+        () => updateList(list.map(item => item.value)))
       );
     }
   };
@@ -496,16 +501,23 @@ export class NumberedList extends Component<
     return (
       <ul className={Styles.NumberedList}>
         {list.map((item, index) => (
-          <NumberedInput
-            key={index}
-            value={item}
-            placeholder={placeholder}
-            onChange={this.onChange}
-            number={index}
-            removable={index >= minShown}
-            onRemove={this.removeItem}
-            errorMessage={errorMessage[index]}
-          />
+          <>
+          {item.editable && 
+            <NumberedInput
+              key={index}
+              value={item.value}
+              placeholder={placeholder}
+              onChange={this.onChange}
+              number={index}
+              removable={index >= minShown}
+              onRemove={this.removeItem}
+              errorMessage={errorMessage[index]}
+            />
+          }
+          {!item.editable && 
+            <li key={index}>{index + 1}. {item.value}</li>
+          }
+          </>
         ))}
         <li>
           <SecondaryButton
@@ -673,8 +685,8 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             subheader="List the outcomes people can choose from."
             link
           />
-          <OutcomesList
-            outcomes={inputs
+          <NumberedList
+            initialList={inputs
               .filter(
                 input =>
                   input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
@@ -682,15 +694,33 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
               )
               .map(input => {
                 if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
-                  return input.placeholder;
+                  return {
+                    value: input.placeholder,
+                    editable: false
+                  };
                 } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
-                  return input.placeholder;
+                  return {
+                    value: input.placeholder,
+                    editable: false
+                  };
+                } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+                  return {
+                    value: input.placeholder,
+                    editable: false
+                  };
                 }
                 return null;
               })}
+            minShown={2}
+            maxList={7}
+            placeholder={'Enter outcome'}
+            updateList={(value: Array<string>) => {null}}
+            errorMessage={validations.outcomes}
           />
         </>
       )}
     </div>
   );
 };
+
+

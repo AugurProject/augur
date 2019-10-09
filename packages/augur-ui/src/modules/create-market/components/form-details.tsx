@@ -66,7 +66,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
       onChange,
       onError,
       template,
-      updateNewMarket
+      updateNewMarket,
     } = this.props;
     const s = this.state;
 
@@ -158,9 +158,12 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               />
             </>
           )}
-          {template &&
-            <QuestionBuilder newMarket={newMarket} updateNewMarket={updateNewMarket} />
-          }
+          {template && (
+            <QuestionBuilder
+              newMarket={newMarket}
+              updateNewMarket={updateNewMarket}
+            />
+          )}
           {!template && (
             <>
               <DateTimeSelector
@@ -203,7 +206,12 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
                 link
               />
               <NumberedList
-                initialList={outcomes}
+                initialList={outcomes.map(outcome => {
+                  return {
+                    value: outcome,
+                    editable: true,
+                  };
+                })}
                 minShown={2}
                 maxList={7}
                 placeholder={'Enter outcome'}
