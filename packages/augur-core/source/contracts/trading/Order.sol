@@ -127,11 +127,11 @@ library Order {
         uint256 _numOutcomes = _shareTokens.length;
 
         uint256 _i = 0;
-        for (; _i < _orderData.outcome; _i++) {
+        for (; _attosharesHeld > 0 && _i < _orderData.outcome; _i++) {
             uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_orderData.creator);
             _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
         }
-        for (_i++; _i < _numOutcomes; _i++) {
+        for (_i++; _attosharesHeld > 0 && _i < _numOutcomes; _i++) {
             uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_orderData.creator);
             _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
         }
