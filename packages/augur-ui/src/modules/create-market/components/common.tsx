@@ -14,8 +14,17 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
 import { Error } from 'modules/common/form';
 import Styles from 'modules/create-market/components/common.styles.less';
-import { FormattedNumber, DateFormattedObject } from 'modules/types';
+import { FormattedNumber, DateFormattedObject, NewMarket } from 'modules/types';
 import moment, { Moment } from 'moment';
+import {
+  TemplateInputType,
+  TemplateInput,
+  Template,
+} from 'modules/create-market/get-template';
+import { outcomes } from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import { CATEGORICAL } from 'modules/common/constants';
+import { string } from 'io-ts';
+import newMarket from 'modules/markets/reducers/new-market';
 
 export interface HeaderProps {
   text: string;
@@ -271,6 +280,8 @@ interface DateTimeSelectorProps {
   meridiem: string;
   timezone: string;
   endTimeFormatted: DateFormattedObject;
+  header?: string;
+  subheader?: string;
 }
 
 interface TimeSelectorParams {
@@ -290,6 +301,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     meridiem,
     timezone,
     endTimeFormatted,
+    header,
+    subheader,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -307,8 +320,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   return (
     <div className={Styles.DateTimeSelector}>
       <Subheaders
-        header="Reporting start date and time"
-        subheader="Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "
+        header={header ? header : "Reporting start date and time"}
+        subheader={subheader ? subheader : "Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "}
         link
       />
       <span>
@@ -331,10 +344,9 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
               onChange('setEndTime', currentTimestamp);
             }
             setDateFocused(() => focused);
-
           }}
           focused={dateFocused}
-          errorMessage={validations.setEndTime}
+          errorMessage={validations && validations.setEndTime}
         />
         <TimeSelector
           hour={hour}
@@ -359,7 +371,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             setTimeFocused(() => focused);
           }}
           focused={timeFocused}
-          errorMessage={validations.hour}
+          errorMessage={validations && validations.hour}
         />
         <TimezoneDropdown
           onChange={(offsetName: string, offset: number, timezone: string) => {
@@ -397,8 +409,13 @@ export interface NumberedInputProps {
   errorMessage?: strinng;
 }
 
+interface NumberedListOutcomes {
+  value: string;
+  editable: boolean;
+}
+
 export interface NumberedListProps {
-  initialList: Array<string>;
+  initialList: NumberedListOutcomes[];
   minShown: number;
   maxList: number;
   placeholder: string;
@@ -407,7 +424,7 @@ export interface NumberedListProps {
 }
 
 export interface NumberedListState {
-  list: Array<string>;
+  list: NumberedListOutcomes[];
   isFull: boolean;
   isMin: boolean;
 }
@@ -446,22 +463,24 @@ export class NumberedList extends Component<
   onChange = (value, index) => {
     const { updateList } = this.props;
     const { list } = this.state;
-    list[index] = value;
-    this.setState({ list }, () => updateList(list));
+    list[index].value = value;
+    this.setState({ list }, () => updateList(list.map(item => item.value)));
   };
 
   addItem = () => {
     const { isFull, list } = this.state;
     const { maxList, minShown, updateList } = this.props;
     if (!isFull) {
-      list.push('');
+      list.push({value: '', editable: true});
       this.setState(
         {
           list,
           isFull: list.length === maxList,
           isMin: list.length === minShown,
         },
-        () => updateList(list)
+        () => {
+          updateList(list.map(item => item.value))
+        }
       );
     }
   };
@@ -477,7 +496,9 @@ export class NumberedList extends Component<
           isMin: list.length === minShown,
           isFull: list.length === maxList,
         },
-        () => updateList(list)
+        () => {
+          updateList(list.map(item => item.value))
+        }
       );
     }
   };
@@ -489,16 +510,23 @@ export class NumberedList extends Component<
     return (
       <ul className={Styles.NumberedList}>
         {list.map((item, index) => (
-          <NumberedInput
-            key={index}
-            value={item}
-            placeholder={placeholder}
-            onChange={this.onChange}
-            number={index}
-            removable={index >= minShown}
-            onRemove={this.removeItem}
-            errorMessage={errorMessage[index]}
-          />
+          <>
+          {item.editable && 
+            <NumberedInput
+              key={index}
+              value={item.value}
+              placeholder={placeholder}
+              onChange={this.onChange}
+              number={index}
+              removable={index >= minShown}
+              onRemove={this.removeItem}
+              errorMessage={errorMessage[index]}
+            />
+          }
+          {!item.editable && 
+            <li key={index}>{index + 1}. {item.value}</li>
+          }
+          </>
         ))}
         <li>
           <SecondaryButton
@@ -563,3 +591,177 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
     </div>
   );
 };
+
+interface InputFactoryProps {
+  input: TemplateInput;
+  inputs: TemplateInput[];
+  inputIndex: number;
+  updateNewMarket: Function;
+  template: Template;
+}
+
+export const InputFactory = (props: InputFactoryProps) => {
+  const { input, inputs, inputIndex, updateNewMarket, template } = props;
+  if (input.type === TemplateInputType.TEXT) {
+    return (
+      <TextInput
+        placeholder={input.placeholder}
+        onChange={value => {
+          const newInputs = inputs;
+          newInputs[inputIndex].userInput = value;
+          updateNewMarket({
+            template: {
+              ...template,
+              inputs: newInputs,
+            },
+          });
+        }}
+        value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+    return (
+      <TextInput
+        placeholder={input.placeholder}
+        onChange={value => {
+          const newInputs = inputs;
+          newInputs[inputIndex].userInput = value;
+          const newOutcomes = outcomes;
+          newOutcomes[inputIndex] = value;
+          updateNewMarket({
+            outcomes: newOutcomes,
+            template: {
+              ...template,
+              inputs: newInputs,
+            },
+          });
+        }}
+        value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.DATETIME) {
+    return <span>{input.userInput || input.placeholder}</span>;
+  } else {
+    return null;
+  }
+};
+
+interface EstimatedStartSelectorProps {
+  input: TemplateInput;
+  newMarket: NewMarket;
+}
+
+export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
+
+  return (
+    <DateTimeSelector
+      header="Estimated start time"
+      subheader="When is the event estimated to begin?"
+      link
+      setEndTime={null}
+      onChange={() => {}}
+      validations={newMarket.validations}
+      hour={null}
+      minute={null}
+      meridiem={null}
+      timezone={null}
+      currentTimestamp={0}
+      endTimeFormatted={props.input.userInput}
+    />
+  );
+};
+export interface QuestionBuilderProps {
+  newMarket: NewMarket;
+  updateNewMarket: Function;
+}
+
+export const QuestionBuilder = (props: QuestionBuilderProps) => {
+  const { updateNewMarket, newMarket } = props;
+  const { template, outcomes, marketType, validations } = newMarket;
+  const question = template.question.split(' ');
+  const inputs = template.inputs;
+
+  const dateTimeIndex = inputs.findIndex(input => input.type === TemplateInputType.DATETIME)
+
+  return (
+    <div className={Styles.QuestionBuilder}>
+      <Subheaders
+        header="Market question"
+        subheader="What do you want people to predict?"
+      />
+      <div>
+        {question.map(word => {
+          const bracketPos = word.indexOf('[');
+          const bracketPos2 = word.indexOf(']');
+
+          if (bracketPos === -1 || bracketPos === -1) {
+            return <span key={word.id}>{word}</span>;
+          } else {
+            const id = word.substring(bracketPos + 1, bracketPos2);
+            const inputIndex = inputs.findIndex(
+              findInput => findInput.id.toString() === id
+            );
+            if (inputIndex > -1) {
+              const input = inputs[inputIndex];
+              return <InputFactory
+                key={inputIndex}
+                input={input}
+                inputs={inputs}
+                inputIndex={inputIndex}
+                updateNewMarket={updateNewMarket}
+                template={template}
+              />;
+            }
+          }
+        })}
+      </div>
+      {dateTimeIndex > -1 && 
+        <EstimatedStartSelector newMarket={newMarket} input={inputs[dateTimeIndex]}/>
+      }
+      {marketType === CATEGORICAL && (
+        <>
+          <Subheaders
+            header="Outcomes"
+            subheader="List the outcomes people can choose from."
+            link
+          />
+          <NumberedList
+            initialList={inputs
+              .filter(
+                input =>
+                  input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+                  input.type === TemplateInputType.ADDED_OUTCOME || 
+                  input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+              )
+              .map(input => {
+                if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+                  return {
+                    value: input.placeholder,
+                    editable: false
+                  };
+                } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
+                  return {
+                    value: input.placeholder,
+                    editable: false
+                  };
+                } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+                  return {
+                    value: input.placeholder,
+                    editable: false
+                  };
+                }
+                return null;
+              })}
+            minShown={2}
+            maxList={7}
+            placeholder={'Enter outcome'}
+            updateList={(value: Array<string>) => {null}}
+            errorMessage={validations.outcomes}
+          />
+        </>
+      )}
+    </div>
+  );
+};
+
+

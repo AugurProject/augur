@@ -19,7 +19,8 @@ import {
   NumberedList,
   DateTimeHeaders,
   SmallSubheaders,
-  DateTimeSelector,
+  QuestionBuilder,
+  DateTimeSelector
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
@@ -43,7 +44,7 @@ import {
 } from 'modules/create-market/constants';
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 import { checkValidNumber } from 'modules/common/validations';
-import { setCategories } from "modules/create-market/set-categories";
+import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -83,6 +84,7 @@ export default class FormDetails extends React.Component<
       onChange,
       onError,
       template,
+      updateNewMarket,
     } = this.props;
     const s = this.state;
 
@@ -174,38 +176,46 @@ export default class FormDetails extends React.Component<
               />
             </>
           )}
-          {!template && (
-            <DateTimeSelector
-              setEndTime={setEndTime}
-              onChange={onChange}
-              currentTimestamp={currentTimestamp}
-              validations={validations}
-              hour={hour}
-              minute={minute}
-              meridiem={meridiem}
-              timezone={timezone}
-              endTimeFormatted={endTimeFormatted}
+          {template && (
+            <QuestionBuilder
+              newMarket={newMarket}
+              updateNewMarket={updateNewMarket}
             />
           )}
-          <Subheaders
-            header="Market question"
-            link
-            subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
-          />
-          <TextInput
-            type="textarea"
-            placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => onChange('description', value)}
-            rows="3"
-            value={description}
-            errorMessage={
-              validations.description &&
-              validations.description.charAt(0).toUpperCase() +
-              validations.description.slice(1).toLowerCase()
-            }
-          />
+          {!template && (
+            <>
+              <DateTimeSelector
+                setEndTime={setEndTime}
+                onChange={onChange}
+                validations={validations}
+                hour={hour}
+                minute={minute}
+                meridiem={meridiem}
+                timezone={timezone}
+                endTimeFormatted={endTimeFormatted}
+              />
 
-          {marketType === CATEGORICAL && (
+              <Subheaders
+                header="Market question"
+                link
+                subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
+              />
+              <TextInput
+                type="textarea"
+                placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
+                onChange={(value: string) => onChange('description', value)}
+                rows="3"
+                value={description}
+                errorMessage={
+                  validations.description &&
+                  validations.description.charAt(0).toUpperCase() +
+                    validations.description.slice(1).toLowerCase()
+                }
+              />
+            </>
+          )}
+
+          {marketType === CATEGORICAL && !template && (
             <>
               <Subheaders
                 header="Outcomes"
@@ -213,7 +223,12 @@ export default class FormDetails extends React.Component<
                 link
               />
               <NumberedList
-                initialList={outcomes}
+                initialList={outcomes.map(outcome => {
+                  return {
+                    value: outcome,
+                    editable: true,
+                  };
+                })}
                 minShown={2}
                 maxList={7}
                 placeholder={'Enter outcome'}
@@ -315,7 +330,6 @@ export default class FormDetails extends React.Component<
         <LineBreak />
         <div>
           <Header text="Resolution information" />
-
 
           {template && (
             <DateTimeSelector
