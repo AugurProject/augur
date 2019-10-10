@@ -20,9 +20,9 @@ import {
   NumberedList,
   DateTimeHeaders,
   SmallSubheaders,
-  DateTimeSelector,
   QuestionBuilder,
 } from 'modules/create-market/components/common';
+import DateTimeSelector from 'modules/create-market/containers/date-time-selector';
 import {
   YES_NO,
   SCALAR,
@@ -169,7 +169,6 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               <DateTimeSelector
                 setEndTime={setEndTime}
                 onChange={onChange}
-                currentTimestamp={currentTimestamp}
                 validations={validations}
                 hour={hour}
                 minute={minute}

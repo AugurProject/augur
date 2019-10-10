@@ -24,6 +24,8 @@ import {
 import { outcomes } from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import { CATEGORICAL } from 'modules/common/constants';
 import { string } from 'io-ts';
+import newMarket from 'modules/markets/reducers/new-market';
+import DateTimeSelector from 'modules/create-market/containers/date-time-selector';
 
 export interface HeaderProps {
   text: string;
@@ -289,7 +291,7 @@ interface TimeSelectorParams {
   meridiem?: string;
 }
 
-export const DateTimeSelector = (props: DateTimeSelectorProps) => {
+export const DateTimeSelectorComponent = (props: DateTimeSelectorProps) => {
   const {
     setEndTime,
     onChange,
@@ -345,7 +347,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             setDateFocused(() => focused);
           }}
           focused={dateFocused}
-          errorMessage={validations.setEndTime}
+          errorMessage={validations && validations.setEndTime}
         />
         <TimeSelector
           hour={hour}
@@ -370,7 +372,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             setTimeFocused(() => focused);
           }}
           focused={timeFocused}
-          errorMessage={validations.hour}
+          errorMessage={validations && validations.hour}
         />
         <TimezoneDropdown
           onChange={(offsetName: string, offset: number, timezone: string) => {
@@ -642,27 +644,26 @@ export const InputFactory = (props: InputFactoryProps) => {
 };
 
 interface EstimatedStartSelectorProps {
-
+  input: TemplateInput;
+  newMarket: NewMarket;
 }
+
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
 
   return (
-    <>
-      <DateTimeSelector
-        header="Estimated start time"
-        subheader="When is the event estimated to begin?"
-        link
-        setEndTime={() => {}}
-        onChange={() => {}}
-        currentTimestamp={''}
-        validations={''}
-        hour={''}
-        minute={''}
-        meridiem={''}
-        timezone={''}
-        endTimeFormatted={''}
-      />
-    </>
+    <DateTimeSelector
+      header="Estimated start time"
+      subheader="When is the event estimated to begin?"
+      link
+      setEndTime={null}
+      onChange={() => {}}
+      validations={newMarket.validations}
+      hour={null}
+      minute={null}
+      meridiem={null}
+      timezone={null}
+      endTimeFormatted={props.input.userInput}
+    />
   );
 };
 export interface QuestionBuilderProps {
@@ -711,7 +712,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
         })}
       </div>
       {dateTimeIndex > -1 && 
-        <EstimatedStartSelector />
+        <EstimatedStartSelector newMarket={newMarket} input={inputs[dateTimeIndex]}/>
       }
       {marketType === CATEGORICAL && (
         <>
