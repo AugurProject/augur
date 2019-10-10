@@ -2,6 +2,7 @@ import { CATEGORICAL, YES_NO, SCALAR } from 'modules/common/constants';
 import {
   SOCCER,
   AMERICAN_FOOTBALL,
+  BASEBALL,
   SPORTS,
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
@@ -19,6 +20,8 @@ export enum TemplateInputTypeNames {
   TEAM_WINS_EVENT = 'TEAM_WINS_EVENT',
   PLAYER_AWARD = 'PLAYER_AWARD',
   YEAR_EVENT = 'YEAR_EVENT',
+  BASEBALL_YEAR_EVENT = 'BASEBALL_YEAR_EVENT',
+  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR'
 }
 
 export enum TemplateInputType {
@@ -289,6 +292,79 @@ const templates = {
           },
         ],
       },
+      [BASEBALL]: {
+        templates: [
+          {
+            templateId: `baseball-team-event`,
+            marketType: YES_NO,
+            question: `Will the [0] win the [1] [2]`,
+            example: `Will the NY Yankees win the 2020 World Series`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_WINS_EVENT_YEAR,
+            resolutionRules: [],
+          },
+          {
+            templateId: `baseball-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
+            example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+            ],
+          },
+          {
+            templateId: `baseball-year-event`,
+            marketType: CATEGORICAL,
+            question: `Which MLB team will win the [0] [1]`,
+            example: `Which MLB team will win the 2020 World Series`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.BASEBALL_YEAR_EVENT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `baseball-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `baseball-year-event`,
+            marketType: CATEGORICAL,
+            question: `Which player  will win the [0] [1]`,
+            example: `Which Player will win the 2019 American League Cy Young award`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.BASEBALL_YEAR_EVENT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `baseball-total-wins`,
+            marketType: SCALAR,
+            question: `Total number of wins [0] will finish [1] regular season with`,
+            example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ]
+      },
       [AMERICAN_FOOTBALL]: {
         templates: [
           {
@@ -456,6 +532,20 @@ const inputs = {
       values: LIST_VALUES.FOOTBALL_EVENT,
     }
   ],
+  [TemplateInputTypeNames.BASEBALL_YEAR_EVENT]: [
+    {
+      id: 0,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.BASEBALL_EVENT,
+    }
+  ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {
       id: 0,
@@ -503,6 +593,25 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Year`,
       values: LIST_VALUES.YEARS,
+    },
+  ],
+  [TemplateInputTypeNames.TEAM_WINS_EVENT_YEAR]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Team`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.BASEBALL_EVENT,
     },
   ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN]: [
