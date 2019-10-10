@@ -2,20 +2,19 @@
 
 if [ $# -eq 0 ]
   then
-    echo "Please supply a valid market ID and number of outcomes.";
-    exit 1;
-fi
-
-if [ $# -eq 1 ]
-  then
-    echo "Please supply a valid market ID and number of outcomes.";
+    echo "Please supply a valid market ID and trading outcomes. default outcome is 2";
     exit 1;
 fi
 
 
 MARKET_ID=$1;
-NUM_OF_OUTCOMES=$2;
+OUTCOME=$2;
 PUSH_TIME=$3;
+
+if [ "$OUTCOME" = "" ] ; then
+  echo "set push time"
+  OUTCOME=2;
+fi
 
 if [ "$PUSH_TIME" = "" ] ; then
   echo "set push time"
@@ -31,7 +30,6 @@ curl https://gist.githubusercontent.com/justinbarry/bf6cd9afcd8778027e211105562b
 while IFS=$'\t' read -r -a dataArray
 do
   for ((i = 0; i < ${#dataArray[@]}; ++i)); do
-    OUTCOME=$((RANDOM % $NUM_OF_OUTCOMES));
     if ! ((i % 2)); then
       TRANS_ONE_TYPE='sell'
       TRANS_TWO_TYPE='buy'
@@ -47,15 +45,15 @@ do
     yarn flash run fill-market-orders -u "0xe4ec477bc4abd2b18225bb8cba14bf57867f082b" -m $MARKET_ID -o $OUTCOME -t $TRANS_TWO_TYPE -a "$(jot  -p 4 -r 1 0 1)" -p "${dataArray[$i]}"
 
     if [ "$PUSH_TIME" = true ] ; then
-      npx flash push-timestamp -s -c 600;
+      yarn flash run push-timestamp -c 1h;
     fi
 
-    sleep 30
+    sleep 10
   done
 
   if [ "$PUSH_TIME" = true ] ; then
     echo "Push time";
-    npx flash push-timestamp -s -c 3600;
+    yarn flash run push-timestamp -c 2h;
   fi
-  sleep 30
+  sleep 10
 done

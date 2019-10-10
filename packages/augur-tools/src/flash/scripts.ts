@@ -20,6 +20,9 @@ import { abiV1 } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+  stringTo32ByteHex,
 } from '@augurproject/sdk';
 import { fork } from "./fork";
 
@@ -256,7 +259,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketId',
         abbr: 'm',
-        description: 'market id to place the order',
+        description: 'ASSUMES: binary or categorical markets, market id to place the order',
       },
       {
         name: 'outcome',
@@ -280,22 +283,23 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      Object.keys(args).map(a => this.log(String(args[a])));
       const address = args.userAccount as string;
       const user = await this.ensureUser(null, null, true, address);
       const type =
         String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
-      const cost = new BigNumber(String(args.price)).times(new BigNumber(String(args.amount)));
-      user.faucet(cost.multipliedBy(10**18));
+      const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
+      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(Number(args.price).toFixed(2))), new BigNumber(0), new BigNumber("0.01"));
+      const nullOrderId = stringTo32ByteHex("");
+      const tradegroupId = stringTo32ByteHex("tradegroupId");
       const result = await user.placeOrder(
         String(args.marketId),
         new BigNumber(type),
-        new BigNumber(String(args.amount)),
-        new BigNumber(String(args.price)),
+        onChainShares,
+        onChainPrice,
         new BigNumber(String(args.outcome)),
-        '',
-        '',
-        'tradegroupId'
+        nullOrderId,
+        nullOrderId,
+        tradegroupId
       );
 
       this.log(`place order ${result}`);
@@ -340,21 +344,23 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const address = args.userAccount as string;
       const user = await this.ensureUser(null, null, true, address);
+      const adjPrice = Number(args.price).toFixed(2)
+      // switch bid/ask order type to take the order
       const type =
-        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
-
-      const cost = new BigNumber(String(args.price)).times(new BigNumber(String(args.amount)));
-      user.faucet(cost.multipliedBy(10**18));
+        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 1 : 0;
+      const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
+      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(adjPrice)), new BigNumber(0), new BigNumber("0.01"));
+      const tradegroupId = stringTo32ByteHex("tradegroupId");
       const result = await user.takeBestOrder(
         String(args.marketId),
         new BigNumber(type),
-        new BigNumber(String(args.amount)),
-        new BigNumber(String(args.price)),
+        onChainShares,
+        onChainPrice,
         new BigNumber(String(args.outcome)),
-        'tradegroupId'
+        tradegroupId
       );
 
-      this.log(`take best order ${result}`);
+      this.log(`take best order on outcome ${args.outcome} @ ${adjPrice}`);
     },
   });
 
