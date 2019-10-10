@@ -120,13 +120,11 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
 
     const max = marketMax.toNumber();
-
     const options = {
-      height: containerHeight,
       credits: { enabled: false },
       tooltip: { enabled: false },
       scrollbar: { enabled: false },
-      navigator: { enabled: true, height: 20, margin: 10 },
+      navigator: { enabled: true, height: 20, margin: 12 },
       rangeSelector: { enabled: false },
       plotOptions: {
         candlestick: {
@@ -147,10 +145,8 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         panning: isMobile,
         styledMode: false,
         animation: false,
-        spacing: [15, 0, 10, 0]
-        // margin: isMobile
-        //   ? HIGH_CHART_CONFIG.MobileMargin
-        //   : [20, 10, 10, 10],
+        spacing: [15, 0, 0, 0],
+        height: containerHeight
       },
       xAxis: {
         ordinal: false,
