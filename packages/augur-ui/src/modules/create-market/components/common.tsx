@@ -26,6 +26,7 @@ import { outcomes } from 'modules/market/components/market-orders-positions-tabl
 import { CATEGORICAL } from 'modules/common/constants';
 import { string } from 'io-ts';
 import newMarket from 'modules/markets/reducers/new-market';
+import { SquareDropdown } from 'modules/common/selection';
 
 export interface HeaderProps {
   text: string;
@@ -672,6 +673,23 @@ export const InputFactory = (props: InputFactoryProps) => {
     );
   } else if (input.type === TemplateInputType.DATETIME) {
     return <span>{input.userInput || input.placeholder}</span>;
+  } else if (input.type === TemplateInputType.DROPDOWN) {
+    return <SquareDropdown
+      options={input.values}
+      staticLabel={input.placeholder}
+      onChange={(value) => {
+        let newInputs = inputs;
+        newInputs[inputIndex].userInput = value;
+        const question = buildMarketDescription(template.question, inputs);
+        updateNewMarket({
+          description: question,
+          template: {
+            ...template,
+            inputs: newInputs,
+          },
+        });
+      }}
+    />
   } else {
     return null;
   }

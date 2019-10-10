@@ -39,6 +39,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           onChange={value => {
             updateNewMarket({
                 ...EMPTY_STATE,
+                outcomes: ['', ''],
                 currentStep: newMarket.currentStep,
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
