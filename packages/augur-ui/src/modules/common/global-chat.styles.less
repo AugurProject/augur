@@ -1,16 +1,18 @@
 @import (reference) '~assets/styles/shared';
 
 .GlobalChat {
-
-  bottom: @size-8;
+  background: @color-dark-grey;
+  bottom: @size-4;
   position: fixed;
   right: @size-22;
+  z-index: 2;
 
   button {
     .mono-9-bold;
 
     align-items: center;
     background: @color-module-background;
+    color: @color-primary-text;
     display: flex;
     flex-direction: row-reverse;
     text-transform: uppercase;
@@ -24,7 +26,77 @@
     }
   }
 
+  > div {
+    border: 1px solid #0E0E0F;
+
+    // Header section
+    > div:first-of-type {
+      align-items: center;
+      border: 1px solid @color-dark-grey;
+      display: flex;
+      flex-direction: row;
+      padding: @size-8 @size-8;
+      width: 18.125rem;
+
+      > span {
+        color: @color-primary-text;
+        margin: 0 0;
+        text-transform: uppercase;
+      }
+
+      > span:first-of-type {
+        .mono-11;
+
+        margin: 0 @size-8 0 0;
+      }
+
+      > span:nth-of-type(2) {
+        .mono-9;
+
+        background: fade(@color-open, 15%);
+        border-radius: 0.1875rem;
+        color: @color-open;
+        padding: 0 1px;
+      }
+
+      > button {
+        margin: 0 0 0 auto;
+
+        > svg {
+          height: @size-6;
+          margin: 0;
+          width: @size-6;
+        }
+      }
+    }
+
+    // Chat content
+    > div:nth-of-type(2) {
+      .text-10;
+
+      background-color: @color-module-background;
+      color: @color-primary-text;
+      height: 13.25rem;
+      padding: @size-8
+    }
+
+    // Input section
+    > div:nth-of-type(3) {
+      background-color: @color-module-background;
+      border-top: 1px solid @color-dark-grey;
+      padding: @size-4;
+
+      > textarea {
+        .text-10;
+
+        height: @size-38;
+        resize: none;
+      }
+    }
+  }
+
   @media @breakpoint-max-tablet {
+    display: none; // Hide in mobile for now
     position: relative;
     margin-left: auto;
   }
