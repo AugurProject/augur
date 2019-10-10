@@ -25,6 +25,7 @@ jobs:
       - bash: |
           set -euo pipefail
           echo "Build Source Branch: $(Build.SourceBranchName)"
+          echo "commit message: $(Build.SourceVersionMessage)"
           if [[ "$(Build.SourceBranchName)" == "master" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
