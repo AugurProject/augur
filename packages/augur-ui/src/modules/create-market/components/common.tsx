@@ -495,7 +495,9 @@ export class NumberedList extends Component<
           isMin: list.length === minShown,
           isFull: list.length === maxList,
         },
-        () => updateList(list.map(item => item.value)))
+        () => {
+          updateList(list.map(item => item.value))
+        }
       );
     }
   };
