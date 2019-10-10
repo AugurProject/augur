@@ -246,6 +246,120 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'create-market-order',
+    options: [
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'user account to create the order',
+      },
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market id to place the order',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'outcome to place the order',
+      },
+      {
+        name: 'orderType',
+        abbr: 't',
+        description: 'order type of the order [bid], [ask]',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'number of shares in the order',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price of the order',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      Object.keys(args).map(a => this.log(String(args[a])));
+      const address = args.userAccount as string;
+      const user = await this.ensureUser(null, null, true, address);
+      const type =
+        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
+      const cost = new BigNumber(String(args.price)).times(new BigNumber(String(args.amount)));
+      user.faucet(cost.multipliedBy(10**18));
+      const result = await user.placeOrder(
+        String(args.marketId),
+        new BigNumber(type),
+        new BigNumber(String(args.amount)),
+        new BigNumber(String(args.price)),
+        new BigNumber(String(args.outcome)),
+        '',
+        '',
+        'tradegroupId'
+      );
+
+      this.log(`place order ${result}`);
+    },
+  });
+
+
+  flash.addScript({
+    name: 'fill-market-orders',
+    options: [
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'user account to create the order',
+      },
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market id to place the order',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'outcome to place the order',
+      },
+      {
+        name: 'orderType',
+        abbr: 't',
+        description: 'order type of the order [bid], [ask]',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'number of shares in the order',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price of the order',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.userAccount as string;
+      const user = await this.ensureUser(null, null, true, address);
+      const type =
+        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
+
+      const cost = new BigNumber(String(args.price)).times(new BigNumber(String(args.amount)));
+      user.faucet(cost.multipliedBy(10**18));
+      const result = await user.takeBestOrder(
+        String(args.marketId),
+        new BigNumber(type),
+        new BigNumber(String(args.amount)),
+        new BigNumber(String(args.price)),
+        new BigNumber(String(args.outcome)),
+        'tradegroupId'
+      );
+
+      this.log(`take best order ${result}`);
+    },
+  });
+
+
+  flash.addScript({
     name: 'fake-all',
     async call(this: FlashSession) {
       await this.call('deploy', {write_artifacts: true, time_controlled: true});
