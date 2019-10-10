@@ -82,12 +82,9 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
   }
 
   componentDidMount() {
-    if (this.props.priceTimeSeries) {
-      this.buildOptions(
-        this.props.priceTimeSeries,
-        this.props.selectedPeriod,
-        this.props.containerHeight
-      );
+    const { priceTimeSeries, selectedPeriod, containerHeight } = this.props;
+    if (priceTimeSeries) {
+      this.buildOptions(priceTimeSeries, selectedPeriod, containerHeight);
     }
   }
 
@@ -96,6 +93,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     selectedPeriod: number,
     containerHeight: number
   ) {
+    const { isMobile, marketMax, marketMin, pricePrecision } = this.props;
     const candlestick = priceTimeSeries.map(price => {
       return [price.period, price.open, price.high, price.low, price.close];
     });
@@ -121,14 +119,14 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
 
-    const max = this.props.marketMax.toNumber();
+    const max = marketMax.toNumber();
 
     const options = {
       height: containerHeight,
       credits: { enabled: false },
       tooltip: { enabled: false },
       scrollbar: { enabled: false },
-      navigator: { enabled: true },
+      navigator: { enabled: true, height: 20, margin: 10 },
       rangeSelector: { enabled: false },
       plotOptions: {
         candlestick: {
@@ -146,12 +144,13 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       chart: {
         type: 'candlestick',
         followTouchMove: false,
-        panning: this.props.isMobile,
+        panning: isMobile,
         styledMode: false,
         animation: false,
-        margin: this.props.isMobile
-          ? HIGH_CHART_CONFIG.MobileMargin
-          : [20, 10, 40, 10],
+        spacing: [15, 0, 10, 0]
+        // margin: isMobile
+        //   ? HIGH_CHART_CONFIG.MobileMargin
+        //   : [20, 10, 10, 10],
       },
       xAxis: {
         ordinal: false,
@@ -178,10 +177,10 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         // OHCL
         {
           showEmpty: true,
-          max: this.props.marketMax.toFixed(this.props.pricePrecision),
-          min: this.props.marketMin.toFixed(this.props.pricePrecision),
-          tickInterval: this.props.marketMax
-            .minus(this.props.marketMin)
+          max: marketMax.toFixed(pricePrecision),
+          min: marketMin.toFixed(pricePrecision),
+          tickInterval: marketMax
+            .minus(marketMin)
             .dividedBy(2)
             .toNumber(),
           showFirstLabel: true,
@@ -190,7 +189,10 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             format: '{value:.2f}',
             align: 'center',
             style: Styles.Candlestick_display_yLables,
-            x: max > 1 ? HIGH_CHART_CONFIG.YLableXposition - 15 : HIGH_CHART_CONFIG.YLableXposition,
+            x:
+              max > 1
+                ? HIGH_CHART_CONFIG.YLableXposition - 15
+                : HIGH_CHART_CONFIG.YLableXposition,
             y: HIGH_CHART_CONFIG.YLableYposition,
           },
           crosshair: {
