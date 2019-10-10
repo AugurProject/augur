@@ -20,6 +20,7 @@ import {
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_SIGN_WALLET,
   MODAL_BUY_DAI,
+  ONBOARDING_SEEN_KEY,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -82,10 +83,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const redirect = () => {
     dP.closeModal();
 
-    if (oP.isLogin) {
-      oP.history.push({ pathname: makePath(MARKETS, null) });
-    } else {
-      oP.history.push({ pathname: makePath(LANDING_PAGE, null) });
+    oP.history.push({ pathname: makePath(MARKETS, null) });
+
+    const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
+    if (!showOnboardingSeen) {
+      // Kicks off onboarding
       dP.buyDaiModal();
     }
   };
