@@ -25,7 +25,6 @@ import { outcomes } from 'modules/market/components/market-orders-positions-tabl
 import { CATEGORICAL } from 'modules/common/constants';
 import { string } from 'io-ts';
 import newMarket from 'modules/markets/reducers/new-market';
-import DateTimeSelector from 'modules/create-market/containers/date-time-selector';
 
 export interface HeaderProps {
   text: string;
@@ -291,7 +290,7 @@ interface TimeSelectorParams {
   meridiem?: string;
 }
 
-export const DateTimeSelectorComponent = (props: DateTimeSelectorProps) => {
+export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   const {
     setEndTime,
     onChange,
@@ -479,7 +478,9 @@ export class NumberedList extends Component<
           isFull: list.length === maxList,
           isMin: list.length === minShown,
         },
-        () => updateList(list.map(item => item.value)))
+        () => {
+          updateList(list.map(item => item.value))
+        }
       );
     }
   };
@@ -664,6 +665,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       minute={null}
       meridiem={null}
       timezone={null}
+      currentTimestamp={0}
       endTimeFormatted={props.input.userInput}
     />
   );

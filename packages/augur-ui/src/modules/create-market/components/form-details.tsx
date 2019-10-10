@@ -21,8 +21,8 @@ import {
   DateTimeHeaders,
   SmallSubheaders,
   QuestionBuilder,
+  DateTimeSelector
 } from 'modules/create-market/components/common';
-import DateTimeSelector from 'modules/create-market/containers/date-time-selector';
 import {
   YES_NO,
   SCALAR,
