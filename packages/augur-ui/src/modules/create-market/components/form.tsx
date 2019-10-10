@@ -83,14 +83,14 @@ import { BulkTxLabel } from 'modules/common/labels';
 
 interface FormProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
+  updateNewMarket: (newMarketData: NewMarket) => void;
   address: string;
-  updatePage: Function;
+  updatePage: (page: string) => void;
   addDraft: Function;
   drafts: Drafts;
   updateDraft: Function;
-  clearNewMarket: Function;
-  removeAllOrdersFromNewMarket: Function;
+  clearNewMarket: () => void;
+  removeAllOrdersFromNewMarket: () => void;
   discardModal: Function;
   template: boolean;
   openCreateMarketModal: Function;

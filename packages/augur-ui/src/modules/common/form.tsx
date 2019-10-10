@@ -1,5 +1,4 @@
 import React, { Component, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -1579,15 +1578,6 @@ export const Checkbox = ({
   </div>
 );
 
-Checkbox.propTypes = {
-  id: PropTypes.string.isRequired,
-  isChecked: PropTypes.bool.isRequired,
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func.isRequired,
-  small: PropTypes.bool,
-  smallOnDesktop: PropTypes.bool,
-};
-
 Checkbox.defaultProps = {
   disabled: false,
   small: false,
@@ -1662,34 +1652,6 @@ interface InputState {
 }
 
 export class Input extends Component<InputProps, InputState> {
-  // TODO -- Prop Validations
-  static propTypes = {
-    type: PropTypes.string,
-    className: PropTypes.string,
-    value: PropTypes.any.isRequired,
-    max: PropTypes.any,
-    min: PropTypes.any,
-    isMultiline: PropTypes.bool,
-    isClearable: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    updateValue: PropTypes.func,
-    onBlur: PropTypes.func,
-    isIncrementable: PropTypes.bool,
-    incrementAmount: PropTypes.number,
-    canToggleVisibility: PropTypes.bool,
-    shouldMatchValue: PropTypes.bool,
-    comparisonValue: PropTypes.string,
-    isSearch: PropTypes.bool,
-    placeholder: PropTypes.string,
-    maxButton: PropTypes.bool,
-    onMaxButtonClick: PropTypes.func,
-    noFocus: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    onFocus: PropTypes.func,
-    lightBorder: PropTypes.bool,
-    darkMaxBtn: PropTypes.bool,
-    style: PropTypes.object,
-  };
 
   static defaultProps = {
     type: 'text',
@@ -2148,16 +2110,6 @@ export class InputDropdown extends Component<
     );
   }
 }
-
-InputDropdown.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  default: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  isMobileSmall: PropTypes.bool.isRequired,
-  label: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  onKeyPress: PropTypes.func,
-};
 
 InputDropdown.defaultProps = {
   onKeyPress: null,

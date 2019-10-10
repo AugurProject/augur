@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { ACCOUNT_TYPES, ERROR_TYPES } from "modules/common/constants";
@@ -9,23 +8,27 @@ import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dro
 import Styles from "modules/auth/components/common/error-container.styles";
 import ToggleHeightStyles from "utils/toggle-height.styles";
 
-export default class ErrorContainer extends Component {
-  static propTypes = {
-    error: PropTypes.object,
-    connect: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool.isRequired
-  };
+interface ErrorContainerProps {
+  error?: any;
+  connect: (accountTypes: string) => void;
+  isSelected: boolean;
+}
 
+interface ErrorContainerState {
+  errorShown: boolean;
+}
+
+export default class ErrorContainer extends Component<ErrorContainerProps, ErrorContainerState> {
   static defaultProps = {
     error: null
   };
 
+  state = {
+    errorShown: false
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      errorShown: false
-    };
 
     this.hideError = this.hideError.bind(this);
     this.showError = this.showError.bind(this);

@@ -297,7 +297,7 @@ export interface NewMarket {
   uniqueId: number;
   isValid: boolean;
   validations:
-    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
+  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
   backupSource: string;
   currentStep: number;
   type: string;
@@ -348,7 +348,7 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
+  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -392,6 +392,12 @@ export interface MarketsList {
   };
   selectedCategories: string[];
   marketCardFormat: string;
+}
+
+export interface DefaultOrderProperties {
+  orderPrice: string;
+  orderQuantity: string;
+  selectedNav: string;
 }
 
 export interface LoadReportingMarketsOptions {
@@ -537,18 +543,21 @@ export interface AccountBalances {
   dai: number;
   attoRep: string;
 }
+
+export interface LoginAccountMeta {
+  accountType: string;
+  address: string;
+  signer: any | EthersSigner;
+  isWeb3: boolean;
+  profileImage?: string;
+  email?: string;
+  openWallet?: Function;
+}
+
 export interface LoginAccount {
   address?: string;
   mixedCaseAddress?: string;
-  meta?: {
-    accountType: string;
-    address: string;
-    signer: any | EthersSigner;
-    isWeb3: boolean;
-    profileImage?: string;
-    email?: string;
-    openWallet?: Function;
-  };
+  meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
