@@ -94,9 +94,6 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
       endTimeFormatted,
     } = newMarket;
 
-    let { currentStep } = newMarket;
-    if (isTemplate) currentStep = currentStep - 4;
-
     return (
       <div
         className={classNames(Styles.FormDetails, {
