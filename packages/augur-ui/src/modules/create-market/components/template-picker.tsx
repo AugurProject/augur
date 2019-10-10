@@ -4,6 +4,7 @@ import { RadioTwoLineBarGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/template-picker.styles.less';
 import { getTemplates, getTemplateReadableDescription } from 'modules/create-market/get-template';
 import { YES_NO, SCALAR } from 'modules/common/constants';
+import { EMPTY_STATE } from 'modules/create-market/constants';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
@@ -37,7 +38,10 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           radioButtons={templateOptions}
           onChange={value => {
             updateNewMarket({
-                ...newMarket,
+                ...EMPTY_STATE,
+                currentStep: newMarket.currentStep,
+                marketType: newMarket.marketType,
+                categories: newMarket.categories,
                 template: templates[value]
             })
           }}
