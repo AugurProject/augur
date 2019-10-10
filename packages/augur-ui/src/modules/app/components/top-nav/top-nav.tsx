@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
 import { SecondaryButton } from 'modules/common/buttons';
+import { GlobalChat } from 'modules/global-chat/components/global-chat';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { NavMenuItem } from 'modules/types';
@@ -57,6 +58,7 @@ const TopNav = ({ isLogged, isDisabled = false, menuData, currentBasePath }: Top
           );
         })}
       </ul>
+      <GlobalChat show={false} numberOfPeers={15} />
     </aside>
   );
 };
