@@ -5,7 +5,7 @@
   bottom: @size-4;
   position: fixed;
   right: @size-22;
-  z-index: 2;
+  z-index: @above-all-content-top-layer;
 
   button {
     .mono-9-bold;
@@ -18,7 +18,7 @@
     text-transform: uppercase;
 
     > svg {
-      fill: #FFFFFF;
+      fill: @color-primary-text;
       height: @size-12;
       margin-left: @size-8;
       transform: rotate(180deg);
@@ -27,7 +27,7 @@
   }
 
   > div {
-    border: 1px solid #0E0E0F;
+    border: 1px solid @color-dark-grey;
 
     // Header section
     > div:first-of-type {
