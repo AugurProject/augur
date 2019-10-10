@@ -8,6 +8,7 @@ import {
   MARKET_TYPE_TEMPLATES,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
+import { ValueLabelPair } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -88,6 +89,7 @@ export interface TemplateInput {
   placeholder: string;
   tooltip?: string;
   userInput?: UserInputtedType;
+  values?: ValueLabelPair[];
 }
 
 export interface Categories {
@@ -194,6 +196,17 @@ export const getTemplateReadableDescription = (template: Template) => {
   }
   return question;
 };
+
+export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
+  inputs.forEach((input:TemplateInput) => {
+    question = question.replace(
+      `[${input.id}]`,
+      `${(input.userInput ? input.userInput : `[${input.placeholder}]`)}`
+    );
+  });
+
+  return question;
+}
 
 const templates = {
   [SPORTS]: {
@@ -531,12 +544,12 @@ const inputs = {
     {
       id: 5,
       type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-      placeholder: `Over ({[2] + .5})`,
+      placeholder: `Over [2].5`,
     },
     {
       id: 6,
       type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-      placeholder: `Under ({[2] - .5})`,
+      placeholder: `Under [2].5`,
     },
   ],
 };

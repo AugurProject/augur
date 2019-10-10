@@ -5,11 +5,18 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { ONBOARDING_SEEN_KEY } from 'modules/common/constants';
+import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  setOnboardingSeen: () => {
+    if (windowRef && windowRef.localStorage.setItem) {
+      windowRef.localStorage.setItem(ONBOARDING_SEEN_KEY, 'true');
+    }
+  },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -27,12 +34,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Place test bet',
       disabled: true,
       action: () => {
+        dP.setOnboardingSeen();
         dP.closeModal();
       },
     },
     {
       text: 'Do it later',
       action: () => {
+        dP.setOnboardingSeen();
         dP.closeModal();
       },
     },
