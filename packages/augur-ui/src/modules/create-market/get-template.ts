@@ -197,16 +197,67 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
-export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
-  inputs.forEach((input:TemplateInput) => {
+export const buildMarketDescription = (
+  question: string,
+  inputs: TemplateInput[]
+) => {
+  inputs.forEach((input: TemplateInput) => {
     question = question.replace(
       `[${input.id}]`,
-      `${(input.userInput ? input.userInput : `[${input.placeholder}]`)}`
+      `${input.userInput ? input.userInput : `[${input.placeholder}]`}`
     );
   });
 
   return question;
-}
+};
+
+export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
+  return (
+    inputs.filter(
+      input =>
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME
+    ).length > 0
+  );
+};
+
+export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
+  return inputs
+    .filter(
+      input =>
+        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+        input.type === TemplateInputType.ADDED_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+    )
+    .map((input: TemplateInput) => {
+      if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+        return substituteUserOutcome(input, inputs);
+      }
+      return input.userInput || input.placeholder;
+    });
+};
+
+export const substituteUserOutcome = (
+  input: TemplateInput,
+  inputs: TemplateInput[]
+) => {
+  let matches = input.placeholder.match(/\[(.*?)\]/);
+  let submatch = 0;
+  if (matches) {
+    submatch = matches[1];
+  }
+
+  let text = input.placeholder.replace(
+    `[${submatch}]`,
+    `${
+      inputs[submatch].userInput
+        ? inputs[submatch].userInput
+        : `[${inputs[submatch].placeholder}]`
+    }`
+  );
+
+  return text;
+};
 
 const templates = {
   [SPORTS]: {
@@ -403,7 +454,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.FOOTBALL_EVENT,
-    },
+    }
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {
