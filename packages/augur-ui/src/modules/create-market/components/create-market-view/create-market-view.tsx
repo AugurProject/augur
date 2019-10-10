@@ -7,21 +7,25 @@ import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
 import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
+import { Getters } from "@augurproject/sdk/src";
 
 interface CreateMarketViewProps {
+  getCategoryStats: Function;
+  history: Object;
 }
 
 interface CreateMarketViewState {
-  selected: number;
-  page: number;
+  page: string;
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 export default class CreateMarketView extends React.Component<
   CreateMarketViewProps,
   CreateMarketViewState
 > {
-  state: FormState = {
-    page: this.props.history.location.state || LANDING
+  state: CreateMarketViewState = {
+    page: this.props.history.location.state || LANDING,
+    categoryStats: null
   };
 
   updatePage = (page: string) => {
@@ -30,10 +34,14 @@ export default class CreateMarketView extends React.Component<
 
   componentDidMount() {
     window.scrollTo(0,0);
+    this.props.getCategoryStats((err, categoryStats) => {
+      if (err) return console.error("could not get category stats");
+      this.setState({categoryStats})
+    })
   }
 
   render() {
-    const { page } = this.state;
+    const { page, categoryStats } = this.state;
 
     return (
       <section className={Styles.CreateMarketView}>
@@ -41,9 +49,9 @@ export default class CreateMarketView extends React.Component<
           <title>Create Market</title>
         </Helmet>
         {page === LANDING &&
-          <Landing updatePage={this.updatePage} />
+          <Landing categoryStats={categoryStats} updatePage={this.updatePage} />
         }
-        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} />}
+        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} categoryStats={categoryStats} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );

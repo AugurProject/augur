@@ -5,12 +5,13 @@ import {
 } from 'modules/create-market/components/common';
 import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
-import { getTemplateRadioCards } from '../get-template';
+import { getTemplateRadioCards } from 'modules/create-market/get-template';
 
 export const SubCategories = ({
     newMarket,
     updateNewMarket,
-    nextPage
+    nextPage,
+    categoryStats
   }) => {
   const { categories } = newMarket;
   return (
@@ -33,7 +34,7 @@ export const SubCategories = ({
             primary: newMarket.categories[0],
             secondary: '',
             tertiary: '',
-          })}
+          }, categoryStats)}
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>

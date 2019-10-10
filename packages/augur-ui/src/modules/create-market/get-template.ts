@@ -6,9 +6,11 @@ import {
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
+  MarketCardTemplate
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { ValueLabelPair } from 'modules/types';
+import { Getters } from '@augurproject/sdk/src';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -108,23 +110,53 @@ export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   );
 };
 
-export const getTemplateRadioCards = (categories: Categories) => {
+export const getTemplateRadioCards = (categories: Categories, categoryStats: Getters.Markets.CategoryStats | null): MarketCardTemplate[] => {
   const cats = getTemplateCategories(categories);
   if (cats.length === 0) return [];
   if (!categories.primary) {
-    return cats.map(c => MARKET_TEMPLATES.find(t => t.value === c));
+    return cats.map(c => MARKET_TEMPLATES.find(t => t.value === c))
+    .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && !categories.secondary) {
     return cats.map(c =>
       MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    );
+    )
+    .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && categories.secondary && !categories.tertiary) {
-    return cats.map(c =>
-      MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    );
+    return cats
+      .map(c =>
+        MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
+      )
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   return [];
+};
+
+const addCategoryStats = (
+  categories: Categories,
+  card: MarketCardTemplate,
+  categoryStats: Getters.Markets.CategoryStats
+): MarketCardTemplate => {
+  if (!categoryStats) return card;
+  if (!card) return card;
+  let stats = null;
+  const cardValue = card.value.toLowerCase();
+  if (!categories.primary) stats = categoryStats[cardValue];
+   if (categories.primary && !categories.secondary){
+    const catStats = categoryStats[categories.primary.toLowerCase()]
+    stats = catStats[cardValue];
+  }
+  if (categories.primary && categories.secondary && !categories.tertiary){
+    let catStats = categoryStats[categories.primary.toLowerCase()]
+    catStats = catStats[categories.secondary.toLowerCase()];
+    stats = catStats[cardValue];
+  }
+  if (stats)
+    card.description = `${stats.numberOfMarkets} Markets | ${
+      formatAttoDai(stats.volume).fomatted
+    } Volume`;
+  return card;
 };
 
 const getTemplateCategories = (categories: Categories): string[] => {

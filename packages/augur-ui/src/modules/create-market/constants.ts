@@ -196,35 +196,43 @@ export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
 
+const defaultDescription = '-  |  -';
+export interface MarketCardTemplate {
+  value: string;
+  header: string;
+  description: string;
+  icon: JSX.Element;
+}
+
 export const MARKET_TEMPLATES = [
   {
     value: SPORTS,
     header: SPORTS,
-    description: '80 Markets  |  76.1k',
+    description: defaultDescription,
     icon: icons.Sports,
   },
   {
     value: POLITICS,
     header: POLITICS,
-    description: '110 Markets  |  134.5k',
+    description: defaultDescription,
     icon: icons.Politics,
   },
   {
     value: FINANCE,
     header: FINANCE,
-    description: '100 Markets  |  127.4k',
+    description: defaultDescription,
     icon: icons.Finance,
   },
   {
     value: ENTERTAINMENT,
     header: ENTERTAINMENT,
-    description: '125 Markets  |  717.2k',
+    description: defaultDescription,
     icon: icons.Entertainment,
   },
   {
     value: CRYPTO,
     header: CRYPTO,
-    description: '148 Markets  |  827.4k',
+    description: defaultDescription,
     icon: icons.Crypto,
   },
 ];
@@ -234,49 +242,49 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: SOCCER,
       header: SOCCER,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Soccer,
     },
     {
       value: AMERICAN_FOOTBALL,
       header: AMERICAN_FOOTBALL,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.AmericanFootball,
     },
     {
       value: BASEBALL,
       header: BASEBALL,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Baseball,
     },
     {
       value: GOLF,
       header: GOLF,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Golf,
     },
     {
       value: BASKETBALL,
       header: BASKETBALL,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Basketball,
     },
     {
       value: TENNIS,
       header: TENNIS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Tennis,
     },
     {
       value: HOCKEY,
       header: HOCKEY,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Hockey,
     },
     {
       value: HORSE_RACING,
       header: HORSE_RACING,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.HorseRacing,
     },
   ],
@@ -284,19 +292,19 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: US_ELECTIONS,
       header: US_ELECTIONS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.USElections,
     },
     {
       value: US_POLITICS,
       header: US_POLITICS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.USPolitics,
     },
     {
       value: WORLD,
       header: WORLD,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.World,
     },
   ],
@@ -304,19 +312,19 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: STOCKS,
       header: STOCKS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Stocks,
     },
     {
       value: COMMONDITIES,
       header: COMMONDITIES,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Commodities,
     },
     {
       value: INDEXES,
       header: INDEXES,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Indexes,
     },
   ],
@@ -324,25 +332,25 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: AWARDS,
       header: AWARDS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Awards,
     },
     {
       value: MOVIES,
       header: MOVIES,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Movies,
     },
     {
       value: MUSIC,
       header: MUSIC,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Music,
     },
     {
       value: TV,
       header: TV,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.TV,
     },
   ],
@@ -350,25 +358,25 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: BITCOIN,
       header: BITCOIN,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.BTC,
     },
     {
       value: ETHEREUM,
       header: ETHEREUM,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.ETH,
     },
     {
       value: LITECOIN,
       header: LITECOIN,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.LTC,
     },
     {
       value: AUGUR,
       header: AUGUR,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.REP,
     },
   ],
