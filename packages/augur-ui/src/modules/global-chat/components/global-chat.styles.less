@@ -5,9 +5,10 @@
   bottom: @size-4;
   position: fixed;
   right: @size-22;
-  z-index: @above-all-content-top-layer;
+  z-index: @mask-modal;
 
-  button {
+  // Closed global chat window
+  > button {
     .mono-9-bold;
 
     align-items: center;
@@ -26,17 +27,20 @@
     }
   }
 
+  // Open global chat window
   > div {
+    background-color: @color-module-background;
     border: 1px solid @color-dark-grey;
+    height: 18.125rem;
+    width: 17.5rem;
 
     // Header section
     > div:first-of-type {
       align-items: center;
-      border: 1px solid @color-dark-grey;
+      border-bottom: 1px solid @color-dark-grey;
       display: flex;
       flex-direction: row;
       padding: @size-8 @size-8;
-      width: 18.125rem;
 
       > span {
         color: @color-primary-text;
@@ -64,6 +68,7 @@
 
         > svg {
           height: @size-6;
+          fill: @color-primary-text;
           margin: 0;
           width: @size-6;
         }
@@ -76,7 +81,7 @@
 
       background-color: @color-module-background;
       color: @color-primary-text;
-      height: 13.25rem;
+      // height: 13.25rem;
       padding: @size-8
     }
 
@@ -84,7 +89,11 @@
     > div:nth-of-type(3) {
       background-color: @color-module-background;
       border-top: 1px solid @color-dark-grey;
+      bottom: @size-4;
+      height: 2.8125rem;
       padding: @size-4;
+      position: absolute;
+      width: 100%;
 
       > textarea {
         .text-10;
@@ -95,9 +104,36 @@
     }
   }
 
-  @media @breakpoint-max-tablet {
-    display: none; // Hide in mobile for now
+  @media @breakpoint-mobile {
+    bottom: 0;
     position: relative;
     margin-left: auto;
+    z-index: @mask-toast;
+
+    // Open global chat window
+    > div {
+      background-color: @color-module-background;
+      border: 1px solid @color-dark-grey;
+      bottom: 0;
+      height: 100vh;
+      left: 0;
+      position: fixed;
+      width: 100vw;
+      z-index: @mask-toast;
+
+      // Header section
+      > div:first-of-type {
+        > button {
+          margin: 0 20px 0 auto;
+
+          > svg {
+            height: @size-8;
+            fill: @color-primary-text;
+            margin: 0;
+            width: @size-8;
+          }
+        }
+      }
+    }
   }
 }
