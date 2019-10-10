@@ -162,6 +162,7 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+    timeoutInMinutes: 120
     steps:
       - checkout: self
       - task: UsePythonVersion@0
