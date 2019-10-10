@@ -454,7 +454,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         address _filler = msg.sender;
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _affiliateAddress);
         uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
-        _tradeData.contracts.market.assertBalances();
+        _tradeData.contracts.market.assertBalances(address(_tradeData.contracts.orders));
         return _result;
     }
 

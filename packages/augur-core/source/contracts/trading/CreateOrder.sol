@@ -50,7 +50,7 @@ contract CreateOrder is Initializable, ReentrancyGuard {
      */
     function publicCreateOrder(Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, IERC20 _kycToken) external returns (bytes32) {
         bytes32 _result = this.createOrder(msg.sender, _type, _attoshares, _price, _market, _outcome, _betterOrderId, _worseOrderId, _tradeGroupId, _kycToken);
-        _market.assertBalances();
+        _market.assertBalances(address(orders));
         return _result;
     }
 

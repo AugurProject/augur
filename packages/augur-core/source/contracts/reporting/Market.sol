@@ -755,8 +755,12 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function assertBalances() public view returns (bool) {
+        return assertBalances(augur.lookup("Orders"));
+    }
+
+    function assertBalances(address _orders) public view returns (bool) {
         // Escrowed funds for open orders
-        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(this);
+        uint256 _expectedBalance = IOrders(_orders).getTotalEscrowed(this);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (isFinalized()) {
             IShareToken[] memory _shareTokens = shareTokens;

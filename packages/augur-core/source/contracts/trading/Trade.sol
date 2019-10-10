@@ -111,7 +111,7 @@ contract Trade is Initializable, ReentrancyGuard {
         require(augur.isKnownMarket(_market));
         Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _affiliateAddress, _sender, _kycToken);
         bytes32 _result = trade(_tradeData);
-        _market.assertBalances();
+        _market.assertBalances(address(orders));
         return _result;
     }
 
@@ -119,7 +119,7 @@ contract Trade is Initializable, ReentrancyGuard {
         require(augur.isKnownMarket(_market));
         Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _affiliateAddress, _sender, _kycToken);
         uint256 _result = fillBestOrder(_tradeData);
-        _market.assertBalances();
+        _market.assertBalances(address(orders));
         return _result;
     }
 
