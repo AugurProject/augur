@@ -471,7 +471,6 @@ export class NumberedList extends Component<
   };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // todo: need to compare state once USER_OUTCOME is added
     if (
       JSON.stringify(this.props.initialList) !==
       JSON.stringify(nextProps.initialList)
