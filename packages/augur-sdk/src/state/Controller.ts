@@ -7,6 +7,7 @@ import { augurEmitter } from '../events';
 import { Subscriptions } from '../subscriptions';
 import { IBlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
+import { Markets } from './getter/Markets';
 
 const settings = require('./settings.json');
 
@@ -44,16 +45,20 @@ export class Controller {
     // Grab market ids from all logs.
     // Compose applies operations from bottom to top.
     const logMarketIds = fp.compose(
+      fp.compact,
       fp.uniq,
       fp.map('market')
     )(allLogs);
 
     if(logMarketIds.length === 0) return;
 
-    const marketsInfo = await this.augur.getMarketsInfo({
+    const marketsInfo = await Markets.getMarketsInfo(this.augur, await this.db, {
       marketIds: logMarketIds
     });
-    augurEmitter.emit(SubscriptionEventName.MarketsUpdated, marketsInfo);
+
+    augurEmitter.emit(SubscriptionEventName.MarketsUpdated,  {
+      marketsInfo
+    });
   };
 
   private notifyNewBlockEvent = async (): Promise<void> => {

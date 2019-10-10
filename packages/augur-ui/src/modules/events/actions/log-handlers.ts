@@ -163,11 +163,11 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-  marketsData: Getters.Markets.MarketInfo[] = []
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[]}
+  ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
-  const marketsDataById = marketsData.reduce((acc, marketData) => ({
+  const marketsDataById = marketsInfo.reduce((acc, marketData) => ({
       [marketData.id]: marketData,
       ...acc,
     }), {} as MarketInfos);
