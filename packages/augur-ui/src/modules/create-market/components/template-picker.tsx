@@ -1,7 +1,6 @@
 import React from 'react';
 import { LargeSubheaders } from 'modules/create-market/components/common';
-import { MARKET_SUB_TEMPLATES } from 'modules/create-market/constants';
-import { RadioCardGroup, RadioTwoLineBarGroup } from 'modules/common/form';
+import { RadioTwoLineBarGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/template-picker.styles.less';
 import { getTemplates, getTemplateReadableDescription } from 'modules/create-market/get-template';
 import { YES_NO, SCALAR } from 'modules/common/constants';
@@ -9,9 +8,9 @@ import { YES_NO, SCALAR } from 'modules/common/constants';
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
   const categoriesFormatted = {
-    primary: categories[0].toLowerCase(),
-    secondary: categories[1].toLowerCase(),
-    tertiary: categories[2].toLowerCase(),
+    primary: categories[0],
+    secondary: categories[1],
+    tertiary: categories[2],
   };
   const templates = getTemplates(categoriesFormatted, marketType);
 
