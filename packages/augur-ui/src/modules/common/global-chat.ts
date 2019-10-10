@@ -7,6 +7,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => ({
+  show: false,
+  numberOfPeers: 15,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
