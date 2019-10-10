@@ -146,22 +146,20 @@ const recalculateCumulativeShares = orders => {
   const bids = orders
     .filter(a => a.type === 'sell')
     .sort((a, b) => Number(a.price) - Number(b.price))
-    .reverse()
-    .map(orders => {
-      counterBids = counterBids + Number(orders.shares);
-      orders.cumulativeShares = String(counterBids);
-      return orders;
+    .map(order => {
+      counterBids = counterBids + Number(order.shares);
+      order.cumulativeShares = String(counterBids);
+      return order;
     });
 
   const asks = orders
     .filter(a => a.type === 'buy')
-    .sort((a, b) => Number(a.price) - Number(b.price))
+    .sort((a, b) => Number(b.price) - Number(a.price))
     .map(order => {
       counterAsks = counterAsks + Number(order.shares);
       order.cumulativeShares = String(counterAsks);
       return order;
     });
-
   return [...bids, ...asks];
 };
 
