@@ -29,6 +29,7 @@ import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
 import { FormattedNumber, SizeTypes, DateFormattedObject } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
+import {DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice} from "modules/reporting/common";
 
 export interface MarketTypeProps {
   marketType: string;
@@ -968,11 +969,15 @@ export const BulkTxLabel = ({
   className,
 }: BulkTxLabelProps) =>
   count > 1 || needsApproval ? (
-    <span
-      className={classNames(Styles.BulkTxLabel, className)}
-    >{`${buttonName} requires ${count} transaction${count > 1 ? `s` : ``}${
-      needsApproval ? `, and 1 approval` : ''
-    }`}</span>
+    <div className={classNames(Styles.BulkTxLabel, className)}>
+      <DismissableNotice
+        show={true}
+        description=""
+        title={`${buttonName} requires ${count} transaction${count > 1 ? `s` : ``}${
+          needsApproval ? `, and 1 approval` : ''}`}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+      />
+    </div>
   ) : null;
 
 export const ValueDenomination = ({

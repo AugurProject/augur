@@ -640,6 +640,14 @@ export default class Form extends React.Component<FormProps, FormState> {
                   subheader="You must complete all required fields highlighted above before you can continue"
                 />
               )}
+              {secondButton === CREATE && (
+                <BulkTxLabel
+                  className={Styles.MultipleTransactions}
+                  buttonName={'Create'}
+                  count={1}
+                  needsApproval={needsApproval}
+                />
+              )}
               <div>
                 {firstButton === BACK && (
                   <SecondaryButton text="Back" action={this.prevPage} />
@@ -671,14 +679,6 @@ export default class Form extends React.Component<FormProps, FormState> {
                   )}
                 </div>
               </div>
-              {secondButton === CREATE && (
-                <BulkTxLabel
-                  className={Styles.MultipleTransactions}
-                  buttonName={'Create'}
-                  count={1}
-                  needsApproval={needsApproval}
-                />
-              )}
             </ContentBlock>
           </>
         )}
