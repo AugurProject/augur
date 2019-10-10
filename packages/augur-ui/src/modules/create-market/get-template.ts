@@ -195,6 +195,17 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
+export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
+  inputs.forEach((input:TemplateInput) => {
+    question = question.replace(
+      `[${input.id}]`,
+      `${(input.userInput ? input.userInput : `[${input.placeholder}]`)}`
+    );
+  });
+
+  return question;
+}
+
 const templates = {
   [SPORTS]: {
     templates: [],

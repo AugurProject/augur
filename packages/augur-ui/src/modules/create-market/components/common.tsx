@@ -20,6 +20,7 @@ import {
   TemplateInputType,
   TemplateInput,
   Template,
+  buildMarketDescription,
 } from 'modules/create-market/get-template';
 import { outcomes } from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import { CATEGORICAL } from 'modules/common/constants';
@@ -460,6 +461,15 @@ export class NumberedList extends Component<
     isMin: this.props.initialList.length === this.props.minShown,
   };
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    // todo: need to compare state once USER_OUTCOME is added
+    if (JSON.stringify(this.props.initialList) !== JSON.stringify(nextProps.initialList)) {
+      this.setState({
+        list: nextProps.initialList,
+      });
+    }
+  }
+
   onChange = (value, index) => {
     const { updateList } = this.props;
     const { list } = this.state;
@@ -598,18 +608,21 @@ interface InputFactoryProps {
   inputIndex: number;
   updateNewMarket: Function;
   template: Template;
+  outcomes: String[];
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
-  const { input, inputs, inputIndex, updateNewMarket, template } = props;
+  const { input, inputs, inputIndex, updateNewMarket, template, outcomes } = props;
   if (input.type === TemplateInputType.TEXT) {
     return (
       <TextInput
         placeholder={input.placeholder}
         onChange={value => {
-          const newInputs = inputs;
+          let newInputs = inputs;
           newInputs[inputIndex].userInput = value;
+          const question = buildMarketDescription(template.question, inputs)
           updateNewMarket({
+            description: question,
             template: {
               ...template,
               inputs: newInputs,
@@ -624,11 +637,13 @@ export const InputFactory = (props: InputFactoryProps) => {
       <TextInput
         placeholder={input.placeholder}
         onChange={value => {
-          const newInputs = inputs;
+          let newInputs = inputs;
           newInputs[inputIndex].userInput = value;
-          const newOutcomes = outcomes;
+          let newOutcomes = outcomes;
           newOutcomes[inputIndex] = value;
+          const question = buildMarketDescription(template.question, inputs)
           updateNewMarket({
+            description: question,
             outcomes: newOutcomes,
             template: {
               ...template,
@@ -660,7 +675,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       link
       setEndTime={null}
       onChange={() => {}}
-      validations={newMarket.validations}
+      validations={props.newMarket.validations}
       hour={null}
       minute={null}
       meridiem={null}
@@ -710,6 +725,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                 inputIndex={inputIndex}
                 updateNewMarket={updateNewMarket}
                 template={template}
+                outcomes={outcomes}
               />;
             }
           }
@@ -746,7 +762,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                   };
                 } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
                   return {
-                    value: input.placeholder,
+                    value: input.userInput || input.placeholder,
                     editable: false
                   };
                 }
