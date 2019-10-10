@@ -542,12 +542,12 @@ const inputs = {
     {
       id: 5,
       type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-      placeholder: `Over ({[2] + .5})`,
+      placeholder: `Over [2].5`,
     },
     {
       id: 6,
       type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-      placeholder: `Under ({[2] - .5})`,
+      placeholder: `Under [2].5`,
     },
   ],
 };

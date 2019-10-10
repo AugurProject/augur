@@ -321,8 +321,12 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   return (
     <div className={Styles.DateTimeSelector}>
       <Subheaders
-        header={header ? header : "Reporting start date and time"}
-        subheader={subheader ? subheader : "Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "}
+        header={header ? header : 'Reporting start date and time'}
+        subheader={
+          subheader
+            ? subheader
+            : 'Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. '
+        }
         link
       />
       <span>
@@ -463,7 +467,10 @@ export class NumberedList extends Component<
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     // todo: need to compare state once USER_OUTCOME is added
-    if (JSON.stringify(this.props.initialList) !== JSON.stringify(nextProps.initialList)) {
+    if (
+      JSON.stringify(this.props.initialList) !==
+      JSON.stringify(nextProps.initialList)
+    ) {
       this.setState({
         list: nextProps.initialList,
       });
@@ -481,7 +488,7 @@ export class NumberedList extends Component<
     const { isFull, list } = this.state;
     const { maxList, minShown, updateList } = this.props;
     if (!isFull) {
-      list.push({value: '', editable: true});
+      list.push({ value: '', editable: true });
       this.setState(
         {
           list,
@@ -489,7 +496,7 @@ export class NumberedList extends Component<
           isMin: list.length === minShown,
         },
         () => {
-          updateList(list.map(item => item.value))
+          updateList(list.map(item => item.value));
         }
       );
     }
@@ -507,7 +514,7 @@ export class NumberedList extends Component<
           isFull: list.length === maxList,
         },
         () => {
-          updateList(list.map(item => item.value))
+          updateList(list.map(item => item.value));
         }
       );
     }
@@ -521,21 +528,23 @@ export class NumberedList extends Component<
       <ul className={Styles.NumberedList}>
         {list.map((item, index) => (
           <>
-          {item.editable && 
-            <NumberedInput
-              key={index}
-              value={item.value}
-              placeholder={placeholder}
-              onChange={this.onChange}
-              number={index}
-              removable={index >= minShown}
-              onRemove={this.removeItem}
-              errorMessage={errorMessage[index]}
-            />
-          }
-          {!item.editable && 
-            <li key={index}>{index + 1}. {item.value}</li>
-          }
+            {item.editable && (
+              <NumberedInput
+                key={index}
+                value={item.value}
+                placeholder={placeholder}
+                onChange={this.onChange}
+                number={index}
+                removable={index >= minShown}
+                onRemove={this.removeItem}
+                errorMessage={errorMessage[index]}
+              />
+            )}
+            {!item.editable && (
+              <li key={index}>
+                {index + 1}. {item.value}
+              </li>
+            )}
           </>
         ))}
         <li>
@@ -612,7 +621,14 @@ interface InputFactoryProps {
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
-  const { input, inputs, inputIndex, updateNewMarket, template, outcomes } = props;
+  const {
+    input,
+    inputs,
+    inputIndex,
+    updateNewMarket,
+    template,
+    outcomes,
+  } = props;
   if (input.type === TemplateInputType.TEXT) {
     return (
       <TextInput
@@ -620,7 +636,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         onChange={value => {
           let newInputs = inputs;
           newInputs[inputIndex].userInput = value;
-          const question = buildMarketDescription(template.question, inputs)
+          const question = buildMarketDescription(template.question, inputs);
           updateNewMarket({
             description: question,
             template: {
@@ -641,7 +657,7 @@ export const InputFactory = (props: InputFactoryProps) => {
           newInputs[inputIndex].userInput = value;
           let newOutcomes = outcomes;
           newOutcomes[inputIndex] = value;
-          const question = buildMarketDescription(template.question, inputs)
+          const question = buildMarketDescription(template.question, inputs);
           updateNewMarket({
             description: question,
             outcomes: newOutcomes,
@@ -667,7 +683,6 @@ interface EstimatedStartSelectorProps {
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
-
   return (
     <DateTimeSelector
       header="Estimated start time"
@@ -696,7 +711,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const question = template.question.split(' ');
   const inputs = template.inputs;
 
-  const dateTimeIndex = inputs.findIndex(input => input.type === TemplateInputType.DATETIME)
+  const dateTimeIndex = inputs.findIndex(
+    input => input.type === TemplateInputType.DATETIME
+  );
 
   return (
     <div className={Styles.QuestionBuilder}>
@@ -718,22 +735,27 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             );
             if (inputIndex > -1) {
               const input = inputs[inputIndex];
-              return <InputFactory
-                key={inputIndex}
-                input={input}
-                inputs={inputs}
-                inputIndex={inputIndex}
-                updateNewMarket={updateNewMarket}
-                template={template}
-                outcomes={outcomes}
-              />;
+              return (
+                <InputFactory
+                  key={inputIndex}
+                  input={input}
+                  inputs={inputs}
+                  inputIndex={inputIndex}
+                  updateNewMarket={updateNewMarket}
+                  template={template}
+                  outcomes={outcomes}
+                />
+              );
             }
           }
         })}
       </div>
-      {dateTimeIndex > -1 && 
-        <EstimatedStartSelector newMarket={newMarket} input={inputs[dateTimeIndex]}/>
-      }
+      {dateTimeIndex > -1 && (
+        <EstimatedStartSelector
+          newMarket={newMarket}
+          input={inputs[dateTimeIndex]}
+        />
+      )}
       {marketType === CATEGORICAL && (
         <>
           <Subheaders
@@ -746,24 +768,40 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
               .filter(
                 input =>
                   input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
-                  input.type === TemplateInputType.ADDED_OUTCOME || 
+                  input.type === TemplateInputType.ADDED_OUTCOME ||
                   input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
               )
               .map(input => {
                 if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+                  let matches = input.placeholder.match(/\[(.*?)\]/);
+                  let submatch = 0;
+                  if (matches) {
+                    submatch = matches[1];
+                  }
+
+                  let text = input.placeholder.replace(
+                    `[${submatch}]`,
+                    `${
+                      inputs[submatch].userInput
+                        ? inputs[submatch].userInput
+                        : `[${inputs[submatch].placeholder}]`
+                    }`
+                  );
                   return {
-                    value: input.placeholder,
-                    editable: false
+                    value: text,
+                    editable: false,
                   };
                 } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
                   return {
                     value: input.placeholder,
-                    editable: false
+                    editable: false,
                   };
-                } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+                } else if (
+                  input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+                ) {
                   return {
                     value: input.userInput || input.placeholder,
-                    editable: false
+                    editable: false,
                   };
                 }
                 return null;
@@ -771,7 +809,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             minShown={2}
             maxList={7}
             placeholder={'Enter outcome'}
-            updateList={(value: Array<string>) => {null}}
+            updateList={(value: Array<string>) => {
+              null;
+            }}
             errorMessage={validations.outcomes}
           />
         </>
@@ -779,5 +819,3 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
     </div>
   );
 };
-
-
