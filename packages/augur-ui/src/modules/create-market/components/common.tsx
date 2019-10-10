@@ -279,6 +279,8 @@ interface DateTimeSelectorProps {
   meridiem: string;
   timezone: string;
   endTimeFormatted: DateFormattedObject;
+  header?: string;
+  subheader?: string;
 }
 
 interface TimeSelectorParams {
@@ -298,6 +300,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     meridiem,
     timezone,
     endTimeFormatted,
+    header,
+    subheader,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -315,8 +319,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   return (
     <div className={Styles.DateTimeSelector}>
       <Subheaders
-        header="Reporting start date and time"
-        subheader="Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "
+        header={header ? header : "Reporting start date and time"}
+        subheader={subheader ? subheader : "Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "}
         link
       />
       <span>
@@ -631,12 +635,36 @@ export const InputFactory = (props: InputFactoryProps) => {
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
-    return <span>{input.placeholder}</span>;
+    return <span>{input.userInput || input.placeholder}</span>;
   } else {
     return null;
   }
 };
 
+interface EstimatedStartSelectorProps {
+
+}
+export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
+
+  return (
+    <>
+      <DateTimeSelector
+        header="Estimated start time"
+        subheader="When is the event estimated to begin?"
+        link
+        setEndTime={() => {}}
+        onChange={() => {}}
+        currentTimestamp={''}
+        validations={''}
+        hour={''}
+        minute={''}
+        meridiem={''}
+        timezone={''}
+        endTimeFormatted={''}
+      />
+    </>
+  );
+};
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
@@ -647,6 +675,8 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const { template, outcomes, marketType, validations } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
+
+  const dateTimeIndex = inputs.findIndex(input => input.type === TemplateInputType.DATETIME)
 
   return (
     <div className={Styles.QuestionBuilder}>
@@ -680,6 +710,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           }
         })}
       </div>
+      {dateTimeIndex > -1 && 
+        <EstimatedStartSelector />
+      }
       {marketType === CATEGORICAL && (
         <>
           <Subheaders
