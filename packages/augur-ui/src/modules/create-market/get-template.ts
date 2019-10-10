@@ -8,6 +8,7 @@ import {
   MARKET_TYPE_TEMPLATES,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
+import { ValueLabelPair } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -88,6 +89,7 @@ export interface TemplateInput {
   placeholder: string;
   tooltip?: string;
   userInput?: UserInputtedType;
+  values?: ValueLabelPair[];
 }
 
 export interface Categories {
