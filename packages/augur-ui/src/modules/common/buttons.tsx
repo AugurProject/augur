@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
 import {
@@ -457,13 +456,6 @@ const EtherscanLinkTSX = ({
     {!baseUrl && showNonLink && <span>{label}</span>}
   </span>
 );
-
-EtherscanLinkTSX.propTypes = {
-  baseUrl: PropTypes.string,
-  txhash: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  showNonLink: PropTypes.bool,
-};
 
 EtherscanLinkTSX.defaultProps = {
   baseUrl: null,

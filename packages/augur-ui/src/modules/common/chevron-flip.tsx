@@ -1,6 +1,5 @@
 import React from "react";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 
 import Styles from "modules/common/chevron-flip.styles";
 
@@ -43,7 +42,18 @@ const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
   </svg>
 );
 
-const ChevronFlip = ({
+interface ChevronFlipProps {
+  className?: strin;
+  pointDown?: boolean;
+  stroke?: string;
+  big?: boolean;
+  filledInIcon?: boolean;
+  quick?: boolean;
+  hover?: boolean;
+  containerClassName?: string;
+}
+
+const ChevronFlip: React.FC<ChevronFlipProps> = ({
   filledInIcon,
   className,
   pointDown,
@@ -53,9 +63,9 @@ const ChevronFlip = ({
   hover,
   containerClassName,
 }) => (
-  <span className={containerClassName}>
-    {filledInIcon
-      ? ChevronFlipFilledIcon(
+    <span className={containerClassName}>
+      {filledInIcon
+        ? ChevronFlipFilledIcon(
           classNames(Styles.ChevronFlip, className, {
             [Styles.pointDown]: pointDown,
             [Styles.big]: big,
@@ -64,7 +74,7 @@ const ChevronFlip = ({
           }),
           stroke
         )
-      : ChevronFlipIcon(
+        : ChevronFlipIcon(
           classNames(Styles.ChevronFlip, className, {
             [Styles.pointDown]: pointDown,
             [Styles.big]: big,
@@ -73,19 +83,8 @@ const ChevronFlip = ({
           }),
           stroke
         )}
-  </span>
-);
-
-ChevronFlip.propTypes = {
-  className: PropTypes.string,
-  pointDown: PropTypes.bool,
-  stroke: PropTypes.string,
-  big: PropTypes.bool,
-  filledInIcon: PropTypes.bool,
-  quick: PropTypes.bool,
-  hover: PropTypes.bool,
-  containerClassName: PropTypes.string
-};
+    </span>
+  );
 
 ChevronFlip.defaultProps = {
   className: undefined,

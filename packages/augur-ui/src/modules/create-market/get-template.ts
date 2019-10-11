@@ -2,6 +2,7 @@ import { CATEGORICAL, YES_NO, SCALAR } from 'modules/common/constants';
 import {
   SOCCER,
   AMERICAN_FOOTBALL,
+  BASEBALL,
   SPORTS,
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
@@ -9,9 +10,9 @@ import {
   MarketCardTemplate
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import { ValueLabelPair } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
+import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -22,6 +23,8 @@ export enum TemplateInputTypeNames {
   TEAM_WINS_EVENT = 'TEAM_WINS_EVENT',
   PLAYER_AWARD = 'PLAYER_AWARD',
   YEAR_EVENT = 'YEAR_EVENT',
+  BASEBALL_YEAR_EVENT = 'BASEBALL_YEAR_EVENT',
+  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR'
 }
 
 export enum TemplateInputType {
@@ -41,10 +44,14 @@ export interface UserInputText {
 
 export interface UserInputDateYear extends UserInputText {}
 export interface UserInputDateTime {
-  year: string;
-  day: string;
-  minute: string;
+  endTime: number;
+  hour?: number;
+  minute?: number;
+  meridiem: string;
   timezone: string;
+  offset: number;
+  offsetName: string;
+  endTimeFormatted: TimezoneDateObject;
 }
 export interface UserInputDropdown extends UserInputText {}
 export interface UserInputUserOutcome extends UserInputText {}
@@ -91,7 +98,8 @@ export interface TemplateInput {
   type: TemplateInputType;
   placeholder: string;
   tooltip?: string;
-  userInput?: UserInputtedType;
+  userInput?: string;
+  userInputObject?: UserInputtedType
   values?: ValueLabelPair[];
 }
 
@@ -236,16 +244,67 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
-export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
-  inputs.forEach((input:TemplateInput) => {
+export const buildMarketDescription = (
+  question: string,
+  inputs: TemplateInput[]
+) => {
+  inputs.forEach((input: TemplateInput) => {
     question = question.replace(
       `[${input.id}]`,
-      `${(input.userInput ? input.userInput : `[${input.placeholder}]`)}`
+      `${input.userInput ? input.userInput : `[${input.placeholder}]`}`
     );
   });
 
   return question;
-}
+};
+
+export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
+  return (
+    inputs.filter(
+      input =>
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME
+    ).length > 0
+  );
+};
+
+export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
+  return inputs
+    .filter(
+      input =>
+        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+        input.type === TemplateInputType.ADDED_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+    )
+    .map((input: TemplateInput) => {
+      if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+        return substituteUserOutcome(input, inputs);
+      }
+      return input.userInput || input.placeholder;
+    });
+};
+
+export const substituteUserOutcome = (
+  input: TemplateInput,
+  inputs: TemplateInput[]
+) => {
+  let matches = input.placeholder.match(/\[(.*?)\]/);
+  let submatch = "0";
+  if (matches) {
+    submatch = String(matches[1]);
+  }
+
+  let text = input.placeholder.replace(
+    `[${submatch}]`,
+    `${
+      inputs[submatch].userInput
+        ? inputs[submatch].userInput
+        : `[${inputs[submatch].placeholder}]`
+    }`
+  );
+
+  return text;
+};
 
 const templates = {
   [SPORTS]: {
@@ -276,6 +335,79 @@ const templates = {
             ],
           },
         ],
+      },
+      [BASEBALL]: {
+        templates: [
+          {
+            templateId: `baseball-team-event`,
+            marketType: YES_NO,
+            question: `Will the [0] win the [1] [2]`,
+            example: `Will the NY Yankees win the 2020 World Series`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_WINS_EVENT_YEAR,
+            resolutionRules: [],
+          },
+          {
+            templateId: `baseball-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
+            example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+            ],
+          },
+          {
+            templateId: `baseball-year-event`,
+            marketType: CATEGORICAL,
+            question: `Which MLB team will win the [0] [1]`,
+            example: `Which MLB team will win the 2020 World Series`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.BASEBALL_YEAR_EVENT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `baseball-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `baseball-year-event`,
+            marketType: CATEGORICAL,
+            question: `Which player  will win the [0] [1]`,
+            example: `Which Player will win the 2019 American League Cy Young award`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.BASEBALL_YEAR_EVENT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `baseball-total-wins`,
+            marketType: SCALAR,
+            question: `Total number of wins [0] will finish [1] regular season with`,
+            example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ]
       },
       [AMERICAN_FOOTBALL]: {
         templates: [
@@ -442,7 +574,21 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.FOOTBALL_EVENT,
+    }
+  ],
+  [TemplateInputTypeNames.BASEBALL_YEAR_EVENT]: [
+    {
+      id: 0,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
     },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.BASEBALL_EVENT,
+    }
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {
@@ -491,6 +637,25 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Year`,
       values: LIST_VALUES.YEARS,
+    },
+  ],
+  [TemplateInputTypeNames.TEAM_WINS_EVENT_YEAR]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Team`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.BASEBALL_EVENT,
     },
   ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN]: [

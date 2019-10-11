@@ -13,17 +13,14 @@ import { NewMarket } from "modules/types";
 
 interface LandingProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
+  updateNewMarket: (newMarketData: NewMarket) => void;
   address: String;
   updatePage: Function;
   clearNewMarket: Function;
   categoryStats: Getters.Markets.CategoryStats;
 }
 
-export default class Landing extends React.Component<
-  LandingProps,
-  {}
-> {
+export default class Landing extends React.Component<LandingProps> {
 
   componentDidMount() {
     this.node.scrollIntoView();
