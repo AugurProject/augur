@@ -7,9 +7,15 @@ import {
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
+  ENTERTAINMENT,
+  POLITICS,
+  US_POLITICS,
+  WORLD,
+  FINANCE,
+  CRYPTO,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import { ValueLabelPair, DateFormattedObject, TimezoneDateObject } from 'modules/types';
+import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -21,7 +27,12 @@ export enum TemplateInputTypeNames {
   PLAYER_AWARD = 'PLAYER_AWARD',
   YEAR_EVENT = 'YEAR_EVENT',
   BASEBALL_YEAR_EVENT = 'BASEBALL_YEAR_EVENT',
-  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR'
+  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR',
+  ENTERTAINMNET_AWARDS_BIN = 'ENTERTAINMNET_AWARDS_BIN',
+  ENTERTAINMNET_AWARDS_BIN_2 = 'ENTERTAINMNET_AWARDS_BIN_2',
+  ENTERTAINMNET_AWARDS_BIN_3 = 'ENTERTAINMNET_AWARDS_BIN_3',
+  ENTERTAINMNET_AWARDS_BIN_4 = 'ENTERTAINMNET_AWARDS_BIN_4',
+  ENTERTAINMNET_AWARDS_CAT = 'ENTERTAINMNET_AWARDS_CAT',
 }
 
 export enum TemplateInputType {
@@ -96,7 +107,7 @@ export interface TemplateInput {
   placeholder: string;
   tooltip?: string;
   userInput?: string;
-  userInputObject?: UserInputtedType
+  userInputObject?: UserInputtedType;
   values?: ValueLabelPair[];
 }
 
@@ -250,9 +261,9 @@ export const substituteUserOutcome = (
   inputs: TemplateInput[]
 ) => {
   let matches = input.placeholder.match(/\[(.*?)\]/);
-  let submatch = 0;
+  let submatch = '0';
   if (matches) {
-    submatch = matches[1];
+    submatch = String(matches[1]);
   }
 
   let text = input.placeholder.replace(
@@ -271,6 +282,97 @@ const templates = {
   [SPORTS]: {
     templates: [],
     children: {
+      [POLITICS]: {
+        children: {
+          [US_POLITICS]: {
+            templates: [],
+          },
+          [WORLD]: {
+            templates: [],
+          },
+        },
+      },
+      [CRYPTO]: {
+        templates: [],
+      },
+      [FINANCE]: {
+        templates: [],
+      },
+      [ENTERTAINMENT]: {
+        templates: [
+          {
+            templateId: `ent-host-event`,
+            marketType: YES_NO,
+            question: `Will [0] host the [1] [2]`,
+            example: `Will Billy Crystal host the 2019 Academy Awards`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN,
+            resolutionRules: [],
+          },
+          {
+            templateId: `ent-host-event2`,
+            marketType: YES_NO,
+            question: `Will [0] win an award for [1] at the [2] [3]`,
+            example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_2,
+            resolutionRules: [],
+          },
+          {
+            templateId: `ent-host-event3`,
+            marketType: YES_NO,
+            question: `Will [0] win an award for [1] at the [2] [3]`,
+            example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_3,
+            resolutionRules: [],
+          },
+          {
+            templateId: `ent-host-gross`,
+            marketType: YES_NO,
+            question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]`,
+            example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4,
+            resolutionRules: [],
+          },
+          {
+            templateId: `ent-host-cat`,
+            marketType: CATEGORICAL,
+            question: `Who will host the [0] [1]`,
+            example: `Who wll host the 2020 Emmy Awards`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT,
+            resolutionRules: [],
+          },
+          {
+            templateId: `ent-win-award-cat`,
+            marketType: CATEGORICAL,
+            question: `Who will win for [0] in the [1] [2]`,
+            example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Award`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.ENTERTAINMENT_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
       [SOCCER]: {
         templates: [
           {
@@ -368,7 +470,7 @@ const templates = {
             ],
             resolutionRules: [],
           },
-        ]
+        ],
       },
       [AMERICAN_FOOTBALL]: {
         templates: [
@@ -523,6 +625,111 @@ const templates = {
 };
 
 const inputs = {
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT]: [
+    {
+      id: 0,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Movie Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Amount`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Currency`,
+      values: LIST_VALUES.CURRENCY,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `US / Worldwide`,
+      values: LIST_VALUES.REGION,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_3]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Movie Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Award`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_2]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Person Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Award`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Person Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
   [TemplateInputTypeNames.YEAR_EVENT]: [
     {
       id: 0,
@@ -535,7 +742,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.FOOTBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.BASEBALL_YEAR_EVENT]: [
     {
@@ -549,7 +756,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.BASEBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {

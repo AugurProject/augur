@@ -69,24 +69,78 @@ export const LIST_VALUES = {
   ],
   BASEBALL_EVENT: [
     {
-      value: 'American League Division Series', 
-      label: 'American League Division Series'
+      value: 'American League Division Series',
+      label: 'American League Division Series',
     },
     {
-      value: 'National League Division Series', 
-      label: 'National League Division Series'
+      value: 'National League Division Series',
+      label: 'National League Division Series',
     },
     {
-      value: 'American League Championship Series', 
-      label: 'American League Championship Series'
+      value: 'American League Championship Series',
+      label: 'American League Championship Series',
     },
     {
-      value: 'National League Championship Series', 
-      label: 'National League Championship Series'
+      value: 'National League Championship Series',
+      label: 'National League Championship Series',
     },
     {
-      value: 'World Series', 
-      label: 'World Series'
-    }
+      value: 'World Series',
+      label: 'World Series',
+    },
   ],
+  ENTERTAINMENT_EVENT: [
+    {
+      value: 'Academy Awards',
+      label: 'Academy Awards',
+    },
+    {
+      value: 'Emmy Awards',
+      label: 'Emmy Awards',
+    },
+    {
+      value: 'Grammy Awards',
+      label: 'Grammy Awards',
+    },
+    {
+      value: 'Golden Globe Awards',
+      label: 'Golden Globe Awards',
+    },
+  ],
+  CURRENCY: [
+    {
+      value: 'USD',
+      label: 'USD',
+    },
+    {
+      value: 'EUR',
+      label: 'EUR',
+    },
+    {
+      value: 'JPY',
+      label: 'JPY',
+    },
+    {
+      value: 'GBP',
+      label: 'GBP',
+    },
+    {
+      value: 'AUD',
+      label: 'AUD',
+    },
+    {
+      value: 'CAD',
+      label: 'CAD',
+    },
+  ],
+  REGION: [
+    {
+      value: 'US (United States)',
+      label: 'US (United States)',
+    },
+    {
+      value: 'Worldwide',
+      label: 'Worldwide',
+    },
+  ]
 };
