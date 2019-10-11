@@ -407,7 +407,7 @@ function determineDrawParams(options) {
   };
 
   const containerWidth = depthChart.clientWidth;
-  const containerHeight = depthChart.clientHeight - 12;
+  const containerHeight = depthChart.clientHeight;
   const drawHeight = containerHeight - chartDim.top - chartDim.bottom;
 
   const midPrice = orderBookKeys.mid;
