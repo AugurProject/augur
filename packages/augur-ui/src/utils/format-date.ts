@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DateFormattedObject } from 'modules/types';
+import { DateFormattedObject, TimezoneDateObject } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import { ZERO } from 'modules/common/constants';
 
@@ -164,7 +164,7 @@ export function buildformattedDate(
   meridiem: string,
   timezone: string,
   offset: number
-) {
+): TimezoneDateObject {
 
   const endTime = moment
     .unix(timestamp)

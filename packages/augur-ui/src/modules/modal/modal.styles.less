@@ -1657,25 +1657,24 @@ div.ButtonsRow:last-of-type {
   .mono-12;
 
   align-items: center;
-  border: 1px solid @color-secondary-action;
-  border-radius: @border-radius-default;
+  background: @color-page-background;
+  border: 1px solid @color-secondary-action-outline;
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
-  line-height: @size-14;
-  margin: @size-18 0;
-  padding: @size-12;
-  padding-right: @size-8;
   justify-content: space-between;
-  background: @color-dark-grey;
+  line-height: @size-14;
+  margin: @size-8 0 @size-18 0;
+  padding: @size-12 @size-9;
+  padding-right: 0;
+  width: 234px;
+  position: relative;
 
-  @media @breakpoint-mobile {
-    .mono-10;
-
-    height: @size-40;
-    line-height: @size-14;
-  }
+  > div {
+    margin-right: @size-12;
+    word-break: break-all;
+ }
 
   > button {
     .mono-10;
@@ -1684,6 +1683,7 @@ div.ButtonsRow:last-of-type {
     color: @color-inactive-text;
     display: flex;
     margin-left: @size-8;
+    margin-right: @size-12;
     padding: @size-5;
     text-transform: uppercase;
     color: @color-primary-text;
@@ -1692,11 +1692,40 @@ div.ButtonsRow:last-of-type {
     border-radius: @border-radius-default;
 
     @media @breakpoint-mobile {
-      line-height: @size-10;
       margin-left: @size-4;
       padding: @size-6;
     }
   }
+
+  > button:hover {
+    background: lighten(@color-secondary-action, 5%);
+  }
+}
+
+.ShowConfirmaiton:after {
+  content: '';
+
+  border-top: solid @size-12 @color-primary-text;
+  border-left: solid @size-12 transparent;
+  border-right: solid @size-12 transparent;
+  position: absolute;
+  top: -6px;
+}
+
+.ShowConfirmaiton:before {
+  .text-10;
+  content: 'Copied!';
+  color: @color-inactive-text;
+  position: absolute;
+  bottom: 100%;
+  background: @color-primary-text;
+  padding: @size-8 @size-12;
+  border-radius: @border-radius-default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  text-transform: capitalize;
 }
 
 .ActionRow {
