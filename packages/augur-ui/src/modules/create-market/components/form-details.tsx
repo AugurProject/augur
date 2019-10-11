@@ -159,6 +159,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
             <QuestionBuilder
               newMarket={newMarket}
               updateNewMarket={updateNewMarket}
+              currentTime={currentTimestamp}
             />
           )}
           {!isTemplate && (
@@ -172,6 +173,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
                 meridiem={meridiem}
                 timezone={timezone}
                 endTimeFormatted={endTimeFormatted}
+                uniqueKey={'nonTemplateRes'}
               />
 
               <Subheaders
@@ -321,6 +323,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               meridiem={meridiem}
               timezone={timezone}
               endTimeFormatted={endTimeFormatted}
+              uniqueKey={'templateRes'}
             />
           )}
 
