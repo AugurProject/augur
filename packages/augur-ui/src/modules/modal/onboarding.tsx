@@ -9,7 +9,7 @@ import {
   DaiGraphic,
   TestBet,
   LinkContentSection,
-  Progress,
+  Stepper,
 } from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -24,7 +24,7 @@ interface OnboardingProps {
   mediumHeader?: string;
   linkContent?: LinkContent[];
   testBet?: boolean;
-  progress?: number;
+  currentStep?: number;
 }
 
 export const Onboarding = ({
@@ -35,7 +35,7 @@ export const Onboarding = ({
   mediumHeader,
   linkContent,
   testBet,
-  progress,
+  currentStep,
 }: OnboardingProps) => (
   <div className={Styles.Onboarding}>
     <main>
@@ -48,7 +48,7 @@ export const Onboarding = ({
     </main>
     <div>
       {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-      {progress && <Progress step={progress} /> }
+      {currentStep && <Stepper currentStep={currentStep} maxSteps={3} /> }
     </div>
   </div>
 );

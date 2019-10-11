@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   largeHeader: 'Account created 🎉',
   smallHeader: 'You’re almost ready to start betting!',
-  progress: 1,
+  currentStep: 1,
   buttons: [
     {
       text: 'Continue',

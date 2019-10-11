@@ -22,7 +22,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   largeHeader: '1. Buy DAI to start betting',
   smallHeader: 'Augur uses a currency called DAI',
   daiGraphic: true,
-  progress: 2,
+  currentStep: 2,
   linkContent: [
     {
       content:

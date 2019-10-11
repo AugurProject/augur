@@ -23,7 +23,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   largeHeader: '2. Run a test bet',
   smallHeader: 'Learn how to place a bet using Augur Trade',
   testBet: true,
-  progress: 3,
+  currentStep: 3,
   linkContent: [
     {
       content:

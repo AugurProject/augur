@@ -345,15 +345,18 @@ export const LinkContentSection = (props: LinkContentSectionProps) => (
   </div>
 );
 
-interface ProgressProps {
-  step: number,
+interface StepperProps {
+  currentStep: number,
+  maxSteps: number,
 }
 
-export const Progress = ({ step }: ProgressProps) => (
-  <div className={Styles.Progress}>
-  <span className={step === 1 ? Styles.Current : null}></span>
-  <span className={step === 2 ? Styles.Current : null}></span>
-  <span className={step === 3 ? Styles.Current : null}></span>
+export const Stepper = ({ currentStep, maxSteps }: StepperProps) => (
+  <div className={Styles.Stepper}>
+  {[...Array(maxSteps).keys()]
+    .map(key => key++)
+    .map((step, idx) => (
+    <span key={idx} className={currentStep === step ? Styles.Current : null}></span>
+  ))}
 </div>
 )
 
