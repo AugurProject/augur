@@ -701,6 +701,7 @@ class Form extends Component<FromProps, FormState> {
                 )}
                 id="tr__input--limit-price"
                 type="number"
+                disabled={!!initialLiquidity}
                 step={MIN_QUANTITY.toFixed()}
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"

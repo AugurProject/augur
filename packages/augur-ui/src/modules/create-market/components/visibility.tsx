@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -172,7 +172,9 @@ export default class Visibility extends Component<
       numTicks: numTicks.toFixed(),
       numOutcomes: outcomesFormatted.length,
       marketType: marketTypeNumber,
-      marketFeeDivisor: `${settlementFee}`,
+      feePerCashInAttoCash: `${createBigNumber(settlementFee)
+        .multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER)
+        .toString()}`,
       reportingFeeDivisor: '0',
       spread: parseInt(MAX_SPREAD_10_PERCENT),
     };
