@@ -274,7 +274,7 @@ export default class Review extends React.Component<
         <LineBreak />
         <Header text="Resolution information" />
         <div>
-          <DateTimeHeaders header="Event expiration date and time" timezone={timezone} subheader={endTimeFormatted.formattedUtc} timezoneDateTime={endTimeFormatted.formattedTimezone} />
+          <DateTimeHeaders header="Event expiration date and time" timezone={timezone} subheader={endTimeFormatted && endTimeFormatted.formattedUtc} timezoneDateTime={endTimeFormatted && endTimeFormatted.formattedTimezone} />
           <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
           <SmallSubheaders
             header="Resolution source"
