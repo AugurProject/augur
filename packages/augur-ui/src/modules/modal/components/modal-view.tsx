@@ -42,6 +42,7 @@ import ModalConnect from 'modules/modal/containers/modal-connect';
 import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
+import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -146,6 +147,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
+    case TYPES.MODAL_GLOBAL_CHAT:
+      return <ModalGlobalChat />;
     default:
       return <div />;
   }

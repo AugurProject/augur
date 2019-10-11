@@ -103,4 +103,36 @@
       }
     }
   }
+
+  @media @breakpoint-mobile {
+    position: static;
+    margin-left: auto;
+    z-index: @mask-toast;
+
+    // Open global chat window
+    > div {
+      background-color: @color-module-background;
+      border: 1px solid @color-dark-grey;
+      height: 100vh;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100vw;
+      z-index: @mask-toast;
+
+      // Header section
+      > div:first-of-type {
+        > button {
+          margin: 0 20px 0 auto;
+
+          > svg {
+            height: @size-8;
+            fill: @color-primary-text;
+            margin: 0;
+            width: @size-8;
+          }
+        }
+      }
+    }
+  }
 }
