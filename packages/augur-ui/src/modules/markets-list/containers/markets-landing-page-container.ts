@@ -20,10 +20,8 @@ import {
 } from 'modules/markets-list/actions/update-markets-list';
 import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
 
 const mapStateToProps = (state: AppState, { location }) => {
-  const marketStats = selectMarketStats(state);
   const markets = selectMarkets(state);
 
   return {
