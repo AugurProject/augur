@@ -95,7 +95,8 @@ export interface TemplateInput {
   type: TemplateInputType;
   placeholder: string;
   tooltip?: string;
-  userInput?: UserInputtedType;
+  userInput?: string;
+  userInputObject?: UserInputtedType
   values?: ValueLabelPair[];
 }
 

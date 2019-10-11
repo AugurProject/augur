@@ -708,20 +708,22 @@ export const InputFactory = (props: InputFactoryProps) => {
 };
 
 interface EstimatedStartSelectorProps {
-  input: TemplateInput;
   newMarket: NewMarket;
+  template: Template;
+  input: TemplateInput;
   currentTime: number;
+  updateNewMarket: Function;
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
-  const [endTime, setEndTime] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).endTime : props.currentTime);
-  const [hour, setHour] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).hour : null);
-  const [minute, setMinute] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).minute : null);
-  const [meridiem, setMeridiem] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).meridiem : 'AM');
-  const [timezone, setTimezone] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).timezone : '');
-  const [endTimeFormatted, setEndTimeFormatted] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).endTimeFormatted : '');
-  const [offset, setOffset] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).offset : 0);
-  const [offsetName, setOffsetName] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).offsetName : '');
+  const [endTime, setEndTime] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).endTime : props.currentTime);
+  const [hour, setHour] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).hour : null);
+  const [minute, setMinute] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).minute : null);
+  const [meridiem, setMeridiem] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).meridiem : 'AM');
+  const [timezone, setTimezone] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).timezone : '');
+  const [endTimeFormatted, setEndTimeFormatted] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).endTimeFormatted : '');
+  const [offset, setOffset] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).offset : 0);
+  const [offsetName, setOffsetName] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).offsetName : '');
 
   useEffect(() => {
     const endTimeFormatted = buildformattedDate(
@@ -733,15 +735,23 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       Number(offset)
     );
     setEndTimeFormatted(endTimeFormatted);
-    const userInput = (props.input.userInput ? props.input.userInput : {}) as UserInputDateTime;
-    userInput.endTime = endTime;
-    userInput.hour = hour;
-    userInput.minute = minute;
-    userInput.meridiem = meridiem;
-    userInput.timezone = timezone;
-    userInput.offset = offset;
-    userInput.offsetName = offsetName;
-    userInput.endTimeFormatted = endTimeFormatted;
+    props.input.userInput = endTimeFormatted.formattedUtc;
+    props.template.inputs[props.input.id].userInputObject = {
+      endTime,
+      hour,
+      minute,
+      meridiem,
+      timezone,
+      offset,
+      offsetName,
+      endTimeFormatted,
+    } as UserInputDateTime;
+    const question = buildMarketDescription(props.template.question, props.template.inputs);
+    props.updateNewMarket({
+      description: question,
+      template: props.template
+    });
+
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
 
   return (
@@ -844,8 +854,10 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
       {dateTimeIndex > -1 && (
         <EstimatedStartSelector
           newMarket={newMarket}
+          updateNewMarket={updateNewMarket}
           input={inputs[dateTimeIndex]}
           currentTime={props.currentTime}
+          template={template}
         />
       )}
       {marketType === CATEGORICAL && (
