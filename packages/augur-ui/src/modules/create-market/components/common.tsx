@@ -317,15 +317,6 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   const [dateFocused, setDateFocused] = useState(false);
   const [timeFocused, setTimeFocused] = useState(false);
 
-  useEffect(() => {
-    const timezoneParams = {
-      offset: 0,
-      timezone: '',
-      offsetName: '',
-    };
-    onChange('timezoneDropdown', timezoneParams);
-  }, [dateFocused]);
-
   return (
     <div className={Styles.DateTimeSelector} key={uniqueKey}>
       <Subheaders

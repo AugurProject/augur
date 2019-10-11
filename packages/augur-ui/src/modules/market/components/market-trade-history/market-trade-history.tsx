@@ -1,7 +1,6 @@
 /* eslint react/no-array-index-key: 0 */
 
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { formatShares } from "utils/format-number";
@@ -11,23 +10,15 @@ import OrderHeader from "modules/market-charts/components/order-header/order-hea
 
 import Styles from "modules/market/components/market-trade-history/market-trade-history.styles";
 
-export default class MarketTradeHistory extends Component {
-  static propTypes = {
-    groupedTradeHistoryVolume: PropTypes.object.isRequired,
-    groupedTradeHistory: PropTypes.object.isRequired,
-    toggle: PropTypes.func.isRequired,
-    extend: PropTypes.bool.isRequired,
-    hide: PropTypes.bool.isRequired
-  };
+interface MarketTradeHistoryProps {
+  groupedTradeHistoryVolume: object;
+  groupedTradeHistory: object;
+  toggle: Function;
+  extend: boolean;
+  hide: boolean;
+}
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      // misc: false
-    };
-  }
-
+export default class MarketTradeHistory extends Component<MarketTradeHistoryProps> {
   render() {
     const {
       groupedTradeHistory,
