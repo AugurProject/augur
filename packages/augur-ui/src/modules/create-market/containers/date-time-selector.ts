@@ -4,7 +4,7 @@ import {
   updateNewMarket,
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
-import { DateTimeSelectorComponent } from "modules/create-market/components/common";
+import { DateTimeSelector } from "modules/create-market/components/common";
 import getValue from "utils/get-value";
 
 const mapStateToProps = state => ({
@@ -20,7 +20,7 @@ const DateTimeSelectorContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(DateTimeSelectorComponent)
+  )(DateTimeSelector)
 );
 
 export default DateTimeSelectorContainer;

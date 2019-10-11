@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
 import classNames from 'classnames';
 import moment, { Moment } from 'moment';
 
@@ -58,7 +57,26 @@ interface FormDetailsProps {
   isTemplate?: boolean;
 }
 
-export default class FormDetails extends React.Component<FormDetailsProps, {}> {
+interface FormDetailsState {
+  dateFocused: Boolean;
+  timeFocused: Boolean;
+}
+
+interface TimeSelectorParams {
+  hour?: string;
+  minute?: string;
+  meridiem?: string;
+}
+
+export default class FormDetails extends React.Component<
+  FormDetailsProps,
+  FormDetailsState
+  > {
+  state = {
+    dateFocused: false,
+    timeFocused: false,
+  };
+
   render() {
     const {
       newMarket,
@@ -159,6 +177,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
             <QuestionBuilder
               newMarket={newMarket}
               updateNewMarket={updateNewMarket}
+              currentTime={currentTimestamp}
             />
           )}
           {!isTemplate && (
@@ -172,6 +191,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
                 meridiem={meridiem}
                 timezone={timezone}
                 endTimeFormatted={endTimeFormatted}
+                uniqueKey={'nonTemplateRes'}
               />
 
               <Subheaders
@@ -321,6 +341,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               meridiem={meridiem}
               timezone={timezone}
               endTimeFormatted={endTimeFormatted}
+              uniqueKey={'templateRes'}
             />
           )}
 
