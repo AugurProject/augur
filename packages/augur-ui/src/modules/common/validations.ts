@@ -137,8 +137,8 @@ export function checkOutcomesArray(value) {
 
     let dupes = {};
     value.forEach((outcome, index) => {
-      dupes[outcome] = dupes[outcome] || [];
-      dupes[outcome].push(index);
+      dupes[outcome.toLowerCase()] = dupes[outcome.toLowerCase()] || [];
+      dupes[outcome.toLowerCase()].push(index);
     });
     Object.keys(dupes).map(key => {
       if (dupes[key].length > 1) {

@@ -31,7 +31,6 @@ export interface DropdownProps {
   stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
-  errorMessage?: string;
 }
 
 interface DropdownState {
@@ -99,8 +98,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   shouldComponentUpdate(nextProps: any, nextState: any) {
     if (
       nextState.selected !== this.state.selected ||
-      nextState.showList !== this.state.showList ||
-      nextProps.errorMessage !== this.props.errorMessage
+      nextState.showList !== this.state.showList
     ) {
       return true;
     }
@@ -161,7 +159,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       staticLabel,
       id,
       showColor,
-      errorMessage
     } = this.props;
     const { selected, showList, isDisabled } = this.state;
 
@@ -242,10 +239,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           >
             {selected.label}
           </ReactTooltip>
-        )}
-
-        {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
-          <span>{errorMessage}</span>
         )}
       </div>
     );

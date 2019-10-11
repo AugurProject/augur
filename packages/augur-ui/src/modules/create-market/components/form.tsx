@@ -85,7 +85,7 @@ import { BulkTxLabel } from 'modules/common/labels';
 import {
   tellIfEditableOutcomes,
   createTemplateOutcomes,
-} from '../get-template';
+} from 'modules/create-market/get-template';
 
 interface FormProps {
   newMarket: NewMarket;

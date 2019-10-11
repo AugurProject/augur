@@ -7,6 +7,7 @@ import {
   DatePicker,
   TimeSelector,
   TimezoneDropdown,
+  FormDropdown,
 } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
@@ -31,11 +32,7 @@ import {
   UserInputDateTime,
   createTemplateOutcomes,
 } from 'modules/create-market/get-template';
-import { outcomes } from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import { CATEGORICAL } from 'modules/common/constants';
-import { string } from 'io-ts';
-import newMarket from 'modules/markets/reducers/new-market';
-import { SquareDropdown } from 'modules/common/selection';
 import { buildformattedDate } from 'utils/format-date';
 
 export interface HeaderProps {
@@ -698,7 +695,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return <span>{input.userInput || input.placeholder}</span>;
   } else if (input.type === TemplateInputType.DROPDOWN) {
     return (
-      <SquareDropdown
+      <FormDropdown
         options={input.values}
         staticLabel={input.placeholder}
         errorMessage={validations.inputs[inputIndex]}
