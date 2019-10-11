@@ -31,8 +31,6 @@
   > div {
     background-color: @color-module-background;
     border: 1px solid @color-dark-grey;
-    height: 18.125rem;
-    width: 17.5rem;
 
     // Header section
     > div:first-of-type {
@@ -75,31 +73,10 @@
       }
     }
 
-    // Chat content
-    > div:nth-of-type(2) {
-      .text-10;
-
-      background-color: @color-module-background;
-      color: @color-primary-text;
-      padding: @size-8
-    }
-
-    // Input section
-    > div:nth-of-type(3) {
-      background-color: @color-module-background;
-      border-top: 1px solid @color-dark-grey;
-      bottom: @size-4;
-      height: 2.8125rem;
-      padding: @size-4;
-      position: absolute;
-      width: 100%;
-
-      > textarea {
-        .text-10;
-
-        height: @size-38;
-        resize: none;
-      }
+    iframe {
+      border: 0px;
+      height: 21rem;
+      width: 18.75rem;
     }
   }
 }

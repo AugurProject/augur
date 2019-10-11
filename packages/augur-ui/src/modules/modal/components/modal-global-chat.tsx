@@ -16,17 +16,11 @@ export const ModalGlobalChat = (props: ModalGlobalChatProps) => {
       <div>
         <div>
           <span>Global Chat</span>
-          <span>{props.numberOfPeers} Peers</span>
           <button onClick={() => props.closeModal()}>
             {Close}
           </button>
         </div>
-        <div>
-          Chat content goes here.
-        </div>
-        <div>
-          <textarea placeholder='Type your message...' rows='2'></textarea>
-        </div>
+        <iframe src='https://orbit.chat/#/channel/augur' />
       </div>
     </div>
   );
