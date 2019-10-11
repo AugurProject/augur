@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ReactHtmlParser from "react-html-parser";
@@ -25,7 +24,13 @@ md.block.ruler.disable([
   "lheading",
 ]);
 
-const MarkdownRenderer = ({ text, className, hideLabel }) => {
+interface MarkdownRendererProps {
+  text: string;
+  className?: string;
+  hideLabel?: boolean;
+}
+
+const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text, className, hideLabel }) => {
   if (hideLabel) {
     return (
       <span className={Styles.MarkdownRenderer}>
@@ -39,12 +44,6 @@ const MarkdownRenderer = ({ text, className, hideLabel }) => {
       {ReactHtmlParser(md.render(text))}
     </label>
   );
-};
-
-MarkdownRenderer.propTypes = {
-  text: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  hideLabel: PropTypes.bool,
 };
 
 MarkdownRenderer.defaultProps = {

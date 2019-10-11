@@ -1,13 +1,18 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { UP, DOWN, NONE } from "modules/common/constants";
 import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.styles.less";
 
-export default function OutcomeTradingIndicator({
+interface OutcomeTradingIndicatorProps {
+  tradingIndicator: string;
+  style?: object;
+  location: string;
+}
+
+const OutcomeTradingIndicator: React.FC<OutcomeTradingIndicatorProps> = ({
   tradingIndicator,
   style,
   location
-}) {
+}) => {
   const indicatorArray = {
     [UP]: Styles.Up,
     [DOWN]: Styles.Down,
@@ -94,12 +99,8 @@ export default function OutcomeTradingIndicator({
   );
 }
 
-OutcomeTradingIndicator.propTypes = {
-  tradingIndicator: PropTypes.string.isRequired,
-  style: PropTypes.object,
-  location: PropTypes.string.isRequired
-};
-
 OutcomeTradingIndicator.defaultProps = {
   style: {}
 };
+
+export default OutcomeTradingIndicator

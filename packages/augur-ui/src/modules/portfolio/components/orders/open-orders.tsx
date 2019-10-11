@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
 import FilterSwitchBox from 'modules/portfolio/containers/filter-switch-box';
 import OpenOrder from 'modules/portfolio/containers/open-order';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
+import { MarketData, UIOrder } from 'modules/types';
 
 const sortByOptions = [
   {
@@ -19,20 +18,27 @@ const sortByOptions = [
   },
 ];
 
-export default class OpenOrders extends Component {
-  static propTypes = {
-    markets: PropTypes.array.isRequired,
-    openOrders: PropTypes.array.isRequired,
-    marketsObj: PropTypes.object.isRequired,
-    ordersObj: PropTypes.object.isRequired,
+interface OpenOrdersProps {
+  markets: MarketData[];
+  openOrders: UIOrder[];
+  marketsObj: { [marketId: string]: MarketData };
+  ordersObj: { [orderId: string]: UIOrder };
+  toggle?: () => void;
+  extend?: boolean;
+  hide?: boolean;
+}
+
+interface OpenOrdersState {
+  viewByMarkets: boolean;
+}
+
+export default class OpenOrders extends Component<OpenOrdersProps, OpenOrdersState> {
+  state = {
+    viewByMarkets: true
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      viewByMarkets: true,
-    };
 
     this.filterComp = this.filterComp.bind(this);
     this.switchView = this.switchView.bind(this);
@@ -62,12 +68,12 @@ export default class OpenOrders extends Component {
         market={marketsObj[data.id]}
       />
     ) : (
-      <OpenOrder
-        key={'openOrder_' + data.id}
-        openOrder={ordersObj[data.id]}
-        isSingle
-      />
-    );
+        <OpenOrder
+          key={'openOrder_' + data.id}
+          openOrder={ordersObj[data.id]}
+          isSingle
+        />
+      );
   }
 
   render() {
