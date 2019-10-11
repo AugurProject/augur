@@ -10,7 +10,8 @@ import {
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { ValueLabelPair } from 'modules/types';
-import { Getters } from '@augurproject/sdk/src';
+import { Getters } from '@augurproject/sdk';
+import { formatAttoDai } from 'utils/format-number';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
