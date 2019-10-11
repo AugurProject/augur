@@ -1,10 +1,15 @@
-import * as React from "react";
-import classNames from "classnames";
-import Styles from "modules/common/selection.styles";
-import { ThickChevron, Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles.less";
-import { MARKET_TEMPLATES } from "modules/create-market/constants";
+import * as React from 'react';
+import classNames from 'classnames';
+import Styles from 'modules/common/selection.styles';
+import {
+  ThickChevron,
+  Chevron,
+  DotDotDot,
+  TwoArrows,
+} from 'modules/common/icons';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 
 export interface NameValuePair {
   label: string;
@@ -26,6 +31,7 @@ export interface DropdownProps {
   stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
+  errorMessage?: string;
 }
 
 interface DropdownState {
@@ -64,22 +70,24 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     showList: false,
     scrollWidth: null,
     clientWidth: null,
-    isDisabled: true
+    isDisabled: true,
   };
 
   componentDidMount() {
     this.measure();
-    window.addEventListener("click", this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.defaultValue !== nextProps.defaultValue) {
       this.setState({
-        selected: nextProps.options.find(o => o.value === nextProps.defaultValue),
+        selected: nextProps.options.find(
+          o => o.value === nextProps.defaultValue
+        ),
       });
     }
   }
@@ -89,7 +97,13 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
-    if (nextState.selected !==  this.state.selected || nextState.showList !== this.state.showList) return true;
+    if (
+      nextState.selected !== this.state.selected ||
+      nextState.showList !== this.state.showList ||
+      nextProps.errorMessage !== this.props.errorMessage
+    ) {
+      return true;
+    }
 
     return (
       this.state.scrollWidth !== nextState.scrollWidth ||
@@ -104,9 +118,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     this.setState({
       scrollWidth,
       clientWidth,
-      isDisabled: !(scrollWidth > clientWidth)
+      isDisabled: !(scrollWidth > clientWidth),
     });
-  }
+  };
 
   refDropdown: any = null;
 
@@ -114,7 +128,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     const { onChange } = this.props;
     if (selected !== this.state.selected) {
       this.setState({
-        selected
+        selected,
       });
 
       if (onChange) {
@@ -146,7 +160,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       activeClassName,
       staticLabel,
       id,
-      showColor
+      showColor,
+      errorMessage
     } = this.props;
     const { selected, showList, isDisabled } = this.state;
 
@@ -161,7 +176,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
-          [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]: selected && showColor
+          [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]:
+            selected && showColor,
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
@@ -170,14 +186,16 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         tabIndex={0}
         onClick={this.toggleList}
         data-tip
-        data-for={"dropdown-"+id+staticLabel}
+        data-for={'dropdown-' + id + staticLabel}
       >
         <button
           className={classNames(Styles.label, {
-            [Styles.SelectedLabel]: selected
+            [Styles.SelectedLabel]: selected,
           })}
         >
-          <span ref={ref => (this.labelRef = ref)}>{selected ? selected.label : staticLabel}</span>
+          <span ref={ref => (this.labelRef = ref)}>
+            {selected ? selected.label : staticLabel}
+          </span>
           {ThickChevron}
         </button>
         <div
@@ -195,7 +213,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             </button>
           ))}
         </div>
-        {selected &&
+        {selected && (
           <select
             onChange={e => {
               this.dropdownSelect(e.target.options[e.target.selectedIndex]);
@@ -203,15 +221,18 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             value={selected.value}
           >
             {options.map(option => (
-              <option key={`${option.value}${option.label}`} value={option.value}>
+              <option
+                key={`${option.value}${option.label}`}
+                value={option.value}
+              >
                 {option.label}
               </option>
             ))}
           </select>
-        }
+        )}
         {!isDisabled && (
           <ReactTooltip
-            id={"dropdown-"+id+staticLabel}
+            id={'dropdown-' + id + staticLabel}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
@@ -221,6 +242,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           >
             {selected.label}
           </ReactTooltip>
+        )}
+
+        {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
+          <span>{errorMessage}</span>
         )}
       </div>
     );
@@ -233,13 +258,22 @@ export class StaticLabelDropdown extends Dropdown {
   componentDidMount() {
     if (this.props.defaultValue) {
       this.setState({
-        selected: this.props.options.find(o => o.value === this.props.defaultValue),
+        selected: this.props.options.find(
+          o => o.value === this.props.defaultValue
+        ),
       });
     }
   }
 
   render() {
-    const { sortByStyles, options, large, staticLabel, highlight, defaultValue } = this.props;
+    const {
+      sortByStyles,
+      options,
+      large,
+      staticLabel,
+      highlight,
+      defaultValue,
+    } = this.props;
     const { selected, showList } = this.state;
     if (!selected) {
       return null;
@@ -267,7 +301,7 @@ export class StaticLabelDropdown extends Dropdown {
         </button>
         <div
           className={classNames({
-            [`${Styles.active}`]: showList
+            [`${Styles.active}`]: showList,
           })}
         >
           {options.map(option => (
@@ -304,14 +338,14 @@ export class PillSelection extends React.Component<
   PillSelectionState
 > {
   state: PillSelectionState = {
-    selected: this.props.defaultSelection || 0
+    selected: this.props.defaultSelection || 0,
   };
 
   buttonSelect = (option: SelectionOption) => {
     const { onChange } = this.props;
     if (option.id !== this.state.selected) {
       this.setState({
-        selected: option.id
+        selected: option.id,
       });
       onChange(option.id);
     }
@@ -320,7 +354,7 @@ export class PillSelection extends React.Component<
   renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
-        [Styles.Selected]: this.state.selected === option.id
+        [Styles.Selected]: this.state.selected === option.id,
       })}
       key={option.label}
     >
@@ -346,15 +380,15 @@ export class DotSelection extends React.Component<
   DotSelectionState
 > {
   state: DotSelectionState = {
-    toggleMenu: false
+    toggleMenu: false,
   };
 
   componentDidMount() {
-    document.addEventListener("mousedown", this.handleWindowOnClick);
+    document.addEventListener('mousedown', this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("mousedown", this.handleWindowOnClick);
+    document.removeEventListener('mousedown', this.handleWindowOnClick);
   }
 
   refMenu: any = null;
@@ -372,7 +406,7 @@ export class DotSelection extends React.Component<
 
   toggleMenu() {
     this.setState({
-      toggleMenu: !this.state.toggleMenu
+      toggleMenu: !this.state.toggleMenu,
     });
   }
 
@@ -380,7 +414,7 @@ export class DotSelection extends React.Component<
     return (
       <div
         className={classNames(Styles.DotSelection, {
-          [Styles.MenuOpen]: this.state.toggleMenu
+          [Styles.MenuOpen]: this.state.toggleMenu,
         })}
       >
         <button
