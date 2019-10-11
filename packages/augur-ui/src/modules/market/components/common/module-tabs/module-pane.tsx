@@ -1,10 +1,10 @@
-import PropTypes from "prop-types";
+interface ModulePane {
+  label?: string;
+  onClickCallback?: Function
+}
 
-const ModulePane = p => p.children;
-
-ModulePane.propTypes = {
-  label: PropTypes.string,
-  onClickCallback: PropTypes.func
+const ModulePane: React.FC<ModulePane> = ({ children }) => {
+  return children
 };
 
 export default ModulePane;

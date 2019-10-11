@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ModalReceipt from "modules/modal/components/common/modal-receipt";
@@ -12,13 +11,13 @@ import Styles from "modules/modal/components/common/common.styles.less";
 
 interface ModalReviewProps {
   title: string;
-  items: Array<any>;
-  buttons: Array<any>;
-  description?: Array<string>;
+  items: any[];
+  buttons: any[];
+  description?: string[];
   type?: string;
 }
 
-const ModalReview = ({ title, items, buttons, description = [], type = "" }: ModalReviewProps) => (
+const ModalReview: React.FC<ModalReviewProps> = ({ title, items, buttons, description, type }) => (
   <section
     className={classNames({
       [`${Styles.ModalContainer}`]: type === MODAL_REVIEW,
@@ -31,5 +30,10 @@ const ModalReview = ({ title, items, buttons, description = [], type = "" }: Mod
     <ModalActions buttons={buttons} />
   </section>
 );
+
+ModalReview.defaultProps = {
+  description: [],
+  type: ""
+}
 
 export default ModalReview;
