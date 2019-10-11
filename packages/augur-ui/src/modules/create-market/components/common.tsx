@@ -724,7 +724,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   const [endTimeFormatted, setEndTimeFormatted] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).endTimeFormatted : '');
   const [offset, setOffset] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).offset : 0);
   const [offsetName, setOffsetName] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).offsetName : '');
-
+  let userInput = `[Est. Start Datetime]`;
   useEffect(() => {
     const endTimeFormatted = buildformattedDate(
       Number(endTime),
@@ -735,7 +735,9 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       Number(offset)
     );
     setEndTimeFormatted(endTimeFormatted);
-    props.input.userInput = endTimeFormatted.formattedUtc;
+    if (hour !== null && minute !== null) {
+      userInput = endTimeFormatted.formattedUtc;
+    }
     props.template.inputs[props.input.id].userInputObject = {
       endTime,
       hour,
@@ -746,6 +748,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       offsetName,
       endTimeFormatted,
     } as UserInputDateTime;
+    props.template.inputs[props.input.id].userInput = userInput;
     const question = buildMarketDescription(props.template.question, props.template.inputs);
     props.updateNewMarket({
       description: question,
