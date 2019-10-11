@@ -9,7 +9,7 @@ import {
   MARKET_TYPE_TEMPLATES,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import { ValueLabelPair } from 'modules/types';
+import { ValueLabelPair, DateFormattedObject, TimezoneDateObject } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -41,10 +41,14 @@ export interface UserInputText {
 
 export interface UserInputDateYear extends UserInputText {}
 export interface UserInputDateTime {
-  year: string;
-  day: string;
-  minute: string;
+  endTime: number;
+  hour?: number;
+  minute?: number;
+  meridiem: string;
   timezone: string;
+  offset: number;
+  offsetName: string;
+  endTimeFormatted: TimezoneDateObject;
 }
 export interface UserInputDropdown extends UserInputText {}
 export interface UserInputUserOutcome extends UserInputText {}
@@ -91,7 +95,8 @@ export interface TemplateInput {
   type: TemplateInputType;
   placeholder: string;
   tooltip?: string;
-  userInput?: UserInputtedType;
+  userInput?: string;
+  userInputObject?: UserInputtedType
   values?: ValueLabelPair[];
 }
 

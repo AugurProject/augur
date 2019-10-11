@@ -155,7 +155,7 @@ interface TimezoneDropdownProps {
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
-  const [value, setValue] = useState(UTC_Default);
+  const [value, setValue] = useState(props.timezone ? props.timezone : UTC_Default);
   const [timezones, setTimezones] = useState(getTimezones(props.timestamp));
   useEffect(() => {
     props.timezone ? setValue(props.timezone): setValue(UTC_Default);
@@ -1337,6 +1337,7 @@ interface TimeSelectorProps {
   onDateChange: Function;
   focused?: boolean;
   errorMessage?: string;
+  uniqueKey?: string;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1382,12 +1383,14 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       meridiem,
       focused,
       errorMessage,
+      uniqueKey
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
 
     return (
       <div
+        key={`timeSelector${uniqueKey}`}
         className={Styles.TimeSelector}
         ref={timeSelector => {
           this.timeSelector = timeSelector;

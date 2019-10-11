@@ -6,7 +6,7 @@ import ModulePane from 'modules/market/components/common/module-tabs/module-pane
 import MarketOutcomesChart from 'modules/market-charts/containers/market-outcomes-chart';
 import { TEMP_TABLET } from 'modules/common/constants';
 
-import { Candlestick } from 'modules/market/components/market-view-charts/candlestick';
+import { Candlestick } from 'modules/market-charts/components/market-outcome-charts--candlestick/candlestick';
 import MarketDepth from 'modules/market-charts/containers/market-outcome-chart-depth';
 import { BigNumber } from 'bignumber.js';
 import { MarketData } from 'modules/types';
@@ -74,7 +74,8 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
     } = this.props;
-    const s = this.state;
+    const { hoveredPrice, hoveredDepth } = this.state;
+    const shared = { marketId, selectedOutcomeId };
 
     return (
       <Media query={TEMP_TABLET}>
@@ -84,9 +85,8 @@ export default class MarketChartsPane extends Component<
               <ModulePane label="Candlesticks">
                 {!preview && (
                   <Candlestick
+                    {...shared}
                     currentTimeInSeconds={currentTimestamp}
-                    marketId={marketId}
-                    selectedOutcomeId={selectedOutcomeId}
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                     daysPassed={daysPassed}
@@ -96,11 +96,10 @@ export default class MarketChartsPane extends Component<
               </ModulePane>
               <ModulePane label="Market Depth">
                 <MarketDepth
-                  marketId={marketId}
-                  selectedOutcomeId={selectedOutcomeId}
+                  {...shared}
                   updateSelectedOrderProperties={updateSelectedOrderProperties}
-                  hoveredPrice={s.hoveredPrice}
-                  hoveredDepth={s.hoveredDepth}
+                  hoveredPrice={hoveredPrice}
+                  hoveredDepth={hoveredDepth}
                   updateHoveredDepth={this.updateHoveredDepth}
                   updateHoveredPrice={this.updateHoveredPrice}
                   market={preview && market}
@@ -113,17 +112,15 @@ export default class MarketChartsPane extends Component<
               <ModulePane label="Price History">
                 {!preview && (
                   <MarketOutcomesChart
-                    marketId={marketId}
-                    selectedOutcomeId={selectedOutcomeId}
+                    {...shared}
                   />
                 )}
               </ModulePane>
               <ModulePane label="Candlesticks">
                 {!preview && (
                   <Candlestick
+                    {...shared}
                     currentTimeInSeconds={currentTimestamp}
-                    marketId={marketId}
-                    selectedOutcomeId={selectedOutcomeId}
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                     daysPassed={daysPassed}
@@ -132,11 +129,10 @@ export default class MarketChartsPane extends Component<
               </ModulePane>
               <ModulePane label="Market Depth">
                 <MarketDepth
-                  marketId={marketId}
-                  selectedOutcomeId={selectedOutcomeId}
+                  {...shared}
                   updateSelectedOrderProperties={updateSelectedOrderProperties}
-                  hoveredPrice={s.hoveredPrice}
-                  hoveredDepth={s.hoveredDepth}
+                  hoveredPrice={hoveredPrice}
+                  hoveredDepth={hoveredDepth}
                   updateHoveredDepth={this.updateHoveredDepth}
                   updateHoveredPrice={this.updateHoveredPrice}
                   market={preview && market}
