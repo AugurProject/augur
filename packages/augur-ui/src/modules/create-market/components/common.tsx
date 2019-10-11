@@ -329,7 +329,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   return (
     <div className={Styles.DateTimeSelector} key={uniqueKey}>
       <Subheaders
-        header={header ? header : 'Reporting start date and time'}
+        header={header ? header : 'Event Expiration date and time'}
         subheader={
           subheader
             ? subheader
