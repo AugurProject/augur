@@ -20,13 +20,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: 'Learn how to place a bet on Augur ',
+  largeHeader: '2. Run a test bet',
+  smallHeader: 'Learn how to place a bet using Augur Trade',
   testBet: true,
-  mediumHeader: 'Place a test bet',
+  progress: 3,
   linkContent: [
     {
       content:
-        'Want some guidance on how to place a bet on Augur? Place a test bet right now to see how it works. You’ll get guidance and tips to help you get started.',
+        'Place a quick test bet right now to see how betting works on Augur. You’ll get guidance and tips to help you get started.',
     },
   ],
   buttons: [
@@ -39,7 +40,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       },
     },
     {
-      text: 'Do it later',
+      text: 'Finish',
       action: () => {
         dP.setOnboardingSeen();
         dP.closeModal();

@@ -329,6 +329,7 @@ export const MediumSubheader = (props: BaseSubheaderProps) => (
 interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
+
 export const LinkContentSection = (props: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
     {props.linkContent.map((content, idx) => (
@@ -343,6 +344,18 @@ export const LinkContentSection = (props: LinkContentSectionProps) => (
     ))}
   </div>
 );
+
+interface ProgressProps {
+  step: number,
+}
+
+export const Progress = ({ step }: ProgressProps) => (
+  <div className={Styles.Progress}>
+  <span className={step === 1 ? Styles.Current : null}></span>
+  <span className={step === 2 ? Styles.Current : null}></span>
+  <span className={step === 3 ? Styles.Current : null}></span>
+</div>
+)
 
 export const DaiGraphic = () => (
   <div className={Styles.DaiGraphic}>

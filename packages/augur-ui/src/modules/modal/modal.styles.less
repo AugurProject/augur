@@ -142,6 +142,7 @@
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
   line-height: 140%;
+  text-align: center;
 
   > div > a {
     color: @color-primary-action;
@@ -151,24 +152,73 @@
 div.Onboarding {
   .Message;
 
+  align-items: center;
+  height: 454px;
+  justify-content: center;
   padding: @size-32 @size-40;
+  width: 454px;
+
+  @media @breakpoint-mobile-new {
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    max-height: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
 
   > main {
-    padding: 0;
-    justify-content: center;
     display: flex;
+    flex: 2;
     flex-direction: column;
+    justify-content: center;
+    padding: 0;
+
+    > div:first-of-type {
+      text-align: center;
+    }
   }
 
   > div:last-of-type {
+    align-items: center;
     border-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 0;
+
+    > div:first-of-type {
+      display: flex;
+      flex-direction: row-reverse;
+
+      > button {
+        margin-right: @size-16;
+      }
+    }
   }
 
   @media @breakpoint-mobile-new {
     padding: @size-24;
   }
 }
+
+.Progress {
+  display: flex;
+  margin-top: @size-32;
+
+  > span {
+    background: @color-inactive-text;
+    border-radius: 50%;
+    height: @size-8;
+    margin-right: @size-10;
+    width: @size-8;
+
+    &.Current {
+      background: @color-primary-text;
+    }
+  }
+}
+
 
 .TitleHeader {
   align-items: center;
@@ -756,6 +806,12 @@ div.ButtonsRow:last-of-type {
     color: @color-secondary-text;
     text-align: center;
     margin-top: @size-28;
+  }
+
+  > button {
+    position: absolute;
+    right: @size-12;
+    top: @size-12;
   }
 }
 
@@ -1709,6 +1765,7 @@ div.ButtonsRow:last-of-type {
   border-left: solid @size-12 transparent;
   border-right: solid @size-12 transparent;
   position: absolute;
+  right: @size-16;
   top: -6px;
 }
 
