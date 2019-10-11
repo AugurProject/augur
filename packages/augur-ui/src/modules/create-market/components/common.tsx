@@ -14,7 +14,7 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
 import { Error } from 'modules/common/form';
 import Styles from 'modules/create-market/components/common.styles.less';
-import { FormattedNumber, DateFormattedObject, NewMarket } from 'modules/types';
+import { FormattedNumber, DateFormattedObject, NewMarket, TimezoneDateObject } from 'modules/types';
 import moment, { Moment } from 'moment';
 import {
   TemplateInputType,
@@ -286,7 +286,7 @@ interface DateTimeSelectorProps {
   minute: string;
   meridiem: string;
   timezone: string;
-  endTimeFormatted: DateFormattedObject;
+  endTimeFormatted: TimezoneDateObject | DateFormattedObject;
   header?: string;
   subheader?: string;
   uniqueKey?: string;
