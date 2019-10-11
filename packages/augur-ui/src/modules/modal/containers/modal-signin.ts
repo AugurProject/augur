@@ -19,6 +19,8 @@ import {
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_SIGN_WALLET,
+  MODAL_BUY_DAI,
+  ONBOARDING_SEEN_KEY,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -47,6 +49,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   connectModal: loginOrSignup =>
     dispatch(updateModal({ type: MODAL_CONNECT, loginOrSignup })),
+  buyDaiModal: () =>
+    dispatch(updateModal({ type: MODAL_BUY_DAI })),
   loadingModal: (message, callback, showMetaMaskHelper = false) =>
     dispatch(
       updateModal({
@@ -79,10 +83,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const redirect = () => {
     dP.closeModal();
 
-    if (oP.isLogin) {
-      oP.history.push({ pathname: makePath(MARKETS, null) });
-    } else {
-      oP.history.push({ pathname: makePath(LANDING_PAGE, null) });
+    oP.history.push({ pathname: makePath(MARKETS, null) });
+
+    const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
+    if (!showOnboardingSeen) {
+      // Kicks off onboarding
+      dP.buyDaiModal();
     }
   };
 
@@ -137,21 +143,22 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
     },
     {
-      type: ACCOUNT_TYPES.METAMASK,
+      type: ACCOUNT_TYPES.WEB3WALLET,
       icon: MetaMaskLogin,
-      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.METAMASK}`,
-      subText: `Powered by ${ACCOUNT_TYPES.METAMASK}`,
+      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
+      subText: ``,
       disabled: false,
       hidden: !isMetaMaskPresent(),
       action: async () => {
         const accounts =
           windowRef.ethereum && windowRef.ethereum.selectedAddress;
         const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
-        dP.loadingModal(msg, () => redirect(), accounts ? false : true);
+        const showMetaMaskHelper = accounts ? false : true;
+        dP.loadingModal(msg, () => redirect(), showMetaMaskHelper);
         try {
           await dP.connectMetaMask();
         } catch (error) {
-          onError(error, ACCOUNT_TYPES.METAMASK);
+          onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }
       },
     },

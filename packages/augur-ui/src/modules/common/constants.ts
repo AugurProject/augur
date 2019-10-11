@@ -82,6 +82,7 @@ export const ACCOUNT_TYPES = {
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
+  WEB3WALLET: 'MetaMask / Web3', // Mobile Wallets + Extensions (MetaMask, Dapper, Trust, Coinbase)
   UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
 };
 
@@ -114,49 +115,6 @@ export const ERROR_TYPES = {
     subheader: 'Portis is only available on mainnet/kovan/localhost',
   },
 };
-
-const DEFAULT_ITEM_INDEX = 0;
-export const ITEMS = [
-  {
-    param: ACCOUNT_TYPES.PORTIS,
-    title: 'Portis',
-    icon: Portis,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.FORTMATIC,
-    title: 'Fortmatic',
-    icon: Fortmatic,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.METAMASK,
-    title: 'Metamask / Web 3 Provider',
-    icon: MetaMask,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.TREZOR,
-    title: 'Trezor',
-    icon: Trezor,
-    type: WALLET_TYPE.HARDWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.LEDGER,
-    title: 'Ledger',
-    icon: Ledger,
-    type: WALLET_TYPE.HARDWARE,
-  },
-];
-if (!process.env.AUGUR_HOSTED) {
-  ITEMS.unshift({
-    param: ACCOUNT_TYPES.EDGE,
-    title: 'Edge',
-    icon: Edge,
-    type: WALLET_TYPE.SOFTWARE,
-  });
-}
-ITEMS[DEFAULT_ITEM_INDEX].default = true;
 
 // sidebar related constants
 export const MOBILE_MENU_STATES = {
@@ -493,6 +451,8 @@ export const PERIODS = [
 export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
+export const ONBOARDING_SEEN_KEY = 'onboardingSeen';
+
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
@@ -524,6 +484,7 @@ export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
 export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
 export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
+export const MODAL_TEST_BET = 'MODAL_TEST_BET';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';

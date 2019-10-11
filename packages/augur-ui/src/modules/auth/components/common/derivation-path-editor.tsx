@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
@@ -7,19 +6,24 @@ import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
 import Styles from "modules/auth/components/common/derivation-path-editor.styles";
 import FormStyles from "modules/common/form-styles";
 
-export default class DerivationPathEditor extends Component {
-  static propTypes = {
-    validatePath: PropTypes.func.isRequired,
-    isClicked: PropTypes.bool.isRequired
+interface DerivationPathEditorProps {
+  validatePath: (path: string) => void;
+  isClicked: boolean;
+}
+
+interface DerivationPathEditorState {
+  selectedDefaultPath: boolean;
+  customPath: string;
+}
+
+export default class DerivationPathEditor extends Component<DerivationPathEditorProps, DerivationPathEditorState> {
+  state = {
+    selectedDefaultPath: true,
+    customPath: ""
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectedDefaultPath: true,
-      customPath: ""
-    };
 
     this.selectDerivationPath = this.selectDerivationPath.bind(this);
     this.focusTextInput = this.focusTextInput.bind(this);

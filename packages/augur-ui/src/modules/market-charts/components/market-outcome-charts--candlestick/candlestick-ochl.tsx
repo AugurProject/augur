@@ -1,8 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles.less";
 
-export const CandlestickOchl = ({ hoveredPeriod, pricePrecision }) => (
+interface CandlestickOchlProps {
+  hoveredPeriod?: {
+    open?: number;
+    close?: number;
+    high?: number;
+    low?: number;
+  };
+  pricePrecision: number;
+}
+
+export const CandlestickOchl: React.FC<CandlestickOchlProps> = ({ hoveredPeriod, pricePrecision }) => (
   <div className={Styles.MarketOutcomeChartsHeader__stats}>
     <span>
       {hoveredPeriod.open && (
@@ -39,11 +48,6 @@ export const CandlestickOchl = ({ hoveredPeriod, pricePrecision }) => (
     <span>DAI</span>
   </div>
 );
-
-CandlestickOchl.propTypes = {
-  hoveredPeriod: PropTypes.object,
-  pricePrecision: PropTypes.number.isRequired,
-};
 
 CandlestickOchl.defaultProps = {
   hoveredPeriod: {},

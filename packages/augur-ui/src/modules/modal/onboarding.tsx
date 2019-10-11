@@ -1,17 +1,18 @@
-import React from "react";
+import React from 'react';
 
-import { DefaultButtonProps } from "modules/common/buttons";
+import { DefaultButtonProps } from 'modules/common/buttons';
 import {
   ButtonsRow,
   LargeSubheader,
   SmallSubheader,
   MediumSubheader,
   DaiGraphic,
-  LinkContentSection
-} from "modules/modal/common";
+  TestBet,
+  LinkContentSection,
+} from 'modules/modal/common';
 
-import Styles from "modules/modal/modal.styles.less";
-import { LinkContent } from "modules/types";
+import Styles from 'modules/modal/modal.styles.less';
+import { LinkContent } from 'modules/types';
 
 interface OnboardingProps {
   closeAction: Function;
@@ -21,6 +22,7 @@ interface OnboardingProps {
   daiGraphic?: boolean;
   mediumHeader?: string;
   linkContent?: LinkContent[];
+  testBet?: boolean;
 }
 
 export const Onboarding = ({
@@ -30,14 +32,16 @@ export const Onboarding = ({
   daiGraphic,
   mediumHeader,
   linkContent,
+  testBet,
 }: OnboardingProps) => (
   <div className={Styles.Onboarding}>
     <main>
-        {largeHeader && <LargeSubheader text={largeHeader} />}
-        {smallHeader && <SmallSubheader text={smallHeader} />}
-        {daiGraphic && <DaiGraphic />}
-        {mediumHeader && <MediumSubheader text={mediumHeader} />}
-        {linkContent && <LinkContentSection linkContent={linkContent} />}
+      {largeHeader && <LargeSubheader text={largeHeader} />}
+      {smallHeader && <SmallSubheader text={smallHeader} />}
+      {daiGraphic && <DaiGraphic />}
+      {testBet && <TestBet />}
+      {mediumHeader && <MediumSubheader text={mediumHeader} />}
+      {linkContent && <LinkContentSection linkContent={linkContent} />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

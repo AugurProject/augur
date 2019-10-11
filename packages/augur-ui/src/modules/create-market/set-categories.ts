@@ -1,13 +1,7 @@
+import { SortedGroup } from 'modules/types';
 import { CUSTOM } from 'modules/common/constants';
 
-export interface SortedGroup {
-  value: string;
-  label: string;
-  subGroup?: Array<SortedGroup>;
-  autoCompleteList?: Array<SortedGroup>;
-}
-
-export const setCategories: Array<SortedGroup> = [
+export const setCategories: SortedGroup[] = [
   {
     value: 'Sports',
     label: 'Sports',
@@ -594,10 +588,6 @@ export const setCategories: Array<SortedGroup> = [
           {
             value: 'Charles Schwab Cup Championship',
             label: 'Charles Schwab Cup Championship',
-          },
-          {
-            value: 'Australian PGA Championship',
-            label: 'Australian PGA Championship',
           },
           {
             value: 'Australian PGA Championship',

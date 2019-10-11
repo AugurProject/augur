@@ -13,7 +13,7 @@
   }
 }
 
-.WalletProvider, .TxFee, .Logout, .AddFunds, .AccountFunds  {
+.WalletProvider, .GasEdit, .TxFee, .Logout, .AddFunds, .AccountFunds  {
   align-items: center;
   background: @color-module-background;
   border-bottom: 1px solid @color-dark-grey;
@@ -77,7 +77,7 @@
   }
 }
 
-.WalletProvider {
+.WalletProvider, .GasEdit {
   > div > div:first-of-type {
     .mono-9-bold;
 
@@ -104,6 +104,12 @@
       height: @size-9;
       margin-left: @size-5;
     }
+  }
+}
+
+.WalletProvider.MetaMask{
+  @media @breakpoint-mobile {
+    display: none;
   }
 }
 

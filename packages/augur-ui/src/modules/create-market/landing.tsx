@@ -1,27 +1,25 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from "react";
 
 import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
-import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
+import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 
-import Styles from "modules/create-market/landing.styles";
+import Styles from "modules/create-market/landing.styles.less";
+import { getTemplateRadioCards } from "./get-template";
+import { NewMarket } from "modules/types";
+
 
 interface LandingProps {
-  newMarket: Object;
-  updateNewMarket: Function;
-  address: String;
-  updatePage: Function;
-  clearNewMarket: Function;
+  newMarket: NewMarket;
+  updateNewMarket: (newMarketData: NewMarket) => void;
+  address: string;
+  updatePage: (page: string) => void;
+  clearNewMarket: () => void;
 }
 
-export default class Landing extends React.Component<
-  LandingProps,
-  {}
-> {
+export default class Landing extends React.Component<LandingProps> {
 
   componentDidMount() {
     this.node.scrollIntoView();
@@ -34,21 +32,21 @@ export default class Landing extends React.Component<
       newMarket,
       clearNewMarket
     } = this.props;
-    const s = this.state;
 
     return (
-      <div 
+      <div
         ref={node => {
           this.node = node;
         }}
         className={Styles.Landing}
       >
-        <XLargeSubheaders header={"Create a new market"}>
-          Augur allows <span>anyone</span>, <span>anywhere</span>, to create a market on <span>anything</span>
+        <XLargeSubheaders header={'Create a new market'}>
+          Augur allows <span>anyone</span>, <span>anywhere</span>, to create a
+          market on <span>anything</span>
         </XLargeSubheaders>
 
         <div>
-          <SavedDrafts updatePage={updatePage}/>
+          <SavedDrafts updatePage={updatePage} />
 
           <ContentBlock>
             <LargeSubheaders
@@ -61,15 +59,21 @@ export default class Landing extends React.Component<
             <section>
               <RadioCardGroup
                 onChange={(value: string) => {
-                  const updatedNewMarket = {...newMarket};
+                  const updatedNewMarket = { ...newMarket };
                   updatedNewMarket.categories[0] = value;
+                  updatedNewMarket.categories[1] = '';
+                  updatedNewMarket.categories[2] = '';
                   updatedNewMarket.currentStep = 1;
                   updateNewMarket(updatedNewMarket);
-                  updatePage(TEMPLATE)
+                  updatePage(TEMPLATE);
                 }}
-                radioButtons={MARKET_TEMPLATES}
+                radioButtons={getTemplateRadioCards({
+                  primary: '',
+                  secondary: '',
+                  tertiary: '',
+                })}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine /> 
+                <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>
@@ -80,8 +84,8 @@ export default class Landing extends React.Component<
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />
-            <SecondaryButton 
-              text="Create a custom market" 
+            <SecondaryButton
+              text="Create a custom market"
               action={() => {
                 clearNewMarket();
                 updatePage(SCRATCH);

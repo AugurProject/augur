@@ -124,6 +124,18 @@
   }
 }
 
+.TestBet {
+  margin: @size-42 0 @size-36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > img {
+    width: 230px;
+    height: 129px;
+  }
+}
+
 .LinkContentSection {
   .text-12;
 
@@ -131,9 +143,8 @@
   color: @color-secondary-text;
   line-height: 140%;
 
-  > a {
+  > div > a {
     color: @color-primary-action;
-    margin-left: @size-4;
   }
 }
 
@@ -228,6 +239,12 @@ div.ButtonsRow:last-of-type {
     color: @color-secondary-text;
     line-height: 140%;
     margin-bottom: @size-3;
+
+    > span {
+      width: @size-16;
+      height: @size-16;
+      margin: 0 @size-2;
+    }
   }
 
   @media @breakpoint-mobile-new {
@@ -243,6 +260,22 @@ div.ButtonsRow:last-of-type {
 }
 
 .AddFunds {
+
+
+  &.hideOnMobile {
+    @media @breakpoint-mobile-new {
+      display: none;
+    }
+  }
+
+  &.hideOnDesktop {
+    display: none;
+
+    @media @breakpoint-mobile-new {
+      display: flex;
+    }
+  }
+
   .Container;
 
   flex-direction: row;
@@ -439,6 +472,49 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.AddFundsToolTip {
+  > label {
+    display: inline;
+  }
+}
+
+.DaiEthSelector {
+  display: flex;
+
+  > div {
+    .text-16-bold;
+
+    align-items: center;
+    background: @color-secondary-action;
+    border: 2px solid @color-secondary-action-outline;
+    border-radius: @border-radius-rounded;
+    cursor: pointer;
+    color: @color-primary-text;
+    display: flex;
+    height: 54px;
+    justify-content: center;
+    padding: @size-16 @size-14;
+
+    &.selected {
+      border: 2px solid @color-primary-action;
+      }
+
+    > svg {
+      height: @size-32;
+      width: @size-32;
+      fill: @color-primary-text;
+    }
+  }
+
+  > div:last-of-type {
+    margin-left: @size-12;
+
+    > svg {
+      height: @size-24;
+    }
+  }
+}
+
 .CondensedContainer {
   .Container;
 
@@ -468,7 +544,7 @@ div.ButtonsRow:last-of-type {
   max-width: @login-signup-modal-width;
   padding: 48px 56px;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-new {
     padding: @size-24;
     flex: 1;
     max-width: unset;
@@ -484,7 +560,7 @@ div.ButtonsRow:last-of-type {
   top: 17px;
   width: @size-12;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-new {
     height: @size-16;
     width: @size-16;
   }
@@ -495,7 +571,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .SignIn {
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-new {
     padding-top: 57px;
   }
 
@@ -509,7 +585,7 @@ div.ButtonsRow:last-of-type {
     justify-content: space-between;
     margin-bottom: @size-32;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-new {
       align-items: end;
       flex-direction: column;
     }
@@ -519,7 +595,7 @@ div.ButtonsRow:last-of-type {
 
       color: @color-primary-text;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-new {
         margin-bottom: @size-4;
       }
     }
@@ -1581,25 +1657,24 @@ div.ButtonsRow:last-of-type {
   .mono-12;
 
   align-items: center;
-  border: 1px solid @color-secondary-action;
-  border-radius: @border-radius-default;
+  background: @color-page-background;
+  border: 1px solid @color-secondary-action-outline;
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
-  line-height: @size-14;
-  margin: @size-18 0;
-  padding: @size-12;
-  padding-right: @size-8;
   justify-content: space-between;
-  background: @color-dark-grey;
+  line-height: @size-14;
+  margin: @size-8 0 @size-18 0;
+  padding: @size-12 @size-9;
+  padding-right: 0;
+  width: 234px;
+  position: relative;
 
-  @media @breakpoint-mobile {
-    .mono-10;
-
-    height: @size-40;
-    line-height: @size-14;
-  }
+  > div {
+    margin-right: @size-12;
+    word-break: break-all;
+ }
 
   > button {
     .mono-10;
@@ -1608,6 +1683,7 @@ div.ButtonsRow:last-of-type {
     color: @color-inactive-text;
     display: flex;
     margin-left: @size-8;
+    margin-right: @size-12;
     padding: @size-5;
     text-transform: uppercase;
     color: @color-primary-text;
@@ -1616,11 +1692,40 @@ div.ButtonsRow:last-of-type {
     border-radius: @border-radius-default;
 
     @media @breakpoint-mobile {
-      line-height: @size-10;
       margin-left: @size-4;
       padding: @size-6;
     }
   }
+
+  > button:hover {
+    background: lighten(@color-secondary-action, 5%);
+  }
+}
+
+.ShowConfirmaiton:after {
+  content: '';
+
+  border-top: solid @size-12 @color-primary-text;
+  border-left: solid @size-12 transparent;
+  border-right: solid @size-12 transparent;
+  position: absolute;
+  top: -6px;
+}
+
+.ShowConfirmaiton:before {
+  .text-10;
+  content: 'Copied!';
+  color: @color-inactive-text;
+  position: absolute;
+  bottom: 100%;
+  background: @color-primary-text;
+  padding: @size-8 @size-12;
+  border-radius: @border-radius-default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  text-transform: capitalize;
 }
 
 .ActionRow {

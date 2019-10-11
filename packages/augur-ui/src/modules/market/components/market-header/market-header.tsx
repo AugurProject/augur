@@ -23,6 +23,7 @@ import {
   COPY_AUTHOR,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
+import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints } from 'modules/types';
@@ -190,6 +191,7 @@ export default class MarketHeader extends Component<
                   </button>
                   <MarketTypeLabel marketType={marketType} />
                 </WordTrail>
+                <SocialMediaButtons marketAddress={market.id} marketDescription={description} />
                 <div id="copy_marketId" data-clipboard-text={market.id}>
                   {CopyAlternateIcon}
                 </div>

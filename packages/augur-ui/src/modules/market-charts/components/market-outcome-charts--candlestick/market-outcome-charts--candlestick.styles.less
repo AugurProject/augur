@@ -6,7 +6,6 @@
   flex: 1 100%;
   flex-direction: column;
   min-height: @charts-min-height;
-  max-height: @charts-min-height;
   padding: @size-8;
   position: relative;
 
@@ -30,10 +29,11 @@
   cursor: cell;
   display: flex;
   flex: 1;
+  max-height: @charts-max-height;
 
   & > div {
     display: flex;
-    flex-grow: 1;
+    flex: 1 100%;
   }
 }
 
