@@ -154,7 +154,7 @@ interface TimezoneDropdownProps {
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
-  const [value, setValue] = useState(UTC_Default);
+  const [value, setValue] = useState(props.timezone ? props.timezone : UTC_Default);
   const [timezones, setTimezones] = useState(getTimezones(props.timestamp));
   useEffect(() => {
     props.timezone ? setValue(props.timezone): setValue(UTC_Default);

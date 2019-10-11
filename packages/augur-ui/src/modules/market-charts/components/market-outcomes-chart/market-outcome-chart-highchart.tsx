@@ -260,9 +260,10 @@ export default class MarketOutcomesChartHighchart extends Component<
 
     options.chart = {
       ...options.chart,
-      height: this.container.clientHeight - 10, // need margin as to not perma grow container
-      width: this.container.clientWidth - 10,
+      height: this.container.clientHeight,
+      width: this.container.clientWidth,
     };
+
 
     const useArea =
       priceTimeSeries && Object.keys(priceTimeSeries).length === 1;
