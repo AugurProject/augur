@@ -654,7 +654,7 @@ const inputs = {
     {
       id: 2,
       type: TemplateInputType.DATETIME,
-      placeholder: `Date time`,
+      placeholder: `[Date time]`,
     },
   ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_CAT]: [

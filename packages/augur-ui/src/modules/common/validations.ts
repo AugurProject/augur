@@ -169,18 +169,35 @@ function checkValidNumbers(values) {
 }
 
 export function checkForUserInputFilled(inputs) {
-  console.log(inputs);
-  //let errors = ['', ''];
-
-  return inputs.map(input => {
+  const errors = inputs.map(input => {
     if (
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.DROPDOWN ||
-        input.type === TemplateInputType.DATETIME) &&
+        input.type === TemplateInputType.DROPDOWN) &&
       (!input.userInput || input.userInput === '')
     ) {
-      return 'Dont leave this blank';
+      return 'Input is required';
+    } else if (input.type === TemplateInputType.DATETIME) {
+      if (input.userInputObject) {
+        let validations = {};
+        if (input.userInputObject.hour === null) {
+          validations.hour = 'Choose a time';
+        }
+        if (input.userInputObject.endTime === null) {
+          validations.setEndTime = 'Choose a date';
+        }
+        return validations;
+      } else {
+        return '';
+      }
     } else return '';
   });
+
+  console.log(errors);
+
+  if (errors.every(error => error === '' || (error.constructor === Object && Object.entries(error).length === 0))) {
+    return '';
+  }
+
+  return errors;
 }

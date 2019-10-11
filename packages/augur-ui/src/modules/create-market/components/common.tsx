@@ -632,23 +632,32 @@ interface InputFactoryProps {
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
-  const {
-    input,
-    inputIndex,
-    onChange,
-    newMarket
-  } = props;
+  const { input, inputIndex, onChange, newMarket } = props;
 
-  const {
-    template,
-    outcomes,
-    marketType,
-    validations
-  } = newMarket;
+  const { template, outcomes, marketType, validations } = newMarket;
 
-  const {
-    inputs
-  } = template;
+  const { inputs } = template;
+
+  const updateData = (value) => {
+    const inputValidations = newMarket.validations.inputs;
+    inputValidations[inputIndex] = '';
+    onChange('validations', {
+      ...newMarket.validations,
+      inputs: inputValidations,
+    });
+
+    const question = buildMarketDescription(template.question, inputs);
+    onChange('description', question);
+
+    let newInputs = inputs;
+    newInputs[inputIndex].userInput = value;
+    onChange('template', {
+      ...template,
+      inputs: newInputs,
+    });
+
+    return newInputs;
+  }
 
   if (input.type === TemplateInputType.TEXT) {
     return (
@@ -656,21 +665,14 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
-          let newInputs = inputs;
-          newInputs[inputIndex].userInput = value;
-          const question = buildMarketDescription(template.question, inputs);
           let newOutcomes = outcomes;
+          const newInputs = updateData(value);
           if (marketType === CATEGORICAL && tellIfEditableOutcomes(newInputs)) {
             // todo: this is done because of substitute_user_outcomes,
             // if more substitute_user_outcomes get added relating to other input types will need to add them to other types
             newOutcomes = createTemplateOutcomes(newInputs);
           }
-          onChange('description', question);
           onChange('outcomes', newOutcomes);
-          onChange('template', {
-            ...template,
-            inputs: newInputs,
-          });
         }}
         value={input.userInput}
       />
@@ -681,17 +683,10 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
-          let newInputs = inputs;
-          newInputs[inputIndex].userInput = value;
           let newOutcomes = outcomes;
           newOutcomes[inputIndex] = value;
-          const question = buildMarketDescription(template.question, inputs);
-          onChange('description', question);
+          updateData(value);
           onChange('outcomes', newOutcomes);
-          onChange('template', {
-            ...template,
-            inputs: newInputs,
-          });
         }}
         value={input.userInput}
       />
@@ -705,14 +700,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         staticLabel={input.placeholder}
         errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
-          let newInputs = inputs;
-          newInputs[inputIndex].userInput = value;
-          const question = buildMarketDescription(template.question, inputs);
-          onChange('description', question);
-          onChange('template', {
-            ...template,
-            inputs: newInputs,
-          });
+          updateData(value);
         }}
       />
     );
@@ -727,9 +715,19 @@ interface EstimatedStartSelectorProps {
   input: TemplateInput;
   currentTime: number;
   onChange: Function;
+  inputIndex: number;
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
+  const {
+    newMarket,
+    template,
+    input,
+    inputIndex,
+    currentTime,
+    onChange,
+  } = props;
+
   const [endTime, setEndTime] = useState(
     props.input.userInput
       ? (props.input.userInputObject as UserInputDateTime).endTime
@@ -770,7 +768,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       ? (props.input.userInputObject as UserInputDateTime).offsetName
       : ''
   );
-  let userInput = `[Est. Start Datetime]`;
+  let userInput = props.input.placeholder;
   useEffect(() => {
     const endTimeFormatted = buildformattedDate(
       Number(endTime),
@@ -784,7 +782,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     if (hour !== null && minute !== null) {
       userInput = endTimeFormatted.formattedUtc;
     }
-    props.template.inputs[props.input.id].userInputObject = {
+    template.inputs[props.input.id].userInputObject = {
       endTime,
       hour,
       minute,
@@ -794,14 +792,20 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       offsetName,
       endTimeFormatted,
     } as UserInputDateTime;
-    props.template.inputs[props.input.id].userInput = userInput;
-    const question = buildMarketDescription(
-      props.template.question,
-      props.template.inputs
-    );
+    if (hour !== null && minute !== null) {
+      template.inputs[props.input.id].userInput = userInput;
+    }
+    const inputValidations = newMarket.validations.inputs;
+    inputValidations[inputIndex] = {setEndTime: '', hours: ''};
+    // todo: need to see if they changed date or time and clear validations accordingly
+    onChange('validations', {
+      ...newMarket.validations,
+      inputs: inputValidations,
+    });
+    const question = buildMarketDescription(template.question, template.inputs);
 
-    props.onChange('description', question);
-    props.onChange('template', props.template);
+    onChange('description', question);
+    onChange('template', template);
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
 
   return (
@@ -839,12 +843,12 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               break;
           }
         }}
-        validations={null}
+        validations={newMarket.validations.inputs[inputIndex]}
         hour={hour ? String(hour) : null}
         minute={minute ? String(minute) : null}
         meridiem={meridiem}
         timezone={timezone}
-        currentTimestamp={props.currentTime}
+        currentTimestamp={currentTime}
         endTimeFormatted={endTimeFormatted}
         uniqueKey={'templateEstTime'}
       />
@@ -908,6 +912,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           input={inputs[dateTimeIndex]}
           currentTime={props.currentTime}
           template={template}
+          inputIndex={dateTimeIndex}
         />
       )}
       {marketType === CATEGORICAL && (

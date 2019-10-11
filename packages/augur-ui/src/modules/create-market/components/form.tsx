@@ -419,7 +419,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.onError(label, '');
   };
 
-  onChange = (name, value, callback) => {
+  onChange = (name, value) => {
     const {
       updateNewMarket,
       newMarket,
@@ -535,7 +535,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
     this.onError(name, '');
-    if (callback) callback(name);
   };
 
   onError = (name, error) => {
@@ -582,11 +581,20 @@ export default class Form extends React.Component<FormProps, FormState> {
     const disabledSave =
       savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(validations || {}).every(field =>
-      Array.isArray(field)
-      ? field.every(val => val === '' || !val)
-      : !field || field === ''
-    );
+    const noErrors = Object.values(validations || {}).every(field => {
+      if (Array.isArray(field)) {
+        return field.every(val => {
+          if (typeof val === 'string') {
+            return val === '' || !val
+          } else {
+            return Object.values(val).map(val => val === '');
+          }
+        })
+      } else {
+        return !field || field === '';
+      } 
+    });
+
     const saveDraftError =
       validations && validations.description === draftError;
 
