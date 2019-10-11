@@ -131,6 +131,7 @@ interface Validations {
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
+const NUM_TEMPLATE_STEPS = 4;
 
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
@@ -192,8 +193,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       isTemplate,
     } = this.props;
 
+    let currentStep = isTemplate ? newMarket.currentStep - NUM_TEMPLATE_STEPS : newMarket.currentStep;
+
     const firstPage = isTemplate ? 1 : 0;
-    if (newMarket.currentStep <= firstPage) {
+    if (currentStep <= firstPage) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
           this.setState({ blockShown: true }, () => {
@@ -214,16 +217,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     const { currentStep, marketType, template } = newMarket;
 
     const { contentPages } = this.state;
-    let outcomes = null;
-    if (isTemplate && currentStep === 4 && marketType === CATEGORICAL && tellIfEditableOutcomes(template.inputs)) {
-        outcomes = createTemplateOutcomes(template.inputs);
-        updateNewMarket({
-          ...newMarket,
-          outcomes
-        });
-    }
-
-    if (this.findErrors(outcomes)) return;
+    if (this.findErrors()) return;
 
     const newStep =
       currentStep >= contentPages.length - 1
@@ -233,7 +227,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.node.scrollIntoView();
   };
 
-  findErrors = (outcomes?: String[]) => {
+  findErrors = () => {
     const { newMarket, isTemplate } = this.props;
     const {
       expirySourceType,
@@ -246,7 +240,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     let fields = [];
 
-    if (isTemplate) currentStep = currentStep - 4;
+    if (isTemplate) currentStep = currentStep - NUM_TEMPLATE_STEPS;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -270,8 +264,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       let value = newMarket[field];
       if (field === END_TIME && newMarket.endTimeFormatted) {
         value = newMarket.endTimeFormatted.timestamp;
-      } else if (field === OUTCOMES && outcomes) {
-        value = outcomes;
       }
       const error = this.evaluate({
         ...VALIDATION_ATTRIBUTES[field],

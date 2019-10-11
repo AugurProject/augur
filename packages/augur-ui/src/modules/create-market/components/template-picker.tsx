@@ -2,8 +2,8 @@ import React from 'react';
 import { LargeSubheaders } from 'modules/create-market/components/common';
 import { RadioTwoLineBarGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/template-picker.styles.less';
-import { getTemplates, getTemplateReadableDescription } from 'modules/create-market/get-template';
-import { YES_NO, SCALAR } from 'modules/common/constants';
+import { getTemplates, getTemplateReadableDescription, createTemplateOutcomes } from 'modules/create-market/get-template';
+import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
@@ -39,7 +39,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           onChange={value => {
             updateNewMarket({
                 ...EMPTY_STATE,
-                outcomes: ['', ''],
+                outcomes: newMarket.marketType === CATEGORICAL ? createTemplateOutcomes(templates[value].inputs) : ['', ''],
                 currentStep: newMarket.currentStep,
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
