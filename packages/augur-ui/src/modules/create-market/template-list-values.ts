@@ -67,4 +67,26 @@ export const LIST_VALUES = {
       label: 'NFC Championship game',
     },
   ],
+  BASEBALL_EVENT: [
+    {
+      value: 'American League Division Series', 
+      label: 'American League Division Series'
+    },
+    {
+      value: 'National League Division Series', 
+      label: 'National League Division Series'
+    },
+    {
+      value: 'American League Championship Series', 
+      label: 'American League Championship Series'
+    },
+    {
+      value: 'National League Championship Series', 
+      label: 'National League Championship Series'
+    },
+    {
+      value: 'World Series', 
+      label: 'World Series'
+    }
+  ],
 };
