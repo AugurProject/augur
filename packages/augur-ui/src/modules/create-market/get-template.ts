@@ -155,7 +155,7 @@ const addCategoryStats = (
   }
   if (stats)
     card.description = `${stats.numberOfMarkets} Markets | ${
-      formatAttoDai(stats.volume || "0").fomatted
+      formatAttoDai(stats.volume || "0").formatted
     } Volume`;
   return card;
 };
