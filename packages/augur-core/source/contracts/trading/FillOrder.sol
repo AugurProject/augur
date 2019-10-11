@@ -23,16 +23,24 @@ library Trade {
         Short
     }
 
+    struct StoredContracts {
+        IAugur augur;
+        IOrders orders;
+        ICompleteSets completeSets;
+        ICash denominationToken;
+        IProfitLoss profitLoss;
+    }
+
     struct Contracts {
         IOrders orders;
         IMarket market;
         ICompleteSets completeSets;
         ICash denominationToken;
         IShareToken longShareToken;
-        IShareToken[] shortShareTokens;
         IShareToken[] shareTokens;
         IAugur augur;
         IUniverse universe;
+        IProfitLoss profitLoss;
     }
 
     struct FilledOrder {
@@ -79,17 +87,17 @@ library Trade {
     // Constructor
     //
 
-    function create(IAugur _augur, bytes32 _orderId, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
-        OrderData memory _orderData = createOrderDataWithOrderId(_augur, _orderId);
+    function create(StoredContracts memory _storedContracts, bytes32 _orderId, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
+        OrderData memory _orderData = createOrderDataWithOrderId(_storedContracts, _orderId);
 
-        return createWithData(_augur, _orderData, _fillerAddress, _fillerSize, _affiliateAddress);
+        return createWithData(_storedContracts, _orderData, _fillerAddress, _fillerSize, _affiliateAddress);
     }
 
-    function createWithData(IAugur _augur, OrderData memory _orderData, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
-        Contracts memory _contracts = getContracts(_augur, _orderData.market, _orderData.outcome);
+    function createWithData(StoredContracts memory _storedContracts, OrderData memory _orderData, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
+        Contracts memory _contracts = getContracts(_storedContracts, _orderData.market, _orderData.outcome);
         FilledOrder memory _order = getOrder(_contracts, _orderData.outcome, _orderData.kycToken, _orderData.price, _orderData.orderId);
         Participant memory _creator = getMaker(_orderData.sharesEscrowed, _orderData.amount, _orderData.creator, _orderData.orderType);
-        Participant memory _filler = getFiller(_contracts, _orderData.orderType, _fillerAddress, _fillerSize);
+        Participant memory _filler = getFiller(_contracts, _orderData.outcome, _orderData.orderType, _fillerAddress, _fillerSize);
 
         // Signed orders which have no order id get their funds from the signed order "creator" whereas on chain orders have funds escrowed.
         address _creatorFundsSource = _orderData.orderId == bytes32(0) ? _creator.participantAddress : address(_contracts.market);
@@ -105,8 +113,8 @@ library Trade {
         });
     }
 
-    function createOrderDataWithOrderId(IAugur _augur, bytes32 _orderId) internal view returns (OrderData memory) {
-        IOrders _orders = IOrders(_augur.lookup("Orders"));
+    function createOrderDataWithOrderId(StoredContracts memory _storedContracts, bytes32 _orderId) internal view returns (OrderData memory) {
+        IOrders _orders = _storedContracts.orders;
 
         return OrderData({
             market: _orders.getMarket(_orderId),
@@ -190,8 +198,12 @@ library Trade {
         if (_data.creator.direction == Direction.Short) {
             _data.contracts.longShareToken.trustedFillOrderTransfer(_data.shortFundsAccount, _data.filler.participantAddress, _numberOfSharesToTrade);
         } else {
-            for (uint256 _i = 0; _i < _data.contracts.shortShareTokens.length; ++_i) {
-                _data.contracts.shortShareTokens[_i].trustedFillOrderTransfer(_data.longFundsAccount, _data.filler.participantAddress, _numberOfSharesToTrade);
+            uint256 _i = 0;
+            for (; _i < _data.order.outcome; ++_i) {
+                _data.contracts.shareTokens[_i].trustedFillOrderTransfer(_data.longFundsAccount, _data.filler.participantAddress, _numberOfSharesToTrade);
+            }
+            for (++_i; _i < _data.contracts.shareTokens.length; ++_i) {
+                _data.contracts.shareTokens[_i].trustedFillOrderTransfer(_data.longFundsAccount, _data.filler.participantAddress, _numberOfSharesToTrade);
             }
         }
 
@@ -214,8 +226,12 @@ library Trade {
         if (_data.filler.direction == Direction.Short) {
             _data.contracts.longShareToken.trustedFillOrderTransfer(_data.filler.participantAddress, _data.creator.participantAddress, _numberOfSharesToTrade);
         } else {
-            for (uint256 _i = 0; _i < _data.contracts.shortShareTokens.length; ++_i) {
-                _data.contracts.shortShareTokens[_i].trustedFillOrderTransfer(_data.filler.participantAddress, _data.creator.participantAddress, _numberOfSharesToTrade);
+            uint256 _i = 0;
+            for (; _i < _data.order.outcome; ++_i) {
+                _data.contracts.shareTokens[_i].trustedFillOrderTransfer(_data.filler.participantAddress, _data.creator.participantAddress, _numberOfSharesToTrade);
+            }
+            for (++_i; _i < _data.contracts.shareTokens.length; ++_i) {
+                _data.contracts.shareTokens[_i].trustedFillOrderTransfer(_data.filler.participantAddress, _data.creator.participantAddress, _numberOfSharesToTrade);
             }
         }
 
@@ -320,19 +336,18 @@ library Trade {
     // Construction helpers
     //
 
-    function getContracts(IAugur _augur, IMarket _market, uint256 _outcome) private view returns (Contracts memory) {
-        IOrders _orders = IOrders(_augur.lookup("Orders"));
+    function getContracts(StoredContracts memory _storedContracts, IMarket _market, uint256 _outcome) private view returns (Contracts memory) {
         IShareToken[] memory _shareTokens = _market.getShareTokens();
         return Contracts({
-            orders: _orders,
+            orders: _storedContracts.orders,
             market: _market,
-            completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
-            denominationToken: ICash(_augur.lookup("Cash")),
+            completeSets: _storedContracts.completeSets,
+            denominationToken: _storedContracts.denominationToken,
             longShareToken: _shareTokens[_outcome],
-            shortShareTokens: getShortShareTokens(_market, _outcome, _shareTokens),
             shareTokens: _shareTokens,
-            augur: _augur,
-            universe: _market.getUniverse()
+            augur: _storedContracts.augur,
+            universe: _market.getUniverse(),
+            profitLoss: _storedContracts.profitLoss
         });
     }
 
@@ -364,10 +379,10 @@ library Trade {
         });
     }
 
-    function getFiller(Contracts memory _contracts, Order.Types _orderOrderType, address _address, uint256 _size) private view returns (Participant memory) {
+    function getFiller(Contracts memory _contracts, uint256 _longOutcome, Order.Types _orderOrderType, address _address, uint256 _size) private view returns (Participant memory) {
         Direction _direction = (_orderOrderType == Order.Types.Bid) ? Direction.Short : Direction.Long;
         uint256 _sharesToSell = 0;
-        _sharesToSell = getFillerSharesToSell(_contracts.longShareToken, _contracts.shortShareTokens, _address, _direction, _size);
+        _sharesToSell = getFillerSharesToSell(_contracts.shareTokens, _longOutcome, _address, _direction, _size);
         uint256 _sharesToBuy = _size.sub(_sharesToSell);
         return Participant({
             participantAddress: _address,
@@ -383,33 +398,23 @@ library Trade {
         return _numShares.mul((_direction == Direction.Long) ? _sharePriceLong : _sharePriceShort);
     }
 
-    function getShortShareTokens(IMarket _market, uint256 _longOutcome, IShareToken[] memory _shareTokens) private view returns (IShareToken[] memory) {
-        uint256 _numOutcomes = _shareTokens.length;
-        IShareToken[] memory _shortShareTokens = new IShareToken[](_numOutcomes - 1);
-        uint256 _outcome = 0;
-        for (; _outcome < _longOutcome; ++_outcome) {
-            _shortShareTokens[_outcome] = _shareTokens[_outcome];
-        }
-        for (++_outcome; _outcome < _numOutcomes; ++_outcome) {
-            _shortShareTokens[_outcome - 1] = _shareTokens[_outcome];
-        }
-
-        return _shortShareTokens;
-    }
-
     function getSharePriceDetails(IMarket _market, uint256 _price) private view returns (uint256 _sharePriceRange, uint256 _sharePriceLong, uint256 _sharePriceShort) {
         uint256 _numTicks = _market.getNumTicks();
         _sharePriceShort = uint256(_numTicks.sub(_price));
         return (_numTicks, _price, _sharePriceShort);
     }
 
-    function getFillerSharesToSell(IShareToken _longShareToken, IShareToken[] memory _shortShareTokens, address _filler, Direction _fillerDirection, uint256 _fillerSize) private view returns (uint256) {
+    function getFillerSharesToSell(IShareToken[] memory _shareTokens, uint256 _longOutcome, address _filler, Direction _fillerDirection, uint256 _fillerSize) private view returns (uint256) {
         uint256 _sharesAvailable = SafeMathUint256.getUint256Max();
         if (_fillerDirection == Direction.Short) {
-            _sharesAvailable = _longShareToken.balanceOf(_filler);
+            _sharesAvailable = _shareTokens[_longOutcome].balanceOf(_filler);
         } else {
-            for (uint256 _outcome = 0; _sharesAvailable > 0 && _outcome < _shortShareTokens.length; ++_outcome) {
-                _sharesAvailable = _shortShareTokens[_outcome].balanceOf(_filler).min(_sharesAvailable);
+            uint256 _outcome = 0;
+            for (; _sharesAvailable > 0 && _outcome < _longOutcome; ++_outcome) {
+                _sharesAvailable = _shareTokens[_outcome].balanceOf(_filler).min(_sharesAvailable);
+            }
+            for (++_outcome; _sharesAvailable > 0 && _outcome < _shareTokens.length; ++_outcome) {
+                _sharesAvailable = _shareTokens[_outcome].balanceOf(_filler).min(_sharesAvailable);
             }
         }
         return _sharesAvailable.min(_fillerSize);
@@ -425,20 +430,23 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
 
-    IAugur public augur;
-    IOrders public orders;
-    IProfitLoss public profitLoss;
     address public ZeroXTrade;
     address public trade;
+    
+    Trade.StoredContracts private storedContracts;
 
     mapping (address => uint256[]) public marketOutcomeVolumes;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
-        augur = _augur;
-        orders = IOrders(_augur.lookup("Orders"));
+        storedContracts = Trade.StoredContracts({
+            augur: _augur,
+            orders: IOrders(_augur.lookup("Orders")),
+            completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
+            denominationToken: ICash(_augur.lookup("Cash")),
+            profitLoss: IProfitLoss(_augur.lookup("ProfitLoss"))
+        });
         trade = _augur.lookup("Trade");
-        profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         ZeroXTrade = _augur.lookup("ZeroXTrade");
     }
 
@@ -452,7 +460,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
      */
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
         address _filler = msg.sender;
-        Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _affiliateAddress);
+        Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _affiliateAddress);
         uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
         _tradeData.contracts.market.assertBalances(address(_tradeData.contracts.orders));
         return _result;
@@ -460,14 +468,14 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
-        Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _affiliateAddress);
+        Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _affiliateAddress);
         return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
     }
 
     function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) external returns (uint256) {
         require(msg.sender == ZeroXTrade);
         Trade.OrderData memory _orderData = Trade.createOrderData(_market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
-        Trade.Data memory _tradeData = Trade.createWithData(augur, _orderData, _filler, _amount, _affiliateAddress);
+        Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _affiliateAddress);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
 
@@ -493,12 +501,12 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         if (_totalFees > 0) {
             uint256 _longFees = _totalFees.mul(_tradeData.order.sharePriceLong).div(_tradeData.contracts.market.getNumTicks());
             uint256 _shortFees = _totalFees.sub(_longFees);
-            profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.order.outcome, _longFees);
-            profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, _shortFees);
+            _tradeData.contracts.profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.order.outcome, _longFees);
+            _tradeData.contracts.profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, _shortFees);
         }
         updateProfitLoss(_tradeData, _amountFilled);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
-            profitLoss.recordFrozenFundChange(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
+            _tradeData.contracts.profitLoss.recordFrozenFundChange(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
         }
         return _amountRemainingFillerWants;
     }
@@ -573,7 +581,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _numShortTokens = _tradeData.creator.direction == Trade.Direction.Short ? 0 : _tradeData.getFillerTokensDepleted();
         uint256 _numLongShares = _tradeData.creator.direction == Trade.Direction.Long ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
         uint256 _numShortShares = _tradeData.creator.direction == Trade.Direction.Short ? _tradeData.getMakerSharesDepleted() : _tradeData.getFillerSharesDepleted();
-        profitLoss.recordTrade(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
+        _tradeData.contracts.profitLoss.recordTrade(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
         return true;
     }
 }
