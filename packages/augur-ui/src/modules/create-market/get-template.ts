@@ -285,18 +285,489 @@ const templates = {
       [POLITICS]: {
         children: {
           [US_POLITICS]: {
-            templates: [],
+            templates: [
+              {
+                templateId: `pol-win-event`,
+                marketType: YES_NO,
+                question: `Will [0] win the [1] presidential election`,
+                example: `Will Donald Trump win the 2020 Presidential election`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-pres-nom`,
+                marketType: YES_NO,
+                question: `Will [0] win the [1] [2] presidential nomination`,
+                example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Party`,
+                    values: LIST_VALUES.POL_PARTY,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-office-nom`,
+                marketType: YES_NO,
+                question: `Will [0] run for [1] by [2]`,
+                example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Office`,
+                    values: LIST_VALUES.OFFICES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `By Specific Datetime`,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-imp`,
+                marketType: YES_NO,
+                question: `Will [0] be impeached by [2]`,
+                example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `By Specific Datetime`,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-prez-cat`,
+                marketType: CATEGORICAL,
+                question: `Who will win the [0] US presidential election`,
+                example: `Who will win the 2020 US presidential election`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-nom-cat`,
+                marketType: CATEGORICAL,
+                question: `Who will be the [0] [1] [2] nominee`,
+                example: `Who will be the 2020 Republican Vice President nominee`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Party`,
+                    values: LIST_VALUES.POL_PARTY,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Office`,
+                    values: LIST_VALUES.OFFICES,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-state-prez-cat`,
+                marketType: CATEGORICAL,
+                question: `Which party will win [0] in the [1] Presidential election`,
+                example: `Which party will win Michigan in the 2020 Presidential election`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `State`,
+                    values: LIST_VALUES.US_STATES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                ],
+                resolutionRules: [],
+              },
+            ],
           },
           [WORLD]: {
-            templates: [],
+            templates: [
+              {
+                templateId: `pol-world-pos-cat`,
+                marketType: YES_NO,
+                question: `Will [0] be [1] of [2] on [3]`,
+                example: `Will Kim Jong Un be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Position`,
+                    values: LIST_VALUES.POL_POSITION,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Location`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `By Specific Datetime`,
+                  },
+                ],
+                resolutionRules: [],
+              },
+              {
+                templateId: `pol-world-imp-cat`,
+                marketType: YES_NO,
+                question: `Will [input Name] be impeached by [specific date, time and time zone]`,
+                example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `By Specific Datetime`,
+                  },
+                ],
+                resolutionRules: [],
+              },
+            ],
           },
         },
       },
       [CRYPTO]: {
-        templates: [],
+        templates: [
+          {
+            templateId: `crypto-token-bin`,
+            marketType: YES_NO,
+            question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
+            example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Coin/Token`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `crypto-between-bin`,
+            marketType: YES_NO,
+            question: `Will the price of [0], exceed [1] [2], on [3] anytime between the [4] (23:59 UTC-0) and [5] (23:59 UTC-0)`,
+            example: `Will the price of REP exceed $40 USD on Poloniex anytime between September 1, 2019 (00:00 UTC-0) and December 31, 2019 (23:59 UTC-0)`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Coin/Token`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Start Day of Year`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `End Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `crypto-close-scalar`,
+            marketType: SCALAR,
+            question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
+            example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Coin/Token`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
       },
       [FINANCE]: {
-        templates: [],
+        templates: [
+          {
+            templateId: `fin-stock-bin`,
+            marketType: YES_NO,
+            question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]`,
+            example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Stock`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `fin-stock-exceed-bin`,
+            marketType: YES_NO,
+            question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]`,
+            example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Stock`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Start Day of Year`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `End Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `fin-index-close-bin`,
+            marketType: YES_NO,
+            question: `Will the [0] close on or above [1] [2] on [3]`,
+            example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Index`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `fin-price-scalar`,
+            marketType: SCALAR,
+            question: `What price will [0] close at in [1] on the [2] on [3]`,
+            example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Stock`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `fin-price-close-scalar`,
+            marketType: SCALAR,
+            question: `What price will the [0] close at in [1] on [2]`,
+            example: `What Price will the S&P 500 close at in USD on December 31, 2019`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Index`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
       },
       [ENTERTAINMENT]: {
         templates: [
