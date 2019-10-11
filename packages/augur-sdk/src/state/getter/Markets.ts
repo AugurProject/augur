@@ -763,7 +763,9 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getCategoryStatsParams>
   ): Promise<CategoryStats> {
-    const { universe, categories } = params;
+    const { universe } = params;
+    // case-insensitive
+    const categories = params.categories.map((category) => category.toLowerCase());
 
     const allMarkets = await db.findMarkets({
       selector: {
@@ -782,8 +784,12 @@ export class Markets {
       const { extraInfo: extraInfoBlob } = market;
       const extraInfo = parseExtraInfo(extraInfoBlob);
 
+      let categories = extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
+      // case-insensitive
+      categories = categories.map((category) => category.toLowerCase());
+
       return {
-        categories: extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [],
+        categories,
         volume: market.volume,
         marketOI: market.marketOI,
       };

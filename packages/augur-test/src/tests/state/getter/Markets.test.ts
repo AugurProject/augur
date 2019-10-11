@@ -2079,15 +2079,15 @@ describe('State API :: Markets :: ', () => {
     const stats = await api.route('getCategoryStats', {
       universe: john.augur.contracts.universe.address,
       categories: [
-        'yesNo 1 primary',
+        'yesno 1 primary', // we ignore case
         'common',
-        'categorical 2 secondary',
+        'Categorical 2 secondary',  // we ignore case
         'nonexistent'
       ],
     });
     expect(stats).toEqual({
-      'yesNo 1 primary': {
-        category: 'yesNo 1 primary',
+      'yesno 1 primary': {
+        category: 'yesno 1 primary',
         numberOfMarkets: 1,
         volume: '60000.00',
         openInterest: '40000.00',
