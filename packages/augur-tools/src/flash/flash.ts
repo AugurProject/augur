@@ -120,7 +120,8 @@ export class FlashSession {
   async ensureUser(
     network?: NetworkConfiguration,
     wireUpSdk = null,
-    approveCentralAuthority = true
+    approveCentralAuthority = true,
+    accountAddress = null,
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
@@ -135,7 +136,7 @@ export class FlashSession {
     const connector: BaseConnector = wireUpSdk ? new Connectors.DirectConnector() : new EmptyConnector();
 
     this.user = await ContractAPI.userWrapper(
-      this.getAccount(),
+      this.getAccount(accountAddress),
       this.provider,
       this.contractAddresses,
       connector
@@ -165,8 +166,12 @@ export class FlashSession {
     }
   };
 
-  getAccount(): Account {
+  getAccount(address: string = null): Account {
     let useAccount = this.accounts[0];
+    if (address) {
+      const found = this.accounts.find(a => a.publicKey.toLowerCase() === address.toLowerCase());
+      if (found) useAccount = found;
+    }
     if (this.account) {
       const findAccount = this.accounts.find(
         a => a.publicKey.toLowerCase() === this.account.toLowerCase()
