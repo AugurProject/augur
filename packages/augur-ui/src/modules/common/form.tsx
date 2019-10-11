@@ -1336,6 +1336,7 @@ interface TimeSelectorProps {
   onDateChange: Function;
   focused?: boolean;
   errorMessage?: string;
+  uniqueKey?: string;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1381,12 +1382,14 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       meridiem,
       focused,
       errorMessage,
+      uniqueKey
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
 
     return (
       <div
+        key={`timeSelector${uniqueKey}`}
         className={Styles.TimeSelector}
         ref={timeSelector => {
           this.timeSelector = timeSelector;

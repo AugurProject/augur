@@ -37,6 +37,12 @@ export interface Alert {
   params: object;
 }
 
+export interface TimezoneDateObject {
+  formattedUtc: string;
+  formattedTimezone: string;
+  timestamp: number;
+}
+
 export interface DateFormattedObject {
   value: Date;
   formatted: string;

@@ -54,7 +54,7 @@ interface FormDetailsProps {
   currentTimestamp: number;
   onChange: Function;
   onError: Function;
-  template?: boolean;
+  isTemplate?: boolean;
 }
 
 interface FormDetailsState {
@@ -83,7 +83,7 @@ export default class FormDetails extends React.Component<
       currentTimestamp,
       onChange,
       onError,
-      template,
+      isTemplate,
       updateNewMarket,
     } = this.props;
     const s = this.state;
@@ -112,19 +112,16 @@ export default class FormDetails extends React.Component<
       endTimeFormatted,
     } = newMarket;
 
-    let { currentStep } = newMarket;
-    if (template) currentStep = currentStep - 4;
-
     return (
       <div
         className={classNames(Styles.FormDetails, {
-          [Styles.Template]: template,
+          [Styles.Template]: isTemplate,
         })}
       >
         <div>
           <Header text="Market details" />
 
-          {template && (
+          {isTemplate && (
             <>
               <div>
                 <SmallSubheaders
@@ -143,7 +140,7 @@ export default class FormDetails extends React.Component<
               <LineBreak />
             </>
           )}
-          {!template && (
+          {!isTemplate && (
             <>
               <Subheaders
                 header="Market type"
@@ -176,13 +173,14 @@ export default class FormDetails extends React.Component<
               />
             </>
           )}
-          {template && (
+          {isTemplate && (
             <QuestionBuilder
               newMarket={newMarket}
               updateNewMarket={updateNewMarket}
+              currentTime={currentTimestamp}
             />
           )}
-          {!template && (
+          {!isTemplate && (
             <>
               <DateTimeSelector
                 setEndTime={setEndTime}
@@ -193,6 +191,7 @@ export default class FormDetails extends React.Component<
                 meridiem={meridiem}
                 timezone={timezone}
                 endTimeFormatted={endTimeFormatted}
+                uniqueKey={'nonTemplateRes'}
               />
 
               <Subheaders
@@ -215,7 +214,7 @@ export default class FormDetails extends React.Component<
             </>
           )}
 
-          {marketType === CATEGORICAL && !template && (
+          {marketType === CATEGORICAL && !isTemplate && (
             <>
               <Subheaders
                 header="Outcomes"
@@ -310,7 +309,7 @@ export default class FormDetails extends React.Component<
             </>
           )}
 
-          {!template && (
+          {!isTemplate && (
             <>
               <Subheaders
                 header="Market category"
@@ -331,7 +330,7 @@ export default class FormDetails extends React.Component<
         <div>
           <Header text="Resolution information" />
 
-          {template && (
+          {isTemplate && (
             <DateTimeSelector
               setEndTime={setEndTime}
               onChange={onChange}
@@ -342,6 +341,7 @@ export default class FormDetails extends React.Component<
               meridiem={meridiem}
               timezone={timezone}
               endTimeFormatted={endTimeFormatted}
+              uniqueKey={'templateRes'}
             />
           )}
 
