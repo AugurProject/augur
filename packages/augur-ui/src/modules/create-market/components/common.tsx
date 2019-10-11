@@ -763,7 +763,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
         switch(label) {
           case 'timezoneDropdown':
               const {offset, timezone, offsetName} = value;
-              setOffset(offset);
+              setOffset(Number(offset));
               setTimezone(timezone);
               setOffsetName(offsetName);
             break;
