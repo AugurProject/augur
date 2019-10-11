@@ -5,7 +5,6 @@ import "ROOT/libraries/math/SafeMathUint256.sol";
 import "ROOT/libraries/ContractExists.sol";
 import "ROOT/libraries/token/IERC20.sol";
 import "ROOT/external/IExchange.sol";
-import "ROOT/trading/ICreateOrder.sol";
 import "ROOT/trading/IFillOrder.sol";
 import "ROOT/trading/ICash.sol";
 import "ROOT/trading/Order.sol";
@@ -64,13 +63,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
-    ICreateOrder public createOrder;
     IFillOrder public fillOrder;
     ICash public cash;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
-        createOrder = ICreateOrder(_augur.lookup("CreateOrder"));
         fillOrder = IFillOrder(_augur.lookup("FillOrder"));
         cash = ICash(_augur.lookup("Cash"));
 
