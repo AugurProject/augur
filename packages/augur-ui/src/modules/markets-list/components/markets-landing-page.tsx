@@ -29,7 +29,6 @@ interface MarketsViewProps {
   categoryData: object;
   signupModal: Function;
   categoryStats: Getters.Markets.CategoryStats;
-  getCategoryStats: Function;
 }
 
 interface MarketsViewState {
@@ -56,7 +55,6 @@ export default class MarketsView extends Component<
     const { isConnected } = this.props;
     if (isConnected) {
       this.updateFilteredMarkets();
-      this.props.getCategoryStats();
     }
   }
 
@@ -65,7 +63,6 @@ export default class MarketsView extends Component<
 
     if (isConnected !== prevProps.isConnected) {
       this.updateFilteredMarkets();
-      this.props.getCategoryStats();
     }
   }
 

@@ -11,7 +11,6 @@ import { selectCurrentTimestamp } from "store/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
-import { getCategoryStats } from "../actions/get-category-stats";
 
 const mapStateToProps = state => ({
   categoryStats: state.categoryStats,

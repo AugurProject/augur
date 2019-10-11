@@ -20,7 +20,6 @@ import {
 import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
-import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 
 const mapStateToProps = (state: AppState, { location }) => {
   const marketStats = selectMarketStats(state);
@@ -53,7 +52,6 @@ const mapDispatchToProps = (
     filter: LoadMarketsFilterOptions,
     cb: NodeStyleCallback
   ) => dispatch(loadMarketsByFilter(filter, cb)),
-  getCategoryStats: () => dispatch(getCategoryStats())
 });
 
 const Markets = withRouter(
