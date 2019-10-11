@@ -204,7 +204,12 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    // category might not have sub categories so sub-categories page needs to be skipped
+    let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    const numCategories = newMarket.categories.filter(c => c).length;
+    if (newMarket.currentStep === 2 && numCategories === 1){
+      newStep = 0;
+    }
     updateNewMarket({ currentStep: newStep });
     this.node && this.node.scrollIntoView();
   };
