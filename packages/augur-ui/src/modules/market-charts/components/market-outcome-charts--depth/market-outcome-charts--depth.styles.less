@@ -32,9 +32,15 @@
 .MarketOutcomeDepth__container {
   background: @color-module-background;
   cursor: cell;
+  display: flex;
+  flex-flow: column nowrap;
   flex: 1;
   min-height: @charts-min-height;
-  max-height: @charts-max-height;
+
+  > div {
+    flex: 1 100%;
+    padding: @size-8 0;
+  }
 
   :global {
     .hovered_tooltip_div {
@@ -139,13 +145,15 @@
 
     #depth_range_bounds {
       .bounding-box {
-        fill: @color-primary-text;
-        opacity: 0.05;
+        fill: @color-secondary-action-outline;
+        // opacity: 0.05;
       }
     }
 
     .bounding-line,
-    .tick-line,
+    .tick-line {
+      stroke: @color-secondary-action-outline;
+    }
     .tick-line--midpoint {
       stroke: @color-primary-text;
     }
@@ -156,7 +164,7 @@
 
     .vertical-lines {
       fill: none;
-      stroke: @color-dark-grey;
+      stroke: fade(@color-secondary-action-outline, 40%);
       opacity: 0.25;
     }
 
@@ -165,7 +173,7 @@
     }
 
     .tick-line {
-      color: @color-primary-text;
+      color: @color-secondary-action-outline;
       stroke-width: 1px;
     }
 
@@ -279,7 +287,7 @@
 
     #depth-x-axis {
       line {
-        stroke: @color-primary-text;
+        stroke: @color-secondary-action-outline;
         transform: translateX(-0.03125rem);
       }
 
