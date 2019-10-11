@@ -214,18 +214,16 @@ export default class Form extends React.Component<FormProps, FormState> {
     const { currentStep, marketType, template } = newMarket;
 
     const { contentPages } = this.state;
-
-    if (isTemplate && currentStep === 4) {
-      if (marketType === CATEGORICAL && tellIfEditableOutcomes(template.inputs)) {
-        // todo: need to pass this into findErrors or something, or else then validation won't be using updated outcomes
+    let outcomes = null;
+    if (isTemplate && currentStep === 4 && marketType === CATEGORICAL && tellIfEditableOutcomes(template.inputs)) {
+        outcomes = createTemplateOutcomes(template.inputs);
         updateNewMarket({
           ...newMarket,
-          outcomes: createTemplateOutcomes(template.inputs)
+          outcomes
         });
-      }
     }
 
-    if (this.findErrors()) return;
+    if (this.findErrors(outcomes)) return;
 
     const newStep =
       currentStep >= contentPages.length - 1
@@ -235,17 +233,20 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.node.scrollIntoView();
   };
 
-  findErrors = () => {
-    const { newMarket } = this.props;
+  findErrors = (outcomes?: String[]) => {
+    const { newMarket, isTemplate } = this.props;
     const {
-      currentStep,
       expirySourceType,
       designatedReporterType,
       marketType,
     } = newMarket;
+
+    let { currentStep } = newMarket;
     let hasErrors = false;
 
     let fields = [];
+
+    if (isTemplate) currentStep = currentStep - 4;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -269,6 +270,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       let value = newMarket[field];
       if (field === END_TIME && newMarket.endTimeFormatted) {
         value = newMarket.endTimeFormatted.timestamp;
+      } else if (field === OUTCOMES && outcomes) {
+        value = outcomes;
       }
       const error = this.evaluate({
         ...VALIDATION_ATTRIBUTES[field],

@@ -749,48 +749,50 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
 
   return (
-    <DateTimeSelector
-      header="Estimated start time"
-      subheader="When is the event estimated to begin?"
-      setEndTime={endTime}
-      onChange={(label, value) => {
-        switch(label) {
-          case 'timezoneDropdown':
-              const {offset, timezone, offsetName} = value;
-              setOffset(Number(offset));
-              setTimezone(timezone);
-              setOffsetName(offsetName);
-            break;
-          case 'setEndTime':
-            setEndTime(value);
-            break;
-          case 'timeSelector':
-            if (value.hour) setHour(value.hour);
-            if (value.minute) setMinute(value.minute);
-            if (value.meridiem) setMeridiem(value.meridiem);
-            break;
-          case 'minute':
-            setMinute(value);
-            break;
-          case 'hour':
-            setHour(value);
-            break;
-          case 'meridiem':
-            setMeridiem(value);
-            break;
-          default:
-            break;
-        }
-      }}
-      validations={props.newMarket.validations}
-      hour={hour ? String(hour) : null}
-      minute={minute ? String(minute) : null}
-      meridiem={meridiem}
-      timezone={timezone}
-      currentTimestamp={props.currentTime}
-      endTimeFormatted={endTimeFormatted}
-      uniqueKey={'templateEstTime'}
-    />
+    <div className={Styles.EstimatedStartSelector}>
+      <DateTimeSelector
+        header="Estimated start time"
+        subheader="When is the event estimated to begin?"
+        setEndTime={endTime}
+        onChange={(label, value) => {
+          switch(label) {
+            case 'timezoneDropdown':
+                const {offset, timezone, offsetName} = value;
+                setOffset(Number(offset));
+                setTimezone(timezone);
+                setOffsetName(offsetName);
+              break;
+            case 'setEndTime':
+              setEndTime(value);
+              break;
+            case 'timeSelector':
+              if (value.hour) setHour(value.hour);
+              if (value.minute) setMinute(value.minute);
+              if (value.meridiem) setMeridiem(value.meridiem);
+              break;
+            case 'minute':
+              setMinute(value);
+              break;
+            case 'hour':
+              setHour(value);
+              break;
+            case 'meridiem':
+              setMeridiem(value);
+              break;
+            default:
+              break;
+          }
+        }}
+        validations={null}
+        hour={hour ? String(hour) : null}
+        minute={minute ? String(minute) : null}
+        meridiem={meridiem}
+        timezone={timezone}
+        currentTimestamp={props.currentTime}
+        endTimeFormatted={endTimeFormatted}
+        uniqueKey={'templateEstTime'}
+      />
+    </div>
   );
 };
 
