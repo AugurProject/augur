@@ -142,7 +142,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   }
 
   componentWillUnmount() {
@@ -206,7 +206,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   nextPage = () => {
@@ -232,7 +232,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? contentPages.length - 1
         : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   findErrors = () => {
@@ -542,7 +542,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   preview = () => {
     this.setState({ showPreview: !this.state.showPreview }, () => {
-      this.node.scrollIntoView();
+      this.node && this.node.scrollIntoView();
     });
   };
 

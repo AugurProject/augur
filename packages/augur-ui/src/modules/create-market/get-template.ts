@@ -151,12 +151,12 @@ const getTemplateCategories = (categories: Categories): string[] => {
   if (!categories || !categories.primary) return Object.keys(templates);
   const primaryCat = templates[categories.primary];
   if (!primaryCat) return emptyCats;
-  if (!categories.secondary) return Object.keys(primaryCat.children);
+  if (!categories.secondary) return primaryCat.children ? Object.keys(primaryCat.children) : [];
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  if (!categories.tertiary) return Object.keys(secondaryCat.children);
+  if (!categories.tertiary) return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
   return secondaryCat.children
     ? Object.keys(secondaryCat.children[categories.tertiary])
     : emptyCats;
@@ -563,7 +563,7 @@ const templates = {
             placeholder: `Start Day of Year`,
           },
           {
-            id: 4,
+            id: 5,
             type: TemplateInputType.DATEYEAR,
             placeholder: `End Day of Year`,
           },
