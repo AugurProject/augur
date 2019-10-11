@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import makePath from "modules/routes/helpers/make-path";
 import { DEFAULT_VIEW } from "modules/routes/constants/views";
 import { SecondaryButton } from "modules/common/buttons";
@@ -8,24 +7,16 @@ import { SecondaryButton } from "modules/common/buttons";
 import Styles from "modules/app/components/main-error-boundary.styles";
 import ButtonStyles from "modules/common/buttons.styles";
 
-interface MEBProps {
-  children: Element;
-}
-
 interface MEBState {
-  hasError: Boolean;
+  hasError: boolean;
 }
 
-export default class MainErrorBoundary extends Component<MEBProps, MEBState> {
-  static propTypes = {
-    children: PropTypes.element.isRequired
-  };
-
+export default class MainErrorBoundary extends Component<{}, MEBState> {
   state: MEBState = {
     hasError: false
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: MEBProps) {
+  UNSAFE_componentWillReceiveProps() {
     if (this.state.hasError) {
       this.setState({ hasError: false });
     }
