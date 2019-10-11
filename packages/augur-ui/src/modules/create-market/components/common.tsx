@@ -289,6 +289,7 @@ interface DateTimeSelectorProps {
   endTimeFormatted: DateFormattedObject;
   header?: string;
   subheader?: string;
+  uniqueKey?: string;
 }
 
 interface TimeSelectorParams {
@@ -310,6 +311,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     endTimeFormatted,
     header,
     subheader,
+    uniqueKey,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -383,6 +385,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           }}
           focused={timeFocused}
           errorMessage={validations && validations.hour}
+          uniqueKey={uniqueKey}
         />
         <TimezoneDropdown
           onChange={(offsetName: string, offset: number, timezone: string) => {
@@ -716,7 +719,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   const [minute, setMinute] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).minute : null);
   const [meridiem, setMeridiem] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).meridiem : 'AM');
   const [timezone, setTimezone] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).timezone : '');
-  const [endTimeFormatted, setEndTimeFormatted] = useState();
+  const [endTimeFormatted, setEndTimeFormatted] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).endTimeFormatted : '');
   const [offset, setOffset] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).offset : 0);
   const [offsetName, setOffsetName] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).offsetName : '');
 
@@ -758,21 +761,31 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
             setEndTime(value);
             break;
           case 'timeSelector':
-            setHour(value.hour);
-            setMinute(value.minute);
-            setMeridiem(value.meridiem);
+            if (value.hour) setHour(value.hour);
+            if (value.minute) setMinute(value.minute);
+            if (value.meridiem) setMeridiem(value.meridiem);
+            break;
+          case 'minute':
+            setMinute(value);
+            break;
+          case 'hour':
+            setHour(value);
+            break;
+          case 'meridiem':
+            setMeridiem(value);
             break;
           default:
             break;
         }
       }}
       validations={props.newMarket.validations}
-      hour={String(hour)}
-      minute={String(minute)}
+      hour={hour ? String(hour) : null}
+      minute={minute ? String(minute) : null}
       meridiem={meridiem}
       timezone={timezone}
       currentTimestamp={props.currentTime}
       endTimeFormatted={endTimeFormatted}
+      uniqueKey={'templateEstTime'}
     />
   );
 };
