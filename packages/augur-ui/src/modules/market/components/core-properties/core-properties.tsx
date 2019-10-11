@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { SCALAR } from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
 import getValue from 'utils/get-value';
@@ -15,9 +14,15 @@ import {
 import MarketScalarOutcomeDisplay from '../market-scalar-outcome-display/market-scalar-outcome-display';
 import ChevronFlip from 'modules/common/chevron-flip';
 import classNames from 'classnames';
+import { MarketData } from 'modules/types';
+
+interface CorePropertiesProps {
+  market: MarketData;
+  reportingBarShowing?: boolean;
+}
 
 // TODO: Get market 24 hour volume, currently just using volume
-const CoreProperties = ({ market, reportingBarShowing }) => {
+const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarShowing }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
 
   return (
@@ -140,11 +145,6 @@ const CoreProperties = ({ market, reportingBarShowing }) => {
         )}
     </div>
   );
-};
-
-CoreProperties.propTypes = {
-  market: PropTypes.object.isRequired,
-  reportingBarShowing: PropTypes.bool,
 };
 
 export default CoreProperties;
