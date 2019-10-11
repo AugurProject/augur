@@ -26,7 +26,6 @@ interface MarketsViewProps {
   isSearching: boolean;
   setLoadMarketsPending: Function;
   updateMarketsListMeta: Function;
-  categoryData: object;
   signupModal: Function;
   loadMarketStats: Function;
 }
