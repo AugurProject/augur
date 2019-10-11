@@ -1,8 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import getValue from 'utils/get-value';
-import CustomPropTypes from 'utils/custom-prop-types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { DashlineLong } from 'modules/common/labels';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
@@ -10,12 +8,13 @@ import Styles from 'modules/market/components/market-scalar-outcome-display/mark
 import { SCALAR_UP_ID } from 'modules/common/constants';
 import { formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
+import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
 
 export function calculatePosition(
   min: BigNumber,
   max: BigNumber,
-  lastPrice: FormattedNumber|null
-) {  
+  lastPrice: FormattedNumber | null
+) {
   const range = max.minus(min);
   const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
     .minus(min)
@@ -26,11 +25,18 @@ export function calculatePosition(
   return lastPrice === null ? 50 : pricePercentage;
 };
 
-const MarketScalarOutcomeDisplay = ({
+interface MarketScalarOutcomeDisplayProps {
+  outcomes: MarketInfoOutcome[],
+  max: BigNumber,
+  min: BigNumber,
+  scalarDenomination?: string,
+}
+
+const MarketScalarOutcomeDisplay: React.FC<MarketScalarOutcomeDisplayProps> = ({
   outcomes,
   max,
   min,
-  scalarDenomination = 'N/A',
+  scalarDenomination,
 }) => {
   const lastPrice = getValue(outcomes[SCALAR_UP_ID], 'price');
   const lastPriceFormatted = formatDai(lastPrice);
@@ -75,13 +81,6 @@ const MarketScalarOutcomeDisplay = ({
       </div>
     </div>
   );
-};
-
-MarketScalarOutcomeDisplay.propTypes = {
-  outcomes: PropTypes.array.isRequired,
-  max: CustomPropTypes.bigNumber.isRequired,
-  min: CustomPropTypes.bigNumber.isRequired,
-  scalarDenomination: PropTypes.string,
 };
 
 MarketScalarOutcomeDisplay.defaultProps = {

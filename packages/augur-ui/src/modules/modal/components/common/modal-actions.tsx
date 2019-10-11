@@ -1,6 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
-
 import ModalButton from "modules/modal/components/common/modal-button";
 
 import Styles from "modules/modal/components/common/common.styles.less";
@@ -14,10 +12,10 @@ interface ButtonObject {
 }
 
 interface ModalActionsProps {
-  buttons: Array<ButtonObject>;
+  buttons: ButtonObject[];
 }
 
-const ModalActions = ({ buttons }: ModalActionsProps) => (
+const ModalActions: React.FC<ModalActionsProps> = ({ buttons }) => (
   <div className={Styles.ActionButtons}>
     {buttons.map((button) => (
       <ModalButton key={JSON.stringify(button)} {...button} />

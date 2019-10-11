@@ -8,19 +8,18 @@ import SavedDrafts from "modules/create-market/containers/saved-drafts";
 
 import Styles from "modules/create-market/landing.styles.less";
 import { getTemplateRadioCards } from "./get-template";
+import { NewMarket } from "modules/types";
+
 
 interface LandingProps {
-  newMarket: Object;
-  updateNewMarket: Function;
-  address: String;
-  updatePage: Function;
-  clearNewMarket: Function;
+  newMarket: NewMarket;
+  updateNewMarket: (newMarketData: NewMarket) => void;
+  address: string;
+  updatePage: (page: string) => void;
+  clearNewMarket: () => void;
 }
 
-export default class Landing extends React.Component<
-  LandingProps,
-  {}
-> {
+export default class Landing extends React.Component<LandingProps> {
 
   componentDidMount() {
     this.node.scrollIntoView();
