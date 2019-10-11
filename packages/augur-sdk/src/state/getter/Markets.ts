@@ -761,9 +761,15 @@ export class Markets {
       const { extraInfo: extraInfoBlob } = market;
       const extraInfo = parseExtraInfo(extraInfoBlob);
 
+      const minPrice = new BigNumber(market.prices[0]);
+      const maxPrice = new BigNumber(market.prices[1]);
+      const numTicks = new BigNumber(market.numTicks);
+      const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+
       return {
         categories: extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [],
         volume: market.volume,
+        tickSize,
       };
     });
 
@@ -781,7 +787,10 @@ export class Markets {
         if (market.categories.indexOf(category) !== -1) {
           const stats = categoryStats[category];
           stats.numberOfMarkets++;
-          stats.volume = new BigNumber(stats.volume).plus(market.volume).toString();
+          stats.volume = convertOnChainAmountToDisplayAmount(
+            (new BigNumber(stats.volume).plus(market.volume)),
+            market.tickSize
+          ).toString(10);
         }
       });
     });

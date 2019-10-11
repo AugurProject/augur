@@ -11,7 +11,7 @@ import {
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { ValueLabelPair } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { formatAttoDai } from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -134,8 +134,8 @@ export const getTemplateRadioCards = (categories: Categories, categoryStats: Get
   return [];
 };
 
-const addCategoryStats = (
-  categories: Categories,
+export const addCategoryStats = (
+  categories: Categories | null,
   card: MarketCardTemplate,
   categoryStats: Getters.Markets.CategoryStats
 ): MarketCardTemplate => {
@@ -143,20 +143,26 @@ const addCategoryStats = (
   if (!card) return card;
   let stats = null;
   const cardValue = card.value.toLowerCase();
-  if (!categories.primary) stats = categoryStats[cardValue];
-   if (categories.primary && !categories.secondary){
-    const catStats = categoryStats[categories.primary.toLowerCase()]
+  if (!categories || !categories.primary) stats = categoryStats[cardValue];
+  if (categories && categories.primary && !categories.secondary) {
+    const catStats = categoryStats[categories.primary.toLowerCase()];
     stats = catStats[cardValue];
   }
-  if (categories.primary && categories.secondary && !categories.tertiary){
-    let catStats = categoryStats[categories.primary.toLowerCase()]
+  if (
+    categories &&
+    categories.primary &&
+    categories.secondary &&
+    !categories.tertiary
+  ) {
+    let catStats = categoryStats[categories.primary.toLowerCase()];
     catStats = catStats[categories.secondary.toLowerCase()];
     stats = catStats[cardValue];
   }
-  if (stats)
-    card.description = `${stats.numberOfMarkets} Markets | ${
-      formatAttoDai(stats.volume || "0").formatted
-    } Volume`;
+  if (stats) {
+    const vol = formatDai(stats.volume || '0').formatted;
+    const mkrLabel = stats.numberOfMarkets === 1 ? 'Market' : 'Markets';
+    card.description = `${stats.numberOfMarkets} ${mkrLabel} | $${vol}`;
+  }
   return card;
 };
 

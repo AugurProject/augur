@@ -14,6 +14,7 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { getCategoryStats } from "../actions/get-category-stats";
 
 const mapStateToProps = state => ({
+  categoryStats: state.categoryStats,
   universe: state.universe,
   availableEth: state.loginAccount.balances.eth,
   availableRep: state.loginAccount.balances.rep,
@@ -32,7 +33,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
     dispatch(estimateSubmitNewMarket(data, callback)),
-  getCategoryStats: (cb) => dispatch(getCategoryStats(cb))
 });
 
 const CreateMarket = withRouter(

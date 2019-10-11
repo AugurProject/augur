@@ -28,12 +28,13 @@ interface MarketsViewProps {
   updateMarketsListMeta: Function;
   categoryData: object;
   signupModal: Function;
+  categoryStats: Getters.Markets.CategoryStats;
+  getCategoryStats: Function;
 }
 
 interface MarketsViewState {
   marketCategory: string;
   filterSortedMarkets: string[];
-  marketStats: object;
 }
 
 export default class MarketsView extends Component<
@@ -48,7 +49,6 @@ export default class MarketsView extends Component<
     this.state = {
       marketCategory: 'all',
       filterSortedMarkets: [],
-      marketStats: null,
     };
   }
 
@@ -56,20 +56,16 @@ export default class MarketsView extends Component<
     const { isConnected } = this.props;
     if (isConnected) {
       this.updateFilteredMarkets();
+      this.props.getCategoryStats();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { isConnected, categoryData, isSearching } = this.props;
+    const { isConnected } = this.props;
 
     if (isConnected !== prevProps.isConnected) {
       this.updateFilteredMarkets();
-    }
-
-    if (prevProps.isSearching && !isSearching && this.state.marketCategory === 'all') {
-      this.setState({
-        marketStats: categoryData
-      });
+      this.props.getCategoryStats();
     }
   }
 
@@ -108,6 +104,7 @@ export default class MarketsView extends Component<
       toggleFavorite,
       signupModal,
       isSearching,
+      categoryStats,
     } = this.props;
 
     return (
@@ -139,7 +136,7 @@ export default class MarketsView extends Component<
               search: `category=${categoryName}`,
             });
           }}
-          categoryData={this.state.marketStats}
+          categoryStats={categoryStats}
         />
 
         <div>
