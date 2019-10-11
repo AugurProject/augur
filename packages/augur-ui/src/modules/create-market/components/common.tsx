@@ -716,7 +716,7 @@ interface EstimatedStartSelectorProps {
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
-  const [endTime, setEndTime] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).endTime : props.currentTime);
+  const [endTime, setEndTime] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).endTime : null);
   const [hour, setHour] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).hour : null);
   const [minute, setMinute] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).minute : null);
   const [meridiem, setMeridiem] = useState(props.input.userInput ? (props.input.userInputObject as UserInputDateTime).meridiem : 'AM');
