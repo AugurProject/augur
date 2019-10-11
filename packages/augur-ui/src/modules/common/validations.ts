@@ -193,11 +193,5 @@ export function checkForUserInputFilled(inputs) {
     } else return '';
   });
 
-  console.log(errors);
-
-  if (errors.every(error => error === '' || (error.constructor === Object && Object.entries(error).length === 0))) {
-    return '';
-  }
-
   return errors;
 }

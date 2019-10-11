@@ -639,7 +639,10 @@ export const InputFactory = (props: InputFactoryProps) => {
   const { inputs } = template;
 
   const updateData = (value) => {
-    const inputValidations = newMarket.validations.inputs;
+    let inputValidations = newMarket.validations.inputs;
+    if (inputValidations === '') {
+      inputValidations = [];
+    }
     inputValidations[inputIndex] = '';
     onChange('validations', {
       ...newMarket.validations,
@@ -795,7 +798,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     if (hour !== null && minute !== null) {
       template.inputs[props.input.id].userInput = userInput;
     }
-    const inputValidations = newMarket.validations.inputs;
+    let inputValidations = newMarket.validations.inputs;
+    if (inputValidations === '') {
+      inputValidations = [];
+    }
     inputValidations[inputIndex] = {setEndTime: '', hours: ''};
     // todo: need to see if they changed date or time and clear validations accordingly
     onChange('validations', {
