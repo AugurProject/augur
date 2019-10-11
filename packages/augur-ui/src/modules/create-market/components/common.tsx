@@ -320,11 +320,11 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   useEffect(() => {
     const timezoneParams = {
       offset: 0,
-      timezone: '',
+      timezone: timezone,
       offsetName: '',
     };
     onChange('timezoneDropdown', timezoneParams);
-  }, [dateFocused]);
+  }, [dateFocused, timezone]);
 
   return (
     <div className={Styles.DateTimeSelector} key={uniqueKey}>
