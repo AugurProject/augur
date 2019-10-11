@@ -23,6 +23,7 @@ import {
   buildMarketDescription,
   tellIfEditableOutcomes,
   substituteUserOutcome,
+  UserInputDateTime,
 } from 'modules/create-market/get-template';
 import { outcomes } from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import { CATEGORICAL } from 'modules/common/constants';
@@ -30,6 +31,7 @@ import { string } from 'io-ts';
 import newMarket from 'modules/markets/reducers/new-market';
 import { SquareDropdown } from 'modules/common/selection';
 import { updateNewMarket } from 'modules/markets/actions/update-new-market';
+import { buildformattedDate } from 'utils/format-date';
 
 export interface HeaderProps {
   text: string;
@@ -323,7 +325,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   }, [dateFocused]);
 
   return (
-    <div className={Styles.DateTimeSelector}>
+    <div className={Styles.DateTimeSelector} key={uniqueKey}>
       <Subheaders
         header={header ? header : 'Reporting start date and time'}
         subheader={
@@ -705,29 +707,80 @@ export const InputFactory = (props: InputFactoryProps) => {
 interface EstimatedStartSelectorProps {
   input: TemplateInput;
   newMarket: NewMarket;
+  currentTime: number;
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
+  const [endTime, setEndTime] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).endTime : props.currentTime);
+  const [hour, setHour] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).hour : null);
+  const [minute, setMinute] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).minute : null);
+  const [meridiem, setMeridiem] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).meridiem : 'AM');
+  const [timezone, setTimezone] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).timezone : '');
+  const [endTimeFormatted, setEndTimeFormatted] = useState();
+  const [offset, setOffset] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).offset : 0);
+  const [offsetName, setOffsetName] = useState(props.input.userInput ? (props.input.userInput as UserInputDateTime).offsetName : '');
+
+  useEffect(() => {
+    const endTimeFormatted = buildformattedDate(
+      Number(endTime),
+      Number(hour),
+      Number(minute),
+      meridiem,
+      offsetName,
+      Number(offset)
+    );
+    setEndTimeFormatted(endTimeFormatted);
+    const userInput = (props.input.userInput ? props.input.userInput : {}) as UserInputDateTime;
+    userInput.endTime = endTime;
+    userInput.hour = hour;
+    userInput.minute = minute;
+    userInput.meridiem = meridiem;
+    userInput.timezone = timezone;
+    userInput.offset = offset;
+    userInput.offsetName = offsetName;
+    userInput.endTimeFormatted = endTimeFormatted;
+  }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
+
   return (
     <DateTimeSelector
       header="Estimated start time"
       subheader="When is the event estimated to begin?"
-      link
-      setEndTime={null}
-      onChange={() => {}}
+      setEndTime={endTime}
+      onChange={(label, value) => {
+        switch(label) {
+          case 'timezoneDropdown':
+              const {offset, timezone, offsetName} = value;
+              setOffset(offset);
+              setTimezone(timezone);
+              setOffsetName(offsetName);
+            break;
+          case 'setEndTime':
+            setEndTime(value);
+            break;
+          case 'timeSelector':
+            setHour(value.hour);
+            setMinute(value.minute);
+            setMeridiem(value.meridiem);
+            break;
+          default:
+            break;
+        }
+      }}
       validations={props.newMarket.validations}
-      hour={null}
-      minute={null}
-      meridiem={null}
-      timezone={null}
-      currentTimestamp={0}
-      endTimeFormatted={props.input.userInput}
+      hour={String(hour)}
+      minute={String(minute)}
+      meridiem={meridiem}
+      timezone={timezone}
+      currentTimestamp={props.currentTime}
+      endTimeFormatted={endTimeFormatted}
     />
   );
 };
+
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
+  currentTime: number;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
@@ -779,6 +832,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
         <EstimatedStartSelector
           newMarket={newMarket}
           input={inputs[dateTimeIndex]}
+          currentTime={props.currentTime}
         />
       )}
       {marketType === CATEGORICAL && (
@@ -809,7 +863,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
     )
     .map(input => {
-      if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {       
+      if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
         return {
           value: substituteUserOutcome(input, inputs),
           editable: false,
