@@ -38,7 +38,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           radioButtons={templateOptions}
           onChange={value => {
             updateNewMarket({
-                ...EMPTY_STATE,
+                ...JSON.parse(JSON.stringify(EMPTY_STATE)),
                 outcomes: newMarket.marketType === CATEGORICAL ? createTemplateOutcomes(templates[value].inputs) : ['', ''],
                 currentStep: newMarket.currentStep,
                 marketType: newMarket.marketType,

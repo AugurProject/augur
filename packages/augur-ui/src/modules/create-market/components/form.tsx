@@ -201,11 +201,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       isTemplate,
     } = this.props;
 
-    const currentStep = isTemplate
-      ? newMarket.currentStep - NUM_TEMPLATE_STEPS
-      : newMarket.currentStep;
-    const firstPage = 0;
-    if (currentStep <= firstPage) {
+    const firstPage = isTemplate ? 1 : 0;	    
+    if (newMarket.currentStep <= firstPage) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
           this.setState({ blockShown: true }, () => {

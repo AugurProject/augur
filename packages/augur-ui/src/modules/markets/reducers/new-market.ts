@@ -134,6 +134,7 @@ export default function(
     }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
+      console.log(JSON.parse(JSON.stringify(EMPTY_STATE)));
       return JSON.parse(JSON.stringify(EMPTY_STATE));
     default:
       return newMarket;
