@@ -353,7 +353,7 @@ interface StepperProps {
 export const Stepper = ({ currentStep, maxSteps }: StepperProps) => (
   <div className={Styles.Stepper}>
   {[...Array(maxSteps).keys()]
-    .map(key => key++)
+    .map(key => key + 1)
     .map((step, idx) => (
     <span key={idx} className={currentStep === step ? Styles.Current : null}></span>
   ))}
