@@ -32,6 +32,7 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
+  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -209,6 +210,8 @@ export default class Form extends React.Component<FormProps, FormState> {
     const numCategories = newMarket.categories.filter(c => c).length;
     if (newMarket.currentStep === 2 && numCategories === 1){
       newStep = 0;
+      updatePage(LANDING);
+      clearNewMarket();
     }
     updateNewMarket({ currentStep: newStep });
     this.node && this.node.scrollIntoView();
