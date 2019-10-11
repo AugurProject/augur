@@ -55,7 +55,7 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["common", "yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
+      extraInfo: '{"categories": ["common", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
     })).address;
     markets['yesNoMarket2'] = (await john.createYesNoMarket({
       endTime,
@@ -87,7 +87,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
-      extraInfo: '{"categories": ["common", "scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
+      extraInfo: '{"categories": ["common", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
     })).address;
     endTime = endTime.plus(1);
     markets['scalarMarket2'] = (await john.createScalarMarket({
@@ -1953,7 +1953,6 @@ describe('State API :: Markets :: ', () => {
     });
     expect(categories.sort()).toEqual([
       'common',
-      'yesNo 1 primary',
       'yesNo 1 secondary',
       'yesNo 1 tertiary',
       'yesNo 2 primary',
@@ -1965,7 +1964,6 @@ describe('State API :: Markets :: ', () => {
       'categorical 2 primary',
       'categorical 2 secondary',
       'categorical 2 tertiary',
-      'scalar 1 primary',
       'scalar 1 secondary',
       'scalar 1 tertiary',
       'scalar 2 primary',
@@ -1985,7 +1983,6 @@ describe('State API :: Markets :: ', () => {
     });
     expect(categories.sort()).toMatchObject([
       'common',
-      'yesNo 1 primary',
       'yesNo 1 secondary',
       'yesNo 1 tertiary',
       'yesNo 2 primary',
@@ -1997,7 +1994,6 @@ describe('State API :: Markets :: ', () => {
       'categorical 2 primary',
       'categorical 2 secondary',
       'categorical 2 tertiary',
-      'scalar 1 primary',
       'scalar 1 secondary',
       'scalar 1 tertiary',
       'scalar 2 primary',
@@ -2079,36 +2075,64 @@ describe('State API :: Markets :: ', () => {
     const stats = await api.route('getCategoryStats', {
       universe: john.augur.contracts.universe.address,
       categories: [
-        'yesno 1 primary', // we ignore case
-        'common',
-        'Categorical 2 secondary',  // we ignore case
-        'nonexistent'
+        'yesno 2 primary', // we ignore case
+        'Common', // we ignore case
+        'categorical 2 secondary', // will be empty because it's never a primary category
+        'nonexistent' // will be empty because it's never used as a category
       ],
     });
+    console.log(JSON.stringify(stats, null, 2))
     expect(stats).toEqual({
-      'yesno 1 primary': {
-        category: 'yesno 1 primary',
+      'yesno 2 primary': {
+        category: 'yesno 2 primary',
         numberOfMarkets: 1,
-        volume: '60000.00',
-        openInterest: '40000.00',
+        volume: '0.00',
+        openInterest: '0.00',
+        categories: {
+          'yesno 2 secondary': {
+            category: 'yesno 2 secondary',
+            numberOfMarkets: 1,
+            volume: '0.00',
+            openInterest: '0.00',
+            categories: {}
+          }
+        },
       },
       'common': {
         category: 'common',
         numberOfMarkets: 2,
         volume: '110000.00',
         openInterest: '90000.00',
+        categories: {
+          'yesno 1 secondary': {
+            category: 'yesno 1 secondary',
+            numberOfMarkets: 1,
+            volume: '60000.00',
+            openInterest: '40000.00',
+            categories: {}
+          },
+          'scalar 1 secondary': {
+            category: 'scalar 1 secondary',
+            numberOfMarkets: 1,
+            volume: '50000.00',
+            openInterest: '50000.00',
+            categories: {}
+          }
+        },
       },
       'categorical 2 secondary': {
         category: 'categorical 2 secondary',
-        numberOfMarkets: 1,
+        numberOfMarkets: 0,
         volume: '0.00',
         openInterest: '0.00',
+        categories: {},
       },
       'nonexistent': {
         category: 'nonexistent',
         numberOfMarkets: 0,
         volume: '0.00',
         openInterest: '0.00',
+        categories: {},
       },
     });
   });

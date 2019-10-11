@@ -223,13 +223,15 @@ export interface LiquidityOrderBookInfo {
   orderBook: OrderBook;
 }
 
+interface CategoryStat {
+  category: string;
+  numberOfMarkets: number;
+  volume: string;
+  openInterest: string;
+  categories: CategoryStats;
+}
 export interface CategoryStats {
-  [category: string]: {
-    category: string;
-    numberOfMarkets: number;
-    volume: string;
-    openInterest: string;
-  }
+  [category: string]: CategoryStat
 }
 
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
@@ -583,7 +585,7 @@ export class Markets {
     }
 
     // Get markets info to return
-    let marketsInfo = await getMarketsInfo(db, marketData, reportingFeeDivisor);
+    let marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor);
 
     // Get categories meta data
     const categories = getMarketsCategoriesMeta(marketsInfo);
@@ -765,11 +767,12 @@ export class Markets {
   ): Promise<CategoryStats> {
     const { universe } = params;
     // case-insensitive
-    const categories = params.categories.map((category) => category.toLowerCase());
+    const primaryCategories = params.categories.map((category) => category.toLowerCase());
 
     const allMarkets = await db.findMarkets({
       selector: {
         universe,
+        // exclude markets that are finalized or awaiting finalization
         reportingState: {
           $nin: [
               MarketReportingState.AwaitingFinalization,
@@ -795,37 +798,55 @@ export class Markets {
       };
     });
 
-    const categoryStats = categories.reduce((stats, category) => {
-      stats[category] = {
-        category,
-        numberOfMarkets: 0,
-        volume: '0',
-        openInterest: '0',
-      };
+    const makeDefaultCategoryStats = (category: string): CategoryStat => ({
+      category,
+      numberOfMarkets: 0,
+      volume: '0',
+      openInterest: '0',
+      categories: {}, // sub-categories
+    });
+
+    const categoryStats = primaryCategories.reduce((stats, category) => {
+      stats[category] = makeDefaultCategoryStats(category);
       return stats;
     }, {} as CategoryStats);
 
     markets.forEach((market) => {
-      categories.forEach((category) => {
-        if (market.categories.indexOf(category) !== -1) {
-          const stats = categoryStats[category];
+      primaryCategories.forEach((primaryCategory) => {
+        if (market.categories.indexOf(primaryCategory) === 0) { // index 0 -> primary category
+          const stats = categoryStats[primaryCategory];
           stats.numberOfMarkets++;
           stats.volume = new BigNumber(stats.volume).plus(market.volume).toString();
           stats.openInterest = new BigNumber(stats.openInterest).plus(market.marketOI).toString();
+
+          const secondaryCategory = market.categories[1]; // index 1 -> secondary category
+          if (secondaryCategory) {
+            let secondaryStats = stats.categories[secondaryCategory];
+            if (!secondaryStats) {
+              stats.categories[secondaryCategory] = makeDefaultCategoryStats(secondaryCategory);
+              secondaryStats = stats.categories[secondaryCategory];
+            }
+            secondaryStats.numberOfMarkets++;
+            secondaryStats.volume = new BigNumber(secondaryStats.volume).plus(market.volume).toString();
+            secondaryStats.openInterest = new BigNumber(secondaryStats.openInterest).plus(market.marketOI).toString();
+          }
         }
       });
     });
 
-    const formattedStats = _.mapValues(categoryStats, (stats) => {
-      return {
-        category: stats.category,
-        numberOfMarkets: stats.numberOfMarkets,
-        volume: convertAttoDaiToDisplay(new BigNumber(stats.volume)),
-        openInterest: convertAttoDaiToDisplay(new BigNumber(stats.openInterest)),
-      }
-    });
+    const formatStats = (stats: CategoryStats): CategoryStats => {
+      return _.mapValues(stats, (stats) => {
+        return {
+          category: stats.category,
+          numberOfMarkets: stats.numberOfMarkets,
+          volume: convertAttoDaiToDisplay(new BigNumber(stats.volume)),
+          openInterest: convertAttoDaiToDisplay(new BigNumber(stats.openInterest)),
+          categories: formatStats(stats.categories),
+        }
+      });
+    };
 
-    return formattedStats;
+    return formatStats(categoryStats);
   }
 }
 
@@ -1176,43 +1197,43 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
 }
 
 function getMarketsCategoriesMeta(
-  marketsResults: any[],
+  marketsResults: MarketInfo[],
 ): MarketListMetaCategories {
   const categories = {};
   for (let i = 0; i < marketsResults.length; i++) {
     const marketsResult = marketsResults[i];
     const category1 = marketsResult.categories[0];
-    const category2 = marketsResult.categories[1] ? marketsResult.categories[1] : null;
-    const category3 = marketsResult.categories[2] ? marketsResult.categories[2] : null;
+    const category2 = marketsResult.categories[1] || null;
+    const category3 = marketsResult.categories[2] || null;
 
-    if (categories[category1]) {
-      categories[category1]['count']++;
-    } else {
-      categories[category1] = {
-        'count': 1,
+    let children1 = categories[category1];
+    if (!children1) {
+      children1 = categories[category1] = {
+        'count': 0,
         'children': {},
       };
     }
+    children1['count']++;
 
     if (category2) {
-      if (categories[category1].children[category2]) {
-        categories[category1].children[category2]['count']++;
-      } else {
-        categories[category1].children[category2] = {
-          count: 1,
+      let children2 = categories[category1].children[category2];
+      if (!children2) {
+        children2 = categories[category1].children[category2] = {
+          count: 0,
           children: {},
         };
       }
+      children2['count']++;
     }
 
     if (category3) {
-      if (categories[category1].children[category2].children[category3]) {
-        categories[category1].children[category2].children[category3]['count']++;
-      } else {
-        categories[category1].children[category2].children[category3] = {
-          count: 1,
+      let children3 = categories[category1].children[category2].children[category3];
+      if (!children3) {
+        children3 = categories[category1].children[category2].children[category3] = {
+          count: 0,
         };
       }
+      children3['count']++;
     }
   }
   return categories;
