@@ -32,6 +32,7 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
+  TEMPLATE_INPUTS,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -72,6 +73,7 @@ import {
   dividedBy,
   dateGreater,
   isValidFee,
+  checkForUserInputFilled,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
@@ -128,6 +130,9 @@ interface Validations {
   decimals?: number;
   checkDecimals?: Boolean;
   checkForAdresss?: Boolean;
+  checkUserInputFilled?: Boolean;
+  checkFee?: Boolean;
+  checkForAddress?: Boolean;
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
@@ -193,9 +198,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       isTemplate,
     } = this.props;
 
-    let currentStep = isTemplate ? newMarket.currentStep - NUM_TEMPLATE_STEPS : newMarket.currentStep;
-
-    const firstPage = isTemplate ? 1 : 0;
+    const currentStep = isTemplate ? newMarket.currentStep - NUM_TEMPLATE_STEPS : newMarket.currentStep;
+    const firstPage = 0;
     if (currentStep <= firstPage) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
@@ -256,12 +260,18 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (marketType === SCALAR) {
         fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
       }
+      if (isTemplate) {
+        fields.push(TEMPLATE_INPUTS);
+      }
     } else if (currentStep === 1) {
       fields = [SETTLEMENT_FEE, AFFILIATE_FEE];
     }
 
     fields.map(field => {
       let value = newMarket[field];
+      if (field === TEMPLATE_INPUTS) {
+        value = newMarket.template[TEMPLATE_INPUTS];
+      }
       if (field === END_TIME && newMarket.endTimeFormatted) {
         value = newMarket.endTimeFormatted.timestamp;
       }
@@ -354,6 +364,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       decimals,
       checkForAddress,
       checkFee,
+      checkUserInputFilled
     } = validationsObj;
 
     const checkValidations = [
@@ -380,6 +391,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
+      checkUserInputFilled ? checkForUserInputFilled(value) : '',
     ];
 
     if (label === END_TIME) {
@@ -572,8 +584,8 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const noErrors = Object.values(validations || {}).every(field =>
       Array.isArray(field)
-        ? field.every(val => val === '' || !val)
-        : !field || field === ''
+      ? field.every(val => val === '' || !val)
+      : !field || field === ''
     );
     const saveDraftError =
       validations && validations.description === draftError;

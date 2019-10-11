@@ -626,28 +626,35 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
 
 interface InputFactoryProps {
   input: TemplateInput;
-  inputs: TemplateInput[];
   inputIndex: number;
   onChange: Function;
-  template: Template;
-  outcomes: string[];
-  marketType: string;
+  newMarket: NewMarket;
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
   const {
     input,
-    inputs,
     inputIndex,
     onChange,
+    newMarket
+  } = props;
+
+  const {
     template,
     outcomes,
     marketType,
-  } = props;
+    validations
+  } = newMarket;
+
+  const {
+    inputs
+  } = template;
+
   if (input.type === TemplateInputType.TEXT) {
     return (
       <TextInput
         placeholder={input.placeholder}
+        errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
           let newInputs = inputs;
           newInputs[inputIndex].userInput = value;
@@ -672,6 +679,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <TextInput
         placeholder={input.placeholder}
+        errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
           let newInputs = inputs;
           newInputs[inputIndex].userInput = value;
@@ -695,6 +703,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       <SquareDropdown
         options={input.values}
         staticLabel={input.placeholder}
+        errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
           let newInputs = inputs;
           newInputs[inputIndex].userInput = value;
@@ -883,12 +892,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                 <InputFactory
                   key={inputIndex}
                   input={input}
-                  inputs={inputs}
                   inputIndex={inputIndex}
                   onChange={onChange}
-                  template={template}
-                  outcomes={outcomes}
-                  marketType={marketType}
+                  newMarket={newMarket}
                 />
               );
             }

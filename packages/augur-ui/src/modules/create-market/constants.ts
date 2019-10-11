@@ -49,6 +49,7 @@ export const EMPTY_STATE: NewMarket = {
     scalarDenomination: null,
     outcomes: ['', ''],
     settlementFee: '',
+    inputs: ['', ''],
   },
   currentStep: 0,
   marketType: YES_NO,
@@ -425,6 +426,8 @@ export const TICK_SIZE = 'tickSize';
 export const SETTLEMENT_FEE = 'settlementFee';
 export const AFFILIATE_FEE = 'affiliateFee';
 
+export const TEMPLATE_INPUTS = 'inputs';
+
 export const VALIDATION_ATTRIBUTES = {
   [DESCRIPTION]: {
     label: DESCRIPTION,
@@ -516,4 +519,9 @@ export const VALIDATION_ATTRIBUTES = {
     min: 0,
     max: 100,
   },
+  [TEMPLATE_INPUTS]: {
+    label: TEMPLATE_INPUTS,
+    readableName: 'Template inputs',
+    checkUserInputFilled: true
+  }
 };
