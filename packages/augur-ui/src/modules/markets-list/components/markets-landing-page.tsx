@@ -28,6 +28,7 @@ interface MarketsViewProps {
   updateMarketsListMeta: Function;
   categoryData: object;
   signupModal: Function;
+  loadMarketStats: Function;
 }
 
 interface MarketsViewState {
@@ -54,29 +55,34 @@ export default class MarketsView extends Component<
 
   componentDidMount() {
     const { isConnected } = this.props;
+
     if (isConnected) {
-      this.updateFilteredMarkets();
+      this.getMarketData();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { isConnected, categoryData, isSearching } = this.props;
+    const { isConnected } = this.props;
 
     if (isConnected !== prevProps.isConnected) {
-      this.updateFilteredMarkets();
+      this.getMarketData();
     }
+  }
 
-    if (prevProps.isSearching && !isSearching && this.state.marketCategory === 'all') {
-      this.setState({
-        marketStats: categoryData
-      });
-    }
+  async getMarketData() {
+    this.updateFilteredMarkets();
+
+    const marketStats = await this.props.loadMarketStats();
+    this.setState({
+      marketStats
+    });
   }
 
   updateFilteredMarkets() {
     const { marketCategory } = this.state;
 
     this.props.setLoadMarketsPending(true);
+
     this.props.loadMarketsByFilter(
       {
         categories: marketCategory && marketCategory !== 'all' ? [marketCategory] : [],

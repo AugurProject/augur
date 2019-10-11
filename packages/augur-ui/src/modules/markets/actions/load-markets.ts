@@ -6,6 +6,7 @@ import {
   REPORTING_STATE,
   MAX_SPREAD_ALL_SPREADS,
   MAX_FEE_100_PERCENT,
+  POPULAR_CATEGORIES,
 } from 'modules/common/constants';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
@@ -270,3 +271,25 @@ const loadReportingMarkets = (
   }
   if (cb) cb(null, marketList);
 };
+
+export const loadMarketStats = (): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { universe, connection } = getState();
+
+  if (!(universe && universe.id)) return;
+  if (!connection.isConnected) return;
+
+  const augur = augurSdk.get();
+
+  const params = {
+    universe: universe.id,
+    categories: POPULAR_CATEGORIES,
+  };
+
+  const marketStats = await augur.getCategoryStats({ ...params });
+  return marketStats;
+};
+
+

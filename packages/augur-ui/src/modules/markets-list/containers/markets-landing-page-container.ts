@@ -8,6 +8,7 @@ import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   loadMarketsByFilter,
   LoadMarketsFilterOptions,
+  loadMarketStats,
 } from 'modules/markets/actions/load-markets';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
@@ -51,6 +52,7 @@ const mapDispatchToProps = (
     filter: LoadMarketsFilterOptions,
     cb: NodeStyleCallback
   ) => dispatch(loadMarketsByFilter(filter, cb)),
+  loadMarketStats: () => dispatch(loadMarketStats()),
 });
 
 const Markets = withRouter(

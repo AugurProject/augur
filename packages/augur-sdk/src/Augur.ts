@@ -261,6 +261,8 @@ export class Augur<TProvider extends Provider = Provider> {
 
   getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
 
+  getCategoryStats = this.bindTo(Markets.getCategoryStats);
+
   getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
   }

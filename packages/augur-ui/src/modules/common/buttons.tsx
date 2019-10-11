@@ -24,6 +24,7 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
+import { formatDai } from 'utils/format-number';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -411,10 +412,14 @@ export const CategoryButtons = ({
     {MARKET_TEMPLATES.map((item, idx) => {
       const categoryName = item.value.toLowerCase();
       let body = null;
-      if (categoryData) {
+      if (categoryData && categoryData[categoryName]) {
         const marketText =
-          categoryData[categoryName].markets === 1 ? 'Market' : 'Markets';
-        body = `${categoryData[categoryName].markets} ${marketText} | ${categoryData[categoryName].OI}`;
+          categoryData[categoryName].numberOfMarkets === 1
+            ? 'Market'
+            : 'Markets';
+        body = `${categoryData[categoryName].numberOfMarkets} ${marketText} | ${
+          formatDai(categoryData[categoryName].volume).formattedValue
+        }`;
       }
       return (
         <div key={idx} onClick={() => action(categoryName)}>
