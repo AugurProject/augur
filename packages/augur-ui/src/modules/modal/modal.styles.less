@@ -177,6 +177,10 @@ div.Onboarding {
     > div:first-of-type {
       text-align: center;
     }
+
+    @media @breakpoint-mobile-new {
+      flex: 1;
+    }
   }
 
   > div:last-of-type {
@@ -195,10 +199,10 @@ div.Onboarding {
         margin-right: @size-16;
       }
     }
-  }
 
-  @media @breakpoint-mobile-new {
-    padding: @size-24;
+    @media @breakpoint-mobile-new {
+      flex: 1;
+    }
   }
 }
 
