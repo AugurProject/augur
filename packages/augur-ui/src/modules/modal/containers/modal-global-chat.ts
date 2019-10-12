@@ -1,24 +1,22 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import GlobalChat from 'modules/common/global-chat';
+import { ModalGlobalChat } from 'modules/modal/components/modal-global-chat';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => ({
+  modal: state.modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+  closeModal: () => dispatch(closeModal()),
 });
-
-const mergeProps = (sP: any, dP: any, oP: any) => {
-}
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
-  )(GlobalChat)
+  )(ModalGlobalChat)
 );
