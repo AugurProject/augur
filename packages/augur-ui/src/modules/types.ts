@@ -577,7 +577,8 @@ export interface WindowApp extends Window {
   app: object;
   web3: Web3;
   ethereum: {
-    selectedAddress
+    selectedAddress;
+    networkVersion: string;
   };
   localStorage: Storage;
   integrationHelpers: any;

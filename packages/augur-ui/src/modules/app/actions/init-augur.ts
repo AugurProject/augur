@@ -18,6 +18,7 @@ import {
   MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
+  NETWORK_NAMES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -72,6 +73,14 @@ async function autoLoginAccount(
   const accounts = await windowApp.ethereum.enable().catch((err: Error) => {
     console.log('could not auto login account', err);
   });
+  if (windowApp.ethereum && (augurSdk.networkId !== windowApp.ethereum.networkVersion)) {
+    dispatch(
+      updateModal({
+        type: MODAL_NETWORK_MISMATCH,
+        expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)]
+      })
+    );
+  }
   let account = null;
   for (account of accounts) {
     if (account === loggedInAccount) {
@@ -140,6 +149,7 @@ export function connectAugur(
           dispatch(
             updateModal({
               type: MODAL_NETWORK_MISMATCH,
+              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)]
             })
           );
         } else {

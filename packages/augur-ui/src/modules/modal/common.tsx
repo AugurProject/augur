@@ -329,6 +329,7 @@ export const MediumSubheader = (props: BaseSubheaderProps) => (
 interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
+
 export const LinkContentSection = (props: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
     {props.linkContent.map((content, idx) => (
@@ -343,6 +344,21 @@ export const LinkContentSection = (props: LinkContentSectionProps) => (
     ))}
   </div>
 );
+
+interface StepperProps {
+  currentStep: number,
+  maxSteps: number,
+}
+
+export const Stepper = ({ currentStep, maxSteps }: StepperProps) => (
+  <div className={Styles.Stepper}>
+  {[...Array(maxSteps).keys()]
+    .map(key => key + 1)
+    .map((step, idx) => (
+    <span key={idx} className={currentStep === step ? Styles.Current : null}></span>
+  ))}
+</div>
+)
 
 export const DaiGraphic = () => (
   <div className={Styles.DaiGraphic}>

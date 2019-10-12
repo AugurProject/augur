@@ -14,6 +14,12 @@ export const SubCategories = ({
     categoryStats
   }) => {
   const { categories } = newMarket;
+  const cats = getTemplateRadioCards({
+    primary: newMarket.categories[0],
+    secondary: '',
+    tertiary: '',
+  });
+  if (cats.length === 0) nextPage();
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
@@ -30,11 +36,7 @@ export const SubCategories = ({
             updateNewMarket(updatedNewMarket);
             nextPage();
           }}
-          radioButtons={getTemplateRadioCards({
-            primary: newMarket.categories[0],
-            secondary: '',
-            tertiary: '',
-          }, categoryStats)}
+          radioButtons={cats}
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>
