@@ -13,7 +13,8 @@ import {
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
-  MarketCardTemplate
+  MarketCardTemplate,
+  BASKETBALL,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { Getters } from '@augurproject/sdk';
@@ -130,18 +131,23 @@ export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   );
 };
 
-export const getTemplateRadioCards = (categories: Categories, categoryStats: Getters.Markets.CategoryStats | null): MarketCardTemplate[] => {
+export const getTemplateRadioCards = (
+  categories: Categories,
+  categoryStats: Getters.Markets.CategoryStats | null
+): MarketCardTemplate[] => {
   const cats = getTemplateCategories(categories);
   if (cats.length === 0) return [];
   if (!categories.primary) {
-    return cats.map(c => MARKET_TEMPLATES.find(t => t.value === c))
-    .map(c => addCategoryStats(categories, c, categoryStats));
+    return cats
+      .map(c => MARKET_TEMPLATES.find(t => t.value === c))
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && !categories.secondary) {
-    return cats.map(c =>
-      MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    )
-    .map(c => addCategoryStats(categories, c, categoryStats));
+    return cats
+      .map(c =>
+        MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
+      )
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && categories.secondary && !categories.tertiary) {
     return cats
@@ -190,12 +196,14 @@ const getTemplateCategories = (categories: Categories): string[] => {
   if (!categories || !categories.primary) return Object.keys(templates);
   const primaryCat = templates[categories.primary];
   if (!primaryCat) return emptyCats;
-  if (!categories.secondary) return primaryCat.children ? Object.keys(primaryCat.children) : [];
+  if (!categories.secondary)
+    return primaryCat.children ? Object.keys(primaryCat.children) : [];
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  if (!categories.tertiary) return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
+  if (!categories.tertiary)
+    return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
   return secondaryCat.children
     ? Object.keys(secondaryCat.children[categories.tertiary])
     : emptyCats;
@@ -883,7 +891,6 @@ const templates = {
   [SPORTS]: {
     templates: [],
     children: {
-
       [SOCCER]: {
         templates: [
           {
@@ -907,6 +914,272 @@ const templates = {
             resolutionRules: [
               `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
             ],
+          },
+        ],
+      },
+      [BASKETBALL]: {
+        templates: [
+          {
+            templateId: `bb-team-event`,
+            marketType: YES_NO,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
+            example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
+            resolutionRules: [`Include Regulation and Overtime`],
+          },
+          {
+            templateId: `bb-teamVsteam-point-year`,
+            marketType: YES_NO,
+            question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
+            example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
+            resolutionRules: [`Include Regulation and Overtime`],
+          },
+          {
+            templateId: `bb-teamVsteam-point-comb`,
+            marketType: YES_NO,
+            question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
+            example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
+            resolutionRules: [
+              `Include Regulation and Overtime`,
+              `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+            ],
+          },
+          {
+            templateId: `bb-teamVsteam-point-year`,
+            marketType: YES_NO,
+            question: `Will the [0] have [1] or more regular season wins in [2]`,
+            example: `Will the NY Knicks have 50 or more regular season wins in 2019-2020`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Whole #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [
+              `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+            ],
+          },
+          {
+            templateId: `bb-championship`,
+            marketType: YES_NO,
+            question: `Will the [0] win the [1] NBA Championship?`,
+            example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-year-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2]`,
+            example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Name`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASKETBALL_AWARD,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
+            example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+            ],
+          },
+          {
+            templateId: `bb-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `bb-year-event-cat`,
+            marketType: CATEGORICAL,
+            question: `Which NBA team will win the [0] [1]`,
+            example: `Which NBA team will win the 2019-2020 Western Conference Finals`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASKETBALL_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-year-coll-cat`,
+            marketType: CATEGORICAL,
+            question: `Which college basketball team will win the [0] [1] [2] tournament`,
+            example: `Which college basketball team will win the men's 2020 ACC tournament`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Men's/Women's`,
+                values: LIST_VALUES.MENS_WOMENS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Conference`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [
+              `winner will be determined by the team that wins their conference tournament championship game`
+            ],
+          },
+          {
+            templateId: `bb-leg-coll-cat`,
+            marketType: CATEGORICAL,
+            question: `Which [0] player will win the [1] [2] award`,
+            example: `Which NBA player will win the 2019-2020 Most Valuable Player award`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `League`,
+                values: LIST_VALUES.BASKETBALL_LEAGUE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASKETBALL_AWARD,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-action-cat`,
+            marketType: CATEGORICAL,
+            question: `Which Player will have the most [0] at the end of the the [1] regular season`,
+            example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Action`,
+                values: LIST_VALUES.BASKETBALL_ACTION,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-total-wins`,
+            marketType: SCALAR,
+            question: `Total number of wins [0] will finish [1] regular season with`,
+            example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [],
           },
         ],
       },
@@ -953,9 +1226,9 @@ const templates = {
             ],
           },
           {
-            templateId: `baseball-year-event`,
+            templateId: `baseball-year-event2`,
             marketType: CATEGORICAL,
-            question: `Which player  will win the [0] [1]`,
+            question: `Which player will win the [0] [1]`,
             example: `Which Player will win the 2019 American League Cy Young award`,
             inputs: [],
             inputsType: TemplateInputTypeNames.BASEBALL_YEAR_EVENT,
@@ -1027,7 +1300,6 @@ const templates = {
             question: `Will the [0] have [1] or more regular season wins in [2]`,
             example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
             inputs: [],
-            inputsType: TemplateInputTypeNames.TEAM_WINS_BIN_YEAR,
             resolutionRules: [
               `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
             ],
