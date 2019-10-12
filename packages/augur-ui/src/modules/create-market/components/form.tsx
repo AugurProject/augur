@@ -86,6 +86,7 @@ import {
   tellIfEditableOutcomes,
   createTemplateOutcomes,
 } from 'modules/create-market/get-template';
+import deepClone from 'utils/deep-clone';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -163,10 +164,10 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const savedDraft = drafts[newMarket.uniqueId];
 
-    let defaultState = JSON.parse(JSON.stringify(EMPTY_STATE));
+    let defaultState = deepClone<NewMarket>(EMPTY_STATE);
     defaultState.validations = [];
 
-    let market = JSON.parse(JSON.stringify(newMarket));
+    let market = deepClone<NewMarket>(newMarket);
     market.validations = [];
 
     const disabledSave =
@@ -201,7 +202,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       isTemplate,
     } = this.props;
 
-    const firstPage = isTemplate ? 1 : 0;	    
+    const firstPage = isTemplate ? 1 : 0;
     if (newMarket.currentStep <= firstPage) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {

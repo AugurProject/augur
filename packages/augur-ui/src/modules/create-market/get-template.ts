@@ -9,7 +9,11 @@ import {
   MARKET_TYPE_TEMPLATES,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import { ValueLabelPair, DateFormattedObject, TimezoneDateObject } from 'modules/types';
+import {
+  ValueLabelPair,
+  TimezoneDateObject,
+} from 'modules/types';
+import deepClone from 'utils/deep-clone';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -21,7 +25,7 @@ export enum TemplateInputTypeNames {
   PLAYER_AWARD = 'PLAYER_AWARD',
   YEAR_EVENT = 'YEAR_EVENT',
   BASEBALL_YEAR_EVENT = 'BASEBALL_YEAR_EVENT',
-  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR'
+  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR',
 }
 
 export enum TemplateInputType {
@@ -95,7 +99,7 @@ export interface TemplateInput {
   placeholder: string;
   tooltip?: string;
   userInput?: string;
-  userInputObject?: UserInputtedType
+  userInputObject?: UserInputtedType;
   values?: ValueLabelPair[];
 }
 
@@ -136,8 +140,8 @@ export const getTemplateRadioCards = (categories: Categories) => {
 
 const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
-  if (!categories || !categories.primary) return Object.keys(templates);
-  const primaryCat = templates[categories.primary];
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary) return Object.keys(primaryCat.children);
   const secondaryCat = primaryCat.children
@@ -156,7 +160,7 @@ export const getTemplates = (
   filterByMarketType: boolean = true
 ): Template[] => {
   if (!marketType && filterByMarketType) return [];
-  let categoryTemplates: CategoryTemplate = templates[categories.primary];
+  let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
   if (!categoryTemplates) return [];
   if (!categories.secondary)
@@ -189,7 +193,7 @@ const getTemplatesByMarketType = (
 };
 
 const getInputsByType = (inputName: TemplateInputTypeNames) => {
-  return inputs[inputName];
+  return deepClone<TemplateInput[]>(INPUTS[inputName]);
 };
 
 export const getTemplateReadableDescription = (template: Template) => {
@@ -266,7 +270,7 @@ export const substituteUserOutcome = (
   return text;
 };
 
-const templates = {
+const TEMPLATES = {
   [SPORTS]: {
     templates: [],
     children: {
@@ -367,7 +371,7 @@ const templates = {
             ],
             resolutionRules: [],
           },
-        ]
+        ],
       },
       [AMERICAN_FOOTBALL]: {
         templates: [
@@ -521,7 +525,7 @@ const templates = {
   },
 };
 
-const inputs = {
+const INPUTS = {
   [TemplateInputTypeNames.YEAR_EVENT]: [
     {
       id: 0,
@@ -534,7 +538,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.FOOTBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.BASEBALL_YEAR_EVENT]: [
     {
@@ -548,7 +552,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.BASEBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {

@@ -5,6 +5,8 @@ import Styles from 'modules/create-market/components/template-picker.styles.less
 import { getTemplates, getTemplateReadableDescription, createTemplateOutcomes } from 'modules/create-market/get-template';
 import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
+import deepClone from 'utils/deep-clone';
+import { NewMarket } from 'modules/types';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
@@ -38,7 +40,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           radioButtons={templateOptions}
           onChange={value => {
             updateNewMarket({
-                ...JSON.parse(JSON.stringify(EMPTY_STATE)),
+                ...deepClone<NewMarket>(EMPTY_STATE),
                 outcomes: newMarket.marketType === CATEGORICAL ? createTemplateOutcomes(templates[value].inputs) : ['', ''],
                 currentStep: newMarket.currentStep,
                 marketType: newMarket.marketType,
