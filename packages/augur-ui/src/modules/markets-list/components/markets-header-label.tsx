@@ -1,31 +1,25 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import Styles from "modules/markets-list/components/markets-header.styles.less";
 
-interface MarketsHeaderLabel {
-  noTopPadding?: Boolean;
+interface MarketsHeaderLabelProps {
+  noTopPadding?: boolean;
   title: string;
 }
 
-const MarketsHeaderLabel = ({
-  noTopPadding = false,
+const MarketsHeaderLabel: React.FC<MarketsHeaderLabelProps> = ({
+  noTopPadding,
   title
-}: MarketsHeaderLabel) => (
-  <article
-    className={classNames({
-      [Styles.MarketsHeader]: !noTopPadding
-    })}
-  >
-    <h4>{title}</h4>
-  </article>
-);
-
-MarketsHeaderLabel.propTypes = {
-  noTopPadding: PropTypes.bool,
-  title: PropTypes.string.isRequired
-};
+}) => (
+    <article
+      className={classNames({
+        [Styles.MarketsHeader]: !noTopPadding
+      })}
+    >
+      <h4>{title}</h4>
+    </article>
+  );
 
 MarketsHeaderLabel.defaultProps = {
   noTopPadding: false
