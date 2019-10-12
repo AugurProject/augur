@@ -88,6 +88,7 @@ import {
   createTemplateOutcomes,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
+import { Getters } from '@augurproject/sdk';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -108,7 +109,8 @@ interface FormProps {
 
 interface FormState {
   blockShown: Boolean;
-  contentPages: Array<any>;
+  contentPages: any[];
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 interface Validations {
@@ -150,6 +152,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       ? TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
+    categoryStats: null,
   };
 
   componentDidMount() {
@@ -579,7 +582,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       needsApproval,
       isTemplate,
     } = this.props;
-    const { contentPages } = this.state;
+    const { contentPages, categoryStats } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -664,9 +667,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && (
-                <SubCategories nextPage={this.nextPage} />
-              )}
+              {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={categoryStats} nextPage={this.nextPage}/>}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
