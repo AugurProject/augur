@@ -363,91 +363,102 @@ div.ErrorField:focus {
 .ModalDisclaimer {
   background: @color-module-background;
   border: @size-1 solid @color-dark-grey;
-  border-radius: @size-5;
-  color: @color-primary-text;
+  border-radius: @size-8;
   flex-flow: row nowrap;
   max-width: 35rem;
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
-  padding: @size-24 0 @size-32 0;
   position: relative;
   text-align: center;
   width: 100%;
 
-  > * {
-    width: 100%;
+  > h1 {
+    .text-24;
+
+    color: @color-primary-text;
+    margin: @size-32 0;
   }
 
-  h1 {
-    color: @color-primary-text;
-    font-size: @size-22;
-    font-weight: 500;
-    line-height: 1.75rem;
-    margin: @size-8 0 @size-24;
-  }
-}
-
-.ModalDisclaimer__TextBox {
-  background-color: @color-dark-grey;
-  margin: 0 @size-32 @size-24;
-  max-height: 25rem;
-  max-width: 35rem;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: @size-8 @size-32;
-  text-align: left;
-  width: auto;
-
-  > p {
-    color: @color-primary-text;
-    font-size: @size-14;
-    line-height: @size-22;
-    margin: 0 0 @size-24;
-  }
-}
-
-.ModalDisclaimer__helperText {
-  display: flex;
-  flex-flow: row nowrap;
-  margin-bottom: @size-16;
-
-  > label {
-    align-items: center;
-    color: @color-primary-text;
-    display: flex;
-    font-size: @size-14;
-    font-weight: normal;
-    line-height: @size-16;
-    margin: 0 5rem 0 4rem;
+  > div:first-of-type {
+    background-color: @color-dark-grey;
+    margin: 0 @size-20 @size-48;
+    max-height: 25rem;
+    max-width: 35rem;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: @size-15 @size-24;
     text-align: left;
-    text-transform: none;
-    width: 100%;
+    width: auto;
+
+    > p {
+      .text-14;
+
+      color: @color-secondary-text;
+      font-size: @size-14;
+      margin: 0 0 @size-24;
+    }
+
+    > div:first-of-type {
+      border: 1px solid @color-secondary-action-outline;
+      border-left: 0;
+      border-right: 0;
+      display: flex;
+      flex-flow: row nowrap;
+      padding: @size-26 0;
+
+      > label {
+        align-items: center;
+        color: @color-primary-text;
+        display: flex;
+        font-size: @size-14;
+        margin: 0;
+        text-transform: none;
+        user-select: none;
+        width: 100%;
+
+        > div {
+          margin-right: @size-24;
+        }
+      }
+    }
+    > div:last-of-type {
+      margin: 0 0 @size-32 0;
+
+      > button {
+        .text-12-bold;
+
+        background: @color-primary-action;
+        color: @color-dark-grey;
+        margin: 0;
+      }
+    }
   }
-}
 
-.ModalDisclaimer_disabled {
-    opacity: 0.45;
-}
-
-.ModalDisclaimer__checkbox {
-  display: flex;
-  flex-flow: row nowrap;
-  margin-bottom: @size-16;
-
-  > label {
+  > div:last-of-type {
     align-items: center;
-    color: @color-primary-text;
+    cursor: pointer;
     display: flex;
-    font-size: @size-14;
-    font-weight: bold;
-    line-height: @size-16;
-    margin: 0 4rem;
-    text-transform: none;
-    width: 100%;
-    user-select: none;
+    justify-content: center;
+    position: relative;
+
+    &.hidden {
+      display: none;
+    }
 
     > div {
-      margin-right: @size-32;
+      background: @color-primary-action;
+      bottom: @size-28;
+      border-radius: 50%;
+      height: 40px;
+      position: absolute;
+      width: 40px;
+
+      > svg {
+        fill: @color-dark-grey;
+        height: @size-24;
+        transform: translateY(@size-8);
+        width: @size-24;
+      }
     }
   }
 }
@@ -491,14 +502,6 @@ div.ErrorField:focus {
     flex-grow: 1;
     font-size: 18px;
     justify-content: center;
-  }
-}
-
-@media @breakpoint-mobile {
-  .ModalDisclaimer__TextBox {
-    margin: 0 @size-16 @size-24;
-    max-height: 15rem;
-    padding: @size-8 @size-16;
   }
 }
 
@@ -549,93 +552,13 @@ div.ErrorField:focus {
       min-width: 7rem;
     }
   }
-
-  .ModalDisclaimer__TextBox {
-    margin: 0 @size-16 @size-16;
-    max-height: 20rem;
-    padding: @size-8 @size-16;
-  }
-
-  .ModalDisclaimer__helperText,
-  .ModalDisclaimer__checkbox {
-    > label {
-      font-size: @size-12;
-      line-height: @size-12;
-      margin: 0 @size-24;
-    }
-  }
-
-  .ModalDisclaimer {
-    > h1 {
-      margin: 0 0 @size-16;
-    }
-  }
-}
-
-@media @breakpoint-mobile-extra-small {
-  .ModalDisclaimer__TextBox {
-    margin: 0 @size-16 @size-16;
-    max-height: 10rem;
-  }
-
-  .ModalDisclaimer {
-    padding: @size-16 0 4rem 0;
-
-    > h1 {
-      margin: 0 0 @size-16;
-    }
-
-    .ModalDisclaimer__helperText,
-    .ModalDisclaimer__checkbox {
-      > label {
-        margin: 0 @size-16;
-      }
-    }
-
-    .ActionButtons {
-      padding: @size-16 0 0;
-    }
-  }
-}
-
-@media @breakpoint-mobile-smaller-height,
-  @breakpoint-mobile-extra-small-height {
-  .ModalDisclaimer {
-    max-height: 75vh;
-    max-width: 90vw;
-    padding: @size-8 0 @size-32 0;
-
-    > h1 {
-      margin: 0 0 @size-8;
-    }
-
-    .ActionButtons {
-      margin: 0;
-      max-width: 90vw;
-      padding: @size-8 0 0;
-    }
-  }
-
-  .ModalDisclaimer__TextBox {
-    margin: 0 @size-8 @size-8;
-    max-height: 6rem;
-    max-width: none;
-    padding: 0 @size-8;
-  }
-
-  .ModalDisclaimer__helperText,
-  .ModalDisclaimer__checkbox {
-    margin-bottom: @size-8;
-
-    > label {
-      font-size: @size-12;
-      line-height: @size-12;
-      margin: 0 @size-16;
-    }
-  }
 }
 
 .ModalMetaMaskFinder {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
   background: @color-secondary-action-outline;
   border-top-left-radius: 38px;
   border-bottom-left-radius: 38px;

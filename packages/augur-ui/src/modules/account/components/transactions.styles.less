@@ -3,14 +3,20 @@
 .Content {
   align-items: center;
   background: @color-module-background;
-  display: flex;
-  flex-flow: row wrap;
   justify-content: space-between;
   padding: @size-24;
-  flex: 1;
+  max-width: 580px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+
+  > p {
+    grid-column: span 2;
+  }
 
   > button:first-of-type {
-    flex: 0 0 auto;
+    grid-column: span 2;
     margin: auto;
   }
 
@@ -29,7 +35,6 @@
     .mono-11-bold;
 
     color: @color-secondary-text;
-    flex: 1 100%;
     margin: @size-24 auto @size-12;
     text-align: center;
     text-transform: uppercase;
@@ -78,18 +83,6 @@
     background: unset;
     padding-top: 0;
     margin-top: @size-14;
-
-    > button:first-of-type {
-      flex: 1;
-    }
-
-    > button:nth-of-type(2) {
-      flex: 1;
-    }
-
-    > button:nth-of-type(3) {
-      flex: 1;
-    }
 
     > div {
       margin-top: 0;

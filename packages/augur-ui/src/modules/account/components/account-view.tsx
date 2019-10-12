@@ -91,7 +91,6 @@ export default class AccountView extends React.Component<
                   [Styles.HideActiveMarkets]: s.extendNotifications,
                 })}
               >
-                <ForkingBanner />
                 <div>
                   <div>
                     <Notifications

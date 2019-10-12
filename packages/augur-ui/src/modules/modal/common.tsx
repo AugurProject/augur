@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import QRCode from 'qrcode.react';
 import Clipboard from 'clipboard';
-import ReactTooltip from 'react-tooltip';
-import TooltipStyles from 'modules/common/tooltip.styles';
 import { Checkbox, TextInput, InputDropdown } from 'modules/common/form';
 import {
   XIcon,
-  CopyIcon,
-  CheckCircleIcon,
   LargeDollarIcon,
   LargeDaiIcon,
+  DaiLogoIcon,
+  EthIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -29,7 +27,7 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
-import formatAddress from 'modules/auth/helpers/format-address';
+import { generateDaiTooltip } from 'modules/modal/add-funds';
 
 export interface TitleProps {
   title: string;
@@ -333,15 +331,15 @@ interface LinkContentSectionProps {
 }
 export const LinkContentSection = (props: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map(content => (
-      <>
+    {props.linkContent.map((content, idx) => (
+      <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
             {content.content}
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
-      </>
+      </div>
     ))}
   </div>
 );
@@ -357,6 +355,24 @@ export const DaiGraphic = () => (
       {LargeDollarIcon}
       <span>1 USD</span>
     </div>
+  </div>
+);
+
+export interface DaiEthSelectorProps {
+  daiSelected: boolean;
+  handleClick: Function;
+}
+
+export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps) => (
+  <div className={Styles.DaiEthSelector}>
+    <div onClick={() => handleClick(true)} className={classNames({ [Styles.selected]: daiSelected })}>{DaiLogoIcon} DAI</div>
+    <div onClick={() => handleClick(false)} className={classNames({ [Styles.selected]: !daiSelected })}>{EthIcon} ETH</div>
+  </div>
+);
+
+export const TestBet = () => (
+  <div className={Styles.TestBet}>
+    <img src='assets/images/test-bet-placeholder.png' />
   </div>
 );
 
@@ -489,58 +505,48 @@ export const DepositInfo = (props: DepositInfoProps) => (
   </section>
 );
 
-export class AccountAddressDisplay extends Component<
-  AccountAddressDisplayProps,
-  AccountAddressDisplayState
-> {
-  state: AccountAddressDisplayState = {
-    isCopied: false,
-  };
+export const AccountAddressDisplay = ({ address, copyable }) => {
+  const [isCopied, setIsCopied] = useState(false);
+  let timeoutId = null;
 
-  componentWrapper: any = null;
-  clipboard: any = new Clipboard("#copy_address");
-
-  copyClicked = () => {
-    this.setState({ isCopied: true }, () => {
-      setTimeout(() => {
-        if (this.componentWrapper) this.setState({ isCopied: false });
-      }, 3000);
-    });
-  };
-
-  render() {
-    const { isCopied } = this.state;
-    const { address, copyable } = this.props;
-    return (
-      <span
-        ref={container => {
-          this.componentWrapper = container;
-        }}
-        className={Styles.AccountAddressDisplay}
-      >
-        {address ? formatAddress(address) : '-'}
-        {copyable && (
-          <>
-            <button
-              id="copy_address"
-              data-clipboard-text={address}
-              onClick={this.copyClicked}
-            >
-              Copy
-            </button>
-          </>
-        )}
-      </span>
-    );
+  const copyClicked = () => {
+    setIsCopied(true);
+    timeoutId = setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
   }
+
+  useEffect(() => {
+    new Clipboard('#copy_address');
+
+    return function() {
+      clearTimeout(timeoutId);
+    }
+  }, []);
+
+  return (
+    <span className={Styles.AccountAddressDisplay}>
+      <div>{address ? address : '-'}</div>
+      {copyable && (
+        <>
+          <button
+            id='copy_address'
+            data-clipboard-text={address}
+            onClick={() => copyClicked()}
+            className={isCopied ? Styles.ShowConfirmaiton : null}
+          >
+            Copy
+          </button>
+        </>
+      )}
+    </span>
+  );
 }
 
-interface FundsHelpProps {}
-
-export const FundsHelp = (props: FundsHelpProps) => (
+export const FundsHelp = () => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy DAI and transfer it into your account.</span>
+    <span>Learn how to buy DAI {generateDaiTooltip()} and transfer it into your account.</span>
     <ExternalLinkButton label="Learn More" />
   </div>
 );
@@ -585,7 +591,7 @@ export class MarketReview extends Component<
 
         {endTime && (
           <div>
-            <p>Reporting starts</p>
+            <p>Event Expiration</p>
             <div>{endTime.formattedUtc}</div>
             <div>{endTime.formattedTimezone}</div>
           </div>

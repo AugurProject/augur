@@ -7,73 +7,16 @@ import {
 } from 'modules/markets/actions/update-new-market';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import {
-  SETTLEMENT_FEE_DEFAULT,
-  EXPIRY_SOURCE_GENERIC,
-  DESIGNATED_REPORTER_SELF,
-  AFFILIATE_FEE_DEFAULT,
-  YES_NO,
-  YES_NO_OUTCOMES,
   ZERO,
-  ONE,
   NEW_ORDER_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { NewMarket, BaseAction, LiquidityOrder } from 'modules/types';
 import { formatShares, formatDai } from 'utils/format-number';
-
-export const DEFAULT_STATE: NewMarket = {
-  isValid: false,
-  validations: {
-    description: null,
-    categories: ['', '', ''],
-    designatedReporterAddress: null,
-    expirySourceType: null,
-    setEndTime: null,
-    hour: null,
-    minute: null,
-    meridiem: null,
-    scalarDenomination: null,
-    outcomes: ['', ''],
-    settlementFee: '',
-  },
-  currentStep: 0,
-  marketType: YES_NO,
-  outcomes: ['', ''],
-  outcomesFormatted: YES_NO_OUTCOMES,
-  scalarSmallNum: '',
-  scalarBigNum: '',
-  scalarDenomination: '',
-  description: '',
-  expirySourceType: EXPIRY_SOURCE_GENERIC,
-  expirySource: '',
-  backupSource: '',
-  designatedReporterType: DESIGNATED_REPORTER_SELF,
-  designatedReporterAddress: '',
-  endTime: null,
-  setEndTime: null,
-  tickSize: 0.01,
-  hour: null,
-  minute: null,
-  meridiem: 'AM',
-  offset: 0,
-  offsetName: null,
-  timezone: null,
-  detailsText: '',
-  categories: ['', '', ''],
-  settlementFee: SETTLEMENT_FEE_DEFAULT,
-  affiliateFee: AFFILIATE_FEE_DEFAULT,
-  orderBook: {}, // for submit orders
-  orderBookSorted: {}, // for order book table
-  minPrice: '0',
-  maxPrice: '1',
-  minPriceBigNumber: ZERO,
-  maxPriceBigNumber: ONE,
-  initialLiquidityDai: ZERO,
-  initialLiquidityGas: ZERO,
-};
+import { EMPTY_STATE } from 'modules/create-market/constants';
 
 export default function(
-  newMarket: NewMarket = DEFAULT_STATE,
+  newMarket: NewMarket = JSON.parse(JSON.stringify(EMPTY_STATE)),
   { type, data }: BaseAction
 ): NewMarket {
   switch (type) {
@@ -191,22 +134,7 @@ export default function(
     }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
-      return {
-        ...DEFAULT_STATE,
-        validations: {
-          description: null,
-          categories: ['', '', ''],
-          designatedReporterAddress: null,
-          expirySourceType: null,
-          setEndTime: null,
-          hour: null,
-          minute: null,
-          meridiem: null,
-          scalarDenomination: null,
-          outcomes: ['', ''],
-          settlementFee: '',
-        },
-      };
+      return JSON.parse(JSON.stringify(EMPTY_STATE));
     default:
       return newMarket;
   }
@@ -218,22 +146,20 @@ const recalculateCumulativeShares = orders => {
   const bids = orders
     .filter(a => a.type === 'sell')
     .sort((a, b) => Number(a.price) - Number(b.price))
-    .reverse()
-    .map(orders => {
-      counterBids = counterBids + Number(orders.shares);
-      orders.cumulativeShares = String(counterBids);
-      return orders;
+    .map(order => {
+      counterBids = counterBids + Number(order.shares);
+      order.cumulativeShares = String(counterBids);
+      return order;
     });
 
   const asks = orders
     .filter(a => a.type === 'buy')
-    .sort((a, b) => Number(a.price) - Number(b.price))
+    .sort((a, b) => Number(b.price) - Number(a.price))
     .map(order => {
       counterAsks = counterAsks + Number(order.shares);
       order.cumulativeShares = String(counterAsks);
       return order;
     });
-
   return [...bids, ...asks];
 };
 

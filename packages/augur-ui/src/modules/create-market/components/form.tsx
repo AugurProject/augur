@@ -30,6 +30,9 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
+  EMPTY_STATE,
+  TEMPLATE_PICKER,
+  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -50,14 +53,12 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
-import TemplateFormDetails from 'modules/create-market/containers/template-form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
 import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
-import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
 import {
   isBetween,
   isFilledNumber,
@@ -74,25 +75,26 @@ import {
   isValidFee,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
-import { createBigNumber } from 'utils/create-big-number';
+import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import { tellIfEditableOutcomes, createTemplateOutcomes } from '../get-template';
 
 interface FormProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
+  updateNewMarket: (newMarketData: NewMarket) => void;
   address: string;
-  updatePage: Function;
+  updatePage: (page: string) => void;
   addDraft: Function;
   drafts: Drafts;
   updateDraft: Function;
-  clearNewMarket: Function;
-  removeAllOrdersFromNewMarket: Function;
+  clearNewMarket: () => void;
+  removeAllOrdersFromNewMarket: () => void;
   discardModal: Function;
-  template: boolean;
+  isTemplate: boolean;
   openCreateMarketModal: Function;
   currentTimestamp: number;
   needsApproval: boolean;
@@ -134,14 +136,14 @@ const draftError = 'ENTER A MARKET QUESTION';
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
-    contentPages: this.props.template
+    contentPages: this.props.isTemplate
       ? TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
   };
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   }
 
   componentWillUnmount() {
@@ -153,7 +155,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const savedDraft = drafts[newMarket.uniqueId];
 
-    let defaultState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    let defaultState = JSON.parse(JSON.stringify(EMPTY_STATE));
     defaultState.validations = [];
 
     let market = JSON.parse(JSON.stringify(newMarket));
@@ -188,10 +190,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateNewMarket,
       updatePage,
       clearNewMarket,
-      template,
+      isTemplate,
     } = this.props;
 
-    const firstPage = template ? 1 : 0;
+    const firstPage = isTemplate ? 1 : 0;
     if (newMarket.currentStep <= firstPage) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
@@ -203,23 +205,42 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    // category might not have sub categories so sub-categories page needs to be skipped
+    let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    const numCategories = newMarket.categories.filter(c => c).length;
+    if (newMarket.currentStep === 2 && numCategories === 1){
+      newStep = 0;
+      updatePage(LANDING);
+      clearNewMarket();
+    }
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   nextPage = () => {
-    const { newMarket, updateNewMarket, template } = this.props;
+    const { newMarket, updateNewMarket, isTemplate } = this.props;
+    const { currentStep, marketType, template } = newMarket;
+
     const { contentPages } = this.state;
+
+    if (isTemplate && currentStep === 4) {
+      if (marketType === CATEGORICAL && tellIfEditableOutcomes(template.inputs)) {
+        // todo: need to pass this into findErrors or something, or else then validation won't be using updated outcomes
+        updateNewMarket({
+          ...newMarket,
+          outcomes: createTemplateOutcomes(template.inputs)
+        });
+      }
+    }
 
     if (this.findErrors()) return;
 
     const newStep =
-      newMarket.currentStep >= contentPages.length - 1
+      currentStep >= contentPages.length - 1
         ? contentPages.length - 1
-        : newMarket.currentStep + 1;
+        : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   findErrors = () => {
@@ -284,7 +305,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateDraft,
     } = this.props;
 
-    if (newMarket.description === DEFAULT_STATE.description) {
+    if (newMarket.description === EMPTY_STATE.description) {
       this.onError('description', draftError);
       return;
     }
@@ -529,7 +550,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   preview = () => {
     this.setState({ showPreview: !this.state.showPreview }, () => {
-      this.node.scrollIntoView();
+      this.node && this.node.scrollIntoView();
     });
   };
 
@@ -541,7 +562,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       openCreateMarketModal,
       history,
       needsApproval,
-      template,
+      isTemplate,
     } = this.props;
     const { contentPages } = this.state;
 
@@ -606,7 +627,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === TEMPLATE_FORM_DETAILS && (
                 <FormDetails
-                  template
+                  isTemplate
                   onChange={this.onChange}
                   onError={this.onError}
                 />
@@ -618,11 +639,14 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && <Review />}
-              {mainContent === SUB_CATEGORIES && <SubCategories />}
+              {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
+              {mainContent === SUB_CATEGORIES && <SubCategories nextPage={this.nextPage}/>}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
                   marketType={marketType}
+                  categories={newMarket.categories}
+                  nextPage={this.nextPage}
                 />
               )}
               {saveDraftError && (
@@ -642,7 +666,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  {!template && (
+                  {!isTemplate && (
                     <SecondaryButton
                       text={disabledSave ? 'Saved' : 'Save draft'}
                       disabled={disabledSave}

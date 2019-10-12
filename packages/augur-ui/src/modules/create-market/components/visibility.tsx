@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -130,11 +130,13 @@ export default class Visibility extends Component<
       marketType,
       outcomesFormatted,
       tickSize,
-      maxPriceBigNumber,
-      minPriceBigNumber,
+      maxPrice,
+      minPrice,
       orderBook,
       settlementFee,
     } = newMarket;
+    const minPriceBigNumber = createBigNumber(minPrice);
+    const maxPriceBigNumber = createBigNumber(maxPrice);
     const tickSizeBigNumber = createBigNumber(tickSize);
     const numTicks = tickSizeToNumTickWithDisplayPrices(
       tickSizeBigNumber,
@@ -170,7 +172,9 @@ export default class Visibility extends Component<
       numTicks: numTicks.toFixed(),
       numOutcomes: outcomesFormatted.length,
       marketType: marketTypeNumber,
-      marketFeeDivisor: `${settlementFee}`,
+      feePerCashInAttoCash: `${createBigNumber(settlementFee)
+        .multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER)
+        .toString()}`,
       reportingFeeDivisor: '0',
       spread: parseInt(MAX_SPREAD_10_PERCENT),
     };
@@ -212,8 +216,8 @@ export default class Visibility extends Component<
   componentDidUpdate(prevProps) {
     const { newMarket } = this.props;
     if (
-      prevProps.newMarket.initialLiquidityDai.comparedTo(
-        newMarket.initialLiquidityDai
+      createBigNumber(prevProps.newMarket.initialLiquidityDai).comparedTo(
+        createBigNumber(newMarket.initialLiquidityDai)
       ) !== 0
     ) {
       this.getRanking();

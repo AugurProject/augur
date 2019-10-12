@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -9,8 +8,22 @@ import FilledOrdersTable from 'modules/market/components/market-orders-positions
 import { CancelTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles';
+import { MarketData, NodeStyleCallback, UIOrder, DefaultOrderProperties } from 'modules/types';
 
-const MarketOrdersPositionsTable = ({
+interface MarketOrdersPositionsTableProps {
+  hasPending?: boolean,
+  marketId?: string,
+  outcomes?: UIOrder[],
+  openOrders?: UIOrder[],
+  market: MarketData,
+  filledOrders?: UIOrder[],
+  cancelAllOpenOrders: (orders: UIOrder[], cb?: NodeStyleCallback) => void,
+  preview: boolean,
+  toggle?: () => void,
+  updateSelectedOrderProperties: (selectedOrderProperties: DefaultOrderProperties) => void
+}
+
+const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
   hasPending,
   marketId,
   market,
@@ -20,50 +33,40 @@ const MarketOrdersPositionsTable = ({
   updateSelectedOrderProperties,
   toggle,
 }) => (
-  <ModuleTabs
-    className={Styles.Tabs}
-    selected={0}
-    fillForMobile
-    showToggle
-    toggle={toggle}
-  >
-    <ModulePane label="Open Orders">
-      <OpenOrdersTable openOrders={openOrders} market={market} />
-      {openOrders.length > 0 && (
-        <div className={Styles.Footer}>
-          <CancelTextButton
-            action={() => cancelAllOpenOrders(openOrders)}
-            text="Cancel All"
-            disabled={hasPending}
-          />
-        </div>
-      )}
-    </ModulePane>
-    <ModulePane label="My Fills">
-      <FilledOrdersTable
-        filledOrders={filledOrders}
-        scalarDenomination={market.scalarDenomination}
-      />
-    </ModulePane>
-    <ModulePane label="Positions">
-      <PositionsTable
-        marketId={marketId}
-        extendedView
-        updateSelectedOrderProperties={updateSelectedOrderProperties}
-      />
-    </ModulePane>
-  </ModuleTabs>
-);
-
-MarketOrdersPositionsTable.propTypes = {
-  hasPending: PropTypes.bool,
-  marketId: PropTypes.string,
-  outcomes: PropTypes.array,
-  openOrders: PropTypes.array,
-  market: PropTypes.object.isRequired,
-  filledOrders: PropTypes.array,
-  cancelAllOpenOrders: PropTypes.func.isRequired,
-};
+    <ModuleTabs
+      className={Styles.Tabs}
+      selected={0}
+      fillForMobile
+      showToggle
+      toggle={toggle}
+    >
+      <ModulePane label="Open Orders">
+        <OpenOrdersTable openOrders={openOrders} market={market} />
+        {openOrders.length > 0 && (
+          <div className={Styles.Footer}>
+            <CancelTextButton
+              action={() => cancelAllOpenOrders(openOrders)}
+              text="Cancel All"
+              disabled={hasPending}
+            />
+          </div>
+        )}
+      </ModulePane>
+      <ModulePane label="My Fills">
+        <FilledOrdersTable
+          filledOrders={filledOrders}
+          scalarDenomination={market.scalarDenomination}
+        />
+      </ModulePane>
+      <ModulePane label="Positions">
+        <PositionsTable
+          marketId={marketId}
+          extendedView
+          updateSelectedOrderProperties={updateSelectedOrderProperties}
+        />
+      </ModulePane>
+    </ModuleTabs>
+  );
 
 MarketOrdersPositionsTable.defaultProps = {
   hasPending: false,

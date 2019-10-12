@@ -8,7 +8,7 @@
   display: grid;
   grid-template-columns: auto auto auto;
   grid-template-rows: auto;
-  margin: @size-24 0 0;
+  margin: @size-16 4rem 0;
   padding: @size-12 @size-16;
 
   &.Hide {
@@ -84,6 +84,10 @@
         line-height: @size-19;
       }
     }
+  }
+
+  @media @breakpoint-mobile {
+    margin: calc(@size-24 + @top-bar-height-mobile) @size-24 @size-24 @size-24;
   }
 
   @media @breakpoint-mobile-mid {

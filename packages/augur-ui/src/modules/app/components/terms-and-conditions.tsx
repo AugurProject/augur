@@ -1,12 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Versions } from "modules/types";
 import Styles from "modules/app/components/terms-and-conditions.styles";
 
-const TermsAndConditions = ({
-  augurui,
-  augurjs,
-}: Versions) => (
+const TermsAndConditions: React.FC<{ versions: Versions }> = ({ versions: { augurui } }) => (
   <div className={Styles.TermsAndConditions}>
     <div>
       <a
@@ -29,12 +25,5 @@ const TermsAndConditions = ({
     </div>
   </div>
 );
-
-TermsAndConditions.propTypes = {
-  versions: PropTypes.shape({
-    augurui: PropTypes.string,
-    augurjs: PropTypes.string
-  }).isRequired
-};
 
 export default TermsAndConditions;
