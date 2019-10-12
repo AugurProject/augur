@@ -4,12 +4,21 @@ import {
   AMERICAN_FOOTBALL,
   BASEBALL,
   SPORTS,
+  ENTERTAINMENT,
+  POLITICS,
+  US_POLITICS,
+  WORLD,
+  FINANCE,
+  CRYPTO,
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
+  MarketCardTemplate
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import { ValueLabelPair, DateFormattedObject, TimezoneDateObject } from 'modules/types';
+import { Getters } from '@augurproject/sdk';
+import { formatDai } from 'utils/format-number';
+import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -21,7 +30,12 @@ export enum TemplateInputTypeNames {
   PLAYER_AWARD = 'PLAYER_AWARD',
   YEAR_EVENT = 'YEAR_EVENT',
   BASEBALL_YEAR_EVENT = 'BASEBALL_YEAR_EVENT',
-  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR'
+  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR',
+  ENTERTAINMNET_AWARDS_BIN = 'ENTERTAINMNET_AWARDS_BIN',
+  ENTERTAINMNET_AWARDS_BIN_2 = 'ENTERTAINMNET_AWARDS_BIN_2',
+  ENTERTAINMNET_AWARDS_BIN_3 = 'ENTERTAINMNET_AWARDS_BIN_3',
+  ENTERTAINMNET_AWARDS_BIN_4 = 'ENTERTAINMNET_AWARDS_BIN_4',
+  ENTERTAINMNET_AWARDS_CAT = 'ENTERTAINMNET_AWARDS_CAT',
 }
 
 export enum TemplateInputType {
@@ -96,7 +110,7 @@ export interface TemplateInput {
   placeholder: string;
   tooltip?: string;
   userInput?: string;
-  userInputObject?: UserInputtedType
+  userInputObject?: UserInputtedType;
   values?: ValueLabelPair[];
 }
 
@@ -116,23 +130,59 @@ export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   );
 };
 
-export const getTemplateRadioCards = (categories: Categories) => {
+export const getTemplateRadioCards = (categories: Categories, categoryStats: Getters.Markets.CategoryStats | null): MarketCardTemplate[] => {
   const cats = getTemplateCategories(categories);
   if (cats.length === 0) return [];
   if (!categories.primary) {
-    return cats.map(c => MARKET_TEMPLATES.find(t => t.value === c));
+    return cats.map(c => MARKET_TEMPLATES.find(t => t.value === c))
+    .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && !categories.secondary) {
     return cats.map(c =>
       MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    );
+    )
+    .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && categories.secondary && !categories.tertiary) {
-    return cats.map(c =>
-      MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    );
+    return cats
+      .map(c =>
+        MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
+      )
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   return [];
+};
+
+export const addCategoryStats = (
+  categories: Categories | null,
+  card: MarketCardTemplate,
+  categoryStats: Getters.Markets.CategoryStats
+): MarketCardTemplate => {
+  if (!categoryStats) return card;
+  if (!card) return card;
+  let stats = null;
+  const cardValue = card.value.toLowerCase();
+  if (!categories || !categories.primary) stats = categoryStats[cardValue];
+  if (categories && categories.primary && !categories.secondary) {
+    const catStats = categoryStats[categories.primary.toLowerCase()];
+    stats = catStats[cardValue];
+  }
+  if (
+    categories &&
+    categories.primary &&
+    categories.secondary &&
+    !categories.tertiary
+  ) {
+    let catStats = categoryStats[categories.primary.toLowerCase()];
+    catStats = catStats[categories.secondary.toLowerCase()];
+    stats = catStats[cardValue];
+  }
+  if (stats) {
+    const vol = formatDai(stats.volume || '0').formatted;
+    const mkrLabel = stats.numberOfMarkets === 1 ? 'Market' : 'Markets';
+    card.description = `${stats.numberOfMarkets} ${mkrLabel} | $${vol}`;
+  }
+  return card;
 };
 
 const getTemplateCategories = (categories: Categories): string[] => {
@@ -140,12 +190,12 @@ const getTemplateCategories = (categories: Categories): string[] => {
   if (!categories || !categories.primary) return Object.keys(templates);
   const primaryCat = templates[categories.primary];
   if (!primaryCat) return emptyCats;
-  if (!categories.secondary) return Object.keys(primaryCat.children);
+  if (!categories.secondary) return primaryCat.children ? Object.keys(primaryCat.children) : [];
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  if (!categories.tertiary) return Object.keys(secondaryCat.children);
+  if (!categories.tertiary) return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
   return secondaryCat.children
     ? Object.keys(secondaryCat.children[categories.tertiary])
     : emptyCats;
@@ -250,9 +300,9 @@ export const substituteUserOutcome = (
   inputs: TemplateInput[]
 ) => {
   let matches = input.placeholder.match(/\[(.*?)\]/);
-  let submatch = 0;
+  let submatch = '0';
   if (matches) {
-    submatch = matches[1];
+    submatch = String(matches[1]);
   }
 
   let text = input.placeholder.replace(
@@ -268,9 +318,572 @@ export const substituteUserOutcome = (
 };
 
 const templates = {
+  [POLITICS]: {
+    children: {
+      [US_POLITICS]: {
+        templates: [
+          {
+            templateId: `pol-win-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] presidential election`,
+            example: `Will Donald Trump win the 2020 Presidential election`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-pres-nom`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2] presidential nomination`,
+            example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-office-nom`,
+            marketType: YES_NO,
+            question: `Will [0] run for [1] by [2]`,
+            example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.OFFICES,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-imp`,
+            marketType: YES_NO,
+            question: `Will [0] be impeached by [2]`,
+            example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-prez-cat`,
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] US presidential election`,
+            example: `Who will win the 2020 US presidential election`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-nom-cat`,
+            marketType: CATEGORICAL,
+            question: `Who will be the [0] [1] [2] nominee`,
+            example: `Who will be the 2020 Republican Vice President nominee`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.OFFICES,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-state-prez-cat`,
+            marketType: CATEGORICAL,
+            question: `Which party will win [0] in the [1] Presidential election`,
+            example: `Which party will win Michigan in the 2020 Presidential election`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `State`,
+                values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
+      [WORLD]: {
+        templates: [
+          {
+            templateId: `pol-world-pos-cat`,
+            marketType: YES_NO,
+            question: `Will [0] be [1] of [2] on [3]`,
+            example: `Will Kim Jong Un be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Position`,
+                values: LIST_VALUES.POL_POSITION,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Location`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-world-imp-cat`,
+            marketType: YES_NO,
+            question: `Will [input Name] be impeached by [specific date, time and time zone]`,
+            example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
+    },
+  },
+  [CRYPTO]: {
+    templates: [
+      {
+        templateId: `crypto-token-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
+        example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Coin/Token`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `crypto-between-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0], exceed [1] [2], on [3] anytime between the [4] (23:59 UTC-0) and [5] (23:59 UTC-0)`,
+        example: `Will the price of REP exceed $40 USD on Poloniex anytime between September 1, 2019 (00:00 UTC-0) and December 31, 2019 (23:59 UTC-0)`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Coin/Token`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Start Day of Year`,
+          },
+          {
+            id: 5,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `End Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `crypto-close-scalar`,
+        marketType: SCALAR,
+        question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
+        example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Coin/Token`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+    ],
+  },
+  [FINANCE]: {
+    templates: [
+      {
+        templateId: `fin-stock-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]`,
+        example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Stock`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-stock-exceed-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]`,
+        example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Stock`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Start Day of Year`,
+          },
+          {
+            id: 5,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `End Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-index-close-bin`,
+        marketType: YES_NO,
+        question: `Will the [0] close on or above [1] [2] on [3]`,
+        example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Index`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-price-scalar`,
+        marketType: SCALAR,
+        question: `What price will [0] close at in [1] on the [2] on [3]`,
+        example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Stock`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-price-close-scalar`,
+        marketType: SCALAR,
+        question: `What price will the [0] close at in [1] on [2]`,
+        example: `What Price will the S&P 500 close at in USD on December 31, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Index`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+    ],
+  },
+  [ENTERTAINMENT]: {
+    templates: [
+      {
+        templateId: `ent-host-event`,
+        marketType: YES_NO,
+        question: `Will [0] host the [1] [2]`,
+        example: `Will Billy Crystal host the 2019 Academy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-event2`,
+        marketType: YES_NO,
+        question: `Will [0] win an award for [1] at the [2] [3]`,
+        example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_2,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-event3`,
+        marketType: YES_NO,
+        question: `Will [0] win an award for [1] at the [2] [3]`,
+        example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_3,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-gross`,
+        marketType: YES_NO,
+        question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]`,
+        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-cat`,
+        marketType: CATEGORICAL,
+        question: `Who will host the [0] [1]`,
+        example: `Who wll host the 2020 Emmy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-win-award-cat`,
+        marketType: CATEGORICAL,
+        question: `Who will win for [0] in the [1] [2]`,
+        example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Award`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Year`,
+            values: LIST_VALUES.YEARS,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Event`,
+            values: LIST_VALUES.ENTERTAINMENT_EVENT,
+          },
+        ],
+        resolutionRules: [],
+      },
+    ],
+  },
   [SPORTS]: {
     templates: [],
     children: {
+
       [SOCCER]: {
         templates: [
           {
@@ -368,7 +981,7 @@ const templates = {
             ],
             resolutionRules: [],
           },
-        ]
+        ],
       },
       [AMERICAN_FOOTBALL]: {
         templates: [
@@ -523,6 +1136,111 @@ const templates = {
 };
 
 const inputs = {
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT]: [
+    {
+      id: 0,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Movie Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Amount`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Currency`,
+      values: LIST_VALUES.CURRENCY,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `US / Worldwide`,
+      values: LIST_VALUES.REGION,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_3]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Movie Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Award`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_2]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Person Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Award`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Person Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
   [TemplateInputTypeNames.YEAR_EVENT]: [
     {
       id: 0,
@@ -535,7 +1253,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.FOOTBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.BASEBALL_YEAR_EVENT]: [
     {
@@ -549,7 +1267,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.BASEBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {

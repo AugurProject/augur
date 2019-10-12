@@ -1,8 +1,7 @@
 import React from "react";
-import { Versions } from "modules/types";
-import Styles from "modules/app/components/terms-and-conditions.styles";
+import Styles from "modules/app/components/terms-and-conditions.styles.less";
 
-const TermsAndConditions: React.FC<{ versions: Versions }> = ({ versions: { augurui } }) => (
+const TermsAndConditions = () => (
   <div className={Styles.TermsAndConditions}>
     <div>
       <a
@@ -15,13 +14,8 @@ const TermsAndConditions: React.FC<{ versions: Versions }> = ({ versions: { augu
         href="https://raw.githubusercontent.com/AugurProject/augur/master/LICENSE"
         target="blank"
       >
-        Augur UI License
+        Augur License
       </a>
-    </div>
-    <div>
-      <span>
-        AugurUI: <span>{augurui}</span>
-      </span>
     </div>
   </div>
 );

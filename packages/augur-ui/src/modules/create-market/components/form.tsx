@@ -32,6 +32,7 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
+  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -80,7 +81,9 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { tellIfEditableOutcomes, createTemplateOutcomes } from '../get-template';
+import { Getters } from '@augurproject/sdk';
+import { tellIfEditableOutcomes, createTemplateOutcomes } from 'modules/create-market/get-template';
+
 
 interface FormProps {
   newMarket: NewMarket;
@@ -101,7 +104,8 @@ interface FormProps {
 
 interface FormState {
   blockShown: Boolean;
-  contentPages: Array<any>;
+  contentPages: any[];
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 interface Validations {
@@ -139,10 +143,11 @@ export default class Form extends React.Component<FormProps, FormState> {
       ? TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
+    categoryStats: null,
   };
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   }
 
   componentWillUnmount() {
@@ -204,9 +209,16 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    // category might not have sub categories so sub-categories page needs to be skipped
+    let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    const numCategories = newMarket.categories.filter(c => c).length;
+    if (newMarket.currentStep === 2 && numCategories === 1){
+      newStep = 0;
+      updatePage(LANDING);
+      clearNewMarket();
+    }
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   nextPage = () => {
@@ -232,7 +244,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? contentPages.length - 1
         : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   findErrors = () => {
@@ -542,7 +554,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   preview = () => {
     this.setState({ showPreview: !this.state.showPreview }, () => {
-      this.node.scrollIntoView();
+      this.node && this.node.scrollIntoView();
     });
   };
 
@@ -556,7 +568,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       needsApproval,
       isTemplate,
     } = this.props;
-    const { contentPages } = this.state;
+    const { contentPages, categoryStats } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -632,7 +644,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && <SubCategories nextPage={this.nextPage}/>}
+              {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={categoryStats} nextPage={this.nextPage}/>}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
@@ -651,6 +663,14 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <Error
                   header="complete all Required fields"
                   subheader="You must complete all required fields highlighted above before you can continue"
+                />
+              )}
+              {secondButton === CREATE && (
+                <BulkTxLabel
+                  className={Styles.MultipleTransactions}
+                  buttonName={'Create'}
+                  count={1}
+                  needsApproval={needsApproval}
                 />
               )}
               <div>
@@ -684,14 +704,6 @@ export default class Form extends React.Component<FormProps, FormState> {
                   )}
                 </div>
               </div>
-              {secondButton === CREATE && (
-                <BulkTxLabel
-                  className={Styles.MultipleTransactions}
-                  buttonName={'Create'}
-                  count={1}
-                  needsApproval={needsApproval}
-                />
-              )}
             </ContentBlock>
           </>
         )}

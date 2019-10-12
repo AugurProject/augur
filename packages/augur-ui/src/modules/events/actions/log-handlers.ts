@@ -56,6 +56,7 @@ import {
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
+import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 
 const handleAlert = (
   log: any,
@@ -127,6 +128,7 @@ export const handleSDKReadyEvent = () => (
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
+  dispatch(getCategoryStats())
 };
 
 export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
