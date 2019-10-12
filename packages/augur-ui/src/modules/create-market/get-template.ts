@@ -1300,6 +1300,7 @@ const templates = {
             question: `Will the [0] have [1] or more regular season wins in [2]`,
             example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
             inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_WINS_BIN_YEAR,
             resolutionRules: [
               `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
             ],
