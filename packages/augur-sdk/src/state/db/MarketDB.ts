@@ -4,7 +4,6 @@ import { DerivedDB } from './DerivedDB';
 import { DB } from './DB';
 import { Subscriptions } from '../../subscriptions';
 import { augurEmitter } from '../../events';
-import { SubscriptionEventName } from "../../constants";
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -22,7 +21,7 @@ import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
-import { Block } from "ethereumjs-blockstream";
+import { Block } from 'ethereumjs-blockstream';
 
 
 interface MarketOrderBookData {
@@ -45,7 +44,7 @@ export class MarketDB extends DerivedDB {
   private readonly docProcessMap = {
     'MarketCreated': this.processMarketCreated,
     'InitialReportSubmitted': this.processInitialReportSubmitted,
-    'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted,
+    'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted.bind(this),
     'MarketFinalized': this.processMarketFinalized,
     'MarketVolumeChanged': this.processMarketVolumeChanged,
     'MarketOIChanged': this.processMarketOIChanged,
@@ -163,7 +162,7 @@ export class MarketDB extends DerivedDB {
         numOutcomes,
         spread,
       });
-      marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, "0");
+      marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
     }
 
     return marketOrderBookData;
@@ -249,11 +248,11 @@ export class MarketDB extends DerivedDB {
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = false;
     log['liquidity'] = {
-      0: "000000000000000000000000000000",
-      10: "000000000000000000000000000000",
-      15: "000000000000000000000000000000",
-      20: "000000000000000000000000000000",
-      100: "000000000000000000000000000000"
+      0: '000000000000000000000000000000',
+      10: '000000000000000000000000000000',
+      15: '000000000000000000000000000000',
+      20: '000000000000000000000000000000',
+      100: '000000000000000000000000000000'
     }
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
@@ -270,9 +269,10 @@ export class MarketDB extends DerivedDB {
   }
 
   private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
+    this.locks['processDisputeCrowdsourcerCompleted'] = true;
     const pacingOn: boolean = log['pacingOn'];
     log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
-    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
     log['totalRepStakedInMarket'] = padHex(log['totalRepStakedInMarket']);
     return log;
   }
@@ -296,15 +296,17 @@ export class MarketDB extends DerivedDB {
 
   processNewBlock = async (block: Block): Promise<void> => {
     const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, parseInt(block.number))
-  }
+    await this.processTimestamp(timestamp, Number(block.number))
+  };
 
   processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
     const timestamp = new BigNumber(log.newTimestamp).toNumber();
     await this.processTimestamp(timestamp, log.blockNumber)
-  }
+  };
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
+    await this.waitOnLock('processDisputeCrowdsourcerCompleted', 1000, 50);
+
     const eligibleMarketDocs = await this.find({
       selector: {
         reportingState: { $in: [
