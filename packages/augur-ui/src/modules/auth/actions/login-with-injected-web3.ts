@@ -7,6 +7,7 @@ import { Web3Provider } from 'ethers/providers';
 import {
   ACCOUNT_TYPES,
   MODAL_NETWORK_MISMATCH,
+  NETWORK_NAMES,
 } from 'modules/common/constants';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { augurSdk } from 'services/augursdk';
@@ -34,6 +35,7 @@ export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, A
         dispatch(
           updateModal({
             type: MODAL_NETWORK_MISMATCH,
+            expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)]
           })
         );
       }

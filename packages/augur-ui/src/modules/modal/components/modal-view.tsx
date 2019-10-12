@@ -43,6 +43,7 @@ import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
+import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -149,6 +150,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTestBet />;
     case TYPES.MODAL_GLOBAL_CHAT:
       return <ModalGlobalChat />;
+    case TYPES.MODAL_ACCOUNT_CREATED:
+       return <ModalAccountCreated />
     default:
       return <div />;
   }
