@@ -160,7 +160,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       await Promise.all(logCallbackPromises);
 
       // Fire this after all "filtered" log callbacks are processed.
-      const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map((cb) => cb(blockNumber, logs));
+      const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map((cb) => cb(blockNumber, this.deps.parseLogs(logs)));
       await Promise.all(allLogsCallbackMetaDataPromises);
 
       // let the controller know a new block was added so it can update the UI
