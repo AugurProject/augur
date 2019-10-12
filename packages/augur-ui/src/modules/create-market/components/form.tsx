@@ -81,7 +81,9 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { tellIfEditableOutcomes, createTemplateOutcomes } from '../get-template';
+import { Getters } from '@augurproject/sdk';
+import { tellIfEditableOutcomes, createTemplateOutcomes } from 'modules/create-market/get-template';
+
 
 interface FormProps {
   newMarket: NewMarket;
@@ -102,7 +104,8 @@ interface FormProps {
 
 interface FormState {
   blockShown: Boolean;
-  contentPages: Array<any>;
+  contentPages: any[];
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 interface Validations {
@@ -140,6 +143,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       ? TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
+    categoryStats: null,
   };
 
   componentDidMount() {
@@ -564,7 +568,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       needsApproval,
       isTemplate,
     } = this.props;
-    const { contentPages } = this.state;
+    const { contentPages, categoryStats } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -640,7 +644,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && <SubCategories nextPage={this.nextPage}/>}
+              {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={categoryStats} nextPage={this.nextPage}/>}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
@@ -659,6 +663,14 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <Error
                   header="complete all Required fields"
                   subheader="You must complete all required fields highlighted above before you can continue"
+                />
+              )}
+              {secondButton === CREATE && (
+                <BulkTxLabel
+                  className={Styles.MultipleTransactions}
+                  buttonName={'Create'}
+                  count={1}
+                  needsApproval={needsApproval}
                 />
               )}
               <div>
@@ -692,14 +704,6 @@ export default class Form extends React.Component<FormProps, FormState> {
                   )}
                 </div>
               </div>
-              {secondButton === CREATE && (
-                <BulkTxLabel
-                  className={Styles.MultipleTransactions}
-                  buttonName={'Create'}
-                  count={1}
-                  needsApproval={needsApproval}
-                />
-              )}
             </ContentBlock>
           </>
         )}

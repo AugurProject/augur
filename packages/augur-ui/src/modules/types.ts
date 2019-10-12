@@ -131,10 +131,6 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   forkEndTime?: string;
 }
 
-export interface Versions {
-  augurui: string | null;
-}
-
 export interface UserReports {
   markets?: {
     [universeId: string]: string;
@@ -581,7 +577,8 @@ export interface WindowApp extends Window {
   app: object;
   web3: Web3;
   ethereum: {
-    selectedAddress
+    selectedAddress;
+    networkVersion: string;
   };
   localStorage: Storage;
   integrationHelpers: any;
