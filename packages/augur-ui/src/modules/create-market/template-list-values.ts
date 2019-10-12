@@ -403,4 +403,102 @@ export const LIST_VALUES = {
       label: 'Wyoming',
     },
   ],
+  BASKETBALL_EVENT: [
+    {
+      value: 'Eastern Conference Finals',
+      label: 'Eastern Conference Finals',
+    },
+    {
+      value: 'Western Conference Finals',
+      label: 'Western Conference Finals',
+    },
+    {
+      value: 'NBA Championship',
+      label: 'NBA Championship',
+    },
+  ],
+  BASKETBALL_AWARD: [
+    {
+      value: 'Most Valuable Player',
+      label: 'Most Valuable Player',
+    },
+    {
+      value: 'Rookie of the year',
+      label: 'Rookie of the year',
+    },
+    {
+      value: '6th Man',
+      label: '6th Man',
+    },
+    {
+      value: 'Defensive Player of the Year',
+      label: 'Defensive Player of the Year',
+    },
+    {
+      value: 'Most Improved player',
+      label: 'Most Improved player',
+    },
+    {
+      value: 'Coach of the year',
+      label: 'Coach of the year',
+    },
+    {
+      value: 'NCAA-Naismith College Player of the Year',
+      label: 'NCAA-Naismith College Player of the Year',
+    },
+    {
+      value: 'AP college Player of the year',
+      label: 'AP college Player of the year',
+    },
+    {
+      value: 'John Wooden',
+      label: 'John Wooden',
+    },
+    {
+      value: 'Oscar Robertson',
+      label: 'Oscar Robertson',
+    },
+    {
+      value: 'Sporting News College Basketball Player of the year',
+      label: 'Sporting News College Basketball Player of the year',
+    },
+  ],
+  MENS_WOMENS: [
+    {
+      value: "Men's",
+      label: "Men's",
+    },
+    {
+      value: "Women's",
+      label: "Women's",
+    },
+  ],
+  BASKETBALL_LEAGUE: [
+    {
+      value: 'NBA',
+      label: 'NBA',
+    },
+    {
+      value: 'NCAA',
+      label: 'NCAA',
+    },
+  ],
+  BASKETBALL_ACTION: [
+    {
+      value: 'Points Scored',
+      label: 'Points Scored',
+    },
+    {
+      value: 'Rebounds',
+      label: 'Rebounds',
+    },
+    {
+      value: 'Assists',
+      label: 'Assists',
+    },
+    {
+      value: 'made 3-pointers',
+      label: 'made 3-pointers',
+    },
+  ],
 };
