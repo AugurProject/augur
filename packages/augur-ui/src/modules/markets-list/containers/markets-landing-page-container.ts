@@ -26,6 +26,7 @@ const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
 
   return {
+    categoryStats: state.categoryStats,
     categoryData: marketStats,
     isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,

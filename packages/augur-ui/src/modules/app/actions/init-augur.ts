@@ -29,6 +29,7 @@ import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { forceLoginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 
+
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -161,7 +162,6 @@ export function connectAugur(
           }
           callback(null);
         }
-
         // wire up start up events for sdk
         dispatch(listenForStartUpEvents(sdk));
       }
