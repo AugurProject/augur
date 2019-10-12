@@ -32,6 +32,7 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
+  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -142,7 +143,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   }
 
   componentWillUnmount() {
@@ -204,9 +205,16 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    // category might not have sub categories so sub-categories page needs to be skipped
+    let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    const numCategories = newMarket.categories.filter(c => c).length;
+    if (newMarket.currentStep === 2 && numCategories === 1){
+      newStep = 0;
+      updatePage(LANDING);
+      clearNewMarket();
+    }
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   nextPage = () => {
@@ -232,7 +240,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? contentPages.length - 1
         : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   findErrors = () => {
@@ -542,7 +550,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   preview = () => {
     this.setState({ showPreview: !this.state.showPreview }, () => {
-      this.node.scrollIntoView();
+      this.node && this.node.scrollIntoView();
     });
   };
 
