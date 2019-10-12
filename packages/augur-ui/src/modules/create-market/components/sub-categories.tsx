@@ -7,7 +7,12 @@ import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
 import { getTemplateRadioCards } from 'modules/create-market/get-template';
 
-export const SubCategories = ({ newMarket, updateNewMarket, nextPage }) => {
+export const SubCategories = ({
+    newMarket,
+    updateNewMarket,
+    nextPage,
+    categoryStats
+  }) => {
   const { categories } = newMarket;
   const cats = getTemplateRadioCards({
     primary: newMarket.categories[0],

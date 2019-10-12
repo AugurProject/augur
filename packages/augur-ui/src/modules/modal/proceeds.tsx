@@ -40,7 +40,7 @@ export const Proceeds = (props: ProceedsProps) => (
       {props.rows && <ActionRows rows={props.rows} />}
       {props.breakdown && <Breakdown short rows={props.breakdown} />}
     </main>
-    <ButtonsRow buttons={props.buttons} />
     <BulkTxLabel buttonName={'Claim All'} count={props.submitAllTxCount} needsApproval={false} />
+    <ButtonsRow buttons={props.buttons} />
   </div>
 );

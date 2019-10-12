@@ -145,7 +145,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       )}
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>
-    <ButtonsRow buttons={props.buttons} />
     <BulkTxLabel buttonName={"Submit All"} count={props.submitAllTxCount} needsApproval={props.needsApproval}/>
+    <ButtonsRow buttons={props.buttons} />
   </div>
 );
