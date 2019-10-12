@@ -193,6 +193,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     const gasLimit = new ethers.utils.BigNumber(Math.min(increasedEstimatedGasLimit.toNumber(), 7500000));
 
     // @BODY https://github.com/ethers-io/ethers.js/issues/321
+    // the 'from field is required to estimate gas but will fail if present when the transaction is sent.
     delete tx.from;
 
     const response = await this.signer.sendTransaction({
