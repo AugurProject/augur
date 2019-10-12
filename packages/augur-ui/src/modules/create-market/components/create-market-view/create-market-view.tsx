@@ -65,7 +65,7 @@ export default class CreateMarketView extends React.Component<
         {page === LANDING &&
           <Landing categoryStats={categoryStats} updatePage={this.updatePage} />
         }
-        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} categoryStats={categoryStats} />}
+        {page === TEMPLATE && <Form {...this.props} isTemplate updatePage={this.updatePage} categoryStats={categoryStats} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );

@@ -404,7 +404,7 @@ const templates = {
           {
             templateId: `pol-imp`,
             marketType: YES_NO,
-            question: `Will [0] be impeached by [2]`,
+            question: `Will [0] be impeached by [1]`,
             example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST`,
             inputs: [
               {
@@ -520,7 +520,7 @@ const templates = {
           {
             templateId: `pol-world-imp-cat`,
             marketType: YES_NO,
-            question: `Will [input Name] be impeached by [specific date, time and time zone]`,
+            question: `Will [0] be impeached by [1]`,
             example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST`,
             inputs: [
               {
@@ -1580,12 +1580,12 @@ const inputs = {
       placeholder: `Team`,
     },
     {
-      id: 2,
+      id: 1,
       type: TemplateInputType.TEXT,
       placeholder: `Whole #`,
     },
     {
-      id: 3,
+      id: 2,
       type: TemplateInputType.DROPDOWN,
       placeholder: `Year`,
       values: LIST_VALUES.YEARS,

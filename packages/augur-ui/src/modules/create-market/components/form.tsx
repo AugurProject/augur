@@ -32,7 +32,6 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
-  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
