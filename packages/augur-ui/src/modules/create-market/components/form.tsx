@@ -32,6 +32,8 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
+  TEMPLATE_INPUTS,
+  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -72,6 +74,7 @@ import {
   dividedBy,
   dateGreater,
   isValidFee,
+  checkForUserInputFilled,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
@@ -80,9 +83,12 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import {
+  tellIfEditableOutcomes,
+  createTemplateOutcomes,
+} from 'modules/create-market/get-template';
+import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
-import { tellIfEditableOutcomes, createTemplateOutcomes } from 'modules/create-market/get-template';
-
 
 interface FormProps {
   newMarket: NewMarket;
@@ -131,9 +137,13 @@ interface Validations {
   decimals?: number;
   checkDecimals?: Boolean;
   checkForAdresss?: Boolean;
+  checkUserInputFilled?: Boolean;
+  checkFee?: Boolean;
+  checkForAddress?: Boolean;
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
+const NUM_TEMPLATE_STEPS = 4;
 
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
@@ -158,10 +168,10 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const savedDraft = drafts[newMarket.uniqueId];
 
-    let defaultState = JSON.parse(JSON.stringify(EMPTY_STATE));
+    let defaultState = deepClone<NewMarket>(EMPTY_STATE);
     defaultState.validations = [];
 
-    let market = JSON.parse(JSON.stringify(newMarket));
+    let market = deepClone<NewMarket>(newMarket);
     market.validations = [];
 
     const disabledSave =
@@ -225,17 +235,6 @@ export default class Form extends React.Component<FormProps, FormState> {
     const { currentStep, marketType, template } = newMarket;
 
     const { contentPages } = this.state;
-
-    if (isTemplate && currentStep === 4) {
-      if (marketType === CATEGORICAL && tellIfEditableOutcomes(template.inputs)) {
-        // todo: need to pass this into findErrors or something, or else then validation won't be using updated outcomes
-        updateNewMarket({
-          ...newMarket,
-          outcomes: createTemplateOutcomes(template.inputs)
-        });
-      }
-    }
-
     if (this.findErrors()) return;
 
     const newStep =
@@ -247,16 +246,15 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   findErrors = () => {
-    const { newMarket } = this.props;
-    const {
-      currentStep,
-      expirySourceType,
-      designatedReporterType,
-      marketType,
-    } = newMarket;
+    const { newMarket, isTemplate } = this.props;
+    const { expirySourceType, designatedReporterType, marketType } = newMarket;
+
+    let { currentStep } = newMarket;
     let hasErrors = false;
 
     let fields = [];
+
+    if (isTemplate) currentStep = currentStep - NUM_TEMPLATE_STEPS;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -272,12 +270,18 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (marketType === SCALAR) {
         fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
       }
+      if (isTemplate) {
+        fields.push(TEMPLATE_INPUTS);
+      }
     } else if (currentStep === 1) {
       fields = [SETTLEMENT_FEE, AFFILIATE_FEE];
     }
 
     fields.map(field => {
       let value = newMarket[field];
+      if (field === TEMPLATE_INPUTS) {
+        value = newMarket.template[TEMPLATE_INPUTS];
+      }
       if (field === END_TIME && newMarket.endTimeFormatted) {
         value = newMarket.endTimeFormatted.timestamp;
       }
@@ -370,6 +374,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       decimals,
       checkForAddress,
       checkFee,
+      checkUserInputFilled,
     } = validationsObj;
 
     const checkValidations = [
@@ -396,6 +401,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
+      checkUserInputFilled ? checkForUserInputFilled(value) : '',
     ];
 
     if (label === END_TIME) {
@@ -412,7 +418,17 @@ export default class Form extends React.Component<FormProps, FormState> {
       );
     }
 
-    const errorMsg = checkValidations.find(validation => validation !== '');
+    const errorMsg = checkValidations.find(validation => {
+      if (typeof validation === 'string') {
+        return validation !== '';
+      } else {
+        return !validation.every(
+          error =>
+            error === '' ||
+            (error.constructor === Object && Object.entries(error).length === 0)
+        );
+      }
+    });
 
     if (errorMsg) {
       this.onError(label, errorMsg);
@@ -423,7 +439,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.onError(label, '');
   };
 
-  onChange = (name, value, callback) => {
+  onChange = (name, value) => {
     const {
       updateNewMarket,
       newMarket,
@@ -539,7 +555,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
     this.onError(name, '');
-    if (callback) callback(name);
   };
 
   onError = (name, error) => {
@@ -586,11 +601,20 @@ export default class Form extends React.Component<FormProps, FormState> {
     const disabledSave =
       savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(validations || {}).every(field =>
-      Array.isArray(field)
-        ? field.every(val => val === '' || !val)
-        : !field || field === ''
-    );
+    const noErrors = Object.values(validations || {}).every(field => {
+      if (Array.isArray(field)) {
+        return field.every(val => {
+          if (typeof val === 'string') {
+            return val === '' || !val;
+          } else {
+            return Object.values(val).map(val => val === '');
+          }
+        });
+      } else {
+        return !field || field === '';
+      }
+    });
+
     const saveDraftError =
       validations && validations.description === draftError;
 

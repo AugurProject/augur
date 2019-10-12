@@ -17,9 +17,13 @@ import {
   BASKETBALL,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
+import {
+  ValueLabelPair,
+  TimezoneDateObject,
+} from 'modules/types';
+import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
-import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -45,7 +49,6 @@ export enum TemplateInputType {
   DATETIME = 'DATETIME',
   DROPDOWN = 'DROPDOWN',
   ADDED_OUTCOME = 'ADDED_OUTCOME',
-  USER_OUTCOME = 'USER_OUTCOME',
   USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
 }
@@ -193,8 +196,8 @@ export const addCategoryStats = (
 
 const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
-  if (!categories || !categories.primary) return Object.keys(templates);
-  const primaryCat = templates[categories.primary];
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary)
     return primaryCat.children ? Object.keys(primaryCat.children) : [];
@@ -215,7 +218,7 @@ export const getTemplates = (
   filterByMarketType: boolean = true
 ): Template[] => {
   if (!marketType && filterByMarketType) return [];
-  let categoryTemplates: CategoryTemplate = templates[categories.primary];
+  let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
   if (!categoryTemplates) return [];
   if (!categories.secondary)
@@ -248,7 +251,7 @@ const getTemplatesByMarketType = (
 };
 
 const getInputsByType = (inputName: TemplateInputTypeNames) => {
-  return inputs[inputName];
+  return deepClone<TemplateInput[]>(INPUTS[inputName]);
 };
 
 export const getTemplateReadableDescription = (template: Template) => {
@@ -325,7 +328,7 @@ export const substituteUserOutcome = (
   return text;
 };
 
-const templates = {
+const TEMPLATES = {
   [POLITICS]: {
     children: {
       [US_POLITICS]: {
@@ -1408,7 +1411,7 @@ const templates = {
   },
 };
 
-const inputs = {
+const INPUTS = {
   [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT]: [
     {
       id: 0,
@@ -1646,7 +1649,7 @@ const inputs = {
     {
       id: 2,
       type: TemplateInputType.DATETIME,
-      placeholder: `Date time`,
+      placeholder: `[Date time]`,
     },
   ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_CAT]: [
