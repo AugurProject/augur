@@ -133,7 +133,7 @@ export default class MarketView extends Component<
   }
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
     window.scrollTo(0, 1);
 
     const { isMarketLoading, showMarketLoadingModal } = this.props;
