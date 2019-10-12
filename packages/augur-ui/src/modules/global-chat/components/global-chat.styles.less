@@ -5,9 +5,10 @@
   bottom: @size-4;
   position: fixed;
   right: @size-22;
-  z-index: @above-all-content-top-layer;
+  z-index: @mask-modal;
 
-  button {
+  // Closed global chat window
+  > button {
     .mono-9-bold;
 
     align-items: center;
@@ -26,17 +27,18 @@
     }
   }
 
+  // Open global chat window
   > div {
+    background-color: @color-module-background;
     border: 1px solid @color-dark-grey;
 
     // Header section
     > div:first-of-type {
       align-items: center;
-      border: 1px solid @color-dark-grey;
+      border-bottom: 1px solid @color-dark-grey;
       display: flex;
       flex-direction: row;
       padding: @size-8 @size-8;
-      width: 18.125rem;
 
       > span {
         color: @color-primary-text;
@@ -64,40 +66,17 @@
 
         > svg {
           height: @size-6;
+          fill: @color-primary-text;
           margin: 0;
           width: @size-6;
         }
       }
     }
 
-    // Chat content
-    > div:nth-of-type(2) {
-      .text-10;
-
-      background-color: @color-module-background;
-      color: @color-primary-text;
-      height: 13.25rem;
-      padding: @size-8
+    iframe {
+      border: 0px;
+      height: 21rem;
+      width: 18.75rem;
     }
-
-    // Input section
-    > div:nth-of-type(3) {
-      background-color: @color-module-background;
-      border-top: 1px solid @color-dark-grey;
-      padding: @size-4;
-
-      > textarea {
-        .text-10;
-
-        height: @size-38;
-        resize: none;
-      }
-    }
-  }
-
-  @media @breakpoint-max-tablet {
-    display: none; // Hide in mobile for now
-    position: relative;
-    margin-left: auto;
   }
 }
