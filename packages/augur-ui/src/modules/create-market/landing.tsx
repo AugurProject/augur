@@ -23,6 +23,8 @@ interface LandingProps {
 export default class Landing extends React.Component<LandingProps> {
 
   componentDidMount() {
+    this.node.scrollIntoView();
+    this.props.clearNewMarket();
     this.node && this.node.scrollIntoView();
   }
 
