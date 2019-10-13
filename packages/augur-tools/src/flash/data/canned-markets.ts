@@ -59,10 +59,26 @@ export interface CannedMarket {
 }
 
 function massageMarkets(markets: CannedMarket[]): CannedMarket[] {
-  return markets.map((market): CannedMarket => {
+  const randomSortedMarkets = markets.sort(() => Math.random() - 0.5);
+
+  // multiplying the share values of all trades of 2/3 canned markets by 100 
+  // for passing the liquidity filters
+  return randomSortedMarkets.map((market, index): CannedMarket => {
+    if (index % 3 !== 0) {
+      const newOrderBook: OrderBook = {}
+
+      Object.entries(market.orderBook).forEach(([outcome, { buy, sell }]) => {
+        newOrderBook[outcome] = {
+          buy: buy.map(askBid => ({ ...askBid, shares: (+askBid.shares * 100).toFixed(2) })),
+          sell: sell.map(askBid => ({ ...askBid, shares: (+askBid.shares * 100).toFixed(2) })),
+        }
+      })
+    }
+
     if (market.outcomes) {
       market.outcomes = market.outcomes.map(formatBytes32String);
     }
+
     return market;
   });
 }
@@ -294,7 +310,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       categories: ["science"],
       description:
         "Average tropospheric methane concentration (in parts-per-billion) on " +
-      inFiveMonths.toDateString(),
+        inFiveMonths.toDateString(),
       resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
       tags: ["climate", "atmosphere"],
       longDescription:
@@ -359,14 +375,14 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     orderBook: {
       2: {
         buy: [
-            { shares: "10.01", price: "100" },
-            { shares: "20.01", price: "150" },
-            { shares: "30.01", price: "220" },
+          { shares: "10.01", price: "100" },
+          { shares: "20.01", price: "150" },
+          { shares: "30.01", price: "220" },
         ],
         sell: [
-            { shares: "10.01", price: "225" },
-            { shares: "20.01", price: "250" },
-            { shares: "30.01", price: "300" },
+          { shares: "10.01", price: "225" },
+          { shares: "20.01", price: "250" },
+          { shares: "30.01", price: "300" },
         ],
       },
     },
