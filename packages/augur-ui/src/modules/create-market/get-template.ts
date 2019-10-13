@@ -899,7 +899,7 @@ const TEMPLATES = {
           {
             templateId: `hk-teamVsteam`,
             marketType: YES_NO,
-            question: `Will the [1] win vs the [1], Estimated schedule start time: [2]`,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
             example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
@@ -979,7 +979,7 @@ const TEMPLATES = {
           {
             templateId: `hk-award`,
             marketType: CATEGORICAL,
-            question: `Which NHL player will win the [1] [2] award`,
+            question: `Which NHL player will win the [0] [1] award`,
             example: `Which NHL player will win the 2019-2020 Calder Trophy`,
             inputs: [
               {
@@ -1927,7 +1927,7 @@ const INPUTS = {
     {
       id: 2,
       type: TemplateInputType.DATETIME,
-      placeholder: `[Date time]`,
+      placeholder: `Date time`,
     },
   ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_CAT]: [
