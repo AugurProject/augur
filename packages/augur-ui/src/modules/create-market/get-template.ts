@@ -1722,7 +1722,7 @@ const INPUTS = {
       values: LIST_VALUES.CURRENCY,
     },
     {
-      id: 2,
+      id: 3,
       type: TemplateInputType.DROPDOWN,
       placeholder: `US / Worldwide`,
       values: LIST_VALUES.REGION,
