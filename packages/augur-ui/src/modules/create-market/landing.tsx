@@ -8,22 +8,24 @@ import SavedDrafts from "modules/create-market/containers/saved-drafts";
 
 import Styles from "modules/create-market/landing.styles.less";
 import { getTemplateRadioCards } from "./get-template";
+import { Getters } from "@augurproject/sdk";
+import { NewMarket } from "modules/types";
 
 interface LandingProps {
-  newMarket: Object;
-  updateNewMarket: Function;
+  newMarket: NewMarket;
+  updateNewMarket: (newMarketData: NewMarket) => void;
   address: String;
   updatePage: Function;
   clearNewMarket: Function;
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
-export default class Landing extends React.Component<
-  LandingProps,
-  {}
-> {
+export default class Landing extends React.Component<LandingProps> {
 
   componentDidMount() {
     this.node.scrollIntoView();
+    this.props.clearNewMarket();
+    this.node && this.node.scrollIntoView();
   }
 
   render() {
@@ -31,7 +33,8 @@ export default class Landing extends React.Component<
       updatePage,
       updateNewMarket,
       newMarket,
-      clearNewMarket
+      clearNewMarket,
+      categoryStats
     } = this.props;
 
     return (
@@ -72,7 +75,7 @@ export default class Landing extends React.Component<
                   primary: '',
                   secondary: '',
                   tertiary: '',
-                })}
+                }, categoryStats)}
               >
                 <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>

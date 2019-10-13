@@ -32,6 +32,8 @@ import {
   MARKET_TYPE,
   EMPTY_STATE,
   TEMPLATE_PICKER,
+  TEMPLATE_INPUTS,
+  TEMPLATE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -72,6 +74,7 @@ import {
   dividedBy,
   dateGreater,
   isValidFee,
+  checkForUserInputFilled,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
@@ -80,18 +83,23 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { tellIfEditableOutcomes, createTemplateOutcomes } from '../get-template';
+import {
+  tellIfEditableOutcomes,
+  createTemplateOutcomes,
+} from 'modules/create-market/get-template';
+import deepClone from 'utils/deep-clone';
+import { Getters } from '@augurproject/sdk';
 
 interface FormProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
+  updateNewMarket: (newMarketData: NewMarket) => void;
   address: string;
-  updatePage: Function;
+  updatePage: (page: string) => void;
   addDraft: Function;
   drafts: Drafts;
   updateDraft: Function;
-  clearNewMarket: Function;
-  removeAllOrdersFromNewMarket: Function;
+  clearNewMarket: () => void;
+  removeAllOrdersFromNewMarket: () => void;
   discardModal: Function;
   isTemplate: boolean;
   openCreateMarketModal: Function;
@@ -101,7 +109,8 @@ interface FormProps {
 
 interface FormState {
   blockShown: Boolean;
-  contentPages: Array<any>;
+  contentPages: any[];
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 interface Validations {
@@ -128,9 +137,13 @@ interface Validations {
   decimals?: number;
   checkDecimals?: Boolean;
   checkForAdresss?: Boolean;
+  checkUserInputFilled?: Boolean;
+  checkFee?: Boolean;
+  checkForAddress?: Boolean;
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
+const NUM_TEMPLATE_STEPS = 4;
 
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
@@ -139,10 +152,11 @@ export default class Form extends React.Component<FormProps, FormState> {
       ? TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
+    categoryStats: null,
   };
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   }
 
   componentWillUnmount() {
@@ -154,10 +168,10 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const savedDraft = drafts[newMarket.uniqueId];
 
-    let defaultState = JSON.parse(JSON.stringify(EMPTY_STATE));
+    let defaultState = deepClone<NewMarket>(EMPTY_STATE);
     defaultState.validations = [];
 
-    let market = JSON.parse(JSON.stringify(newMarket));
+    let market = deepClone<NewMarket>(newMarket);
     market.validations = [];
 
     const disabledSave =
@@ -204,9 +218,16 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    // category might not have sub categories so sub-categories page needs to be skipped
+    let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    const numCategories = newMarket.categories.filter(c => c).length;
+    if (newMarket.currentStep === 2 && numCategories === 1){
+      newStep = 0;
+      updatePage(LANDING);
+      clearNewMarket();
+    }
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   nextPage = () => {
@@ -214,17 +235,6 @@ export default class Form extends React.Component<FormProps, FormState> {
     const { currentStep, marketType, template } = newMarket;
 
     const { contentPages } = this.state;
-
-    if (isTemplate && currentStep === 4) {
-      if (marketType === CATEGORICAL && tellIfEditableOutcomes(template.inputs)) {
-        // todo: need to pass this into findErrors or something, or else then validation won't be using updated outcomes
-        updateNewMarket({
-          ...newMarket,
-          outcomes: createTemplateOutcomes(template.inputs)
-        });
-      }
-    }
-
     if (this.findErrors()) return;
 
     const newStep =
@@ -232,20 +242,19 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? contentPages.length - 1
         : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   findErrors = () => {
-    const { newMarket } = this.props;
-    const {
-      currentStep,
-      expirySourceType,
-      designatedReporterType,
-      marketType,
-    } = newMarket;
+    const { newMarket, isTemplate } = this.props;
+    const { expirySourceType, designatedReporterType, marketType } = newMarket;
+
+    let { currentStep } = newMarket;
     let hasErrors = false;
 
     let fields = [];
+
+    if (isTemplate) currentStep = currentStep - NUM_TEMPLATE_STEPS;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -261,12 +270,18 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (marketType === SCALAR) {
         fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
       }
+      if (isTemplate) {
+        fields.push(TEMPLATE_INPUTS);
+      }
     } else if (currentStep === 1) {
       fields = [SETTLEMENT_FEE, AFFILIATE_FEE];
     }
 
     fields.map(field => {
       let value = newMarket[field];
+      if (field === TEMPLATE_INPUTS) {
+        value = newMarket.template[TEMPLATE_INPUTS];
+      }
       if (field === END_TIME && newMarket.endTimeFormatted) {
         value = newMarket.endTimeFormatted.timestamp;
       }
@@ -359,6 +374,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       decimals,
       checkForAddress,
       checkFee,
+      checkUserInputFilled,
     } = validationsObj;
 
     const checkValidations = [
@@ -385,6 +401,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
+      checkUserInputFilled ? checkForUserInputFilled(value) : '',
     ];
 
     if (label === END_TIME) {
@@ -401,7 +418,17 @@ export default class Form extends React.Component<FormProps, FormState> {
       );
     }
 
-    const errorMsg = checkValidations.find(validation => validation !== '');
+    const errorMsg = checkValidations.find(validation => {
+      if (typeof validation === 'string') {
+        return validation !== '';
+      } else {
+        return !validation.every(
+          error =>
+            error === '' ||
+            (error.constructor === Object && Object.entries(error).length === 0)
+        );
+      }
+    });
 
     if (errorMsg) {
       this.onError(label, errorMsg);
@@ -412,7 +439,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.onError(label, '');
   };
 
-  onChange = (name, value, callback) => {
+  onChange = (name, value) => {
     const {
       updateNewMarket,
       newMarket,
@@ -528,7 +555,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
     this.onError(name, '');
-    if (callback) callback(name);
   };
 
   onError = (name, error) => {
@@ -542,7 +568,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   preview = () => {
     this.setState({ showPreview: !this.state.showPreview }, () => {
-      this.node.scrollIntoView();
+      this.node && this.node.scrollIntoView();
     });
   };
 
@@ -556,7 +582,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       needsApproval,
       isTemplate,
     } = this.props;
-    const { contentPages } = this.state;
+    const { contentPages, categoryStats } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -575,11 +601,20 @@ export default class Form extends React.Component<FormProps, FormState> {
     const disabledSave =
       savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(validations || {}).every(field =>
-      Array.isArray(field)
-        ? field.every(val => val === '' || !val)
-        : !field || field === ''
-    );
+    const noErrors = Object.values(validations || {}).every(field => {
+      if (Array.isArray(field)) {
+        return field.every(val => {
+          if (typeof val === 'string') {
+            return val === '' || !val;
+          } else {
+            return Object.values(val).map(val => val === '');
+          }
+        });
+      } else {
+        return !field || field === '';
+      }
+    });
+
     const saveDraftError =
       validations && validations.description === draftError;
 
@@ -632,7 +667,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && <SubCategories nextPage={this.nextPage}/>}
+              {mainContent === SUB_CATEGORIES && <SubCategories categoryStats={categoryStats} nextPage={this.nextPage}/>}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
@@ -651,6 +686,14 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <Error
                   header="complete all Required fields"
                   subheader="You must complete all required fields highlighted above before you can continue"
+                />
+              )}
+              {secondButton === CREATE && (
+                <BulkTxLabel
+                  className={Styles.MultipleTransactions}
+                  buttonName={'Create'}
+                  count={1}
+                  needsApproval={needsApproval}
                 />
               )}
               <div>
@@ -684,14 +727,6 @@ export default class Form extends React.Component<FormProps, FormState> {
                   )}
                 </div>
               </div>
-              {secondButton === CREATE && (
-                <BulkTxLabel
-                  className={Styles.MultipleTransactions}
-                  buttonName={'Create'}
-                  count={1}
-                  needsApproval={needsApproval}
-                />
-              )}
             </ContentBlock>
           </>
         )}

@@ -704,9 +704,11 @@ div.LinearPropertyViewTransaction {
 }
 
 .BulkTxLabel {
-  .mono-9;
+  margin: 0 @size-24 @size-24;
 
-  color: @color-secondary-text;
+  @media @breakpoint-mobile {
+    margin: 0 @size-16 @size-16;
+  }
 }
 
 .MarketLabel {

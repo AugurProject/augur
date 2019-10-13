@@ -12,7 +12,6 @@ import {
   ContractInterfaces,
 } from '@augurproject/core';
 import moment from 'moment';
-
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
@@ -24,7 +23,9 @@ import {
   convertDisplayPriceToOnChainPrice,
   stringTo32ByteHex,
 } from '@augurproject/sdk';
-import { fork } from "./fork";
+import { fork } from './fork';
+import { dispute } from './dispute';
+import { MarketList } from "@augurproject/sdk/build/state/getter/Markets";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -858,6 +859,57 @@ export function addScripts(flash: FlashSession) {
       } else {
         this.log('ERROR: forking failed.');
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'dispute',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'yes/no market to dispute. defaults to making one',
+      },
+      {
+        name: 'slow',
+        abbr: 's',
+        description: 'puts market into slow pacing mode immediately',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(this.network, true);
+      const slow = args.slow as boolean;
+
+      let marketId = args.marketId as string || null;
+      if (marketId === null) {
+        const market = await user.createReasonableYesNoMarket();
+        marketId = market.address;
+        this.log(`Created market ${marketId}`);
+      }
+
+      await (await this.db).sync(user.augur, 100000, 0);
+      const marketInfo = (await this.api.route('getMarketsInfo', {
+        marketIds: [marketId],
+      }))[0];
+
+      await dispute(user, marketInfo, slow);
+    },
+  });
+
+  flash.addScript({
+    name: 'markets',
+    async call(this: FlashSession): Promise<MarketList|null> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, true);
+
+      await (await this.db).sync(user.augur, 100000, 0);
+      const markets: MarketList = await this.api.route('getMarkets', {
+        universe: user.augur.contracts.universe.address,
+      });
+      console.log(JSON.stringify(markets, null, 2));
+      return markets;
     },
   });
 }

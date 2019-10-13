@@ -25,17 +25,11 @@ export const GlobalChat = (props: GlobalChatProps) => {
         <div>
           <div>
             <span>Global Chat</span>
-            <span>{props.numberOfPeers} Peers</span>
             <button onClick={() => setShow(!show)}>
               {Close}
             </button>
           </div>
-          <div>
-            Chat content goes here.
-          </div>
-          <div>
-            <textarea placeholder='Type your message...' rows='2'></textarea>
-          </div>
+          <iframe src='https://augurproject.github.io/orbit-web/#/channel/augur' />
         </div>
       }
     </div>
