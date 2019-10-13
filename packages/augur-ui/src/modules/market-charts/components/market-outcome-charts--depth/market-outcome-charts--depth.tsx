@@ -18,7 +18,6 @@ interface MarketOutcomeDepthProps {
   updateSelectedOrderProperties: Function;
   marketMin: BigNumber;
   marketMax: BigNumber;
-  isMobile?: boolean;
   hasOrders: boolean;
   hoveredPrice?: any;
 }
@@ -29,7 +28,6 @@ export default class MarketOutcomeDepth extends Component<
 > {
   static defaultProps = {
     hoveredPrice: null,
-    isMobile: false,
     sharedChartMargins: {
       top: 0,
       bottom: 20,
@@ -60,7 +58,6 @@ export default class MarketOutcomeDepth extends Component<
       sharedChartMargins,
       updateHoveredPrice,
       updateSelectedOrderProperties,
-      isMobile,
       hasOrders,
     } = this.props;
     this.drawDepth({
@@ -72,7 +69,6 @@ export default class MarketOutcomeDepth extends Component<
       marketMax,
       updateHoveredPrice,
       updateSelectedOrderProperties,
-      isMobile,
       hasOrders,
     });
   }
@@ -83,7 +79,6 @@ export default class MarketOutcomeDepth extends Component<
       marketDepth,
       orderBookKeys,
       sharedChartMargins,
-      isMobile,
     } = this.props;
     const {
       yScale,
@@ -102,7 +97,6 @@ export default class MarketOutcomeDepth extends Component<
       JSON.stringify(orderBookKeys) !==
         JSON.stringify(nextProps.orderBookKeys) ||
       sharedChartMargins !== nextProps.sharedChartMargins ||
-      isMobile !== nextProps.isMobile ||
       Math.abs(
         this.depthChart.clientWidth +
           this.depthChart.clientHeight -
@@ -118,7 +112,6 @@ export default class MarketOutcomeDepth extends Component<
         marketMax: nextProps.marketMax,
         updateHoveredPrice: nextProps.updateHoveredPrice,
         updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
-        isMobile: nextProps.isMobile,
         hasOrders: nextProps.hasOrders,
       });
     }
@@ -148,7 +141,6 @@ export default class MarketOutcomeDepth extends Component<
         marketMax,
         updateHoveredPrice,
         updateSelectedOrderProperties,
-        isMobile,
         hasOrders,
       } = options;
 
@@ -158,7 +150,6 @@ export default class MarketOutcomeDepth extends Component<
         marketDepth,
         orderBookKeys,
         pricePrecision,
-        isMobile,
         marketMax,
         marketMin,
       });
@@ -190,7 +181,6 @@ export default class MarketOutcomeDepth extends Component<
         pricePrecision,
         marketMax,
         marketMin,
-        isMobile,
         hasOrders,
         marketDepth,
       });
@@ -199,7 +189,6 @@ export default class MarketOutcomeDepth extends Component<
         drawParams,
         depthChart,
         marketDepth: drawParams.newMarketDepth,
-        isMobile,
         hasOrders,
         marketMin,
         marketMax,
@@ -391,7 +380,7 @@ function determineDrawParams(options) {
     ? midPrice.plus(maxDistance)
     : midPrice.plus(minDistance);
 
-  const xDomain = [xDomainMin, xDomainMax.times(1.02)];
+  const xDomain = [xDomainMin, xDomainMax];
   const yDomain = [
     0,
     Object.keys(marketDepth)
@@ -413,8 +402,8 @@ function determineDrawParams(options) {
     .scaleLinear()
     .domain(d3.extent(xDomain))
     .range([
-      0,
-      containerWidth,
+      chartDim.left,
+      containerWidth - chartDim.right,
     ]);
 
   const yScale = d3
@@ -473,7 +462,6 @@ function drawTicks(options) {
     pricePrecision,
     marketMax,
     marketMin,
-    isMobile,
     hasOrders,
     marketDepth,
   } = options;
@@ -502,7 +490,6 @@ function drawTicks(options) {
 
   //  Midpoint Label
   if (
-    !isMobile &&
     hasOrders &&
     marketDepth.bids.length > 0 &&
     marketDepth.asks.length > 0
@@ -573,7 +560,7 @@ function drawTicks(options) {
           .tickSize(9)
           .tickPadding(4)
       )
-      .attr('transform', `translate(0, 0)`)
+      .attr('transform', `translate(-${drawParams.chartDim.left}, 0)`)
       .selectAll('text')
       .text(d => d)
       .select('path')
@@ -640,6 +627,23 @@ function drawTicks(options) {
       .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom);
   });
 
+  // Draw yAxis Lines
+  drawParams.yScale.ticks(tickCount).forEach((tick: number) => {
+    if (
+      tick === drawParams.yScale.ticks(tickCount)[0] ||
+      tick === drawParams.yScale.ticks(tickCount)[length - 1]
+    ) {
+      return;
+    }
+    depthChart
+      .append('line')
+      .attr('class', 'horizontal-lines')
+      .attr('x1', drawParams.chartDim.tickOffset)
+      .attr('y1', drawParams.yScale(tick))
+      .attr('x2', drawParams.containerWidth - drawParams.chartDim.right)
+      .attr('y2', drawParams.yScale(tick));
+  });
+
   // Draw RightSide yAxis
   if (hasOrders) {
     const yTicks2 = depthChart.append('g').attr('id', 'depth_y_ticks');
@@ -652,7 +656,7 @@ function drawTicks(options) {
           .tickSize(9)
           .tickPadding(4)
       )
-      .attr('transform', `translate(${drawParams.containerWidth}, 0)`)
+      .attr('transform', `translate(${drawParams.containerWidth + drawParams.chartDim.right}, 0)`)
       .selectAll('text')
       .text(d => d)
       .select('path')
