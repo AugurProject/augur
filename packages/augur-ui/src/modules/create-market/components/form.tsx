@@ -221,7 +221,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     // category might not have sub categories so sub-categories page needs to be skipped
     let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
     const numCategories = newMarket.categories.filter(c => c).length;
-    if (newMarket.currentStep === 2 && numCategories === 1){
+    if (newMarket.currentStep === 2 && numCategories === 1) {
       newStep = 0;
       updatePage(LANDING);
       clearNewMarket();
@@ -667,7 +667,9 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
-              {mainContent === SUB_CATEGORIES && <SubCategories nextPage={this.nextPage}/>}
+              {mainContent === SUB_CATEGORIES && (
+                <SubCategories nextPage={this.nextPage} />
+              )}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
@@ -701,13 +703,11 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  {!isTemplate && (
-                    <SecondaryButton
-                      text={disabledSave ? 'Saved' : 'Save draft'}
-                      disabled={disabledSave}
-                      action={this.saveDraft}
-                    />
-                  )}
+                  <SecondaryButton
+                    text={disabledSave ? 'Saved' : 'Save draft'}
+                    disabled={disabledSave}
+                    action={this.saveDraft}
+                  />
                   {secondButton === NEXT && (
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}
