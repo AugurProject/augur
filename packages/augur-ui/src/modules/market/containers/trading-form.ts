@@ -4,8 +4,6 @@ import TradingForm from 'modules/market/components/trading-form/trading-form';
 import { createBigNumber } from 'utils/create-big-number';
 import { windowRef } from 'utils/window-ref';
 import {
-  MARKET_REVIEW_TRADE_SEEN,
-  MODAL_MARKET_REVIEW_TRADE,
   DISCLAIMER_SEEN,
   MODAL_DISCLAIMER,
   MODAL_ADD_FUNDS,
@@ -26,7 +24,6 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { LoginAccount } from 'modules/types';
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
@@ -72,13 +69,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
   updateTradeShares: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeShares({ marketId, outcomeId, ...order, callback })),
-  marketReviewTradeModal: modal =>
-    dispatch(
-      updateModal({
-        type: MODAL_MARKET_REVIEW_TRADE,
-        ...modal,
-      })
-    ),
   disclaimerModal: modal =>
     dispatch(
       updateModal({
@@ -110,11 +100,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const marketReviewTradeSeen =
-    windowRef &&
-    windowRef.localStorage &&
-    windowRef.localStorage.getItem(MARKET_REVIEW_TRADE_SEEN);
-
   const disclaimerSeen =
     windowRef &&
     windowRef.localStorage &&
@@ -124,7 +109,6 @@ const mergeProps = (sP, dP, oP) => {
     ...oP,
     ...sP,
     ...dP,
-    marketReviewTradeSeen: !!marketReviewTradeSeen,
     disclaimerSeen: !!disclaimerSeen,
   };
 };

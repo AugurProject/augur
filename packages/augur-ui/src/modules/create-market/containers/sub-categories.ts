@@ -1,16 +1,17 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import getValue from "utils/get-value";
 import {
   updateNewMarket,
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
 import { SubCategories } from "modules/create-market/components/sub-categories";
+import { AppState } from "store";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppState) => ({
+  categoryStats: state.categoryStats,
   newMarket: state.newMarket,
-  currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
-  address: getValue(state, "loginAccount.address"),
+  currentTimestamp: state.blockchain.currentAugurTimestamp,
+  address: state.loginAccount.address,
 });
 
 const mapDispatchToProps = dispatch => ({

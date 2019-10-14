@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/core",
-  "version": "10.0.0-alpha.1",
+  "version": "2.0.0-alpha.1",
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
@@ -17,9 +17,6 @@
     "build:debug": "npm run build:source && npm run lint && cross-env ENABLE_SOLIDITY_DEBUG=true npm run build:interfaces && npm run build:source",
     "build:artifacts": "cross-env OUTPUT_PATH='../augur-artifacts/src' npm run build:contracts",
     "build:documentation": "yarn solidity-docgen -s ./output/contracts/contracts_full.json -o ../../docs/v2/docs/contracts",
-    "preversion": "npm run build",
-    "version": "git add source/libraries/ContractInterfaces.ts",
-    "release": "npm version prerelease && npm publish",
     "test:unit": "python3 -m pytest -vv",
     "test:unit:all": "python3 -m pytest tests -vv",
     "test:integration": "jest --detectOpenHandles --verbose=true",
@@ -68,7 +65,7 @@
     "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
   },
   "dependencies": {
-    "@augurproject/artifacts": "10.0.0-alpha.1",
+    "@augurproject/artifacts": "2.0.0-alpha.1",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "@types/get-port": "4.0.1",
     "@types/mkdirp": "0.5.2",
@@ -77,7 +74,7 @@
     "bignumber.js": "8.0.2",
     "binascii": "0.0.2",
     "bn.js": "5.0.0",
-    "contract-dependencies-ethers": "10.0.0-alpha.1",
+    "contract-dependencies-ethers": "2.0.0-alpha.1",
     "copy-dir": "0.4.0",
     "crypto-promise": "2.1.0",
     "ethers": "4.0.37",
@@ -103,8 +100,8 @@
     "solc": "0.5.11",
     "solium": "1.2.5",
     "source-map-support": "0.5.13",
-    "ts-node": "7.0.1",
     "ts-jest": "24.1.0",
+    "ts-node": "7.0.1",
     "typescript": "3.6.3",
     "util": "0.12.1"
   }
