@@ -485,6 +485,7 @@ export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
 export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
 export const MODAL_TEST_BET = 'MODAL_TEST_BET';
+export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
@@ -494,7 +495,6 @@ export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MARKET_REVIEWS = 'marketReviews';
-export const MARKET_REVIEW_TRADE_SEEN = 'marketReviewTradeSeen';
 export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_MARKET_REVIEW_TRADE = 'MODAL_MARKET_REVIEW_TRADE';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
@@ -505,6 +505,7 @@ export const MODAL_LOGIN = 'MODAL_LOGIN';
 export const MODAL_SIGNUP = 'MODAL_SIGNUP';
 export const MODAL_CONNECT = 'MODAL_CONNECT';
 export const MODAL_LOADING = 'MODAL_LOADING';
+export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';

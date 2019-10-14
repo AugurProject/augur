@@ -1,4 +1,3 @@
-# adding artifact caching: https://github.com/Microsoft/azure-pipelines-artifact-caching-tasks/blob/master/README.md
 variables:
     DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
     CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
@@ -25,6 +24,7 @@ jobs:
       - bash: |
           set -euo pipefail
           echo "Build Source Branch: $(Build.SourceBranchName)"
+          echo "commit message: $(Build.SourceVersionMessage)"
           if [[ "$(Build.SourceBranchName)" == "master" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
@@ -101,6 +101,7 @@ jobs:
       matrix:
         node_10_x:
           node_version: $(PRIMARY_NODE_VERSION)
+    timeoutInMinutes: 120
     steps:
       - checkout: self
       - task: NodeTool@0

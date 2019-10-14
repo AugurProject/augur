@@ -5,7 +5,11 @@ import { Action } from 'redux';
 import { Web3Provider } from 'ethers/providers';
 import Portis, { INetwork } from '@portis/web3';
 import Web3 from 'web3';
-import { ACCOUNT_TYPES, PORTIS_API_KEY, NETWORK_IDS } from 'modules/common/constants';
+import {
+  ACCOUNT_TYPES,
+  PORTIS_API_KEY,
+  NETWORK_IDS,
+} from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
 
@@ -23,30 +27,26 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
   }
 };
 
-export const loginWithPortis = (forceRegisterPage = false, showConnectingModal) => async (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const loginWithPortis = (
+  forceRegisterPage = false,
+  showConnectingModal
+) => async (dispatch: ThunkDispatch<void, any, Action>) => {
   const networkId = getNetworkId();
-  const protisNetwork = getPortisNetwork(networkId);
+  const portisNetwork = getPortisNetwork(networkId);
 
-  if (protisNetwork) {
-    const portis = new Portis(PORTIS_API_KEY, protisNetwork, {
+  if (portisNetwork) {
+    const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
       scope: ['email'],
       registerPageByDefault: forceRegisterPage,
     });
 
-    portis.onLogin(async (_, email) => {
-      if (email) {
-        await initPortis(portis, email);
-      }
-    });
+
+    windowRef.portis = portis;
 
     const initPortis = async (portis, email = null) => {
       try {
         const web3 = new Web3(portis.provider);
         const provider = new Web3Provider(portis.provider);
-
-        windowRef.portis = portis;
 
         const accounts = await web3.eth.getAccounts();
         const account = accounts[0];
@@ -69,12 +69,27 @@ export const loginWithPortis = (forceRegisterPage = false, showConnectingModal) 
 
         await dispatch(updateSdk(accountObject, undefined));
       } catch (error) {
-          document.querySelector('.por_portis-container').remove();
-          throw error;
+        throw error;
       }
     };
 
-    await initPortis(portis);
+    portis.onLogin(async (_, email) => {
+      if (email) {
+        await initPortis(portis, email);
+      } else {
+        await initPortis(portis);
+      }
+    });
+
+    try {
+      const result = await portis.showPortis();
+      if (result && result.error) {
+        throw result.error;
+      }
+    } catch (error) {
+      document.querySelector('.por_portis-container').remove();
+      throw error;
+    }
   } else {
     throw Error('Network currently not supported with Portis');
   }

@@ -131,10 +131,6 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   forkEndTime?: string;
 }
 
-export interface Versions {
-  augurui: string | null;
-}
-
 export interface UserReports {
   markets?: {
     [universeId: string]: string;
@@ -303,7 +299,7 @@ export interface NewMarket {
   uniqueId: number;
   isValid: boolean;
   validations:
-    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
+  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
   backupSource: string;
   currentStep: number;
   type: string;
@@ -354,7 +350,7 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
+  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -398,6 +394,12 @@ export interface MarketsList {
   };
   selectedCategories: string[];
   marketCardFormat: string;
+}
+
+export interface DefaultOrderProperties {
+  orderPrice: string;
+  orderQuantity: string;
+  selectedNav: string;
 }
 
 export interface LoadReportingMarketsOptions {
@@ -543,18 +545,21 @@ export interface AccountBalances {
   dai: number;
   attoRep: string;
 }
+
+export interface LoginAccountMeta {
+  accountType: string;
+  address: string;
+  signer: any | EthersSigner;
+  isWeb3: boolean;
+  profileImage?: string;
+  email?: string;
+  openWallet?: Function;
+}
+
 export interface LoginAccount {
   address?: string;
   mixedCaseAddress?: string;
-  meta?: {
-    accountType: string;
-    address: string;
-    signer: any | EthersSigner;
-    isWeb3: boolean;
-    profileImage?: string;
-    email?: string;
-    openWallet?: Function;
-  };
+  meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
@@ -572,7 +577,8 @@ export interface WindowApp extends Window {
   app: object;
   web3: Web3;
   ethereum: {
-    selectedAddress
+    selectedAddress;
+    networkVersion: string;
   };
   localStorage: Storage;
   integrationHelpers: any;

@@ -56,6 +56,7 @@ import {
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
+import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 
 const handleAlert = (
   log: any,
@@ -127,6 +128,7 @@ export const handleSDKReadyEvent = () => (
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
+  dispatch(getCategoryStats())
 };
 
 export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
@@ -163,11 +165,11 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-  marketsData: Getters.Markets.MarketInfo[] = []
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[]}
+  ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
-  const marketsDataById = marketsData.reduce((acc, marketData) => ({
+  const marketsDataById = marketsInfo.reduce((acc, marketData) => ({
       [marketData.id]: marketData,
       ...acc,
     }), {} as MarketInfos);
@@ -531,6 +533,7 @@ export const handleTokensMintedLog = (
   log: Logs.TokensMinted
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const userAddress = getState().loginAccount.address;
+  const isForking = getState().universe.forkingInfo !== null;
   if(log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(
       log.target,
@@ -541,7 +544,7 @@ export const handleTokensMintedLog = (
     }
     dispatch(loadDisputeWindow());
   }
-  if (log.tokenType === Logs.TokenType.ReputationToken) {
+  if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
     const isUserDataUpdate = isSameAddress(
       log.target,
       userAddress

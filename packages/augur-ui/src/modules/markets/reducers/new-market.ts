@@ -14,9 +14,10 @@ import { createBigNumber } from 'utils/create-big-number';
 import { NewMarket, BaseAction, LiquidityOrder } from 'modules/types';
 import { formatShares, formatDai } from 'utils/format-number';
 import { EMPTY_STATE } from 'modules/create-market/constants';
+import deepClone from 'utils/deep-clone';
 
 export default function(
-  newMarket: NewMarket = JSON.parse(JSON.stringify(EMPTY_STATE)),
+  newMarket: NewMarket = deepClone<NewMarket>(EMPTY_STATE),
   { type, data }: BaseAction
 ): NewMarket {
   switch (type) {
@@ -134,7 +135,7 @@ export default function(
     }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
-      return JSON.parse(JSON.stringify(EMPTY_STATE));
+      return deepClone<NewMarket>(EMPTY_STATE);
     default:
       return newMarket;
   }

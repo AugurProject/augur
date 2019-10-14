@@ -26,6 +26,7 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
+import { MODAL_GLOBAL_CHAT } from 'modules/common/constants';
 
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
@@ -66,6 +67,7 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
   updateConnectionTray: value =>
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
+  showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
 });
 
 const AppContainer = compose(
