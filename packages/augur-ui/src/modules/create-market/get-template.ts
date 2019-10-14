@@ -349,7 +349,7 @@ export const buildResolutionDetails = (
 ) => {
   let details = userDetails;
   Object.values(resolutionRules).forEach(type =>
-    type.forEach(rule => {
+    type && type.forEach(rule => {
       if (rule.isSelected) {
         if (details.length > 0) {
           details = details.concat('\n');
