@@ -15,7 +15,9 @@ export class SingleThreadConnector extends BaseConnector {
   }
 
   async syncUserData(account: string): Promise<any> {
-    return (await this.api).route('syncUserData', [account]);
+    const api = (await this.api);
+    const db = await api.db;
+    return db.addTrackedUser(account, 100000, 10);
   }
 
   async disconnect(): Promise<any> {
