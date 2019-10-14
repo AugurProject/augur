@@ -201,14 +201,14 @@ export class DerivedDB extends AbstractDB {
     this.locks[name] = true;
   }
 
-  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<boolean> {
+  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<void> {
     for (let i = 0; i < (maxTimeMS / periodMS); i++) {
       if (!this.locks[lock]) {
-        return true;
+        return;
       }
       await sleep(periodMS);
     }
-    return false; // timeout
+    throw Error(`timeout: lock ${lock} on ${this.name} DB did not release after ${maxTimeMS}ms`);
   }
 
   protected clearLocks() {
