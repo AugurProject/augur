@@ -48,6 +48,7 @@ export class MarketDB extends DerivedDB {
     'MarketVolumeChanged': this.processMarketVolumeChanged,
     'MarketOIChanged': this.processMarketOIChanged,
     'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
+    'MarketMigrated': this.processMarketMigrated,
   };
 
   constructor(db: DB, networkId: number, augur: Augur) {
@@ -58,7 +59,8 @@ export class MarketDB extends DerivedDB {
       'InitialReportSubmitted',
       'DisputeCrowdsourcerCompleted',
       'MarketFinalized',
-      'MarketParticipantsDisavowed'
+      'MarketParticipantsDisavowed',
+      'MarketMigrated'
     ], ['market']);
 
     this.augur = augur;
@@ -303,6 +305,11 @@ export class MarketDB extends DerivedDB {
 
   private processMarketParticipantsDisavowed(log: ParsedLog): ParsedLog {
     log['disavowed'] = true;
+    return log;
+  }
+
+  private processMarketMigrated(log: ParsedLog): ParsedLog {
+    log['universe'] = log['newUniverse'];
     return log;
   }
 
