@@ -25,6 +25,7 @@ export class DerivedDB extends AbstractDB {
   // events like controller:new:block, with the assumption that log processing
   // should happen first.
   protected locks: {[name: string]: boolean} = {};
+  protected readonly HANDLE_MERGE_EVENT_LOCK = 'handleMergeEvent';
 
   constructor(
     db: DB,
@@ -127,6 +128,7 @@ export class DerivedDB extends AbstractDB {
     let success = true;
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
+      this.lock(this.HANDLE_MERGE_EVENT_LOCK);
       const documents = _.map<ParsedLog, ParsedLog>(logs, this.processLog.bind(this));
       const documentsById = _.groupBy(documents, '_id');
       documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
