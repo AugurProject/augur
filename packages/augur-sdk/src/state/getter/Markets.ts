@@ -148,6 +148,7 @@ export interface MarketInfo {
   disputeInfo: DisputeInfo;
   categories: string[];
   noShowBondAmount: string;
+  disavowed: boolean;
 }
 
 export interface DisputeInfo {
@@ -1156,6 +1157,7 @@ async function getMarketsInfo(
       transactionHash: marketData.transactionHash,
       outcomes,
       disputeInfo,
+      disavowed: marketData.disavowed
     };
   });
 }

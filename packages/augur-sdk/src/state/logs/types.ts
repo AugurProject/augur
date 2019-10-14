@@ -409,6 +409,7 @@ export interface MarketData extends Log, Doc {
   nextWindowEndTime: string;
   pacingOn: boolean;
   noShowBond: string;
+  disavowed: boolean;
 }
 
 export interface DisputeDoc extends Log, Doc {

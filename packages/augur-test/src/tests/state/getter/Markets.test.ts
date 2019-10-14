@@ -1913,6 +1913,7 @@ describe('State API :: Markets :: ', () => {
 
   test(':getMarketsInfo disputeinfo.stakes outcome valid/invalid', async () => {
     const market = await john.createReasonableYesNoMarket();
+    const otherMarket = await john.createReasonableYesNoMarket();
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
     let infos = await api.route('getMarketsInfo', {
@@ -1944,6 +1945,29 @@ describe('State API :: Markets :: ', () => {
         isMalformedOutcome: false,
       },
     ]);
+  });
+
+  test(':getMarketsInfo disavowed in fork', async () => {
+    const market = await john.createReasonableYesNoMarket();
+    const otherMarket = await john.createReasonableYesNoMarket();
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+
+    let infos = await api.route('getMarketsInfo', {marketIds: [market.address]});
+    let info = infos[0];
+
+    await fork(john, info);
+
+    await otherMarket.disavowCrowdsourcers();
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+
+    infos = await api.route('getMarketsInfo', {marketIds: [otherMarket.address]});
+    expect(infos.length).toEqual(1);
+    info = infos[0];
+
+    expect(info).toHaveProperty('disavowed');
+    expect(info['disavowed']).toEqual(true);
   });
 
   test(':getCategories : all reporting states', async () => {
