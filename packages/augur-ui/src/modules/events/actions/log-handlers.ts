@@ -533,6 +533,7 @@ export const handleTokensMintedLog = (
   log: Logs.TokensMinted
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const userAddress = getState().loginAccount.address;
+  const isForking = getState().universe.forkingInfo !== null;
   if(log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(
       log.target,
@@ -543,7 +544,7 @@ export const handleTokensMintedLog = (
     }
     dispatch(loadDisputeWindow());
   }
-  if (log.tokenType === Logs.TokenType.ReputationToken) {
+  if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
     const isUserDataUpdate = isSameAddress(
       log.target,
       userAddress
