@@ -19,8 +19,8 @@ import {
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_SIGN_WALLET,
-  MODAL_BUY_DAI,
   ONBOARDING_SEEN_KEY,
+  MODAL_ACCOUNT_CREATED,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -33,7 +33,7 @@ import {
   MetaMaskLogin,
 } from 'modules/common/icons';
 import makePath from 'modules/routes/helpers/make-path';
-import { MARKETS, LANDING_PAGE } from 'modules/routes/constants/views';
+import { MARKETS } from 'modules/routes/constants/views';
 import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({
@@ -49,8 +49,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   connectModal: loginOrSignup =>
     dispatch(updateModal({ type: MODAL_CONNECT, loginOrSignup })),
-  buyDaiModal: () =>
-    dispatch(updateModal({ type: MODAL_BUY_DAI })),
+  accountCreatedModal: () =>
+    dispatch(updateModal({ type: MODAL_ACCOUNT_CREATED })),
   loadingModal: (message, callback, showMetaMaskHelper = false) =>
     dispatch(
       updateModal({
@@ -86,9 +86,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     oP.history.push({ pathname: makePath(MARKETS, null) });
 
     const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
-    if (!showOnboardingSeen) {
+    if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
       // Kicks off onboarding
-      dP.buyDaiModal();
+      dP.accountCreatedModal();
     }
   };
 

@@ -4,12 +4,26 @@ import {
   AMERICAN_FOOTBALL,
   BASEBALL,
   SPORTS,
+  ENTERTAINMENT,
+  POLITICS,
+  US_POLITICS,
+  WORLD,
+  FINANCE,
+  CRYPTO,
   MARKET_TEMPLATES,
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
+  MarketCardTemplate,
+  BASKETBALL,
+  HOCKEY,
+  HORSE_RACING,
+  TENNIS,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import { ValueLabelPair, DateFormattedObject, TimezoneDateObject } from 'modules/types';
+import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
+import deepClone from 'utils/deep-clone';
+import { Getters } from '@augurproject/sdk';
+import { formatDai } from 'utils/format-number';
 
 export enum TemplateInputTypeNames {
   TEAM_VS_TEAM_BIN = 'TEAM_VS_TEAM_BIN',
@@ -21,7 +35,12 @@ export enum TemplateInputTypeNames {
   PLAYER_AWARD = 'PLAYER_AWARD',
   YEAR_EVENT = 'YEAR_EVENT',
   BASEBALL_YEAR_EVENT = 'BASEBALL_YEAR_EVENT',
-  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR'
+  TEAM_WINS_EVENT_YEAR = 'TEAM_WINS_EVENT_YEAR',
+  ENTERTAINMNET_AWARDS_BIN = 'ENTERTAINMNET_AWARDS_BIN',
+  ENTERTAINMNET_AWARDS_BIN_2 = 'ENTERTAINMNET_AWARDS_BIN_2',
+  ENTERTAINMNET_AWARDS_BIN_3 = 'ENTERTAINMNET_AWARDS_BIN_3',
+  ENTERTAINMNET_AWARDS_BIN_4 = 'ENTERTAINMNET_AWARDS_BIN_4',
+  ENTERTAINMNET_AWARDS_CAT = 'ENTERTAINMNET_AWARDS_CAT',
 }
 
 export enum TemplateInputType {
@@ -30,7 +49,6 @@ export enum TemplateInputType {
   DATETIME = 'DATETIME',
   DROPDOWN = 'DROPDOWN',
   ADDED_OUTCOME = 'ADDED_OUTCOME',
-  USER_OUTCOME = 'USER_OUTCOME',
   USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
 }
@@ -96,7 +114,7 @@ export interface TemplateInput {
   placeholder: string;
   tooltip?: string;
   userInput?: string;
-  userInputObject?: UserInputtedType
+  userInputObject?: UserInputtedType;
   values?: ValueLabelPair[];
 }
 
@@ -116,36 +134,79 @@ export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   );
 };
 
-export const getTemplateRadioCards = (categories: Categories) => {
+export const getTemplateRadioCards = (
+  categories: Categories,
+  categoryStats: Getters.Markets.CategoryStats | null
+): MarketCardTemplate[] => {
   const cats = getTemplateCategories(categories);
   if (cats.length === 0) return [];
   if (!categories.primary) {
-    return cats.map(c => MARKET_TEMPLATES.find(t => t.value === c));
+    return cats
+      .map(c => MARKET_TEMPLATES.find(t => t.value === c))
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && !categories.secondary) {
-    return cats.map(c =>
-      MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    );
+    return cats
+      .map(c =>
+        MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
+      )
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   if (categories.primary && categories.secondary && !categories.tertiary) {
-    return cats.map(c =>
-      MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
-    );
+    return cats
+      .map(c =>
+        MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
+      )
+      .map(c => addCategoryStats(categories, c, categoryStats));
   }
   return [];
 };
 
+export const addCategoryStats = (
+  categories: Categories | null,
+  card: MarketCardTemplate,
+  categoryStats: Getters.Markets.CategoryStats
+): MarketCardTemplate => {
+  if (!categoryStats) return card;
+  if (!card) return card;
+  let stats = null;
+  const cardValue = card.value.toLowerCase();
+  if (!categories || !categories.primary) stats = categoryStats[cardValue];
+  if (categories && categories.primary && !categories.secondary) {
+    const catStats = categoryStats[categories.primary.toLowerCase()];
+    stats = catStats.categories[cardValue];
+  }
+  if (
+    categories &&
+    categories.primary &&
+    categories.secondary &&
+    !categories.tertiary
+  ) {
+    let catStats = categoryStats[categories.primary.toLowerCase()];
+    catStats = catStats[categories.secondary.toLowerCase()];
+    stats = catStats.categories[cardValue];
+  }
+  if (stats) {
+    const vol = formatDai(stats.volume || '0').formatted;
+    const mkrLabel = stats.numberOfMarkets === 1 ? 'Market' : 'Markets';
+    card.description = `${stats.numberOfMarkets} ${mkrLabel} | $${vol}`;
+  }
+  return card;
+};
+
 const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
-  if (!categories || !categories.primary) return Object.keys(templates);
-  const primaryCat = templates[categories.primary];
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
-  if (!categories.secondary) return Object.keys(primaryCat.children);
+  if (!categories.secondary)
+    return primaryCat.children ? Object.keys(primaryCat.children) : [];
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  if (!categories.tertiary) return Object.keys(secondaryCat.children);
+  if (!categories.tertiary)
+    return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
   return secondaryCat.children
     ? Object.keys(secondaryCat.children[categories.tertiary])
     : emptyCats;
@@ -157,7 +218,7 @@ export const getTemplates = (
   filterByMarketType: boolean = true
 ): Template[] => {
   if (!marketType && filterByMarketType) return [];
-  let categoryTemplates: CategoryTemplate = templates[categories.primary];
+  let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
   if (!categoryTemplates) return [];
   if (!categories.secondary)
@@ -190,7 +251,7 @@ const getTemplatesByMarketType = (
 };
 
 const getInputsByType = (inputName: TemplateInputTypeNames) => {
-  return inputs[inputName];
+  return deepClone<TemplateInput[]>(INPUTS[inputName]);
 };
 
 export const getTemplateReadableDescription = (template: Template) => {
@@ -250,9 +311,9 @@ export const substituteUserOutcome = (
   inputs: TemplateInput[]
 ) => {
   let matches = input.placeholder.match(/\[(.*?)\]/);
-  let submatch = 0;
+  let submatch = '0';
   if (matches) {
-    submatch = matches[1];
+    submatch = String(matches[1]);
   }
 
   let text = input.placeholder.replace(
@@ -267,10 +328,850 @@ export const substituteUserOutcome = (
   return text;
 };
 
-const templates = {
+const TEMPLATES = {
+  [POLITICS]: {
+    children: {
+      [US_POLITICS]: {
+        templates: [
+          {
+            templateId: `pol-win-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] presidential election`,
+            example: `Will Donald Trump win the 2020 Presidential election`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-pres-nom`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2] presidential nomination`,
+            example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-office-nom`,
+            marketType: YES_NO,
+            question: `Will [0] run for [1] by [2]`,
+            example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.OFFICES,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-imp`,
+            marketType: YES_NO,
+            question: `Will [0] be impeached by [1]`,
+            example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-prez-cat`,
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] US presidential election`,
+            example: `Who will win the 2020 US presidential election`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-nom-cat`,
+            marketType: CATEGORICAL,
+            question: `Who will be the [0] [1] [2] nominee`,
+            example: `Who will be the 2020 Republican Vice President nominee`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.OFFICES,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-state-prez-cat`,
+            marketType: CATEGORICAL,
+            question: `Which party will win [0] in the [1] Presidential election`,
+            example: `Which party will win Michigan in the 2020 Presidential election`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `State`,
+                values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
+      [WORLD]: {
+        templates: [
+          {
+            templateId: `pol-world-pos-cat`,
+            marketType: YES_NO,
+            question: `Will [0] be [1] of [2] on [3]`,
+            example: `Will Kim Jong Un be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Position`,
+                values: LIST_VALUES.POL_POSITION,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Location`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `pol-world-imp-cat`,
+            marketType: YES_NO,
+            question: `Will [0] be impeached by [1]`,
+            example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATETIME,
+                placeholder: `By Specific Datetime`,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
+    },
+  },
+  [CRYPTO]: {
+    templates: [
+      {
+        templateId: `crypto-token-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
+        example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Coin/Token`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `crypto-between-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0], exceed [1] [2], on [3] anytime between the [4] (23:59 UTC-0) and [5] (23:59 UTC-0)`,
+        example: `Will the price of REP exceed $40 USD on Poloniex anytime between September 1, 2019 (00:00 UTC-0) and December 31, 2019 (23:59 UTC-0)`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Coin/Token`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Start Day of Year`,
+          },
+          {
+            id: 5,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `End Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `crypto-close-scalar`,
+        marketType: SCALAR,
+        question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
+        example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Coin/Token`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+    ],
+  },
+  [FINANCE]: {
+    templates: [
+      {
+        templateId: `fin-stock-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]`,
+        example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Stock`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-stock-exceed-bin`,
+        marketType: YES_NO,
+        question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]`,
+        example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Stock`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 4,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Start Day of Year`,
+          },
+          {
+            id: 5,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `End Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-index-close-bin`,
+        marketType: YES_NO,
+        question: `Will the [0] close on or above [1] [2] on [3]`,
+        example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Index`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Value #`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-price-scalar`,
+        marketType: SCALAR,
+        question: `What price will [0] close at in [1] on the [2] on [3]`,
+        example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Stock`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.TEXT,
+            placeholder: `Exchange`,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+      {
+        templateId: `fin-price-close-scalar`,
+        marketType: SCALAR,
+        question: `What price will the [0] close at in [1] on [2]`,
+        example: `What Price will the S&P 500 close at in USD on December 31, 2019`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Index`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Currency`,
+            values: LIST_VALUES.CURRENCY,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DATEYEAR,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: [],
+      },
+    ],
+  },
+  [ENTERTAINMENT]: {
+    templates: [
+      {
+        templateId: `ent-host-event`,
+        marketType: YES_NO,
+        question: `Will [0] host the [1] [2]`,
+        example: `Will Billy Crystal host the 2019 Academy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-event2`,
+        marketType: YES_NO,
+        question: `Will [0] win an award for [1] at the [2] [3]`,
+        example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_2,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-event3`,
+        marketType: YES_NO,
+        question: `Will [0] win an award for [1] at the [2] [3]`,
+        example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_3,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-gross`,
+        marketType: YES_NO,
+        question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]`,
+        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-host-cat`,
+        marketType: CATEGORICAL,
+        question: `Who will host the [0] [1]`,
+        example: `Who wll host the 2020 Emmy Awards`,
+        inputs: [],
+        inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT,
+        resolutionRules: [],
+      },
+      {
+        templateId: `ent-win-award-cat`,
+        marketType: CATEGORICAL,
+        question: `Who will win for [0] in the [1] [2]`,
+        example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Award`,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Year`,
+            values: LIST_VALUES.YEARS,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Event`,
+            values: LIST_VALUES.ENTERTAINMENT_EVENT,
+          },
+        ],
+        resolutionRules: [],
+      },
+    ],
+  },
   [SPORTS]: {
     templates: [],
     children: {
+      [HOCKEY]: {
+        templates: [
+          {
+            templateId: `hk-teamVsteam`,
+            marketType: YES_NO,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
+            example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-teamVsteam`,
+            marketType: YES_NO,
+            question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]`,
+            example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-championship`,
+            marketType: YES_NO,
+            question: `Will the [0] win the [1] Stanley Cup?`,
+            example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
+            example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+            ],
+          },
+          {
+            templateId: `hk-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `hk-year-event-cat`,
+            marketType: CATEGORICAL,
+            question: `Which NHL team will win the [0] Stanley Cup`,
+            example: `Which NHL team will win the 2019-2020 Stanley Cup`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-award`,
+            marketType: CATEGORICAL,
+            question: `Which NHL player will win the [0] [1] award`,
+            example: `Which NHL player will win the 2019-2020 Calder Trophy`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.HOCKEY_AWARD,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-point-year`,
+            marketType: SCALAR,
+            question: `Total number of wins the [0] will finish [1] regular season with`,
+            example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [
+              `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+            ],
+          },
+        ],
+      },
+      [HORSE_RACING]: {
+        templates: [
+          {
+            templateId: `hr-win-year-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2]`,
+            example: `Will American Pharoah win the 2020 Triple Crown`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Horse`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hr-win-cat`,
+            marketType: CATEGORICAL,
+            question: `Which horse will win the [0] [1]`,
+            example: `Which horse will win the 2020 Kentucky Derby`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
+      [TENNIS]: {
+        templates: [
+          {
+            templateId: `ten-playout-year-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1][2]`,
+            example: `Will Roger Federer win the 2020 Wimbledon`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.TENNIS_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `ten-win-cat`,
+            marketType: CATEGORICAL,
+            question: `Which tennis player will win the [0] [1]`,
+            example: `Which tennis player will win the 2020 Australian Open`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `ten-win-cat`,
+            marketType: CATEGORICAL,
+            question: `[0] [1] Match play winner: [2] vs [3]`,
+            example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                placeholder: `Player A`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                placeholder: `Player B`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Winner`,
+              },
+            ],
+            resolutionRules: [
+              `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+              `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+            ],
+          },
+        ],
+      },
       [SOCCER]: {
         templates: [
           {
@@ -294,6 +1195,272 @@ const templates = {
             resolutionRules: [
               `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
             ],
+          },
+        ],
+      },
+      [BASKETBALL]: {
+        templates: [
+          {
+            templateId: `bb-team-event`,
+            marketType: YES_NO,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
+            example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
+            resolutionRules: [`Include Regulation and Overtime`],
+          },
+          {
+            templateId: `bb-teamVsteam-point-year`,
+            marketType: YES_NO,
+            question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
+            example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
+            resolutionRules: [`Include Regulation and Overtime`],
+          },
+          {
+            templateId: `bb-teamVsteam-point-comb`,
+            marketType: YES_NO,
+            question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
+            example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
+            resolutionRules: [
+              `Include Regulation and Overtime`,
+              `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+            ],
+          },
+          {
+            templateId: `bb-teamVsteam-point-year`,
+            marketType: YES_NO,
+            question: `Will the [0] have [1] or more regular season wins in [2]`,
+            example: `Will the NY Knicks have 50 or more regular season wins in 2019-2020`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Whole #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [
+              `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+            ],
+          },
+          {
+            templateId: `bb-championship`,
+            marketType: YES_NO,
+            question: `Will the [0] win the [1] NBA Championship?`,
+            example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-year-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2]`,
+            example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Name`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASKETBALL_AWARD,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
+            example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+            ],
+          },
+          {
+            templateId: `bb-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `bb-year-event-cat`,
+            marketType: CATEGORICAL,
+            question: `Which NBA team will win the [0] [1]`,
+            example: `Which NBA team will win the 2019-2020 Western Conference Finals`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASKETBALL_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-year-coll-cat`,
+            marketType: CATEGORICAL,
+            question: `Which college basketball team will win the [0] [1] [2] tournament`,
+            example: `Which college basketball team will win the men's 2020 ACC tournament`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Men's/Women's`,
+                values: LIST_VALUES.MENS_WOMENS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Conference`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [
+              `winner will be determined by the team that wins their conference tournament championship game`,
+            ],
+          },
+          {
+            templateId: `bb-leg-coll-cat`,
+            marketType: CATEGORICAL,
+            question: `Which [0] player will win the [1] [2] award`,
+            example: `Which NBA player will win the 2019-2020 Most Valuable Player award`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `League`,
+                values: LIST_VALUES.BASKETBALL_LEAGUE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASKETBALL_AWARD,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-action-cat`,
+            marketType: CATEGORICAL,
+            question: `Which Player will have the most [0] at the end of the the [1] regular season`,
+            example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Action`,
+                values: LIST_VALUES.BASKETBALL_ACTION,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `bb-total-wins`,
+            marketType: SCALAR,
+            question: `Total number of wins [0] will finish [1] regular season with`,
+            example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [],
           },
         ],
       },
@@ -340,9 +1507,9 @@ const templates = {
             ],
           },
           {
-            templateId: `baseball-year-event`,
+            templateId: `baseball-year-event2`,
             marketType: CATEGORICAL,
-            question: `Which player  will win the [0] [1]`,
+            question: `Which player will win the [0] [1]`,
             example: `Which Player will win the 2019 American League Cy Young award`,
             inputs: [],
             inputsType: TemplateInputTypeNames.BASEBALL_YEAR_EVENT,
@@ -368,7 +1535,7 @@ const templates = {
             ],
             resolutionRules: [],
           },
-        ]
+        ],
       },
       [AMERICAN_FOOTBALL]: {
         templates: [
@@ -522,7 +1689,112 @@ const templates = {
   },
 };
 
-const inputs = {
+const INPUTS = {
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT]: [
+    {
+      id: 0,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Movie Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Amount`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Currency`,
+      values: LIST_VALUES.CURRENCY,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `US / Worldwide`,
+      values: LIST_VALUES.REGION,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_3]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Movie Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Award`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_2]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Person Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.TEXT,
+      placeholder: `Award`,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 3,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
+  [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN]: [
+    {
+      id: 0,
+      type: TemplateInputType.TEXT,
+      placeholder: `Person Name`,
+    },
+    {
+      id: 1,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Year`,
+      values: LIST_VALUES.YEARS,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.DROPDOWN,
+      placeholder: `Event`,
+      values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+  ],
   [TemplateInputTypeNames.YEAR_EVENT]: [
     {
       id: 0,
@@ -535,7 +1807,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.FOOTBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.BASEBALL_YEAR_EVENT]: [
     {
@@ -549,7 +1821,7 @@ const inputs = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.BASEBALL_EVENT,
-    }
+    },
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
     {
@@ -589,12 +1861,12 @@ const inputs = {
       placeholder: `Team`,
     },
     {
-      id: 2,
+      id: 1,
       type: TemplateInputType.TEXT,
       placeholder: `Whole #`,
     },
     {
-      id: 3,
+      id: 2,
       type: TemplateInputType.DROPDOWN,
       placeholder: `Year`,
       values: LIST_VALUES.YEARS,

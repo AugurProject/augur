@@ -5,14 +5,33 @@ import {
 } from 'modules/create-market/components/common';
 import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
-import { getTemplateRadioCards } from '../get-template';
+import { getTemplateRadioCards } from 'modules/create-market/get-template';
+import { Getters } from '@augurproject/sdk/src';
+import { NewMarket } from 'modules/types';
+
+export interface SubCategoriesProps {
+  newMarket: NewMarket;
+  updateNewMarket: Function;
+  nextPage: Function;
+  categoryStats: Getters.Markets.CategoryStats;
+}
 
 export const SubCategories = ({
-    newMarket,
-    updateNewMarket,
-    nextPage
-  }) => {
+  newMarket,
+  updateNewMarket,
+  nextPage,
+  categoryStats,
+}: SubCategoriesProps) => {
   const { categories } = newMarket;
+  const cats = getTemplateRadioCards(
+    {
+      primary: newMarket.categories[0],
+      secondary: '',
+      tertiary: '',
+    },
+    categoryStats
+  );
+  if (cats.length === 0) nextPage();
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
@@ -29,11 +48,7 @@ export const SubCategories = ({
             updateNewMarket(updatedNewMarket);
             nextPage();
           }}
-          radioButtons={getTemplateRadioCards({
-            primary: newMarket.categories[0],
-            secondary: '',
-            tertiary: '',
-          })}
+          radioButtons={cats}
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>

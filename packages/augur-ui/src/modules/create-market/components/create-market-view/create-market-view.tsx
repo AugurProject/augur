@@ -8,8 +8,10 @@ import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
 import { NewMarket, UIOrder, NodeStyleCallback, LoginAccountMeta, Universe } from "modules/types";
+import { Getters } from "@augurproject/sdk/src";
 
 interface CreateMarketViewProps extends RouteComponentProps<{}> {
+  categoryStats: Getters.Markets.CategoryStats;
   isMobileSmall: boolean;
   currentTimestamp: number;
   gasPrice: number;
@@ -38,14 +40,10 @@ interface CreateMarketViewState {
 export default class CreateMarketView extends React.Component<
   CreateMarketViewProps,
   CreateMarketViewState
-  > {
-  static defaultProps = {
-    availableEth: 0,
-    availableRep: 0
-  };
+> {
+  state: CreateMarketViewState = {
+    page: this.props.history.location.state || LANDING,
 
-  state = {
-    page: this.props.history.location.state || LANDING
   };
 
   updatePage = (page: string) => {
@@ -58,16 +56,16 @@ export default class CreateMarketView extends React.Component<
 
   render() {
     const { page } = this.state;
-
+    const { categoryStats } = this.props;
     return (
       <section className={Styles.CreateMarketView}>
         <Helmet>
           <title>Create Market</title>
         </Helmet>
         {page === LANDING &&
-          <Landing updatePage={this.updatePage} />
+          <Landing categoryStats={categoryStats} updatePage={this.updatePage} />
         }
-        {page === TEMPLATE && <Form {...this.props} isTemplate updatePage={this.updatePage} />}
+        {page === TEMPLATE && <Form {...this.props} isTemplate updatePage={this.updatePage} categoryStats={categoryStats} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );
