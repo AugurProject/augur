@@ -378,10 +378,19 @@ export interface LiquidityData {
   [spread: number]: number;
 }
 
+export interface ExtraInfo {
+  _scalarDenomination?: string;
+  resolutionSource?: string;
+  backupSource?: string;
+  longDescription?: string;
+  description?: string;
+  categories?: string[];
+}
+
 export interface MarketData extends Log, Doc {
   universe: Address;
   endTime: Timestamp;
-  extraInfo: string;
+  extraInfo: ExtraInfo;
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;

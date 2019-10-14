@@ -1977,11 +1977,11 @@ describe('State API :: Markets :: ', () => {
     });
     expect(categories.sort()).toEqual([
       'common',
-      'yesNo 1 secondary',
-      'yesNo 1 tertiary',
-      'yesNo 2 primary',
-      'yesNo 2 secondary',
-      'yesNo 2 tertiary',
+      'yesno 1 secondary',
+      'yesno 1 tertiary',
+      'yesno 2 primary',
+      'yesno 2 secondary',
+      'yesno 2 tertiary',
       'categorical 1 primary',
       'categorical 1 secondary',
       'categorical 1 tertiary',
@@ -2007,11 +2007,11 @@ describe('State API :: Markets :: ', () => {
     });
     expect(categories.sort()).toMatchObject([
       'common',
-      'yesNo 1 secondary',
-      'yesNo 1 tertiary',
-      'yesNo 2 primary',
-      'yesNo 2 secondary',
-      'yesNo 2 tertiary',
+      'yesno 1 secondary',
+      'yesno 1 tertiary',
+      'yesno 2 primary',
+      'yesno 2 secondary',
+      'yesno 2 tertiary',
       'categorical 1 primary',
       'categorical 1 secondary',
       'categorical 1 tertiary',
