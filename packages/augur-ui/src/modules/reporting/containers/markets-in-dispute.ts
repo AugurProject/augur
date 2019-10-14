@@ -7,8 +7,10 @@ import {
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
 import { disputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
+import { AppState } from 'store';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppState) => ({
+  disputingMarketsMeta: state.reportingListState,
   isConnected: state.connection.isConnected,
   userAddress: state.loginAccount.mixedCaseAddress,
   markets: disputingMarkets(state),
