@@ -304,7 +304,7 @@ export class MarketDB extends DerivedDB {
   };
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
-    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 1000, 50);
+    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
 
     const eligibleMarketDocs = await this.find({
       selector: {
