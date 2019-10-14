@@ -501,4 +501,58 @@ export const LIST_VALUES = {
       label: 'made 3-pointers',
     },
   ],
+  HOCKEY_AWARD: [
+    {
+      value: 'Hart Trophy',
+      label: 'Hart Trophy',
+    },
+    {
+      value: 'Norris Trophy',
+      label: 'Norris Trophy',
+    },
+    {
+      value: 'Vezina Trophy',
+      label: 'Vezina Trophy',
+    },
+    {
+      value: 'Calder Trophy',
+      label: 'Calder Trophy',
+    },
+  ],
+  HORSE_RACING_EVENT: [
+    {
+      value: 'Kentucky Derby',
+      label: 'Kentucky Derby',
+    },
+    {
+      value: 'Preakness',
+      label: 'Preakness',
+    },
+    {
+      value: 'Belmont',
+      label: 'Belmont',
+    },
+    {
+      value: 'Triple Crown',
+      label: 'Triple Crown',
+    },
+  ],
+  TENNIS_EVENT: [
+    {
+      value: 'Australian Open',
+      label: 'Australian Open',
+    },
+    {
+      value: 'French Open',
+      label: 'French Open',
+    },
+    {
+      value: 'Wimbledon',
+      label: 'Wimbledon',
+    },
+    {
+      value: 'US Open',
+      label: 'US Open',
+    },
+  ],
 };
