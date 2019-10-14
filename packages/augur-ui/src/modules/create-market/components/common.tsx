@@ -1006,10 +1006,7 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
   const { onChange, newMarket } = props;
   const { template } = newMarket;
   const { resolutionRules } = template;
-  if (
-    (!resolutionRules[CHOICE] && !resolutionRules[OPTIONAL]) ||
-    (resolutionRules[CHOICE] && resolutionRules[CHOICE].length === 0 && resolutionRules[OPTIONAL] && resolutionRules[OPTIONAL].length === 0)
-  ) {
+  if (Object.keys(resolutionRules).length === 0) {
     return null;
   }
   return (
