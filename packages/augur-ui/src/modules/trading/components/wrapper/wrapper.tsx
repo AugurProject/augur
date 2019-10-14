@@ -510,7 +510,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             action={e => {
               e.preventDefault();
               if (initialLiquidity) {
-                updateLiquidity(selectedOutcome, s);() => this.placeMarketTrade(market, selectedOutcome, s)
+                updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else {
                 if (disclaimerSeen) {
