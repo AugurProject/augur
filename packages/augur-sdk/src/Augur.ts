@@ -29,10 +29,21 @@ import { Liquidity } from "./api/Liquidity";
 import { Liquidity as LiquidityGetter } from "./state/getter/Liquidity";
 import { TransactionResponse } from "ethers/providers";
 import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
-import { GenericEventDBDescription } from "./state/logs/types";
-import { ZeroX, BrowserMesh } from "./api/ZeroX";
 import { WSClient } from '@0x/mesh-rpc-client';
-import { Arrayish } from "ethers/utils";
+import {
+  GnosisSafeStateReponse,
+} from '@augurproject/gnosis-relay-api';
+import { Arrayish } from 'ethers/utils';
+import { GnosisSafeStatusPayload } from './api/Gnosis';
+
+import { BrowserMesh, ZeroX } from './api/ZeroX';
+import { SingleThreadConnector } from './connector';
+import {
+  augurEmitter,
+  EventNameEmitter,
+} from './events';
+import { Address, GenericEventDBDescription } from './state/logs/types';
+import { Subscriptions } from './subscriptions';
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -47,10 +58,11 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly gnosis: Gnosis;
   readonly zeroX: ZeroX;
   readonly universe: Universe;
-  static syncableFlexSearch: SyncableFlexSearch;
-  static connector: BaseConnector;
+  syncableFlexSearch: SyncableFlexSearch;
+  connector: BaseConnector;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
+  readonly subscriptions: Subscriptions;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -58,42 +70,56 @@ export class Augur<TProvider extends Provider = Provider> {
   private txFailureCallback: TXStatusCallback;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
-    { EventName: "CompleteSetsPurchased", indexes: []},
-    { EventName: "CompleteSetsSold", indexes: []},
-    { EventName: "DisputeCrowdsourcerCompleted", indexes: ["market"]},
-    { EventName: "DisputeCrowdsourcerContribution", indexes: []},
-    { EventName: "DisputeCrowdsourcerCreated", indexes: []},
-    { EventName: "DisputeCrowdsourcerRedeemed", indexes: []},
-    { EventName: "DisputeWindowCreated", indexes: []},
-    { EventName: "InitialReporterRedeemed", indexes: []},
-    { EventName: "InitialReportSubmitted", indexes: []},
-    { EventName: "InitialReporterTransferred", indexes: []},
-    { EventName: "MarketCreated", indexes: ["market"]},
-    { EventName: "MarketFinalized", indexes: ["market"]},
-    { EventName: "MarketMigrated", indexes: ["market"]},
-    { EventName: "MarketParticipantsDisavowed", indexes: []},
-    { EventName: "MarketTransferred", indexes: []},
-    { EventName: "MarketVolumeChanged", indexes: []},
-    { EventName: "MarketOIChanged", indexes: []},
-    { EventName: "OrderEvent", indexes: []},
-    { EventName: "ParticipationTokensRedeemed", indexes: []},
-    { EventName: "ReportingParticipantDisavowed", indexes: []},
-    { EventName: "TimestampSet", indexes: ["newTimestamp"]},
-    { EventName: "TradingProceedsClaimed", indexes: []},
-    { EventName: "UniverseCreated", indexes: []},
-    { EventName: "UniverseForked", indexes: ["universe"]},
-    { EventName: "TransferSingle", indexes: []},
-    { EventName: "TransferBatch", indexes: []},
-    { EventName: "ShareTokenBalanceChanged", indexes: []},
+    { EventName: 'CompleteSetsPurchased', indexes: [] },
+    { EventName: 'CompleteSetsSold', indexes: [] },
+    { EventName: 'DisputeCrowdsourcerCompleted', indexes: ['market'] },
+    { EventName: 'DisputeCrowdsourcerContribution', indexes: [] },
+    { EventName: 'DisputeCrowdsourcerCreated', indexes: [] },
+    { EventName: 'DisputeCrowdsourcerRedeemed', indexes: [] },
+    { EventName: 'DisputeWindowCreated', indexes: [] },
+    { EventName: 'InitialReporterRedeemed', indexes: [] },
+    { EventName: 'InitialReportSubmitted', indexes: [] },
+    { EventName: 'InitialReporterTransferred', indexes: [] },
+    { EventName: 'MarketCreated', indexes: ['market'] },
+    { EventName: 'MarketFinalized', indexes: ['market'] },
+    { EventName: 'MarketMigrated', indexes: ['market'] },
+    { EventName: 'MarketParticipantsDisavowed', indexes: [] },
+    { EventName: 'MarketTransferred', indexes: [] },
+    { EventName: 'MarketVolumeChanged', indexes: [] },
+    { EventName: 'MarketOIChanged', indexes: [] },
+    { EventName: 'OrderEvent', indexes: [] },
+    { EventName: 'ParticipationTokensRedeemed', indexes: [] },
+    { EventName: 'ReportingParticipantDisavowed', indexes: [] },
+    { EventName: 'TimestampSet', indexes: ['newTimestamp'] },
+    { EventName: 'TradingProceedsClaimed', indexes: [] },
+    { EventName: 'UniverseCreated', indexes: [] },
+    { EventName: 'UniverseForked', indexes: ['universe'] },
+    { EventName: 'TransferSingle', indexes: []},
+    { EventName: 'TransferBatch', indexes: []},
+    { EventName: 'ShareTokenBalanceChanged', indexes: []},
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, browserMesh: BrowserMesh = undefined) {
+  constructor(
+    provider: TProvider,
+    dependencies: ContractDependenciesGnosis,
+    networkId: NetworkId,
+    addresses: ContractAddresses,
+    connector: BaseConnector = new EmptyConnector(),
+    gnosisRelay: IGnosisRelayAPI = undefined,
+    enableFlexSearch = false,
+    meshClient: WSClient = undefined,
+    browserMesh: BrowserMesh = undefined
+  ) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
-    if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
-      Augur.connector = connector;
+    if (!this.connector || connector.constructor.name !== 'EmptyConnector') {
+      this.connector = connector;
     }
+
+    this.subscriptions = new Subscriptions(augurEmitter);
+
+    this.subscriptions.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
 
     // API
     this.addresses = addresses;
@@ -102,23 +128,40 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
-    this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
+    this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
-    this.zeroX = meshClient && browserMesh ? new ZeroX(this, meshClient, browserMesh) : undefined;
-    if (enableFlexSearch && !Augur.syncableFlexSearch) {
-      Augur.syncableFlexSearch = new SyncableFlexSearch();
+    this.zeroX =
+      meshClient && browserMesh
+        ? new ZeroX(this, meshClient, browserMesh)
+        : undefined;
+    if (enableFlexSearch && !this.syncableFlexSearch) {
+      this.syncableFlexSearch = new SyncableFlexSearch();
     }
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, meshBrowser: BrowserMesh = undefined): Promise<Augur> {
-    // has to be static because of the way we instantiate boundTo methods
-    if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
-      Augur.connector = connector;
-    }
-
+  static async create<TProvider extends Provider = Provider>(
+    provider: TProvider,
+    dependencies: ContractDependenciesGnosis,
+    addresses: ContractAddresses,
+    connector: BaseConnector = new SingleThreadConnector(),
+    gnosisRelay: IGnosisRelayAPI = undefined,
+    enableFlexSearch = false,
+    meshClient: WSClient = undefined,
+    meshBrowser: BrowserMesh = undefined
+  ): Promise<Augur> {
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch, meshClient, meshBrowser);
+    const augur = new Augur<TProvider>(
+      provider,
+      dependencies,
+      networkId,
+      addresses,
+      connector,
+      gnosisRelay,
+      enableFlexSearch,
+      meshClient,
+      meshBrowser
+    );
 
     await augur.contracts.setReputationToken(networkId);
     return augur;
@@ -168,9 +211,13 @@ export class Augur<TProvider extends Provider = Provider> {
       data: '0x00',
       value,
     };
-    const ethersTransaction = this.dependencies.transactionToEthersTransaction(transaction);
+    const ethersTransaction = this.dependencies.transactionToEthersTransaction(
+      transaction
+    );
     await this.dependencies.signer.sendTransaction(ethersTransaction);
   }
+
+  async updateGnosisSafe(payload: GnosisSafeStatusPayload): Promise<void> {}
 
   setGnosisSafeAddress(safeAddress: string): void {
     this.dependencies.setSafeAddress(safeAddress);
@@ -184,6 +231,13 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.setUseRelay(useRelay);
   }
 
+  checkSafe(owner:Address, safe: Address): Promise<GnosisSafeStateReponse> {
+    return this.gnosis.getGnosisSafeDeploymentStatusViaRelay({
+      owner,
+      safe,
+    });
+  }
+
   getUniverse(address: string): ContractInterfaces.Universe {
     return this.contracts.universeFromAddress(address);
   }
@@ -193,10 +247,16 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   getOrders(): ContractInterfaces.Orders {
-    return new ContractInterfaces.Orders(this.dependencies, this.addresses.Orders);
+    return new ContractInterfaces.Orders(
+      this.dependencies,
+      this.addresses.Orders
+    );
   }
 
-  registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {
+  registerTransactionStatusCallback(
+    key: string,
+    callback: TransactionStatusCallback
+  ): void {
     this.dependencies.registerTransactionStatusCallback(key, callback);
   }
 
@@ -209,69 +269,78 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    return Augur.connector.connect(ethNodeUrl, account);
+    return this.connector.connect(ethNodeUrl, account);
   }
 
   async disconnect(): Promise<any> {
-    return Augur.connector.disconnect();
+    return this.connector.disconnect();
   }
 
-  bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
-    return Augur.connector && Augur.connector.bindTo(f);
+  bindTo<R, P>(
+    f: (db: any, augur: any, params: P) => Promise<R>
+  ): (params: P) => Promise<R> {
+    return this.connector && this.connector.bindTo(f);
   }
 
-  async on(eventName: SubscriptionEventName | TXEventName | string, callback: Callback | TXStatusCallback): Promise<void> {
+  async on(
+    eventName: SubscriptionEventName | TXEventName | string,
+    callback: Callback | TXStatusCallback
+  ): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      return Augur.connector.on(eventName, callback as Callback);
-    }
-    else if (eventName === TXEventName.AwaitingSigning) {
+      return this.connector.on(eventName, callback as Callback);
+    } else if (eventName === TXEventName.AwaitingSigning) {
       this.txAwaitingSigningCallback = callback;
-    }
-    else if (eventName === TXEventName.Pending) {
+    } else if (eventName === TXEventName.Pending) {
       this.txPendingCallback = callback;
-    }
-    else if (eventName === TXEventName.Success) {
+    } else if (eventName === TXEventName.Success) {
       this.txSuccessCallback = callback;
-    }
-    else if (eventName === TXEventName.Failure) {
+    } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
     }
   }
 
-  async off(eventName: SubscriptionEventName | TXEventName | string): Promise<void> {
+  async off(
+    eventName: SubscriptionEventName | TXEventName | string
+  ): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      return Augur.connector.off(eventName);
-    }
-    else if (eventName === TXEventName.AwaitingSigning) {
+      return this.connector.off(eventName);
+    } else if (eventName === TXEventName.AwaitingSigning) {
       this.txAwaitingSigningCallback = null;
-    }
-    else if (eventName === TXEventName.Pending) {
+    } else if (eventName === TXEventName.Pending) {
       this.txPendingCallback = null;
-    }
-    else if (eventName === TXEventName.Success) {
+    } else if (eventName === TXEventName.Success) {
       this.txSuccessCallback = null;
-    }
-    else if (eventName === TXEventName.Failure) {
+    } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
     }
   }
 
-  getMarkets = this.bindTo(Markets.getMarkets);
+  getMarkets = (
+    params: Parameters<typeof Markets.getMarkets>[2]
+  ): ReturnType<typeof Markets.getMarkets> => {
+    return this.bindTo(Markets.getMarkets)(params);
+  };
 
-  getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
+  getMarketsInfo = (
+    params: Parameters<typeof Markets.getMarketsInfo>[2]
+  ): ReturnType<typeof Markets.getMarketsInfo> => {
+    return this.bindTo(Markets.getMarketsInfo)(params);
+  };
 
   getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
-  }
+  };
 
-  getZeroXOrders = (params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrders>[2]) => {
+  getZeroXOrders = (
+    params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrders>[2]
+  ) => {
     delete params.sortBy;
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrders)(params);
-  }
+  };
 
   syncUserData(account: string): void {
-    Augur.connector.syncUserData(account);
-  }
+    this.connector.syncUserData(account);
+  };
 
   get signer(): EthersSigner {
     return this.dependencies.signer;
@@ -279,35 +348,99 @@ export class Augur<TProvider extends Provider = Provider> {
 
   set signer(signer: EthersSigner)  {
     this.dependencies.signer = signer;
-  }
+  };
 
-  getTradingHistory = this.bindTo(Trading.getTradingHistory);
-  getAllOrders = this.bindTo(Trading.getAllOrders);
-  getTradingOrders = this.bindTo(Trading.getOrders);
-  getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
+  getTradingHistory = (
+    params: Parameters<typeof Trading.getTradingHistory>[2]
+  ): ReturnType<typeof Trading.getTradingHistory> => {
+    return this.bindTo(Trading.getTradingHistory)(params);
+  };
+  getAllOrders = (
+    params: Parameters<typeof Trading.getAllOrders>[2]
+  ): ReturnType<typeof Trading.getAllOrders> => {
+    return this.bindTo(Trading.getAllOrders)(params);
+  };
+  getTradingOrders = (
+    params: Parameters<typeof Trading.getOrders>[2]
+  ): ReturnType<typeof Trading.getOrders> => {
+    return this.bindTo(Trading.getOrders)(params);
+  };
+  getMarketOrderBook = (
+    params: Parameters<typeof Markets.getMarketOrderBook>[2]
+  ): ReturnType<typeof Markets.getMarketOrderBook> => {
+    return this.bindTo(Markets.getMarketOrderBook)(params);
+  };
 
-  getMarketPriceCandlesticks = this.bindTo(Markets.getMarketPriceCandlesticks);
-  getMarketLiquidityRanking = this.bindTo(LiquidityGetter.getMarketLiquidityRanking);
-  getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
-  getProfitLoss = this.bindTo(Users.getProfitLoss);
-  getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
-  getAccountTimeRangedStats = this.bindTo(Users.getAccountTimeRangedStats);
+  getMarketPriceCandlesticks = (
+    params: Parameters<typeof Markets.getMarketPriceCandlesticks>[2]
+  ): ReturnType<typeof Markets.getMarketPriceCandlesticks> => {
+    return this.bindTo(Markets.getMarketPriceCandlesticks)(params);
+  };
+  getMarketLiquidityRanking = this.bindTo(
+    LiquidityGetter.getMarketLiquidityRanking
+  );
+  getUserTradingPositions = (
+    params: Parameters<typeof Users.getUserTradingPositions>[2]
+  ): ReturnType<typeof Users.getUserTradingPositions> => {
+    return this.bindTo(Users.getUserTradingPositions)(params);
+  };
+  getProfitLoss = (
+    params: Parameters<typeof Users.getProfitLoss>[2]
+  ): ReturnType<typeof Users.getProfitLoss> => {
+    return this.bindTo(Users.getProfitLoss)(params);
+  };
+  getProfitLossSummary = (
+    params: Parameters<typeof Users.getProfitLossSummary>[2]
+  ): ReturnType<typeof Users.getProfitLossSummary> => {
+    return this.bindTo(Users.getProfitLossSummary)(params);
+  };
+  getAccountTimeRangedStats = (
+    params: Parameters<typeof Users.getAccountTimeRangedStats>[2]
+  ): ReturnType<typeof Users.getAccountTimeRangedStats> => {
+    return this.bindTo(Users.getAccountTimeRangedStats)(params);
+  };
   getUserAccountData = this.bindTo(Users.getUserAccountData);
-  getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
-  getAccountRepStakeSummary = this.bindTo(Accounts.getAccountRepStakeSummary);
-  getUserCurrentDisputeStake = this.bindTo(Accounts.getUserCurrentDisputeStake);
-  getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
-  getCategoryStats = this.bindTo(Markets.getCategoryStats);
+  getAccountTransactionHistory = this.bindTo(
+    Accounts.getAccountTransactionHistory
+  );
+  getAccountRepStakeSummary = (
+    params: Parameters<typeof Accounts.getAccountRepStakeSummary>[2]
+  ): ReturnType<typeof Accounts.getAccountRepStakeSummary> => {
+    return this.bindTo(Accounts.getAccountRepStakeSummary)(params);
+  };
+
+  getUserCurrentDisputeStake = (
+    params: Parameters<typeof Accounts.getUserCurrentDisputeStake>[2]
+  ): ReturnType<typeof Accounts.getUserCurrentDisputeStake> => {
+    return this.bindTo(Accounts.getUserCurrentDisputeStake)(params);
+  };
+  getPlatformActivityStats = (
+    params: Parameters<typeof Platform.getPlatformActivityStats>[2]
+  ): ReturnType<typeof Platform.getPlatformActivityStats> => {
+    return this.bindTo(Platform.getPlatformActivityStats)(params);
+  };
+  getCategoryStats = (
+    params: Parameters<typeof Markets.getCategoryStats>[2]
+  ): ReturnType<typeof Markets.getCategoryStats> => {
+    return this.bindTo(Markets.getCategoryStats)(params);
+  };
 
   async hotloadMarket(marketId: string) {
     return this.hotLoading.getMarketDataParams({ market: marketId });
   }
 
   async getDisputeWindow(params: GetDisputeWindowParams): Promise<DisputeWindow> {
-    return await this.hotLoading.getCurrentDisputeWindowData(params);
+    return this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
-  async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+
+  getAugurEventEmitter(): EventNameEmitter {
+    return this.subscriptions;
+  }
+
+  async simulateTrade(
+    params: PlaceTradeDisplayParams
+  ): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }
 
@@ -315,56 +448,79 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.trade.placeTrade(params);
   }
 
-  async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
+  async createYesNoMarket(
+    params: CreateYesNoMarketParams
+  ): Promise<ContractInterfaces.Market> {
     return this.market.createYesNoMarket(params);
   }
 
-  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
+  async createCategoricalMarket(
+    params: CreateCategoricalMarketParams
+  ): Promise<ContractInterfaces.Market> {
     return this.market.createCategoricalMarket(params);
   }
 
-  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
+  async createScalarMarket(
+    params: CreateScalarMarketParams
+  ): Promise<ContractInterfaces.Market> {
     return this.market.createScalarMarket(params);
   }
 
-  async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+  async simulateTradeGasLimit(
+    params: PlaceTradeDisplayParams
+  ): Promise<BigNumber> {
     return this.trade.simulateTradeGasLimit(params);
   }
 
-  getUniverseChildren = this.bindTo(Universe.getUniverseChildren);
+  getUniverseChildren = (
+    params: Parameters<typeof Universe.getUniverseChildren>[2]
+  ): ReturnType<typeof Universe.getUniverseChildren> => {
+    return this.bindTo(Universe.getUniverseChildren)(params);
+  };
 
   private registerTransactionStatusEvents() {
-    this.registerTransactionStatusCallback("Transaction Status Handler", (transaction, status, hash) => {
-
-      if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
-        const txn: TXStatus = {
-          transaction,
-          eventName: TXEventName.Success,
-          hash,
-        } as TXStatus;
-        this.txSuccessCallback(txn);
-      } else if (status === TransactionStatus.AWAITING_SIGNING && this.txAwaitingSigningCallback) {
-        const txn: TXStatus = {
-          transaction,
-          eventName: TXEventName.AwaitingSigning,
-          hash,
-        } as TXStatus;
-        this.txAwaitingSigningCallback(txn);
-      } else if (status === TransactionStatus.PENDING && this.txPendingCallback) {
-        const txn: TXStatus = {
-          transaction,
-          eventName: TXEventName.Pending,
-          hash,
-        } as TXStatus;
-        this.txPendingCallback(txn);
-      } else if (status === TransactionStatus.FAILURE && this.txFailureCallback) {
-        const txn: TXStatus = {
-          transaction,
-          eventName: TXEventName.Failure,
-          hash,
-        } as TXStatus;
-        this.txFailureCallback(txn);
+    this.registerTransactionStatusCallback(
+      'Transaction Status Handler',
+      (transaction, status, hash) => {
+        if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.Success,
+            hash,
+          } as TXStatus;
+          this.txSuccessCallback(txn);
+        } else if (
+          status === TransactionStatus.AWAITING_SIGNING &&
+          this.txAwaitingSigningCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.AwaitingSigning,
+            hash,
+          } as TXStatus;
+          this.txAwaitingSigningCallback(txn);
+        } else if (
+          status === TransactionStatus.PENDING &&
+          this.txPendingCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.Pending,
+            hash,
+          } as TXStatus;
+          this.txPendingCallback(txn);
+        } else if (
+          status === TransactionStatus.FAILURE &&
+          this.txFailureCallback
+        ) {
+          const txn: TXStatus = {
+            transaction,
+            eventName: TXEventName.Failure,
+            hash,
+          } as TXStatus;
+          this.txFailureCallback(txn);
+        }
       }
-    });
+    );
   }
 }

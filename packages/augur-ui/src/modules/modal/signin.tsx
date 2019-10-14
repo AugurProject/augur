@@ -1,5 +1,8 @@
-import React from 'react';
-import { PrimarySignInButton, SecondarySignInButton } from 'modules/common/buttons';
+import React, { useState, useEffect } from 'react';
+import {
+  PrimarySignInButton,
+  SecondarySignInButton,
+} from 'modules/common/buttons';
 import { Close } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -36,6 +39,18 @@ export const SignIn = (props: LoginProps) => {
 
   const LOGIN_OR_SIGNUP = isLogin ? 'Login' : 'Signup';
 
+  const [isGnosis, setIsGnosis] = useState(
+    Boolean(window.localStorage.getItem('isGnosis'))
+  );
+
+  useEffect(() => {
+    if (isGnosis) {
+      window.localStorage.setItem('isGnosis', 'true');
+    } else {
+      window.localStorage.removeItem('isGnosis');
+    }
+  }, [isGnosis]);
+
   const parimaryButtonsToShow = connectMethods
     .filter(method => !method.hidden)
     .filter(method => method.primary)
@@ -64,9 +79,7 @@ export const SignIn = (props: LoginProps) => {
 
   return (
     <div className={Styles.SignIn}>
-      <div onClick={() => closeModal()}>
-        {Close}
-      </div>
+      <div onClick={() => closeModal()}>{Close}</div>
       <header>
         <div>{LOGIN_OR_SIGNUP}</div>
         {isLogin ? (
@@ -93,6 +106,14 @@ export const SignIn = (props: LoginProps) => {
           <span onClick={() => connectModal(isLogin ? 'login' : 'signup')}>
             Connect
           </span>
+        </div>
+
+        <div
+          title='Gnosis safe is under development'
+          onClick={() => setIsGnosis(!isGnosis)}
+        >
+          Use Gnosis Safe ⚠️
+          <input type='checkbox' readOnly checked={isGnosis ? true : false} />
         </div>
       </footer>
     </div>

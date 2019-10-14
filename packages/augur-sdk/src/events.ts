@@ -7,7 +7,7 @@ export * from "./event-handlers";
 
 // Some events, like MarketState, are not always sourced from logs and do not have an "eventName"
 // Always make sure it is present without having to specify in every .emit call
-class EventNameEmitter extends EventEmitter {
+export class EventNameEmitter extends EventEmitter {
   emit(eventName: SubscriptionEventName | string, ...args: any[]): boolean {
     return super.emit(eventName, ...args);
   }

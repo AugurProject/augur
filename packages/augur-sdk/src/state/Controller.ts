@@ -3,7 +3,6 @@ import { Block } from 'ethers/providers';
 import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
 import { SubscriptionEventName } from '../constants';
-import { augurEmitter } from '../events';
 import { Subscriptions } from '../subscriptions';
 import { IBlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
 import { DB } from './db/DB';
@@ -15,19 +14,20 @@ export class Controller {
   private static latestBlock: Block;
   private static throttled: any;
 
-  private readonly events = new Subscriptions(augurEmitter);
+  private readonly events;
 
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
   ) {
+    this.events = new Subscriptions(augur.getAugurEventEmitter());
   }
 
   async run(): Promise<void> {
     try {
-      this.events.subscribe('controller:new:block', this.notifyNewBlockEvent.bind(this));
       this.blockAndLogStreamerListener.listenForAllEvents(this.updateMarketsData);
+      this.blockAndLogStreamerListener.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
 
       const db = await this.db;
       await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
@@ -56,7 +56,7 @@ export class Controller {
       marketIds: logMarketIds
     });
 
-    augurEmitter.emit(SubscriptionEventName.MarketsUpdated,  {
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.MarketsUpdated,  {
       marketsInfo
     });
   };
@@ -74,7 +74,7 @@ export class Controller {
     const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
-    augurEmitter.emit(SubscriptionEventName.NewBlock, {
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
       highestAvailableBlockNumber: block.number,
       lastSyncedBlockNumber: lowestBlock,

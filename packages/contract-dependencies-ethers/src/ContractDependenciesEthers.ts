@@ -52,6 +52,9 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     public readonly address?: string) {
   }
 
+  public setSigner(signer: EthersSigner) {
+    this.signer = signer;
+  }
 
   public transactionToEthersTransaction(transaction: Transaction<BigNumber>): Transaction<ethers.utils.BigNumber> {
     const transactionObj: Transaction<ethers.utils.BigNumber> = {

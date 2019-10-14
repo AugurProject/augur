@@ -4,7 +4,6 @@ import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { Log, ParsedLog } from '@augurproject/types';
 import { SyncStatus } from './SyncStatus';
-import { augurEmitter } from '../../events';
 import { SubscriptionEventName } from '../../constants';
 
 export interface Document extends BaseDocument {
@@ -149,7 +148,7 @@ export class SyncableDB extends AbstractDB {
     if (success) {
       if (documents && (documents as any[]).length) {
         _.each(documents, (document: any) => {
-          augurEmitter.emit(this.eventName, {
+          this.augur.getAugurEventEmitter().emit(this.eventName, {
             eventName: this.eventName,
             ...document,
           });
@@ -177,8 +176,8 @@ export class SyncableDB extends AbstractDB {
         await this.db.remove(doc._id, doc._rev);
       }
 
-      if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
-        await Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
+      if (this.augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
+        await this.augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
       }
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);

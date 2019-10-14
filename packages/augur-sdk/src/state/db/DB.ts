@@ -1,5 +1,4 @@
 import { Augur } from '../../Augur';
-import { augurEmitter } from "../../events";
 import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
 import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
@@ -155,8 +154,8 @@ export class DB {
     this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
 
     // Custom Derived DBs here
-    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators']);
-    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId']);
+    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators'], this.augur);
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId'], this.augur);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
     // Create Indexes
@@ -278,9 +277,9 @@ export class DB {
 
     // Update LiquidityDatabase and set it to update whenever there's a new block
     await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
-    augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
 
-    augurEmitter.emit(SubscriptionEventName.SDKReady, {
+    this.augur.getAugurEventEmitter().on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
 
@@ -343,7 +342,7 @@ export class DB {
   }
 
   async emitUserDataSynced(): Promise<void> {
-    augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.UserDataSynced, {
       eventName: SubscriptionEventName.UserDataSynced,
       trackedUsers: await this.trackedUsers.getUsers(),
     });

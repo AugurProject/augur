@@ -119,6 +119,12 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleGnosisStateUpdate = (response) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  console.log('handleGnosisStateUpdate', response);
+};
+
 export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {

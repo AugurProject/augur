@@ -18,6 +18,18 @@ export class Subscriptions extends EventEmitter {
     this.emit(`unsubscribe:${subscription}`);
   }
 
+  on(event: string | symbol, listener: (...args: any[]) => void): this {
+    this.parentEmitter.on(event, listener);
+    super.on(event, listener);
+    return this;
+  }
+
+  off(event: string | symbol, listener: (...args: any[]) => void): this {
+    this.parentEmitter.on(event, listener);
+    super.off(event, listener);
+    return this;
+  }
+
   removeAllListeners(eventName?: string | symbol): this {
     this.emit("removeAllListeners");
     return eventName ? super.removeAllListeners(eventName) : super.removeAllListeners();

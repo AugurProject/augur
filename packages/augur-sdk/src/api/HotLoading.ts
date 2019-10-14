@@ -1,6 +1,5 @@
 import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
-import { augurEmitter } from '../events';
 import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
 import { Address, MarketTypeName } from "../state/logs/types";
 import { MarketInfoOutcome } from "../state/getter/Markets";
@@ -192,7 +191,7 @@ export class HotLoading {
         template,
     }
 
-    augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
     return marketsInfo;
   }
 

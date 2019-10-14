@@ -487,7 +487,7 @@ export class Markets {
       offset: undefined
     };
 
-    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories);
+    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories, augur);
     const numMarketDocs = marketsFTSResults.length;
 
     if (params.search || params.categories) {
@@ -1247,16 +1247,17 @@ function getMarketsCategoriesMeta(
 async function getMarketsSearchResults(
   universe: string,
   query: string,
-  categories: string[]
+  categories: string[],
+  augur: Augur
 ): Promise<Array<SearchResults<MarketFields>>> {
   const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
     whereObj['category' + (i + 1)] = categories[i];
   }
   if (query) {
-    return Augur.syncableFlexSearch.search(query, { where: whereObj });
+    return augur.syncableFlexSearch.search(query, { where: whereObj });
   }
-  return Augur.syncableFlexSearch.where(whereObj);
+  return augur.syncableFlexSearch.where(whereObj);
 }
 
 /**

@@ -120,15 +120,27 @@ export function addScripts(flash: FlashSession) {
         description: 'Quantity of Cash.',
         required: true,
       },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
+      const target = String(args.target);
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
       await user.faucet(atto);
+
+      // if we have a target we transfer from current account to target.
+      if(target) {
+        await user.augur.contracts.cash.transfer(target, atto);
+      }
     },
   });
 
@@ -971,4 +983,23 @@ export function addScripts(flash: FlashSession) {
       });
     },
   })
+  flash.addScript({
+    name: 'check-safe-registration',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'address to check registry contract for the safe address.',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, false);
+
+      const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
+      console.log(result);
+  }});
 }

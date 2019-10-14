@@ -1,7 +1,7 @@
-import { BigNumber } from 'bignumber.js';
-import { GnosisRelayAPI, RelayTransaction } from '../index';
-import { ethers } from 'ethers';
 import { abi } from '@augurproject/artifacts';
+import { BigNumber } from 'bignumber.js';
+import { ethers } from 'ethers';
+import { GnosisRelayAPI, GnosisSafeState, RelayTransaction } from '../index';
 
 // Local testing
 const RELAY_API = 'http://localhost:8000/api/';
@@ -49,8 +49,9 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
 
     // The safe is not yet funded (or deployed)
     let safeStatus = await api.checkSafe(safeAddress);
-    await expect(safeStatus.blockNumber).toEqual(null);
-    await expect(safeStatus.txHash).toEqual(null);
+    await expect(safeStatus).toEqual({
+      status: GnosisSafeState.WAITING_FOR_FUNDS
+    });
 
     // Fund the safe
     console.log('Funding Safe');
@@ -66,7 +67,7 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     // Wait till the relay service has deployed the safe
     console.log('Waiting for Safe Deployment');
     // Originally checked the blockNumber but it doesn't seem to be available in ganache.
-    while (safeStatus.txHash === null) {
+    while (safeStatus.status === GnosisSafeState.WAITING_FOR_FUNDS) {
         await sleep(2000);
         safeStatus = await api.checkSafe(safeAddress);
     }
@@ -139,5 +140,5 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
       contractAddress: null,
     });
     expect(receipt.blockNumber).not.toBeNull();
-  
+
 }, 600000);

@@ -3,7 +3,6 @@ import { AbstractDB, BaseDocument } from './AbstractDB';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
-import { augurEmitter } from '../../events';
 import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
 import { getAddress } from "ethers/utils/address";
 import { SignedOrder } from '@0x/types';
@@ -79,7 +78,7 @@ export class ZeroXOrders extends AbstractDB {
       documents
     ).then((success) => {
       if (success) {
-        augurEmitter.emit("ZeroXOrders", documents);
+        this.augur.getAugurEventEmitter().emit("ZeroXOrders", documents);
       } else {
         throw new Error('Unable to handle mesh events for ZeroX Orders');
       }
@@ -100,7 +99,7 @@ export class ZeroXOrders extends AbstractDB {
       );
     }
     if (success) {
-      augurEmitter.emit("ZeroXOrders", {});
+      this.augur.getAugurEventEmitter().emit("ZeroXOrders", {});
     } else {
       throw new Error('Unable to sync ZeroX Orders');
     }

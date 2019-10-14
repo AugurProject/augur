@@ -2,8 +2,6 @@ import * as _ from 'lodash';
 import { Augur } from '../../Augur';
 import { DerivedDB } from './DerivedDB';
 import { DB } from './DB';
-import { Subscriptions } from '../../subscriptions';
-import { augurEmitter } from '../../events';
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -38,19 +36,9 @@ interface LiquidityResults {
  * Market specific derived DB intended for filtering purposes
  */
 export class MarketDB extends DerivedDB {
-  protected augur: Augur;
-  private readonly events = new Subscriptions(augurEmitter);
+  private readonly events;
   readonly liquiditySpreads = [10, 15, 20, 100];
-  private readonly docProcessMap = {
-    'MarketCreated': this.processMarketCreated,
-    'InitialReportSubmitted': this.processInitialReportSubmitted,
-    'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted.bind(this),
-    'MarketFinalized': this.processMarketFinalized,
-    'MarketVolumeChanged': this.processMarketVolumeChanged,
-    'MarketOIChanged': this.processMarketOIChanged,
-    'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
-    'MarketMigrated': this.processMarketMigrated,
-  };
+  private readonly docProcessMap;
 
   constructor(db: DB, networkId: number, augur: Augur) {
     super(db, networkId, 'Markets', [
@@ -62,9 +50,21 @@ export class MarketDB extends DerivedDB {
       'MarketFinalized',
       'MarketParticipantsDisavowed',
       'MarketMigrated'
-    ], ['market']);
+    ], ['market'],
+      augur);
 
-    this.augur = augur;
+    this.events = this.augur.getAugurEventEmitter();
+
+    this.docProcessMap = {
+      'MarketCreated': this.processMarketCreated.bind(this),
+      'InitialReportSubmitted': this.processInitialReportSubmitted,
+      'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted.bind(this),
+      'MarketFinalized': this.processMarketFinalized,
+      'MarketVolumeChanged': this.processMarketVolumeChanged,
+      'MarketOIChanged': this.processMarketOIChanged,
+      'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
+      'MarketMigrated': this.processMarketMigrated,
+    };
 
     this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
     this.events.subscribe('controller:new:block', this.processNewBlock);
@@ -80,11 +80,11 @@ export class MarketDB extends DerivedDB {
   }
 
   syncFTS = async (): Promise<void> => {
-    if (Augur.syncableFlexSearch) {
+    if (this.augur.syncableFlexSearch) {
       const allDocs = await this.allDocs();
       let marketDocs: any[] = allDocs.rows ? allDocs.rows.map(row => row.doc) : [];
       marketDocs = marketDocs.slice(0, marketDocs.length - 1);
-      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
+      await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
   }
 
@@ -240,7 +240,7 @@ export class MarketDB extends DerivedDB {
     return log;
   }
 
-  private processMarketCreated(log: ParsedLog): ParsedLog {
+  private processMarketCreated = (log: ParsedLog): ParsedLog => {
     log['reportingState'] = MarketReportingState.PreReporting;
     log['finalized'] = false;
     log['invalidFilter'] = false;
@@ -268,8 +268,8 @@ export class MarketDB extends DerivedDB {
     } catch (err) {
       log['extraInfo'] = {};
     }
-    if (Augur.syncableFlexSearch) {
-      Augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
+    if (this.augur.syncableFlexSearch) {
+      this.augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
     }
     return log;
   }
