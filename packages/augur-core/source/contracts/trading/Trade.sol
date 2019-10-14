@@ -132,20 +132,27 @@ contract Trade is Initializable, ReentrancyGuard {
     }
 
     function fillBestOrder(Data memory _tradeData) internal nonReentrant returns (uint256 _bestAmount) {
+        IOrders _orders = orders;
         // we need to fill a BID if we want to SELL and we need to fill an ASK if we want to BUY
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_tradeData.direction);
-        bytes32 _orderId = orders.getBestOrderId(_type, _tradeData.market, _tradeData.outcome, _tradeData.kycToken);
+        bytes32 _orderId = _orders.getBestOrderId(_type, _tradeData.market, _tradeData.outcome, _tradeData.kycToken);
         _bestAmount = _tradeData.amount;
-        uint256 _orderPrice = orders.getPrice(_orderId);
+        uint256 _orderPrice = _orders.getPrice(_orderId);
+        uint256 _lastTradePrice = 0;
         // If the price is acceptable relative to the trade type
         while (_orderId != 0 && _bestAmount > 0 && _tradeData.loopLimit > 0 && isMatch(_orderId, _type, _orderPrice, _tradeData.price)) {
-            bytes32 _nextOrderId = orders.getWorseOrderId(_orderId);
-            orders.setPrice(_tradeData.market, _tradeData.outcome, _orderPrice);
+            bytes32 _nextOrderId = _orders.getWorseOrderId(_orderId);
+            _lastTradePrice = _orderPrice;
             _bestAmount = fillOrder.fillOrder(_tradeData.sender, _orderId, _bestAmount, _tradeData.tradeGroupId, _tradeData.affiliateAddress);
             _orderId = _nextOrderId;
-            _orderPrice = orders.getPrice(_orderId);
+            _orderPrice = _orders.getPrice(_orderId);
             _tradeData.loopLimit -= 1;
         }
+        
+        if (_lastTradePrice != 0) {
+            _orders.setPrice(_tradeData.market, _tradeData.outcome, _lastTradePrice);
+        }
+
         if (isMatch(_orderId, _type, _orderPrice, _tradeData.price)) {
             return 0;
         }
