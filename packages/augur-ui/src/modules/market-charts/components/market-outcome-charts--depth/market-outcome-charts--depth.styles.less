@@ -37,9 +37,27 @@
   flex: 1;
   min-height: @charts-min-height;
 
+  > span:first-of-type {
+    .mono-9-bold;
+
+    flex: 1 100%;
+    color: @color-secondary-text;
+    margin-top: @size-8;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  > span:last-of-type {
+    .mono-12;
+
+    flex: 1 100%;
+    color: @color-primary-text;
+    text-align: center;
+  }
+
   > div {
     flex: 1 100%;
-    padding: @size-8 0;
+    padding: @size-4 0;
   }
 
   :global {
@@ -53,8 +71,8 @@
       flex: 1 113px;
       flex-flow: row nowrap;
       height: 3.5rem;
-      min-width: 113px;
-      padding: 0 0.5rem;
+      padding: 0 @size-4;
+      justify-content: space-between;
     }
 
     .hovered_tooltip_div.flip {
@@ -89,7 +107,7 @@
       flex-flow: column nowrap;
 
       > div {
-        .text-10;
+        .mono-9-bold;
 
         flex: 1;
         line-height: @size-12;
@@ -114,13 +132,13 @@
       margin-left: 0.5rem;
 
       > div {
-        .mono-10;
+        .mono-9;
 
         color: @color-primary-text;
         flex: 1;
         font-weight: bold;
         line-height: @size-12;
-        text-align: left;
+        text-align: right;
       }
 
       > div#price_value {
@@ -146,7 +164,6 @@
     #depth_range_bounds {
       .bounding-box {
         fill: @color-secondary-action-outline;
-        // opacity: 0.05;
       }
     }
 
@@ -190,21 +207,6 @@
       letter-spacing: 0.3px;
       line-height: @size-10;
       text-transform: capitalize;
-    }
-
-    .tick-value-midpoint,
-    .tick-value-denomination {
-      .mono-12;
-
-      fill: @color-primary-text;
-      text-align: center;
-    }
-
-    .tick-value-midpoint-text {
-      .mono-10;
-
-      fill: @color-inactive-text;
-      text-align: center;
     }
 
     .tick > text {

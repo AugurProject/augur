@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
-
+import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
 import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
 
@@ -21,6 +21,14 @@ interface MarketOutcomeDepthProps {
   hasOrders: boolean;
   hoveredPrice?: any;
 }
+// this is important to make sure we don't infinitely redraw the chart / have the container keep growing
+const MARGIN_OF_ERROR = 50;
+
+const checkResize = memoize(
+  (clientWidth, clientHeight, containerWidth, containerHeight) =>
+    Math.abs(clientWidth + clientHeight - (containerWidth + containerHeight)) >
+    MARGIN_OF_ERROR
+);
 
 export default class MarketOutcomeDepth extends Component<
   MarketOutcomeDepthProps,
@@ -73,35 +81,27 @@ export default class MarketOutcomeDepth extends Component<
     });
   }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps) {
     const {
       hoveredPrice,
       marketDepth,
       orderBookKeys,
       sharedChartMargins,
     } = this.props;
-    const {
-      yScale,
-      xScale,
-      containerHeight,
-      containerWidth,
-      currentChartHeight,
-      currentChartWidth,
-    } = this;
+    const { containerHeight, containerWidth } = this;
     const curMarketDepth = JSON.stringify(marketDepth);
     const nextMarketDepth = JSON.stringify(nextProps.marketDepth);
-    // this is important to make sure we don't infinitely redraw the chart / have the container keep growing
-    const MARGIN_OF_ERROR = 25;
     if (
       curMarketDepth !== nextMarketDepth ||
       JSON.stringify(orderBookKeys) !==
         JSON.stringify(nextProps.orderBookKeys) ||
       sharedChartMargins !== nextProps.sharedChartMargins ||
-      Math.abs(
-        this.depthChart.clientWidth +
-          this.depthChart.clientHeight -
-          (containerWidth + containerHeight)
-      ) > MARGIN_OF_ERROR
+      checkResize(
+        this.depthChart.clientWidth,
+        this.depthChart.clientHeight,
+        containerWidth,
+        containerHeight
+      )
     ) {
       this.drawDepth({
         marketDepth: nextProps.marketDepth,
@@ -165,14 +165,8 @@ export default class MarketOutcomeDepth extends Component<
         .style('display', 'flex')
         .append('svg')
         .attr('id', 'depth_chart')
-        .attr(
-          'width',
-          drawParams.containerWidth
-        )
-        .attr(
-          'height',
-          drawParams.containerHeight
-        );
+        .attr('width', drawParams.containerWidth)
+        .attr('height', drawParams.containerHeight);
 
       drawTicks({
         drawParams,
@@ -296,6 +290,8 @@ export default class MarketOutcomeDepth extends Component<
         }}
         className={Styles.MarketOutcomeDepth__container}
       >
+        <span>mid price</span>
+        <span>{`$${this.props.orderBookKeys.mid.toFixed()}`}</span>
         {this.depthContainer}
       </div>
     );
@@ -392,19 +388,15 @@ function determineDrawParams(options) {
           if (result.gt(p)) return result;
         }
         return p;
-        // '1.1' gives a 10% buffer on the top
       }, ZERO)
-      .times(1.1)
+      .times(1.05)
       .toNumber(),
   ];
 
   const xScale = d3
     .scaleLinear()
     .domain(d3.extent(xDomain))
-    .range([
-      chartDim.left,
-      containerWidth - chartDim.right,
-    ]);
+    .range([chartDim.left, containerWidth - chartDim.right]);
 
   const yScale = d3
     .scaleLinear()
@@ -459,7 +451,6 @@ function drawTicks(options) {
     drawParams,
     depthChart,
     orderBookKeys,
-    pricePrecision,
     marketMax,
     marketMin,
     hasOrders,
@@ -475,10 +466,7 @@ function drawTicks(options) {
     .append('line')
     .attr('class', 'bounding-line')
     .attr('x1', 0)
-    .attr(
-      'x2',
-      drawParams.containerWidth
-    )
+    .attr('x2', drawParams.containerWidth)
     .attr(
       'y1',
       (d, i) => (drawParams.containerHeight - drawParams.chartDim.bottom) * i
@@ -488,62 +476,15 @@ function drawTicks(options) {
       (d, i) => (drawParams.containerHeight - drawParams.chartDim.bottom) * i
     );
 
-  //  Midpoint Label
-  if (
-    hasOrders &&
-    marketDepth.bids.length > 0 &&
-    marketDepth.asks.length > 0
-  ) {
-    const midOffset = -25;
-    let quarter = drawParams.yScale(drawParams.yDomain[1] * 0.85);
-    quarter = quarter < 40 ? 40 : quarter;
-
-    const denominationWidth = 15;
-    const priceWidth =
-      orderBookKeys.mid.toFixed(pricePrecision).toString().length * 10 +
-      denominationWidth;
-    const pricePlacement = -1 * (priceWidth / 2);
-    const denominationPlacement =
-      pricePlacement + priceWidth - denominationWidth;
-
+  //  Midpoint line
+  if (hasOrders && marketDepth.bids.length > 0 && marketDepth.asks.length > 0) {
     depthChart
       .append('line')
       .attr('class', 'tick-line--midpoint')
       .attr('x1', drawParams.xScale(orderBookKeys.mid.toNumber()))
       .attr('y1', 0)
       .attr('x2', drawParams.xScale(orderBookKeys.mid.toNumber()))
-      .attr(
-        'y2',
-        drawParams.containerHeight - drawParams.chartDim.bottom - quarter
-      )
-      .attr('transform', `translate(0, ${quarter})`);
-    depthChart
-      .append('text')
-      .attr('class', 'tick-value-midpoint-text')
-      .attr('x', drawParams.xScale(orderBookKeys.mid.toNumber()))
-      .attr('y', quarter - 30)
-      .attr('dx', midOffset)
-      .attr('dy', 0)
-      .text(orderBookKeys.mid && 'MID PRICE');
-    depthChart
-      .append('text')
-      .attr('class', 'tick-value-midpoint')
-      .attr('x', drawParams.xScale(orderBookKeys.mid.toNumber()))
-      .attr('y', quarter - 12)
-      .attr('dx', pricePlacement)
-      .attr('dy', 0)
-      .text(
-        orderBookKeys.mid && `${orderBookKeys.mid.toFixed(pricePrecision)}`
-      );
-
-    depthChart
-      .append('text')
-      .attr('class', 'tick-value-denomination')
-      .attr('x', drawParams.xScale(orderBookKeys.mid.toNumber()))
-      .attr('y', quarter - 12)
-      .attr('dx', denominationPlacement)
-      .attr('dy', 0)
-      .text('DAI');
+      .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom);
   }
 
   const tickCount = 5;
@@ -560,7 +501,7 @@ function drawTicks(options) {
           .tickSize(9)
           .tickPadding(4)
       )
-      .attr('transform', `translate(-${drawParams.chartDim.left}, 0)`)
+      .attr('transform', `translate(-${drawParams.chartDim.left}, 10)`)
       .selectAll('text')
       .text(d => d)
       .select('path')
@@ -656,7 +597,11 @@ function drawTicks(options) {
           .tickSize(9)
           .tickPadding(4)
       )
-      .attr('transform', `translate(${drawParams.containerWidth + drawParams.chartDim.right}, 0)`)
+      .attr(
+        'transform',
+        `translate(${drawParams.containerWidth +
+          drawParams.chartDim.right}, 10)`
+      )
       .selectAll('text')
       .text(d => d)
       .select('path')
@@ -844,10 +789,7 @@ function attachHoverClickHandlers(options) {
   depthChart
     .append('rect')
     .attr('class', 'overlay')
-    .attr(
-      'width',
-      drawParams.containerWidth
-    )
+    .attr('width', drawParams.containerWidth)
     .attr('height', drawParams.containerHeight)
     .on('mouseover', () => d3.select('#crosshairs').style('display', null))
     .on('mouseout', () => {
@@ -900,14 +842,14 @@ function attachHoverClickHandlers(options) {
       d3.select('#volume_label').attr('class', `${nearestFillingOrder[4]}`);
       d3.select('#cost_label').attr('class', `${nearestFillingOrder[4]}`);
       d3.select('#price_value').html(
-        `${createBigNumber(nearestFillingOrder[1]).toFixed(pricePrecision)}`
+        `$${createBigNumber(nearestFillingOrder[1]).toFixed(pricePrecision)}`
       );
       d3.select('#volume_value').html(
         `${createBigNumber(nearestFillingOrder[0]).toFixed(pricePrecision)}`
       );
       d3.select('#cost_value').html(
         // @ts-ignore
-        `${nearestFillingOrder[5].toFixed(pricePrecision)} DAI`
+        `$${nearestFillingOrder[5].toFixed(pricePrecision)}`
       );
 
       // 27 comes from the padding/border/margins so 1rem total for horz

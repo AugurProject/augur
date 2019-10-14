@@ -9,7 +9,7 @@ import { Checkbox } from 'modules/common/form';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
 
-import { MarketData } from 'modules/types';
+import { MarketData, ReportingListState } from 'modules/types';
 import { Getters } from '@augurproject/sdk/src';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
@@ -47,6 +47,7 @@ interface MarketsInDisputeProps {
   loadCurrentlyDisputingMarkets: Function;
   loadNextWindowDisputingMarkets: Function;
   markets: DisputingMarkets;
+  disputingMarketsMeta: ReportingListState;
 }
 
 interface MarketsInDisputeState {
@@ -110,7 +111,7 @@ export default class MarketsInDispute extends Component<
     prevProps: MarketsInDisputeProps,
     prevState: MarketsInDisputeState
   ) {
-    const { isConnected, markets } = this.props;
+    const { isConnected, disputingMarketsMeta, markets } = this.props;
     const {
       filterByMyPortfolio,
       sortBy,
@@ -128,13 +129,12 @@ export default class MarketsInDispute extends Component<
     ) {
       this.loadMarkets();
     }
-    if (markets !== prevProps.markets) {
+    if (
+      JSON.stringify(disputingMarketsMeta) !==
+      JSON.stringify(prevProps.disputingMarketsMeta)
+    ) {
       this.getFilteredDataMarkets(markets);
     }
-  }
-
-  componentWillUnmount() {
-    console.log('component has unmounted');
   }
 
   componentDidMount() {
@@ -143,34 +143,11 @@ export default class MarketsInDispute extends Component<
   }
 
   loadMarkets = () => {
-    const { tabs } = this.state;
     const filterOptions = this.getLoadMarketsFiltersOptions();
     this.getLoadMarketsMethods().map(loader =>
-      this.loadDisputeTypeMarkets(
-        loader.method,
-        filterOptions,
-        tabs,
-        loader.tabName
-      )
+      loader.method(filterOptions)
     );
   };
-
-  loadDisputeTypeMarkets(loadDisputeMarkets, filterOptions, tabs, tabName) {
-    loadDisputeMarkets(
-      filterOptions,
-      (err, marketResults: Getters.Markets.MarketList) => {
-        if (err) return console.log('error', err);
-        const marketCount = marketResults.meta.marketCount;
-        const showPagination = marketCount > filterOptions.limit;
-        this.setState({
-          showPagination,
-          marketCount,
-          isLoadingMarkets: false,
-          tabs: this.setTabCounts(tabs, tabName, marketCount),
-        });
-      }
-    );
-  }
 
   setTabCounts = (tabs, tabName, marketCount) => {
     const index = tabName === TAB_CURRENT ? 0 : 1;
@@ -240,12 +217,33 @@ export default class MarketsInDispute extends Component<
     });
   };
 
-  getFilteredDataMarkets = (markets: DisputingMarkets) => {
+  getFilteredDataMarkets = (
+    markets: DisputingMarkets
+  ) => {
+    const { tabs, selectedTab, limit } = this.state;
     const filteredData = {
       [TAB_CURRENT]: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE],
       [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW],
     };
-    this.setState({ filteredData });
+    let newTabs = this.setTabCounts(
+      tabs,
+      TAB_CURRENT,
+      markets[REPORTING_STATE.CROWDSOURCING_DISPUTE].length,
+    );
+    newTabs = this.setTabCounts(
+      tabs,
+      TAB_AWAITING,
+      markets[REPORTING_STATE.AWAITING_NEXT_WINDOW].length,
+    );
+    const marketCount = filteredData[selectedTab].length;
+    const showPagination = marketCount > limit;
+    this.setState({
+      filteredData,
+      tabs: newTabs,
+      isLoadingMarkets: false,
+      showPagination,
+      marketCount,
+    });
   };
 
   render() {
