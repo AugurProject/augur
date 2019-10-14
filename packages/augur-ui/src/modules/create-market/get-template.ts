@@ -15,12 +15,12 @@ import {
   MARKET_TYPE_TEMPLATES,
   MarketCardTemplate,
   BASKETBALL,
+  HOCKEY,
+  HORSE_RACING,
+  TENNIS,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
-import {
-  ValueLabelPair,
-  TimezoneDateObject,
-} from 'modules/types';
+import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
@@ -174,7 +174,7 @@ export const addCategoryStats = (
   if (!categories || !categories.primary) stats = categoryStats[cardValue];
   if (categories && categories.primary && !categories.secondary) {
     const catStats = categoryStats[categories.primary.toLowerCase()];
-    stats = catStats[cardValue];
+    stats = catStats.categories[cardValue];
   }
   if (
     categories &&
@@ -184,7 +184,7 @@ export const addCategoryStats = (
   ) {
     let catStats = categoryStats[categories.primary.toLowerCase()];
     catStats = catStats[categories.secondary.toLowerCase()];
-    stats = catStats[cardValue];
+    stats = catStats.categories[cardValue];
   }
   if (stats) {
     const vol = formatDai(stats.volume || '0').formatted;
@@ -894,6 +894,284 @@ const TEMPLATES = {
   [SPORTS]: {
     templates: [],
     children: {
+      [HOCKEY]: {
+        templates: [
+          {
+            templateId: `hk-teamVsteam`,
+            marketType: YES_NO,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
+            example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-teamVsteam`,
+            marketType: YES_NO,
+            question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]`,
+            example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-championship`,
+            marketType: YES_NO,
+            question: `Will the [0] win the [1] Stanley Cup?`,
+            example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-teamVsteam`,
+            marketType: CATEGORICAL,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
+            example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
+            resolutionRules: [
+              ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+            ],
+          },
+          {
+            templateId: `hk-overUnder`,
+            marketType: CATEGORICAL,
+            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
+            example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [],
+            inputsType: TemplateInputTypeNames.OVER_UNDER,
+            resolutionRules: [
+              `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+            ],
+          },
+          {
+            templateId: `hk-year-event-cat`,
+            marketType: CATEGORICAL,
+            question: `Which NHL team will win the [0] Stanley Cup`,
+            example: `Which NHL team will win the 2019-2020 Stanley Cup`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-award`,
+            marketType: CATEGORICAL,
+            question: `Which NHL player will win the [0] [1] award`,
+            example: `Which NHL player will win the 2019-2020 Calder Trophy`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                values: LIST_VALUES.HOCKEY_AWARD,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hk-point-year`,
+            marketType: SCALAR,
+            question: `Total number of wins the [0] will finish [1] regular season with`,
+            example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Team`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year Range`,
+                values: LIST_VALUES.YEAR_RANGE,
+              },
+            ],
+            resolutionRules: [
+              `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+            ],
+          },
+        ],
+      },
+      [HORSE_RACING]: {
+        templates: [
+          {
+            templateId: `hr-win-year-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2]`,
+            example: `Will American Pharoah win the 2020 Triple Crown`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Horse`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `hr-win-cat`,
+            marketType: CATEGORICAL,
+            question: `Which horse will win the [0] [1]`,
+            example: `Which horse will win the 2020 Kentucky Derby`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+        ],
+      },
+      [TENNIS]: {
+        templates: [
+          {
+            templateId: `ten-playout-year-event`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1][2]`,
+            example: `Will Roger Federer win the 2020 Wimbledon`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.TENNIS_EVENT,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `ten-win-cat`,
+            marketType: CATEGORICAL,
+            question: `Which tennis player will win the [0] [1]`,
+            example: `Which tennis player will win the 2020 Australian Open`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: [],
+          },
+          {
+            templateId: `ten-win-cat`,
+            marketType: CATEGORICAL,
+            question: `[0] [1] Match play winner: [2] vs [3]`,
+            example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                placeholder: `Player A`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                placeholder: `Player B`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Winner`,
+              },
+            ],
+            resolutionRules: [
+              `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+              `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+            ],
+          },
+        ],
+      },
       [SOCCER]: {
         templates: [
           {
@@ -1103,7 +1381,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: [
-              `winner will be determined by the team that wins their conference tournament championship game`
+              `winner will be determined by the team that wins their conference tournament championship game`,
             ],
           },
           {
@@ -1444,7 +1722,7 @@ const INPUTS = {
       values: LIST_VALUES.CURRENCY,
     },
     {
-      id: 2,
+      id: 3,
       type: TemplateInputType.DROPDOWN,
       placeholder: `US / Worldwide`,
       values: LIST_VALUES.REGION,
@@ -1649,7 +1927,7 @@ const INPUTS = {
     {
       id: 2,
       type: TemplateInputType.DATETIME,
-      placeholder: `[Date time]`,
+      placeholder: `Date time`,
     },
   ],
   [TemplateInputTypeNames.TEAM_VS_TEAM_CAT]: [
