@@ -97,6 +97,7 @@ jobs:
       matrix:
         node_10_x:
           node_version: $(PRIMARY_NODE_VERSION)
+    timeoutInMinutes: 120
     steps:
       - checkout: self
       - task: NodeTool@0
