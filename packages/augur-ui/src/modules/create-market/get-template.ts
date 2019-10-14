@@ -96,10 +96,22 @@ export interface CategoryList {
 interface TemplateChildren {
   [category: string]: CategoryTemplate;
 }
+
 interface CategoryTemplate {
   templates: Template[];
   children: TemplateChildren;
 }
+
+interface ResolutionRule {
+  text: string;
+  isSelected?: boolean;
+}
+
+interface ResolutionRules {
+  [OPTIONAL]: ResolutionRule[];
+  [CHOICE]: ResolutionRule[];
+}
+
 export interface Template {
   templateId: string;
   categories: Categories;
@@ -108,7 +120,7 @@ export interface Template {
   example: string;
   inputs: TemplateInput[];
   inputsType: TemplateInputTypeNames;
-  resolutionRules: string[];
+  resolutionRules: ResolutionRules;
 }
 
 export interface TemplateInput {
@@ -946,7 +958,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
               [OPTIONAL]: [
-                ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                {text:`If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`},
               ],
             },
           },
@@ -959,7 +971,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
               [OPTIONAL]: [
-                `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                {text:`If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1029,7 +1041,7 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
-                `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                {text:`Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`},
               ],
             },
           },
@@ -1176,8 +1188,8 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
-                `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
-                `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                {text:`If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`},
+                {text:`If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1194,11 +1206,11 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
               [CHOICE]: [
-                'Incldue Regulation and any added injury or stoppage time',
-                'Incldue Regulation, any added injury or stoppage time and any Overtime or Penalty shoot-out'
+                {text:'Include Regulation and any added injury or stoppage time'},
+                {text:'Include Regulation, any added injury or stoppage time and any Overtime or Penalty shoot-out'}
               ],
               [OPTIONAL]: [
-                `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                {text:`If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`},
               ],
             },
           },
@@ -1211,7 +1223,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
               [OPTIONAL]: [
-                `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                {text:`If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1227,7 +1239,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
             resolutionRules: {
-              [OPTIONAL]: [`Include Regulation and Overtime`],
+              [OPTIONAL]: [{text:`Include Regulation and Overtime`}],
             },
           },
           {
@@ -1238,7 +1250,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
-              [OPTIONAL]: [`Include Regulation and Overtime`],
+              [OPTIONAL]: [{text:`Include Regulation and Overtime`}],
             },
           },
           {
@@ -1250,8 +1262,8 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
               [OPTIONAL]: [
-                `Include Regulation and Overtime`,
-                `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                {text:`Include Regulation and Overtime`},
+                {text:`If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`},
               ],
             },
           },
@@ -1280,7 +1292,7 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
-                `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                {text:`Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`},
               ],
             },
           },
@@ -1339,7 +1351,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
               [OPTIONAL]: [
-                ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                { text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".` }
               ],
             },
           },
@@ -1352,7 +1364,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
               [OPTIONAL]: [
-                `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                {text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1413,7 +1425,7 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
-                `winner will be determined by the team that wins their conference tournament championship game`,
+                {text: `winner will be determined by the team that wins their conference tournament championship game`},
               ],
             },
           },
@@ -1517,7 +1529,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
               [OPTIONAL]: [
-                ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                {text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`},
               ],
             },
           },
@@ -1539,7 +1551,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
               [OPTIONAL]: [
-                `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                {text:`If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1585,8 +1597,8 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
             resolutionRules: {
               [OPTIONAL]: [
-                `Include Regulation and Overtime`,
-                `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                {text:`Include Regulation and Overtime`},
+                {text:`If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`},
               ],
             },
           },
@@ -1599,8 +1611,8 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
               [OPTIONAL]: [
-                `Include Regulation and Overtime`,
-                `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                {text:`Include Regulation and Overtime`},
+                {text:`If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`},
               ],
             },
           },
@@ -1613,8 +1625,8 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
               [OPTIONAL]: [
-                `Include Regulation and Overtime`,
-                `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                {text:`Include Regulation and Overtime`},
+                {text:`If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`},
               ],
             },
           },
@@ -1627,7 +1639,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_WINS_BIN_YEAR,
             resolutionRules: {
               [OPTIONAL]: [
-                `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                {text:`Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`},
               ],
             },
           },
@@ -1658,8 +1670,8 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
               [OPTIONAL]: [
-                `Include Regulation and Overtime`,
-                `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+                {text:`Include Regulation and Overtime`},
+                {text:`If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1672,8 +1684,8 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
               [OPTIONAL]: [
-                `Include Regulation and Overtime`,
-                `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+                {text:`Include Regulation and Overtime`},
+                {text:`If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`},
               ],
             },
           },
@@ -1686,7 +1698,7 @@ const TEMPLATES = {
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
               [OPTIONAL]: [
-                `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                {text:`If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`},
               ],
             },
           },
