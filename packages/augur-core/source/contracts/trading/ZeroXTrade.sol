@@ -121,14 +121,19 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function bidBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
-        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
+        uint256 _numberOfOutcomes = _shareTokens.length;
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
         uint256 _attoSharesOwned = 2**254;
-        for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
-            if (_i != _outcome) {
-                uint256 _creatorShareTokenBalance = _market.getShareToken(_i).balanceOf(_owner);
-                _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
-            }
+        uint256 _i = 0;
+        for (; _attoSharesOwned > 0 && _i < _outcome; _i++) {
+            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_owner);
+            _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
+        }
+
+        for (_i++; _attoSharesOwned > 0 && _i < _numberOfOutcomes; _i++) {
+            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_owner);
+            _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
         }
 
         uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
