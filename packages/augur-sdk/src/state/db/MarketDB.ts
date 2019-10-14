@@ -49,6 +49,7 @@ export class MarketDB extends DerivedDB {
     'MarketVolumeChanged': this.processMarketVolumeChanged,
     'MarketOIChanged': this.processMarketOIChanged,
   };
+  readonly PROCESS_DOC_LOCK = 'processDoc';
 
   constructor(db: DB, networkId: number, augur: Augur) {
     super(db, networkId, 'Markets', [
@@ -229,6 +230,7 @@ export class MarketDB extends DerivedDB {
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {
+    this.lock(this.PROCESS_DOC_LOCK);
     const processFunc = this.docProcessMap[log.name];
     if (processFunc) {
       return processFunc(log);
@@ -269,7 +271,6 @@ export class MarketDB extends DerivedDB {
   }
 
   private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
-    this.locks['processDisputeCrowdsourcerCompleted'] = true;
     const pacingOn: boolean = log['pacingOn'];
     log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
@@ -305,7 +306,7 @@ export class MarketDB extends DerivedDB {
   };
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
-    await this.waitOnLock('processDisputeCrowdsourcerCompleted', 1000, 50);
+    await this.waitOnLock(this.PROCESS_DOC_LOCK, 1000, 50);
 
     const eligibleMarketDocs = await this.find({
       selector: {

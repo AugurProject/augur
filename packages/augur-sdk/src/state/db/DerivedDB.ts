@@ -154,7 +154,7 @@ export class DerivedDB extends AbstractDB {
       // NOTE: "!syncing" is because during bulk sync we can rely on the order of events provided as they are handled in sequence
       if (this.requiresOrder && !syncing) documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex']);
       success = await this.bulkUpsertUnorderedDocuments(documentsByIdByTopic);
-      this.locks = {}; // Clear locks
+      this.clearLocks();
     }
 
     if (success) {
@@ -195,6 +195,10 @@ export class DerivedDB extends AbstractDB {
     return log;
   }
 
+  protected lock(name: string) {
+    this.locks[name] = true;
+  }
+
   protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<boolean> {
     for (let i = 0; i < (maxTimeMS / periodMS); i++) {
       if (!this.locks[lock]) {
@@ -203,5 +207,9 @@ export class DerivedDB extends AbstractDB {
       await sleep(periodMS);
     }
     return false; // timeout
+  }
+
+  protected clearLocks() {
+    this.locks = {};
   }
 }
