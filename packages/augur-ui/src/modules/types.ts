@@ -381,6 +381,7 @@ export interface Draft {
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
+  template: Template;
 }
 
 export interface Drafts {

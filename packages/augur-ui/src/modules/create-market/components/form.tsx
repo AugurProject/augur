@@ -164,7 +164,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   }
 
   unblock = (cb?: Function) => {
-    const { drafts, newMarket, discardModal } = this.props;
+    const { drafts, newMarket, discardModal, isTemplate } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
 
@@ -185,7 +185,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         if (!close) {
           this.props.history.push({
             pathname: makePath(CREATE_MARKET, null),
-            state: SCRATCH,
+            state: isTemplate ? TEMPLATE : SCRATCH,
           });
           cb && cb(false);
         } else {
@@ -218,14 +218,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    // category might not have sub categories so sub-categories page needs to be skipped
-    let newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
-    const numCategories = newMarket.categories.filter(c => c).length;
-    if (newMarket.currentStep === 2 && numCategories === 1) {
-      newStep = 0;
-      updatePage(LANDING);
-      clearNewMarket();
-    }
+    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
     updateNewMarket({ currentStep: newStep });
     this.node && this.node.scrollIntoView();
   };
