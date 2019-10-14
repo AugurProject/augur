@@ -947,8 +947,8 @@ const TEMPLATES = {
             resolutionRules: {
               [OPTIONAL]: [
                 ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `hk-overUnder`,
@@ -961,7 +961,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
               ],
-            }
+            },
           },
           {
             templateId: `hk-year-event-cat`,
@@ -1030,7 +1030,7 @@ const TEMPLATES = {
             resolutionRules: {
               [OPTIONAL]: [
                 `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
-              ]
+              ],
             },
           },
         ],
@@ -1179,7 +1179,7 @@ const TEMPLATES = {
                 `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
                 `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
               ],
-            }
+            },
           },
         ],
       },
@@ -1196,7 +1196,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
               ],
-            }
+            },
           },
           {
             templateId: `soccer-overUnder`,
@@ -1209,7 +1209,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
               ],
-            }
+            },
           },
         ],
       },
@@ -1223,9 +1223,8 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
             resolutionRules: {
-              [OPTIONAL]: [
-                `Include Regulation and Overtime`],
-            }
+              [OPTIONAL]: [`Include Regulation and Overtime`],
+            },
           },
           {
             templateId: `bb-teamVsteam-point-year`,
@@ -1235,9 +1234,8 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
-              [OPTIONAL]: [
-                `Include Regulation and Overtime`],
-            }
+              [OPTIONAL]: [`Include Regulation and Overtime`],
+            },
           },
           {
             templateId: `bb-teamVsteam-point-comb`,
@@ -1251,7 +1249,7 @@ const TEMPLATES = {
                 `Include Regulation and Overtime`,
                 `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
               ],
-            }
+            },
           },
           {
             templateId: `bb-teamVsteam-point-year`,
@@ -1280,7 +1278,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
               ],
-            }
+            },
           },
           {
             templateId: `bb-championship`,
@@ -1339,7 +1337,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
               ],
-            }
+            },
           },
           {
             templateId: `bb-overUnder`,
@@ -1352,7 +1350,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
               ],
-            }
+            },
           },
           {
             templateId: `bb-year-event-cat`,
@@ -1413,7 +1411,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `winner will be determined by the team that wins their conference tournament championship game`,
               ],
-            }
+            },
           },
           {
             templateId: `bb-leg-coll-cat`,
@@ -1517,7 +1515,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
               ],
-            }
+            },
           },
           {
             templateId: `baseball-year-event`,
@@ -1539,7 +1537,7 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
               ],
-            }
+            },
           },
           {
             templateId: `baseball-year-event2`,
@@ -1585,8 +1583,8 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `Include Regulation and Overtime`,
                 `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-teamVsteam-point`,
@@ -1599,8 +1597,8 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `Include Regulation and Overtime`,
                 `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-teamVsteam-point-comb`,
@@ -1613,8 +1611,8 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `Include Regulation and Overtime`,
                 `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-teamVsteam-point-year`,
@@ -1626,8 +1624,8 @@ const TEMPLATES = {
             resolutionRules: {
               [OPTIONAL]: [
                 `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-team-event`,
@@ -1658,8 +1656,8 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `Include Regulation and Overtime`,
                 `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-teamVsteam-coll`,
@@ -1672,8 +1670,8 @@ const TEMPLATES = {
               [OPTIONAL]: [
                 `Include Regulation and Overtime`,
                 `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-overUnder`,
@@ -1685,8 +1683,8 @@ const TEMPLATES = {
             resolutionRules: {
               [OPTIONAL]: [
                 `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
-              ]
-            }
+              ],
+            },
           },
           {
             templateId: `fb-year-event`,
