@@ -1193,8 +1193,12 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
+              [CHOICE]: [
+                'Incldue Regulation and any added injury or stoppage time',
+                'Incldue Regulation, any added injury or stoppage time and any Overtime or Penalty shoot-out'
+              ],
               [OPTIONAL]: [
-                ` If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
               ],
             },
           },
