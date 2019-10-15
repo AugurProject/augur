@@ -14,11 +14,12 @@ export const UPDATE_REPORTING_LIST = 'UPDATE_REPORTING_LIST';
 export function updateReportingList(
   reportingState: string,
   marketIds: string[],
-  params: Partial<LoadReportingMarketsOptions>
+  params: Partial<LoadReportingMarketsOptions>,
+  isLoading: boolean,
 ) {
   return {
     type: UPDATE_REPORTING_LIST,
-    data: { params, marketIds, reportingState },
+    data: { params, marketIds, reportingState, isLoading },
   };
 }
 

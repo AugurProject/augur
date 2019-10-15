@@ -31,16 +31,21 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const gasCost = sP.gasCost;
+  const marketId = sP.modal.market.id;
+  const payoutNumerators = [];
+  const description = '';
+  const estimateGas = false;
+  const migrateMarketThroughOneFork = () => {
+    dP.migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas)
+  };
   return {
     title: 'Migrate Market',
     description: ['This market will be migrated to the winning universe and will no longer be viewable in the current universe.'],
-    marketId: sP.modal.marketId,
+    marketId: sP.modal.market.id,
     marketTitle: sP.modal.market.description,
     type: sP.modal.marketType,
     closeModal: () => dP.closeModal(),
-    migrateMarketThroughOneFork: (marketId, payoutNumerators, description, estimateGas, callback) => {
-      dP.migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas, callback)
-    },
+
     breakdown: [
       {
         label: 'Total Gas Cost (Est)',
@@ -57,7 +62,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       {
         text: 'Migrate Market',
         action: () => {
-          dP.migrateMarketThroughOneFork();
+          migrateMarketThroughOneFork();
           dP.closeModal();
         },
       },
