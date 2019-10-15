@@ -15,20 +15,13 @@
 <a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
 </p>
 
-<p align="center">Augur is a decentralized oracle and peer to peer protocol for prediction markets. Augur is free, public, open source software, portions of which are licensed under the General Public License (GPL) and portions of which are licensed under the Massachusetts Institute of Technology (MIT) license. Augur is a set of smart contracts written in Solidity that can be deployed to the Ethereum blockchain.</p>
+Augur is a decentralized oracle and peer to peer protocol for prediction markets. Augur is free, public, open source software, portions of which are licensed under the General Public License (GPL) and portions of which are licensed under the Massachusetts Institute of Technology (MIT) license. Augur is a set of smart contracts written in Solidity that can be deployed to the Ethereum blockchain.</p>
 
-<p align="center">Augur is a protocol, freely available for anyone to use however they please. Augur is accessible through a desktop client app, similar to interacting with an Ethereum or Bitcoin node. Users of the Augur protocol must themselves ensure that the actions they are performing are compliant with the laws in all applicable jurisdictions and must acknowledge that others’ use of the Augur protocol may not be compliant. Users of the Augur protocol do so at their own risk.</p>
+Augur is a protocol, freely available for anyone to use however they please. Augur is accessible through a desktop client app, similar to interacting with an Ethereum or Bitcoin node. Users of the Augur protocol must themselves ensure that the actions they are performing are compliant with the laws in all applicable jurisdictions and must acknowledge that others’ use of the Augur protocol may not be compliant. Users of the Augur protocol do so at their own risk.</p>
 
-<p align="center">For more information about the Augur protocol, <a href="https://www.augur.net/faq/">check out the FAQ.</a></p>
-
-### <p align="center">Augur Monorepo<a name="install" ></a></p>
-
-<p align="center">This repository will soon become Augur's monorepo. For the time being, this repository is being used for global issues, pull requests, and project milestones. Click on the issues board below to browse active projects, development pipeline, weekly sprints and more.  </p>
-
-<p align="center"><a href="https://github.com/AugurProject/augur/projects?query=is%3Aopen"><img src="https://i.imgur.com/uSIQot3.png"></a></p>
+For more information about the Augur protocol, [check out the FAQ.](https://www.augur.net/faq/)
 
 <h4><p align="center">Looking for Augur App? Click Below: <h4></p>
-
 <p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"> <img width="200" src="https://augur.net/dist/images/meta_logo.png"> </a></p>
 
 ## Installation
@@ -37,7 +30,7 @@ Clone Augur's Monorepo.
 
 * `git clone https://github.com/AugurProject/augur.git`
 
-Then, install the packages using Yarn.
+Then, install the packages using Yarn -- installation *must* be done via `yarn` and not `npm` since Augur utilizes the Yarn Workspace funcitonality for monorepo support.
 
 * `yarn`
 
@@ -88,7 +81,7 @@ Running on the "kovan" testnet
 All parts of Augur are entirely open source. You can view, edit, and contribute to Augur via the repositories hosted on GitHub!
 
 - [Augur Core](packages/augur-core) - The core implementation of the Augur Project as Smart Contracts written in Solidity for the Ethereum Network.
-- [Augur Sdk](packages/augur-sdk) - Typescript library for Node.js and the browser to help communicate with the Augur smart contracts.
+- [Augur SDK](packages/augur-sdk) - Typescript library for Node.js and the browser to help communicate with the Augur smart contracts.
 - [Augur UI](packages/augur-ui/) - A reference client UI which uses Augur Node and a connection to the Ethereum Network to interact with the Augur community.
 
 ## Documentation and Whitepaper
