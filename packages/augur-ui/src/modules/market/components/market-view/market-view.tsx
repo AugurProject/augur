@@ -19,7 +19,6 @@ import {
   CATEGORICAL,
   BUY,
   MODAL_TRADING_OVERLAY,
-  MARKET_REVIEWS,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -140,6 +139,9 @@ export default class MarketView extends Component<
     if (isMarketLoading) {
       showMarketLoadingModal();
     }
+    else {
+      this.showMarketDisclaimer();
+    }
   }
 
   UNSAFE_componentWillUpdate(nextProps) {
@@ -168,14 +170,6 @@ export default class MarketView extends Component<
     const { marketReviewSeen, marketReviewModal } = this.props;
     if (!marketReviewSeen) {
       marketReviewModal();
-      const localStorageRef =
-        typeof window !== 'undefined' && window.localStorage;
-      if (localStorageRef && localStorageRef.setItem) {
-        const value = localStorageRef.getItem(MARKET_REVIEWS);
-        let markets = value ? JSON.parse(value) : [];
-        markets = markets.concat(this.props.marketId);
-        localStorageRef.setItem(MARKET_REVIEWS, JSON.stringify(markets));
-      }
     }
   }
 
