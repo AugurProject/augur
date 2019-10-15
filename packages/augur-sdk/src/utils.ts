@@ -315,7 +315,7 @@ export function describeScalarOutcome(
 
 export function describeUniverseOutcome(
   outcome: PayoutNumeratorValue,
-  forkingMarket: MarketCreatedLog
+  forkingMarket: MarketData
 ): string {
   if (outcome.malformed) {
     return CommonOutcomes.Malformed;
@@ -340,7 +340,7 @@ export function describeUniverseOutcome(
 
 export function describeMarketOutcome(
   outcome: string | number,
-  market: MarketCreatedLog
+  market: MarketData
 ): string {
   outcome = Number(outcome);
 

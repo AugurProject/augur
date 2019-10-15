@@ -59,6 +59,7 @@ contract ProfitLoss is Initializable {
     }
 
     function adjustTraderProfitForFees(IMarket _market, address _trader, uint256 _outcome, uint256 _fees) public returns (bool) {
+        require(msg.sender == fillOrder);
         profitLossData[_trader][address(_market)][_outcome].realizedProfit -= int256(_fees);
         return true;
     }
@@ -73,7 +74,7 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function adjustForTrader(IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) public returns (bool) {
+    function adjustForTrader(IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) private returns (bool) {
         OutcomeData storage _outcomeData = profitLossData[_address][address(_market)][_outcome];
         int256 _newNetPosition = _outcomeData.netPosition.add(_amount);
         bool _sold = _outcomeData.netPosition < 0 &&  _amount > 0 || _outcomeData.netPosition > 0 &&  _amount < 0;

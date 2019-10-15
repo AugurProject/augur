@@ -21,7 +21,7 @@ import { createBigNumber } from 'utils/create-big-number';
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, blockchain } = state;
   const { forkingInfo } = universe;
-  const isForking = forkingInfo !== null;
+  const isForking = !!forkingInfo;
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
   const { reportingState, endTime } = market;
@@ -42,7 +42,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
       forkingInfo.forkEndTime
     );
 
-  if (isForking && forkingInfo.winningChildUniverseId) {
+  if (
+    isForking &&
+    forkingInfo.winningChildUniverseId &&
+    universe.children &&
+    universe.children.length > 0
+  ) {
     const winning = universe.children.find(
       c => c.id === forkingInfo.winningChildUniverseId
     );
@@ -76,7 +81,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
   let buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
 
   if (marketNeedsMigrating && canMigrateMarkets) {
-    title = 'Fork has finalized. Please migrate this market to the new universe.';
+    title =
+      'Fork has finalized. Please migrate this market to the new universe.';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
     if (hasMarketEnded) {
       buttonText = 'Report and Migrate Market';
@@ -147,8 +153,8 @@ const mapDispatchToProps = dispatch => ({
 const mergeProps = (sP, dP, oP) => {
   let action = null;
   action = sP.hasReleaseRep
-  ? () => dP.releaseReportingRep(sP.releasableRep)
-  : action;
+    ? () => dP.releaseReportingRep(sP.releasableRep)
+    : action;
 
   if (sP.canMigrateMarkets) {
     action = sP.hasMarketEnded

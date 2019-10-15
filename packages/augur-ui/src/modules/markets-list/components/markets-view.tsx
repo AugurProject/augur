@@ -24,7 +24,7 @@ interface MarketsViewProps {
   isLogged: boolean;
   markets: MarketData[];
   location: object;
-  history: object;
+  history: History;
   isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
   loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
@@ -185,7 +185,6 @@ export default class MarketsView extends Component<
             filterSortedMarkets,
             marketCount,
             showPagination,
-            marketCount,
           });
           this.props.updateMarketsListMeta(result.meta);
           this.props.setLoadMarketsPending(false);

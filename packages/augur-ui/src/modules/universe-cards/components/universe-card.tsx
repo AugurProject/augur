@@ -17,6 +17,7 @@ interface UniverseCardProps {
   account: string;
   breakdown?: LinearPropertyLabelProps[];
   switchUniverse: Function;
+  history: History;
 }
 
 export const UniverseCard = (
@@ -26,7 +27,7 @@ export const UniverseCard = (
     parentUniverseId,
     creationTimestamp,
     outcomeName,
-    account,
+    history,
     breakdown,
     switchUniverse,
   }: UniverseCardProps
@@ -57,7 +58,7 @@ export const UniverseCard = (
       {desiredUniverseId !== null &&
         <PrimaryButton
           text={primaryButtonText}
-          action={() => switchUniverse(desiredUniverseId, account)}
+          action={() => switchUniverse(desiredUniverseId, history)}
         />
       }
     </div>

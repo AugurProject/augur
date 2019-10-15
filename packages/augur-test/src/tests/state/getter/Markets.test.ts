@@ -1913,6 +1913,7 @@ describe('State API :: Markets :: ', () => {
 
   test(':getMarketsInfo disputeinfo.stakes outcome valid/invalid', async () => {
     const market = await john.createReasonableYesNoMarket();
+    const otherMarket = await john.createReasonableYesNoMarket();
 
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
     let infos = await api.route('getMarketsInfo', {
@@ -1946,6 +1947,29 @@ describe('State API :: Markets :: ', () => {
     ]);
   });
 
+  test(':getMarketsInfo disavowed in fork', async () => {
+    const market = await john.createReasonableYesNoMarket();
+    const otherMarket = await john.createReasonableYesNoMarket();
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+
+    let infos = await api.route('getMarketsInfo', {marketIds: [market.address]});
+    let info = infos[0];
+
+    await fork(john, info);
+
+    await otherMarket.disavowCrowdsourcers();
+
+    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+
+    infos = await api.route('getMarketsInfo', {marketIds: [otherMarket.address]});
+    expect(infos.length).toEqual(1);
+    info = infos[0];
+
+    expect(info).toHaveProperty('disavowed');
+    expect(info['disavowed']).toEqual(true);
+  });
+
   test(':getCategories : all reporting states', async () => {
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
     const categories = await api.route('getCategories', {
@@ -1953,11 +1977,11 @@ describe('State API :: Markets :: ', () => {
     });
     expect(categories.sort()).toEqual([
       'common',
-      'yesNo 1 secondary',
-      'yesNo 1 tertiary',
-      'yesNo 2 primary',
-      'yesNo 2 secondary',
-      'yesNo 2 tertiary',
+      'yesno 1 secondary',
+      'yesno 1 tertiary',
+      'yesno 2 primary',
+      'yesno 2 secondary',
+      'yesno 2 tertiary',
       'categorical 1 primary',
       'categorical 1 secondary',
       'categorical 1 tertiary',
@@ -1983,11 +2007,11 @@ describe('State API :: Markets :: ', () => {
     });
     expect(categories.sort()).toMatchObject([
       'common',
-      'yesNo 1 secondary',
-      'yesNo 1 tertiary',
-      'yesNo 2 primary',
-      'yesNo 2 secondary',
-      'yesNo 2 tertiary',
+      'yesno 1 secondary',
+      'yesno 1 tertiary',
+      'yesno 2 primary',
+      'yesno 2 secondary',
+      'yesno 2 tertiary',
       'categorical 1 primary',
       'categorical 1 secondary',
       'categorical 1 tertiary',

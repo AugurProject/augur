@@ -38,8 +38,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    switchUniverse: (universeId: string, account: string) =>
-      dispatch(switchUniverse(universeId, account)),
+    switchUniverse: (universeId: string, history: History) =>
+      dispatch(switchUniverse(universeId, history)),
 });
 
 export default withRouter(

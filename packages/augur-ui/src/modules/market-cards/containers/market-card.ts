@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     isMobile: state.appStatus.isMobile,
     pendingLiquidityOrders: state.pendingLiquidityOrders,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    disputingWindowEndTime: state.universe.disputeWindow.endTime,
+    disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
     address: state.loginAccount.address,
     isFavorite: !!state.favorites[ownProps.market.marketId],
     hasStaked,
