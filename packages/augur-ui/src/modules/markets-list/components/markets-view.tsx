@@ -17,7 +17,6 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
-import ForkingBanner from 'modules/reporting/containers/forking-banner';
 
 const PAGINATION_COUNT = 10;
 
@@ -49,6 +48,8 @@ interface MarketsViewProps {
   updateMarketsListCardFormat: Function;
   marketCardFormat: string;
   updateMobileMenuState: Function;
+  updateLoginAccountSettings: Function;
+  showInvalidMarketsBanner: boolean;
 }
 
 interface MarketsViewState {
@@ -205,17 +206,19 @@ export default class MarketsView extends Component<
       updateMarketsListCardFormat,
       search,
       updateMobileMenuState,
+      updateLoginAccountSettings,
       updateMarketsFilter,
       marketFilter,
       marketSort,
       isSearching,
+      showInvalidMarketsBanner,
     } = this.props;
     const {
       filterSortedMarkets,
       marketCount,
       limit,
       offset,
-      showPagination,
+      showPagination
     } = this.state;
 
     const displayFee = this.props.maxFee !== MAX_FEE_100_PERCENT;
@@ -294,6 +297,9 @@ export default class MarketsView extends Component<
         <FilterNotice
           color="red"
           show={!displayFee || !displayLiquiditySpread}
+          isInvalidMarketsBanner={true}
+          updateLoginAccountSettings={updateLoginAccountSettings}
+          showInvalidMarketsBanner={showInvalidMarketsBanner}
           content={
             <span>
               {feesLiquidityMessage}{' '}
