@@ -8,32 +8,19 @@
   border-top: 1px solid @color-table-header;
   border-radius: @border-radius-default;
 
-  > div:first-of-type {
+  > h3 {
     .mono-11-bold;
 
+    color: @color-secondary-text;
     padding-bottom: @size-8;
     text-transform: uppercase;
   }
 
-  > div:nth-of-type(2) {
-    .mono-10;
-  }
+  > h4 {
+    .mono-14-bold;
 
-  > div:nth-of-type(3) {
-    .text-14-bold;
-
-    padding-top: @size-4;
-    margin-bottom: @size-16;
-
-    > svg {
-      fill: none;
-      height: 0.75rem;
-      width: 0.75rem;
-
-      > path {
-        fill: @color-primary-text;
-      }
-    }
+    color: @color-primary-text;
+    margin: @size-4 0;
   }
 
   > span {
@@ -44,18 +31,6 @@
   }
 
   @media @breakpoint-mobile {
-    > div:first-of-type {
-      .mono-12-bold;
-
-      padding-bottom: @size-8;
-    }
-
-    > div:nth-of-type(3) {
-      > div {
-        padding-bottom: @size-8;
-      }
-    }
-
     padding-top: @size-24;
   }
 
@@ -73,26 +48,36 @@
   svg {
     :global {
       .highcharts-background {
-        fill: @color-module-background;
+        fill: transparent;
 
-        @media @breakpoint-mobile-mid {
-          fill: @color-dark-grey;
-        }
+        // @media @breakpoint-mobile-mid {
+        //   fill: @color-dark-grey;
+        // }
       }
 
-      g.highcharts-axis-labels > text,
-      g.highcharts-axis-labels > text > tspan {
-        .mono-9;
+      g.highcharts-yaxis-labels > text {
+        // y axis labels
+        fill: @color-primary-text;
+        font-family: @roboto-mono;
+        font-size: @size-9;
+        font-weight: bold;
+        line-height: @size-11;
 
-        color: @color-inactive-text;
-        fill: @color-inactive-text;
+      }
+      g.highcharts-xaxis-labels > text > tspan,
+      g.highcharts-xaxis-labels > text {
+        // x axis labels
+        fill: @color-primary-text;
+        font-family: @roboto-mono;
+        font-size: @size-9;
+        line-height: @size-11;
       }
 
       .highcharts-yaxis-labels,
       .highcharts-label {
         .mono-9;
 
-        fill: @color-inactive-text;
+        fill: @color-primary-text;
       }
 
       .highcharts-no-data {
@@ -160,11 +145,4 @@
       }
     }
   }
-}
-
-.Labels {
-  .mono-9;
-
-  color: @color-inactive-text;
-  fill: @color-inactive-text;
 }
