@@ -138,11 +138,12 @@ jobs:
         condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
       - bash: |
           set -euo pipefail
-          yarn test --runInBand --ci --reporters=default --reporters=jest-junit
+          free -m
+          yarn test --verbose --runInBand --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
-          NODE_OPTIONS: "--max_old_space_size=6144"
+          NODE_OPTIONS: "--max_old_space_size=2048"
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:
