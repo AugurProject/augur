@@ -56,6 +56,11 @@ export enum TemplateInputType {
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
 }
 
+export enum ValidationType {
+  WHOLE_NUMBER = 'WHOLE_NUMBER',
+  NUMBER = 'NUMBER'
+}
+
 export interface UserInputText {
   value: string;
 }
@@ -593,6 +598,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -628,6 +634,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -702,6 +709,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -737,6 +745,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -777,6 +786,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -1321,6 +1331,7 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.TEXT,
+                validationType: ValidationType.WHOLE_NUMBER,
                 placeholder: `Whole #`,
               },
               {
@@ -1992,6 +2003,7 @@ const INPUTS = {
     {
       id: 1,
       type: TemplateInputType.TEXT,
+      validationType: ValidationType.WHOLE_NUMBER,
       placeholder: `Whole #`,
     },
     {
@@ -2034,6 +2046,7 @@ const INPUTS = {
     {
       id: 2,
       type: TemplateInputType.TEXT,
+      validationType: ValidationType.WHOLE_NUMBER,
       placeholder: `Whole #`,
     },
     {
@@ -2095,6 +2108,7 @@ const INPUTS = {
     {
       id: 2,
       type: TemplateInputType.TEXT,
+      validationType: ValidationType.WHOLE_NUMBER,
       placeholder: `Whole #`,
     },
     {
