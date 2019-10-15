@@ -86,6 +86,7 @@ import { BulkTxLabel } from 'modules/common/labels';
 import {
   tellIfEditableOutcomes,
   createTemplateOutcomes,
+  buildResolutionDetails,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
@@ -143,7 +144,7 @@ interface Validations {
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
-const NUM_TEMPLATE_STEPS = 4;
+const TEMPLATE_FORM_STARTS = 4;
 
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
@@ -176,9 +177,25 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const disabledSave =
       savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
-    const unsaved =
+    let unsaved =
       !newMarket.uniqueId &&
       JSON.stringify(market) !== JSON.stringify(defaultState);
+
+    if (!cb && isTemplate && newMarket.currentStep < TEMPLATE_FORM_STARTS) {
+      let templateMarket = market;
+      let templateDefaultState = defaultState;
+      templateMarket.categories = [];
+      templateMarket.marketType = '';
+      templateMarket.currentStep = 0;
+      templateMarket.template = {};
+      templateDefaultState.categories = [];
+      templateDefaultState.marketType = '';
+      templateDefaultState.template = {};
+      unsaved =
+        !newMarket.uniqueId &&
+        JSON.stringify(templateMarket) !== JSON.stringify(templateDefaultState);
+      if (unsaved) return;
+    }
 
     if (unsaved && !disabledSave) {
       discardModal((close: Boolean) => {
@@ -206,21 +223,39 @@ export default class Form extends React.Component<FormProps, FormState> {
       isTemplate,
     } = this.props;
 
-    const firstPage = isTemplate ? 1 : 0;
-    if (newMarket.currentStep <= firstPage) {
+    const firstPage = 0;
+    if (
+      (isTemplate && newMarket.currentStep === TEMPLATE_FORM_STARTS) ||
+      (!isTemplate && newMarket.currentStep <= firstPage)
+    ) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
           this.setState({ blockShown: true }, () => {
-            updatePage(LANDING);
-            clearNewMarket();
+            // todo: need to check if it is a template here, then go to prev page if template
+
+            if (isTemplate) {
+              updateNewMarket({
+                ...newMarket,
+                currentStep: TEMPLATE_FORM_STARTS - 1,
+                template: null,
+              });
+            } else {
+              updatePage(LANDING);
+              clearNewMarket();
+            }
           });
         }
       });
+    } else if (isTemplate && newMarket.currentStep === 1) {
+      clearNewMarket();
+      return updatePage(LANDING);
+    } else {
+      //todo: new addtion not sure if should be in if else
+      const newStep =
+        newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+      updateNewMarket({ currentStep: newStep });
+      this.node && this.node.scrollIntoView();
     }
-
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
-    updateNewMarket({ currentStep: newStep });
-    this.node && this.node.scrollIntoView();
   };
 
   nextPage = () => {
@@ -247,7 +282,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     let fields = [];
 
-    if (isTemplate) currentStep = currentStep - NUM_TEMPLATE_STEPS;
+    if (isTemplate) currentStep = currentStep - TEMPLATE_FORM_STARTS;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -624,7 +659,18 @@ export default class Form extends React.Component<FormProps, FormState> {
           <div>
             <span>Your market preview</span>
             <PrimaryButton text="Close preview" action={this.preview} />
-            <MarketView market={newMarket} preview />
+            <MarketView
+              market={{
+                ...newMarket,
+                details: isTemplate
+                  ? buildResolutionDetails(
+                      newMarket.detailsText,
+                      newMarket.template.resolutionRules
+                    )
+                  : newMarket.detailsText,
+              }}
+              preview
+            />
             <PrimaryButton text="Close preview" action={this.preview} />
           </div>
         )}
@@ -696,11 +742,14 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  <SecondaryButton
-                    text={disabledSave ? 'Saved' : 'Save draft'}
-                    disabled={disabledSave}
-                    action={this.saveDraft}
-                  />
+                  {((isTemplate && currentStep >= TEMPLATE_FORM_STARTS) ||
+                    !isTemplate) && (
+                    <SecondaryButton
+                      text={disabledSave ? 'Saved' : 'Save draft'}
+                      disabled={disabledSave}
+                      action={this.saveDraft}
+                    />
+                  )}
                   {secondButton === NEXT && (
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}
