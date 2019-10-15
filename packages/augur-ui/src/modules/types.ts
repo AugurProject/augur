@@ -16,6 +16,7 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
+import { Template } from 'modules/create-market/get-template';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -337,6 +338,7 @@ export interface NewMarket {
   offsetName: string;
   offset: number;
   timezone: string;
+  template: Template;
 }
 
 export interface LinkContent {
@@ -557,6 +559,10 @@ export interface LoginAccountMeta {
   openWallet?: Function;
 }
 
+export interface LoginAccountSettings {
+  showInvalidMarketsBanner?: boolean;
+}
+
 export interface LoginAccount {
   address?: string;
   mixedCaseAddress?: string;
@@ -568,6 +574,7 @@ export interface LoginAccount {
   allowance?: BigNumber;
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
+  settings?: LoginAccountSettings;
 }
 
 export interface Web3 {
