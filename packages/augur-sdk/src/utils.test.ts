@@ -23,7 +23,8 @@ import {
   MarketCreatedLog,
   MarketType,
   MarketTypeName,
-  YesNoOutcomes
+  YesNoOutcomes,
+  MarketData
 } from './state/logs/types';
 import { formatBytes32String } from 'ethers/utils';
 import BigNumber from 'bignumber.js';
@@ -253,78 +254,78 @@ test('describe scalar outcome', () => {
 
 test('describe universe outcome : malformed', () => {
   const outcome: PayoutNumeratorValue = { outcome: null, malformed: true };
-  const log = {} as MarketCreatedLog;
-  expect(describeUniverseOutcome(outcome, log)).toEqual(CommonOutcomes.Malformed);
+  const marketData= {} as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(CommonOutcomes.Malformed);
 });
 
 test('describe universe outcome : invalid', () => {
   const outcome: PayoutNumeratorValue = { outcome: '0', invalid: true };
-  const log = {} as MarketCreatedLog;
-  expect(describeUniverseOutcome(outcome, log)).toEqual(CommonOutcomes.Invalid);
+  const marketData= {} as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(CommonOutcomes.Invalid);
 });
 
 test('describe universe outcome : yes-no : no', () => {
   const outcome: PayoutNumeratorValue = { outcome: '1' };
-  const log = {
+  const marketData = {
     marketType: MarketType.YesNo,
-  } as MarketCreatedLog;
-  expect(describeUniverseOutcome(outcome, log)).toEqual(YesNoOutcomes.No);
+  } as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(YesNoOutcomes.No);
 });
 
 test('describe universe outcome : yes-no : yes', () => {
   const outcome: PayoutNumeratorValue = { outcome: '2' };
-  const log = {
+  const marketData = {
     marketType: MarketType.YesNo,
-  } as MarketCreatedLog;
-  expect(describeUniverseOutcome(outcome, log)).toEqual(YesNoOutcomes.Yes);
+  } as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(YesNoOutcomes.Yes);
 });
 
 test('describe universe outcome : categorical', () => {
   const outcome: PayoutNumeratorValue = { outcome: '1' };
-  const log = {
+  const marketData = {
     marketType: MarketType.Categorical,
     outcomes: ['real', 'a dream', 'a trick'].map(formatBytes32String),
-  } as MarketCreatedLog;
-  expect(describeUniverseOutcome(outcome, log)).toEqual('real'.padEnd(32, '\u0000'));
+  } as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual('real'.padEnd(32, '\u0000'));
 });
 
 test('describe universe outcome : scalar', () => {
   const outcome: PayoutNumeratorValue = { outcome: '42' };
-  const log = {
+  const marketData = {
     marketType: MarketType.Scalar,
-  } as MarketCreatedLog;
-  expect(describeUniverseOutcome(outcome, log)).toEqual('42');
+  } as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual('42');
 });
 
 test('describe market outcome : invalid', () => {
-  const log = {} as MarketCreatedLog;
-  expect(describeMarketOutcome(0, log)).toEqual(CommonOutcomes.Invalid);
-  expect(describeMarketOutcome('0x00', log)).toEqual(CommonOutcomes.Invalid);
+  const marketData = {} as MarketData;
+  expect(describeMarketOutcome(0, marketData)).toEqual(CommonOutcomes.Invalid);
+  expect(describeMarketOutcome('0x00', marketData)).toEqual(CommonOutcomes.Invalid);
 });
 
 test('describe market outcome : yes-no', () => {
-  const log = { marketType: MarketType.YesNo } as MarketCreatedLog;
-  expect(describeMarketOutcome('0x01', log)).toEqual(YesNoOutcomes.No);
-  expect(describeMarketOutcome('0x02', log)).toEqual(YesNoOutcomes.Yes);
+  const marketData = { marketType: MarketType.YesNo } as MarketData;
+  expect(describeMarketOutcome('0x01', marketData)).toEqual(YesNoOutcomes.No);
+  expect(describeMarketOutcome('0x02', marketData)).toEqual(YesNoOutcomes.Yes);
 });
 
 test('describe market outcome : categorical', () => {
-  const log = {
+  const marketData = {
     marketType: MarketType.Categorical,
     outcomes: ['real', 'a dream', 'a trick'].map(formatBytes32String),
-  } as MarketCreatedLog;
-  expect(describeMarketOutcome('0x01', log)).toEqual('real'.padEnd(32, '\u0000'));
-  expect(describeMarketOutcome('0x02', log)).toEqual('a dream'.padEnd(32, '\u0000'));
-  expect(describeMarketOutcome('0x03', log)).toEqual('a trick'.padEnd(32, '\u0000'));
+  } as MarketData;
+  expect(describeMarketOutcome('0x01', marketData)).toEqual('real'.padEnd(32, '\u0000'));
+  expect(describeMarketOutcome('0x02', marketData)).toEqual('a dream'.padEnd(32, '\u0000'));
+  expect(describeMarketOutcome('0x03', marketData)).toEqual('a trick'.padEnd(32, '\u0000'));
 });
 
 test('describe market outcome : scalar', () => {
-  const log = {
+  const marketData = {
     marketType: MarketType.Scalar,
     prices: ['-10', '10'],
-  } as MarketCreatedLog;
-  expect(describeMarketOutcome('0x01', log)).toEqual('-10');
-  expect(describeMarketOutcome('0x02', log)).toEqual('10');
+  } as MarketData;
+  expect(describeMarketOutcome('0x01', marketData)).toEqual('-10');
+  expect(describeMarketOutcome('0x02', marketData)).toEqual('10');
 });
 
 test('market type to name', async () => {
