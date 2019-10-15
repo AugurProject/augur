@@ -560,6 +560,10 @@ export interface LoginAccountMeta {
   openWallet?: Function;
 }
 
+export interface LoginAccountSettings {
+  showInvalidMarketsBanner?: boolean;
+}
+
 export interface LoginAccount {
   address?: string;
   mixedCaseAddress?: string;
@@ -571,6 +575,7 @@ export interface LoginAccount {
   allowance?: BigNumber;
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
+  settings?: LoginAccountSettings;
 }
 
 export interface Web3 {
