@@ -4,7 +4,8 @@
 [![](https://img.shields.io/discord/378030344374583298.svg)](https://invite.augur.net)
 [![](https://img.shields.io/badge/contributions-welcome-orange.svg)](https://github.com/AugurProject/augur/issues)
 [![](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/AugurProject/augur/pulls)
-[![](https://img.shields.io/github/contributors/AugurProject/augur.svg)](https://github.com/AugurProject/augur-app/graphs/contributors) [![](https://img.shields.io/github/issues-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/issues)
+[![](https://img.shields.io/github/contributors/AugurProject/augur.svg)](https://github.com/AugurProject/augur-app/graphs/contributors) <br/>
+[![](https://img.shields.io/github/issues-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/issues)
 [![](https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+)
 [![](https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/pulls)
 [![](https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed)
