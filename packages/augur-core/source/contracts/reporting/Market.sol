@@ -3,7 +3,6 @@ pragma solidity 0.5.10;
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/Ownable.sol';
-import 'ROOT/libraries/collections/Map.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
@@ -13,7 +12,6 @@ import 'ROOT/trading/ICash.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/factories/ShareTokenFactory.sol';
 import 'ROOT/factories/InitialReporterFactory.sol';
-import 'ROOT/factories/MapFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
@@ -37,7 +35,6 @@ contract Market is Initializable, Ownable, IMarket {
     IDisputeWindow private disputeWindow;
     ICash private cash;
     IAugur public augur;
-    MapFactory private mapFactory;
 
     // Attributes
     uint256 private numTicks;
@@ -57,7 +54,10 @@ contract Market is Initializable, Ownable, IMarket {
 
     // Collections
     IReportingParticipant[] public participants;
-    IMap public crowdsourcers;
+
+    mapping(bytes32 => address) private crowdsourcers;
+    uint256 private crowdsourcerGeneration;
+
     IShareToken[] private shareTokens;
     mapping (address => uint256) public affiliateFeesAttoCash;
 
@@ -79,8 +79,6 @@ contract Market is Initializable, Ownable, IMarket {
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
-        mapFactory = MapFactory(_augur.lookup("MapFactory"));
-        clearCrowdsourcers();
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
@@ -256,7 +254,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_newCrowdsourcer.getStake() >= _correctSize) {
                 finishedCrowdsourcingDisputeBond(_newCrowdsourcer);
             } else {
-                crowdsourcers.add(_payoutDistributionHash, address(_newCrowdsourcer));
+                crowdsourcers[_payoutDistributionHash] = address(_newCrowdsourcer);
             }
         }
     }
@@ -395,7 +393,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function getOrCreateDisputeCrowdsourcer(bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, bool _overload) private returns (IDisputeCrowdsourcer) {
-        IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
+        IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(getCrowdsourcer(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
             IDisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = IDisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
             uint256 _participantStake = getParticipantStake();
@@ -404,9 +402,14 @@ contract Market is Initializable, Ownable, IMarket {
                 _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
             uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, _size, _payoutDistributionHash, _payoutNumerators);
+            uint256 _crowdsourcerGeneration = crowdsourcerGeneration;
+            if (_overload) {
+                // If the preemptive crowdsourcer is used, it will always enter at the next generation
+                _crowdsourcerGeneration += 1;
+            }
+            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, _size, _payoutDistributionHash, _payoutNumerators, _crowdsourcerGeneration);
             if (!_overload) {
-                crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
+                crowdsourcers[_payoutDistributionHash] = address(_crowdsourcer);
             } else {
                 preemptiveDisputeCrowdsourcer = _crowdsourcer;
             }
@@ -486,7 +489,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function clearCrowdsourcers() private {
-        crowdsourcers = mapFactory.createMap(augur, address(this));
+        crowdsourcerGeneration += 1;
     }
 
     function getHighestNonTentativeParticipantStake() public view returns (uint256) {
@@ -607,7 +610,11 @@ contract Market is Initializable, Ownable, IMarket {
      * @return The associated Dispute Crowdsourcer contract for this round of disputing
      */
     function getCrowdsourcer(bytes32 _payoutDistributionHash) public view returns (IDisputeCrowdsourcer) {
-        return  IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
+        IDisputeCrowdsourcer _crowdsourcer = IDisputeCrowdsourcer(crowdsourcers[_payoutDistributionHash]);
+        if (_crowdsourcer != IDisputeCrowdsourcer(0) && _crowdsourcer.getCrowdsourcerGeneration() == crowdsourcerGeneration) {
+            return _crowdsourcer;
+        }
+        return IDisputeCrowdsourcer(0);
     }
 
     /**
@@ -727,7 +734,7 @@ contract Market is Initializable, Ownable, IMarket {
         if (address(preemptiveDisputeCrowdsourcer) == address(_shadyReportingParticipant)) {
             return true;
         }
-        if (crowdsourcers.getAsAddressOrZero(_shadyReportingParticipant.getPayoutDistributionHash()) == address(_shadyReportingParticipant)) {
+        if (getCrowdsourcer(_shadyReportingParticipant.getPayoutDistributionHash()) == _shadyReportingParticipant) {
             return true;
         }
         // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
