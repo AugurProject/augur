@@ -1,6 +1,6 @@
 {
   "name": "contract-dependencies",
-  "version": "10.0.0-alpha.1",
+  "version": "2.0.0-alpha.1",
   "description": "Contract Dependencies Interfaces",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -9,7 +9,6 @@
     "src": "src"
   },
   "scripts": {
-    "version": "yarn rebuild",
     "rebuild": "yarn build",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc -b",

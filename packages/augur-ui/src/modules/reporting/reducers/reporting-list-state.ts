@@ -10,12 +10,13 @@ export default function(
 ): ReportingListState {
   switch (type) {
     case UPDATE_REPORTING_LIST: {
-      const { reportingState, marketIds, params } = data;
+      const { reportingState, marketIds, params, isLoading } = data;
       return {
         ...reportingList,
         [reportingState]: {
           marketIds,
-          params
+          params,
+          isLoading,
         }
       };
     }
