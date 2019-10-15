@@ -17,6 +17,7 @@ import {
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
+import { Action } from 'redux';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -138,7 +139,8 @@ export const loadMarketsByFilter = (
   };
   // not pass properties at their max value
   if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
-  if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS) delete params.maxLiquiditySpread
+  if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS)
+    delete params.maxLiquiditySpread;
 
   const marketList = await augur.getMarkets({ ...params });
   dispatch(addUpdateMarketInfos(marketList.markets));
@@ -148,7 +150,7 @@ export const loadMarketsByFilter = (
 export const loadNextWindowDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+): ThunkAction<void, AppState, void, Action> => async (
   dispatch,
   getState
 ) => {
@@ -162,7 +164,7 @@ export const loadNextWindowDisputingMarkets = (
 export const loadCurrentlyDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+): ThunkAction<void, AppState, void, Action> => async (
   dispatch,
   getState
 ) => {
@@ -234,7 +236,7 @@ export const loadDesignatedReportingMarkets = (
 const loadReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+): ThunkAction<void, AppState, void, Action> => async (
   dispatch,
   getState
 ) => {
@@ -244,7 +246,7 @@ const loadReportingMarkets = (
   let reportingState = null;
   if (filterOptions.reportingStates.length === 1) {
     reportingState = filterOptions.reportingStates[0];
-    dispatch(updateReportingList(reportingState, [], filterOptions));
+    dispatch(updateReportingList(reportingState, [], filterOptions, true));
   }
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
@@ -266,7 +268,7 @@ const loadReportingMarkets = (
   dispatch(addUpdateMarketInfos(marketList.markets));
   if (reportingState) {
     const marketIds = marketList.markets.map(m => m.id);
-    dispatch(updateReportingList(reportingState, marketIds, filterOptions));
+    dispatch(updateReportingList(reportingState, marketIds, filterOptions, false));
   }
   if (cb) cb(null, marketList);
 };
