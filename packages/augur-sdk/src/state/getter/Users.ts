@@ -7,7 +7,7 @@ import {
   ParsedOrderEventLog,
   Doc,
   Timestamped,
-  MarketCreatedLog,
+  MarketData,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
@@ -623,7 +623,7 @@ try {
     );
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const marketsResponse = await db.findMarketCreatedLogs({
+    const marketsResponse = await db.findMarkets({
       selector: { market: { $in: marketIds } },
     });
     const markets = _.keyBy(marketsResponse, 'market');
@@ -944,7 +944,7 @@ function getLastDocBeforeTimestamp<TDoc extends Timestamped>(
 
 function getTradingPositionFromProfitLossFrame(
   profitLossFrame: ProfitLossChangedLog,
-  marketDoc: MarketCreatedLog,
+  marketDoc: MarketData,
   onChainOutcomeValue: BigNumber,
   timestamp: number,
   shareTokenBalancesByMarketandOutcome

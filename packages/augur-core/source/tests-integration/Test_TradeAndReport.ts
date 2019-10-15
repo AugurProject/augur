@@ -24,6 +24,10 @@ describe('TradeAndReport', () => {
         console.log("Create Market");
         const market = await fixture.createReasonableMarket(fixture.universe!, [stringTo32ByteHex(' '), stringTo32ByteHex(' ')]);
 
+        const migrationMarketEndTime = new BigNumber(Math.round(new Date().getTime() / 1000) + 365 * 24 * 60 * 60);
+        const ZERO = new BigNumber(0);
+        const migrationMarket = await fixture.createMarket(fixture.universe!, [stringTo32ByteHex(' '), stringTo32ByteHex(' ')], migrationMarketEndTime, ZERO, ZERO, fixture.account);
+
         // Place an order
         const type = new BigNumber(0); // BID
         const outcome = new BigNumber(0);
@@ -70,5 +74,8 @@ describe('TradeAndReport', () => {
 
         const isFinalized = await market.isFinalized_();
         expect(isFinalized).to.be.true;
+
+        console.log("Migrating market through fork")
+        await migrationMarket.migrateThroughOneFork([], "");
     });
 });

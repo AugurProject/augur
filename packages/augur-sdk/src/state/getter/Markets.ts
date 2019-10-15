@@ -148,6 +148,7 @@ export interface MarketInfo {
   disputeInfo: DisputeInfo;
   categories: string[];
   noShowBondAmount: string;
+  disavowed: boolean;
 }
 
 export interface DisputeInfo {
@@ -748,7 +749,7 @@ export class Markets {
 
     const allCategories: {[category: string]: null} = {};
     marketLogs.forEach((log) => {
-      const extraInfo = parseExtraInfo(log.extraInfo);
+      const extraInfo = log.extraInfo;
       if (extraInfo) {
         const categories = Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
         categories.forEach((category) => {
@@ -784,12 +785,9 @@ export class Markets {
     });
 
     const markets = allMarkets.map((market) => {
-      const { extraInfo: extraInfoBlob } = market;
-      const extraInfo = parseExtraInfo(extraInfoBlob);
+      const extraInfo = market.extraInfo;
 
       let categories = extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
-      // case-insensitive
-      categories = categories.map((category) => category.toLowerCase());
 
       return {
         categories,
@@ -868,21 +866,6 @@ const extraInfoType = t.intersection([
     tags: t.array(t.string),
   }),
 ]);
-
-// Turns extraInfo blob into the correct object. Returns null if it can't.
-export function parseExtraInfo(extraInfoBlob: string): t.TypeOf<typeof extraInfoType>|null {
-  let extraInfo;
-  try {
-    extraInfo = JSON.parse(extraInfoBlob)
-  } catch(e) {
-    return null;
-  }
-
-  return pipe(
-    extraInfoType.decode(extraInfo),
-    fold((errors: t.Errors) => null, (info: t.TypeOf<typeof extraInfoType>) => info),
-  )
-}
 
 function filterOrderFilledLogs(
   orderFilledLogs: ParsedOrderEventLog[],
@@ -1070,7 +1053,7 @@ async function getMarketsInfo(
     let backupSource = null;
     let scalarDenomination = null;
     if (marketData.extraInfo) {
-      const extraInfo = JSON.parse(marketData.extraInfo);
+      const extraInfo = marketData.extraInfo;
       categories = extraInfo.categories ? extraInfo.categories : [];
       description = extraInfo.description ? extraInfo.description : null;
       details = extraInfo.longDescription
@@ -1156,6 +1139,7 @@ async function getMarketsInfo(
       transactionHash: marketData.transactionHash,
       outcomes,
       disputeInfo,
+      disavowed: marketData.disavowed
     };
   });
 }

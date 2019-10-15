@@ -15,7 +15,6 @@ import {
   WORST_CASE_FILL,
 } from '../../constants';
 import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
-import { MarketCreatedDoc } from './SyncableFlexSearch';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
@@ -48,6 +47,8 @@ export class MarketDB extends DerivedDB {
     'MarketFinalized': this.processMarketFinalized,
     'MarketVolumeChanged': this.processMarketVolumeChanged,
     'MarketOIChanged': this.processMarketOIChanged,
+    'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
+    'MarketMigrated': this.processMarketMigrated,
   };
 
   constructor(db: DB, networkId: number, augur: Augur) {
@@ -57,7 +58,9 @@ export class MarketDB extends DerivedDB {
       'MarketOIChanged',
       'InitialReportSubmitted',
       'DisputeCrowdsourcerCompleted',
-      'MarketFinalized'
+      'MarketFinalized',
+      'MarketParticipantsDisavowed',
+      'MarketMigrated'
     ], ['market']);
 
     this.augur = augur;
@@ -77,10 +80,10 @@ export class MarketDB extends DerivedDB {
 
   syncFTS = async (): Promise<void> => {
     if (Augur.syncableFlexSearch) {
-      const marketDocs = await this.allDocs();
-      let marketCreatedDocs: any[] = marketDocs.rows ? marketDocs.rows.map(row => row.doc) : [];
-      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
-      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+      const allDocs = await this.allDocs();
+      let marketDocs: any[] = allDocs.rows ? allDocs.rows.map(row => row.doc) : [];
+      marketDocs = marketDocs.slice(0, marketDocs.length - 1);
+      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
   }
 
@@ -237,9 +240,6 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketCreated(log: ParsedLog): ParsedLog {
-    if (Augur.syncableFlexSearch) {
-      Augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketCreatedDoc]);
-    }
     log['reportingState'] = MarketReportingState.PreReporting;
     log['invalidFilter'] = false;
     log['marketOI'] = '0x00';
@@ -257,6 +257,15 @@ export class MarketDB extends DerivedDB {
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
+    try {
+      log['extraInfo'] = JSON.parse(log['extraInfo']);
+      log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+    } catch (err) {
+      log['extraInfo'] = {};
+    }
+    if (Augur.syncableFlexSearch) {
+      Augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
+    }
     return log;
   }
 
@@ -291,6 +300,16 @@ export class MarketDB extends DerivedDB {
 
   private processMarketOIChanged(log: ParsedLog): ParsedLog {
     log['marketOI'] = padHex(log['marketOI']);
+    return log;
+  }
+
+  private processMarketParticipantsDisavowed(log: ParsedLog): ParsedLog {
+    log['disavowed'] = true;
+    return log;
+  }
+
+  private processMarketMigrated(log: ParsedLog): ParsedLog {
+    log['universe'] = log['newUniverse'];
     return log;
   }
 
