@@ -199,14 +199,13 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
 
   buidOptions(data: number[][]) {
     const { width } = this.props;
-
     const options = this.getDefaultOptions(data);
     const intervalInfo = this.calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
 
     options.chart = {
       ...options.chart,
-      width: width - 10,
+      width,
     };
 
     if (Array.isArray(options.xAxis)) {
