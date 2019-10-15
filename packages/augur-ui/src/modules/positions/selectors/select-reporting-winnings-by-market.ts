@@ -23,7 +23,7 @@ export const selectReportingWinningsByMarket = createSelector(
     marketInfos, // this is needed to trigger the selector if marketInfos changes
     forkingInfo,
   ): MarketReportClaimableContracts => {
-    const releasingRep = forkingInfo !== null;
+    const releasingRep = !!forkingInfo;
     const forkingMarket = releasingRep && forkingInfo.forkingMarket;
     let claimableMarkets = {
       unclaimedRep: ZERO,
