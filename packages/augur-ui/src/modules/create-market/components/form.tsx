@@ -84,8 +84,6 @@ import Styles from 'modules/create-market/components/form.styles.less';
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
 import {
-  tellIfEditableOutcomes,
-  createTemplateOutcomes,
   buildResolutionDetails,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
