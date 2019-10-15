@@ -7,6 +7,7 @@ import {
   DatePicker,
   TimeSelector,
   TimezoneDropdown,
+  FormDropdown,
 } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
@@ -14,8 +15,25 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
 import { Error } from 'modules/common/form';
 import Styles from 'modules/create-market/components/common.styles.less';
-import { FormattedNumber, DateFormattedObject } from 'modules/types';
+import {
+  FormattedNumber,
+  DateFormattedObject,
+  NewMarket,
+  TimezoneDateObject,
+} from 'modules/types';
 import moment, { Moment } from 'moment';
+import {
+  TemplateInputType,
+  TemplateInput,
+  Template,
+  buildMarketDescription,
+  tellIfEditableOutcomes,
+  substituteUserOutcome,
+  UserInputDateTime,
+  createTemplateOutcomes,
+} from 'modules/create-market/get-template';
+import { CATEGORICAL } from 'modules/common/constants';
+import { buildformattedDate } from 'utils/format-date';
 
 export interface HeaderProps {
   text: string;
@@ -270,7 +288,10 @@ interface DateTimeSelectorProps {
   minute: string;
   meridiem: string;
   timezone: string;
-  endTimeFormatted: DateFormattedObject;
+  endTimeFormatted: TimezoneDateObject | DateFormattedObject;
+  header?: string;
+  subheader?: string;
+  uniqueKey?: string;
 }
 
 interface TimeSelectorParams {
@@ -290,25 +311,23 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     meridiem,
     timezone,
     endTimeFormatted,
+    header,
+    subheader,
+    uniqueKey,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
   const [timeFocused, setTimeFocused] = useState(false);
 
-  useEffect(() => {
-    const timezoneParams = {
-      offset: 0,
-      timezone: '',
-      offsetName: '',
-    };
-    onChange('timezoneDropdown', timezoneParams);
-  }, [dateFocused]);
-
   return (
-    <div className={Styles.DateTimeSelector}>
+    <div className={Styles.DateTimeSelector} key={uniqueKey}>
       <Subheaders
-        header="Reporting start date and time"
-        subheader="Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. "
+        header={header ? header : 'Event Expiration date and time'}
+        subheader={
+          subheader
+            ? subheader
+            : 'Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. '
+        }
         link
       />
       <span>
@@ -331,10 +350,9 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
               onChange('setEndTime', currentTimestamp);
             }
             setDateFocused(() => focused);
-
           }}
           focused={dateFocused}
-          errorMessage={validations.setEndTime}
+          errorMessage={validations && validations.setEndTime}
         />
         <TimeSelector
           hour={hour}
@@ -359,7 +377,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             setTimeFocused(() => focused);
           }}
           focused={timeFocused}
-          errorMessage={validations.hour}
+          errorMessage={validations && validations.hour}
+          uniqueKey={uniqueKey}
         />
         <TimezoneDropdown
           onChange={(offsetName: string, offset: number, timezone: string) => {
@@ -394,20 +413,27 @@ export interface NumberedInputProps {
   placeholder: string;
   onChange: Function;
   onRemove?: Function;
-  errorMessage?: strinng;
+  errorMessage?: string;
+  editable?: boolean;
+}
+
+interface NumberedListOutcomes {
+  value: string;
+  editable: boolean;
 }
 
 export interface NumberedListProps {
-  initialList: Array<string>;
+  initialList: NumberedListOutcomes[];
   minShown: number;
   maxList: number;
   placeholder: string;
   updateList: Function;
   errorMessage?: string;
+  hideAdd?: boolean;
 }
 
 export interface NumberedListState {
-  list: Array<string>;
+  list: NumberedListOutcomes[];
   isFull: boolean;
   isMin: boolean;
 }
@@ -420,16 +446,29 @@ export const NumberedInput = ({
   removable,
   onRemove,
   errorMessage,
+  editable,
 }: NumberedInputProps) => (
   <li key={number} className={Styles.NumberedInput}>
     <span>{`${number + 1}.`}</span>
-    <TextInput
-      onChange={value => onChange(value, number)}
-      value={value}
-      placeholder={placeholder}
-      errorMessage={errorMessage}
-    />
-    {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
+    {editable && (
+      <>
+        <TextInput
+          onChange={value => onChange(value, number)}
+          value={value}
+          placeholder={placeholder}
+          errorMessage={errorMessage}
+        />
+        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
+      </>
+    )}
+    {!editable && (
+      <>
+        {value}
+        {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
+          <span>{errorMessage}</span>
+        )}
+      </>
+    )}
   </li>
 );
 
@@ -443,25 +482,38 @@ export class NumberedList extends Component<
     isMin: this.props.initialList.length === this.props.minShown,
   };
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      JSON.stringify(this.props.initialList) !==
+      JSON.stringify(nextProps.initialList)
+    ) {
+      this.setState({
+        list: nextProps.initialList,
+      });
+    }
+  }
+
   onChange = (value, index) => {
     const { updateList } = this.props;
     const { list } = this.state;
-    list[index] = value;
-    this.setState({ list }, () => updateList(list));
+    list[index].value = value;
+    this.setState({ list }, () => updateList(list.map(item => item.value)));
   };
 
   addItem = () => {
     const { isFull, list } = this.state;
     const { maxList, minShown, updateList } = this.props;
     if (!isFull) {
-      list.push('');
+      list.push({ value: '', editable: true });
       this.setState(
         {
           list,
           isFull: list.length === maxList,
           isMin: list.length === minShown,
         },
-        () => updateList(list)
+        () => {
+          updateList(list.map(item => item.value));
+        }
       );
     }
   };
@@ -477,37 +529,42 @@ export class NumberedList extends Component<
           isMin: list.length === minShown,
           isFull: list.length === maxList,
         },
-        () => updateList(list)
+        () => {
+          updateList(list.map(item => item.value));
+        }
       );
     }
   };
 
   render() {
     const { list, isFull } = this.state;
-    const { placeholder, minShown, errorMessage } = this.props;
+    const { placeholder, minShown, errorMessage, hideAdd } = this.props;
 
     return (
       <ul className={Styles.NumberedList}>
         {list.map((item, index) => (
           <NumberedInput
             key={index}
-            value={item}
+            value={item.value}
             placeholder={placeholder}
             onChange={this.onChange}
             number={index}
             removable={index >= minShown}
             onRemove={this.removeItem}
             errorMessage={errorMessage[index]}
+            editable={item.editable}
           />
         ))}
-        <li>
-          <SecondaryButton
-            disabled={isFull}
-            text="Add"
-            action={e => this.addItem()}
-            icon={AddIcon}
-          />
-        </li>
+        {!hideAdd && (
+          <li>
+            <SecondaryButton
+              disabled={isFull}
+              text="Add"
+              action={e => this.addItem()}
+              icon={AddIcon}
+            />
+          </li>
+        )}
       </ul>
     );
   }
@@ -561,5 +618,377 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
         />
       )}
     </div>
+  );
+};
+
+interface InputFactoryProps {
+  input: TemplateInput;
+  inputIndex: number;
+  onChange: Function;
+  newMarket: NewMarket;
+}
+
+export const InputFactory = (props: InputFactoryProps) => {
+  const { input, inputIndex, onChange, newMarket } = props;
+
+  const { template, outcomes, marketType, validations } = newMarket;
+
+  const { inputs } = template;
+
+  const updateData = (value) => {
+    let inputValidations = newMarket.validations.inputs;
+    if (inputValidations === '') {
+      inputValidations = [];
+    }
+    inputValidations[inputIndex] = '';
+    onChange('validations', {
+      ...newMarket.validations,
+      inputs: inputValidations,
+    });
+
+    const question = buildMarketDescription(template.question, inputs);
+    onChange('description', question);
+
+    let newInputs = inputs;
+    newInputs[inputIndex].userInput = value;
+    onChange('template', {
+      ...template,
+      inputs: newInputs,
+    });
+
+    return newInputs;
+  }
+
+  if (input.type === TemplateInputType.TEXT) {
+    return (
+      <TextInput
+        placeholder={input.placeholder}
+        errorMessage={validations.inputs[inputIndex]}
+        onChange={value => {
+          let newOutcomes = outcomes;
+          const newInputs = updateData(value);
+          if (marketType === CATEGORICAL && tellIfEditableOutcomes(newInputs)) {
+            // todo: this is done because of substitute_user_outcomes,
+            // if more substitute_user_outcomes get added relating to other input types will need to add them to other types
+            newOutcomes = createTemplateOutcomes(newInputs);
+          }
+          onChange('outcomes', newOutcomes);
+        }}
+        value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+    return (
+      <TextInput
+        placeholder={input.placeholder}
+        errorMessage={validations.inputs[inputIndex]}
+        onChange={value => {
+          let newOutcomes = outcomes;
+          newOutcomes[inputIndex] = value;
+          updateData(value);
+          onChange('outcomes', newOutcomes);
+        }}
+        value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.DATETIME) {
+    return <span>{input.userInput || input.placeholder}</span>;
+  } else if (input.type === TemplateInputType.DROPDOWN) {
+    return (
+      <FormDropdown
+        options={input.values}
+        staticLabel={input.placeholder}
+        errorMessage={validations.inputs[inputIndex]}
+        onChange={value => {
+          updateData(value);
+        }}
+      />
+    );
+  } else {
+    return null;
+  }
+};
+
+interface EstimatedStartSelectorProps {
+  newMarket: NewMarket;
+  template: Template;
+  input: TemplateInput;
+  currentTime: number;
+  onChange: Function;
+  inputIndex: number;
+}
+
+export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
+  const {
+    newMarket,
+    template,
+    input,
+    inputIndex,
+    currentTime,
+    onChange,
+  } = props;
+
+  const [endTime, setEndTime] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).endTime
+      : null
+  );
+  const [hour, setHour] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).hour
+      : null
+  );
+  const [minute, setMinute] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).minute
+      : null
+  );
+  const [meridiem, setMeridiem] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).meridiem
+      : 'AM'
+  );
+  const [timezone, setTimezone] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).timezone
+      : ''
+  );
+  const [endTimeFormatted, setEndTimeFormatted] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).endTimeFormatted
+      : ''
+  );
+  const [offset, setOffset] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).offset
+      : 0
+  );
+  const [offsetName, setOffsetName] = useState(
+    props.input.userInput
+      ? (props.input.userInputObject as UserInputDateTime).offsetName
+      : ''
+  );
+  let userInput = props.input.placeholder;
+  useEffect(() => {
+    const endTimeFormatted = buildformattedDate(
+      Number(endTime),
+      Number(hour),
+      Number(minute),
+      meridiem,
+      offsetName,
+      Number(offset)
+    );
+    setEndTimeFormatted(endTimeFormatted);
+    if (hour !== null && minute !== null) {
+      userInput = endTimeFormatted.formattedUtc;
+    }
+    template.inputs[props.input.id].userInputObject = {
+      endTime,
+      hour,
+      minute,
+      meridiem,
+      timezone,
+      offset,
+      offsetName,
+      endTimeFormatted,
+    } as UserInputDateTime;
+    if (hour !== null && minute !== null) {
+      template.inputs[props.input.id].userInput = userInput;
+    }
+    let inputValidations = newMarket.validations.inputs;
+    if (inputValidations === '') {
+      inputValidations = [];
+    }
+    inputValidations[inputIndex] = {setEndTime: '', hours: ''};
+    // todo: need to see if they changed date or time and clear validations accordingly
+    onChange('validations', {
+      ...newMarket.validations,
+      inputs: inputValidations,
+    });
+    const question = buildMarketDescription(template.question, template.inputs);
+
+    onChange('description', question);
+    onChange('template', template);
+  }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
+
+  return (
+    <div className={Styles.EstimatedStartSelector}>
+      <DateTimeSelector
+        header="Estimated start time"
+        subheader="When is the event estimated to begin?"
+        setEndTime={endTime}
+        onChange={(label, value) => {
+          switch (label) {
+            case 'timezoneDropdown':
+              const { offset, timezone, offsetName } = value;
+              setOffset(Number(offset));
+              setTimezone(timezone);
+              setOffsetName(offsetName);
+              break;
+            case 'setEndTime':
+              setEndTime(value);
+              break;
+            case 'timeSelector':
+              if (value.hour) setHour(value.hour);
+              if (value.minute) setMinute(value.minute);
+              if (value.meridiem) setMeridiem(value.meridiem);
+              break;
+            case 'minute':
+              setMinute(value);
+              break;
+            case 'hour':
+              setHour(value);
+              break;
+            case 'meridiem':
+              setMeridiem(value);
+              break;
+            default:
+              break;
+          }
+        }}
+        validations={newMarket.validations.inputs[inputIndex]}
+        hour={hour ? String(hour) : null}
+        minute={minute ? String(minute) : null}
+        meridiem={meridiem}
+        timezone={timezone}
+        currentTimestamp={currentTime}
+        endTimeFormatted={endTimeFormatted}
+        uniqueKey={'templateEstTime'}
+      />
+    </div>
+  );
+};
+
+export interface QuestionBuilderProps {
+  newMarket: NewMarket;
+  onChange: Function;
+  currentTime: number;
+}
+
+export const QuestionBuilder = (props: QuestionBuilderProps) => {
+  const { onChange, newMarket } = props;
+  const { template, outcomes, marketType, validations } = newMarket;
+  const question = template.question.split(' ');
+  const inputs = template.inputs;
+
+  const dateTimeIndex = inputs.findIndex(
+    input => input.type === TemplateInputType.DATETIME
+  );
+
+  return (
+    <div className={Styles.QuestionBuilder}>
+      <Subheaders
+        header="Market question"
+        subheader="What do you want people to predict?"
+      />
+      <div>
+        {question.map(word => {
+          const bracketPos = word.indexOf('[');
+          const bracketPos2 = word.indexOf(']');
+
+          if (bracketPos === -1 || bracketPos === -1) {
+            return <span key={word.id}>{word}</span>;
+          } else {
+            const id = word.substring(bracketPos + 1, bracketPos2);
+            const inputIndex = inputs.findIndex(
+              findInput => findInput.id.toString() === id
+            );
+            if (inputIndex > -1) {
+              const input = inputs[inputIndex];
+              return (
+                <InputFactory
+                  key={inputIndex}
+                  input={input}
+                  inputIndex={inputIndex}
+                  onChange={onChange}
+                  newMarket={newMarket}
+                />
+              );
+            }
+          }
+        })}
+      </div>
+      {dateTimeIndex > -1 && (
+        <EstimatedStartSelector
+          newMarket={newMarket}
+          onChange={onChange}
+          input={inputs[dateTimeIndex]}
+          currentTime={props.currentTime}
+          template={template}
+          inputIndex={dateTimeIndex}
+        />
+      )}
+      {marketType === CATEGORICAL && (
+        <CategoricalTemplate newMarket={newMarket} onChange={onChange} />
+      )}
+    </div>
+  );
+};
+
+export interface CategoricalTemplateProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
+  const { onChange, newMarket } = props;
+  const { template, outcomes, validations } = newMarket;
+  const inputs = template.inputs;
+
+  let initialList = inputs
+    .filter(
+      input =>
+        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+        input.type === TemplateInputType.ADDED_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+    )
+    .map(input => {
+      if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+        return {
+          value: substituteUserOutcome(input, inputs),
+          editable: false,
+        };
+      } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
+        return {
+          value: input.placeholder,
+          editable: false,
+        };
+      } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+        return {
+          value: input.userInput || input.placeholder,
+          editable: false,
+        };
+      }
+      return null;
+    });
+
+  while (initialList.length < 2) {
+    initialList.push({
+      value: '',
+      editable: true,
+    });
+  }
+
+  const hideAdd = tellIfEditableOutcomes(inputs);
+
+  return (
+    <>
+      <Subheaders
+        header="Outcomes"
+        subheader="List the outcomes people can choose from."
+        link
+      />
+      <NumberedList
+        initialList={initialList}
+        minShown={2}
+        maxList={7}
+        placeholder={'Enter outcome'}
+        updateList={(value: Array<string>) => {
+          onChange('outcomes', value);
+        }}
+        hideAdd={hideAdd}
+        errorMessage={validations.outcomes}
+      />
+    </>
   );
 };

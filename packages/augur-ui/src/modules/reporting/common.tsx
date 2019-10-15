@@ -15,7 +15,7 @@ import {
   CancelTextButton,
   PrimaryButton,
 } from 'modules/common/buttons';
-import { TextInput } from 'modules/common/form';
+import {Checkbox, TextInput} from 'modules/common/form';
 import {
   LinearPropertyLabel,
   SizableValueLabel,
@@ -535,6 +535,7 @@ interface ReportingBondsViewState {
   stakeError: string;
   isScalar: boolean;
   threshold: string;
+  readAndAgreedCheckbox: boolean;
 }
 
 export class ReportingBondsView extends Component<
@@ -548,6 +549,7 @@ export class ReportingBondsView extends Component<
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
     threshold: this.props.userAttoRep.toString(),
+    readAndAgreedCheckbox: false
   };
 
   async componentDidMount() {
@@ -614,6 +616,10 @@ export class ReportingBondsView extends Component<
     updateInputtedStake({inputToAttoRep, inputStakeValue});
   };
 
+  checkCheckbox = (readAndAgreedCheckbox: boolean) => {
+    this.setState({ readAndAgreedCheckbox });
+  }
+
   render() {
     const {
       market,
@@ -628,7 +634,7 @@ export class ReportingBondsView extends Component<
       owesRep,
     } = this.props;
 
-    const { showInput, disabled, scalarError, stakeError, isScalar, threshold } = this.state;
+    const { showInput, disabled, scalarError, stakeError, isScalar, threshold, readAndAgreedCheckbox } = this.state;
 
     const repAmount = migrateRep ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted : formatAttoRep(market.noShowBondAmount).formatted;
     let repLabel = migrateRep ? 'REP to migrate' : 'open reporter winning Stake'
@@ -677,18 +683,6 @@ export class ReportingBondsView extends Component<
           label="Transaction Fee"
           value={reportingGasFee}
         />
-        {migrateRep &&
-          createBigNumber(inputtedReportingStake.inputToAttoRep).lt(
-            createBigNumber(userAttoRep)
-          ) && (
-            <DismissableNotice
-              show={true}
-              description=""
-              title="Are you sure you only want to migrate a portion of your REP to this universe?
-            If not, go back and select the ‘MAx’ button to migrate your full REP amount."
-              buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-            />
-          )}
         {initialReport && (
           <PreFilledStake
             showInput={showInput}
@@ -699,7 +693,6 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-
         {showInput && (
           <div>
             <span>Totals</span>
@@ -713,9 +706,44 @@ export class ReportingBondsView extends Component<
             />
           </div>
         )}
+        {migrateRep &&
+        createBigNumber(inputtedReportingStake.inputStakeValue).lt(userAttoRep) && (
+          <DismissableNotice
+            show={true}
+            description=""
+            title="Are you sure you only want to migrate a portion of your REP to this universe?
+            If not, go back and select the ‘Max’ button to migrate your full REP amount."
+            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+          />
+        )}
+        {migrateRep && (
+          <div
+            className={Styles.ReportingBondsViewCheckbox}
+            role="button"
+            tabIndex={0}
+            onClick={(e: React.SyntheticEvent) => {
+              e.preventDefault();
+              this.checkCheckbox(!readAndAgreedCheckbox);
+            }}
+          >
+            <label htmlFor="migrate-rep-confirmation">
+              <Checkbox
+                id="migrate-rep-confirmation"
+                isChecked={readAndAgreedCheckbox}
+                onClick={() => this.checkCheckbox(!readAndAgreedCheckbox)}
+                disabled={false}
+              />
+              I have carefully read all the information and fully acknowledge the consequences of migrating my REP to an unsuccessful universe
+            </label>
+          </div>
+        )}
         <PrimaryButton
-          text="Confirm"
-          disabled={disabled}
+          text={migrateRep ? "Confirm and Migrate REP" : "Confirm"}
+          disabled={
+            migrateRep
+              ? (disabled || !readAndAgreedCheckbox)
+              : disabled
+          }
           action={() => reportAction()}
         />
       </div>

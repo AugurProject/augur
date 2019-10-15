@@ -81,7 +81,7 @@
     display: flex;
     height: @top-bar-height-mobile;
     justify-content: flex-start;
-    padding-left: @size-22;
+    padding: 0 @size-22;
     position: fixed;
     width: 100%;
 
@@ -105,6 +105,33 @@
         display: flex;
         position: absolute;
         right: 24px;
+      }
+    }
+
+    > .GlobalChat {
+      background: @color-dark-grey;
+      position: fixed;
+      right: @size-22;
+      z-index: @mask-modal;
+
+      // Closed global chat window
+      > button {
+        .mono-9-bold;
+
+        align-items: center;
+        background: @color-module-background;
+        color: @color-primary-text;
+        display: flex;
+        flex-direction: row-reverse;
+        text-transform: uppercase;
+
+        > svg {
+          fill: @color-primary-text;
+          height: @size-12;
+          margin-left: @size-8;
+          transform: rotate(180deg);
+          width: @size-12;
+        }
       }
     }
   }

@@ -5,21 +5,29 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { ONBOARDING_SEEN_KEY } from 'modules/common/constants';
+import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  setOnboardingSeen: () => {
+    if (windowRef && windowRef.localStorage.setItem) {
+      windowRef.localStorage.setItem(ONBOARDING_SEEN_KEY, 'true');
+    }
+  },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: 'Learn how to place a bet on Augur ',
+  largeHeader: '2. Run a test bet',
+  smallHeader: 'Learn how to place a bet using Augur Trade',
   testBet: true,
-  mediumHeader: 'Place a test bet',
+  currentStep: 3,
   linkContent: [
     {
       content:
-        'Want some guidance on how to place a bet on Augur? Place a test bet right now to see how it works. You’ll get guidance and tips to help you get started.',
+        'Place a quick test bet right now to see how betting works on Augur. You’ll get guidance and tips to help you get started.',
     },
   ],
   buttons: [
@@ -27,12 +35,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Place test bet',
       disabled: true,
       action: () => {
+        dP.setOnboardingSeen();
         dP.closeModal();
       },
     },
     {
-      text: 'Do it later',
+      text: 'Finish',
       action: () => {
+        dP.setOnboardingSeen();
         dP.closeModal();
       },
     },

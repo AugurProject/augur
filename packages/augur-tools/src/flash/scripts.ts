@@ -12,7 +12,6 @@ import {
   ContractInterfaces,
 } from '@augurproject/core';
 import moment from 'moment';
-
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
@@ -20,8 +19,13 @@ import { abiV1 } from '@augurproject/artifacts';
 import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+  stringTo32ByteHex,
 } from '@augurproject/sdk';
-import { fork } from "./fork";
+import { fork } from './fork';
+import { dispute } from './dispute';
+import { MarketList } from "@augurproject/sdk/build/state/getter/Markets";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -244,6 +248,123 @@ export function addScripts(flash: FlashSession) {
       return createCannedMarketsAndOrders(user);
     },
   });
+
+  flash.addScript({
+    name: 'create-market-order',
+    options: [
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'user account to create the order',
+      },
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'ASSUMES: binary or categorical markets, market id to place the order',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'outcome to place the order',
+      },
+      {
+        name: 'orderType',
+        abbr: 't',
+        description: 'order type of the order [bid], [ask]',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'number of shares in the order',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price of the order',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.userAccount as string;
+      const user = await this.ensureUser(null, null, true, address);
+      const type =
+        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
+      const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
+      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(Number(args.price).toFixed(2))), new BigNumber(0), new BigNumber("0.01"));
+      const nullOrderId = stringTo32ByteHex("");
+      const tradegroupId = stringTo32ByteHex("tradegroupId");
+      const result = await user.placeOrder(
+        String(args.marketId),
+        new BigNumber(type),
+        onChainShares,
+        onChainPrice,
+        new BigNumber(String(args.outcome)),
+        nullOrderId,
+        nullOrderId,
+        tradegroupId
+      );
+
+      this.log(`place order ${result}`);
+    },
+  });
+
+
+  flash.addScript({
+    name: 'fill-market-orders',
+    options: [
+      {
+        name: 'userAccount',
+        abbr: 'u',
+        description: 'user account to create the order',
+      },
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market id to place the order',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'outcome to place the order',
+      },
+      {
+        name: 'orderType',
+        abbr: 't',
+        description: 'order type of the order [bid], [ask]',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'number of shares in the order',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price of the order',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.userAccount as string;
+      const user = await this.ensureUser(null, null, true, address);
+      const adjPrice = Number(args.price).toFixed(2)
+      // switch bid/ask order type to take the order
+      const type =
+        String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 1 : 0;
+      const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
+      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(adjPrice)), new BigNumber(0), new BigNumber("0.01"));
+      const tradegroupId = stringTo32ByteHex("tradegroupId");
+      const result = await user.takeBestOrder(
+        String(args.marketId),
+        new BigNumber(type),
+        onChainShares,
+        onChainPrice,
+        new BigNumber(String(args.outcome)),
+        tradegroupId
+      );
+
+      this.log(`take best order on outcome ${args.outcome} @ ${adjPrice}`);
+    },
+  });
+
 
   flash.addScript({
     name: 'fake-all',
@@ -738,6 +859,57 @@ export function addScripts(flash: FlashSession) {
       } else {
         this.log('ERROR: forking failed.');
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'dispute',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'yes/no market to dispute. defaults to making one',
+      },
+      {
+        name: 'slow',
+        abbr: 's',
+        description: 'puts market into slow pacing mode immediately',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(this.network, true);
+      const slow = args.slow as boolean;
+
+      let marketId = args.marketId as string || null;
+      if (marketId === null) {
+        const market = await user.createReasonableYesNoMarket();
+        marketId = market.address;
+        this.log(`Created market ${marketId}`);
+      }
+
+      await (await this.db).sync(user.augur, 100000, 0);
+      const marketInfo = (await this.api.route('getMarketsInfo', {
+        marketIds: [marketId],
+      }))[0];
+
+      await dispute(user, marketInfo, slow);
+    },
+  });
+
+  flash.addScript({
+    name: 'markets',
+    async call(this: FlashSession): Promise<MarketList|null> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, true);
+
+      await (await this.db).sync(user.augur, 100000, 0);
+      const markets: MarketList = await this.api.route('getMarkets', {
+        universe: user.augur.contracts.universe.address,
+      });
+      console.log(JSON.stringify(markets, null, 2));
+      return markets;
     },
   });
 }

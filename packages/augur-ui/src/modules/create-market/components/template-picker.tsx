@@ -1,17 +1,19 @@
 import React from 'react';
 import { LargeSubheaders } from 'modules/create-market/components/common';
-import { MARKET_SUB_TEMPLATES } from 'modules/create-market/constants';
-import { RadioCardGroup, RadioTwoLineBarGroup } from 'modules/common/form';
+import { RadioTwoLineBarGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/template-picker.styles.less';
-import { getTemplates, getTemplateReadableDescription } from 'modules/create-market/get-template';
-import { YES_NO, SCALAR } from 'modules/common/constants';
+import { getTemplates, getTemplateReadableDescription, createTemplateOutcomes } from 'modules/create-market/get-template';
+import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import deepClone from 'utils/deep-clone';
+import { NewMarket } from 'modules/types';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
   const categoriesFormatted = {
-    primary: categories[0].toLowerCase(),
-    secondary: categories[1].toLowerCase(),
-    tertiary: categories[2].toLowerCase(),
+    primary: categories[0],
+    secondary: categories[1],
+    tertiary: categories[2],
   };
   const templates = getTemplates(categoriesFormatted, marketType);
 
@@ -38,7 +40,11 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           radioButtons={templateOptions}
           onChange={value => {
             updateNewMarket({
-                ...newMarket,
+                ...deepClone<NewMarket>(EMPTY_STATE),
+                outcomes: newMarket.marketType === CATEGORICAL ? createTemplateOutcomes(templates[value].inputs) : ['', ''],
+                currentStep: newMarket.currentStep,
+                marketType: newMarket.marketType,
+                categories: newMarket.categories,
                 template: templates[value]
             })
           }}

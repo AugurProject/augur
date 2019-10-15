@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import QRCode from 'qrcode.react';
 import Clipboard from 'clipboard';
-import ReactTooltip from 'react-tooltip';
-import TooltipStyles from 'modules/common/tooltip.styles';
 import { Checkbox, TextInput, InputDropdown } from 'modules/common/form';
 import {
   XIcon,
-  CopyIcon,
-  CheckCircleIcon,
   LargeDollarIcon,
   LargeDaiIcon,
-  DaiLogoIcon,
   DaiLogoIcon,
   EthIcon,
 } from 'modules/common/icons';
@@ -33,7 +28,6 @@ import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
-import formatAddress from 'modules/auth/helpers/format-address';
 
 export interface TitleProps {
   title: string;
@@ -335,6 +329,7 @@ export const MediumSubheader = (props: BaseSubheaderProps) => (
 interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
+
 export const LinkContentSection = (props: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
     {props.linkContent.map((content, idx) => (
@@ -349,6 +344,21 @@ export const LinkContentSection = (props: LinkContentSectionProps) => (
     ))}
   </div>
 );
+
+interface StepperProps {
+  currentStep: number,
+  maxSteps: number,
+}
+
+export const Stepper = ({ currentStep, maxSteps }: StepperProps) => (
+  <div className={Styles.Stepper}>
+  {[...Array(maxSteps).keys()]
+    .map(key => key + 1)
+    .map((step, idx) => (
+    <span key={idx} className={currentStep === step ? Styles.Current : null}></span>
+  ))}
+</div>
+)
 
 export const DaiGraphic = () => (
   <div className={Styles.DaiGraphic}>
@@ -511,55 +521,45 @@ export const DepositInfo = (props: DepositInfoProps) => (
   </section>
 );
 
-export class AccountAddressDisplay extends Component<
-  AccountAddressDisplayProps,
-  AccountAddressDisplayState
-> {
-  state: AccountAddressDisplayState = {
-    isCopied: false,
-  };
+export const AccountAddressDisplay = ({ address, copyable }) => {
+  const [isCopied, setIsCopied] = useState(false);
+  let timeoutId = null;
 
-  componentWrapper: any = null;
-  clipboard: any = new Clipboard("#copy_address");
-
-  copyClicked = () => {
-    this.setState({ isCopied: true }, () => {
-      setTimeout(() => {
-        if (this.componentWrapper) this.setState({ isCopied: false });
-      }, 3000);
-    });
-  };
-
-  render() {
-    const { isCopied } = this.state;
-    const { address, copyable } = this.props;
-    return (
-      <span
-        ref={container => {
-          this.componentWrapper = container;
-        }}
-        className={Styles.AccountAddressDisplay}
-      >
-        {address ? formatAddress(address) : '-'}
-        {copyable && (
-          <>
-            <button
-              id="copy_address"
-              data-clipboard-text={address}
-              onClick={this.copyClicked}
-            >
-              Copy
-            </button>
-          </>
-        )}
-      </span>
-    );
+  const copyClicked = () => {
+    setIsCopied(true);
+    timeoutId = setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
   }
+
+  useEffect(() => {
+    new Clipboard('#copy_address');
+
+    return function() {
+      clearTimeout(timeoutId);
+    }
+  }, []);
+
+  return (
+    <span className={Styles.AccountAddressDisplay}>
+      <div>{address ? address : '-'}</div>
+      {copyable && (
+        <>
+          <button
+            id='copy_address'
+            data-clipboard-text={address}
+            onClick={() => copyClicked()}
+            className={isCopied ? Styles.ShowConfirmaiton : null}
+          >
+            Copy
+          </button>
+        </>
+      )}
+    </span>
+  );
 }
 
-interface FundsHelpProps {}
-
-export const FundsHelp = (props: FundsHelpProps) => (
+export const FundsHelp = () => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
     <span>Learn how to buy DAI {generateDaiTooltip()} and transfer it into your account.</span>

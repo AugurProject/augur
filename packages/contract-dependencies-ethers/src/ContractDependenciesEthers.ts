@@ -167,9 +167,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   public async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
     if (!this.signer) throw new Error("Attempting to sign a transaction while not providing a signer");
     // @TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
-    // @BODY https://github.com/ethers-io/ethers.js/issues/321
     const tx = this.transactionToEthersTransaction(transaction);
-    delete tx.from;
     const txMetadataKey = `0x${transaction.data.substring(10)}`;
     const txMetadata = this.transactionDataMetaData[txMetadataKey];
     this.onTransactionStatusChanged(txMetadata, TransactionStatus.AWAITING_SIGNING);
@@ -190,7 +188,18 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   public async sendTransaction(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<ethers.providers.TransactionReceipt> {
-    const response = await this.signer.sendTransaction(tx);
+    const estimatedGasLimit = await this.provider.estimateGas(tx);
+    const increasedEstimatedGasLimit = estimatedGasLimit.add(estimatedGasLimit.div(10));
+    const gasLimit = new ethers.utils.BigNumber(Math.min(increasedEstimatedGasLimit.toNumber(), 7500000));
+
+    // @BODY https://github.com/ethers-io/ethers.js/issues/321
+    // the 'from field is required to estimate gas but will fail if present when the transaction is sent.
+    delete tx.from;
+
+    const response = await this.signer.sendTransaction({
+      ...tx,
+      gasLimit,
+    });
     const hash = response.hash;
     this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, hash);
     return await response.wait();

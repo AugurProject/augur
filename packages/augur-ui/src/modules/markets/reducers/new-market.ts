@@ -14,9 +14,10 @@ import { createBigNumber } from 'utils/create-big-number';
 import { NewMarket, BaseAction, LiquidityOrder } from 'modules/types';
 import { formatShares, formatDai } from 'utils/format-number';
 import { EMPTY_STATE } from 'modules/create-market/constants';
+import deepClone from 'utils/deep-clone';
 
 export default function(
-  newMarket: NewMarket = JSON.parse(JSON.stringify(EMPTY_STATE)),
+  newMarket: NewMarket = deepClone<NewMarket>(EMPTY_STATE),
   { type, data }: BaseAction
 ): NewMarket {
   switch (type) {
@@ -134,7 +135,7 @@ export default function(
     }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
-      return JSON.parse(JSON.stringify(EMPTY_STATE));
+      return deepClone<NewMarket>(EMPTY_STATE);
     default:
       return newMarket;
   }
@@ -146,22 +147,20 @@ const recalculateCumulativeShares = orders => {
   const bids = orders
     .filter(a => a.type === 'sell')
     .sort((a, b) => Number(a.price) - Number(b.price))
-    .reverse()
-    .map(orders => {
-      counterBids = counterBids + Number(orders.shares);
-      orders.cumulativeShares = String(counterBids);
-      return orders;
+    .map(order => {
+      counterBids = counterBids + Number(order.shares);
+      order.cumulativeShares = String(counterBids);
+      return order;
     });
 
   const asks = orders
     .filter(a => a.type === 'buy')
-    .sort((a, b) => Number(a.price) - Number(b.price))
+    .sort((a, b) => Number(b.price) - Number(a.price))
     .map(order => {
       counterAsks = counterAsks + Number(order.shares);
       order.cumulativeShares = String(counterAsks);
       return order;
     });
-
   return [...bids, ...asks];
 };
 

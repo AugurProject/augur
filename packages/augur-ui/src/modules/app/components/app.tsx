@@ -69,6 +69,7 @@ interface AppProps {
   toasts: any[];
   updateConnectionTray: Function;
   isConnectionTrayOpen: boolean;
+  showGlobalChat: Function;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -358,6 +359,7 @@ export default class AppView extends Component<AppProps> {
               currentBasePath={sidebarStatus.currentBasePath}
               isConnectionTrayOpen={isConnectionTrayOpen}
               logout={() => this.props.logout()}
+              showGlobalChat={() => this.props.showGlobalChat()}
             />
 
             {/* HIDDEN ON MOBILE */}
@@ -396,7 +398,7 @@ export default class AppView extends Component<AppProps> {
                 onClick={this.mainSectionClickHandler}
                 role='presentation'
               >
-                        <ForkingBanner />
+                <ForkingBanner />
 
                 <Routes isLogged={isLogged} />
               </section>

@@ -18,7 +18,7 @@ import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import universe from "modules/universe/reducers/universe";
-import versions from "modules/app/reducers/versions";
+import categoryStats from "modules/app/reducers/category-stats";
 import pendingOrders from "modules/orders/reducers/pending-orders";
 import filledOrders from "modules/orders/reducers/filled-orders";
 import readNotifications from "modules/notifications/reducers/read-notifications";
@@ -49,7 +49,6 @@ import {
   PendingQueue,
   FilledOrders,
   Universe,
-  Versions,
   OpenOrders,
   Drafts,
   MarketsList,
@@ -83,7 +82,7 @@ export function createReducer() {
     filledOrders,
     sidebarStatus,
     universe,
-    versions,
+    categoryStats,
     userOpenOrders,
     drafts,
     marketsList,
@@ -118,7 +117,7 @@ export interface AppStateInterface {
   filledOrders: FilledOrders;
   sidebarStatus: any;
   universe: Universe;
-  versions: Versions;
+  categoryStats: Getters.Markets.CategoryStats;
   userOpenOrders: OpenOrders;
   drafts: Drafts;
   marketsList: MarketsList;

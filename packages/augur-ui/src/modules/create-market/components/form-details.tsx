@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
 import classNames from 'classnames';
 import moment, { Moment } from 'moment';
 
@@ -20,7 +19,8 @@ import {
   NumberedList,
   DateTimeHeaders,
   SmallSubheaders,
-  DateTimeSelector,
+  QuestionBuilder,
+  DateTimeSelector
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
@@ -44,7 +44,7 @@ import {
 } from 'modules/create-market/constants';
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 import { checkValidNumber } from 'modules/common/validations';
-import { setCategories } from "modules/create-market/set-categories";
+import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -54,17 +54,37 @@ interface FormDetailsProps {
   currentTimestamp: number;
   onChange: Function;
   onError: Function;
-  template?: boolean;
+  isTemplate?: boolean;
 }
 
-export default class FormDetails extends React.Component<FormDetailsProps, {}> {
+interface FormDetailsState {
+  dateFocused: Boolean;
+  timeFocused: Boolean;
+}
+
+interface TimeSelectorParams {
+  hour?: string;
+  minute?: string;
+  meridiem?: string;
+}
+
+export default class FormDetails extends React.Component<
+  FormDetailsProps,
+  FormDetailsState
+  > {
+  state = {
+    dateFocused: false,
+    timeFocused: false,
+  };
+
   render() {
     const {
       newMarket,
       currentTimestamp,
       onChange,
       onError,
-      template,
+      isTemplate,
+      updateNewMarket,
     } = this.props;
     const s = this.state;
 
@@ -92,19 +112,16 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
       endTimeFormatted,
     } = newMarket;
 
-    let { currentStep } = newMarket;
-    if (template) currentStep = currentStep - 4;
-
     return (
       <div
         className={classNames(Styles.FormDetails, {
-          [Styles.Template]: template,
+          [Styles.Template]: isTemplate,
         })}
       >
         <div>
           <Header text="Market details" />
 
-          {template && (
+          {isTemplate && (
             <>
               <div>
                 <SmallSubheaders
@@ -123,7 +140,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               <LineBreak />
             </>
           )}
-          {!template && (
+          {!isTemplate && (
             <>
               <Subheaders
                 header="Market type"
@@ -156,38 +173,48 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               />
             </>
           )}
-          {!template && (
-            <DateTimeSelector
-              setEndTime={setEndTime}
+          {isTemplate && (
+            <QuestionBuilder
+              newMarket={newMarket}
+              currentTime={currentTimestamp}
               onChange={onChange}
-              currentTimestamp={currentTimestamp}
-              validations={validations}
-              hour={hour}
-              minute={minute}
-              meridiem={meridiem}
-              timezone={timezone}
-              endTimeFormatted={endTimeFormatted}
             />
           )}
-          <Subheaders
-            header="Market question"
-            link
-            subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
-          />
-          <TextInput
-            type="textarea"
-            placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => onChange('description', value)}
-            rows="3"
-            value={description}
-            errorMessage={
-              validations.description &&
-              validations.description.charAt(0).toUpperCase() +
-                validations.description.slice(1).toLowerCase()
-            }
-          />
+          {!isTemplate && (
+            <>
+              <DateTimeSelector
+                setEndTime={setEndTime}
+                onChange={onChange}
+                validations={validations}
+                hour={hour}
+                minute={minute}
+                meridiem={meridiem}
+                timezone={timezone}
+                endTimeFormatted={endTimeFormatted}
+                uniqueKey={'nonTemplateRes'}
+              />
 
-          {marketType === CATEGORICAL && (
+              <Subheaders
+                header="Market question"
+                link
+                subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
+              />
+              <TextInput
+                type="textarea"
+                placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
+                onChange={(value: string) => onChange('description', value)}
+                rows="3"
+                value={description}
+                errorMessage={
+                  validations.description &&
+                  validations.description.charAt(0).toUpperCase() +
+                    validations.description.slice(1).toLowerCase()
+                }
+              />
+            </>
+          )}
+
+          {marketType === CATEGORICAL && !isTemplate && (
             <>
               <Subheaders
                 header="Outcomes"
@@ -195,7 +222,12 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
                 link
               />
               <NumberedList
-                initialList={outcomes}
+                initialList={outcomes.map(outcome => {
+                  return {
+                    value: outcome,
+                    editable: true,
+                  };
+                })}
                 minShown={2}
                 maxList={7}
                 placeholder={'Enter outcome'}
@@ -277,7 +309,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
             </>
           )}
 
-          {!template && (
+          {!isTemplate && (
             <>
               <Subheaders
                 header="Market category"
@@ -298,8 +330,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
         <div>
           <Header text="Resolution information" />
 
-
-          {template && (
+          {isTemplate && (
             <DateTimeSelector
               setEndTime={setEndTime}
               onChange={onChange}
@@ -310,6 +341,7 @@ export default class FormDetails extends React.Component<FormDetailsProps, {}> {
               meridiem={meridiem}
               timezone={timezone}
               endTimeFormatted={endTimeFormatted}
+              uniqueKey={'templateRes'}
             />
           )}
 
