@@ -75,7 +75,7 @@ export class MarketDB extends DerivedDB {
     await this.syncOrderBooks(true);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
-    //await this.syncFTS();
+    await this.syncFTS();
   }
 
   syncFTS = async (): Promise<void> => {
