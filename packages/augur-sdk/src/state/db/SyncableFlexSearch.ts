@@ -1,13 +1,8 @@
-import { MarketCreated } from '../../event-handlers';
+import { MarketData } from '../logs/types';
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
 import { Index, SearchOptions, SearchResults } from 'flexsearch';
-
-export interface MarketCreatedDoc extends MarketCreated {
-   _id: string;
-   _rev?: string;
-}
 
 export interface MarketFields {
   id: string;
@@ -64,7 +59,7 @@ export class SyncableFlexSearch {
     return this.flexSearchIndex.where(whereObj);
   }
 
-  async addMarketCreatedDocs(marketCreatedDocs: MarketCreatedDoc[]) {
+  async addMarketCreatedDocs(marketCreatedDocs: MarketData[]) {
     for (const marketCreatedDoc of marketCreatedDocs) {
       let category1 = "";
       let category2 = "";
@@ -75,28 +70,20 @@ export class SyncableFlexSearch {
       let backupSource = "";
       let _scalarDenomination = "";
 
-      // Parse extraInfo string
-      const extraInfo = marketCreatedDoc.extraInfo;
-      if (extraInfo) {
-        let info;
-        try {
-          info = JSON.parse(extraInfo);
-        } catch (err) {
-          console.error("Cannot parse document json: " + extraInfo);
-        }
+      // Handle extraInfo
+      const info = marketCreatedDoc.extraInfo;
 
-        if (info) {
-          if (Array.isArray(info.categories)) {
-            category1 = info.categories[0] ? info.categories[0].toString().toLowerCase() : "";
-            category2 = info.categories[1] ? info.categories[1].toString().toLowerCase() : "";
-            category3 = info.categories[2] ? info.categories[2].toString().toLowerCase() : "";
-          }
-          description = info.description ? info.description : "";
-          longDescription = info.longDescription ? info.longDescription : "";
-          resolutionSource = info.resolutionSource ? info.resolutionSource : "";
-          backupSource = info.backupSource ? info.backupSource : "";
-          _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
+      if (info) {
+        if (Array.isArray(info.categories)) {
+          category1 = info.categories[0] ? info.categories[0].toString().toLowerCase() : "";
+          category2 = info.categories[1] ? info.categories[1].toString().toLowerCase() : "";
+          category3 = info.categories[2] ? info.categories[2].toString().toLowerCase() : "";
         }
+        description = info.description ? info.description : "";
+        longDescription = info.longDescription ? info.longDescription : "";
+        resolutionSource = info.resolutionSource ? info.resolutionSource : "";
+        backupSource = info.backupSource ? info.backupSource : "";
+        _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
       }
 
       await this.flexSearchIndex.add({

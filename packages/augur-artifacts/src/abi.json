@@ -18067,45 +18067,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_address",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_amount",
-					"type": "int256"
-				},
-				{
-					"name": "_price",
-					"type": "int256"
-				},
-				{
-					"name": "_frozenTokenDelta",
-					"type": "int256"
-				}
-			],
-			"name": "adjustForTrader",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "claimTradingProceeds",

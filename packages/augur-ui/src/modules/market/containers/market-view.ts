@@ -8,13 +8,12 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import {
   MODAL_MARKET_REVIEW,
   MARKET_REVIEW_SEEN,
-  MARKET_REVIEWS,
   MODAL_MARKET_LOADING,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { closeModal } from "modules/modal/actions/close-modal";
+import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 
 const mapStateToProps = (state, ownProps) => {
@@ -22,20 +21,10 @@ const mapStateToProps = (state, ownProps) => {
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = ownProps.market || selectMarket(marketId);
 
-  let marketReviewSeen =
+  const marketReviewSeen =
     windowRef &&
     windowRef.localStorage &&
     Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
-
-  const marketReview =
-    windowRef &&
-    windowRef.localStorage &&
-    JSON.parse(windowRef.localStorage.getItem(MARKET_REVIEWS));
-
-  // If market review modal has been seen for this market, do not show again
-  if (marketReview && marketReview.includes(marketId)) {
-    marketReviewSeen = true;
-  }
 
   if (market === null) {
     return {
