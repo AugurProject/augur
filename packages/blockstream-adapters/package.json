@@ -1,6 +1,6 @@
 {
   "name": "blockstream-adapters",
-  "version": "10.0.0-alpha.1",
+  "version": "2.0.0-alpha.1",
   "description": "Adapters for blockstream",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/ethersjs-provider": "10.0.0-alpha.1",
+    "@augurproject/ethersjs-provider": "2.0.0-alpha.1",
     "ethers": "4.0.37",
     "ethrpc": "6.1.5"
   },
