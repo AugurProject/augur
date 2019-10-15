@@ -69,7 +69,7 @@ Running on the "kovan" testnet
 |  `yarn docker:geth:pop-15`            |  15 second block times, real time, has contracts and canned market data. |
 |  `yarn docker:geth:pop`               |  5 second block times, fake time, use flash scripts to move time . |
 |  `yarn docker:geth:pop-normal-time`   |  5 second block times, real time, has contracts and canned market data. |
-|  `yarn docker:geth`                   |  5 second block times, no contracts uploaded, use `dp` to upload . |
+|  `yarn docker:geth`                   |  5 second block times, no contracts uploaded, use `deploy` script from `augur-tools` to manually deploy the contracts. <br/> Example: ```yarn workspace @augurproject/tools deploy``` |
 
 ## 100% Open Source
 
