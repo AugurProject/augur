@@ -20,7 +20,8 @@ import {
   DateTimeHeaders,
   SmallSubheaders,
   QuestionBuilder,
-  DateTimeSelector
+  DateTimeSelector,
+  ResolutionRules
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
@@ -382,6 +383,10 @@ export default class FormDetails extends React.Component<
               onChange('expirySourceType', value);
             }}
           />
+
+          {isTemplate &&
+            <ResolutionRules newMarket={newMarket} onChange={onChange} />
+          }
 
           <Subheaders
             header="Resolution details"

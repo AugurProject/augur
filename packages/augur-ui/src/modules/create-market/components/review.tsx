@@ -36,6 +36,7 @@ import { NewMarket, FormattedNumber } from 'modules/types';
 
 import Styles from "modules/create-market/components/review.styles.less";
 import { buildformattedDate } from "utils/format-date";
+import { buildResolutionDetails } from "modules/create-market/get-template";
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -237,6 +238,7 @@ export default class Review extends React.Component<
       affiliateFee,
       endTimeFormatted,
       timezone,
+      template
     } = newMarket;
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
@@ -245,6 +247,8 @@ export default class Review extends React.Component<
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
     const noDai = s.insufficientFunds[DAI];
+
+    const resolutionDetails = template ? buildResolutionDetails(detailsText, template.resolutionRules) : detailsText;
 
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -275,7 +279,7 @@ export default class Review extends React.Component<
         <Header text="Resolution information" />
         <div>
           <DateTimeHeaders header="Event expiration date and time" timezone={timezone} subheader={endTimeFormatted && endTimeFormatted.formattedUtc} timezoneDateTime={endTimeFormatted && endTimeFormatted.formattedTimezone} />
-          <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
+          <SmallSubheaders header="resolution details" subheader={resolutionDetails === "" ? "–" : resolutionDetails} />
           <SmallSubheaders
             header="Resolution source"
             subheader={expirySourceType === EXPIRY_SOURCE_GENERIC
