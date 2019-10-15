@@ -696,7 +696,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
-    return <span>{input.userInput || input.placeholder}</span>;
+    return <span>{input.userInput ? input.userInput : `[${input.placeholder}]`}</span>;
   } else if (input.type === TemplateInputType.DROPDOWN) {
     return (
       <FormDropdown
