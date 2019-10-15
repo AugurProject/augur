@@ -9,8 +9,6 @@ export const updateLoginAccountSettings = (
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   try {
-    console.log('settings', settings);
-    console.log('loginAccount', loginAccount);
     dispatch(
       updateLoginAccount({
         settings: {
