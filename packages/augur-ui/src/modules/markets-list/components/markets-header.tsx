@@ -11,7 +11,7 @@ interface MarketsHeaderProps {
   location: object;
   filter: string;
   sort: string;
-  history: object;
+  history: History;
   isSearchingMarkets: boolean;
   selectedCategory: string[];
   search: string;
