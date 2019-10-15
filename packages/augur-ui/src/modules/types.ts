@@ -558,7 +558,8 @@ export interface LoginAccountMeta {
 }
 
 export interface LoginAccountSettings {
-  showInvalidMarketsBanner?: boolean;
+  showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
+  showInvalidMarketsBannerHideOrShow?: boolean;
 }
 
 export interface LoginAccount {

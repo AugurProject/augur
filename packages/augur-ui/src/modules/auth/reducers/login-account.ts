@@ -26,7 +26,8 @@ const DEFAULT_STATE: LoginAccount = {
     unrealizedRevenue24hChangePercent: "0",
   },
   settings: {
-    showInvalidMarketsBanner: true
+    showInvalidMarketsBannerFeesOrLiquiditySpread: true,
+    showInvalidMarketsBannerHideOrShow: true,
   }
 };
 
