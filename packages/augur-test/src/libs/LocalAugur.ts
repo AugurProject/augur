@@ -1,4 +1,4 @@
-import { Augur, Connectors } from "@augurproject/sdk";
+import { Augur, EmptyConnector } from "@augurproject/sdk";
 import { Account, makeGanacheProvider, makeSigner, makeGnosisDependencies, createDbFromSeed, Seed } from "@augurproject/tools";
 import { TestEthersProvider } from "./TestEthersProvider";
 
@@ -12,5 +12,5 @@ export async function makeTestAugur(seed: Seed, accounts: Account[]): Promise<Au
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeGnosisDependencies(provider, undefined, signer, undefined, undefined, undefined, accounts[0].publicKey);
 
-  return Augur.create(provider, dependencies, seed.addresses, new Connectors.SEOConnector(), undefined, true);
+  return Augur.create(provider, dependencies, seed.addresses, new EmptyConnector(), undefined, true);
 }

@@ -2,7 +2,7 @@ import { INVALID_OUTCOME } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
-import { TemplateInputType } from 'modules/create-market/get-template';
+import { TemplateInputType, ValidationType } from 'modules/create-market/get-template';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';
@@ -170,7 +170,11 @@ function checkValidNumbers(values) {
 
 export function checkForUserInputFilled(inputs) {
   const errors = inputs.map(input => {
-    if (
+    if (input.validationType === ValidationType.WHOLE_NUMBER && moreThanDecimals(input.userInput, 0)) {
+      return 'Must be a whole number';
+    } else if (input.validationType === ValidationType.NUMBER && checkValidNumber(input.userInput)) {
+      return 'Must enter a valid number';
+    } else if (
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.DROPDOWN) &&

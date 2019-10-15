@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     notifications,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    disputingWindowEndTime: state.universe.disputeWindow.endTime,
+    disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
   };
 };
 
