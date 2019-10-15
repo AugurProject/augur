@@ -15,8 +15,8 @@
   "scripts": {
     "clean": "rm -rf build; rm -rf node_modules",
     "nuke": "yarn clean; rm yarn.lock; rm package-lock.json",
-    "dev": "node scripts/dev.js",
-    "build": "webpack",
+    "dev": "yarn workspace orbit-web build && node scripts/dev.js",
+    "build": "yarn workspace orbit-web build && webpack",
     "build:kovan": "ETHEREUM_NETWORK=kovan webpack",
     "build:mainnet": "ETHEREUM_NETWORK=mainnet webpack",
     "start": "node server.js",
