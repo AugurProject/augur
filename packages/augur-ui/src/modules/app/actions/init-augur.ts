@@ -111,7 +111,7 @@ function pollForNetwork(
 }
 
 export function connectAugur(
-  history: any,
+  history: History,
   env: any,
   isInitialConnection: boolean = false,
   callback: NodeStyleCallback = logError
@@ -134,11 +134,11 @@ export function connectAugur(
           windowApp.localStorage.getItem &&
           loginAccount.address
         ) {
-          const localUniverse =
+          const loginAddress =
             (windowApp.localStorage.getItem &&
               windowApp.localStorage.getItem(loginAccount.address)) ||
             '';
-          const storedUniverseId = JSON.parse(localUniverse).selectedUniverse[
+          const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
             getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
@@ -176,7 +176,7 @@ interface initAugurParams {
 }
 
 export function initAugur(
-  history: any,
+  history: History,
   { ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) {

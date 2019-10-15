@@ -133,7 +133,7 @@ export default class MarketsInDispute extends Component<
       JSON.stringify(disputingMarketsMeta) !==
       JSON.stringify(prevProps.disputingMarketsMeta)
     ) {
-      this.getFilteredDataMarkets(markets);
+      this.getFilteredDataMarkets(markets, disputingMarketsMeta);
     }
   }
 
@@ -144,9 +144,7 @@ export default class MarketsInDispute extends Component<
 
   loadMarkets = () => {
     const filterOptions = this.getLoadMarketsFiltersOptions();
-    this.getLoadMarketsMethods().map(loader =>
-      loader.method(filterOptions)
-    );
+    this.getLoadMarketsMethods().map(loader => loader.method(filterOptions));
   };
 
   setTabCounts = (tabs, tabName, marketCount) => {
@@ -218,9 +216,14 @@ export default class MarketsInDispute extends Component<
   };
 
   getFilteredDataMarkets = (
-    markets: DisputingMarkets
+    markets: DisputingMarkets,
+    disputingMarketsMeta: ReportingListState
   ) => {
     const { tabs, selectedTab, limit } = this.state;
+    const currentIsLoading =
+      disputingMarketsMeta[REPORTING_STATE.CROWDSOURCING_DISPUTE].isLoading;
+    const awaitingIsLoading =
+      disputingMarketsMeta[REPORTING_STATE.AWAITING_NEXT_WINDOW].isLoading;
     const filteredData = {
       [TAB_CURRENT]: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE],
       [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW],
@@ -228,19 +231,20 @@ export default class MarketsInDispute extends Component<
     let newTabs = this.setTabCounts(
       tabs,
       TAB_CURRENT,
-      markets[REPORTING_STATE.CROWDSOURCING_DISPUTE].length,
+      markets[REPORTING_STATE.CROWDSOURCING_DISPUTE].length
     );
     newTabs = this.setTabCounts(
       tabs,
       TAB_AWAITING,
-      markets[REPORTING_STATE.AWAITING_NEXT_WINDOW].length,
+      markets[REPORTING_STATE.AWAITING_NEXT_WINDOW].length
     );
     const marketCount = filteredData[selectedTab].length;
     const showPagination = marketCount > limit;
     this.setState({
       filteredData,
       tabs: newTabs,
-      isLoadingMarkets: false,
+      isLoadingMarkets:
+        selectedTab === TAB_CURRENT ? currentIsLoading : awaitingIsLoading,
       showPagination,
       marketCount,
     });

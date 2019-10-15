@@ -9,7 +9,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   return {
     isLogged: state.authStatus.isLogged && !universe.forkingInfo,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    disputingWindowEndTime: state.universe.disputeWindow.endTime,
+    disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
   };
 };
 
