@@ -36,7 +36,7 @@ export interface TitleProps {
 }
 
 export interface DescriptionProps {
-  description: Array<string>;
+  description: string[];
 }
 
 export interface ButtonsRowProps {

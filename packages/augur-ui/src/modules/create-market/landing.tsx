@@ -1,15 +1,20 @@
-import React from "react";
+import React from 'react';
 
-import { RadioCardGroup } from "modules/common/form";
-import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
-import { SecondaryButton } from "modules/common/buttons";
-import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
-import SavedDrafts from "modules/create-market/containers/saved-drafts";
+import { RadioCardGroup } from 'modules/common/form';
+import {
+  LargeSubheaders,
+  ContentBlock,
+  XLargeSubheaders,
+  SmallHeaderLink,
+} from 'modules/create-market/components/common';
+import { SecondaryButton } from 'modules/common/buttons';
+import { SCRATCH, TEMPLATE } from 'modules/create-market/constants';
+import SavedDrafts from 'modules/create-market/containers/saved-drafts';
 
-import Styles from "modules/create-market/landing.styles.less";
-import { getTemplateRadioCards } from "./get-template";
-import { Getters } from "@augurproject/sdk";
-import { NewMarket } from "modules/types";
+import Styles from 'modules/create-market/landing.styles.less';
+import { getTemplateRadioCards } from './get-template';
+import { Getters } from '@augurproject/sdk';
+import { NewMarket } from 'modules/types';
 
 interface LandingProps {
   newMarket: NewMarket;
@@ -21,9 +26,7 @@ interface LandingProps {
 }
 
 export default class Landing extends React.Component<LandingProps> {
-
   componentDidMount() {
-    this.node.scrollIntoView();
     this.props.clearNewMarket();
     this.node && this.node.scrollIntoView();
   }
@@ -34,7 +37,7 @@ export default class Landing extends React.Component<LandingProps> {
       updateNewMarket,
       newMarket,
       clearNewMarket,
-      categoryStats
+      categoryStats,
     } = this.props;
 
     return (
@@ -71,11 +74,14 @@ export default class Landing extends React.Component<LandingProps> {
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE);
                 }}
-                radioButtons={getTemplateRadioCards({
-                  primary: '',
-                  secondary: '',
-                  tertiary: '',
-                }, categoryStats)}
+                radioButtons={getTemplateRadioCards(
+                  {
+                    primary: '',
+                    secondary: '',
+                    tertiary: '',
+                  },
+                  categoryStats
+                )}
               >
                 <SmallHeaderLink text="Don't see your category?" link ownLine />
               </RadioCardGroup>

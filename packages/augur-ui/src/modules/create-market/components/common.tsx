@@ -8,6 +8,8 @@ import {
   TimeSelector,
   TimezoneDropdown,
   FormDropdown,
+  RadioBarGroup,
+  MultiSelectRadioBarGroup,
 } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
@@ -31,6 +33,8 @@ import {
   substituteUserOutcome,
   UserInputDateTime,
   createTemplateOutcomes,
+  CHOICE,
+  OPTIONAL,
 } from 'modules/create-market/get-template';
 import { CATEGORICAL } from 'modules/common/constants';
 import { buildformattedDate } from 'utils/format-date';
@@ -635,7 +639,7 @@ export const InputFactory = (props: InputFactoryProps) => {
 
   const { inputs } = template;
 
-  const updateData = (value) => {
+  const updateData = value => {
     let inputValidations = newMarket.validations.inputs;
     if (inputValidations === '') {
       inputValidations = [];
@@ -646,9 +650,6 @@ export const InputFactory = (props: InputFactoryProps) => {
       inputs: inputValidations,
     });
 
-    const question = buildMarketDescription(template.question, inputs);
-    onChange('description', question);
-
     let newInputs = inputs;
     newInputs[inputIndex].userInput = value;
     onChange('template', {
@@ -656,8 +657,11 @@ export const InputFactory = (props: InputFactoryProps) => {
       inputs: newInputs,
     });
 
+    const question = buildMarketDescription(template.question, newInputs);
+    onChange('description', question);
+
     return newInputs;
-  }
+  };
 
   if (input.type === TemplateInputType.TEXT) {
     return (
@@ -692,7 +696,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
-    return <span>{input.userInput || input.placeholder}</span>;
+    return <span>{input.userInput ? input.userInput : `[${input.placeholder}]`}</span>;
   } else if (input.type === TemplateInputType.DROPDOWN) {
     return (
       <FormDropdown
@@ -799,7 +803,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     if (inputValidations === '') {
       inputValidations = [];
     }
-    inputValidations[inputIndex] = {setEndTime: '', hours: ''};
+    inputValidations[inputIndex] = { setEndTime: '', hours: '' };
     // todo: need to see if they changed date or time and clear validations accordingly
     onChange('validations', {
       ...newMarket.validations,
@@ -990,5 +994,84 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
         errorMessage={validations.outcomes}
       />
     </>
+  );
+};
+
+export interface ResolutionRulesProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+export const ResolutionRules = (props: ResolutionRulesProps) => {
+  const { onChange, newMarket } = props;
+  const { template } = newMarket;
+  const { resolutionRules } = template;
+  if (Object.keys(resolutionRules).length === 0) {
+    return null;
+  }
+  return (
+    <div className={Styles.ResolutionRules}>
+      <Subheaders
+        header="Suggested resolution rules"
+        subheader="Common rules for this template that you can optionally include in your market."
+      />
+      {resolutionRules[CHOICE] && resolutionRules[CHOICE].length > 0 && (
+        <>
+          <span>Choose one:</span>
+          <RadioBarGroup
+            radioButtons={resolutionRules[CHOICE].map((rule, index) =>
+              {
+                return {
+                  header: rule.text,
+                  value: index.toString()
+                }
+              }
+            )}
+            onChange={(value: string) => {
+              const newResolutionRulesChoice = resolutionRules[CHOICE].map((rule, index) => {
+                  return {
+                    ...rule,
+                    isSelected: index.toString() === value
+                  }
+              });
+              onChange('template', {
+                ...template,
+                resolutionRules: {
+                  [OPTIONAL]: resolutionRules[OPTIONAL],
+                  [CHOICE]: newResolutionRulesChoice
+                }
+              })
+            }}
+          />
+        </>
+      )}
+       {resolutionRules[OPTIONAL] && resolutionRules[OPTIONAL].length > 0 && (
+        <>
+          <span>Choose as many as you like:</span>
+          <MultiSelectRadioBarGroup
+            radioButtons={resolutionRules[OPTIONAL].map((rule, index) =>
+              {
+                return {
+                  header: rule.text,
+                  value: index.toString(),
+                  isSelected: rule.isSelected
+                }
+              }
+            )}
+            onChange={(value: string) => {
+              let newResolutionRulesOpt = resolutionRules[OPTIONAL];
+              newResolutionRulesOpt[parseInt(value)].isSelected = !resolutionRules[OPTIONAL][parseInt(value)].isSelected;
+              onChange('template', {
+                ...template,
+                resolutionRules: {
+                  [OPTIONAL]: newResolutionRulesOpt,
+                  [CHOICE]: resolutionRules[CHOICE]
+                }
+              })
+            }}
+          />
+        </>
+       )}
+    </div>
   );
 };

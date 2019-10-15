@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState) => {
     myMarkets: createdMarkets,
     outcomes: {}, // marketDisputeOutcomes() || {},
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    disputingWindowEndTime: state.universe.disputeWindow.endTime,
+    disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
   };
 };
 // TOJDO confirm with TOm whats up with this, getBalance Only

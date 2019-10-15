@@ -117,7 +117,6 @@ export default class OverviewChart extends React.Component<
         createBigNumber(data[data.length - 1].realized).toNumber(),
       ]);
 
-
       if (this.container) {
         this.setState({
           profitLossData,
@@ -149,28 +148,25 @@ export default class OverviewChart extends React.Component<
     if (noTrades) {
       content = (
         <>
-          <div>{constants.PROFIT_LOSS_CHART_TITLE}</div>
+          <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
           <span>No Trading Activity</span>
         </>
       );
     } else {
       content = (
         <>
-          <div>{constants.PROFIT_LOSS_CHART_TITLE}</div>
-          <div>
-            <MovementLabel
-              showColors
-              showIcon={profitLossChangeHasValue}
-              showPlusMinus
-              showBrackets
-              value={Number(profitLossChange)}
-              size={SizeTypes.NORMAL}
-            />
-          </div>
-          <div>
-            {profitLossValue}
-            {DaiLogoIcon}
-          </div>
+          <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
+          <MovementLabel
+            showColors
+            showIcon={true || profitLossChangeHasValue}
+            showPlusMinus
+            showBrackets
+            value={Number(profitLossChange)}
+            size={SizeTypes.NORMAL}
+          />
+          <h4>
+            ${profitLossValue}
+          </h4>
           <ProfitLossChart
             data={profitLossData}
             // @ts-ignore
