@@ -1,19 +1,13 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/AugurProject/branding/master/name-horizontal/Augur-Mark-Inline.png" width="500"></p>
 
-# <p align="center">Augur Monorepo<a name="install" ></a></p>
-
-<p align="center"><a href="https://github.com/AugurProject/augur-app/graphs/contributors"><img src="https://img.shields.io/github/contributors/AugurProject/augur.svg"></a>
-<br>
-<a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/github/issues-raw/AugurProject/augur.svg"></a> <a href="https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+"><img src="https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg"></a>
-<br>
-<a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg"></a>
-<a href="https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg"></a>
-<br>
-<a href="https://invite.augur.net"><img src="https://img.shields.io/discord/378030344374583298.svg"></a>
-<a href="https://github.com/AugurProject/augur/issues"><img src="https://img.shields.io/badge/contributions-welcome-orange.svg"></a>
-<a href="https://github.com/AugurProject/augur/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
-</p>
+[![](https://img.shields.io/github/contributors/AugurProject/augur.svg)](https://github.com/AugurProject/augur-app/graphs/contributors) [![](https://img.shields.io/github/issues-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/issues)
+[![](https://img.shields.io/github/issues-closed-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+)
+[![](https://img.shields.io/github/issues-pr-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/pulls)
+[![](https://img.shields.io/github/issues-pr-closed-raw/AugurProject/augur.svg)](https://github.com/AugurProject/augur/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed)
+[![](https://img.shields.io/discord/378030344374583298.svg)](https://invite.augur.net)
+[![](https://img.shields.io/badge/contributions-welcome-orange.svg)](https://github.com/AugurProject/augur/issues)
+[![](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/AugurProject/augur/pulls)
 
 Augur is a decentralized oracle and peer to peer protocol for prediction markets. Augur is free, public, open source software, portions of which are licensed under the General Public License (GPL) and portions of which are licensed under the Massachusetts Institute of Technology (MIT) license. Augur is a set of smart contracts written in Solidity that can be deployed to the Ethereum blockchain.</p>
 
