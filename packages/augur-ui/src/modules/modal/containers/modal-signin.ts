@@ -83,7 +83,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const redirect = () => {
     dP.closeModal();
 
-    oP.history.push({ pathname: makePath(MARKETS, null) });
+
+    const path = sP.modal.pathName ? sP.modal.pathName : makePath(MARKETS, null);
+    oP.history.push(path);
 
     const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
     if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {

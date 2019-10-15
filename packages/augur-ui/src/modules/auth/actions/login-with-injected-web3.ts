@@ -14,12 +14,6 @@ import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 
-export const forceLoginWithInjectedWeb3 = account => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(login(account));
-};
-
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, Action>) => {
   const failure = () => {

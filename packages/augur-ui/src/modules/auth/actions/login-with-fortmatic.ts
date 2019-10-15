@@ -19,7 +19,7 @@ const getFormaticNetwork = (networkId: string): false | string   => {
   }
 };
 
-export const loginWithFortmatic = (showConnectingModal: FUnction) => async (
+export const loginWithFortmatic = (showConnectingModal: Function) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
 
