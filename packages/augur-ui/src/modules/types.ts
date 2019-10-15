@@ -419,6 +419,7 @@ export interface ReportingListState {
   [reportingState: string]: {
     marketIds: string[];
     params: Partial<LoadReportingMarketsOptions>;
+    isLoading: boolean;
   };
 }
 export interface FilledOrders {
