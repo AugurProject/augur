@@ -231,8 +231,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
           this.setState({ blockShown: true }, () => {
-            // todo: need to check if it is a template here, then go to prev page if template
-
             if (isTemplate) {
               updateNewMarket({
                 ...newMarket,
@@ -250,7 +248,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       clearNewMarket();
       return updatePage(LANDING);
     } else {
-      //todo: new addtion not sure if should be in if else
       const newStep =
         newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
       updateNewMarket({ currentStep: newStep });
