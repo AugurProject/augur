@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/test",
-  "version": "10.0.0-alpha.1",
+  "version": "2.0.0-alpha.1",
   "description": "Augur Test",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -9,7 +9,6 @@
     "tests": "src/tests"
   },
   "scripts": {
-    "version": "yarn rebuild",
     "lint": "tslint -c tslint.json -p . src/tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
@@ -29,12 +28,12 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "10.0.0-alpha.1",
-    "@augurproject/core": "10.0.0-alpha.1",
-    "@augurproject/ethersjs-provider": "10.0.0-alpha.1",
-    "@augurproject/sdk": "10.0.0-alpha.1",
-    "@augurproject/tools": "10.0.0-alpha.1",
-    "contract-dependencies-ethers": "10.0.0-alpha.1",
+    "@augurproject/artifacts": "2.0.0-alpha.1",
+    "@augurproject/core": "2.0.0-alpha.1",
+    "@augurproject/ethersjs-provider": "2.0.0-alpha.1",
+    "@augurproject/sdk": "2.0.0-alpha.1",
+    "@augurproject/tools": "2.0.0-alpha.1",
+    "contract-dependencies-ethers": "2.0.0-alpha.1",
     "ethers": "4.0.37",
     "levelup": "4.2.0",
     "memdown": "4.1.0"

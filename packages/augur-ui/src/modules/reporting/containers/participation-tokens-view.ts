@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState) => {
   const isLoggedIn = state.authStatus.isLogged;
   const { address, fees, purchased } =
     state.universe && state.universe.disputeWindow;
-  const disablePurchaseButton = state.universe.forkingInfo !== null;
+  const disablePurchaseButton = !!state.universe.forkingInfo;
   const { participationTokens } =
     state.loginAccount && state.loginAccount.reporting;
   const tokenAmount =

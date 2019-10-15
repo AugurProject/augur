@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ui",
-  "version": "10.0.0-alpha.1",
+  "version": "2.0.0-alpha.1",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -38,13 +38,12 @@
     "docker:release": "scripts/release-docker.sh",
     "docker:spin-up": "npm run docker:pull && npm run docker:start",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
-    "prepush": "yarn test && node scripts/pre-push.js",
-    "version": "npm run build:mainnet"
+    "prepush": "yarn test && node scripts/pre-push.js"
   },
   "dependencies": {
     "@0x/order-utils": "8.4.0",
-    "@augurproject/sdk": "10.0.0-alpha.1",
-    "@augurproject/utils": "10.0.0-alpha.1",
+    "@augurproject/sdk": "^2.0.0-alpha.1",
+    "@augurproject/utils": "^2.0.0-alpha.1",
     "@ledgerhq/hw-app-eth": "4.70.0",
     "@ledgerhq/hw-transport-u2f": "4.70.0",
     "@portis/web3": "2.0.0-beta.43",
@@ -101,7 +100,7 @@
     "web3": "1.2.1"
   },
   "devDependencies": {
-    "@augurproject/tools": "10.0.0-alpha.1",
+    "@augurproject/tools": "^2.0.0-alpha.1",
     "@types/classnames": "2.2.9",
     "@types/expect-puppeteer": "3.3.1",
     "@types/jest": "24.0.18",

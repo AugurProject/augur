@@ -208,7 +208,7 @@ export const handleMarketMigratedLog = (log: any) => (
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }
-  dispatch(loadUniverseDetails(universeId));
+  dispatch(loadUniverseDetails(universeId, userAddress));
 };
 
 export const handleTokensTransferredLog = (log: any) => (
@@ -533,6 +533,7 @@ export const handleTokensMintedLog = (
   log: Logs.TokensMinted
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const userAddress = getState().loginAccount.address;
+  const isForking = !!getState().universe.forkingInfo;
   if(log.tokenType === Logs.TokenType.ParticipationToken) {
     const isUserDataUpdate = isSameAddress(
       log.target,
@@ -543,13 +544,13 @@ export const handleTokensMintedLog = (
     }
     dispatch(loadDisputeWindow());
   }
-  if (log.tokenType === Logs.TokenType.ReputationToken) {
+  if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
     const isUserDataUpdate = isSameAddress(
       log.target,
       userAddress
     );
     if (isUserDataUpdate) {
-      dispatch(loadUniverseDetails(log.universe))
+      dispatch(loadUniverseDetails(log.universe, userAddress))
     }
   }
 };

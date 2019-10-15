@@ -24,6 +24,9 @@ const DEFAULT_STATE: LoginAccount = {
   allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
     unrealizedRevenue24hChangePercent: "0",
+  },
+  settings: {
+    showInvalidMarketsBanner: true
   }
 };
 

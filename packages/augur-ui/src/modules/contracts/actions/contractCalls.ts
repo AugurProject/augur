@@ -156,9 +156,9 @@ export async function getRepThresholdForPacing() {
   return threshold;
 }
 
-export async function getDisputeThresholdForFork() {
+export async function getDisputeThresholdForFork(universeId: string) {
   const { contracts } = augurSdk.get();
-  const disputeThresholdForFork = await contracts.universe.getDisputeThresholdForFork_();
+  const disputeThresholdForFork = await contracts.universeFromAddress(universeId).getDisputeThresholdForFork_();
   return createBigNumber(disputeThresholdForFork);
 }
 
@@ -168,27 +168,27 @@ export async function getOpenInterestInAttoCash() {
   return openInterestInAttoCash;
 }
 
-export async function getForkingMarket() {
+export async function getForkingMarket(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkingMarket = await contracts.universe.getForkingMarket_();
+  const forkingMarket = await contracts.universeFromAddress(universeId).getForkingMarket_();
   return forkingMarket;
 }
 
-export async function getForkEndTime() {
+export async function getForkEndTime(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkEndTime = await contracts.universe.getForkEndTime_();
+  const forkEndTime = await contracts.universeFromAddress(universeId).getForkEndTime_();
   return forkEndTime;
 }
 
-export async function getForkReputationGoal() {
+export async function getForkReputationGoal(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkReputationGoal = await contracts.universe.getForkReputationGoal_();
+  const forkReputationGoal = await contracts.universeFromAddress(universeId).getForkReputationGoal_();
   return forkReputationGoal;
 }
 
-export async function getWinningChildUniverse() {
+export async function getWinningChildUniverse(universeId: string) {
   const { contracts } = augurSdk.get();
-  const winningChildUniverse = await contracts.universe.getWinningChildUniverse_();
+  const winningChildUniverse = await contracts.universeFromAddress(universeId).getWinningChildUniverse_();
   return winningChildUniverse;
 }
 

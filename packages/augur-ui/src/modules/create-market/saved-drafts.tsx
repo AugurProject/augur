@@ -4,7 +4,7 @@ import { Drafts, Draft } from "modules/types";
 import { formatDate } from "utils/format-date";
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import { PillLabel } from "modules/common/labels";
-import { SCRATCH } from "modules/create-market/constants";
+import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/saved-drafts.styles";
 
@@ -30,7 +30,7 @@ const DraftRow: React.FC<DraftRowProps> = (props) => {
       <button
         onClick={() => {
           props.updateNewMarket(props.draft);
-          props.updatePage(SCRATCH);
+          props.updatePage(props.draft.template ? TEMPLATE : SCRATCH);
         }}
       >
         <PillLabel label="Draft" />

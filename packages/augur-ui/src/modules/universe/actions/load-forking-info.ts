@@ -21,18 +21,20 @@ export function loadUniverseForkingInfo(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    // assuming SDK is already connected to univese
-    const forkingMarket = forkingMarketId || (await getForkingMarket());
+    // SDK could be connected to wrong universe need to pass in universe
+    const { universe } = getState() as AppState;
+    const universeId = universe.id;
+    const forkingMarket = forkingMarketId || (await getForkingMarket(universeId));
     const isForking = forkingMarket !== NULL_ADDRESS;
     if (isForking) {
-      const forkEndTime = await getForkEndTime();
-      const forkAttoReputationGoal = await getForkReputationGoal();
+      const forkEndTime = await getForkEndTime(universeId);
+      const forkAttoReputationGoal = await getForkReputationGoal(universeId);
       const isForkingMarketFinalized = await isFinalized(forkingMarket);
       let winningChildUniverseId;
       if (isForkingMarketFinalized) {
-        winningChildUniverseId = await getWinningChildUniverse();
+        winningChildUniverseId = await getWinningChildUniverse(universeId);
       }
-      const forkAttoThreshold = await getDisputeThresholdForFork();
+      const forkAttoThreshold = await getDisputeThresholdForFork(universeId);
       const forkingInfo: ForkingInfo = {
         forkingMarket,
         forkEndTime: forkEndTime.toNumber(),

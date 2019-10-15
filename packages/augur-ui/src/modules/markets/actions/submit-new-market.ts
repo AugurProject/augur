@@ -10,6 +10,7 @@ import { createMarket, approveToTrade } from 'modules/contracts/actions/contract
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { constructMarketParamsReturn } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
+import { buildResolutionDetails } from 'modules/create-market/get-template';
 
 export function submitNewMarket(
   market: NewMarket,
@@ -60,7 +61,7 @@ export function submitNewMarket(
           endTime: market.endTime,
           tickSize: market.tickSize,
           marketType: market.marketType,
-          detailsText: market.detailsText,
+          detailsText: market.template ? buildResolutionDetails(market.detailsText, market.template.resolutionRules) : market.detailsText,
           categories: market.categories,
           settlementFee: market.settlementFee,
           affiliateFee: market.affiliateFee,
