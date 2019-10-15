@@ -18,7 +18,7 @@ import { selectReportingWinningsByMarket } from 'modules/positions/selectors/sel
 const mapStateToProps = (state: AppState) => {
   const { universe, loginAccount, blockchain } = state;
   const { forkingInfo } = universe;
-  const isForking = forkingInfo !== null;
+  const isForking = !!forkingInfo;
   if (!isForking) return { show: false };
 
   const { reporting, balances } = loginAccount;

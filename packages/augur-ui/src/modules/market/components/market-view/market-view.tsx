@@ -47,7 +47,7 @@ interface MarketViewProps {
   marketType: string;
   outcomes: OutcomeFormatted[];
   updateModal: Function;
-  history: object;
+  history: History;
   showMarketLoadingModal: Function;
   preview?: boolean;
   sortedOutcomes: OutcomeFormatted[];
