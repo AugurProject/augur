@@ -184,13 +184,19 @@ export default class Form extends React.Component<FormProps, FormState> {
     if (!cb && isTemplate && newMarket.currentStep < TEMPLATE_FORM_STARTS) {
       let templateMarket = market;
       let templateDefaultState = defaultState;
-      templateMarket.categories = [];
-      templateMarket.marketType = '';
-      templateMarket.currentStep = 0;
-      templateMarket.template = {};
-      templateDefaultState.categories = [];
-      templateDefaultState.marketType = '';
-      templateDefaultState.template = {};
+      templateMarket = {
+        ...templateMarket,
+        categories: [],
+        marketType: '',
+        currentStep: 0,
+        template: null
+      };
+      templateDefaultState = {
+        ...templateDefaultState,
+        categories: [],
+        marketType: '',
+        template: null
+      };
       unsaved =
         !newMarket.uniqueId &&
         JSON.stringify(templateMarket) !== JSON.stringify(templateDefaultState);
