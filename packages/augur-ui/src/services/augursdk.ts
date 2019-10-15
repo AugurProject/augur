@@ -50,7 +50,7 @@ export class SDK {
       account
     );
 
-    const connector = (new WebWorkerConnector());
+    const connector = (iOSSafari ? new SEOConnector(): new WebWorkerConnector());
     connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http
