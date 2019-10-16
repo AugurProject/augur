@@ -350,7 +350,8 @@ export const buildResolutionDetails = (
 };
 
 export const findIfSubCats = (category) => {
-  return false;
+  if (TEMPLATES[category].children) return false;
+  return true;
 };
 
 const TEMPLATES = {
