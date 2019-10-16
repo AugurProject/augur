@@ -43,7 +43,8 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketSort: state.filterSortOptions.marketSort,
     marketFilter: state.filterSortOptions.marketFilter,
     marketCardFormat: state.marketsList.marketCardFormat,
-    showInvalidMarketsBanner: (state.loginAccount.settings || {}).showInvalidMarketsBanner,
+    showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {}).showInvalidMarketsBannerHideOrShow,
+    showInvalidMarketsBannerFeesOrLiquiditySpread: (state.loginAccount.settings || {}).showInvalidMarketsBannerFeesOrLiquiditySpread,
   };
 };
 
