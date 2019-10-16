@@ -232,7 +232,7 @@ export const getTemplates = (
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
       : categoryTemplates.templates;
 
-  categoryTemplates = categoryTemplates.children[categories.secondary];
+  categoryTemplates = categoryTemplates.children && categoryTemplates.children[categories.secondary];
   if (!categoryTemplates) return [];
 
   return filterByMarketType
