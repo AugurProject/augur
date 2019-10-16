@@ -60,7 +60,7 @@ const localStorageMiddleware = store => next => action => {
       : 1;
     let universeId = env.universe;
     const Augur = augurSdk ? augurSdk.get() : undefined;
-    if (Augur && !universeId) {
+    if (Augur) {
       universeId = Augur.contracts.universe.address;
     }
     const universeIdToUse = universeId;
