@@ -289,7 +289,7 @@ export const buildMarketDescription = (
   inputs.forEach((input: TemplateInput) => {
     const userInputFormatted =
       input.type === TemplateInputType.DATEYEAR
-        ? convertUnixToFormattedDate(input.userInput).formattedLocalShortTime
+        ? convertUnixToFormattedDate(input.userInput).formattedSimpleData
         : input.userInput;
     question = question.replace(
       `[${input.id}]`,
