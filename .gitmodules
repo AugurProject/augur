@@ -1,0 +1,3 @@
+[submodule "packages/orbit-web"]
+	path = packages/orbit-web
+	url = git@github.com:orbitdb/orbit-web.git
