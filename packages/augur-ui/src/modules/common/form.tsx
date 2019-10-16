@@ -298,7 +298,8 @@ interface CategoryMultiSelectProps {
   initialValues?: string[];
   updateSelection: Function;
   errorMessage?: string[];
-  disableCategories?: boolean;
+  disableCategory?: boolean;
+  disableSubCategory?: boolean;
 }
 
 interface CategoryMultiSelectState {
@@ -597,7 +598,7 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
-    const { errorMessage, disableCategories } = this.props;
+    const { errorMessage, disableCategory, disableSubCategory } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -636,7 +637,7 @@ export class CategoryMultiSelect extends Component<
           showText={customPrimary}
           showIcon={false}
           showDropdown={true}
-          disabled={disableCategories}
+          disabled={disableCategory}
         />
         {(showSecondaryDropdown || customSecondary) && (
           <DropdownInputGroup
@@ -654,7 +655,7 @@ export class CategoryMultiSelect extends Component<
             showIcon={showSecondaryDropdown || customSecondary}
             showDropdown={showSecondaryDropdown}
             autoCompleteList={secondaryAutoComplete}
-            disabled={disableCategories}
+            disabled={disableSubCategory}
           />
         )}
         {(showTertiaryDropdown || customTertiary) && (

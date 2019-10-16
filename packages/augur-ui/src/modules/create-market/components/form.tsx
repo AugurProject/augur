@@ -34,6 +34,7 @@ import {
   TEMPLATE_PICKER,
   TEMPLATE_INPUTS,
   TEMPLATE,
+  NO_CAT_TEMPLATE_CONTENT_PAGES,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -148,7 +149,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
     contentPages: this.props.isTemplate
-      ? TEMPLATE_CONTENT_PAGES
+      ? (this.props.newMarket.initialSubCat === '' ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
     categoryStats: null,

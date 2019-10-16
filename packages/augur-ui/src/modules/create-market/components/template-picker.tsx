@@ -48,6 +48,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
                 template: templates[value]
+                initialSubCat: newMarket.categories[1],
             })
           }}
         />
