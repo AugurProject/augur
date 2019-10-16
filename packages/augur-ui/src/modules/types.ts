@@ -561,7 +561,8 @@ export interface LoginAccountMeta {
 }
 
 export interface LoginAccountSettings {
-  showInvalidMarketsBanner?: boolean;
+  showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
+  showInvalidMarketsBannerHideOrShow?: boolean;
 }
 
 export interface LoginAccount {
@@ -679,6 +680,8 @@ export interface ClaimReportingOptions {
   reportingParticipants: string[],
   disputeWindows: string[],
   estimateGas?: boolean;
+  disavowed?: boolean;
+  isForkingMarket?: boolean;
 }
 
 export interface MarketReportContracts {

@@ -12,7 +12,7 @@ interface CandlestickOchlProps {
 }
 
 export const CandlestickOchl: React.FC<CandlestickOchlProps> = ({ hoveredPeriod, pricePrecision }) => (
-  <div className={Styles.MarketOutcomeChartsHeader__stats}>
+  <div className={Styles.Stats}>
     <span>
       {hoveredPeriod.open && (
         <>
@@ -45,7 +45,6 @@ export const CandlestickOchl: React.FC<CandlestickOchlProps> = ({ hoveredPeriod,
         </>
       )}
     </span>
-    <span>DAI</span>
   </div>
 );
 

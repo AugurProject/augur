@@ -28,6 +28,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
+import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 
 export interface TitleProps {
   title: string;
@@ -97,13 +98,14 @@ export interface ActionRow {
   text: string;
   label: string;
   value: string;
+  notice?: string;
   action: Function;
   status: typeof PENDING | typeof SUCCESS;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
 }
 
 export interface ActionRowsProps {
-  rows: Array<ActionRow>;
+  rows: ActionRow[];
 }
 
 export interface ReadableAddressProps {
@@ -464,6 +466,7 @@ export const ActionRows = (props: ActionRowsProps) =>
           action={row.action}
         />
       </div>
+      {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
     </section>
   ));
 
