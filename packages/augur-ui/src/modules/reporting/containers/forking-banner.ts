@@ -43,6 +43,7 @@ const mapStateToProps = (state: AppState) => {
     releasableRep,
     forkTime: convertUnixToFormattedDate(forkingInfo.forkEndTime),
     currentTime: convertUnixToFormattedDate(blockchain.currentAugurTimestamp),
+    isForking: !forkingInfo.isForkingMarketFinalized,
   };
 };
 
