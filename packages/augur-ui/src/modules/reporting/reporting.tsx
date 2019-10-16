@@ -45,7 +45,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                     title={'Upcoming Designated Reporting'}
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage="Connect a wallet to see your markets that will soon be ready to Report on."
-                    emptyHeader="There are no markets coming up in the next week for you to Report on. "
+                    emptyHeader="There are no markets coming up in the next week for you to Report on."
                     emptySubheader="Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."
                   />
                   <ReportingModalButton
