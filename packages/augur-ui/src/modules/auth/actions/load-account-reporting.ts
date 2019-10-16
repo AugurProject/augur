@@ -12,7 +12,7 @@ export const loadAccountReportingHistory = (
   getState: () => AppState
 ) => {
   const { universe, loginAccount } = getState();
-  if (!loginAccount && loginAccount.address) return;
+  if (!loginAccount || !loginAccount.address) return;
   const Augur = augurSdk.get();
   const reporting = await Augur.getAccountRepStakeSummary({
     universe: universe.id,
