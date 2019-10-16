@@ -8,7 +8,6 @@ import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpResources } from '../help-resources';
-import { GlobalChat } from 'modules/global-chat/components/global-chat';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Chevron } from 'modules/common/icons';
 
@@ -69,20 +68,19 @@ const SideNav = ({
         </ul>
 
         <footer>
+          <div className={Styles.GlobalChat}>
+            <SecondaryButton
+              action={showGlobalChat}
+              text='Global Chat'
+              icon={Chevron}
+            />
+          </div>
           {isLogged && (
             <>
               <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
-              <div className={Styles.GlobalChat}>
-                <SecondaryButton
-                  action={showGlobalChat}
-                  text='Global Chat'
-                  icon={Chevron}
-                />
-              </div>
+              <HelpResources />
             </>
           )}
-
-          {isLogged && <HelpResources />}
         </footer>
       </div>
     </aside>
