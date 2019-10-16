@@ -191,6 +191,7 @@ export default class FormDetails extends React.Component<
                 minute={minute}
                 meridiem={meridiem}
                 timezone={timezone}
+                currentTimestamp={currentTimestamp}
                 endTimeFormatted={endTimeFormatted}
                 uniqueKey={'nonTemplateRes'}
               />
