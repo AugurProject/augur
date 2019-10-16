@@ -7,6 +7,7 @@ import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import deepClone from 'utils/deep-clone';
 import { NewMarket } from 'modules/types';
+import { template } from './form-details.styles.less';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
@@ -43,6 +44,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                 ...deepClone<NewMarket>(EMPTY_STATE),
                 outcomes: newMarket.marketType === CATEGORICAL ? createTemplateOutcomes(templates[value].inputs) : ['', ''],
                 currentStep: newMarket.currentStep,
+                scalarDenomination: newMarket.marketType === SCALAR && templates[value].denomination,
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
                 template: templates[value]
