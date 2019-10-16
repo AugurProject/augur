@@ -47,7 +47,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                 scalarDenomination: newMarket.marketType === SCALAR && templates[value].denomination,
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
-                template: templates[value]
+                template: templates[value],
                 initialSubCat: newMarket.categories[1],
             })
           }}
