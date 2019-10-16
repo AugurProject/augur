@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const isForking = !!sP.forkingInfo;
-  const forkingMarket = isForking ? sP.forkingInfo.forkingMarket : undefined;
+  const forkingMarket = isForking ? sP.forkingInfo.forkingMarket : null;
   const { gasCost, pendingQueue } = sP;
   const claimReportingFees = sP.claimReportingFees as MarketReportClaimableContracts;
   const modalRows: ActionRowsProps[] = [];
