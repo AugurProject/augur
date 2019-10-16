@@ -98,42 +98,37 @@ class MarketOutcomeCandlestick extends React.PureComponent<
       containerHeight,
       defaultCandlePeriod,
     } = this.state;
+    const staticLabel = hoveredPeriod.volume
+    ? `V: ${hoveredPeriod.volume
+        .toFixed(fixedPrecision)
+        .toString()}`
+    : 'Show Volume in';
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
-        <div className={Styles.MarketOutcomeChartsHeader__chart__interaction}>
-          <div>
-            <SquareDropdown
-              defaultValue={defaultCandlePeriod}
-              options={PERIODS}
-              onChange={updateSelectedPeriod}
-              sortByStyles={{ minWidth: '4.875rem' }}
-            />
-            <StaticLabelDropdown
-              defaultValue={DAI}
-              options={VOLUME_DAI_SHARES}
-              sortByStyles={{ minWidth: '9.375rem' }}
-              staticLabel={
-                hoveredPeriod.volume
-                  ? `V: ${hoveredPeriod.volume
-                      .toFixed(fixedPrecision)
-                      .toString()}`
-                  : 'Show Volume in '
-              }
-              onChange={this.updateVolumeType}
-              highlight={!!hoveredPeriod.volume}
-            />
-          </div>
+        <div className={Styles.TopSection}>
+          <SquareDropdown
+            defaultValue={defaultCandlePeriod}
+            options={PERIODS}
+            onChange={updateSelectedPeriod}
+          />
           <CandlestickOchl
             hoveredPeriod={hoveredPeriod}
             pricePrecision={pricePrecision}
+          />
+          <StaticLabelDropdown
+            defaultValue={DAI}
+            options={VOLUME_DAI_SHARES}
+            staticLabel={staticLabel}
+            onChange={this.updateVolumeType}
+            highlight={!!hoveredPeriod.volume}
           />
         </div>
         <div
           ref={drawContainer => {
             this.drawContainer = drawContainer;
           }}
-          className={Styles.MarketOutcomeCandlestick__container}
+          className={Styles.ChartContainer}
         >
           <MarketOutcomeChartsCandlestickHighchart
             priceTimeSeries={priceTimeSeries}
