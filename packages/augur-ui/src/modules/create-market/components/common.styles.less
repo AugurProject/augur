@@ -337,6 +337,7 @@
 
   @media @breakpoint-mobile-mid {
     padding: @size-24 @size-16;
+    width: 100%;
   }
 }
 
@@ -364,7 +365,7 @@
       grid-template-columns: repeat(1, 1fr);
       grid-gap: @size-12;
 
-      > div > div > div > div {
+      > div > div > div > div:first-of-type {
         min-width: 100%;
       }
     }

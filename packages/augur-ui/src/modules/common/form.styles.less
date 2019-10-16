@@ -144,6 +144,7 @@
     color: @color-primary-action;
     cursor: default;
     padding: 0 @size-12;
+    white-space: nowrap;
 
     &.Selected {
       color: @color-primary-text;
@@ -151,7 +152,7 @@
   }
 
   > svg {
-    width: @size-16;
+    min-width: @size-16;
     height: @size-16;
 
     > path {
@@ -162,6 +163,9 @@
   @media @breakpoint-mobile-mid {
     border: 0;
     padding: 0;
+    overflow-x: auto;
+    max-width: 100%;
+    justify-content: flex-start;
 
     > span:first-of-type {
       padding-left: @size-8;
@@ -340,7 +344,6 @@
   @media @breakpoint-mobile-mid {
     height: 128px;
     grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
-    width: 312px;
   }
 
   > svg {
@@ -355,8 +358,6 @@
 
     @media @breakpoint-mobile-mid {
       .text-14;
-
-      width: 244px;
     }
   }
 
@@ -375,7 +376,6 @@
 
       max-height: 50px;
       white-space: normal;
-      width: 244px;
     }
   }
 
