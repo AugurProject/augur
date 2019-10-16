@@ -9,6 +9,10 @@
     }
 
     @media @breakpoint-mobile-mid {
-    	margin-top: @size-24;
+        margin-top: @size-24;
+        
+        > div {
+            max-width: calc(~"100% - @{size-10}");
+        }
     }
 }

@@ -84,8 +84,6 @@ import Styles from 'modules/create-market/components/form.styles.less';
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
 import {
-  tellIfEditableOutcomes,
-  createTemplateOutcomes,
   buildResolutionDetails,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
@@ -239,7 +237,9 @@ export default class Form extends React.Component<FormProps, FormState> {
           this.setState({ blockShown: true }, () => {
             if (isTemplate) {
               updateNewMarket({
-                ...newMarket,
+                ...deepClone<NewMarket>(EMPTY_STATE),
+                marketType: newMarket.marketType,
+                categories: newMarket.categories,
                 currentStep: TEMPLATE_FORM_STARTS - 1,
                 template: null,
               });
@@ -626,6 +626,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       largeHeader,
       noDarkBackground,
       previewButton,
+      disabledFunction
     } = contentPages[currentStep];
 
     const savedDraft = drafts[uniqueId];
@@ -648,6 +649,8 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const saveDraftError =
       validations && validations.description === draftError;
+
+    const disabledNext = disabledFunction ? disabledFunction(newMarket) : false;
 
     return (
       <div
@@ -754,7 +757,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                     />
                   )}
                   {secondButton === NEXT && (
-                    <PrimaryButton text="Next" action={this.nextPage} />
+                    <PrimaryButton text="Next" action={this.nextPage} disabled={disabledNext}/>
                   )}
                   {secondButton === CREATE && (
                     <PrimaryButton

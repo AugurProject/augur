@@ -71,6 +71,7 @@ export default class Landing extends React.Component<LandingProps> {
                   updatedNewMarket.categories[1] = '';
                   updatedNewMarket.categories[2] = '';
                   updatedNewMarket.currentStep = 1;
+                  updatedNewMarket.marketType = '';
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE);
                 }}

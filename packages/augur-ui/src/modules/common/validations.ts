@@ -177,7 +177,7 @@ export function checkForUserInputFilled(inputs) {
     } else if (
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.DROPDOWN) &&
+        input.type === TemplateInputType.DROPDOWN || input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
       (!input.userInput || input.userInput === '')
     ) {
       return 'Input is required';
