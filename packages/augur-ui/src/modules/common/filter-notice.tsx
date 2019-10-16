@@ -2,17 +2,22 @@ import React from 'react';
 import Styles from 'modules/common/filter-notice.styles.less';
 import {ExclamationCircle, XIcon} from 'modules/common/icons';
 
+interface Settings {
+  propertyName: string;
+  propertyValue: boolean;
+}
+
 interface FilterNoticeProps {
   color?: string;
   content: JSX.Element;
   show: boolean;
-  isInvalidMarketsBanner?: boolean;
+  settings?: Settings;
+  showDismissButton?: boolean;
   updateLoginAccountSettings?: Function;
-  showInvalidMarketsBanner?: boolean;
 }
 
 export const FilterNotice = (props: FilterNoticeProps) => {
-  const showNotice = () => props.isInvalidMarketsBanner ? props.showInvalidMarketsBanner && props.show : props.show;
+  const showNotice = () => props.showDismissButton ? props.settings.propertyValue && props.show : props.show;
 
   return (
     <div className={Styles.filterNotice}>
@@ -23,10 +28,10 @@ export const FilterNotice = (props: FilterNoticeProps) => {
           </span>
           {props.content}
           {
-            props.isInvalidMarketsBanner &&
+            props.showDismissButton &&
             <button
               type='button'
-              onClick={() => props.updateLoginAccountSettings({showInvalidMarketsBanner: false})}
+              onClick={() => props.updateLoginAccountSettings({[props.settings.propertyName]: false})}
             >
               {XIcon}
             </button>

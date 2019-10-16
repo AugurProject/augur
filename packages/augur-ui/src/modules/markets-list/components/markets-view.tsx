@@ -49,7 +49,8 @@ interface MarketsViewProps {
   marketCardFormat: string;
   updateMobileMenuState: Function;
   updateLoginAccountSettings: Function;
-  showInvalidMarketsBanner: boolean;
+  showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
+  showInvalidMarketsBannerHideOrShow: boolean;
 }
 
 interface MarketsViewState {
@@ -211,7 +212,8 @@ export default class MarketsView extends Component<
       marketFilter,
       marketSort,
       isSearching,
-      showInvalidMarketsBanner,
+      showInvalidMarketsBannerFeesOrLiquiditySpread,
+      showInvalidMarketsBannerHideOrShow,
     } = this.props;
     const {
       filterSortedMarkets,
@@ -279,10 +281,15 @@ export default class MarketsView extends Component<
             updateQuery(param, value, this.props.location, this.props.history)
           }
         />
-
         <FilterNotice
           color="red"
           show={this.props.includeInvalidMarkets === 'show'}
+          showDismissButton={true}
+          updateLoginAccountSettings={updateLoginAccountSettings}
+          settings={{
+            propertyName: 'showInvalidMarketsBannerHideOrShow',
+            propertyValue: showInvalidMarketsBannerHideOrShow
+          }}
           content={
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
@@ -297,9 +304,12 @@ export default class MarketsView extends Component<
         <FilterNotice
           color="red"
           show={!displayFee || !displayLiquiditySpread}
-          isInvalidMarketsBanner={true}
+          showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
-          showInvalidMarketsBanner={showInvalidMarketsBanner}
+          settings={{
+            propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
+            propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread
+          }}
           content={
             <span>
               {feesLiquidityMessage}{' '}

@@ -249,10 +249,11 @@ export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
 export class StaticLabelDropdown extends Dropdown {
   componentDidMount() {
-    if (this.props.defaultValue) {
+    const { options, defaultValue } = this.props;
+    if (defaultValue) {
       this.setState({
-        selected: this.props.options.find(
-          o => o.value === this.props.defaultValue
+        selected: options.find(
+          o => o.value === defaultValue
         ),
       });
     }
@@ -265,7 +266,6 @@ export class StaticLabelDropdown extends Dropdown {
       large,
       staticLabel,
       highlight,
-      defaultValue,
     } = this.props;
     const { selected, showList } = this.state;
     if (!selected) {
