@@ -390,7 +390,7 @@ export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps)
 
 export const TestBet = () => (
   <div className={Styles.TestBet}>
-    <img src='assets/images/test-bet-placeholder.png' />
+    <img src='images/test-bet-placeholder.png' />
   </div>
 );
 
