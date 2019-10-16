@@ -349,6 +349,10 @@ export const buildResolutionDetails = (
   return details;
 };
 
+export const findIfSubCats = (category) => {
+  return false;
+};
+
 const TEMPLATES = {
   [POLITICS]: {
     children: {
