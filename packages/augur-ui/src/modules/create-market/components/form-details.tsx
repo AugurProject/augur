@@ -48,7 +48,7 @@ import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { findIfSubCats } from "../get-template";
+import { findIfSubCats } from "modules/create-market/get-template";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
