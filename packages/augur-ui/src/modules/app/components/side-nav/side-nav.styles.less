@@ -85,13 +85,14 @@
     position: fixed;
     width: 100%;
 
-    > div:first-of-type {
+    > div:nth-of-type(2) {
       .mono-10;
 
       display: flex;
       color: @color-primary-text;
       cursor: pointer;
       text-transform: uppercase;
+      order: 1;
 
       > svg {
         width: @size-9;
@@ -99,7 +100,7 @@
       }
     }
 
-    > div:last-of-type {
+    > div:nth-of-type(3) {
       @media @breakpoint-mobile {
         bottom: 75px;
         display: flex;
@@ -110,9 +111,8 @@
 
     > .GlobalChat {
       background: @color-dark-grey;
-      position: fixed;
-      right: @size-22;
-      z-index: @mask-modal;
+      margin-left: auto;
+      order: 2;
 
       // Closed global chat window
       > button {
