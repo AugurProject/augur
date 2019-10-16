@@ -16,16 +16,15 @@ export const switchUniverse = (
 ): ThunkAction<any, any, any, any> => async (dispatch, getState) => {
   const { loginAccount, filterSortOptions } = getState() as AppState;
   const account = loginAccount.address;
+  history.push({
+    pathname: makePath(MARKETS, null),
+  });
   dispatch(
     loadUniverseDetails(universeId, account, () => {
       dispatch(switchUniverseState());
       dispatch(loadUniverseForkingInfo());
       dispatch(loadDisputeWindow());
       dispatch(loadAccountData());
-
-      history.push({
-        pathname: makePath(MARKETS, null),
-      });
 
       const filter = {
         maxFee: filterSortOptions.maxFee,
