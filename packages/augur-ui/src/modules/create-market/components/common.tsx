@@ -697,13 +697,16 @@ export const InputFactory = (props: InputFactoryProps) => {
     );
   } else if (input.type === TemplateInputType.DATETIME) {
     return <span>{input.userInput ? input.userInput : `[${input.placeholder}]`}</span>;
-  } else if (input.type === TemplateInputType.DROPDOWN) {
+  } else if (input.type === TemplateInputType.DROPDOWN || input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
     return (
       <FormDropdown
         options={input.values}
         staticLabel={input.placeholder}
         errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
+          if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
+            onChange('scalarDenomination', value);
+          }
           updateData(value);
         }}
       />

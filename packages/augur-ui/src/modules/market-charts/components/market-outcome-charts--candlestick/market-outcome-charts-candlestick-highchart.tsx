@@ -28,13 +28,9 @@ interface HighChartsWrapperProps {
   currentTimeInSeconds: number;
 }
 
-interface HighChartsWrapperState {
-  options: object;
-}
-
 export default class MarketOutcomeChartsCandlestickHighchart extends Component<
   HighChartsWrapperProps,
-  HighChartsWrapperState
+  {}
 > {
   static defaultProps = {
     isMobile: false,
@@ -45,13 +41,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
   constructor(props) {
     super(props);
-    this.state = {
-      options: {
-        lang: {
-          noData: 'No Completed Trades',
-        },
-      },
-    };
 
     this.displayCandleInfoAndPlotViz = this.displayCandleInfoAndPlotViz.bind(
       this
@@ -121,6 +110,9 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
     const max = marketMax.toNumber();
     const options = {
+      lang: {
+        noData: 'No Completed Trades',
+      },
       credits: { enabled: false },
       tooltip: { enabled: false },
       scrollbar: { enabled: false },
@@ -150,6 +142,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       },
       xAxis: {
         ordinal: false,
+        tickLength: 8,
         labels: {
           format,
           align: 'center',
@@ -182,7 +175,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           showFirstLabel: true,
           showLastLabel: true,
           labels: {
-            format: '{value:.2f}',
+            format: '${value:.2f}',
             align: 'center',
             style: Styles.Candlestick_display_yLables,
             x:
@@ -195,7 +188,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             snap: false,
             label: {
               enabled: true,
-              format: '{value:.2f}',
+              format: '${value:.2f}',
             },
           },
         },
@@ -230,7 +223,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         {
           type: 'column',
           name: 'volume',
-          color: '#161022',
+          color: '#0E0E0F',
           data: volume,
           yAxis: 1,
           maxPointWidth: 20,
@@ -242,8 +235,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       ],
     };
 
-    const fullOptions = Object.assign(this.state.options, options);
-    this.chart = Highcharts.stockChart(this.container, fullOptions);
+    this.chart = Highcharts.stockChart(this.container, options);
   }
 
   componentWillUnmount() {
@@ -312,7 +304,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
     const bar = data.find(d => d && d.x === timestamp);
 
-    const color = isHover ? '#665789' : '#161022';
+    const color = isHover ? '#0E0E0F' : '#3C3B43';
 
     if (isGroupedData) {
       const index = data.indexOf(bar);
