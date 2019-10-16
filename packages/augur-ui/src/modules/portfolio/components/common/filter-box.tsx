@@ -17,7 +17,7 @@ export interface FilterBoxProps {
   sortByOptions: Array<NameValuePair>;
   filteredData: Array<Market>;
   data: MarketsByReportingState;
-  filterComp: Function;
+  filterComp: (input: string, market: Market) => boolean;
   bottomRightContent?: ReactNode;
   rightContent?: Function;
   dataObj: object;
@@ -41,209 +41,183 @@ interface FilterBoxState {
   filteredData: Array<Market>;
 }
 
-export default class FilterBox extends React.Component<
-  FilterBoxProps,
-  FilterBoxState
-> {
-  state: FilterBoxState = {
-    search: '',
-    selectedTab: ALL_MARKETS,
-    tabs: createTabsInfo(this.props.data),
-    sortBy: this.props.sortByOptions && this.props.sortByOptions[0].value,
-    filteredData: this.props.data[ALL_MARKETS],
-  };
+const FilterBox: React.FC<FilterBoxProps> = props => {
+  const {
+    title,
+    sortByOptions,
+    currentAugurTimestamp,
+    bottomRightContent,
+    noToggle,
+    renderRightContent,
+    dataObj,
+    renderToggleContent,
+    filterLabel,
+    sortByStyles,
+    showPending,
+    filterComp,
+    toggle,
+    hide,
+    extend,
+    data,
+  } = props;
 
-  componentDidMount() {
-    const filteredData = this.applySearch(
-      this.props.data,
-      this.state.search,
-      this.props.data[this.state.selectedTab]
+  // states
+  const [search, setSearch] = React.useState('');
+  const [selectedTab, setSelectedTab] = React.useState(ALL_MARKETS);
+  const [sortBy, setSortBy] = React.useState(
+    (sortByOptions && sortByOptions[0].value) || ''
+  );
+  const [filteredData, setFilteredData] = React.useState(data[ALL_MARKETS]);
+  const [tabs, setTabs] = React.useState(createTabsInfo(data));
+
+  // refs
+  const dataRef = React.useRef(null);
+
+  // funcs
+  const applySearchAndSort = () => {
+    let nextFilteredData = data[selectedTab];
+
+    // filter markets
+    nextFilteredData = nextFilteredData.filter(market =>
+      filterComp(search, market)
     );
-    this.setState({ filteredData });
-  }
 
-  UNSAFE_componentWillUpdate({ data }) {
-    const { selectedTab, search } = this.state;
-    if (
-      JSON.stringify(data[selectedTab]) !==
-      JSON.stringify(this.props.data[selectedTab])
-    ) {
-      const filteredData = this.applySearch(data, search, data[selectedTab]);
-      this.setState({ filteredData });
-    }
-  }
+    // sort markets
+    const sortOption = sortByOptions.find(option => option.value === sortBy);
 
-  calculateTabNums = (data: MarketsByReportingState, input: string) => {
-    const { filterComp } = this.props;
-    const { tabs } = this.state;
+    if (sortOption) {
+      let comp: Function;
 
-    for (var i = 0; i < tabs.length; i++) {
-      const length = data[tabs[i].key].filter(filterComp.bind(this, input))
-        .length;
-      tabs[i].num = length;
-    }
+      if (sortOption.comp) {
+        comp = sortOption.comp;
+      }
 
-    this.setState({ tabs });
-  };
+      if (sortOption.value === END_TIME) {
+        comp = (marketA, marketB) => {
+          // Not found endTime prop in Market interface
+          if (
+            marketA.endTime.timestamp < currentAugurTimestamp &&
+            marketB.endTime.timestamp < currentAugurTimestamp
+          ) {
+            return marketB.endTime.timestamp - marketA.endTime.timestamp;
+          }
 
-  updateSortBy = (value: string) => {
-    this.setState({ sortBy: value });
+          if (marketA.endTime.timestamp < currentAugurTimestamp) {
+            return 1;
+          }
 
-    let { filteredData } = this.state;
-    filteredData = this.applySortBy(value, filteredData);
+          if (marketB.endTime.timestamp < currentAugurTimestamp) {
+            return -1;
+          }
 
-    this.setState({ filteredData });
-  };
+          return marketA.endTime.timestamp - marketB.endTime.timestamp;
+        };
+      }
 
-  onSearchChange = (input: string) => {
-    this.setState({ search: input });
-
-    const { data } = this.props;
-    const { selectedTab } = this.state;
-    const tabData = data[selectedTab];
-    const filteredData = this.applySearch(data, input, tabData);
-
-    this.setState({ filteredData });
-  };
-
-  selectTab = (tab: string) => {
-    this.setState({ selectedTab: tab });
-
-    const { data } = this.props;
-    let dataFiltered = this.applySearch(data, this.state.search, data[tab]);
-    dataFiltered = this.applySortBy(this.state.sortBy, dataFiltered);
-
-    // @ts-ignore
-    this.setState({ filteredData: dataFiltered, tab });
-  };
-
-  applySearch = (
-    data: MarketsByReportingState,
-    input: string,
-    filteredData: Array<Market>
-  ) => {
-    const { filterComp } = this.props;
-    const { sortBy } = this.state;
-
-    filteredData = filteredData.filter(filterComp.bind(this, input));
-    filteredData = this.applySortBy(sortBy, filteredData);
-
-    this.calculateTabNums(data, input);
-
-    return filteredData;
-  };
-
-  applySortBy = (value: string, data: Array<Market>) => {
-    const { currentAugurTimestamp, sortByOptions } = this.props;
-    const valueObj = sortByOptions.find(option => ({ value }));
-    let comp: any;
-
-    if (valueObj && valueObj.comp) {
-      comp = valueObj.comp;
+      nextFilteredData = nextFilteredData.sort((a, b) => comp(a, b));
     }
 
-    if (valueObj && valueObj.value === END_TIME) {
-      comp = (marketA, marketB) => {
-        if (
-          marketA.endTime.timestamp < currentAugurTimestamp &&
-          marketB.endTime.timestamp < currentAugurTimestamp
-        ) {
-          return marketB.endTime.timestamp - marketA.endTime.timestamp;
-        }
-        if (marketA.endTime.timestamp < currentAugurTimestamp) {
-          return 1;
-        }
-        if (marketB.endTime.timestamp < currentAugurTimestamp) {
-          return -1;
-        }
-        return marketA.endTime.timestamp - marketB.endTime.timestamp;
+    const nextTabs = [...tabs];
+
+    for (let i = 0; i < tabs.length; i++) {
+      const numOfMarkets = data[tabs[i].key].filter(market =>
+        filterComp(search, market)
+      ).length;
+
+      nextTabs[i] = {
+        ...nextTabs[i],
+        num: numOfMarkets,
       };
     }
-    data = data.sort(comp);
 
-    return data;
+    setTabs(nextTabs);
+    setFilteredData(nextFilteredData);
   };
 
-  render() {
-    const {
-      title,
-      sortByOptions,
-      bottomRightContent,
-      noToggle,
-      renderRightContent,
-      dataObj,
-      renderToggleContent,
-      filterLabel,
-      sortByStyles,
-      showPending,
-      toggle,
-      hide,
-      extend,
-    } = this.props;
+  // effects
 
-    const { filteredData, search, selectedTab, tabs } = this.state;
-
-    let selectedLabel: any = tabs.find(tab => tab.key === selectedTab);
-
-    if (selectedLabel) {
-      selectedLabel = selectedLabel.label.toLowerCase();
+  // for:
+  // - component did mount
+  // - search, sortBy, selectedTab, data did change
+  React.useEffect(() => {
+    if (
+      dataRef.current &&
+      JSON.stringify(data[selectedTab]) ===
+        JSON.stringify(dataRef.current[selectedTab])
+    ) {
+      return;
     }
 
-    return (
-      <QuadBox
-        title={title}
-        switchHeaders={true}
-        showFilterSearch={true}
-        onSearchChange={this.onSearchChange}
-        sortByOptions={sortByOptions}
-        sortByStyles={sortByStyles}
-        updateDropdown={this.updateSortBy}
-        bottomRightBarContent={bottomRightContent && bottomRightContent}
-        toggle={toggle}
-        hide={hide}
-        extend={extend}
-        bottomBarContent={
-          <SwitchLabelsGroup
-            tabs={tabs}
-            selectedTab={selectedTab}
-            selectTab={this.selectTab}
-          />
-        }
-        content={
-          <>
-            {filteredData.length === 0 && (
-              <EmptyDisplay
-                selectedTab={
-                  selectedTab !== ALL_MARKETS ? selectedLabel + ' ' : ''
-                }
-                filterLabel={filterLabel}
-                search={search}
-              />
+    applySearchAndSort();
+  }, [search, sortBy, selectedTab, data]);
+
+  // for: - maintain dataRef
+  React.useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
+  // memos
+  const selectedLabel = React.useMemo(() => {
+    const tab = tabs.find(tab => tab.key === selectedTab);
+    const label = (tab && tab.label) || '';
+
+    return label !== ALL_MARKETS ? selectedLabel + ' ' : '';
+  }, [tabs, selectedTab]);
+
+  return (
+    <QuadBox
+      title={title}
+      switchHeaders={true}
+      showFilterSearch={true}
+      onSearchChange={setSearch}
+      sortByOptions={sortByOptions}
+      sortByStyles={sortByStyles}
+      updateDropdown={setSortBy}
+      bottomRightBarContent={bottomRightContent && bottomRightContent}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
+      bottomBarContent={
+        <SwitchLabelsGroup
+          tabs={tabs}
+          selectedTab={selectedTab}
+          selectTab={setSelectedTab}
+        />
+      }
+      content={
+        <>
+          {filteredData.length === 0 && (
+            <EmptyDisplay
+              selectedTab={selectedLabel}
+              filterLabel={filterLabel}
+              search={search}
+            />
+          )}
+          {/* Not found id prop in Market interface */}
+          {filteredData.length > 0 &&
+            filteredData.map((market: any, index: number) =>
+              dataObj[market.id] ? (
+                <MarketRow
+                  key={`position_${market.id}_${index}`}
+                  market={dataObj[market.id]}
+                  showState={selectedTab === ALL_MARKETS}
+                  noToggle={noToggle}
+                  showPending={showPending}
+                  toggleContent={
+                    renderToggleContent &&
+                    renderToggleContent(dataObj[market.id])
+                  }
+                  rightContent={
+                    renderRightContent && renderRightContent(dataObj[market.id])
+                  }
+                />
+              ) : null
             )}
-            {filteredData.length > 0 &&
-              filteredData.map((market: any, index: string) =>
-                dataObj[market.id] ? (
-                  <MarketRow
-                    key={'position_' + market.id + '_' + index}
-                    market={dataObj[market.id]}
-                    showState={selectedTab === ALL_MARKETS}
-                    noToggle={noToggle}
-                    showPending={showPending}
-                    toggleContent={
-                      renderToggleContent &&
-                      renderToggleContent(dataObj[market.id])
-                    }
-                    rightContent={
-                      renderRightContent &&
-                      renderRightContent(dataObj[market.id])
-                    }
-                  />
-                ) : null
-              )}
-          </>
-        }
-        search={search}
-      />
-    );
-  }
-}
+        </>
+      }
+      search={search}
+    />
+  );
+};
+
+export default FilterBox;
