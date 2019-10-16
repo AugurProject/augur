@@ -7,6 +7,7 @@ import { augurEmitter } from '../../events';
 import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
 import { getAddress } from "ethers/utils/address";
 import { SignedOrder } from '@0x/types';
+import { WrapperOrderEvent } from '../../api/ZeroX';
 
 // This database clears its contents on every sync. The primary purposes for even storing this data are:
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
@@ -78,7 +79,7 @@ export class ZeroXOrders extends AbstractDB {
     }
   }
 
-  handleMeshEvent(orderEvents: OrderEvent[]): void {
+  handleMeshEvent(orderEvents: WrapperOrderEvent[]): void {
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -128,7 +129,9 @@ export class ZeroXOrders extends AbstractDB {
   processOrder(order: OrderInfo): StoredOrder {
     const _id = order.orderHash;
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
-    const savedOrder = Object.assign({ _id, signedOrder: order.signedOrder, amount: order.fillableTakerAssetAmount, orderHash: order.orderHash }, augurOrderData);
+    // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
+    const amount = typeof(order.fillableTakerAssetAmount) === "string" ? order.fillableTakerAssetAmount : order.fillableTakerAssetAmount.toFixed();
+    const savedOrder = Object.assign({ _id, signedOrder: order.signedOrder, amount, orderHash: order.orderHash }, augurOrderData);
     return savedOrder;
   }
 
