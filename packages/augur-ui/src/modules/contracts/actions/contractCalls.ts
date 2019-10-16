@@ -158,7 +158,9 @@ export async function getRepThresholdForPacing() {
 
 export async function getDisputeThresholdForFork(universeId: string) {
   const { contracts } = augurSdk.get();
-  const disputeThresholdForFork = await contracts.universeFromAddress(universeId).getDisputeThresholdForFork_();
+  const disputeThresholdForFork = await contracts
+    .universeFromAddress(universeId)
+    .getDisputeThresholdForFork_();
   return createBigNumber(disputeThresholdForFork);
 }
 
@@ -170,25 +172,33 @@ export async function getOpenInterestInAttoCash() {
 
 export async function getForkingMarket(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkingMarket = await contracts.universeFromAddress(universeId).getForkingMarket_();
+  const forkingMarket = await contracts
+    .universeFromAddress(universeId)
+    .getForkingMarket_();
   return forkingMarket;
 }
 
 export async function getForkEndTime(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkEndTime = await contracts.universeFromAddress(universeId).getForkEndTime_();
+  const forkEndTime = await contracts
+    .universeFromAddress(universeId)
+    .getForkEndTime_();
   return forkEndTime;
 }
 
 export async function getForkReputationGoal(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkReputationGoal = await contracts.universeFromAddress(universeId).getForkReputationGoal_();
+  const forkReputationGoal = await contracts
+    .universeFromAddress(universeId)
+    .getForkReputationGoal_();
   return forkReputationGoal;
 }
 
 export async function getWinningChildUniverse(universeId: string) {
   const { contracts } = augurSdk.get();
-  const winningChildUniverse = await contracts.universeFromAddress(universeId).getWinningChildUniverse_();
+  const winningChildUniverse = await contracts
+    .universeFromAddress(universeId)
+    .getWinningChildUniverse_();
   return winningChildUniverse;
 }
 
@@ -270,6 +280,20 @@ export async function redeemUserStakesEstimateGas(
   );
 }
 
+export async function forkAndRedeem(reportingParticipantsContracts: string) {
+  const { contracts } = augurSdk.get();
+  try {
+    contracts
+      .getReportingParticipant(reportingParticipantsContracts)
+      .forkAndRedeem();
+  } catch (e) {
+    console.error(
+      'Could not fork and redeem sigle reporting participant contract',
+      e
+    );
+  }
+}
+
 export async function redeemUserStakes(
   reportingParticipantsContracts: string[],
   disputeWindows: string[]
@@ -281,9 +305,17 @@ export async function redeemUserStakes(
       disputeWindows
     );
   } catch (e) {
-    console.error("Could not redeem REP", e);
+    console.error('Could not redeem REP', e);
   }
+}
 
+export async function disavowMarket(marketId: string) {
+  const { contracts } = augurSdk.get();
+  try {
+    contracts.marketFromAddress(marketId).disavowCrowdsourcers();
+  } catch (e) {
+    console.error('Could not disavow market', marketId, e);
+  }
 }
 
 export interface doReportDisputeAddStake {
