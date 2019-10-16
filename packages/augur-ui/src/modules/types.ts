@@ -679,6 +679,8 @@ export interface ClaimReportingOptions {
   reportingParticipants: string[],
   disputeWindows: string[],
   estimateGas?: boolean;
+  disavowed?: boolean;
+  isForkingMarket?: boolean;
 }
 
 export interface MarketReportContracts {
