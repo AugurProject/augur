@@ -51,9 +51,15 @@ export enum TemplateInputType {
   DATEYEAR = 'DATEYEAR',
   DATETIME = 'DATETIME',
   DROPDOWN = 'DROPDOWN',
+  DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN',
   ADDED_OUTCOME = 'ADDED_OUTCOME',
   USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
+}
+
+export enum ValidationType {
+  WHOLE_NUMBER = 'WHOLE_NUMBER',
+  NUMBER = 'NUMBER'
 }
 
 export interface UserInputText {
@@ -121,6 +127,7 @@ export interface Template {
   inputs: TemplateInput[];
   inputsType: TemplateInputTypeNames;
   resolutionRules: ResolutionRules;
+  denomination: string;
 }
 
 export interface TemplateInput {
@@ -593,6 +600,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -628,6 +636,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -658,6 +667,7 @@ const TEMPLATES = {
         marketType: SCALAR,
         question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
         example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
+        denomination: '[Denomination]',
         inputs: [
           {
             id: 0,
@@ -666,7 +676,7 @@ const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.DROPDOWN,
+            type: TemplateInputType.DENOMINATION_DROPDOWN,
             placeholder: `Currency`,
             values: LIST_VALUES.CURRENCY,
           },
@@ -702,6 +712,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -737,6 +748,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -777,6 +789,7 @@ const TEMPLATES = {
             id: 1,
             type: TemplateInputType.TEXT,
             placeholder: `Value #`,
+            validationType: ValidationType.NUMBER,
           },
           {
             id: 2,
@@ -797,6 +810,7 @@ const TEMPLATES = {
         marketType: SCALAR,
         question: `What price will [0] close at in [1] on the [2] on [3]`,
         example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019`,
+        denomination: '[Denomination]',
         inputs: [
           {
             id: 0,
@@ -805,7 +819,7 @@ const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.DROPDOWN,
+            type: TemplateInputType.DENOMINATION_DROPDOWN,
             placeholder: `Currency`,
             values: LIST_VALUES.CURRENCY,
           },
@@ -827,6 +841,7 @@ const TEMPLATES = {
         marketType: SCALAR,
         question: `What price will the [0] close at in [1] on [2]`,
         example: `What Price will the S&P 500 close at in USD on December 31, 2019`,
+        denomination: '[Denomination]',
         inputs: [
           {
             id: 0,
@@ -835,7 +850,7 @@ const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.DROPDOWN,
+            type: TemplateInputType.DENOMINATION_DROPDOWN,
             placeholder: `Currency`,
             values: LIST_VALUES.CURRENCY,
           },
@@ -1048,6 +1063,7 @@ const TEMPLATES = {
             marketType: SCALAR,
             question: `Total number of wins the [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
+            denomination: 'wins',
             inputs: [
               {
                 id: 0,
@@ -1321,6 +1337,7 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.TEXT,
+                validationType: ValidationType.WHOLE_NUMBER,
                 placeholder: `Whole #`,
               },
               {
@@ -1540,6 +1557,7 @@ const TEMPLATES = {
             marketType: SCALAR,
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
+            denomination: 'wins',
             inputs: [
               {
                 id: 0,
@@ -1621,6 +1639,7 @@ const TEMPLATES = {
             marketType: SCALAR,
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
+            denomination: 'wins',
             inputs: [
               {
                 id: 0,
@@ -1797,6 +1816,7 @@ const TEMPLATES = {
             marketType: SCALAR,
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Giants will finish 2019 regular season with`,
+            denomination: 'wins',
             inputs: [
               {
                 id: 0,
@@ -1992,6 +2012,7 @@ const INPUTS = {
     {
       id: 1,
       type: TemplateInputType.TEXT,
+      validationType: ValidationType.WHOLE_NUMBER,
       placeholder: `Whole #`,
     },
     {
@@ -2034,6 +2055,7 @@ const INPUTS = {
     {
       id: 2,
       type: TemplateInputType.TEXT,
+      validationType: ValidationType.WHOLE_NUMBER,
       placeholder: `Whole #`,
     },
     {
@@ -2095,6 +2117,7 @@ const INPUTS = {
     {
       id: 2,
       type: TemplateInputType.TEXT,
+      validationType: ValidationType.WHOLE_NUMBER,
       placeholder: `Whole #`,
     },
     {
