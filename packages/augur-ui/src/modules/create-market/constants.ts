@@ -34,7 +34,6 @@ export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
 
-
 export const EMPTY_STATE: NewMarket = {
   isValid: false,
   validations: {
@@ -110,16 +109,16 @@ const LiquidityContent = {
 };
 
 const ReviewContent = {
-	title: "Review",
-	largeHeader: "Review market details",
-	previewButton: true,
-	explainerBlockTitle: "Double check the details",
-	explainerBlockSubtexts: [
-		"Event expiration must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."
-	],
-	mainContent: REVIEW,
-	firstButton: BACK,
-	secondButton: CREATE
+  title: 'Review',
+  largeHeader: 'Review market details',
+  previewButton: true,
+  explainerBlockTitle: 'Double check the details',
+  explainerBlockSubtexts: [
+    'Event expiration must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid.',
+  ],
+  mainContent: REVIEW,
+  firstButton: BACK,
+  secondButton: CREATE,
 };
 
 export const CUSTOM_CONTENT_PAGES = [
@@ -133,6 +132,10 @@ export const SUB_CATEGORIES = 'subCategories';
 export const MARKET_TYPE = 'marketType';
 export const TEMPLATE_PICKER = 'templatePicker';
 
+function checkValid(data) {
+  return data === '' || !data;
+}
+
 export const TEMPLATE_CONTENT_PAGES = [
   { title: 'Category' },
   {
@@ -140,20 +143,33 @@ export const TEMPLATE_CONTENT_PAGES = [
     mainContent: SUB_CATEGORIES,
     firstButton: BACK,
     secondButton: NEXT,
+    disabledFunction: newMarket => checkValid(newMarket.categories[1]),
   },
-  { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
-  { title: 'Template', mainContent: TEMPLATE_PICKER, firstButton: BACK, secondButton: NEXT },
+  {
+    title: 'Market Type',
+    mainContent: MARKET_TYPE,
+    firstButton: BACK,
+    secondButton: NEXT,
+    disabledFunction: newMarket => checkValid(newMarket.marketType),
+  },
+  {
+    title: 'Template',
+    mainContent: TEMPLATE_PICKER,
+    firstButton: BACK,
+    secondButton: NEXT,
+    disabledFunction: newMarket => checkValid(newMarket.template),
+  },
   {
     title: 'Event Details',
-    largeHeader: "Enter the event details",
-    explainerBlockTitle: "A note on choosing a market",
+    largeHeader: 'Enter the event details',
+    explainerBlockTitle: 'A note on choosing a market',
     explainerBlockSubtexts: [
       "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
-      "A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid."
+      'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid.',
     ],
     mainContent: TEMPLATE_FORM_DETAILS,
     firstButton: BACK,
-    secondButton: NEXT
+    secondButton: NEXT,
   },
   LiquidityContent,
   ReviewContent,
@@ -394,8 +410,7 @@ export const MARKET_TYPE_TEMPLATES = [
   {
     value: CATEGORICAL,
     header: 'Multiple Choice',
-    description:
-      'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
+    description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
     icon: Popcorn,
     useIconColors: true,
   },
@@ -407,7 +422,7 @@ export const MARKET_TYPE_TEMPLATES = [
     icon: Popcorn,
     useIconColors: true,
   },
-]
+];
 
 export const DESCRIPTION_PLACEHOLDERS = {
   [YES_NO]: 'Example: Will [person] win the [year] [event]?',
@@ -491,7 +506,7 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Min',
     checkFilledNumber: true,
     checkLessThan: true,
-    lessThanMessage: 'Min can\'t be higher than max'
+    lessThanMessage: "Min can't be higher than max",
   },
   [MAX_PRICE]: {
     label: MAX_PRICE,
@@ -530,6 +545,6 @@ export const VALIDATION_ATTRIBUTES = {
   [TEMPLATE_INPUTS]: {
     label: TEMPLATE_INPUTS,
     readableName: 'Template inputs',
-    checkUserInputFilled: true
-  }
+    checkUserInputFilled: true,
+  },
 };

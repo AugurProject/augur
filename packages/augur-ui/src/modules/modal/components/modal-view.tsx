@@ -21,7 +21,6 @@ import ModalFinalize from 'modules/modal/containers/modal-finalize';
 import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
 import ModalMarketReview from 'modules/modal/containers/modal-market-review';
-import ModalMarketReviewTrade from 'modules/modal/containers/modal-market-review-trade';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
 import ModalParticipate from 'modules/modal/containers/modal-participate';
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
@@ -118,8 +117,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDiscard />;
     case TYPES.MODAL_MARKET_REVIEW:
       return <ModalMarketReview {...modal} />;
-    case TYPES.MODAL_MARKET_REVIEW_TRADE:
-      return <ModalMarketReviewTrade {...modal} />;
     case TYPES.MODAL_ACCOUNT_APPROVAL:
       return <ModalApproval />;
     case TYPES.MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET:
