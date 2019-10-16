@@ -128,6 +128,7 @@ export interface Template {
   inputsType: TemplateInputTypeNames;
   resolutionRules: ResolutionRules;
   denomination: string;
+  noSubCategories?: boolean;
 }
 
 export interface TemplateInput {
@@ -566,6 +567,7 @@ const TEMPLATES = {
   [CRYPTO]: {
     templates: [
       {
+        noSubCategories: true,
         templateId: `crypto-token-bin`,
         marketType: YES_NO,
         question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
@@ -602,6 +604,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `crypto-between-bin`,
         marketType: YES_NO,
         question: `Will the price of [0], exceed [1] [2], on [3] anytime between the [4] (23:59 UTC-0) and [5] (23:59 UTC-0)`,
@@ -643,6 +646,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `crypto-close-scalar`,
         marketType: SCALAR,
         question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
@@ -678,6 +682,7 @@ const TEMPLATES = {
   [FINANCE]: {
     templates: [
       {
+        noSubCategories: true,
         templateId: `fin-stock-bin`,
         marketType: YES_NO,
         question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]`,
@@ -714,6 +719,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `fin-stock-exceed-bin`,
         marketType: YES_NO,
         question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]`,
@@ -755,6 +761,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `fin-index-close-bin`,
         marketType: YES_NO,
         question: `Will the [0] close on or above [1] [2] on [3]`,
@@ -786,6 +793,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `fin-price-scalar`,
         marketType: SCALAR,
         question: `What price will [0] close at in [1] on the [2] on [3]`,
@@ -817,6 +825,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `fin-price-close-scalar`,
         marketType: SCALAR,
         question: `What price will the [0] close at in [1] on [2]`,
@@ -847,6 +856,7 @@ const TEMPLATES = {
   [ENTERTAINMENT]: {
     templates: [
       {
+        noSubCategories: true,
         templateId: `ent-host-event`,
         marketType: YES_NO,
         question: `Will [0] host the [1] [2]`,
@@ -856,6 +866,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `ent-host-event2`,
         marketType: YES_NO,
         question: `Will [0] win an award for [1] at the [2] [3]`,
@@ -865,6 +876,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `ent-host-event3`,
         marketType: YES_NO,
         question: `Will [0] win an award for [1] at the [2] [3]`,
@@ -883,6 +895,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `ent-host-cat`,
         marketType: CATEGORICAL,
         question: `Who will host the [0] [1]`,
@@ -892,6 +905,7 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        noSubCategories: true,
         templateId: `ent-win-award-cat`,
         marketType: CATEGORICAL,
         question: `Who will win for [0] in the [1] [2]`,

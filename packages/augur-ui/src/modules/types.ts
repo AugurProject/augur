@@ -339,7 +339,6 @@ export interface NewMarket {
   offset: number;
   timezone: string;
   template: Template;
-  initialSubCat?: boolean;
 }
 
 export interface LinkContent {

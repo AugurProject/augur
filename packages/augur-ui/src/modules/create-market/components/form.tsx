@@ -149,7 +149,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
     contentPages: this.props.isTemplate
-      ? (this.props.newMarket.initialSubCat === '' ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
+      ? (this.props.newMarket.template.noSubCategories ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
     categoryStats: null,
