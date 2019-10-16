@@ -59,22 +59,6 @@ export default class MarketOutcomesChartHighchart extends Component<
           styledMode: false,
           animation: false,
           marginTop: 40,
-          // events: {
-          //   load() {
-          //     // @ts-ignore
-          //     const { width } = this.renderer;
-          //     // @ts-ignore
-          //     // this.ethLabel = this.renderer.label('DAI', width - 35, 0).add();
-          //   },
-          //   redraw() {
-          //     // @ts-ignore
-          //     const { width } = this.renderer;
-          //     // @ts-ignore
-          //     // this.ethLabel.destroy();
-          //     // @ts-ignore
-          //     // this.ethLabel = this.renderer.label('DAI', width - 35, 0).add();
-          //   },
-          // },
         },
         credits: {
           enabled: false,
