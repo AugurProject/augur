@@ -70,6 +70,7 @@ interface AppProps {
   updateConnectionTray: Function;
   isConnectionTrayOpen: boolean;
   showGlobalChat: Function;
+  updateHelpMenuState: Function;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -121,11 +122,13 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
-      updateConnectionTray
+      updateConnectionTray,
+      updateHelpMenuState,
     } = this.props;
 
     window.addEventListener('click', (e) => {
       updateConnectionTray(false);
+      updateHelpMenuState(false);
     });
 
     initAugur(

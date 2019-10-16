@@ -14,7 +14,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { LANDING_PAGE } from 'modules/routes/constants/views';
-import { HelpResources } from 'modules/app/components/help-resources';
+import HelpResources from 'modules/app/containers/help-resources';
 
 interface TopBarProps {
   alertsVisible: boolean;
@@ -24,6 +24,7 @@ interface TopBarProps {
   updateIsAlertVisible: Function;
   signupModal: Function;
   loginModal: Function;
+  isConnectionTrayOpen: boolean;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -34,6 +35,7 @@ const TopBar: React.FC<TopBarProps> = ({
   updateIsAlertVisible,
   signupModal,
   loginModal,
+  isConnectionTrayOpen,
 }) => {
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 

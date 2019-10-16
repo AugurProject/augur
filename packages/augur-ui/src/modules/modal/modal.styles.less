@@ -195,8 +195,12 @@ div.Onboarding {
       display: flex;
       flex-direction: row-reverse;
 
-      > button {
+      > button:last-of-type {
         margin-right: @size-16;
+      }
+
+      > button:only-of-type {
+        margin: 0;
       }
     }
 
@@ -220,6 +224,10 @@ div.Onboarding {
     &.Current {
       background: @color-primary-text;
     }
+  }
+
+  > span:last-of-type {
+    margin-right: 0;
   }
 }
 
