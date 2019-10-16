@@ -310,23 +310,19 @@ export default class FormDetails extends React.Component<
               />
             </>
           )}
-
-          {!isTemplate && (
-            <>
-              <Subheaders
-                header="Market category"
-                subheader="Categories help users to find your market on Augur."
-              />
-              <CategoryMultiSelect
-                initialSelected={categories}
-                sortedGroup={setCategories}
-                updateSelection={categoryArray =>
-                  onChange(CATEGORIES, categoryArray)
-                }
-                errorMessage={validations.categories}
-              />
-            </>
-          )}
+          <Subheaders
+            header="Market category"
+            subheader="Categories help users to find your market on Augur."
+          />
+          <CategoryMultiSelect
+            initialSelected={categories}
+            sortedGroup={setCategories}
+            updateSelection={categoryArray =>
+              onChange(CATEGORIES, categoryArray)
+            }
+            errorMessage={validations.categories}
+            disableCategories={isTemplate}
+          />
         </div>
         <LineBreak />
         <div>
