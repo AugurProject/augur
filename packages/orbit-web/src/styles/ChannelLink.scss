@@ -1,0 +1,41 @@
+@import 'Colors';
+
+.ChannelLink {
+  display: flex;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  text-decoration: none;
+
+  &.hasMentions {
+    .unreadMessages {
+      background-color: $main-color;
+    }
+  }
+
+  &:hover {
+    color: rgb(240, 240, 240);
+  }
+
+  .unreadMessages {
+    font-weight: bold;
+    font-size: 0.6em;
+
+    color: rgba(240, 240, 240, 0.9);
+    background-color: rgba(240, 240, 240, 0.1);
+    border-radius: 32px;
+
+    display: flex;
+    justify-content: center;
+
+    height: 1.2em;
+    min-width: 1.2em;
+
+    margin-left: 0.3em;
+    margin-right: 0em;
+    padding: 0.2em 0.25em 0.2em 0.2em;
+  }
+}

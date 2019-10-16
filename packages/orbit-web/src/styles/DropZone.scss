@@ -1,0 +1,28 @@
+@import "Colors";
+
+.dropzone {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 101;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em;
+  font-weight: bold;
+  font-size: 4em;
+  color: $main-text-color;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+  transition: opacity 0.1s ease-in-out;
+  border: 2px dotted $main-color;
+  white-space: nowrap;
+  overflow: hidden;
+  .droplabel {
+    pointer-events: none;
+  }
+}
