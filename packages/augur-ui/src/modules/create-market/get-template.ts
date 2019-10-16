@@ -166,13 +166,24 @@ export const getTemplateRadioCards = (
       .map(c => MARKET_TEMPLATES.find(t => t.value === c))
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
-  if (categories.primary && !categories.secondary) {
+  const useParentValues = findIfSubCats(categories.primary)
+
+  if (categories.primary && (useParentValues || !categories.secondary)) {
     return cats
       .map(c =>
         MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
       )
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
+
+  if (categories.primary && categories.secondary) {
+    return cats
+      .map(c =>
+        MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
+      )
+      .map(c => addCategoryStats(categories, c, categoryStats));
+  }
+
   return [];
 };
 
@@ -226,7 +237,9 @@ export const getTemplates = (
   let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
   if (!categoryTemplates) return [];
-  if (!categories.secondary)
+
+  const useParentValues = findIfSubCats(categories.primary)
+  if (!categories.secondary || useParentValues)
     return filterByMarketType
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
       : categoryTemplates.templates;
