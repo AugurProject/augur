@@ -1,13 +1,13 @@
-import React from "react";
-import * as constants from "modules/common/constants";
-import logError from "utils/log-error";
-import { DaiLogoIcon } from "modules/common/icons";
-import ProfitLossChart from "modules/account/components/profit-loss-chart";
-import { MovementLabel } from "modules/common/labels";
-import Styles from "modules/account/components/overview-chart.styles.less";
-import { formatDai } from "utils/format-number";
-import { SizeTypes } from "modules/types";
-import { createBigNumber } from "utils/create-big-number";
+import React from 'react';
+import * as constants from 'modules/common/constants';
+import logError from 'utils/log-error';
+import { DaiLogoIcon } from 'modules/common/icons';
+import ProfitLossChart from 'modules/account/components/profit-loss-chart';
+import { MovementLabel } from 'modules/common/labels';
+import Styles from 'modules/account/components/overview-chart.styles.less';
+import { formatDai } from 'utils/format-number';
+import { SizeTypes } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
 
 const ALL_TIME = 3;
 export interface OverviewChartProps {
@@ -68,26 +68,31 @@ export default class OverviewChart extends React.Component<
     }
   };
 
-   getChartData = async (timeRangeDataConfig: TimeFrameOption) => {
+  getChartData = async (timeRangeDataConfig: TimeFrameOption) => {
     const { universe, currentAugurTimestamp } = this.props;
 
     if (currentAugurTimestamp === 0) {
       return;
     }
 
-    let startTime: number | null = (currentAugurTimestamp) - timeRangeDataConfig.periodInterval;
+    let startTime: number | null =
+      currentAugurTimestamp - timeRangeDataConfig.periodInterval;
 
     if (timeRangeDataConfig.id === ALL_TIME) {
       startTime = BEGINNING_START_TIME;
     }
 
     try {
-      const data = await this.props.getProfitLoss(universe, startTime, currentAugurTimestamp);
+      const data = await this.props.getProfitLoss(
+        universe,
+        startTime,
+        currentAugurTimestamp
+      );
 
       const noTrades = data
         .reduce(
           (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
-          constants.ZERO,
+          constants.ZERO
         )
         .eq(constants.ZERO);
 
@@ -99,7 +104,9 @@ export default class OverviewChart extends React.Component<
       const chartValues = data.reduce(
         (p, d) => ({
           ...p,
-          [d.timestamp === 0 ? startTime * 1000: d.timestamp * 1000]: createBigNumber((d.realized)).toNumber(),
+          [d.timestamp === 0
+            ? startTime * 1000
+            : d.timestamp * 1000]: createBigNumber(d.realized).toNumber(),
         }),
         {}
       );
@@ -120,20 +127,18 @@ export default class OverviewChart extends React.Component<
       if (this.container) {
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(lastData.realized || 0)
-            .formatted,
-          profitLossChangeHasValue: !createBigNumber(
-            lastData.realized || 0
-          ).eq(constants.ZERO),
+          profitLossChange: formatDai(lastData.realized || 0).formatted,
+          profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
+            constants.ZERO
+          ),
           profitLossValue: formatDai(lastData.realized).formatted,
-          noTrades,
+          noTrades: false,
         });
       }
-    }
-    catch (error) {
+    } catch (error) {
       logError(error);
     }
-  }
+  };
 
   render() {
     const {
@@ -165,7 +170,9 @@ export default class OverviewChart extends React.Component<
             size={SizeTypes.NORMAL}
           />
           <h4>
-            ${profitLossValue}
+            {profitLossValue >= 0
+              ? `$${profitLossValue}`
+              : `-$${Math.abs(profitLossValue)}`}
           </h4>
           <ProfitLossChart
             data={profitLossData}
@@ -178,7 +185,7 @@ export default class OverviewChart extends React.Component<
     return (
       <div
         className={Styles.OverviewChart}
-        ref={(container) => {
+        ref={container => {
           this.container = container;
         }}
       >
