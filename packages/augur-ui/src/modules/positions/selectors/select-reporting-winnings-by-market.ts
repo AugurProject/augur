@@ -21,7 +21,7 @@ export const selectReportingWinningsByMarket = createSelector(
   (
     userReporting,
     marketInfos, // this is needed to trigger the selector if marketInfos changes
-    forkingInfo,
+    forkingInfo
   ): MarketReportClaimableContracts => {
     const releasingRep = !!forkingInfo;
     const forkingMarket = releasingRep && forkingInfo.forkingMarket;
@@ -42,7 +42,7 @@ export const selectReportingWinningsByMarket = createSelector(
     ) {
       const calcUnclaimed = userReporting.participationTokens.contracts.reduce(
         (p, c) =>
-          (c.isClaimable || releasingRep)
+          c.isClaimable || releasingRep
             ? {
                 contracts: [...p.contracts, c.address],
                 dai: p.dai.plus(c.amountFees),
@@ -63,7 +63,10 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.reporting.contracts.length > 0
     ) {
       claimableMarkets = userReporting.reporting.contracts.reduce(
-        (p, contract) => ((contract.isClaimable || releasingRep) ? sumClaims(contract, p, forkingMarket) : p),
+        (p, contract) =>
+          contract.isClaimable || releasingRep
+            ? sumClaims(contract, p, forkingMarket, releasingRep)
+            : p,
         claimableMarkets
       );
     }
@@ -73,7 +76,10 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.disputing.contracts.length > 0
     ) {
       claimableMarkets = userReporting.disputing.contracts.reduce(
-        (p, contract) => ((contract.isClaimable || releasingRep) ? sumClaims(contract, p, forkingMarket) : p),
+        (p, contract) =>
+          contract.isClaimable || releasingRep
+            ? sumClaims(contract, p, forkingMarket, false)
+            : p,
         claimableMarkets
       );
     }
@@ -96,9 +102,29 @@ function sumClaims(
   contractInfo: Getters.Accounts.ContractInfo,
   marketsCollection: marketsReportingCollection,
   forkingMarket: string,
+  filterForkingMarket: boolean
 ): marketsReportingCollection {
   const marketId = contractInfo.marketId;
-  if (marketId === forkingMarket) return marketsCollection;
+  // only add reporting contracts for the forking market
+  if (marketId === forkingMarket && filterForkingMarket) {
+    const addedValue = createBigNumber(contractInfo.amount);
+    marketsCollection.marketContracts = [
+      ...marketsCollection.marketContracts,
+      {
+        ...contractInfo,
+        contracts: [contractInfo.address],
+        totalAmount: createBigNumber(contractInfo.amount),
+        marketObject: selectMarket(contractInfo.marketId),
+      },
+    ];
+    marketsCollection.unclaimedRep = marketsCollection.unclaimedRep.plus(
+      addedValue
+    );
+    return marketsCollection;
+  }
+
+  if (filterForkingMarket) return marketsCollection;
+
   let addedValue = ZERO;
   const found = marketsCollection.marketContracts.find(
     c => c.marketId === marketId
