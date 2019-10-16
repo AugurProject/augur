@@ -29,7 +29,7 @@ export const GlobalChat = (props: GlobalChatProps) => {
               {Close}
             </button>
           </div>
-          <iframe src='./chat/index.html#/channel/augur' />
+          <iframe src='https://augurproject.github.io/orbit-web/#/channel/augur' />
         </div>
       }
     </div>
