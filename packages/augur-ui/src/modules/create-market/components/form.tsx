@@ -237,7 +237,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           this.setState({ blockShown: true }, () => {
             if (isTemplate) {
               updateNewMarket({
-                ...EMPTY_STATE,
+                ...deepClone<NewMarket>(EMPTY_STATE),
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
                 currentStep: TEMPLATE_FORM_STARTS - 1,
