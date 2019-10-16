@@ -626,6 +626,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       largeHeader,
       noDarkBackground,
       previewButton,
+      disabledFunction
     } = contentPages[currentStep];
 
     const savedDraft = drafts[uniqueId];
@@ -648,6 +649,8 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const saveDraftError =
       validations && validations.description === draftError;
+
+    const disabledNext = disabledFunction ? disabledFunction(newMarket) : false;
 
     return (
       <div
@@ -754,7 +757,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                     />
                   )}
                   {secondButton === NEXT && (
-                    <PrimaryButton text="Next" action={this.nextPage} />
+                    <PrimaryButton text="Next" action={this.nextPage} disabled={disabledNext}/>
                   )}
                   {secondButton === CREATE && (
                     <PrimaryButton
