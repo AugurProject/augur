@@ -84,8 +84,6 @@ import Styles from 'modules/create-market/components/form.styles.less';
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
 import {
-  tellIfEditableOutcomes,
-  createTemplateOutcomes,
   buildResolutionDetails,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
@@ -239,7 +237,9 @@ export default class Form extends React.Component<FormProps, FormState> {
           this.setState({ blockShown: true }, () => {
             if (isTemplate) {
               updateNewMarket({
-                ...newMarket,
+                ...deepClone<NewMarket>(EMPTY_STATE),
+                marketType: newMarket.marketType,
+                categories: newMarket.categories,
                 currentStep: TEMPLATE_FORM_STARTS - 1,
                 template: null,
               });
