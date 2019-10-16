@@ -25,6 +25,7 @@ export class DerivedDB extends AbstractDB {
   // events like controller:new:block, with the assumption that log processing
   // should happen first.
   protected locks: {[name: string]: boolean} = {};
+  protected readonly HANDLE_MERGE_EVENT_LOCK = 'handleMergeEvent';
 
   constructor(
     db: DB,
@@ -127,6 +128,7 @@ export class DerivedDB extends AbstractDB {
     let success = true;
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
+      this.lock(this.HANDLE_MERGE_EVENT_LOCK);
       const documents = _.map<ParsedLog, ParsedLog>(logs, this.processLog.bind(this));
       const documentsById = _.groupBy(documents, '_id');
       documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
@@ -154,7 +156,7 @@ export class DerivedDB extends AbstractDB {
       // NOTE: "!syncing" is because during bulk sync we can rely on the order of events provided as they are handled in sequence
       if (this.requiresOrder && !syncing) documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex']);
       success = await this.bulkUpsertUnorderedDocuments(documentsByIdByTopic);
-      this.locks = {}; // Clear locks
+      this.clearLocks();
     }
 
     if (success) {
@@ -195,13 +197,21 @@ export class DerivedDB extends AbstractDB {
     return log;
   }
 
-  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<boolean> {
+  protected lock(name: string) {
+    this.locks[name] = true;
+  }
+
+  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<void> {
     for (let i = 0; i < (maxTimeMS / periodMS); i++) {
       if (!this.locks[lock]) {
-        return true;
+        return;
       }
       await sleep(periodMS);
     }
-    return false; // timeout
+    throw Error(`timeout: lock ${lock} on ${this.name} DB did not release after ${maxTimeMS}ms`);
+  }
+
+  protected clearLocks() {
+    this.locks = {};
   }
 }
