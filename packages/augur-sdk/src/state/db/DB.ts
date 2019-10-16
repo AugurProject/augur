@@ -313,9 +313,8 @@ export class DB {
       }
     }
 
-    await Promise.all(dbSyncPromises);
-
-    await this.emitUserDataSynced();
+    // Only emit this if actually did something....
+    if((await Promise.all(dbSyncPromises)).length > 0) await this.emitUserDataSynced();
   }
 
   async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
