@@ -298,6 +298,8 @@ interface CategoryMultiSelectProps {
   initialValues?: string[];
   updateSelection: Function;
   errorMessage?: string[];
+  disableCategory?: boolean;
+  disableSubCategory?: boolean;
 }
 
 interface CategoryMultiSelectState {
@@ -319,6 +321,7 @@ interface DropdownInputGroupProps {
   showText: boolean;
   showIcon: boolean;
   showDropdown: boolean;
+  disabled: boolean;
 }
 
 const defaultMultiSelect = (amount: number, justStrings = false) => {
@@ -451,6 +454,7 @@ export const DropdownInputGroup = ({
   showText,
   showIcon,
   showDropdown,
+  disabled
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -461,6 +465,7 @@ export const DropdownInputGroup = ({
         onChange={onChangeDropdown}
         options={options}
         errorMessage={errorMessage}
+        disabled={disabled}
       />
     )}
     {showText && (
@@ -593,7 +598,7 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
-    const { errorMessage } = this.props;
+    const { errorMessage, disableCategory, disableSubCategory } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -632,6 +637,7 @@ export class CategoryMultiSelect extends Component<
           showText={customPrimary}
           showIcon={false}
           showDropdown={true}
+          disabled={disableCategory}
         />
         {(showSecondaryDropdown || customSecondary) && (
           <DropdownInputGroup
@@ -649,6 +655,7 @@ export class CategoryMultiSelect extends Component<
             showIcon={showSecondaryDropdown || customSecondary}
             showDropdown={showSecondaryDropdown}
             autoCompleteList={secondaryAutoComplete}
+            disabled={disableSubCategory}
           />
         )}
         {(showTertiaryDropdown || customTertiary) && (

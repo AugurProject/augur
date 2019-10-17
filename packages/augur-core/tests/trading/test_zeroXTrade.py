@@ -185,6 +185,43 @@ def test_basic_trading(contractsFixture, cash, market, universe):
                 with TokenDelta(cash, 0, contractsFixture.accounts[1], "Tester 1 cash not taken"):
                     ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1])
 
+def test_cancelation(contractsFixture, cash, market, universe):
+    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
+    salt = 5
+
+    # First we'll create a signed order
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, zeroXExchange.address, salt)
+    signature = signOrder(orderHash, contractsFixture.privateKeys[0])
+
+    # Now lets cancel it
+    zeroXExchange.cancelOrder(rawZeroXOrderData)
+    assert zeroXExchange.cancelled(orderHash)
+
+    fillAmount = fix(1)
+    affiliateAddress = nullAddress
+    tradeGroupId = longTo32Bytes(42)
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
+    # Lets take the order as another user and confirm we cannot take a canceled order. It will just be a no-op
+    assert cash.faucet(fix(1, 60))
+    assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
+    with TokenDelta(cash, 0, contractsFixture.accounts[0], "Trade occured when cancelled"):
+        with TokenDelta(cash, 0, contractsFixture.accounts[1], "Trade occured when cancelled"):
+            ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1])
+
+    # Now lets make and cancel several
+    # First we'll create a signed order
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, zeroXExchange.address, salt+1)
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, zeroXExchange.address, salt+2)
+
+    # Now lets cancel it
+    zeroXExchange.batchCancelOrders([rawZeroXOrderData1,rawZeroXOrderData2])
+    assert zeroXExchange.cancelled(orderHash1)
+    assert zeroXExchange.cancelled(orderHash2)
+
 @mark.parametrize('withSelf', [
     True,
     False

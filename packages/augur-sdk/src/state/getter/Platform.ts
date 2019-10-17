@@ -20,6 +20,7 @@ import {
   TradingProceedsClaimedLog
 } from "../logs/types";
 import { NULL_ADDRESS } from "./types";
+import { convertAttoValueToDisplayValue } from '../../utils';
 
 export interface PlatformActivityStatsResult {
   activeUsers: number;
@@ -151,9 +152,11 @@ async function getVolume(
     },
     fields: [ 'volume' ],
   });
-  return marketsLogs.reduce(
+  const volume = marketsLogs.reduce(
     (total, log) => total.plus(log.volume),
     new BigNumber(0));
+
+  return convertAttoValueToDisplayValue(volume);
 }
 
 async function getAmountStaked(

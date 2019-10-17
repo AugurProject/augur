@@ -9,7 +9,7 @@ import {
   UPDATE_MARKET_ETH_BALANCE
 } from "modules/markets/actions/update-markets-data";
 
-import { RESET_STATE } from "modules/app/actions/reset-state";
+import { RESET_STATE, SWITCH_UNIVERSE } from "modules/app/actions/reset-state";
 import { MarketInfos, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: MarketInfos = {};
@@ -67,6 +67,7 @@ export default function(marketInfos: MarketInfos = DEFAULT_STATE, { type, data }
     }
     case REMOVE_MARKET:
       return immutableDelete(marketInfos, data.marketId);
+    case SWITCH_UNIVERSE:
     case RESET_STATE:
     case CLEAR_MARKETS_DATA:
       return DEFAULT_STATE;
