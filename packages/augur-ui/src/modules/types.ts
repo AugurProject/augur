@@ -512,6 +512,7 @@ export interface AppStatus {
 
 export interface AuthStatus {
   isLogged?: boolean;
+  restoredAccount?: boolean;
   edgeLoading?: boolean;
   edgeContext?: string;
   isConnectionTrayOpen?: boolean;

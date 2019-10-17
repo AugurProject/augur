@@ -39,8 +39,6 @@ import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  account: state.loginAccount,
-  isLogged: state.authStatus.isLogged,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

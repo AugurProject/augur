@@ -35,7 +35,7 @@ import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { updateAuthStatus, IS_LOGGED } from 'modules/auth/actions/auth-status';
+import { updateAuthStatus, RESTORED_ACCOUNT } from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
 
 
@@ -51,68 +51,68 @@ function pollForAccount(
   let attemptedLogin = false;
   let intervalId = null;
 
-  async function attempLogin() {
+  async function attemptLogin() {
     const { connection } = getState();
     if (attemptedLogin) {
       clearInterval(intervalId);
-    } else {
-      if (connection.isConnected) {
-        attemptedLogin = true;
+    }
 
-        const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-        const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
+    if (connection.isConnected) {
+      attemptedLogin = true;
 
-        const showModal = (accountType) => {
-          dispatch(
-            updateModal({
-              type: MODAL_LOADING,
-              callback: () => dispatch(closeModal()),
-              message: `Syncing 📡 ${accountType} account...`,
-              showCloseAfterDelay: true,
-            })
-          );
+      const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+      const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
+
+      const showModal = (accountType) => {
+        dispatch(
+          updateModal({
+            type: MODAL_LOADING,
+            callback: () => dispatch(closeModal()),
+            message: `Syncing 📡 ${accountType} account...`,
+            showCloseAfterDelay: true,
+          })
+        );
+      }
+
+      const errorModal = () => {
+        dispatch(logout());
+        dispatch(
+          updateModal({
+            type: MODA_WALLET_ERROR,
+          })
+        );
+      };
+
+      if (loggedInAccount) {
+        try {
+          if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+            showModal(ACCOUNT_TYPES.WEB3WALLET);
+            await dispatch(loginWithInjectedWeb3());
+          }
+          if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+            showModal(ACCOUNT_TYPES.PORTIS);
+            await dispatch(loginWithPortis(false));
+          }
+
+          if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+            showModal(ACCOUNT_TYPES.FORTMATIC);
+            await dispatch(loginWithFortmatic());
+          }
+
+          if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+            showModal(ACCOUNT_TYPES.TORUS);
+            await dispatch(loginWithTorus());
+          }
         }
-
-        const errorModal = () => {
-          dispatch(logout());
-          dispatch(
-            updateModal({
-              type: MODA_WALLET_ERROR,
-            })
-          );
-        };
-
-        if (loggedInAccount) {
-          try {
-            if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
-              showModal(ACCOUNT_TYPES.WEB3WALLET);
-              await dispatch(loginWithInjectedWeb3());
-            }
-            if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-              showModal(ACCOUNT_TYPES.PORTIS);
-              await dispatch(loginWithPortis(false));
-            }
-
-            if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-              showModal(ACCOUNT_TYPES.FORTMATIC);
-              await dispatch(loginWithFortmatic());
-            }
-
-            if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-              showModal(ACCOUNT_TYPES.TORUS);
-              await dispatch(loginWithTorus());
-            }
-          }
-          catch (error) {
-            errorModal();
-          }
+        catch (error) {
+          errorModal();
         }
       }
     }
   }
 
   intervalId = setInterval(() => {
-    attempLogin();
+    attemptLogin();
   }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
@@ -170,7 +170,7 @@ export function connectAugur(
           preloaded: true,
         },
       };
-      dispatch(updateAuthStatus(IS_LOGGED, true))
+      dispatch(updateAuthStatus(RESTORED_ACCOUNT, true))
       dispatch(updateLoginAccount(accountObject));
     }
 

@@ -23,6 +23,7 @@ const mapStateToProps = state => {
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     isLogged: state.authStatus.isLogged,
+    restoredAccount: state.authStatus.restoredAccount,
     accountMeta:
       state.loginAccount &&
       state.loginAccount.meta,
