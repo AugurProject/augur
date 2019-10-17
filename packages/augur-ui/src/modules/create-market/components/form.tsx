@@ -110,6 +110,7 @@ interface FormProps {
 interface FormState {
   blockShown: Boolean;
   contentPages: any[];
+  templateFormStarts: number;
   categoryStats: Getters.Markets.CategoryStats;
 }
 
@@ -143,11 +144,11 @@ interface Validations {
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
-const TEMPLATE_FORM_STARTS = 4;
 
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
+    templateFormStarts: findIfSubCats(this.props.newMarket.categories[0]) ? 3 : 4,
     contentPages: this.props.isTemplate
       ? (findIfSubCats(this.props.newMarket.categories[0]) ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
       : CUSTOM_CONTENT_PAGES,
@@ -180,7 +181,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       !newMarket.uniqueId &&
       JSON.stringify(market) !== JSON.stringify(defaultState);
 
-    if (!cb && isTemplate && newMarket.currentStep < TEMPLATE_FORM_STARTS) {
+    if (!cb && isTemplate && newMarket.currentStep < this.state.templateFormStarts) {
       let templateMarket = market;
       let templateDefaultState = defaultState;
       templateMarket = {
@@ -230,7 +231,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     const firstPage = 0;
     if (
-      (isTemplate && newMarket.currentStep === TEMPLATE_FORM_STARTS) ||
+      (isTemplate && newMarket.currentStep === this.state.templateFormStarts) ||
       (!isTemplate && newMarket.currentStep <= firstPage)
     ) {
       this.unblock((goBack: Boolean) => {
@@ -241,7 +242,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 ...deepClone<NewMarket>(EMPTY_STATE),
                 marketType: newMarket.marketType,
                 categories: newMarket.categories,
-                currentStep: TEMPLATE_FORM_STARTS - 1,
+                currentStep: this.state.templateFormStarts - 1,
                 template: null,
               });
             } else {
@@ -286,7 +287,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     let fields = [];
 
-    if (isTemplate) currentStep = currentStep - TEMPLATE_FORM_STARTS;
+    if (isTemplate) currentStep = currentStep - this.state.templateFormStarts;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -749,7 +750,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  {((isTemplate && currentStep >= TEMPLATE_FORM_STARTS) ||
+                  {((isTemplate && currentStep >= this.state.templateFormStarts) ||
                     !isTemplate) && (
                     <SecondaryButton
                       text={disabledSave ? 'Saved' : 'Save draft'}

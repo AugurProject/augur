@@ -246,7 +246,7 @@ export const OutcomesList = (props: OutcomesListProps) => (
     <h1>Outcomes</h1>
     <div>
       {props.outcomes.map((outcome: string, index: Number) => (
-        <span key={index}>
+        <span key={String(index)}>
           {index + 1}. {outcome}
         </span>
       ))}
@@ -307,6 +307,53 @@ interface TimeSelectorParams {
   hour?: string;
   minute?: string;
   meridiem?: string;
+}
+
+interface DatePickerSelectorProps {
+  setEndTime?: number;
+  onChange: Function;
+  currentTimestamp: number;
+  errrorMessage?: string;
+  placeholder?: string;
+  errorMessage?: string;
+}
+
+export const DatePickerSelector = (props: DatePickerSelectorProps) => {
+    const {
+      setEndTime,
+      onChange,
+      currentTimestamp,
+      errorMessage,
+      placeholder
+    } = props;
+
+    const [dateFocused, setDateFocused] = useState(false);
+
+    return (
+      <DatePicker
+        date={setEndTime ? moment(setEndTime * 1000) : null}
+        placeholder={placeholder}
+        displayFormat="MMM D, YYYY"
+        id="input-date"
+        onDateChange={(date: Moment) => {
+          if (!date) return onChange('setEndTime', '');
+          onChange(date.startOf('day').unix());
+        }}
+        isOutsideRange={day =>
+          day.isAfter(moment(currentTimestamp * 1000).add(6, 'M')) ||
+          day.isBefore(moment(currentTimestamp * 1000))
+        }
+        numberOfMonths={1}
+        onFocusChange={({ focused }) => {
+          if (setEndTime === null) {
+            onChange(currentTimestamp);
+          }
+          setDateFocused(() => focused);
+        }}
+        focused={dateFocused}
+        errorMessage={errorMessage}
+      />
+    );
 }
 
 export const DateTimeSelector = (props: DateTimeSelectorProps) => {
@@ -635,10 +682,11 @@ interface InputFactoryProps {
   inputIndex: number;
   onChange: Function;
   newMarket: NewMarket;
+  currentTimestamp: string;
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
-  const { input, inputIndex, onChange, newMarket } = props;
+  const { input, inputIndex, onChange, newMarket, currentTimestamp } = props;
 
   const { template, outcomes, marketType, validations } = newMarket;
 
@@ -698,6 +746,18 @@ export const InputFactory = (props: InputFactoryProps) => {
           onChange('outcomes', newOutcomes);
         }}
         value={input.userInput}
+      />
+    );
+  } else if (input.type === TemplateInputType.DATEYEAR) {
+    return (
+      <DatePickerSelector
+        onChange={(value) => {
+          updateData(value);
+        }}
+        currentTimestamp={currentTimestamp}
+        placeholder={input.placeholder}
+        setEndTime={input.userInput}
+        errorMessage={validations.inputs[inputIndex]}
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
@@ -878,7 +938,7 @@ export interface QuestionBuilderProps {
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
-  const { onChange, newMarket } = props;
+  const { onChange, newMarket, currentTimestamp } = props;
   const { template, outcomes, marketType, validations } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
@@ -894,12 +954,12 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
         subheader="What do you want people to predict?"
       />
       <div>
-        {question.map(word => {
+        {question.map((word, index) => {
           const bracketPos = word.indexOf('[');
           const bracketPos2 = word.indexOf(']');
 
           if (bracketPos === -1 || bracketPos === -1) {
-            return <span key={word.id}>{word}</span>;
+            return <span key={word+index}>{word}</span>;
           } else {
             const id = word.substring(bracketPos + 1, bracketPos2);
             const inputIndex = inputs.findIndex(
@@ -914,6 +974,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                   inputIndex={inputIndex}
                   onChange={onChange}
                   newMarket={newMarket}
+                  currentTimestamp={currentTimestamp}
                 />
               );
             }
@@ -925,7 +986,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           newMarket={newMarket}
           onChange={onChange}
           input={inputs[dateTimeIndex]}
-          currentTime={props.currentTime}
+          currentTime={currentTimestamp}
           template={template}
           inputIndex={dateTimeIndex}
         />
