@@ -246,7 +246,7 @@ export const OutcomesList = (props: OutcomesListProps) => (
     <h1>Outcomes</h1>
     <div>
       {props.outcomes.map((outcome: string, index: Number) => (
-        <span key={index}>
+        <span key={String(index)}>
           {index + 1}. {outcome}
         </span>
       ))}
@@ -315,6 +315,7 @@ interface DatePickerSelectorProps {
   currentTimestamp: number;
   errrorMessage?: string;
   placeholder?: string;
+  errorMessage?: string;
 }
 
 export const DatePickerSelector = (props: DatePickerSelectorProps) => {
@@ -325,9 +326,9 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
       errorMessage,
       placeholder
     } = props;
-  
+
     const [dateFocused, setDateFocused] = useState(false);
-  
+
     return (
       <DatePicker
         date={setEndTime ? moment(setEndTime * 1000) : null}
@@ -352,7 +353,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
         focused={dateFocused}
         errorMessage={errorMessage}
       />
-  };
+    );
 }
 
 export const DateTimeSelector = (props: DateTimeSelectorProps) => {
@@ -749,14 +750,14 @@ export const InputFactory = (props: InputFactoryProps) => {
     );
   } else if (input.type === TemplateInputType.DATEYEAR) {
     return (
-      <DatePickerSelector 
+      <DatePickerSelector
         onChange={(value) => {
           updateData(value);
-        }} 
-        currentTimestamp={currentTimestamp} 
-        placeholder={input.placeholder} 
-        setEndTime={input.userInput} 
-        errorMessage={validations.inputs[inputIndex]} 
+        }}
+        currentTimestamp={currentTimestamp}
+        placeholder={input.placeholder}
+        setEndTime={input.userInput}
+        errorMessage={validations.inputs[inputIndex]}
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
