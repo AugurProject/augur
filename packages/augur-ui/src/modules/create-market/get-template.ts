@@ -169,7 +169,7 @@ export const getTemplateRadioCards = (
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
 
-  const useParentValues = findIfSubCats(categories.primary);
+  const useParentValues = hasNoTemplateCategoryChildren(categories.primary);
 
   if (categories.primary && (useParentValues || !categories.secondary)) {
     return cats
@@ -241,7 +241,7 @@ export const getTemplates = (
 
   if (!categoryTemplates) return [];
 
-  const useParentValues = findIfSubCats(categories.primary);
+  const useParentValues = hasNoTemplateCategoryChildren(categories.primary);
   if (!categories.secondary || useParentValues)
     return filterByMarketType
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
@@ -370,7 +370,8 @@ export const buildResolutionDetails = (
   return details;
 };
 
-export const findIfSubCats = category => {
+export const hasNoTemplateCategoryChildren = category => {
+  if (!category) return false;
   if (TEMPLATES[category].children) return false;
   return true;
 };
@@ -978,9 +979,6 @@ const TEMPLATES = {
             resolutionRules: {
               [OPTIONAL]: [
                 {
-                  text: ` If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
-                },
-                {
                   text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
                 },
               ],
@@ -1332,6 +1330,9 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
+                {
+                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                },
                 {
                   text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
                 },

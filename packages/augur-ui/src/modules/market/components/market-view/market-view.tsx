@@ -168,7 +168,7 @@ export default class MarketView extends Component<
 
   showMarketDisclaimer() {
     const { marketReviewSeen, marketReviewModal } = this.props;
-    if (!marketReviewSeen) {
+    if (!marketReviewSeen && marketReviewModal) {
       marketReviewModal();
     }
   }
