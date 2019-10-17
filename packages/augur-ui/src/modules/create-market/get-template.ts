@@ -18,12 +18,14 @@ import {
   HOCKEY,
   HORSE_RACING,
   TENNIS,
+  GOLF,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 export const OPTIONAL = 'OPTIONAL';
 export const CHOICE = 'CHOICE';
@@ -59,7 +61,7 @@ export enum TemplateInputType {
 
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
-  NUMBER = 'NUMBER'
+  NUMBER = 'NUMBER',
 }
 
 export interface UserInputText {
@@ -143,7 +145,6 @@ export interface TemplateInput {
 export interface Categories {
   primary: string;
   secondary: string;
-  tertiary?: string;
 }
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
@@ -167,20 +168,25 @@ export const getTemplateRadioCards = (
       .map(c => MARKET_TEMPLATES.find(t => t.value === c))
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
-  if (categories.primary && !categories.secondary) {
+
+  const useParentValues = findIfSubCats(categories.primary);
+
+  if (categories.primary && (useParentValues || !categories.secondary)) {
     return cats
       .map(c =>
         MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
       )
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
-  if (categories.primary && categories.secondary && !categories.tertiary) {
+
+  if (categories.primary && categories.secondary) {
     return cats
       .map(c =>
         MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
       )
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
+
   return [];
 };
 
@@ -198,12 +204,7 @@ export const addCategoryStats = (
     const catStats = categoryStats[categories.primary.toLowerCase()];
     stats = catStats.categories[cardValue];
   }
-  if (
-    categories &&
-    categories.primary &&
-    categories.secondary &&
-    !categories.tertiary
-  ) {
+  if (categories && categories.primary && categories.secondary) {
     let catStats = categoryStats[categories.primary.toLowerCase()];
     catStats = catStats[categories.secondary.toLowerCase()];
     stats = catStats.categories[cardValue];
@@ -227,11 +228,7 @@ const getTemplateCategories = (categories: Categories): string[] => {
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  if (!categories.tertiary)
-    return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
-  return secondaryCat.children
-    ? Object.keys(secondaryCat.children[categories.tertiary])
-    : emptyCats;
+  return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
 };
 
 export const getTemplates = (
@@ -243,19 +240,18 @@ export const getTemplates = (
   let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
   if (!categoryTemplates) return [];
-  if (!categories.secondary)
+
+  const useParentValues = findIfSubCats(categories.primary);
+  if (!categories.secondary || useParentValues)
     return filterByMarketType
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
       : categoryTemplates.templates;
 
-  categoryTemplates = categoryTemplates.children[categories.secondary];
+  categoryTemplates =
+    categoryTemplates.children &&
+    categoryTemplates.children[categories.secondary];
   if (!categoryTemplates) return [];
-  if (!categories.tertiary)
-    return filterByMarketType
-      ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
-      : categoryTemplates.templates;
 
-  categoryTemplates = categoryTemplates.children[categories.tertiary];
   return filterByMarketType
     ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
     : categoryTemplates.templates;
@@ -293,9 +289,13 @@ export const buildMarketDescription = (
   inputs: TemplateInput[]
 ) => {
   inputs.forEach((input: TemplateInput) => {
+    const userInputFormatted =
+      input.type === TemplateInputType.DATEYEAR
+        ? convertUnixToFormattedDate(input.userInput).formattedSimpleData
+        : input.userInput;
     question = question.replace(
       `[${input.id}]`,
-      `${input.userInput ? input.userInput : `[${input.placeholder}]`}`
+      `${input.userInput ? userInputFormatted : `[${input.placeholder}]`}`
     );
   });
 
@@ -355,17 +355,24 @@ export const buildResolutionDetails = (
   resolutionRules: ResolutionRules
 ) => {
   let details = userDetails;
-  Object.values(resolutionRules).forEach(type =>
-    type && type.forEach(rule => {
-      if (rule.isSelected) {
-        if (details.length > 0) {
-          details = details.concat('\n');
+  Object.values(resolutionRules).forEach(
+    type =>
+      type &&
+      type.forEach(rule => {
+        if (rule.isSelected) {
+          if (details.length > 0) {
+            details = details.concat('\n');
+          }
+          details = details.concat(rule.text);
         }
-        details = details.concat(rule.text);
-      }
-    })
+      })
   );
   return details;
+};
+
+export const findIfSubCats = category => {
+  if (TEMPLATES[category].children) return false;
+  return true;
 };
 
 const TEMPLATES = {
@@ -942,6 +949,103 @@ const TEMPLATES = {
   [SPORTS]: {
     templates: [],
     children: {
+      [GOLF]: {
+        templates: [
+          {
+            templateId: `gf-win`,
+            marketType: YES_NO,
+            question: `Will [0] win the [1] [2]`,
+            example: `Will Tiger Woods win the 2020 PGA Championship`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.GOLF_EVENT,
+              },
+            ],
+            resolutionRules: {
+              [OPTIONAL]: [
+                {
+                  text: ` If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                },
+                {
+                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                },
+              ],
+            },
+          },
+          {
+            templateId: `gf-cut`,
+            marketType: YES_NO,
+            question: `Will [0] make the cut at [1] [2]`,
+            example: `Will Tiger Woods make the cut at 2020 PGA Championship`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.GOLF_EVENT,
+              },
+            ],
+            resolutionRules: {
+              [OPTIONAL]: [
+                {
+                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                },
+              ],
+            },
+          },
+          {
+            templateId: `gf-win-cat`,
+            marketType: CATEGORICAL,
+            question: `Which golfer will win the [0] [1]`,
+            example: `Which golfer will win the 2020 PGA Championship`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.GOLF_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
+            ],
+            resolutionRules: {},
+          },
+        ]
+      },
       [HOCKEY]: {
         templates: [
           {
@@ -1045,13 +1149,13 @@ const TEMPLATES = {
                 values: LIST_VALUES.YEAR_RANGE,
               },
               {
-                id: 2,
+                id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Award`,
                 values: LIST_VALUES.HOCKEY_AWARD,
               },
               {
-                id: 3,
+                id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other`,
               },

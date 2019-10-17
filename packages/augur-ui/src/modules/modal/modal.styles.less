@@ -195,8 +195,12 @@ div.Onboarding {
       display: flex;
       flex-direction: row-reverse;
 
-      > button {
+      > button:last-of-type {
         margin-right: @size-16;
+      }
+
+      > button:only-of-type {
+        margin: 0;
       }
     }
 
@@ -220,6 +224,10 @@ div.Onboarding {
     &.Current {
       background: @color-primary-text;
     }
+  }
+
+  > span:last-of-type {
+    margin-right: 0;
   }
 }
 
@@ -292,7 +300,6 @@ div.ButtonsRow:last-of-type {
 
     color: @color-secondary-text;
     line-height: 140%;
-    margin-bottom: @size-3;
 
     > span {
       width: @size-16;
@@ -396,7 +403,6 @@ div.ButtonsRow:last-of-type {
         .text-12;
 
         color: @color-secondary-text;
-        margin: @size-4 0 @size-24;
       }
 
       > h3 {
@@ -410,7 +416,11 @@ div.ButtonsRow:last-of-type {
       > h4 {
         .text-12;
 
-        color: @color-inactive-text;
+        @media @breakpoint-mobile-new {
+          .text-14;
+        }
+
+        color: @color-dark-text;
         line-height: 140%;
         display: flex;
         margin-top: @size-12;
@@ -530,6 +540,30 @@ div.ButtonsRow:last-of-type {
   > label {
     display: inline;
   }
+
+  svg > path {
+    fill: @color-secondary-text;
+  }
+}
+
+.AddFundsCreditDebitCoinbase {
+  > h2 {
+    margin: 0 0 @size-24;
+
+    svg {
+      transform: translateY(@size-4);
+    }
+  }
+}
+
+.AddFundsTransfer {
+  > h2 {
+    margin: @size-4 0 @size-24;
+  }
+
+  > ol svg {
+    transform: translateY(@size-3);
+  }
 }
 
 .DaiEthSelector {
@@ -545,17 +579,18 @@ div.ButtonsRow:last-of-type {
     cursor: pointer;
     color: @color-primary-text;
     display: flex;
-    height: 54px;
+    height: 48px;
     justify-content: center;
-    padding: @size-16 @size-14;
+    padding: @size-14 @size-12 @size-14 @size-4;
+    width: 87px;
 
     &.selected {
       border: 2px solid @color-primary-action;
       }
 
     > svg {
-      height: @size-32;
-      width: @size-32;
+      height: @size-28;
+      width: @size-28;
       fill: @color-primary-text;
     }
   }
@@ -564,7 +599,8 @@ div.ButtonsRow:last-of-type {
     margin-left: @size-12;
 
     > svg {
-      height: @size-24;
+      height: @size-21;
+      width: @size-21;
     }
   }
 }
@@ -634,7 +670,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > header {
-    align-items: center;
+    align-items: flex-end;
     display: flex;
     justify-content: space-between;
     margin-bottom: @size-32;
@@ -701,11 +737,11 @@ div.ButtonsRow:last-of-type {
     }
 
     &:before {
-      margin: 0 0 0 21px;
+      margin: 0 0 0 @size-21;
     }
 
     &:after {
-      margin: 0 21px 0 0;
+      margin: 0 @size-21 0 0;
     }
   }
 
@@ -721,8 +757,12 @@ div.ButtonsRow:last-of-type {
     background: #0095a3;
   }
 
+  > button:first-of-type:hover {
+    background: lighten(#0095a3, 5%);
+  }
+
   > button:last-of-type {
-    margin: 0 0 32px 0;
+    margin: 0 0 @size-32 0;
   }
 }
 
@@ -762,9 +802,14 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      .text-12;
+      .text-14;
 
       color: @color-secondary-text;
+      line-height: @size-20;
+
+      @media @breakpoint-mobile {
+        .text-12;
+      }
     }
   }
 
@@ -2146,6 +2191,7 @@ div.ButtonsRow:last-of-type {
     > main {
       > div:first-of-type {
         padding: 0 @size-16;
+        min-height: min-content;
       }
 
       > div:nth-of-type(2) {
@@ -2153,6 +2199,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div:last-of-type {
+        min-height: min-content;
         padding: @size-16;
       }
     }
