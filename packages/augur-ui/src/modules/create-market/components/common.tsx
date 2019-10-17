@@ -36,7 +36,7 @@ import {
   CHOICE,
   OPTIONAL,
 } from 'modules/create-market/get-template';
-import { CATEGORICAL } from 'modules/common/constants';
+import { CATEGORICAL, CATEGORICAL_OUTCOMES_MIN_NUM } from 'modules/common/constants';
 import { buildformattedDate } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 
@@ -1044,7 +1044,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
     }
   });
 
-  while (initialList.length < 2) {
+  while (initialList.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
     initialList.push({
       value: '',
       editable: true,
