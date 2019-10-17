@@ -178,7 +178,7 @@ export default class FormDetails extends React.Component<
           {isTemplate && (
             <QuestionBuilder
               newMarket={newMarket}
-              currentTime={currentTimestamp}
+              currentTimestamp={currentTimestamp}
               onChange={onChange}
             />
           )}
