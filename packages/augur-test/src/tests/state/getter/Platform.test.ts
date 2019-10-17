@@ -82,7 +82,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     });
     expect(stats.amountStaked.toString()).toEqual('4650537188053131103515648');
     expect(stats.openInterest.toString()).toEqual('2040000000000000');
-    expect(stats.volume.toString()).toEqual('6093000000000000');
+    expect(stats.volume.toString()).toEqual('0.006093');
   }, 200000);
 });
 
