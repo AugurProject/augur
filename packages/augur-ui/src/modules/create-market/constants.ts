@@ -175,6 +175,9 @@ export const TEMPLATE_CONTENT_PAGES = [
   ReviewContent,
 ];
 
+export const NO_CAT_TEMPLATE_CONTENT_PAGES = TEMPLATE_CONTENT_PAGES.filter(page => page.title !== 'Sub-Category');
+
+
 // Market Type Names
 export const MARKET_TYPE_NAME = {
   [YES_NO]: 'Yes/No',

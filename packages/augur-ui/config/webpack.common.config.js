@@ -11,23 +11,26 @@ const gitRevisionPlugin = new GitRevisionPlugin();
 const PATHS = {
   BUILD: path.resolve(__dirname, "../build"),
   APP: path.resolve(__dirname, "../src"),
-  TEST: path.resolve(__dirname, "../test")
+  TEST: path.resolve(__dirname, "../test"),
+  ORBIT: path.resolve(__dirname, "../../orbit-web"),
 };
 
 module.exports = {
   mode: "development",
-  entry: [
+  entry: {
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
-    'regenerator-runtime/runtime',
-    `${PATHS.APP}/web-workers-exit`,
-    "react",
-    "react-dom",
-    "redux",
-    "redux-thunk",
-    "moment",
-    "react-datetime",
-    `${PATHS.APP}/main`
-  ],
+    augur: [
+      'regenerator-runtime/runtime',
+      `${PATHS.APP}/web-workers-exit`,
+      "react",
+      "react-dom",
+      "redux",
+      "redux-thunk",
+      "moment",
+      "react-datetime",
+      `${PATHS.APP}/main`
+    ],
+  },
   output: {
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
@@ -124,11 +127,11 @@ module.exports = {
       },
       {
         from: path.resolve(PATHS.APP, "assets/fonts"),
-        to: path.resolve(PATHS.BUILD, "assets/fonts")
+        to: path.resolve(PATHS.BUILD, "fonts")
       },
       {
         from: path.resolve(PATHS.APP, "assets/images"),
-        to: path.resolve(PATHS.BUILD, "assets/images")
+        to: path.resolve(PATHS.BUILD, "images")
       },
       {
         from: path.resolve(PATHS.APP, "sitemap.xml"),
@@ -137,7 +140,7 @@ module.exports = {
       {
         from: path.resolve(PATHS.APP, "robots.txt"),
         to: PATHS.BUILD
-      }
+      },
     ]),
     new HtmlWebpackPlugin({
       template: path.resolve(PATHS.APP, "index.ejs"),

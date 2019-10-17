@@ -9,7 +9,8 @@ import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
-  updateAppStatus
+  updateAppStatus,
+  IS_HELP_MENU_OPEN
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -68,6 +69,7 @@ const mapDispatchToProps = dispatch => ({
   updateConnectionTray: value =>
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
+  updateHelpMenuState: (isHelpMenuOpen) => dispatch(updateAppStatus(IS_HELP_MENU_OPEN, isHelpMenuOpen)),
 });
 
 const AppContainer = compose(

@@ -12,6 +12,7 @@ import {
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { closeModal } from 'modules/modal/actions/close-modal';
 
 export const forceLoginWithInjectedWeb3 = account => (
   dispatch: ThunkDispatch<void, any, Action>
@@ -22,6 +23,7 @@ export const forceLoginWithInjectedWeb3 = account => (
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, Action>) => {
   const failure = () => {
+    dispatch(closeModal());
     throw Error('NOT_SIGNED_IN');
   };
   const success = async (account: string, refresh: boolean) => {
