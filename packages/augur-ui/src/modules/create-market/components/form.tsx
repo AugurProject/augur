@@ -148,7 +148,7 @@ const draftError = 'ENTER A MARKET QUESTION';
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
-    templateFormStarts: this.props.isTemplate && hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? 3 : 4,
+    templateFormStarts: hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? 3 : 4,
     contentPages: this.props.isTemplate
       ? (hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
       : CUSTOM_CONTENT_PAGES,

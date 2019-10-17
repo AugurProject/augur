@@ -324,7 +324,7 @@ export default class FormDetails extends React.Component<
             }
             errorMessage={validations.categories}
             disableCategory={isTemplate}
-            disableSubCategory={isTemplate && !hasNoTemplateCategoryChildren(newMarket.categories[0])}
+            disableSubCategory={hasNoTemplateCategoryChildren(newMarket.categories[0])}
           />
         </div>
         <LineBreak />

@@ -371,7 +371,8 @@ export const buildResolutionDetails = (
 };
 
 export const hasNoTemplateCategoryChildren = category => {
-  if (!category || !!TEMPLATES[category] || !!TEMPLATES[category].children)
+  if (!category) return true;
+  if (!!TEMPLATES[category] || !!TEMPLATES[category].children)
     return false;
   return true;
 };
