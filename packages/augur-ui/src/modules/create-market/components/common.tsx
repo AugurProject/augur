@@ -1034,6 +1034,15 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       }
       return null;
     });
+  
+  outcomes.forEach(outcome => {
+    if (initialList.filter(option => option.value === outcome).length === 0) {
+      initialList.push({
+        value: outcome,
+        editable: true
+      });
+    }
+  });
 
   while (initialList.length < 2) {
     initialList.push({
