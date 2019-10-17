@@ -20,6 +20,7 @@ import {
   ACCOUNT_TYPES,
   NETWORK_NAMES,
   MODAL_LOADING,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -32,6 +33,10 @@ import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { updateAuthStatus, IS_LOGGED } from 'modules/auth/actions/auth-status';
+import { logout } from 'modules/auth/actions/logout';
 
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
@@ -46,54 +51,66 @@ function pollForAccount(
   let attemptedLogin = false;
   let intervalId = null;
 
-  function attempLogin() {
-    const { authStatus, connection, modal } = getState();
-
+  async function attempLogin() {
+    const { connection } = getState();
     if (attemptedLogin) {
       clearInterval(intervalId);
-    }
-
-    if (connection.isConnected) {
-      const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-      const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
-
-      const showModal = (accountType) => {
+    } else {
+      if (connection.isConnected) {
         attemptedLogin = true;
-        dispatch(
-          updateModal({
-            type: MODAL_LOADING,
-            callback: () => dispatch(closeModal()),
-            message: `Loading ${accountType} account.`,
-            showCloseAfterDelay: true,
-          })
-        );
-      }
 
-      if (!authStatus.isLogged && loggedInAccount) {
-        const isLoading = modal && modal.type === MODAL_LOADING;
-        if (isGlobalWeb3() && !isLoading && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
-          showModal(ACCOUNT_TYPES.WEB3WALLET);
-          dispatch(loginWithInjectedWeb3());
-        }
-        if (!isLoading && loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-          showModal(ACCOUNT_TYPES.PORTIS);
-          dispatch(loginWithPortis(false, () => null));
+        const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+        const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
+
+        const showModal = (accountType) => {
+          dispatch(
+            updateModal({
+              type: MODAL_LOADING,
+              callback: () => dispatch(closeModal()),
+              message: `Syncing 📡 ${accountType} account...`,
+              showCloseAfterDelay: true,
+            })
+          );
         }
 
-        if (!isLoading && loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-          showModal(ACCOUNT_TYPES.FORTMATIC);
-          dispatch(loginWithFortmatic(() => null));
-        }
+        const errorModal = () => {
+          dispatch(logout());
+          dispatch(
+            updateModal({
+              type: MODA_WALLET_ERROR,
+            })
+          );
+        };
 
-        if (!isLoading && loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-          showModal(ACCOUNT_TYPES.TORUS);
-          dispatch(loginWithTorus(() => null));
+        if (loggedInAccount) {
+          try {
+            if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+              showModal(ACCOUNT_TYPES.WEB3WALLET);
+              await dispatch(loginWithInjectedWeb3());
+            }
+            if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+              showModal(ACCOUNT_TYPES.PORTIS);
+              await dispatch(loginWithPortis(false));
+            }
+
+            if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+              showModal(ACCOUNT_TYPES.FORTMATIC);
+              await dispatch(loginWithFortmatic());
+            }
+
+            if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+              showModal(ACCOUNT_TYPES.TORUS);
+              await dispatch(loginWithTorus());
+            }
+          }
+          catch (error) {
+            errorModal();
+          }
         }
       }
     }
   }
 
-  attempLogin();
   intervalId = setInterval(() => {
     attempLogin();
   }, ACCOUNTS_POLL_INTERVAL_DURATION);
@@ -133,6 +150,45 @@ export function connectAugur(
   ) => {
     const { modal, loginAccount } = getState();
     const windowApp = windowRef as WindowApp;
+
+    const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+    const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
+
+    // Preload Account
+    const preloadAccount = (accountType) => {
+      const accountObject = {
+        address: loggedInAccount,
+        mixedCaseAddress: toChecksumAddress(loggedInAccount),
+        meta: {
+          address: loggedInAccount,
+          signer: null,
+          email: null,
+          profileImage: null,
+          openWallet: null,
+          accountType,
+          isWeb3: true,
+          preloaded: true,
+        },
+      };
+      dispatch(updateAuthStatus(IS_LOGGED, true))
+      dispatch(updateLoginAccount(accountObject));
+    }
+
+    if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+      preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
+    }
+
+    if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+      preloadAccount(ACCOUNT_TYPES.PORTIS);
+    }
+
+    if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+      preloadAccount(ACCOUNT_TYPES.FORTMATIC);
+    }
+
+    if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+      preloadAccount(ACCOUNT_TYPES.TORUS);
+    }
 
     connect(
       env,

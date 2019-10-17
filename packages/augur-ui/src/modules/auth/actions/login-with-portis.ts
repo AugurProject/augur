@@ -27,55 +27,52 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
   }
 };
 
-export const loginWithPortis = (
-  forceRegisterPage = false,
-  showConnectingModal
-) => async (dispatch: ThunkDispatch<void, any, Action>) => {
+export const loginWithPortis = (forceRegisterPage = false) => async (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   const networkId = getNetworkId();
   const portisNetwork = getPortisNetwork(networkId);
 
   if (portisNetwork) {
-    const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
-      scope: ['email'],
-      registerPageByDefault: forceRegisterPage,
-    });
-    const web3 = new Web3(portis.provider);
-    const provider = new Web3Provider(portis.provider);
+    try {
+      const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
+        scope: ['email'],
+        registerPageByDefault: forceRegisterPage,
+      });
 
-    windowRef.portis = portis;
+      const web3 = new Web3(portis.provider);
+      const provider = new Web3Provider(portis.provider);
 
-    const initPortis = async (portis, accounts, email = null) => {
-      const account = accounts[0];
+      windowRef.portis = portis;
 
-      showConnectingModal();
+      const initPortis = (portis, accounts, email = null) => {
+        const account = accounts[0];
 
-      const accountObject = {
-        address: account,
-        mixedCaseAddress: toChecksumAddress(account),
-        meta: {
+        const accountObject = {
           address: account,
-          email,
-          profileImage: null,
-          signer: provider.getSigner(),
-          openWallet: () => portis.showPortis(),
-          accountType: ACCOUNT_TYPES.PORTIS,
-          isWeb3: true,
-        },
+          mixedCaseAddress: toChecksumAddress(account),
+          meta: {
+            address: account,
+            email,
+            profileImage: null,
+            signer: provider.getSigner(),
+            openWallet: () => portis.showPortis(),
+            accountType: ACCOUNT_TYPES.PORTIS,
+            isWeb3: true,
+          },
+        };
+
+        dispatch(updateSdk(accountObject, undefined));
       };
 
-      dispatch(updateSdk(accountObject, undefined));
-    };
-
-    try {
-      const accounts = await web3.eth.getAccounts();
-
-      portis.onLogin(async (_, email) => {
+      portis.onLogin((_, email) => {
         if (email) {
-          await initPortis(portis, accounts, email);
+          initPortis(portis, accounts, email);
         }
       });
 
-      await initPortis(portis, accounts);
+      const accounts = await web3.eth.getAccounts();
+      initPortis(portis, accounts);
     } catch (error) {
       document.querySelector('.por_portis-container').remove();
       throw error;

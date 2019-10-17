@@ -1,14 +1,12 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Loading } from 'modules/modal/loading';
-import { AppState } from 'store';
+import { Message } from 'modules/modal/message';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppState } from 'store';
 
 const mapStateToProps = (state: AppState) => ({
-  isLogged: state.authStatus.isLogged,
-  loginAccount: state.loginAccount,
   modal: state.modal,
 });
 
@@ -16,19 +14,19 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });
 
-const mergeProps = (sP: any, dP: any) => ({
-  shouldClose: sP.loginAccount.meta && !sP.loginAccount.meta.preloaded,
-  message: sP.modal.message,
-  callback: sP.modal.callback,
-  showMetaMaskHelper: sP.modal.showMetaMaskHelper,
-  showCloseAfterDelay: sP.modal.showCloseAfterDelay,
-  closeModal: dP.closeModal,
-});
+const mergeProps = (sP, dP, oP) => {
+  return {
+    title: 'Opps!',
+    buttons: [],
+    description: ['Please try again.'],
+    closeAction: () => dP.closeModal(),
+  };
+};
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(Loading)
+  )(Message)
 );
