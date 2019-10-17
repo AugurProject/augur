@@ -21,6 +21,7 @@ contract IMarket is IOwnable {
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public;
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators) public view returns (bytes32);
+    function doInitialReport(uint256[] memory _payoutNumerators, string memory _description, uint256 _additionalStake) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getDisputeWindow() public view returns (IDisputeWindow);
     function getNumberOfOutcomes() public view returns (uint256);

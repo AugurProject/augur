@@ -28,7 +28,7 @@ def test_designatedReportHappyPath(localFixture, universe, market):
         "universe": universe.address,
         "reporter": localFixture.accounts[0],
         "market": market.address,
-        "amountStaked": universe.getInitialReportMinValue(),
+        "amountStaked": market.repBond(),
         "isDesignatedReporter": True,
         "payoutNumerators": [0, 0, market.getNumTicks()],
         "description": "Obviously I'm right",
@@ -151,6 +151,8 @@ def test_initialReport_methods(localFixture, universe, market, constants):
 def test_roundsOfReporting(rounds, localFixture, market, universe):
     disputeWindow = universe.getOrCreateCurrentDisputeWindow(False)
 
+    marketRepBond = market.repBond()
+
     # Do the initial report
     proceedToNextRound(localFixture, market, moveTimeForward = False)
 
@@ -161,7 +163,7 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     crowdsourcerCreatedLog = {
         "universe": universe.address,
         "market": market.address,
-        "size": universe.getInitialReportMinValue() * 2,
+        "size": marketRepBond * 2,
         "payoutNumerators": [0, 0, market.getNumTicks()],
     }
 
@@ -169,10 +171,10 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         "universe": universe.address,
         "reporter": localFixture.accounts[0],
         "market": market.address,
-        "amountStaked": universe.getInitialReportMinValue() * 2,
+        "amountStaked": marketRepBond * 2,
         "description": "Clearly incorrect",
         "payoutNumerators": [0, 0, market.getNumTicks()],
-        "currentStake": universe.getInitialReportMinValue() * 2,
+        "currentStake": marketRepBond * 2,
         "stakeRemaining": 0,
     }
 
@@ -182,10 +184,10 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         "market": market.address,
         "nextWindowStartTime": disputeWindow.getStartTime(),
         "nextWindowEndTime": disputeWindow.getEndTime(),
-        "totalRepStakedInMarket": universe.getInitialReportMinValue() * 3,
+        "totalRepStakedInMarket": marketRepBond * 3,
         "disputeRound": 2,
         "payoutNumerators": [0, 0, market.getNumTicks()],
-        "totalRepStakedInPayout": universe.getInitialReportMinValue() * 2,
+        "totalRepStakedInPayout": marketRepBond * 2,
     }
 
     with AssertLog(localFixture, "DisputeCrowdsourcerCreated", crowdsourcerCreatedLog):
@@ -205,9 +207,9 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
-    #(False, True),
-    #(True, False),
-    #(False, False),
+    (False, True),
+    (True, False),
+    (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
     claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
@@ -584,12 +586,12 @@ def test_dispute_pacing_threshold(localFixture, universe, market):
 
     # Now if we try to immediately dispute without the newly assigned dispute window being active the tx will fail
     with raises(TransactionFailed):
-        market.contribute([0, market.getNumTicks(), 0], 1, "")
+        market.contribute([0, 0, market.getNumTicks()], 1, "")
 
     # If we move time forward to the dispute window start we succeed
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
-    assert market.contribute([0, market.getNumTicks(), 0], 1, "")
+    assert market.contribute([0, 0, market.getNumTicks()], 1, "")
 
 def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
     proceedToNextRound(localFixture, market, moveTimeForward = False)

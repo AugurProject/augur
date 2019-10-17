@@ -37,6 +37,8 @@ export class Time extends c.Time<BigNumber> {
 }
 export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
+export class WarpSync extends c.WarpSync<BigNumber> {
+}
 export class ZeroXExchange extends c.ZeroXExchange<BigNumber> {
 }
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
