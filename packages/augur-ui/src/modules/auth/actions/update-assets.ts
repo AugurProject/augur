@@ -21,18 +21,19 @@ export const updateAssets = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
+  const { loginAccount, universe } = getState();
   const { address } = loginAccount;
-  return updateBalances(address, dispatch, callback);
+  return updateBalances(universe.id, address, dispatch, callback);
 };
 
 function updateBalances(
+  universe: string,
   address: string,
   dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
   Promise.all([
-    getRepBalance(address),
+    getRepBalance(universe, address),
     getDaiBalance(address),
     getEthBalance(address),
   ]).then(amounts => {

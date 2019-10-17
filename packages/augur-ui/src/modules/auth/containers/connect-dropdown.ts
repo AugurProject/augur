@@ -3,6 +3,7 @@ import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dr
 import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
+import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 
 const mapStateToProps = state => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
@@ -17,7 +18,7 @@ const mapStateToProps = state => {
 
   return {
     universeOutcomeName: state.universe.outcomeName ? state.universe.outcomeName : null,
-    parentUniverseId: state.universe.parentId ? state.universe.parentId : null,
+    parentUniverseId: state.universe.parentUniverseId !== NULL_ADDRESS ? state.universe.parentUniverseId : null,
     universeHasChildren: !!state.universe.forkingInfo,
     loginAccountAddress: state.loginAccount.address,
     userDefinedGasPrice: userDefined,
