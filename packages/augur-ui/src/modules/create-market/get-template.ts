@@ -979,9 +979,6 @@ const TEMPLATES = {
             resolutionRules: {
               [OPTIONAL]: [
                 {
-                  text: ` If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
-                },
-                {
                   text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
                 },
               ],
@@ -1333,6 +1330,9 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
+                {
+                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                },
                 {
                   text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
                 },

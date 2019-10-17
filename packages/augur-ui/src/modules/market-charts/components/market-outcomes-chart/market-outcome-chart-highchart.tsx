@@ -59,22 +59,6 @@ export default class MarketOutcomesChartHighchart extends Component<
           styledMode: false,
           animation: false,
           marginTop: 40,
-          events: {
-            load() {
-              // @ts-ignore
-              const { width } = this.renderer;
-              // @ts-ignore
-              this.ethLabel = this.renderer.label('DAI', width - 35, 0).add();
-            },
-            redraw() {
-              // @ts-ignore
-              const { width } = this.renderer;
-              // @ts-ignore
-              this.ethLabel.destroy();
-              // @ts-ignore
-              this.ethLabel = this.renderer.label('DAI', width - 35, 0).add();
-            },
-          },
         },
         credits: {
           enabled: false,
@@ -120,7 +104,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           showFirstLabel: true,
           showLastLabel: true,
           labels: {
-            format: '{value:.4f}',
+            format: '${value:.4f}',
             style: Styles.MarketOutcomeChartsHighcharts__yLabels,
             x: 0,
             y: -2,
@@ -136,7 +120,7 @@ export default class MarketOutcomesChartHighchart extends Component<
             snap: true,
             label: {
               enabled: true,
-              format: "{value:.4f} <span class='eth-label'>DAI</span>",
+              format: "${value:.4f}",
             },
           },
         },
@@ -155,7 +139,6 @@ export default class MarketOutcomesChartHighchart extends Component<
       selectedOutcomeId,
       daysPassed,
     } = this.props;
-    const { containerHeight } = this.state;
     this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
   }
 

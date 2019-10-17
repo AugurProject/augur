@@ -9,6 +9,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import { stringTo32ByteHex } from '../../libs/Utils';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
+import { MockBrowserMesh } from "../../libs/MockBrowserMesh";
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
@@ -29,11 +30,12 @@ describe('Augur API :: ZeroX :: ', () => {
 
     await MockMeshServer.create();
     meshClient = new WSClient(`ws://localhost:${SERVER_PORT}`);
+    const meshBrowser = new MockBrowserMesh(meshClient);
 
     const connector = new Connectors.DirectConnector();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, connector, undefined, meshClient);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses, connector, undefined, meshClient);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, connector, undefined, meshClient, meshBrowser);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses, connector, undefined, meshClient, meshBrowser);
     const dbPromise = mock.makeDB(john.augur, ACCOUNTS);
     db = await dbPromise;
     connector.initialize(john.augur, db);

@@ -35,14 +35,15 @@
   display: flex;
   flex-flow: column nowrap;
   flex: 1;
+  max-height: @charts-max-height;
   min-height: @charts-min-height;
+  padding-top: @size-8;
 
   > span:first-of-type {
     .mono-9-bold;
 
     flex: 1 100%;
     color: @color-secondary-text;
-    margin-top: @size-8;
     text-align: center;
     text-transform: uppercase;
   }
@@ -56,7 +57,7 @@
   }
 
   > div {
-    flex: 1 100%;
+    flex: 1 auto;
     padding: @size-4 0;
   }
 
