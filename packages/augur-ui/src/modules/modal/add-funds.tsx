@@ -121,7 +121,7 @@ export const AddFunds = ({
           <BackButton action={() => setSelectedOption(() => null)} />
           <CloseButton action={() => closeAction()} />
         </div>
-        <div>
+        <div className={selectedOption === '2' ? Styles.AddFundsTransfer : Styles.AddFundsCreditDebitCoinbase}>
           {selectedOption === '0' && (
             <>
               <h1>Credit/debit card</h1>
