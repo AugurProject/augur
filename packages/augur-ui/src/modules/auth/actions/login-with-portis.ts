@@ -9,9 +9,11 @@ import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
   NETWORK_IDS,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { updateModal } from 'modules/modal/actions/update-modal';
 
 const getPortisNetwork = (networkId): false | string | INetwork => {
   const myPrivateEthereumNode = {
@@ -69,6 +71,16 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
         if (email) {
           initPortis(portis, accounts, email);
         }
+      });
+
+      portis.onError(error => {
+        document.querySelector('.por_portis-container').remove();
+        dispatch(
+          updateModal({
+            type: MODA_WALLET_ERROR,
+            error: error.toString(),
+          })
+        );
       });
 
       const accounts = await web3.eth.getAccounts();

@@ -35,9 +35,11 @@ import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { updateAuthStatus, RESTORED_ACCOUNT } from 'modules/auth/actions/auth-status';
+import {
+  updateAuthStatus,
+  RESTORED_ACCOUNT,
+} from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
-
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -61,9 +63,11 @@ function pollForAccount(
       attemptedLogin = true;
 
       const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-      const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
+      const loggedInAccountType = windowApp.localStorage.getItem(
+        'loggedInAccountType'
+      );
 
-      const showModal = (accountType) => {
+      const showModal = accountType => {
         dispatch(
           updateModal({
             type: MODAL_LOADING,
@@ -72,7 +76,7 @@ function pollForAccount(
             showCloseAfterDelay: true,
           })
         );
-      }
+      };
 
       const errorModal = () => {
         dispatch(logout());
@@ -85,7 +89,10 @@ function pollForAccount(
 
       if (loggedInAccount) {
         try {
-          if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+          if (
+            isGlobalWeb3() &&
+            loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET
+          ) {
             showModal(ACCOUNT_TYPES.WEB3WALLET);
             await dispatch(loginWithInjectedWeb3());
           }
@@ -103,8 +110,7 @@ function pollForAccount(
             showModal(ACCOUNT_TYPES.TORUS);
             await dispatch(loginWithTorus());
           }
-        }
-        catch (error) {
+        } catch (error) {
           errorModal();
         }
       }
@@ -115,7 +121,6 @@ function pollForAccount(
     attemptLogin();
   }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
-
 
 function pollForNetwork(
   dispatch: ThunkDispatch<void, any, Action>,
@@ -152,10 +157,12 @@ export function connectAugur(
     const windowApp = windowRef as WindowApp;
 
     const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-    const loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
+    const loggedInAccountType = windowApp.localStorage.getItem(
+      'loggedInAccountType'
+    );
 
     // Preload Account
-    const preloadAccount = (accountType) => {
+    const preloadAccount = accountType => {
       const accountObject = {
         address: loggedInAccount,
         mixedCaseAddress: toChecksumAddress(loggedInAccount),
@@ -170,9 +177,9 @@ export function connectAugur(
           preloaded: true,
         },
       };
-      dispatch(updateAuthStatus(RESTORED_ACCOUNT, true))
+      dispatch(updateAuthStatus(RESTORED_ACCOUNT, true));
       dispatch(updateLoginAccount(accountObject));
-    }
+    };
 
     if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
       preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
@@ -192,7 +199,7 @@ export function connectAugur(
 
     connect(
       env,
-      async (err: any, sdk:Augur<Provider> ) => {
+      async (err: any, sdk: Augur<Provider>) => {
         if (err) {
           return callback(err, null);
         }
@@ -218,13 +225,13 @@ export function connectAugur(
           dispatch(
             updateModal({
               type: MODAL_NETWORK_MISMATCH,
-              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)]
+              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
             })
           );
         } else {
           dispatch(updateUniverse({ id: universeId }));
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
-              dispatch(closeModal());
+            dispatch(closeModal());
           }
           if (isInitialConnection) {
             pollForAccount(dispatch, getState);

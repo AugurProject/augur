@@ -18,7 +18,7 @@ const mergeProps = (sP, dP, oP) => {
   return {
     title: 'Opps!',
     buttons: [],
-    description: ['Please try again.'],
+    description: ['Please try again.', sP.modal.error ? sP.modal.error : '' ],
     closeAction: () => dP.closeModal(),
   };
 };
