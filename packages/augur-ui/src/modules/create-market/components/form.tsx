@@ -175,7 +175,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     let market = deepClone<NewMarket>(newMarket);
     market.validations = [];
-    market.currentStep = 0;
+    market.currentStep = isTemplate ? this.state.templateFormStarts : 0;
 
     const disabledSave =
       savedDraft && JSON.stringify(market) === JSON.stringify(savedDraft);
@@ -638,9 +638,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       disabledFunction
     } = contentPages[currentStep];
 
-    const savedDraft = drafts[uniqueId];
+    let savedDraft = drafts[uniqueId];
+    if (savedDraft) savedDraft.validations = [];
     let comparableNewMarket = deepClone<NewMarket>(newMarket);
-    comparableNewMarket.currentStep = 0;
+    comparableNewMarket.currentStep = isTemplate ? this.state.templateFormStarts : 0;
     comparableNewMarket.validations = [];
 
     const disabledSave =

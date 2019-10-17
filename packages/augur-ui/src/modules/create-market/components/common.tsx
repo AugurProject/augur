@@ -607,7 +607,7 @@ export class NumberedList extends Component<
             number={index}
             removable={index >= minShown}
             onRemove={this.removeItem}
-            errorMessage={errorMessage[index]}
+            errorMessage={errorMessage && errorMessage[index]}
             editable={item.editable}
           />
         ))}
@@ -720,7 +720,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <TextInput
         placeholder={input.placeholder}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           let newOutcomes = outcomes;
           const newInputs = updateData(value);
@@ -738,7 +738,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <TextInput
         placeholder={input.placeholder}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           let newOutcomes = outcomes;
           newOutcomes[inputIndex] = value;
@@ -757,7 +757,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
         setEndTime={input.userInput}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
@@ -767,7 +767,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       <FormDropdown
         options={input.values}
         staticLabel={input.placeholder}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
             onChange('scalarDenomination', value);
@@ -918,7 +918,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               break;
           }
         }}
-        validations={newMarket.validations.inputs[inputIndex]}
+        validations={newMarket.validations.inputs && newMarket.validations.inputs[inputIndex]}
         hour={hour ? String(hour) : null}
         minute={minute ? String(minute) : null}
         meridiem={meridiem}
