@@ -104,10 +104,18 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string): Promise<BigNumber> {
+export async function getRepBalance(
+  universe: string,
+  address: string
+): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
-  const RepToken = contracts.getReputationToken();
-  const balance = await RepToken.balanceOf_(address);
+  const networkId = getNetworkId();
+  const repToken = await contracts
+    .universeFromAddress(universe)
+    .getReputationToken_();
+  const balance = await contracts
+    .reputationTokenFromAddress(repToken, networkId)
+    .balanceOf_(address);
   return balance;
 }
 
