@@ -31,6 +31,7 @@ export interface DropdownProps {
   stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
+  disabled?: boolean;
 }
 
 interface DropdownState {
@@ -159,6 +160,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       staticLabel,
       id,
       showColor,
+      disabled
     } = this.props;
     const { selected, showList, isDisabled } = this.state;
 
@@ -173,6 +175,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
+          [Styles.Disabled]: disabled,
           [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]:
             selected && showColor,
         })}

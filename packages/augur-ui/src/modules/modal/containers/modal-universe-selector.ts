@@ -21,20 +21,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => {
   return {
     closeAction: () => {
-      if (sP.modal.cb) {
-        sP.modal.cb();
-      }
       dP.closeModal();
     },
     ...oP,
     ...sP,
   };
-}
+};
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
+    mergeProps
   )(ModalUniverseSelector)
 );

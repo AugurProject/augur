@@ -555,4 +555,26 @@ export const LIST_VALUES = {
       label: 'US Open',
     },
   ],
+  GOLF_EVENT: [
+    {
+      value: 'PGA Championship',
+      label: 'PGA Championship',
+    },
+    {
+      value: 'Open Championship',
+      label: 'Open Championship',
+    },
+    {
+      value: 'US Open',
+      label: 'US Open',
+    },
+    {
+      value: 'Masters',
+      label: 'Masters',
+    },
+    {
+      value: 'British Open',
+      label: 'British Open',
+    },
+  ],
 };
