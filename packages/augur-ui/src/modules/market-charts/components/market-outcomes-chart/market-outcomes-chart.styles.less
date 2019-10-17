@@ -14,16 +14,17 @@
         fill: @color-module-background;
       }
 
-      g.highcharts-axis-labels > text > tspan {
-        .mono-12;
+      g.highcharts-yaxis-labels {
+        .mono-10-bold;
 
-        color: @color-primary-text;
         fill: @color-primary-text;
       }
 
-      .highcharts-yaxis-labels,
-      .highcharts-label {
-        .mono-12;
+      g.highcharts-xaxis-labels,
+      g.highcharts-xaxis-labels > text,
+      g.highcharts-xaxis-labels > text > tspan,
+      g.highcharts-xaxis-labels > text > title {
+        .mono-9;
 
         fill: @color-primary-text;
       }
@@ -43,7 +44,7 @@
 
       .highcharts-tick,
       .highcharts-axis-line {
-        stroke: fade(@color-primary-text, 40%);
+        stroke: @color-secondary-action-outline;
       }
 
       .highcharts-xaxis-grid,
@@ -56,7 +57,7 @@
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: fade(@color-primary-text, 40%);
+          stroke: @color-secondary-action-outline;
         }
       }
 
@@ -194,8 +195,4 @@
       }
     }
   }
-}
-
-.MarketOutcomeChartsHighcharts__yLabels {
-  color: @color-primary-text;
 }

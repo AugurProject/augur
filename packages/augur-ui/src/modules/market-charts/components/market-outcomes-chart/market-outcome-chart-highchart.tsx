@@ -47,10 +47,6 @@ export default class MarketOutcomesChartHighchart extends Component<
       containerHeight: 0,
       containerWidth: 0,
       options: {
-        title: {
-          text: '',
-          y: 5,
-        },
         lang: {
           noData: 'No Completed Trades',
         },
@@ -59,6 +55,26 @@ export default class MarketOutcomesChartHighchart extends Component<
           styledMode: false,
           animation: false,
           marginTop: 40,
+        },
+        events: {
+          load() {
+            if (props.isScalar) {
+              // ts-ignore
+              const { width } = this.renderer;
+              // ts-ignore
+              this.ethLabel = this.renderer.label(props.scalarDenomination, (width / 2), 0).add();
+            }
+          },
+          redraw() {
+            if (props.isScalar) {
+              // ts-ignore
+              const { width } = this.renderer;
+              // ts-ignore
+              this.ethLabel.destroy();
+              // ts-ignore
+              this.ethLabel = this.renderer.label(props.scalarDenomination, (width / 2), 0).add();
+            }
+          }
         },
         credits: {
           enabled: false,
@@ -74,8 +90,13 @@ export default class MarketOutcomesChartHighchart extends Component<
             },
           },
           series: {
+            events: {
+              mouseOver(e) {
+                console.log("mouseover", e);
+              },
+            },
             marker: {
-              enabled: true,
+              enabled: false,
             },
           },
         },
@@ -87,6 +108,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           showLastLabel: true,
           labels: {
             format: '{value:%b %d}',
+            style: { fontSize: '9px' }
           },
           crosshair: {
             snap: true,
@@ -104,13 +126,10 @@ export default class MarketOutcomesChartHighchart extends Component<
           showFirstLabel: true,
           showLastLabel: true,
           labels: {
-            format: '${value:.4f}',
-            style: Styles.MarketOutcomeChartsHighcharts__yLabels,
+            format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
+            style: null,
             x: 0,
             y: -2,
-          },
-          title: {
-            text: '',
           },
           height: '100%',
           resize: {
@@ -120,7 +139,7 @@ export default class MarketOutcomesChartHighchart extends Component<
             snap: true,
             label: {
               enabled: true,
-              format: "${value:.4f}",
+              format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
             },
           },
         },
@@ -200,14 +219,10 @@ export default class MarketOutcomesChartHighchart extends Component<
     const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay);
     let interval = daysPassed <= 7 ? mmSecondsInHour : mmSecondsInDay;
     interval = daysPassed >= 60 ? mmSecondsInWeek : interval;
-
     return {
-      tickInterval: useTickInterval ? interval.toNumber() : 0,
       labels: {
         format: interval.isEqualTo(mmSecondsInHour) ? hours : days,
-        style: {
-          color: '#ffffff', // remove this when adding custom css and turning on styleMode
-        },
+        style: null,
       },
       crosshair: {
         snap: true,
