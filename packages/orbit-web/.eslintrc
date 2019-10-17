@@ -1,0 +1,15 @@
+{
+  "env": {
+    "browser": true
+  },
+  "settings": {
+    "react": { "version": "detect" }
+  },
+  "extends": ["standard", "standard-jsx"],
+  "parser": "babel-eslint",
+  "rules": {
+    "react/jsx-curly-newline": ["off", "consistent"],
+    "react/jsx-handler-names": "warn",
+    "no-unused-vars": "warn"
+  }
+}

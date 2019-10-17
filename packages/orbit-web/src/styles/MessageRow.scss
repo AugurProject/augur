@@ -1,0 +1,138 @@
+@import 'Animations';
+@import 'Colors';
+
+$background-color: rgb(40, 40, 40);
+$border-color: rgb(36, 36, 36);
+$timestamp-color: rgba(240, 240, 240, 0.6);
+
+.highlighted {
+  background-color: rgb(37, 37, 37) !important;
+}
+
+.command {
+  font-style: italic;
+  color: rgba(240, 240, 240, 1) !important;
+}
+
+.Message {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+
+  font-size: 16px;
+
+  &__Timestamp {
+    display: flex;
+    color: $timestamp-color;
+    font-size: 0.8em;
+  }
+
+  &__Content {
+    display: flex;
+    flex: 1;
+    margin: 0 0.5em;
+  }
+
+  .popout {
+    display: flex;
+    position: absolute;
+    right: 0;
+  }
+
+  &__Popup {
+    border: 1px solid rgb(48, 48, 48);
+    font-size: 0.75em;
+    margin-right: 0.5em;
+    color: rgba(228, 228, 228, 0.8);
+    background: rgb(32, 32, 32);
+    padding: 1em;
+  }
+
+  &__User {
+    display: flex;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__Avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-left: 0.5em;
+    margin-top: 0.1em;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.25em;
+    font-family: 'LatoBold';
+    color: rgb(95, 95, 95);
+
+    // background-image: url('../images/earth.png') cover;
+    // background-size: cover;
+    // background-repeat: no-repeat;
+  }
+}
+
+.size-normal {
+  .Message {
+    align-items: baseline;
+    padding-bottom: 0.15em;
+
+    &__User {
+      margin-left: 0.5em;
+    }
+
+    &__Timestamp {
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      font-style: normal;
+      margin-left: 0.3em;
+      padding-right: 0.5em;
+    }
+  }
+}
+
+.size-large {
+  .Message {
+    padding-bottom: 0.5em;
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 0.2em;
+      flex: 1;
+    }
+
+    &__Details {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      margin: 0 0.5em 0.1em 0.5em;
+    }
+
+    &__Timestamp {
+      border: none;
+      font-style: italic;
+      margin-left: 0.5em;
+    }
+  }
+}
+
+.font-normal {
+  .Message {
+    // font-size: 1em;
+    font-weight: bold;
+  }
+}
+
+.font-monospace {
+  .Message {
+    font-family: 'Roboto Mono';
+    // font-size: .9em;
+    font-weight: normal;
+  }
+}
