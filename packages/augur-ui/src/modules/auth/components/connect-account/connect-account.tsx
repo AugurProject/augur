@@ -14,6 +14,7 @@ interface ConnectAccountProps {
   isLogged: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
+  updateHelpMenuState: Function;
   updateMobileMenuState: Function;
   mobileMenuState: number;
   userInfo: LoginAccount['meta'];
@@ -26,16 +27,19 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   toggleDropdown(cb?: Function) {
     const {
       updateConnectionTray,
+      updateHelpMenuState,
       updateMobileMenuState,
       isConnectionTrayOpen,
       mobileMenuState,
     } = this.props;
     if (mobileMenuState > 0) {
       updateConnectionTray(!isConnectionTrayOpen);
+      updateHelpMenuState(false);
     }
     else {
       updateMobileMenuState(1);
       updateConnectionTray(!isConnectionTrayOpen);
+      updateHelpMenuState(false);
     }
 
     if (cb && typeof cb === 'function') cb();

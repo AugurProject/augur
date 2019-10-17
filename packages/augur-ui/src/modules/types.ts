@@ -508,6 +508,7 @@ export interface Blockchain {
 export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
+  isHelpMenuOpen: boolean;
 }
 
 export interface AuthStatus {

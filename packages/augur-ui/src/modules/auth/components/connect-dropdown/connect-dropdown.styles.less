@@ -13,7 +13,12 @@
   }
 }
 
-.WalletProvider, .GasEdit, .TxFee, .Logout, .AddFunds, .AccountFunds  {
+.WalletProvider,
+.GasEdit,
+.TxFee,
+.Logout,
+.AddFunds,
+.AccountFunds  {
   align-items: center;
   background: @color-module-background;
   border-bottom: 1px solid @color-dark-grey;
@@ -21,6 +26,7 @@
   flex-direction: row;
   justify-content: space-between;
   padding: @size-20 @size-16;
+  height: 56px;
 }
 
 .AddFunds {
@@ -77,18 +83,32 @@
   }
 }
 
-.WalletProvider, .GasEdit {
+.WalletProvider,
+.GasEdit {
   > div > div:first-of-type {
     .mono-9-bold;
 
     color: @color-secondary-text;
+    display: flex;
     text-transform: uppercase;
+
+    > span > label {
+      margin: 0;
+
+      > svg {
+        height: @size-12;
+        margin-left: @size-4;
+        width: @size-12;
+      }
+    }
+
   }
 
   > div > div:last-of-type {
     .text-10;
 
     color: @color-primary-text;
+    display: flex;
     margin: @size-6 0 0 0;
   }
 
@@ -136,6 +156,7 @@
     display: none;
   }
 
+  height: 44px;
   justify-content: flex-end;
 
   > div {
