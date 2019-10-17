@@ -38,6 +38,7 @@ import {
 } from 'modules/create-market/get-template';
 import { CATEGORICAL } from 'modules/common/constants';
 import { buildformattedDate } from 'utils/format-date';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 
 export interface HeaderProps {
   text: string;
@@ -70,6 +71,7 @@ export interface SubheadersProps {
   underline?: Boolean;
   ownLine?: Boolean;
   smallSubheader?: Boolean;
+  renderMarkdown?: Boolean;
 }
 
 export interface DateTimeHeadersProps extends SubheadersProps {
@@ -161,7 +163,10 @@ export const DateTimeHeaders = (props: DateTimeHeadersProps) => (
 export const SmallSubheaders = (props: SubheadersProps) => (
   <div className={Styles.SmallSubheaders}>
     <h1>{props.header}</h1>
-    <span>{props.subheader}</span>
+    {props.renderMarkdown &&
+      <MarkdownRenderer text={props.subheader}/>
+    }
+    {!props.renderMarkdown && <span>{props.subheader}</span>}
   </div>
 );
 
