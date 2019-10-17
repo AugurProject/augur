@@ -167,6 +167,7 @@ export const getTemplateRadioCards = (
       .map(c => MARKET_TEMPLATES.find(t => t.value === c))
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
+
   const useParentValues = findIfSubCats(categories.primary);
 
   if (categories.primary && (useParentValues || !categories.secondary)) {
