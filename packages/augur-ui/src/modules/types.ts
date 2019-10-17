@@ -130,6 +130,7 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
+  timeframeData?: Getters.Platform.PlatformActivityStatsResult;
 }
 
 export interface UserReports {
@@ -507,6 +508,7 @@ export interface Blockchain {
 export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
+  isHelpMenuOpen: boolean;
 }
 
 export interface AuthStatus {

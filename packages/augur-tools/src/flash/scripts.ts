@@ -876,11 +876,17 @@ export function addScripts(flash: FlashSession) {
         description: 'puts market into slow pacing mode immediately',
         flag: true,
       },
+      {
+        name: 'rounds',
+        abbr: 'r',
+        description: 'number of rounds to complete',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser(this.network, true);
       const slow = args.slow as boolean;
+      const rounds = args.rounds ? Number(args.rounds) : 0;
 
       let marketId = args.marketId as string || null;
       if (marketId === null) {
@@ -894,7 +900,7 @@ export function addScripts(flash: FlashSession) {
         marketIds: [marketId],
       }))[0];
 
-      await dispute(user, marketInfo, slow);
+      await dispute(user, marketInfo, slow, rounds);
     },
   });
 

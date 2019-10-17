@@ -48,6 +48,7 @@ import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import { hasNoTemplateCategoryChildren } from "modules/create-market/get-template";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
@@ -177,7 +178,7 @@ export default class FormDetails extends React.Component<
           {isTemplate && (
             <QuestionBuilder
               newMarket={newMarket}
-              currentTime={currentTimestamp}
+              currentTimestamp={currentTimestamp}
               onChange={onChange}
             />
           )}
@@ -191,6 +192,7 @@ export default class FormDetails extends React.Component<
                 minute={minute}
                 meridiem={meridiem}
                 timezone={timezone}
+                currentTimestamp={currentTimestamp}
                 endTimeFormatted={endTimeFormatted}
                 uniqueKey={'nonTemplateRes'}
               />
@@ -310,23 +312,20 @@ export default class FormDetails extends React.Component<
               />
             </>
           )}
-
-          {!isTemplate && (
-            <>
-              <Subheaders
-                header="Market category"
-                subheader="Categories help users to find your market on Augur."
-              />
-              <CategoryMultiSelect
-                initialSelected={categories}
-                sortedGroup={setCategories}
-                updateSelection={categoryArray =>
-                  onChange(CATEGORIES, categoryArray)
-                }
-                errorMessage={validations.categories}
-              />
-            </>
-          )}
+          <Subheaders
+            header="Market category"
+            subheader="Categories help users to find your market on Augur."
+          />
+          <CategoryMultiSelect
+            initialSelected={categories}
+            sortedGroup={setCategories}
+            updateSelection={categoryArray =>
+              onChange(CATEGORIES, categoryArray)
+            }
+            errorMessage={validations.categories}
+            disableCategory={isTemplate}
+            disableSubCategory={isTemplate && !hasNoTemplateCategoryChildren(newMarket.categories[0])}
+          />
         </div>
         <LineBreak />
         <div>
