@@ -1,7 +1,6 @@
 'use strict'
 
 import React from 'react'
-import { hot, setConfig } from 'react-hot-loader'
 import { Redirect, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useObserver } from 'mobx-react'
@@ -17,12 +16,7 @@ import ChannelLink from './ChannelLink'
 
 import '../styles/ControlPanel.scss'
 
-setConfig({
-  pureSFC: true,
-  pureRender: true
-})
-
-function ControlPanel () {
+export default function ControlPanel () {
   const location = useLocation()
   const { networkStore, uiStore, sessionStore } = React.useContext(RootContext)
   const [t] = useTranslation()
@@ -210,5 +204,3 @@ function ControlPanel () {
     ) : null
   )
 }
-
-export default hot(module)(ControlPanel)

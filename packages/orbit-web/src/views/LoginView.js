@@ -1,7 +1,6 @@
 'use strict'
 
 import React, { lazy } from 'react'
-import { hot } from 'react-hot-loader'
 import { useLocation, Redirect } from 'react-router-dom'
 import { useObserver } from 'mobx-react'
 import { useTranslation } from 'react-i18next'
@@ -22,7 +21,7 @@ const LoginForm = lazy(() => import(/* webpackChunkName: "LoginForm" */ '../comp
 
 const logger = new Logger()
 
-function LoginView () {
+export default function LoginView () {
   const location = useLocation()
   const { uiStore, sessionStore } = React.useContext(RootContext)
   const [t] = useTranslation()
@@ -79,5 +78,3 @@ function LoginView () {
     )
   )
 }
-
-export default hot(module)(LoginView)

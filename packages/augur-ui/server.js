@@ -18,6 +18,7 @@ if (process.env.NODE_ENV === "development") {
   // Hot Module Reload
   app.use(
     devMiddleware(compiler, {
+      writeToDisk: true,
       publicPath: config.output.publicPath,
       stats: {
         colors: true

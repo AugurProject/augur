@@ -30,6 +30,10 @@ module.exports = {
       "react-datetime",
       `${PATHS.APP}/main`
     ],
+    chat: [
+      '@babel/polyfill',
+      `${PATHS.ORBIT}/src/index.js`,
+    ],
   },
   output: {
     filename: "[name].[chunkhash].js",
@@ -54,7 +58,7 @@ module.exports = {
     symlinks: false
   },
   module: {
-    rules: rules = [
+    rules: [
       {
         test: /\.tsx?$/,
         loader: "ts-loader",
@@ -103,12 +107,71 @@ module.exports = {
         ]
       },
       {
-        test: /\.css$/,
+        test: /\.s?css$/,
         use: [
           "style-loader",
-          "postcss-loader"
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [require('postcss-preset-env')()]
+            }
+          },
+          'sass-loader'
         ]
-      }
+      },
+      {
+        test: /\.(js|jsx)$/,
+        include: path.resolve(PATHS.ORBIT, "src"),
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            "presets": ["@babel/preset-env", "@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-dynamic-import",
+              "@babel/plugin-transform-async-to-generator",
+              "@babel/plugin-transform-flow-strip-types",
+              "@babel/plugin-syntax-flow",
+              [
+                "@babel/plugin-proposal-object-rest-spread",
+                {
+                  "loose": true
+                }
+              ],
+              [
+                "@babel/plugin-transform-spread",
+                {
+                  "loose": true
+                }
+              ],
+              ["@babel/plugin-proposal-decorators", { "legacy": true }],
+              ["@babel/plugin-proposal-class-properties", { "loose": true }],
+            ]
+          },
+        }],
+      },
+      {
+        test: /\.worker\.js$/,
+        include: path.resolve(PATHS.ORBIT, "src"),
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              name: 'chat.worker.[name].js'
+            }
+          },
+          'babel-loader'],
+
+      },
+      {
+        test: /\.(png|jpg|svg)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[hash:20].[ext]',
+            outputPath: 'images/'
+          }
+        }
+      },
     ]
   },
   plugins: [
@@ -141,6 +204,10 @@ module.exports = {
         from: path.resolve(PATHS.APP, "robots.txt"),
         to: PATHS.BUILD
       },
+      {
+        from: path.resolve(PATHS.ORBIT, "src/fonts"),
+        to: path.resolve(PATHS.BUILD, "fonts")
+      },
     ]),
     new HtmlWebpackPlugin({
       template: path.resolve(PATHS.APP, "index.ejs"),
@@ -155,7 +222,14 @@ module.exports = {
         ];
 
         return order.indexOf(b.names[0]) + order.indexOf(a.names[0]);
-      }
+      },
+      chunks: [ 'augur' ],
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(PATHS.ORBIT, "src/index.html"),
+      filename: 'chat.html',
+      environment: process.env.NODE_ENV,
+      chunks: [ 'chat' ],
     }),
     new GitRevisionPlugin({
       branch: true

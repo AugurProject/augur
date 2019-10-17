@@ -17,7 +17,7 @@ import '../styles/SettingsView.scss'
 settingsOptions.themeName.options = Object.keys(themes)
 settingsOptions.language.options = Object.keys(locales)
 
-function SettingsView () {
+export default function SettingsView () {
   const { uiStore } = React.useContext(RootContext)
 
   const [t] = useTranslation()
@@ -86,5 +86,3 @@ function SettingsView () {
     <div className='SettingsView'>{Object.keys(settingsOptions).map(renderField)}</div>
   ))
 }
-
-export default hot(module)(SettingsView)

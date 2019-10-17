@@ -2,7 +2,6 @@
 
 import React, { useContext } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { hot } from 'react-hot-loader'
 import { useObserver } from 'mobx-react'
 import { useTranslation } from 'react-i18next'
 
@@ -10,7 +9,7 @@ import RootContext from '../context/RootContext'
 
 import '../styles/ChannelHeader.scss'
 
-function ChannelHeader () {
+export default function ChannelHeader () {
   const location = useLocation()
   const { channel } = useParams()
   const { networkStore, uiStore } = useContext(RootContext)
@@ -38,5 +37,3 @@ function ChannelHeader () {
     </div>
   ))
 }
-
-export default hot(module)(ChannelHeader)

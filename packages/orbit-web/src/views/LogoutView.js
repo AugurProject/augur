@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom'
 
 import RootContext from '../context/RootContext'
 
-function LogoutView () {
+export default function LogoutView () {
   const { sessionStore } = React.useContext(RootContext)
 
   React.useEffect(() => {
@@ -15,5 +15,3 @@ function LogoutView () {
 
   return <Redirect to='/' />
 }
-
-export default hot(module)(LogoutView)

@@ -2,7 +2,6 @@
 
 import React, { Suspense, lazy, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { hot } from 'react-hot-loader'
 import { useObserver } from 'mobx-react'
 
 import RootContext from '../context/RootContext'
@@ -16,7 +15,7 @@ const MessageUserProfilePanel = lazy(() =>
   import(/* webpackChunkName: "MessageUserProfilePanel" */ '../containers/MessageUserProfilePanel')
 )
 
-function ChannelView () {
+export default function ChannelView () {
   const { networkStore } = useContext(RootContext)
   const { channel } = useParams()
 
@@ -37,5 +36,3 @@ function ChannelView () {
     )
   )
 }
-
-export default hot(module)(ChannelView)
