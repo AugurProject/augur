@@ -85,7 +85,7 @@ import Styles from 'modules/create-market/components/form.styles.less';
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
 import {
-  buildResolutionDetails, findIfSubCats,
+  buildResolutionDetails, hasNoTemplateCategoryChildren,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
@@ -148,9 +148,9 @@ const draftError = 'ENTER A MARKET QUESTION';
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
-    templateFormStarts: findIfSubCats(this.props.newMarket.categories[0]) ? 3 : 4,
+    templateFormStarts: hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? 3 : 4,
     contentPages: this.props.isTemplate
-      ? (findIfSubCats(this.props.newMarket.categories[0]) ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
+      ? (hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
     categoryStats: null,

@@ -48,7 +48,7 @@ import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { findIfSubCats } from "modules/create-market/get-template";
+import { hasNoTemplateCategoryChildren } from "modules/create-market/get-template";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
@@ -324,7 +324,7 @@ export default class FormDetails extends React.Component<
             }
             errorMessage={validations.categories}
             disableCategory={isTemplate}
-            disableSubCategory={!findIfSubCats(newMarket.categories[0])}
+            disableSubCategory={!hasNoTemplateCategoryChildren(newMarket.categories[0])}
           />
         </div>
         <LineBreak />
