@@ -59,7 +59,7 @@ export enum TemplateInputType {
 
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
-  NUMBER = 'NUMBER'
+  NUMBER = 'NUMBER',
 }
 
 export interface UserInputText {
@@ -143,7 +143,6 @@ export interface TemplateInput {
 export interface Categories {
   primary: string;
   secondary: string;
-  tertiary?: string;
 }
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
@@ -167,20 +166,24 @@ export const getTemplateRadioCards = (
       .map(c => MARKET_TEMPLATES.find(t => t.value === c))
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
-  if (categories.primary && !categories.secondary) {
+  const useParentValues = findIfSubCats(categories.primary)
+
+  if (categories.primary && (useParentValues || !categories.secondary)) {
     return cats
       .map(c =>
         MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
       )
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
-  if (categories.primary && categories.secondary && !categories.tertiary) {
+
+  if (categories.primary && categories.secondary) {
     return cats
       .map(c =>
         MARKET_SUB_TEMPLATES[categories.primary].find(t => t.value === c)
       )
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
+
   return [];
 };
 
@@ -198,12 +201,7 @@ export const addCategoryStats = (
     const catStats = categoryStats[categories.primary.toLowerCase()];
     stats = catStats.categories[cardValue];
   }
-  if (
-    categories &&
-    categories.primary &&
-    categories.secondary &&
-    !categories.tertiary
-  ) {
+  if (categories && categories.primary && categories.secondary) {
     let catStats = categoryStats[categories.primary.toLowerCase()];
     catStats = catStats[categories.secondary.toLowerCase()];
     stats = catStats.categories[cardValue];
@@ -227,11 +225,7 @@ const getTemplateCategories = (categories: Categories): string[] => {
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  if (!categories.tertiary)
-    return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
-  return secondaryCat.children
-    ? Object.keys(secondaryCat.children[categories.tertiary])
-    : emptyCats;
+  return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
 };
 
 export const getTemplates = (
@@ -243,19 +237,16 @@ export const getTemplates = (
   let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
   if (!categoryTemplates) return [];
-  if (!categories.secondary)
+
+  const useParentValues = findIfSubCats(categories.primary)
+  if (!categories.secondary || useParentValues)
     return filterByMarketType
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
       : categoryTemplates.templates;
 
-  categoryTemplates = categoryTemplates.children[categories.secondary];
+  categoryTemplates = categoryTemplates.children && categoryTemplates.children[categories.secondary];
   if (!categoryTemplates) return [];
-  if (!categories.tertiary)
-    return filterByMarketType
-      ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
-      : categoryTemplates.templates;
 
-  categoryTemplates = categoryTemplates.children[categories.tertiary];
   return filterByMarketType
     ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
     : categoryTemplates.templates;
@@ -355,17 +346,24 @@ export const buildResolutionDetails = (
   resolutionRules: ResolutionRules
 ) => {
   let details = userDetails;
-  Object.values(resolutionRules).forEach(type =>
-    type && type.forEach(rule => {
-      if (rule.isSelected) {
-        if (details.length > 0) {
-          details = details.concat('\n');
+  Object.values(resolutionRules).forEach(
+    type =>
+      type &&
+      type.forEach(rule => {
+        if (rule.isSelected) {
+          if (details.length > 0) {
+            details = details.concat('\n');
+          }
+          details = details.concat(rule.text);
         }
-        details = details.concat(rule.text);
-      }
-    })
+      })
   );
   return details;
+};
+
+export const findIfSubCats = (category) => {
+  if (TEMPLATES[category].children) return false;
+  return true;
 };
 
 const TEMPLATES = {
