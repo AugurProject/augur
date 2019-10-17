@@ -953,12 +953,12 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
         subheader="What do you want people to predict?"
       />
       <div>
-        {question.map(word => {
+        {question.map((word, index) => {
           const bracketPos = word.indexOf('[');
           const bracketPos2 = word.indexOf(']');
 
           if (bracketPos === -1 || bracketPos === -1) {
-            return <span key={word.id}>{word}</span>;
+            return <span key={word+index}>{word}</span>;
           } else {
             const id = word.substring(bracketPos + 1, bracketPos2);
             const inputIndex = inputs.findIndex(
