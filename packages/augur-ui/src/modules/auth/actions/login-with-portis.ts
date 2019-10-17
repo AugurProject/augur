@@ -47,9 +47,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
 
       windowRef.portis = portis;
 
-      const initPortis = (portis, accounts, email = null) => {
-        const account = accounts[0];
-
+      const initPortis = (portis, account, email = null) => {
         const accountObject = {
           address: account,
           mixedCaseAddress: toChecksumAddress(account),
@@ -67,10 +65,8 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
         dispatch(updateSdk(accountObject, undefined));
       };
 
-      portis.onLogin((_, email) => {
-        if (email) {
-          initPortis(portis, accounts, email);
-        }
+      portis.onLogin((account, email) => {
+          initPortis(portis, account, email);
       });
 
       portis.onError(error => {
@@ -83,8 +79,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
         );
       });
 
-      const accounts = await web3.eth.getAccounts();
-      initPortis(portis, accounts);
+      await web3.eth.getAccounts();
     } catch (error) {
       document.querySelector('.por_portis-container').remove();
       throw error;

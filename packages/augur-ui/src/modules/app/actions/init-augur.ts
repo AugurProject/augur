@@ -59,7 +59,7 @@ function pollForAccount(
       clearInterval(intervalId);
     }
 
-    if (connection.isConnected) {
+    if (!attemptedLogin && connection.isConnected) {
       attemptedLogin = true;
 
       const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
