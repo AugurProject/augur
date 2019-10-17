@@ -288,6 +288,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   getProfitLoss = this.bindTo(Users.getProfitLoss);
   getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
+  getAccountTimeRangedStats = this.bindTo(Users.getAccountTimeRangedStats);
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
   getAccountRepStakeSummary = this.bindTo(Accounts.getAccountRepStakeSummary);
   getUserCurrentDisputeStake = this.bindTo(Accounts.getUserCurrentDisputeStake);
