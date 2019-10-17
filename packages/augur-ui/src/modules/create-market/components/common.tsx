@@ -766,6 +766,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <FormDropdown
         options={input.values}
+        defaultValue={input.userInput}
         staticLabel={input.placeholder}
         errorMessage={validations.inputs[inputIndex]}
         onChange={value => {
