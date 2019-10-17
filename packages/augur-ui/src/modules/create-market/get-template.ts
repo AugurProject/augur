@@ -24,6 +24,7 @@ import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 export const OPTIONAL = 'OPTIONAL';
 export const CHOICE = 'CHOICE';
@@ -166,7 +167,8 @@ export const getTemplateRadioCards = (
       .map(c => MARKET_TEMPLATES.find(t => t.value === c))
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
-  const useParentValues = findIfSubCats(categories.primary)
+
+  const useParentValues = findIfSubCats(categories.primary);
 
   if (categories.primary && (useParentValues || !categories.secondary)) {
     return cats
@@ -238,13 +240,15 @@ export const getTemplates = (
 
   if (!categoryTemplates) return [];
 
-  const useParentValues = findIfSubCats(categories.primary)
+  const useParentValues = findIfSubCats(categories.primary);
   if (!categories.secondary || useParentValues)
     return filterByMarketType
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
       : categoryTemplates.templates;
 
-  categoryTemplates = categoryTemplates.children && categoryTemplates.children[categories.secondary];
+  categoryTemplates =
+    categoryTemplates.children &&
+    categoryTemplates.children[categories.secondary];
   if (!categoryTemplates) return [];
 
   return filterByMarketType
@@ -284,9 +288,13 @@ export const buildMarketDescription = (
   inputs: TemplateInput[]
 ) => {
   inputs.forEach((input: TemplateInput) => {
+    const userInputFormatted =
+      input.type === TemplateInputType.DATEYEAR
+        ? convertUnixToFormattedDate(input.userInput).formattedSimpleData
+        : input.userInput;
     question = question.replace(
       `[${input.id}]`,
-      `${input.userInput ? input.userInput : `[${input.placeholder}]`}`
+      `${input.userInput ? userInputFormatted : `[${input.placeholder}]`}`
     );
   });
 
@@ -361,7 +369,7 @@ export const buildResolutionDetails = (
   return details;
 };
 
-export const findIfSubCats = (category) => {
+export const findIfSubCats = category => {
   if (TEMPLATES[category].children) return false;
   return true;
 };
@@ -1043,13 +1051,13 @@ const TEMPLATES = {
                 values: LIST_VALUES.YEAR_RANGE,
               },
               {
-                id: 2,
+                id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Award`,
                 values: LIST_VALUES.HOCKEY_AWARD,
               },
               {
-                id: 3,
+                id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other`,
               },
