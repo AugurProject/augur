@@ -27,7 +27,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'Place a quick test bet right now to see how betting works on Augur. You’ll get guidance and tips to help you get started.',
+        'See how betting works on Augur. You’ll get guidance and tips to help you get started.',
     },
   ],
   buttons: [
