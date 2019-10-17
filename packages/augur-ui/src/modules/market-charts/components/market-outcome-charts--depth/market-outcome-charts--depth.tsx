@@ -37,7 +37,7 @@ export default class MarketOutcomeDepth extends Component<
   static defaultProps = {
     hoveredPrice: null,
     sharedChartMargins: {
-      top: 0,
+      top: 35,
       bottom: 20,
     },
   };
@@ -361,9 +361,8 @@ function determineDrawParams(options) {
   };
 
   const containerWidth = depthChart.clientWidth;
-  const containerHeight =
-    depthChart.clientHeight + chartDim.bottom + chartDim.top;
-  const drawHeight = containerHeight - chartDim.top - chartDim.bottom;
+  const containerHeight = depthChart.clientHeight - chartDim.top;
+  const drawHeight = containerHeight - chartDim.bottom;
 
   const midPrice = orderBookKeys.mid;
   const minDistance = midPrice.minus(marketMin);
@@ -501,7 +500,7 @@ function drawTicks(options) {
           .tickSize(9)
           .tickPadding(4)
       )
-      .attr('transform', `translate(-${drawParams.chartDim.left}, 10)`)
+      .attr('transform', `translate(-${drawParams.chartDim.left}, 6)`)
       .selectAll('text')
       .text(d => d)
       .select('path')
@@ -600,7 +599,7 @@ function drawTicks(options) {
       .attr(
         'transform',
         `translate(${drawParams.containerWidth +
-          drawParams.chartDim.right}, 10)`
+          drawParams.chartDim.right}, 6)`
       )
       .selectAll('text')
       .text(d => d)

@@ -130,6 +130,7 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
+  timeframeData?: Getters.Platform.PlatformActivityStatsResult;
 }
 
 export interface UserReports {
