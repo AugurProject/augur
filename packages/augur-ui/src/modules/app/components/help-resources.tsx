@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import { QuestionIcon } from 'modules/common/icons';
@@ -6,7 +6,11 @@ import { ExternalLinkButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/help-resources.styles.less';
 
-interface HelpResourcesProps {}
+interface HelpResourcesProps {
+  isHelpMenuOpen: boolean;
+  updateHelpMenuState: Function;
+  updateConnectionTray: Function;
+}
 
 const HELP_LINKS = [
   {
@@ -27,19 +31,29 @@ const HELP_LINKS = [
   },
 ];
 
-export const HelpResources = (props: HelpResourcesProps) => {
-  const [showHelpDropdown, setShowHelpDropdown] = useState(false);
+export const HelpResources = ({
+  isHelpMenuOpen,
+  updateHelpMenuState,
+  updateConnectionTray
+}: HelpResourcesProps) => {
+
+  useEffect(() => {
+    if (isHelpMenuOpen) {
+      updateConnectionTray(false);
+    }
+  }, [isHelpMenuOpen]);
 
   return (
     <div
       className={classNames(Styles.HelpResources, {
-        [Styles.Open]: showHelpDropdown,
+        [Styles.Open]: isHelpMenuOpen,
       })}
+      onClick={(event) => event.stopPropagation()}
     >
-      <span onClick={() => setShowHelpDropdown(() => !showHelpDropdown)}>
+      <span onClick={() => updateHelpMenuState(!isHelpMenuOpen)}>
         {QuestionIcon}
       </span>
-      {showHelpDropdown && (
+      {isHelpMenuOpen && (
         <div>
           <span>popular help resources</span>
           {HELP_LINKS.map((helpLink, index) => (
