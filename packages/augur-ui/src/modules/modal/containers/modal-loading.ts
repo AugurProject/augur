@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any) => ({
-  shouldClose: sP.loginAccount.meta && !sP.loginAccount.meta.preloaded,
+  shouldClose: sP.isLogged && sP.loginAccount.meta && !sP.loginAccount.meta.preloaded,
   message: sP.modal.message,
   callback: sP.modal.callback,
   showMetaMaskHelper: sP.modal.showMetaMaskHelper,
