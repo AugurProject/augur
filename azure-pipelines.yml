@@ -43,21 +43,25 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-artifacts/.* ]]
               then
                 echo "found an artifacts change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
-              if [[ $f == .*augur-tools/docker-builder/* ]]
+              if [[ $f =~ .*augur-tools/docker-builder/* ]]
               then
                 echo "found a docker-builder change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_DOCKER_BUILDER;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
               then
                 echo "found a change in geth-poa: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_GETH_POA;isOutput=true]true"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-ui.* ]]
               then
@@ -134,11 +138,12 @@ jobs:
         condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
       - bash: |
           set -euo pipefail
-          yarn test --runInBand --ci --reporters=default --reporters=jest-junit
+          free -m
+          yarn test --verbose --runInBand --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
-          NODE_OPTIONS: "--max_old_space_size=6144"
+          NODE_OPTIONS: "--max_old_space_size=2048"
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:
@@ -362,18 +367,11 @@ jobs:
     condition: |
       and
       (
-        succeeded(),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
-        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
-        not(eq(variables['Build.sourceBranch'], 'refs/tags')),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_DOCKER_BUILDER'], 'true')
-        )
+        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -415,8 +413,9 @@ jobs:
           vstsFeed: npmPackages
       - script: |
           set -exuo pipefail
-          packages/augur-tools/docker-builder/ci-build.sh -n $(NETWORK_ID) -t $(NORMAL_TIME) $(IMAGE_NAME)
-        displayName: 'build and push $(IMAGE_NAME) image'
+          export DOCKER_BUILDKIT=1
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+        displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -427,7 +426,7 @@ jobs:
           set -exuo pipefail
           CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           docker images
-          docker tag augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}" augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
+          docker tag $(IMAGE_NAME) augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
           docker push augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
         displayName: Push Docker Images to hub
       - task: Docker@1

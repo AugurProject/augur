@@ -138,7 +138,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         styledMode: false,
         animation: false,
         spacing: [15, 0, 0, 0],
-        height: containerHeight
       },
       xAxis: {
         ordinal: false,

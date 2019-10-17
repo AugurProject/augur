@@ -1,112 +1,92 @@
-import React, { Component } from 'react';
+import React from 'react';
+import classNames from 'classnames';
+import { Location, History } from 'history';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKETS } from 'modules/routes/constants/views';
-import { CATEGORY_PARAM_NAME, MOBILE_MENU_STATES } from 'modules/common/constants';
+import {
+  CATEGORY_PARAM_NAME,
+  MOBILE_MENU_STATES,
+} from 'modules/common/constants';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
-import classNames from 'classnames';
 import { FilterButton } from 'modules/common/buttons';
 
 interface MarketsHeaderProps {
-  location: object;
+  location: Location;
+  history: History;
   filter: string;
   sort: string;
-  history: History;
   isSearchingMarkets: boolean;
   selectedCategory: string[];
   search: string;
-  updateMobileMenuState: Function;
+  updateMobileMenuState: (mobileMenuState: number) => void;
 }
 
-interface MarketsHeaderState {
-  headerTitle: string | null;
-}
-
-export default class MarketsHeader extends Component<
-  MarketsHeaderProps,
-  MarketsHeaderState
-> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      headerTitle: null,
-    };
-
-    this.setHeaderTitle = this.setHeaderTitle.bind(this);
+const getHeaderTitleFromProps = (
+  search: string,
+  location: Location,
+  selectedCategory: string[]
+) => {
+  if (search) {
+    return `Search: "${search}"`;
   }
 
-  UNSAFE_componentWillMount() {
-    this.setHeaderTitle(this.props);
+  const searchParams = parseQuery(location.search);
+
+  if (searchParams[CATEGORY_PARAM_NAME]) {
+    return searchParams[CATEGORY_PARAM_NAME];
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { location, selectedCategory, search } = this.props;
-    if (
-      location !== nextProps.location ||
-      selectedCategory !== nextProps.selectedCategory ||
-      search !== nextProps.search
-    ) {
-      this.setHeaderTitle(nextProps);
-    }
+  if (selectedCategory && selectedCategory.length > 0) {
+    return selectedCategory[selectedCategory.length - 1];
   }
 
-  setHeaderTitle(props) {
-    const searchParams = parseQuery(location.search);
+  return MARKETS;
+};
 
-    if (props.search) {
-      this.setState({
-        headerTitle: `Search: "${props.search}"`,
-      });
-      return;
-    }
+const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
+  const {
+    isSearchingMarkets,
+    updateMobileMenuState,
+    location,
+    selectedCategory,
+    search,
+  } = props;
+  const [headerTitle, setHeaderTitle] = React.useState(
+    getHeaderTitleFromProps(search, location, selectedCategory)
+  );
 
-    if (searchParams[CATEGORY_PARAM_NAME]) {
-      this.setState({
-        headerTitle: searchParams[CATEGORY_PARAM_NAME],
-      });
-      return;
-    }
-
-    if (props.selectedCategory && props.selectedCategory.length > 0) {
-      this.setState({
-        headerTitle: props.selectedCategory[props.selectedCategory.length - 1],
-      });
-      return;
-    }
-
-    this.setState({
-      headerTitle: MARKETS,
-    });
-  }
-
-  render() {
-    const {
-      isSearchingMarkets,
-      updateMobileMenuState,
-    } = this.props;
-    const { headerTitle } = this.state;
-
-    return (
-      <article
-        className={classNames(Styles.MarketsHeader, {
-          [Styles.DisableFilters]: isSearchingMarkets,
-        })}
-      >
-        <div>
-          <FilterSearch isSearchingMarkets={isSearchingMarkets} />
-          {/* MOBILE FILTERS TOGGLE */}
-          <FilterButton
-            action={() =>
-              updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
-            }
-          />
-        </div>
-        <div>
-          <h1>{headerTitle}</h1>
-          <FilterSearch isSearchingMarkets={isSearchingMarkets} />
-        </div>
-      </article>
+  React.useEffect(() => {
+    const nextHeaderTitle = getHeaderTitleFromProps(
+      search,
+      location,
+      selectedCategory
     );
-  }
-}
+
+    setHeaderTitle(nextHeaderTitle);
+  }, [location, selectedCategory, search]);
+
+  return (
+    <article
+      className={classNames(Styles.MarketsHeader, {
+        [Styles.DisableFilters]: isSearchingMarkets,
+      })}
+    >
+      <div>
+        <FilterSearch isSearchingMarkets={isSearchingMarkets} />
+        {/* MOBILE FILTERS TOGGLE */}
+        <FilterButton
+          action={() =>
+            updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
+          }
+        />
+      </div>
+      <div>
+        <h1>{headerTitle}</h1>
+        <FilterSearch isSearchingMarkets={isSearchingMarkets} />
+      </div>
+    </article>
+  );
+};
+
+export default MarketsHeader;

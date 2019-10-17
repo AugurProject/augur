@@ -631,8 +631,8 @@ const TEMPLATES = {
       {
         templateId: `crypto-between-bin`,
         marketType: YES_NO,
-        question: `Will the price of [0], exceed [1] [2], on [3] anytime between the [4] (23:59 UTC-0) and [5] (23:59 UTC-0)`,
-        example: `Will the price of REP exceed $40 USD on Poloniex anytime between September 1, 2019 (00:00 UTC-0) and December 31, 2019 (23:59 UTC-0)`,
+        question: `Will the price of [0], exceed [1] [2], on [3] anytime between the start of [4] (00:00 UTC-0) and end of [5] (23:59 UTC-0)`,
+        example: `Will the price of REP exceed $40 USD on Poloniex anytime between the start of September 1, 2019 (00:00 UTC-0) and end of December 31, 2019 (23:59 UTC-0)`,
         inputs: [
           {
             id: 0,
@@ -977,9 +977,6 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
-                {
-                  text: ` If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
-                },
                 {
                   text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
                 },
@@ -1332,6 +1329,9 @@ const TEMPLATES = {
             ],
             resolutionRules: {
               [OPTIONAL]: [
+                {
+                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                },
                 {
                   text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
                 },

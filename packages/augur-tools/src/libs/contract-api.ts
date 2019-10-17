@@ -8,7 +8,9 @@ import {
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   ZeroXPlaceTradeDisplayParams,
-  ZeroXSimulateTradeData
+  ZeroXSimulateTradeData,
+  BrowserMesh,
+  EmptyConnector
 } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -21,7 +23,6 @@ import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { BaseConnector } from '@augurproject/sdk/build/connector';
-import { EmptyConnector } from '@augurproject/sdk';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -33,11 +34,12 @@ export class ContractAPI {
     addresses: ContractAddresses,
     connector: BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
-    meshClient: WSClient = undefined
+    meshClient: WSClient = undefined,
+    meshBrowser: BrowserMesh = undefined
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
 
     return new ContractAPI(augur, provider, dependencies, account);
   }
