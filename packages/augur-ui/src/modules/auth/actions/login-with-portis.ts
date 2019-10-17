@@ -39,53 +39,43 @@ export const loginWithPortis = (
       scope: ['email'],
       registerPageByDefault: forceRegisterPage,
     });
-
+    const web3 = new Web3(portis.provider);
+    const provider = new Web3Provider(portis.provider);
 
     windowRef.portis = portis;
 
-    const initPortis = async (portis, email = null) => {
-      try {
-        const web3 = new Web3(portis.provider);
-        const provider = new Web3Provider(portis.provider);
+    const initPortis = async (portis, accounts, email = null) => {
+      const account = accounts[0];
 
-        const accounts = await web3.eth.getAccounts();
-        const account = accounts[0];
+      showConnectingModal();
 
-        showConnectingModal();
-
-        const accountObject = {
+      const accountObject = {
+        address: account,
+        mixedCaseAddress: toChecksumAddress(account),
+        meta: {
           address: account,
-          mixedCaseAddress: toChecksumAddress(account),
-          meta: {
-            address: account,
-            email,
-            profileImage: null,
-            signer: provider.getSigner(),
-            openWallet: () => portis.showPortis(),
-            accountType: ACCOUNT_TYPES.PORTIS,
-            isWeb3: true,
-          },
-        };
+          email,
+          profileImage: null,
+          signer: provider.getSigner(),
+          openWallet: () => portis.showPortis(),
+          accountType: ACCOUNT_TYPES.PORTIS,
+          isWeb3: true,
+        },
+      };
 
-        await dispatch(updateSdk(accountObject, undefined));
-      } catch (error) {
-        throw error;
-      }
+      dispatch(updateSdk(accountObject, undefined));
     };
 
-    portis.onLogin(async (_, email) => {
-      if (email) {
-        await initPortis(portis, email);
-      } else {
-        await initPortis(portis);
-      }
-    });
-
     try {
-      const result = await portis.showPortis();
-      if (result && result.error) {
-        throw result.error;
-      }
+      const accounts = await web3.eth.getAccounts();
+
+      portis.onLogin(async (_, email) => {
+        if (email) {
+          await initPortis(portis, accounts, email);
+        }
+      });
+
+      await initPortis(portis, accounts);
     } catch (error) {
       document.querySelector('.por_portis-container').remove();
       throw error;

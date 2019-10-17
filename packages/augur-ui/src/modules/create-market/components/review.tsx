@@ -279,7 +279,7 @@ export default class Review extends React.Component<
         <Header text="Resolution information" />
         <div>
           <DateTimeHeaders header="Event expiration date and time" timezone={timezone} subheader={endTimeFormatted && endTimeFormatted.formattedUtc} timezoneDateTime={endTimeFormatted && endTimeFormatted.formattedTimezone} />
-          <SmallSubheaders header="resolution details" subheader={resolutionDetails === "" ? "–" : resolutionDetails} />
+          <SmallSubheaders header="resolution details" renderMarkdown subheader={resolutionDetails === "" ? "–" : resolutionDetails} />
           <SmallSubheaders
             header="Resolution source"
             subheader={expirySourceType === EXPIRY_SOURCE_GENERIC

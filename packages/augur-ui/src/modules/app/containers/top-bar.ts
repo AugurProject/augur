@@ -18,6 +18,7 @@ const mapStateToProps = (state: AppState) => {
     unseenCount,
     isLogged: authStatus.isLogged,
     alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible,
+    isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
   };
 };
 
