@@ -37,7 +37,7 @@ export async function dispute(user: ContractAPI, market: MarketInfo, slow: boole
       let numerators = payoutNumerators;
       if (i % 2) numerators = conflictNumerators;
       await user.contribute(marketContract, numerators, SOME_REP);
-      delay(5000); // give processing time to catch up
+      await delay(5000); // give processing time to catch up
     }
   }
 }
