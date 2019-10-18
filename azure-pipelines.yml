@@ -480,6 +480,12 @@ jobs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
+      - bash: |
+          set -euo pipefail
+          ls -l packages/augur-ui/build
+          DOCKER_BUILDKIT=1 docker build --progress=plain -t augurproject/augur-ipfs:v2 -f packages/augur-tools/docker-builder/Dockerfile-ipfs .
+          docker push augurproject/augur-ipfs:v2
+        displayName: augur-ipfs build
       - script: |
           set -euo pipefail
           export NODE_OPTIONS="--max-old-space-size=6144"
@@ -493,12 +499,6 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=6144"
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
-      - bash: |
-          set -euo pipefail
-          ls -l packages/augur-ui/build
-          DOCKER_BUILDKIT=1 docker build --progress=plain -t augurproject/augur-ipfs:v2 -f packages/augur-tools/docker-builder/Dockerfile-ipfs .
-          docker push augurproject/augur-ipfs:v2
-        displayName: augur-ipfs build
       - task: Docker@1
         displayName: docker logout
         inputs:
