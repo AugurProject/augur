@@ -72,13 +72,19 @@ export const loginWithTorus = () => async (
       throw error;
     }
 
-    try {
-      const userInfo = await torus.getUserInfo();
-      accountObject.meta.email = userInfo.email;
-      accountObject.meta.profileImage = userInfo.profileImage;
+    // Temporary workaround - Torus userInfo modal is blocked on safari
+    const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+    if (isSafari) {
       dispatch(updateSdk(accountObject, undefined));
-    } catch (error) {
-      dispatch(updateSdk(accountObject, undefined));
+    } else {
+      try {
+        const userInfo = await torus.getUserInfo();
+        accountObject.meta.email = userInfo.email;
+        accountObject.meta.profileImage = userInfo.profileImage;
+        dispatch(updateSdk(accountObject, undefined));
+      } catch (error) {
+        dispatch(updateSdk(accountObject, undefined));
+      }
     }
   } else {
     throw Error('Network currently not supported with Torus');
