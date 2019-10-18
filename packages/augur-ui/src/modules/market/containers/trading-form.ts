@@ -24,6 +24,19 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKET } from 'modules/routes/constants/views';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+
+const getMarketPath = id => {
+  return {
+    pathname: makePath(MARKET),
+    search: makeQuery({
+      [MARKET_ID_PARAM_NAME]: id,
+    }),
+  };
+};
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
@@ -77,8 +90,20 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
   addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-  loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
-  signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
+  loginModal: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_LOGIN,
+        pathName: getMarketPath(ownProps.market.id),
+      })
+    ),
+  signupModal: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_SIGNUP,
+        pathName: getMarketPath(ownProps.market.id),
+      })
+    ),
   onSubmitPlaceTrade: (
     marketId,
     outcomeId,
