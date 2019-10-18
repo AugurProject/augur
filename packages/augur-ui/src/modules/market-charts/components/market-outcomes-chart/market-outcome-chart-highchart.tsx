@@ -50,31 +50,15 @@ export default class MarketOutcomesChartHighchart extends Component<
         lang: {
           noData: 'No Completed Trades',
         },
+        title: {
+          text: ''
+        },
         chart: {
           type: 'line',
           styledMode: false,
           animation: false,
           marginTop: 40,
-        },
-        events: {
-          load() {
-            if (props.isScalar) {
-              // ts-ignore
-              const { width } = this.renderer;
-              // ts-ignore
-              this.ethLabel = this.renderer.label(props.scalarDenomination, (width / 2), 0).add();
-            }
-          },
-          redraw() {
-            if (props.isScalar) {
-              // ts-ignore
-              const { width } = this.renderer;
-              // ts-ignore
-              this.ethLabel.destroy();
-              // ts-ignore
-              this.ethLabel = this.renderer.label(props.scalarDenomination, (width / 2), 0).add();
-            }
-          }
+          marginRight: 45,
         },
         credits: {
           enabled: false,
@@ -90,11 +74,6 @@ export default class MarketOutcomesChartHighchart extends Component<
             },
           },
           series: {
-            events: {
-              mouseOver(e) {
-                console.log("mouseover", e);
-              },
-            },
             marker: {
               enabled: false,
             },
@@ -128,7 +107,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           labels: {
             format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
             style: null,
-            x: 0,
+            x: 35,
             y: -2,
           },
           height: '100%',
