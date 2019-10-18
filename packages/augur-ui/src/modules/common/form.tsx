@@ -664,7 +664,7 @@ export class CategoryMultiSelect extends Component<
             staticLabel="Tertiary Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
-            errorMessage={errorMessage[2]}
+            errorMessage={errorMessage && errorMessage[2]}
             value={values[2]}
             placeholder="Custom Tertiary Category"
             onChangeInput={v =>
