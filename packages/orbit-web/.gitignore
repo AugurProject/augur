@@ -38,6 +38,4 @@ test/tests.bundle*
 # Sourcemaps
 dist/**/*.js.map
 
-dist
-
 .env

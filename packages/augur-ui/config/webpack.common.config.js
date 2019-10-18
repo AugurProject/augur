@@ -141,6 +141,10 @@ module.exports = {
         from: path.resolve(PATHS.APP, "robots.txt"),
         to: PATHS.BUILD
       },
+      {
+        from: path.resolve(PATHS.ORBIT, "dist"),
+        to: path.resolve(PATHS.BUILD, "chat")
+      },
     ]),
     new HtmlWebpackPlugin({
       template: path.resolve(PATHS.APP, "index.ejs"),
