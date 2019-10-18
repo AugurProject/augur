@@ -501,6 +501,9 @@ jobs:
           docker push augurproject/augur-ipfs:v2
           aws --region=us-east-1 ecs update-service  --service augur-ipfs --cluster kovan-v2-ecs --force-new-deployment
         displayName: augur-ipfs build
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
       - task: Docker@1
         displayName: docker logout
         inputs:
