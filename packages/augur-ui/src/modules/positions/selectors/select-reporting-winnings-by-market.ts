@@ -54,7 +54,7 @@ export const selectReportingWinningsByMarket = createSelector(
       participationContracts = {
         contracts: calcUnclaimed.contracts,
         unclaimedDai: calcUnclaimed.dai,
-        unclaimedRep: calcUnclaimed.rep,
+        unclaimedRep: createBigNumber(userReporting.participationTokens.totalClaimable),
       };
     }
     if (
