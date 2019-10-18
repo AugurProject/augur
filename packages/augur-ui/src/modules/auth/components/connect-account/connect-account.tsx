@@ -12,6 +12,7 @@ import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 
 interface ConnectAccountProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
   updateHelpMenuState: Function;
@@ -48,11 +49,12 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   render() {
     const {
       isLogged,
+      restoredAccount,
       isConnectionTrayOpen,
       userInfo,
     } = this.props;
 
-    if (!isLogged || !userInfo) return null;
+    if (!isLogged && !restoredAccount || !userInfo) return null;
 
     return (
       <div

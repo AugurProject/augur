@@ -20,6 +20,7 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   logout: Function;
   accountMeta: {
     accountType: string;
@@ -40,6 +41,7 @@ interface ConnectDropdownProps {
 const ConnectDropdown = (props: ConnectDropdownProps) => {
   const {
     isLogged,
+    restoredAccount,
     userDefinedGasPrice,
     accountMeta,
     gasPriceSpeed,
@@ -52,7 +54,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     universeHasChildren,
   } = props;
 
-  if (!isLogged) return null;
+  if (!isLogged && !restoredAccount) return null;
 
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
 
@@ -92,18 +94,22 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     {
       accountType: ACCOUNT_TYPES.PORTIS,
       action: () => accountMeta.openWallet(),
+      disabled: !accountMeta.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.FORTMATIC,
       action: () => accountMeta.openWallet(),
+      disabled: !accountMeta.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.TORUS,
       action: () => accountMeta.openWallet(),
+      disabled: !accountMeta.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.WEB3WALLET,
       action: () => setShowMetaMaskHelper(true),
+      disabled: false,
     },
   ];
 
@@ -179,6 +185,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                   action={() => wallet.action()}
                   text="OPEN"
                   icon={Open}
+                  disabled={wallet.disabled}
                 />
               </div>
             );

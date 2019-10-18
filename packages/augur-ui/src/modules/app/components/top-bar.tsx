@@ -19,23 +19,23 @@ import HelpResources from 'modules/app/containers/help-resources';
 interface TopBarProps {
   alertsVisible: boolean;
   isLogged: boolean;
+  restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
   updateIsAlertVisible: Function;
   signupModal: Function;
   loginModal: Function;
-  isConnectionTrayOpen: boolean;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
   alertsVisible,
   isLogged,
+  restoredAccount,
   stats,
   unseenCount,
   updateIsAlertVisible,
   signupModal,
   loginModal,
-  isConnectionTrayOpen,
 }) => {
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -47,7 +47,7 @@ const TopBar: React.FC<TopBarProps> = ({
         </Link>
       </div>
 
-      {isLogged && (
+      {(isLogged || restoredAccount) && (
         <div className={Styles.statsContainer}>
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
@@ -67,26 +67,23 @@ const TopBar: React.FC<TopBarProps> = ({
         </div>
       )}
       <div>
-        {!isLogged && (
+        {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />
         )}
-        {!isLogged && (
+        {!isLogged && !restoredAccount && (
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
 
-        {isLogged && <HelpResources />}
+        {(isLogged || restoredAccount) && <HelpResources />}
         <ConnectAccount />
 
-        {isLogged && (
+        {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
               [Styles.alertsDark]: alertsVisible,
-              [Styles.alertsDisabled]: !isLogged,
             })}
-            onClick={(e: any) => {
-              if (isLogged) {
-                updateIsAlertVisible(!alertsVisible);
-              }
+            onClick={() => {
+              updateIsAlertVisible(!alertsVisible);
             }}
             tabIndex={-1}
           >
