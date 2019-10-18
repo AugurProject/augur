@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { isSafari } from 'utils/is-safari';
 
 const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {
@@ -72,9 +73,8 @@ export const loginWithTorus = () => async (
       throw error;
     }
 
-    // Temporary workaround - Torus userInfo modal is blocked on safari
-    const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
-    if (isSafari) {
+    // Temporary workaround
+    if (isSafari()) {
       dispatch(updateSdk(accountObject, undefined));
     } else {
       try {
