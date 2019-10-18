@@ -185,11 +185,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         bytes[] memory _signatures
     )
         public
+        payable
         returns (uint256)
     {
         uint256 _fillAmountRemaining = _requestedFillAmount;
 
         transferFromAllowed = true;
+
+        uint256 _protocolFee = 150000 * tx.gasprice;
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
@@ -197,12 +200,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             validateOrder(_order);
             IExchange _exchange = getExchangeFromAssetData(_order.makerAssetData);
 
-            // Update 0x. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow(
+            // Update 0x and pay protocol fee. This will also validate signatures and order state for us.
+            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow.value(_protocolFee)(
                 _order,
                 _fillAmountRemaining,
                 _signatures[i]
             );
+
             if (totalFillResults.takerAssetFilledAmount == 0) {
                 continue;
             }
@@ -214,16 +218,19 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         transferFromAllowed = false;
 
+        if (address(this).balance > 0) {
+            msg.sender.transfer(address(this).balance);
+        }
+
         return _fillAmountRemaining;
     }
 
-    function validateOrder(IExchange.Order memory _order) internal pure {
+    function validateOrder(IExchange.Order memory _order) internal view {
         (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
         require(_zeroXTradeToken == _zeroXTradeTokenTaker);
         require(_tokenId == _tokenIdTaker);
-        // XXX: Needs merge from master to work
-        // XXX require(_zeroXTradeToken == this);
+        require(_zeroXTradeToken == this);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {

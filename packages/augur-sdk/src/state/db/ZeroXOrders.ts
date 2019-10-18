@@ -7,11 +7,11 @@ import { augurEmitter } from '../../events';
 import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
 import { getAddress } from "ethers/utils/address";
 import { SignedOrder } from '@0x/types';
-import { WrapperOrderEvent } from '../../api/ZeroX';
 
-// This database clears its contents on every sync. The primary purposes for even storing this data are:
+// This database clears its contents on every sync.
+// The primary purposes for even storing this data are:
 // 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
-// 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load. We can do this on demand if the full sync above is too slow
+// 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
 const EXPECTED_ASSET_DATA_LENGTH = 714;
 
@@ -62,7 +62,7 @@ export class ZeroXOrders extends AbstractDB {
 
   static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
     const zeroXOrders = new ZeroXOrders(db, networkId, augur);
-    await zeroXOrders.deleteOld();
+    await zeroXOrders.clearDB();
     await zeroXOrders.subscribeToMeshEvents();
     return zeroXOrders;
   }
@@ -71,15 +71,7 @@ export class ZeroXOrders extends AbstractDB {
     return await this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
   }
 
-  async deleteOld(): Promise<void> {
-    const oldSnapshotRawDocs = await this.allDocs();
-    const oldSnapshotDocs = oldSnapshotRawDocs.rows ? oldSnapshotRawDocs.rows.map(row => Object.assign(row.doc, { _deleted: true})) : [];
-    if (oldSnapshotDocs.length > 0) {
-      await this.bulkUpsertUnorderedDocuments(oldSnapshotDocs);
-    }
-  }
-
-  handleMeshEvent(orderEvents: WrapperOrderEvent[]): void {
+  handleMeshEvent(orderEvents: OrderEvent[]): void {
     const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
     let documents = _.map(filteredOrders, this.processOrder.bind(this));
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
@@ -130,7 +122,7 @@ export class ZeroXOrders extends AbstractDB {
     const _id = order.orderHash;
     const augurOrderData = this.parseAssetData(order.signedOrder.makerAssetData);
     // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
-    const amount = typeof(order.fillableTakerAssetAmount) === "string" ? order.fillableTakerAssetAmount : order.fillableTakerAssetAmount.toFixed();
+    const amount = order.fillableTakerAssetAmount.toFixed();
     const savedOrder = Object.assign({ _id, signedOrder: order.signedOrder, amount, orderHash: order.orderHash }, augurOrderData);
     return savedOrder;
   }

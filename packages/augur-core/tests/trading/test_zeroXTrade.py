@@ -159,21 +159,26 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     yesShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(YES))
     noShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(NO))
 
-    # Lets take the order as another user and confirm assets are traded
     assert cash.faucet(fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
+
+    # We have to provide a protocol fee along with the fill
+    with raises(TransactionFailed):
+        ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1])
+
+    # Lets take the order as another user and confirm assets are traded
     with TokenDelta(yesShareToken, fix(1), contractsFixture.accounts[0], "Tester 0 Shares not received"):
         with TokenDelta(noShareToken, fix(1), contractsFixture.accounts[1], "Tester 1 Shares not received"):
             with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[0], "Tester 0 cash not taken"):
                 with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[1], "Tester 1 cash not taken"):
                     with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
-                        amountRemaining = ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1])
+                        amountRemaining = ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
                         assert amountRemaining == 0
 
     # Another user can fill the rest. We'll also ask to fill more than is available and see that we get back the remaining amount desired
     assert cash.faucet(fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[2])
-    amountRemaining = ZeroXTrade.trade(fillAmount + 1, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[2])
+    amountRemaining = ZeroXTrade.trade(fillAmount + 1, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
     assert amountRemaining == 1
 
     # The order is completely filled so further attempts to take it will not actuall result in any trade occuring
@@ -183,7 +188,7 @@ def test_basic_trading(contractsFixture, cash, market, universe):
         with TokenDelta(noShareToken, 0, contractsFixture.accounts[1], "Tester 1 Shares not received"):
             with TokenDelta(cash, 0, contractsFixture.accounts[0], "Tester 0 cash not taken"):
                 with TokenDelta(cash, 0, contractsFixture.accounts[1], "Tester 1 cash not taken"):
-                    ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1])
+                    ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
 
 def test_cancelation(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -210,7 +215,7 @@ def test_cancelation(contractsFixture, cash, market, universe):
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
     with TokenDelta(cash, 0, contractsFixture.accounts[0], "Trade occured when cancelled"):
         with TokenDelta(cash, 0, contractsFixture.accounts[1], "Trade occured when cancelled"):
-            ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1])
+            ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
 
     # Now lets make and cancel several
     # First we'll create a signed order
@@ -258,9 +263,9 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
                 with TokenDelta(noShareToken, fix(2), contractsFixture.accounts[2], "Taker Shares not received"):
                     with TokenDelta(cash, -fix(2, 60), sender, "Creator cash not taken"):
                         with TokenDelta(cash, -fix(2, 40), contractsFixture.accounts[2], "Taker cash not taken"):
-                            assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                            assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
     else:
-        assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == fix(2)
+        assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == fix(2)
 
 def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -292,7 +297,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
             with TokenDelta(noShareToken, fix(1), contractsFixture.accounts[2], "Taker Shares not received"):
                 with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[1], "Creator cash not taken"):
                     with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[2], "Taker cash not taken"):
-                        assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                        assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_two_bids_on_books_buy_both(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -325,7 +330,7 @@ def test_two_bids_on_books_buy_both(contractsFixture, cash, market):
                 with TokenDelta(cash, -fix(4, 60), contractsFixture.accounts[1], "Creator cash not taken"):
                     with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[3], "Creator cash not taken"):
                         with TokenDelta(cash, -fix(5, 40), contractsFixture.accounts[2], "Taker cash not taken"):
-                            assert ZeroXTrade.trade(fix(5), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                            assert ZeroXTrade.trade(fix(5), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=300000) == 0
 
 def test_two_bids_on_books_buy_full_and_partial(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -358,7 +363,7 @@ def test_two_bids_on_books_buy_full_and_partial(contractsFixture, cash, market, 
                 with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[1], "Creator cash not taken"):
                     with TokenDelta(cash, -fix(2, 60), contractsFixture.accounts[3], "Creator cash not taken"):
                         with TokenDelta(cash, -fix(3, 40), contractsFixture.accounts[2], "Taker cash not taken"):
-                            assert ZeroXTrade.trade(fix(3), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                            assert ZeroXTrade.trade(fix(3), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=300000) == 0
 
 def test_one_ask_on_books_buy_full_order(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -391,7 +396,7 @@ def test_one_ask_on_books_buy_full_order(contractsFixture, cash, market, univers
             with TokenDelta(yesShareToken, fix(2), contractsFixture.accounts[2], "Taker Shares not received"):
                 with TokenDelta(cash, -fix(2, 40), sender, "Creator cash not taken"):
                     with TokenDelta(cash, -fix(2, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-                        assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                        assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_one_ask_on_books_buy_partial_order(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -424,7 +429,7 @@ def test_one_ask_on_books_buy_partial_order(contractsFixture, cash, market, univ
             with TokenDelta(yesShareToken, fix(2), contractsFixture.accounts[2], "Taker Shares not received"):
                 with TokenDelta(cash, -fix(2, 40), sender, "Creator cash not taken"):
                     with TokenDelta(cash, -fix(2, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-                        assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                        assert ZeroXTrade.trade(fix(2), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_two_asks_on_books_buy_both(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -457,7 +462,7 @@ def test_two_asks_on_books_buy_both(contractsFixture, cash, market, universe):
                 with TokenDelta(cash, -fix(4, 40), contractsFixture.accounts[1], "Creator cash not taken"):
                     with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[3], "Creator cash not taken"):
                         with TokenDelta(cash, -fix(5, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-                            assert ZeroXTrade.trade(fix(5), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                            assert ZeroXTrade.trade(fix(5), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=300000) == 0
 
 def test_two_asks_on_books_buy_full_and_partial(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -490,7 +495,7 @@ def test_two_asks_on_books_buy_full_and_partial(contractsFixture, cash, market):
                 with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[1], "Creator cash not taken"):
                     with TokenDelta(cash, -fix(2, 40), contractsFixture.accounts[3], "Creator cash not taken"):
                         with TokenDelta(cash, -fix(3, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-                            assert ZeroXTrade.trade(fix(3), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                            assert ZeroXTrade.trade(fix(3), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=300000) == 0
 
 def test_take_order_with_shares_buy_with_cash(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -522,7 +527,7 @@ def test_take_order_with_shares_buy_with_cash(contractsFixture, cash, market, un
         with TokenDelta(yesShareToken, fix(1), contractsFixture.accounts[2], "Taker Shares not received"):
             with TokenDelta(cash, fix(1, 60), account, "Creator cash not received"):
                 with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-                    assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                    assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contractsFixture, cash, categoricalMarket, universe):
     market = categoricalMarket
@@ -561,7 +566,7 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     expectedTester2Payout = totalProceeds * (numTicks - 60) / numTicks
     with TokenDelta(cash, expectedTester1Payout, contractsFixture.accounts[1], "Tester 1 Cash delta wrong"):
         with TokenDelta(cash, expectedTester2Payout, contractsFixture.accounts[2], "Tester 2 Cash delta wrong"):
-            assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+            assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
     assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == 0
     assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)
@@ -622,12 +627,12 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
             nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
             totalFees = fix(100) / 50 # Market fees + reporting fees
             with TokenDelta(cash, totalFees, nextDisputeWindowAddress, "Dispute Window did not recieve the correct fees"):
-                assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
         else:
             with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
-                assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
     else:
-        assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+        assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
     assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == 0
     assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)
@@ -694,7 +699,7 @@ def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
     # without the kyc token we cannot fill the order
     cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[2])
     with raises(TransactionFailed):
-        ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+        ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
     reputationToken.transfer(contractsFixture.accounts[2], 1)
 
@@ -703,7 +708,7 @@ def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
         with TokenDelta(yesShareToken, fix(1), contractsFixture.accounts[2], "Taker Shares not received"):
             with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[1], "Creator cash not received"):
                 with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[2], "Taker cash not taken"):
-                    assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+                    assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
 def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
@@ -727,4 +732,4 @@ def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
         with TokenDelta(yesShareToken, 0, contractsFixture.accounts[2], "Taker Shares not received"):
             with TokenDelta(cash, 0, contractsFixture.accounts[1], "Creator cash not received"):
                 with TokenDelta(cash, 0, contractsFixture.accounts[2], "Taker cash not taken"):
-                    assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == fix(1)
+                    assert ZeroXTrade.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == fix(1)
