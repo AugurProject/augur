@@ -3,7 +3,7 @@
 
 $background-color: rgb(40, 40, 40);
 $border-color: rgb(36, 36, 36);
-$timestamp-color: rgba(240, 240, 240, 0.6);
+$timestamp-color: #848294;
 
 .highlighted {
   background-color: rgb(37, 37, 37) !important;
@@ -15,22 +15,25 @@ $timestamp-color: rgba(240, 240, 240, 0.6);
 }
 
 .Message {
-  display: flex;
-  flex: 1 1 100%;
-  flex-direction: row;
-
-  font-size: 16px;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  grid-template-rows: auto auto;
+  padding-bottom: 1em;
+  font-size: 10px;
 
   &__Timestamp {
-    display: flex;
+    grid-column: 1;
+    grid-row: 1;
     color: $timestamp-color;
     font-size: 0.8em;
   }
 
   &__Content {
-    display: flex;
-    flex: 1;
-    margin: 0 0.5em;
+    color: #E9E5F2;
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    margin: 0.25em 0.5em 0;
+    line-height: 1.5;
   }
 
   .popout {
@@ -49,10 +52,10 @@ $timestamp-color: rgba(240, 240, 240, 0.6);
   }
 
   &__User {
-    display: flex;
+    grid-column: 2;
+    grid-row: 1;
     color: rgba(255, 255, 255, 0.95);
-    font-weight: bold;
-    cursor: pointer;
+    font-weight: 400;
     user-select: none;
   }
 
@@ -68,7 +71,7 @@ $timestamp-color: rgba(240, 240, 240, 0.6);
     align-items: center;
     font-weight: bold;
     font-size: 1.25em;
-    font-family: 'LatoBold';
+    font-family: 'Roboto';
     color: rgb(95, 95, 95);
 
     // background-image: url('../images/earth.png') cover;
@@ -80,16 +83,16 @@ $timestamp-color: rgba(240, 240, 240, 0.6);
 .size-normal {
   .Message {
     align-items: baseline;
-    padding-bottom: 0.15em;
+    padding-bottom: 1em;
 
     &__User {
       margin-left: 0.5em;
     }
 
     &__Timestamp {
-      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      border-right: 1px solid $timestamp-color;
       font-style: normal;
-      margin-left: 0.3em;
+      margin-left: 0.5em;
       padding-right: 0.5em;
     }
   }
@@ -125,7 +128,7 @@ $timestamp-color: rgba(240, 240, 240, 0.6);
 .font-normal {
   .Message {
     // font-size: 1em;
-    font-weight: bold;
+    font-weight: 400;
   }
 }
 

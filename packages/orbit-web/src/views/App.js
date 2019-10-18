@@ -67,11 +67,6 @@ function AppView ({ isAuthenticated }) {
         {/* Controlpanel */}
         <ControlPanel />
 
-        {/* Channelheader */}
-        <Route path={['/channel/:channel', '/settings']}>
-          <ChannelHeader />
-        </Route>
-
         <Switch>
           {/* Channel */}
           <Route exact path='/channel/:channel'>

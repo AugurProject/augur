@@ -145,7 +145,7 @@ input[type='button'],
   background-color: $bar-background-color;
   box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   max-height: $controls-height;
   min-height: $controls-height;
@@ -183,8 +183,6 @@ input[type='button'],
   padding: 0.5em 1em;
   border-radius: 16px;
   letter-spacing: 1px;
-
-  background-color: rgba(48, 48, 48, 0.5);
 }
 
 .Messages {
@@ -193,14 +191,14 @@ input[type='button'],
 
   overflow: hidden;
 
-  background-color: rgb(35, 35, 35);
+  background-color: #201E22;
 
   flex: 1 1 auto;
 
   .dateSeparator {
     display: flex;
     justify-content: flex-start;
-    margin: 4px 0 2px 0;
+    margin: 10px 0 10px 0;
     font-size: 0.7em;
     color: rgb(228, 228, 228);
     cursor: default;

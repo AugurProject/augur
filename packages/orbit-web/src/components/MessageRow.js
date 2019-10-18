@@ -25,7 +25,6 @@ function MessageRow ({
       message={message}
       colorify={colorifyUsernames}
       isCommand={isCommand}
-      onClick={onMessageUserClick}
     />
   )
 

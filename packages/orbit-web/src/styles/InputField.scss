@@ -4,7 +4,7 @@ $border:         1px solid $input-border-color;
 $border-focused: 1px solid $main-color;
 
 input[type=text], input[type=password], input[type=checkbox] {
-  font-family: "Lato";
+  font-family: "Roboto";
   font-weight: bold;
 
   color: $input-text-color;
@@ -19,6 +19,36 @@ input[type=text], input[type=password], input[type=checkbox] {
 
   margin-left: 0.25em;
   margin-right: 0.25em;
+}
+
+input[type=text]::placeholder {
+  color: #848294;
+  opacity: 1;
+}
+
+textarea {
+  font-size: 10px;
+  font-family: "Roboto";
+  font-weight: 400;
+
+  color: $input-text-color;
+  background-color: #0E0E0F;
+
+  border: 1px solid #252429;
+
+  padding: 0.5em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+
+  margin-left: 0;
+  margin-right: 0;
+
+  height: 100%;
+}
+
+textarea::placeholder {
+  color: #848294;
+  opacity: 1;
 }
 
 input[type=text]:focus, input[type=password]:focus {
