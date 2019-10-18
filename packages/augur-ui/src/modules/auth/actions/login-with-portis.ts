@@ -9,9 +9,11 @@ import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
   NETWORK_IDS,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { updateModal } from 'modules/modal/actions/update-modal';
 
 const getPortisNetwork = (networkId): false | string | INetwork => {
   const myPrivateEthereumNode = {
@@ -27,55 +29,57 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
   }
 };
 
-export const loginWithPortis = (
-  forceRegisterPage = false,
-  showConnectingModal
-) => async (dispatch: ThunkDispatch<void, any, Action>) => {
+export const loginWithPortis = (forceRegisterPage = false) => async (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   const networkId = getNetworkId();
   const portisNetwork = getPortisNetwork(networkId);
 
   if (portisNetwork) {
-    const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
-      scope: ['email'],
-      registerPageByDefault: forceRegisterPage,
-    });
-    const web3 = new Web3(portis.provider);
-    const provider = new Web3Provider(portis.provider);
-
-    windowRef.portis = portis;
-
-    const initPortis = async (portis, accounts, email = null) => {
-      const account = accounts[0];
-
-      showConnectingModal();
-
-      const accountObject = {
-        address: account,
-        mixedCaseAddress: toChecksumAddress(account),
-        meta: {
-          address: account,
-          email,
-          profileImage: null,
-          signer: provider.getSigner(),
-          openWallet: () => portis.showPortis(),
-          accountType: ACCOUNT_TYPES.PORTIS,
-          isWeb3: true,
-        },
-      };
-
-      dispatch(updateSdk(accountObject, undefined));
-    };
-
     try {
-      const accounts = await web3.eth.getAccounts();
-
-      portis.onLogin(async (_, email) => {
-        if (email) {
-          await initPortis(portis, accounts, email);
-        }
+      const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
+        scope: ['email'],
+        registerPageByDefault: forceRegisterPage,
       });
 
-      await initPortis(portis, accounts);
+      const web3 = new Web3(portis.provider);
+      const provider = new Web3Provider(portis.provider);
+
+      windowRef.portis = portis;
+
+      const initPortis = (portis, account, email = null) => {
+        const accountObject = {
+          address: account,
+          mixedCaseAddress: toChecksumAddress(account),
+          meta: {
+            address: account,
+            email,
+            profileImage: null,
+            signer: provider.getSigner(),
+            openWallet: () => portis.showPortis(),
+            accountType: ACCOUNT_TYPES.PORTIS,
+            isWeb3: true,
+          },
+        };
+
+        dispatch(updateSdk(accountObject, undefined));
+      };
+
+      portis.onLogin((account, email) => {
+          initPortis(portis, account, email);
+      });
+
+      portis.onError(error => {
+        document.querySelector('.por_portis-container').remove();
+        dispatch(
+          updateModal({
+            type: MODA_WALLET_ERROR,
+            error: error.toString(),
+          })
+        );
+      });
+
+      await web3.eth.getAccounts();
     } catch (error) {
       document.querySelector('.por_portis-container').remove();
       throw error;

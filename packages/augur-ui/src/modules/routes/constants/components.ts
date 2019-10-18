@@ -7,7 +7,7 @@ export {
 } from "modules/markets-list/containers/markets-landing-page-container";
 
 
-export { default as Account } from "modules/account/components/account-view";
+export { default as Account } from "modules/account/containers/account-view";
 
 export { default as Market } from "modules/market/containers/market-view";
 
