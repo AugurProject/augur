@@ -15,7 +15,6 @@ import Styles from 'modules/markets-list/components/markets-list-styles.less';
 interface MarketsListProps {
   testid?: string;
   history: History;
-  isLogged: boolean;
   markets: MarketData[];
   filteredMarkets: string[];
   location: object;
