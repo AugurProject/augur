@@ -169,7 +169,7 @@ export const getTemplateRadioCards = (
       .map(c => addCategoryStats(categories, c, categoryStats));
   }
 
-  const useParentValues = findIfSubCats(categories.primary);
+  const useParentValues = hasNoTemplateCategoryChildren(categories.primary);
 
   if (categories.primary && (useParentValues || !categories.secondary)) {
     return cats
@@ -241,7 +241,7 @@ export const getTemplates = (
 
   if (!categoryTemplates) return [];
 
-  const useParentValues = findIfSubCats(categories.primary);
+  const useParentValues = hasNoTemplateCategoryChildren(categories.primary);
   if (!categories.secondary || useParentValues)
     return filterByMarketType
       ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
@@ -370,7 +370,8 @@ export const buildResolutionDetails = (
   return details;
 };
 
-export const findIfSubCats = category => {
+export const hasNoTemplateCategoryChildren = category => {
+  if (!category) return false;
   if (TEMPLATES[category].children) return false;
   return true;
 };
@@ -1244,7 +1245,7 @@ const TEMPLATES = {
           {
             templateId: `ten-playout-year-event`,
             marketType: YES_NO,
-            question: `Will [0] win the [1][2]`,
+            question: `Will [0] win the [1] [2]`,
             example: `Will Roger Federer win the 2020 Wimbledon`,
             inputs: [
               {
