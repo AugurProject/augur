@@ -1245,7 +1245,7 @@ const TEMPLATES = {
           {
             templateId: `ten-playout-year-event`,
             marketType: YES_NO,
-            question: `Will [0] win the [1][2]`,
+            question: `Will [0] win the [1] [2]`,
             example: `Will Roger Federer win the 2020 Wimbledon`,
             inputs: [
               {
