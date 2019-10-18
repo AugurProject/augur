@@ -17,8 +17,8 @@ const mapStateToProps = (state: AppState) => {
     stats: selectCoreStats(state),
     unseenCount,
     isLogged: authStatus.isLogged,
+    restoredAccount: authStatus.restoredAccount,
     alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible,
-    isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
   };
 };
 
