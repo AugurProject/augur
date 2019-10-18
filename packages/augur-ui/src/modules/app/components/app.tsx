@@ -43,6 +43,7 @@ interface AppProps {
   history: History;
   initAugur: Function;
   isLogged: boolean;
+  restoredAccount: boolean;
   isMobile: boolean;
   location: Location;
   loginAccount: LoginAccount;
@@ -310,6 +311,7 @@ export default class AppView extends Component<AppProps> {
       blockchain,
       history,
       isLogged,
+      restoredAccount,
       location,
       modal,
       universe,
@@ -357,7 +359,7 @@ export default class AppView extends Component<AppProps> {
                 updateConnectionTray(false);
                 updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
               }}
-              isLogged={isLogged}
+              isLogged={isLogged || restoredAccount}
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
               isConnectionTrayOpen={isConnectionTrayOpen}
@@ -367,7 +369,7 @@ export default class AppView extends Component<AppProps> {
 
             {/* HIDDEN ON MOBILE */}
             <TopNav
-              isLogged={isLogged}
+              isLogged={isLogged || restoredAccount}
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
             />
@@ -403,7 +405,7 @@ export default class AppView extends Component<AppProps> {
               >
                 <ForkingBanner />
 
-                <Routes isLogged={isLogged} />
+                <Routes isLogged={isLogged || restoredAccount} />
               </section>
             </section>
           </section>
