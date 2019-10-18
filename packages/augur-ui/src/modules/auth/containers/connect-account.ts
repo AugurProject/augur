@@ -9,6 +9,7 @@ import { updateAppStatus, IS_HELP_MENU_OPEN } from 'modules/app/actions/update-a
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
+  restoredAccount: state.authStatus.restoredAccount,
   universeId: state.universe.id,
   userInfo: state.loginAccount.meta,
   isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,

@@ -196,7 +196,6 @@ export default class MarketsView extends Component<
   render() {
     const {
       history,
-      isLogged,
       isMobile,
       loadMarketsInfoIfNotLoaded,
       location,
@@ -322,7 +321,6 @@ export default class MarketsView extends Component<
 
         <MarketsList
           testid='markets'
-          isLogged={isLogged}
           markets={markets}
           showPagination={showPagination && !isSearching}
           filteredMarkets={filterSortedMarkets}
