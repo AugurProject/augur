@@ -481,12 +481,6 @@ jobs:
           command: login
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
-      - bash: |
-          set -euo pipefail
-          ls -l packages/augur-ui/build
-          DOCKER_BUILDKIT=1 docker build --progress=plain -t augurproject/augur-ipfs:v2 -f packages/augur-tools/docker-builder/Dockerfile-ipfs .
-          docker push augurproject/augur-ipfs:v2
-        displayName: augur-ipfs build
       - script: |
           set -euo pipefail
           export NODE_OPTIONS="--max-old-space-size=6144"
@@ -505,6 +499,7 @@ jobs:
           ls -l packages/augur-ui/build
           DOCKER_BUILDKIT=1 docker build --progress=plain -t augurproject/augur-ipfs:v2 -f packages/augur-tools/docker-builder/Dockerfile-ipfs .
           docker push augurproject/augur-ipfs:v2
+          aws --region=us-east-1 ecs update-service  --service augur-ipfs --cluster kovan-v2-ecs --force-new-deployment
         displayName: augur-ipfs build
       - task: Docker@1
         displayName: docker logout
