@@ -21,6 +21,7 @@ import {
   SIGNIN_SIGN_WALLET,
   ONBOARDING_SEEN_KEY,
   MODAL_ACCOUNT_CREATED,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -38,8 +39,6 @@ import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  account: state.loginAccount,
-  isLogged: state.authStatus.isLogged,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -61,12 +60,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: (showRegister, showConnectingModal) =>
-    dispatch(loginWithPortis(showRegister, showConnectingModal)),
-  connectTorus: showConnectingModal =>
-    dispatch(loginWithTorus(showConnectingModal)),
-  connectFortmatic: showConnectingModal =>
-    dispatch(loginWithFortmatic(showConnectingModal)),
+  connectPortis: (showRegister) =>
+    dispatch(loginWithPortis(showRegister)),
+  connectTorus: () =>
+    dispatch(loginWithTorus()),
+  connectFortmatic: () =>
+    dispatch(loginWithFortmatic()),
+  errorModal: () => dispatch(
+    updateModal({
+      type: MODA_WALLET_ERROR,
+    })
+  ),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -74,16 +78,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.closeModal();
+    dP.errorModal();
   };
-
-  const showConnectingModal = () =>
-    dP.loadingModal(SIGNIN_LOADING_TEXT, () => redirect());
 
   const redirect = () => {
     dP.closeModal();
 
-    oP.history.push({ pathname: makePath(MARKETS, null) });
+    const path = sP.modal.pathName ? sP.modal.pathName : makePath(MARKETS, null);
+    oP.history.push(path);
 
     const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
     if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
@@ -104,9 +106,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => redirect());
         try {
           const forceRegisterPage = oP.isLogin ? false : true;
-          await dP.connectPortis(forceRegisterPage, () =>
-            showConnectingModal()
-          );
+          await dP.connectPortis(forceRegisterPage);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -121,7 +121,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => redirect());
         try {
-          await dP.connectTorus(() => showConnectingModal());
+          await dP.connectTorus();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
         }
@@ -136,7 +136,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => redirect());
         try {
-          await dP.connectFortmatic(() => showConnectingModal());
+          await dP.connectFortmatic();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
@@ -146,7 +146,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       type: ACCOUNT_TYPES.WEB3WALLET,
       icon: MetaMaskLogin,
       text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
-      subText: ``,
+      subText: '',
       disabled: false,
       hidden: !isMetaMaskPresent(),
       action: async () => {
