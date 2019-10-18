@@ -80,10 +80,6 @@
         .dashline-long;
       }
 
-      .eth-label {
-        font-size: @size-9;
-      }
-
       // --- mulitple line styling
       g.highcharts-line-series.highcharts-color-0 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-0 > .highcharts-halo,
@@ -188,10 +184,13 @@
         stroke: @color-outcome-invalid;
       }
 
-      text.highcharts-title tspan {
-        .mono-10;
+      text.highcharts-title tspan,
+      text.highcharts-title > tspan {
+        .text-10;
 
+        color: @color-primary-text;
         fill: @color-primary-text;
+        text-transform: capitalize;
       }
     }
   }

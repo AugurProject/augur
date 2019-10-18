@@ -36,13 +36,11 @@ export default class MarketOutcomesChartHighchart extends Component<
     scalarDenomination: '',
   };
 
-  ethLabel: null;
   container: any;
   chart: Highcharts.Chart;
 
   constructor(props) {
     super(props);
-    this.ethLabel = null;
     this.state = {
       containerHeight: 0,
       containerWidth: 0,
@@ -51,7 +49,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           noData: 'No Completed Trades',
         },
         title: {
-          text: ''
+          text: '',
         },
         chart: {
           type: 'line',
