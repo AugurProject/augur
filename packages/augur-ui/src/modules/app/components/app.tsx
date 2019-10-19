@@ -111,7 +111,7 @@ export default class AppView extends Component<AppProps> {
       title: 'Create',
       route: CREATE_MARKET,
       requireLogin: true,
-      disabled: this.props.universe.forkingInfo !== null,
+      disabled: !!this.props.universe.forkingInfo,
     },
   ];
 
@@ -181,7 +181,7 @@ export default class AppView extends Component<AppProps> {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
     if (universe.forkingInfo !== nextProps.universe.forkingInfo) {
-      this.sideNavMenuData[5].disabled = nextProps.universe.forkingInfo !== null;
+      this.sideNavMenuData[5].disabled = !!nextProps.universe.forkingInfo;
     }
 
     if (location !== nextProps.location) {
