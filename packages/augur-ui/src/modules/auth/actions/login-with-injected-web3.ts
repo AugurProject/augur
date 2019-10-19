@@ -38,10 +38,12 @@ export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, A
     });
   };
 
-  windowRef.ethereum.on('accountsChanged', function(accounts) {
-    console.log('refershing account to', accounts[0]);
-    success(accounts[0], true);
-  });
+  if (windowRef.ethereum && windowRef.ethereum.on) {
+    windowRef.ethereum.on('accountsChanged', function(accounts) {
+      console.log('refershing account to', accounts[0]);
+      success(accounts[0], true);
+    });
+  }
 
   return windowRef.ethereum
     .enable()
