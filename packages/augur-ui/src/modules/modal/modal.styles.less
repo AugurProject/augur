@@ -239,11 +239,18 @@ div.Onboarding {
   flex-flow: row nowrap;
   justify-content: space-between;
   padding: @size-24;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
   &.Bright {
     > h1 {
       color: @color-reporting;
     }
+  }
+
+  &.ShortBorder {
+    padding: 0 0 @size-24;
+    margin: @size-24 @size-24 0;
   }
 
   @media @breakpoint-mobile {
@@ -262,7 +269,17 @@ div.Onboarding {
     text-transform: uppercase;
   }
 
+  > h2 {
+    .text-12;
+
+    color: @color-primary-text;
+    margin-top: @size-16;
+    grid-row: 2;
+  }
+
   > button:first-of-type {
+    display: flex;
+    justify-content: flex-end;
     > svg {
       height: @size-12;
       width: @size-12;
@@ -275,7 +292,6 @@ div.Onboarding {
 }
 
 div.ButtonsRow:last-of-type {
-  border-top: 1px solid fade(@color-dark-grey, 50%);
   padding: @size-12 @size-24;
 
   @media @breakpoint-mobile {
@@ -1209,6 +1225,8 @@ div.ButtonsRow:last-of-type {
   .Message;
 
   > main {
+    padding: @size-24;
+
     > p {
       border-bottom: 1px solid @color-dark-grey;
       margin-bottom: @size-16;
@@ -1222,7 +1240,7 @@ div.ButtonsRow:last-of-type {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  margin-bottom: @size-16;
+  margin-bottom: @size-24;
 
   > div {
     height: 6.25rem;
@@ -1258,6 +1276,11 @@ div.ButtonsRow:last-of-type {
 
       color: @color-inactive-text;
       margin-bottom: @size-8;
+      text-transform: capitalize;
+    }
+
+    > div:first-of-type {
+      margin-bottom: @size-22;
     }
 
     > button {
@@ -1294,10 +1317,11 @@ div.ButtonsRow:last-of-type {
 
   > div:nth-of-type(2) {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
 
     > div {
       height: @size-40;
+      margin-bottom: 0;
 
       > button {
         padding: @size-10 @size-12;
@@ -1322,17 +1346,16 @@ div.ButtonsRow:last-of-type {
 
   > div:last-of-type {
     align-content: start;
-    align-items: flex-start;
-    display: flex;
-    flex-flow: row wrap;
-
-    > label {
-      height: 1rem;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 
     > button {
       height: 1rem;
       margin-left: auto;
+    }
+
+    > div {
+      grid-column: 1 / span 2;
     }
   }
 
