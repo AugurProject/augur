@@ -1284,7 +1284,7 @@ const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
-                values: LIST_VALUES.HORSE_RACING_EVENT,
+                values: LIST_VALUES.TENNIS_EVENT,
               },
               {
                 id: 2,
@@ -1310,7 +1310,7 @@ const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
-                values: LIST_VALUES.HORSE_RACING_EVENT,
+                values: LIST_VALUES.TENNIS_EVENT,
               },
               {
                 id: 2,
