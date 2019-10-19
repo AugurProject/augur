@@ -2,12 +2,16 @@ import React from 'react';
 import { LargeSubheaders } from 'modules/create-market/components/common';
 import { RadioTwoLineBarGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/template-picker.styles.less';
-import { getTemplates, getTemplateReadableDescription, createTemplateOutcomes } from 'modules/create-market/get-template';
+import {
+  getTemplates,
+  getTemplateReadableDescription,
+  createTemplateOutcomes,
+  buildMarketDescription,
+} from 'modules/create-market/get-template';
 import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import deepClone from 'utils/deep-clone';
 import { NewMarket } from 'modules/types';
-import { template } from './form-details.styles.less';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const { categories, marketType } = newMarket;
@@ -27,11 +31,11 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
 
   const templateOptions = templates.map((template, index) => {
     return {
-        header: `${getTemplateReadableDescription(template)}?`,
-        description: `Example: ${template.example}?`,
-        value: index.toString(),
+      header: `${getTemplateReadableDescription(template)}?`,
+      description: `Example: ${template.example}?`,
+      value: index.toString(),
     };
-  })
+  });
 
   return (
     <section className={Styles.TemplatePicker}>
@@ -41,14 +45,23 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
           radioButtons={templateOptions}
           onChange={value => {
             updateNewMarket({
-                ...deepClone<NewMarket>(EMPTY_STATE),
-                outcomes: newMarket.marketType === CATEGORICAL ? createTemplateOutcomes(templates[value].inputs) : ['', ''],
-                currentStep: newMarket.currentStep,
-                scalarDenomination: newMarket.marketType === SCALAR && templates[value].denomination,
-                marketType: newMarket.marketType,
-                categories: newMarket.categories,
-                template: templates[value]
-            })
+              ...deepClone<NewMarket>(EMPTY_STATE),
+              description: buildMarketDescription(
+                templates[value].question,
+                templates[value].inputs
+              ),
+              outcomes:
+                newMarket.marketType === CATEGORICAL
+                  ? createTemplateOutcomes(templates[value].inputs)
+                  : ['', ''],
+              currentStep: newMarket.currentStep,
+              scalarDenomination:
+                newMarket.marketType === SCALAR &&
+                templates[value].denomination,
+              marketType: newMarket.marketType,
+              categories: newMarket.categories,
+              template: templates[value],
+            });
           }}
         />
       </section>
