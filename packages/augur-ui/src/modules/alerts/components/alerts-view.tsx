@@ -15,7 +15,7 @@ interface AlertsViewProps {
   removeAlert: (alertId:string, alertName:string) => void;
   clearAlerts: () => void;
   toggleAlerts: () => void;
-  alertsVisible: Boolean;
+  alertsVisible: boolean;
 }
 
 
@@ -47,7 +47,8 @@ const AlertsView: React.FC<AlertsViewProps> = ({
       <section
         id="alerts_view"
         className={classNames(Styles.AlertsView, {
-          [Styles.dark]: !(alerts && alerts.length)
+          [Styles.dark]: !(alerts && alerts.length),
+          [Styles.isOpen]: alertsVisible,
         })}
       >
         <button
