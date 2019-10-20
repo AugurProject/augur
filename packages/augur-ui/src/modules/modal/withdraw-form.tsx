@@ -80,7 +80,7 @@ export class WithdrawForm extends Component<
   handleMax = () => {
     const { loginAccount, GasCosts } = this.props;
     const { currency } = this.state;
-    const fullAmount = createBigNumber(loginAccount[currency.toLowerCase()]);
+    const fullAmount = createBigNumber(loginAccount.balances[currency.toLowerCase()]);
     const valueMinusGas = fullAmount.minus(GasCosts.eth.fullPrecision);
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
     this.amountChange(currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed());
@@ -163,13 +163,13 @@ export class WithdrawForm extends Component<
         : formattedAmount;
     const buttons = [
       {
-        text: "send",
+        text: "Send",
         action: () =>
           transferFunds(formattedAmount.fullPrecision, currency, address),
         disabled: !isValid,
       },
       {
-        text: "cancel",
+        text: "Cancel",
         action: closeAction,
       },
     ];
@@ -177,39 +177,29 @@ export class WithdrawForm extends Component<
       {
         label: "Send",
         value: formattedAmount,
-        useValueLabel: true,
-        showDenomination: true,
       },
       {
         label: "GAS Cost",
         value: gasCost,
-        useValueLabel: true,
-        showDenomination: true,
       },
       {
         label: "Total",
         value: formattedTotal,
-        useValueLabel: true,
-        showDenomination: true,
         highlight: true,
       }
     ];
 
     return (
       <div className={Styles.WithdrawForm}>
-        <Title title="Send Funds" closeAction={closeAction} />
+        <Title title="Send Funds" subheader="Send funds from your connected wallet" closeAction={closeAction} />
         <main>
-          {/*
-            // @ts-ignore */}
-          <Description
-            description={["Send funds from your connected wallet"]}
-          />
           <div className={Styles.GroupedForm}>
             <div>
-              <label htmlFor="recipient">Recipient</label>
+              <label htmlFor="recipient">Recipient address</label>
               <TextInput
                 type="text"
                 id="recipient"
+                value={address}
                 autoComplete="off"
                 placeholder="0x..."
                 onChange={this.addressChange}
@@ -224,7 +214,7 @@ export class WithdrawForm extends Component<
                 defaultValue={currency}
                 onChange={this.dropdownChange}
               />
-              <span>Available: {loginAccount[currency.toLowerCase()]}</span>
+              <span>Available: {loginAccount.balances[currency.toLowerCase()]}</span>
             </div>
             <div>
               <label htmlFor="amount">Amount</label>
@@ -232,6 +222,7 @@ export class WithdrawForm extends Component<
               <TextInput
                 type="number"
                 id="amount"
+                value={amount}
                 placeholder="0.00"
                 onChange={this.amountChange}
                 errorMessage={errors.amount && errors.amount.length > 0 ? errors.amount : ""}

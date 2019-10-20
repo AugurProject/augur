@@ -26,6 +26,7 @@ export enum SizeTypes {
 
 export interface Alert {
   id: string;
+  uniqueId: string;
   title: string;
   name: string;
   description: string;

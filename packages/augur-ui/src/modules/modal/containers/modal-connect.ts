@@ -51,9 +51,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithTorus()),
   connectFortmatic: () =>
     dispatch(loginWithFortmatic()),
-  errorModal: () => dispatch(
+  errorModal: (error) => dispatch(
     updateModal({
       type: MODA_WALLET_ERROR,
+      error: error ? error.toString() : ''
     })
   ),
 });
@@ -61,7 +62,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.errorModal();
+    dP.errorModal(error);
   };
 
   const redirect = () => {

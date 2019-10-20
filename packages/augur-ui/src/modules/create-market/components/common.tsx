@@ -36,7 +36,7 @@ import {
   CHOICE,
   OPTIONAL,
 } from 'modules/create-market/get-template';
-import { CATEGORICAL } from 'modules/common/constants';
+import { CATEGORICAL, CATEGORICAL_OUTCOMES_MIN_NUM } from 'modules/common/constants';
 import { buildformattedDate } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 
@@ -607,7 +607,7 @@ export class NumberedList extends Component<
             number={index}
             removable={index >= minShown}
             onRemove={this.removeItem}
-            errorMessage={errorMessage[index]}
+            errorMessage={errorMessage && errorMessage[index]}
             editable={item.editable}
           />
         ))}
@@ -720,7 +720,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <TextInput
         placeholder={input.placeholder}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           let newOutcomes = outcomes;
           const newInputs = updateData(value);
@@ -738,7 +738,7 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <TextInput
         placeholder={input.placeholder}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           let newOutcomes = outcomes;
           newOutcomes[inputIndex] = value;
@@ -757,7 +757,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
         setEndTime={input.userInput}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
@@ -766,8 +766,9 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <FormDropdown
         options={input.values}
+        defaultValue={input.userInput}
         staticLabel={input.placeholder}
-        errorMessage={validations.inputs[inputIndex]}
+        errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
             onChange('scalarDenomination', value);
@@ -918,7 +919,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               break;
           }
         }}
-        validations={newMarket.validations.inputs[inputIndex]}
+        validations={newMarket.validations.inputs && newMarket.validations.inputs[inputIndex]}
         hour={hour ? String(hour) : null}
         minute={minute ? String(minute) : null}
         meridiem={meridiem}
@@ -1034,8 +1035,17 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       }
       return null;
     });
+  
+  outcomes.forEach(outcome => {
+    if (initialList.filter(option => option.value === outcome).length === 0) {
+      initialList.push({
+        value: outcome,
+        editable: true
+      });
+    }
+  });
 
-  while (initialList.length < 2) {
+  while (initialList.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
     initialList.push({
       value: '',
       editable: true,
