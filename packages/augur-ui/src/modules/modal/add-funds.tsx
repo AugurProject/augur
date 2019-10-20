@@ -92,6 +92,7 @@ export const AddFunds = ({
 
   return (
     <div
+      onClick={event => event.stopPropagation()}
       className={classNames(Styles.AddFunds, {
         [Styles.ShowSelected]: selectedOption,
         [Styles.hideOnMobile]: autoSelect,
