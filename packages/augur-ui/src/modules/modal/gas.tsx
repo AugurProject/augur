@@ -73,7 +73,7 @@ export class Gas extends React.Component<GasProps, GasState> {
     ];
 
     return (
-      <div className={Styles.Gas}>
+      <div onClick={event => event.stopPropagation()} className={Styles.Gas}>
         <Title title="Gas Price (gwei)" closeAction={closeAction} />
         <main>
           {showLowAlert && (
