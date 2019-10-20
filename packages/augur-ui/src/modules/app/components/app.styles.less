@@ -85,6 +85,7 @@ h6 {
   @media @breakpoint-mobile {
     width: 100vw;
     padding-bottom: @markets-list-footer-padding;
+    position: fixed;
 
     &.SideNavOpen {
       opacity: 0.1;
@@ -166,7 +167,7 @@ svg.SideBar__mobile-bars-unseen {
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
     z-index: @mask-modal;
