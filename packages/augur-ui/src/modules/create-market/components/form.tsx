@@ -88,6 +88,7 @@ import {
   buildResolutionDetails, hasNoTemplateCategoryChildren,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
+
 import { Getters } from '@augurproject/sdk';
 
 interface FormProps {
@@ -174,9 +175,10 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     let market = deepClone<NewMarket>(newMarket);
     market.validations = [];
+    market.currentStep = isTemplate ? this.state.templateFormStarts : 0;
 
     const disabledSave =
-      savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+      savedDraft && JSON.stringify(market) === JSON.stringify(savedDraft);
     let unsaved =
       !newMarket.uniqueId &&
       JSON.stringify(market) !== JSON.stringify(defaultState);
@@ -343,6 +345,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateNewMarket,
       drafts,
       updateDraft,
+      isTemplate
     } = this.props;
 
     if (newMarket.description === EMPTY_STATE.description) {
@@ -350,12 +353,15 @@ export default class Form extends React.Component<FormProps, FormState> {
       return;
     }
 
+    const currentStep = isTemplate ? this.state.templateFormStarts : 0;
+
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
       const updatedDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
-        updated: updatedDate,
+        currentStep,
+        updated: updatedDate
       };
       updateDraft(newMarket.uniqueId, draftMarket);
       updateNewMarket({
@@ -366,9 +372,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       const createdDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
+        currentStep,
         uniqueId: createdDate,
         created: createdDate,
-        updated: createdDate,
+        updated: createdDate
       };
 
       addDraft(createdDate, draftMarket);
@@ -631,9 +638,14 @@ export default class Form extends React.Component<FormProps, FormState> {
       disabledFunction
     } = contentPages[currentStep];
 
-    const savedDraft = drafts[uniqueId];
+    let savedDraft = drafts[uniqueId];
+    if (savedDraft) savedDraft.validations = [];
+    let comparableNewMarket = deepClone<NewMarket>(newMarket);
+    comparableNewMarket.currentStep = isTemplate ? this.state.templateFormStarts : 0;
+    comparableNewMarket.validations = [];
+
     const disabledSave =
-      savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+      savedDraft && JSON.stringify(comparableNewMarket) === JSON.stringify(savedDraft);
 
     const noErrors = Object.values(validations || {}).every(field => {
       if (Array.isArray(field)) {

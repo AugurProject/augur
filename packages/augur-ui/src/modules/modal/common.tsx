@@ -34,6 +34,7 @@ export interface TitleProps {
   title: string;
   closeAction: Function;
   bright?: boolean;
+  subheader?: string;
 }
 
 export interface DescriptionProps {
@@ -256,9 +257,13 @@ export const Title = (props: TitleProps) => (
   <header
     className={classNames(Styles.TitleHeader, {
       [Styles.Bright]: props.bright,
+      [Styles.ShortBorder]: props.subheader
     })}
   >
     <h1>{props.title}</h1>
+    {props.subheader &&
+      <h2>{props.subheader}</h2>
+    }
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
     )}
