@@ -694,7 +694,7 @@ export const InputFactory = (props: InputFactoryProps) => {
 
   const updateData = value => {
     let inputValidations = newMarket.validations.inputs;
-    if (inputValidations === '') {
+    if (!inputValidations) {
       inputValidations = [];
     }
     inputValidations[inputIndex] = '';
@@ -869,7 +869,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       template.inputs[props.input.id].userInput = userInput;
     }
     let inputValidations = newMarket.validations.inputs;
-    if (inputValidations === '') {
+    if (!inputValidations) {
       inputValidations = [];
     }
     inputValidations[inputIndex] = { setEndTime: '', hours: '' };
