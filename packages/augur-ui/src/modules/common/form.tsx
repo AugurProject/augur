@@ -233,6 +233,7 @@ interface RadioGroupProps {
     | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
     | [];
   hideRadioButton?: boolean;
+  disabled?: boolean;
 }
 
 export interface RadioGroupState {
@@ -1053,12 +1054,14 @@ export const RadioBar = ({
   secondErrorMessage,
   secondHeader,
   multiSelect,
+  disabled
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
       [Styles.MultiSelect]: multiSelect,
+      [Styles.Disabled]: disabled,
     })}
     role="button"
     onClick={e => onChange(value)}
