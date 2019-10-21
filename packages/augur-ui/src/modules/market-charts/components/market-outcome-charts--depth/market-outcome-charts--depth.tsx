@@ -8,6 +8,8 @@ import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
 import Styles from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles.less';
 import { MarketDepth } from 'modules/markets/helpers/order-for-market-depth';
 
+import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
+
 interface MarketOutcomeDepthProps {
   sharedChartMargins?: object;
   marketDepth: MarketDepth;
@@ -21,6 +23,11 @@ interface MarketOutcomeDepthProps {
   hasOrders: boolean;
   hoveredPrice?: any;
 }
+interface MarketOutcomeDepthState {
+  zoom: number;
+}
+
+const ZOOM_LEVELS = [0, 1, 2, 3, 4, 5];
 // this is important to make sure we don't infinitely redraw the chart / have the container keep growing
 const MARGIN_OF_ERROR = 50;
 
@@ -32,7 +39,7 @@ const checkResize = memoize(
 
 export default class MarketOutcomeDepth extends Component<
   MarketOutcomeDepthProps,
-  {}
+  MarketOutcomeDepthState
 > {
   static defaultProps = {
     hoveredPrice: null,
@@ -48,6 +55,10 @@ export default class MarketOutcomeDepth extends Component<
   yScale: number = 0;
   containerHeight: number = 0;
   containerWidth: number = 0;
+
+  state = {
+    zoom: ZOOM_LEVELS[0],
+  };
 
   constructor(props) {
     super(props);
@@ -290,8 +301,10 @@ export default class MarketOutcomeDepth extends Component<
         }}
         className={Styles.MarketOutcomeDepth__container}
       >
+        <button onClick={() => console.log('click Zoom Out', this.state.zoom)}>{ZoomOutIcon}</button>
         <span>mid price</span>
         <span>{`$${this.props.orderBookKeys.mid.toFixed()}`}</span>
+        <button onClick={() => console.log('click Zoom In', this.state.zoom)}>{ZoomInIcon}</button>
         {this.depthContainer}
       </div>
     );
@@ -598,8 +611,7 @@ function drawTicks(options) {
       )
       .attr(
         'transform',
-        `translate(${drawParams.containerWidth +
-          drawParams.chartDim.right}, 6)`
+        `translate(${drawParams.containerWidth + drawParams.chartDim.right}, 6)`
       )
       .selectAll('text')
       .text(d => d)
