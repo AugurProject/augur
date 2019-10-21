@@ -887,8 +887,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
-        header="Estimated start time"
-        subheader="When is the event estimated to begin?"
+        header={props.input.label || 'Estimated start time'}
+        subheader={props.input.sublabel || 'When is the event estimated to begin?'}
         setEndTime={endTime}
         onChange={(label, value) => {
           switch (label) {
@@ -1035,7 +1035,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       }
       return null;
     });
-  
+
   outcomes.forEach(outcome => {
     if (initialList.filter(option => option.value === outcome).length === 0) {
       initialList.push({
