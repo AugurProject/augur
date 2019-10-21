@@ -136,6 +136,7 @@ export interface TemplateInput {
   id: number;
   type: TemplateInputType;
   placeholder: string;
+  label?: string;
   tooltip?: string;
   userInput?: string;
   userInputObject?: UserInputtedType;
@@ -447,7 +448,9 @@ const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -466,7 +469,9 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -508,7 +513,7 @@ const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
-                values: LIST_VALUES.OFFICES,
+                values: LIST_VALUES.PRES_OFFICES,
               },
             ],
             resolutionRules: {},
@@ -563,7 +568,9 @@ const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -582,7 +589,9 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
