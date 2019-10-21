@@ -34,7 +34,7 @@ import {
   UserInputDateTime,
   createTemplateOutcomes,
   CHOICE,
-  OPTIONAL,
+  REQUIRED,
 } from 'modules/create-market/get-template';
 import { CATEGORICAL, CATEGORICAL_OUTCOMES_MIN_NUM } from 'modules/common/constants';
 import { buildformattedDate } from 'utils/format-date';
@@ -887,8 +887,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
-        header="Estimated start time"
-        subheader="When is the event estimated to begin?"
+        header={props.input.label || 'Estimated start time'}
+        subheader={props.input.sublabel || 'When is the event estimated to begin?'}
         setEndTime={endTime}
         onChange={(label, value) => {
           switch (label) {
@@ -1035,7 +1035,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       }
       return null;
     });
-  
+
   outcomes.forEach(outcome => {
     if (initialList.filter(option => option.value === outcome).length === 0) {
       initialList.push({
@@ -1091,8 +1091,8 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
   return (
     <div className={Styles.ResolutionRules}>
       <Subheaders
-        header="Suggested resolution rules"
-        subheader="Common rules for this template that you can optionally include in your market."
+        header="Added resolution rules"
+        subheader="Rules for this template that will be included in your market."
       />
       {resolutionRules[CHOICE] && resolutionRules[CHOICE].length > 0 && (
         <>
@@ -1116,7 +1116,7 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
               onChange('template', {
                 ...template,
                 resolutionRules: {
-                  [OPTIONAL]: resolutionRules[OPTIONAL],
+                  [REQUIRED]: resolutionRules[REQUIRED],
                   [CHOICE]: newResolutionRulesChoice
                 }
               })
@@ -1124,30 +1124,21 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
           />
         </>
       )}
-       {resolutionRules[OPTIONAL] && resolutionRules[OPTIONAL].length > 0 && (
+       {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
         <>
-          <span>Choose as many as you like:</span>
+          <span>Added Resolution details:</span>
           <MultiSelectRadioBarGroup
-            radioButtons={resolutionRules[OPTIONAL].map((rule, index) =>
+            radioButtons={resolutionRules[REQUIRED].map((rule, index) =>
               {
                 return {
                   header: rule.text,
                   value: index.toString(),
-                  isSelected: rule.isSelected
+                  isSelected: true,
+                  disabled: true
                 }
               }
             )}
-            onChange={(value: string) => {
-              let newResolutionRulesOpt = resolutionRules[OPTIONAL];
-              newResolutionRulesOpt[parseInt(value)].isSelected = !resolutionRules[OPTIONAL][parseInt(value)].isSelected;
-              onChange('template', {
-                ...template,
-                resolutionRules: {
-                  [OPTIONAL]: newResolutionRulesOpt,
-                  [CHOICE]: resolutionRules[CHOICE]
-                }
-              })
-            }}
+            onChange={(value: string) => {}}
           />
         </>
        )}
