@@ -987,8 +987,8 @@ const TEMPLATES = {
           {
             templateId: `gf-cut`,
             marketType: YES_NO,
-            question: `Will [0] make the cut at [1] [2]`,
-            example: `Will Tiger Woods make the cut at 2020 PGA Championship`,
+            question: `Will [0] make the cut at the [1] [2]`,
+            example: `Will Tiger Woods make the cut at the 2020 PGA Championship`,
             inputs: [
               {
                 id: 0,
