@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { isSafari } from 'utils/is-safari';
 
 const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {
@@ -72,13 +73,18 @@ export const loginWithTorus = () => async (
       throw error;
     }
 
-    try {
-      const userInfo = await torus.getUserInfo();
-      accountObject.meta.email = userInfo.email;
-      accountObject.meta.profileImage = userInfo.profileImage;
+    // Temporary workaround
+    if (isSafari()) {
       dispatch(updateSdk(accountObject, undefined));
-    } catch (error) {
-      dispatch(updateSdk(accountObject, undefined));
+    } else {
+      try {
+        const userInfo = await torus.getUserInfo();
+        accountObject.meta.email = userInfo.email;
+        accountObject.meta.profileImage = userInfo.profileImage;
+        dispatch(updateSdk(accountObject, undefined));
+      } catch (error) {
+        dispatch(updateSdk(accountObject, undefined));
+      }
     }
   } else {
     throw Error('Network currently not supported with Torus');

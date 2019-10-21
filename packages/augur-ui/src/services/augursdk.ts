@@ -14,12 +14,7 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
 import { EnvObject } from 'modules/types';
 import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
-
-// From: https://stackoverflow.com/a/29696509
-const ua = window.navigator.userAgent;
-const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
-const webkit = !!ua.match(/WebKit/i);
-const iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+import { isMobileSafari } from 'utils/is-safari';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -50,7 +45,7 @@ export class SDK {
       account
     );
 
-    const connector = (iOSSafari ? new SEOConnector(): new WebWorkerConnector());
+    const connector = (isMobileSafari() ? new SEOConnector(): new WebWorkerConnector());
     connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http

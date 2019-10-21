@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
+import ConnectAccount from 'modules/auth/containers/connect-account';
 import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
@@ -30,7 +31,7 @@ const SideNav = ({
   logout,
   currentBasePath,
   showNav,
-  showGlobalChat
+  showGlobalChat,
 }: SideNavProps) => {
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
@@ -42,46 +43,52 @@ const SideNav = ({
         [Styles.showNav]: showNav,
       })}
     >
-      <div className={Styles.SideNav__container}>
-        {isConnectionTrayOpen && <ConnectDropdown />}
-        <ul
-          className={classNames({
-            [Styles.accountDetailsOpen]: isConnectionTrayOpen,
-          })}
-        >
-          {accessFilteredMenu.map((item, idx) => (
-            <li
-              key={idx}
-              className={classNames({
-                [Styles.disabled]: item.disabled,
-                [Styles.selected]: item.route === currentBasePath,
-              })}
-            >
-              <Link
-                to={item.route ? makePath(item.route) : null}
-                onClick={() => defaultMobileClick()}
-              >
-                <span>{item.title}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <div>
+        <ConnectAccount />
+      </div>
 
-        <footer>
-          <div className={Styles.GlobalChat}>
-            <SecondaryButton
-              action={showGlobalChat}
-              text='Global Chat'
-              icon={Chevron}
-            />
-          </div>
-          {isLogged && (
-            <>
-              <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
-              <HelpResources />
-            </>
-          )}
-        </footer>
+      <div className={Styles.SideNav__container}>
+        <div>
+          {isConnectionTrayOpen && <ConnectDropdown />}
+          <ul
+            className={classNames({
+              [Styles.accountDetailsOpen]: isConnectionTrayOpen,
+            })}
+          >
+            {accessFilteredMenu.map((item, idx) => (
+              <li
+                key={idx}
+                className={classNames({
+                  [Styles.disabled]: item.disabled,
+                  [Styles.selected]: item.route === currentBasePath,
+                })}
+              >
+                <Link
+                  to={item.route ? makePath(item.route) : null}
+                  onClick={() => defaultMobileClick()}
+                >
+                  <span>{item.title}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <footer>
+            <div className={Styles.GlobalChat}>
+              <SecondaryButton
+                action={showGlobalChat}
+                text='Global Chat'
+                icon={Chevron}
+              />
+            </div>
+            {isLogged && (
+              <>
+                <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
+                <HelpResources />
+              </>
+            )}
+          </footer>
+        </div>
       </div>
     </aside>
   );
