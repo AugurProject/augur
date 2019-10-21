@@ -8,7 +8,6 @@ html,
 
 body {
   background: @color-page-background;
-  overflow: auto;
 
   // See Issue #3504
   top: 0px !important;
@@ -86,6 +85,11 @@ h6 {
   @media @breakpoint-mobile {
     width: 100vw;
     padding-bottom: @markets-list-footer-padding;
+    position: fixed;
+
+    &.SideNavOpen {
+      opacity: 0.1;
+    }
   }
 
   > section {
@@ -104,10 +108,18 @@ h6 {
   @media @breakpoint-mobile {
     padding-top: 0;
   }
+
+  > div:first-of-type {
+    left: 0px;
+    position: absolute;
+    right: 0px;
+    width: 100%;
+    z-index: @mask-toast;
+  }
 }
 
+
 .SideBar__mobile-bars {
-  position: absolute;
   top: 0;
   left: 0;
   border-bottom: 1px solid @color-module-background;
@@ -115,7 +127,7 @@ h6 {
   height: @top-bar-height-mobile;
   outline: none;
   padding: 1rem;
-  position: absolute;
+  position: fixed;
   width: 3.125rem;
   z-index: @mask-modal;
 
@@ -155,9 +167,13 @@ svg.SideBar__mobile-bars-unseen {
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
     z-index: @mask-modal;
+
+    &.SideNavOpen {
+      opacity: 0.1;
+    }
   }
 }

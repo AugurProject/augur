@@ -40,6 +40,7 @@
     padding: @size-12;
 
     @media @breakpoint-mobile {
+      background: @color-module-background;
       padding: @size-16 @size-12;
       border: none;
     }
@@ -90,6 +91,10 @@
   position: absolute;
   right: 0px;
   top: 56px;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
 }
 
 .AccountInfo {
