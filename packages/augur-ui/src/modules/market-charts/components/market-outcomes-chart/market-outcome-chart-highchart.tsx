@@ -85,7 +85,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           showLastLabel: true,
           labels: {
             format: '{value:%b %d}',
-            style: { fontSize: '9px' }
+            style: { fontSize: '9px' },
           },
           crosshair: {
             snap: true,
@@ -239,7 +239,6 @@ export default class MarketOutcomesChartHighchart extends Component<
       width: this.container.clientWidth,
     };
 
-
     const useArea =
       priceTimeSeries && Object.keys(priceTimeSeries).length === 1;
     const hasData =
@@ -251,7 +250,7 @@ export default class MarketOutcomesChartHighchart extends Component<
 
     const series = [];
     Object.keys(priceTimeSeries).forEach(id => {
-      series.push({
+      const baseSeriesOptions = {
         type: 'line',
         lineWidth:
           selectedOutcomeId && selectedOutcomeId === id
@@ -262,6 +261,31 @@ export default class MarketOutcomesChartHighchart extends Component<
           pts.timestamp,
           createBigNumber(pts.price).toNumber(),
         ]),
+      };
+
+      const events = {
+        mouseOver() {
+          if (this.type === 'line') {
+            this.update({ ...baseSeriesOptions, type: 'area' }, true);
+          }
+        },
+        mouseOut() {
+          this.update({ ...baseSeriesOptions }, true);
+        },
+        click() {
+          this.update(
+            {
+              ...baseSeriesOptions,
+              type: this.type === 'line' ? 'area' : 'line',
+            },
+            true
+          );
+        },
+      };
+
+      series.push({
+        ...baseSeriesOptions,
+        events: events,
       });
     });
 
