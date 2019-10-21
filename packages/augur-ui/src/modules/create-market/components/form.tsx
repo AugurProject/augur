@@ -240,10 +240,11 @@ export default class Form extends React.Component<FormProps, FormState> {
         if (goBack) {
           this.setState({ blockShown: true }, () => {
             if (isTemplate) {
+              const categories = [newMarket.categories[0], hasNoTemplateCategoryChildren(newMarket.categories[0]) ? '' : newMarket.categories[1], ''];
               updateNewMarket({
                 ...deepClone<NewMarket>(EMPTY_STATE),
                 marketType: newMarket.marketType,
-                categories: newMarket.categories,
+                categories,
                 currentStep: this.state.templateFormStarts - 1,
                 template: null,
               });
