@@ -136,6 +136,7 @@ export interface TemplateInput {
   id: number;
   type: TemplateInputType;
   placeholder: string;
+  label?: string;
   tooltip?: string;
   userInput?: string;
   userInputObject?: UserInputtedType;
@@ -448,6 +449,7 @@ const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DATETIME,
                 placeholder: `By Specific Datetime`,
+                label: `By Specific Datetime`,
               },
             ],
             resolutionRules: {},
@@ -467,6 +469,7 @@ const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DATETIME,
                 placeholder: `By Specific Datetime`,
+                label: `By Specific Datetime`,
               },
             ],
             resolutionRules: {},
@@ -564,6 +567,7 @@ const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DATETIME,
                 placeholder: `By Specific Datetime`,
+                label: `By Specific Datetime`,
               },
             ],
             resolutionRules: {},
@@ -583,6 +587,7 @@ const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DATETIME,
                 placeholder: `By Specific Datetime`,
+                label: `By Specific Datetime`,
               },
             ],
             resolutionRules: {},

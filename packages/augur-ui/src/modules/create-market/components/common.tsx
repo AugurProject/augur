@@ -801,6 +801,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     onChange,
   } = props;
 
+  const [datetimeHeaderLabel] = useState(props.input.label || "Estimated start time")
   const [endTime, setEndTime] = useState(
     props.input.userInput
       ? (props.input.userInputObject as UserInputDateTime).endTime
@@ -887,7 +888,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
-        header="Estimated start time"
+        header={datetimeHeaderLabel}
         subheader="When is the event estimated to begin?"
         setEndTime={endTime}
         onChange={(label, value) => {
@@ -1035,7 +1036,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       }
       return null;
     });
-  
+
   outcomes.forEach(outcome => {
     if (initialList.filter(option => option.value === outcome).length === 0) {
       initialList.push({
