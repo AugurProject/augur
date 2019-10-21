@@ -26,6 +26,7 @@ export enum SizeTypes {
 
 export interface Alert {
   id: string;
+  uniqueId: string;
   title: string;
   name: string;
   description: string;
@@ -513,6 +514,7 @@ export interface AppStatus {
 
 export interface AuthStatus {
   isLogged?: boolean;
+  restoredAccount?: boolean;
   edgeLoading?: boolean;
   edgeContext?: string;
   isConnectionTrayOpen?: boolean;

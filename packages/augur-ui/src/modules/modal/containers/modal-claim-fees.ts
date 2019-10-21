@@ -24,8 +24,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
+import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 
-const mapStateToProps = (state: AppState, ownProps) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   gasCost: formatGasCostToEther(
     CLAIM_FEES_GAS_COST,
@@ -33,7 +34,7 @@ const mapStateToProps = (state: AppState, ownProps) => ({
     getGasPrice(state)
   ),
   pendingQueue: state.pendingQueue || [],
-  claimReportingFees: ownProps,
+  claimReportingFees: selectReportingWinningsByMarket(state),
   forkingInfo: state.universe.forkingInfo,
 });
 
@@ -163,6 +164,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
     });
   }
+
+  if (modalRows.length === 0) {
+    dP.closeModal();
+    return {};
+  }
+
   return {
     title: isForking ? 'Release REP' : 'Claim Stake & Fees',
     submitAllTxCount: isForking ? 0 : submitAllTxCount,

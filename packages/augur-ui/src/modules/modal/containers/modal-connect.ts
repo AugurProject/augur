@@ -16,6 +16,7 @@ import {
   SIGNIN_LOADING_TEXT_PORTIS,
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -44,22 +45,25 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: showConnectingModal =>
-    dispatch(loginWithPortis(false, showConnectingModal)),
-  connectTorus: showConnectingModal =>
-    dispatch(loginWithTorus(showConnectingModal)),
-  connectFortmatic: showConnectingModal =>
-    dispatch(loginWithFortmatic(showConnectingModal)),
+  connectPortis: () =>
+    dispatch(loginWithPortis(false)),
+  connectTorus: () =>
+    dispatch(loginWithTorus()),
+  connectFortmatic: () =>
+    dispatch(loginWithFortmatic()),
+  errorModal: (error) => dispatch(
+    updateModal({
+      type: MODA_WALLET_ERROR,
+      error: error ? error.toString() : ''
+    })
+  ),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.closeModal();
+    dP.errorModal(error);
   };
-
-  const showConnectingModal = () =>
-    dP.loadingModal(SIGNIN_LOADING_TEXT, () => redirect());
 
   const redirect = () => {
     dP.closeModal();
@@ -73,7 +77,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => redirect());
         try {
-          await dP.connectPortis(() => showConnectingModal());
+          await dP.connectPortis();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -85,7 +89,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => redirect());
         try {
-          await dP.connectTorus(() => showConnectingModal());
+          await dP.connectTorus();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
         }
@@ -97,7 +101,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => redirect());
         try {
-          await dP.connectFortmatic(() => showConnectingModal());
+          await dP.connectFortmatic();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }

@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { isSafari } from 'utils/is-safari';
 
 const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {
@@ -19,16 +20,17 @@ const getTorusNetwork = (networkId): string => {
   }
 };
 
-export const loginWithTorus = (showConnectingModal: Function) => async (
+export const loginWithTorus = () => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const networkId = getNetworkId();
   const torusNetwork = getTorusNetwork(networkId);
+  let accountObject = {};
 
   if (torusNetwork) {
-    try {
-      const torus = new Torus({});
+    const torus = new Torus({});
 
+    try {
       await torus.init({
         network: { host: torusNetwork },
         showTorusButton: false,
@@ -39,15 +41,11 @@ export const loginWithTorus = (showConnectingModal: Function) => async (
       const web3 = new Web3(torus.provider);
       const provider = new Web3Provider(torus.provider);
       const isWeb3 = true;
-
       windowRef.torus = torus;
 
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
-
-      showConnectingModal();
-
-      const accountObject = {
+      accountObject = {
         address: account,
         mixedCaseAddress: toChecksumAddress(account),
         meta: {
@@ -68,7 +66,17 @@ export const loginWithTorus = (showConnectingModal: Function) => async (
           .querySelector('#torusWidget')
           .setAttribute('style', 'display:none');
       }
+    }
+    catch (error) {
+      document.querySelector('#torusIframe').remove();
+      document.querySelector('#torusWidget').remove();
+      throw error;
+    }
 
+    // Temporary workaround
+    if (isSafari()) {
+      dispatch(updateSdk(accountObject, undefined));
+    } else {
       try {
         const userInfo = await torus.getUserInfo();
         accountObject.meta.email = userInfo.email;
@@ -76,12 +84,7 @@ export const loginWithTorus = (showConnectingModal: Function) => async (
         dispatch(updateSdk(accountObject, undefined));
       } catch (error) {
         dispatch(updateSdk(accountObject, undefined));
-        return;
       }
-    } catch (error) {
-      document.querySelector('#torusIframe').remove();
-      document.querySelector('#torusWidget').remove();
-     throw error;
     }
   } else {
     throw Error('Network currently not supported with Torus');

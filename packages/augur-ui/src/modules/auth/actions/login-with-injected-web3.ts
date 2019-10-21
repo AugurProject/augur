@@ -14,44 +14,44 @@ import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 
-export const forceLoginWithInjectedWeb3 = account => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(login(account));
-};
-
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, Action>) => {
-  const failure = () => {
+  const failure = (error) => {
     dispatch(closeModal());
-    throw Error('NOT_SIGNED_IN');
+    throw Error(error);
   };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure();
     if (refresh) dispatch(updateAuthStatus(IS_LOGGED, false));
 
     dispatch(login(account));
-    window.web3.currentProvider.publicConfigStore.on('update', config => {
-      if (augurSdk.networkId !== config.networkVersion) {
-        console.log('web3 updated, network changed to', config.networkVersion);
-        dispatch(
-          updateModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)]
-          })
-        );
-      }
-    });
+    const web3 = windowRef.web3;
+    if (web3.currentProvider.publicConfigStore && web3.currentProvider.publicConfigStore.on) {
+      web3.currentProvider.publicConfigStore.on('update', config => {
+        if (augurSdk.networkId !== config.networkVersion) {
+          console.log('web3 updated, network changed to', config.networkVersion);
+          dispatch(
+            updateModal({
+              type: MODAL_NETWORK_MISMATCH,
+              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)]
+            })
+          );
+        }
+      });
+    }
   };
 
-  windowRef.ethereum
+  if (windowRef.ethereum && windowRef.ethereum.on) {
+    windowRef.ethereum.on('accountsChanged', function(accounts) {
+      console.log('refershing account to', accounts[0]);
+      success(accounts[0], true);
+    });
+  }
+
+  return windowRef.ethereum
     .enable()
     .then((resolve: string[]) => success(resolve[0], false), failure);
 
-  windowRef.ethereum.on('accountsChanged', function(accounts) {
-    console.log('refershing account to', accounts[0]);
-    success(accounts[0], true);
-  });
 };
 
 const login = (account: string) => (
