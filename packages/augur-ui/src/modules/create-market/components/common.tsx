@@ -801,7 +801,6 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     onChange,
   } = props;
 
-  const [datetimeHeaderLabel] = useState(props.input.label || "Estimated start time")
   const [endTime, setEndTime] = useState(
     props.input.userInput
       ? (props.input.userInputObject as UserInputDateTime).endTime
@@ -888,8 +887,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
-        header={datetimeHeaderLabel}
-        subheader="When is the event estimated to begin?"
+        header={props.input.label || 'Estimated start time'}
+        subheader={props.input.sublabel || 'When is the event estimated to begin?'}
         setEndTime={endTime}
         onChange={(label, value) => {
           switch (label) {

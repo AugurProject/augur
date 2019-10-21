@@ -448,8 +448,9 @@ const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
-                label: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event?`
               },
             ],
             resolutionRules: {},
@@ -468,8 +469,9 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
-                label: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event?`
               },
             ],
             resolutionRules: {},
@@ -566,8 +568,9 @@ const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
-                label: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event?`
               },
             ],
             resolutionRules: {},
@@ -586,8 +589,9 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
-                label: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event?`
               },
             ],
             resolutionRules: {},
