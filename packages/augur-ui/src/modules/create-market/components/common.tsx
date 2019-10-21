@@ -872,7 +872,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     if (!inputValidations) {
       inputValidations = [];
     }
-    inputValidations[inputIndex] = { setEndTime: '', hours: '' };
+    inputValidations[inputIndex] = { setEndTime: '', hour: '' };
     // todo: need to see if they changed date or time and clear validations accordingly
     onChange('validations', {
       ...newMarket.validations,

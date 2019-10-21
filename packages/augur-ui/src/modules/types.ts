@@ -4,8 +4,6 @@ import {
   SELL,
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
-  INVALID_SHOW,
-  INVALID_HIDE,
 } from 'modules/common/constants';
 import {
   MARKET_ID_PARAM_NAME,
@@ -16,7 +14,7 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { Template, TemplateInput } from 'modules/create-market/get-template';
+import { Template } from 'modules/create-market/get-template';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -286,18 +284,20 @@ export interface NewMarketPropertiesValidations {
   expirySourceType?: string;
   setEndTime?: string;
   hour?: string;
+  hours?: string;
   minute?: string;
   meridiem?: string;
   outcomes?: string[];
   settlementFee?: string;
   affiliateFee?: number;
-  inputs?: TemplateInput[];
+  inputs?: NewMarketPropertiesValidations[];
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
   affiliateFee?: number;
+  inputs?: NewMarketPropertiesValidations[];
 }
 export interface NewMarket {
   uniqueId: number;
