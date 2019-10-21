@@ -4,8 +4,6 @@ import {
   SELL,
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
-  INVALID_SHOW,
-  INVALID_HIDE,
 } from 'modules/common/constants';
 import {
   MARKET_ID_PARAM_NAME,
@@ -291,18 +289,21 @@ export interface NewMarketPropertiesValidations {
   outcomes?: string[];
   settlementFee?: string;
   affiliateFee?: number;
+  inputs?: NewMarketPropertiesValidations[];
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
   affiliateFee?: number;
+  inputs?: NewMarketPropertiesValidations[];
 }
 export interface NewMarket {
   uniqueId: number;
   isValid: boolean;
   validations:
-  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
+    | NewMarketPropertiesValidations
+    | NewMarketPropertyValidations;
   backupSource: string;
   currentStep: number;
   type: string;
