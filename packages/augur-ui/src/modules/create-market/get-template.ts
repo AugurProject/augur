@@ -511,7 +511,7 @@ const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
-                values: LIST_VALUES.OFFICES,
+                values: LIST_VALUES.PRES_OFFICES,
               },
             ],
             resolutionRules: {},
