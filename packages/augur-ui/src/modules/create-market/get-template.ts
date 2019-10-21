@@ -450,7 +450,7 @@ const TEMPLATES = {
                 type: TemplateInputType.DATETIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
-                sublabel: `Specify date time for event?`
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -471,7 +471,7 @@ const TEMPLATES = {
                 type: TemplateInputType.DATETIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
-                sublabel: `Specify date time for event?`
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -570,7 +570,7 @@ const TEMPLATES = {
                 type: TemplateInputType.DATETIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
-                sublabel: `Specify date time for event?`
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -591,7 +591,7 @@ const TEMPLATES = {
                 type: TemplateInputType.DATETIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
-                sublabel: `Specify date time for event?`
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
