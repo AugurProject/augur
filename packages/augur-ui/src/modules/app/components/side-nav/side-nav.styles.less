@@ -9,10 +9,28 @@
     height: 100vh;
     left: -100%;
     overflow: auto;
-    position: absolute;
+    position: fixed;
     transition: left 0.2s ease-in-out;
-    width: 100%;
-    z-index: @mask-above;
+    width: calc(100% - 52px);
+    z-index: @mask-modal;
+
+    > div {
+      background: @color-module-background;
+      display: flex;
+      justify-content: flex-end;
+
+      > div {
+        width: 100%;
+
+        > div:first-of-type {
+          background: @color-page-background;
+          border-bottom: 1px solid @color-dark-grey;
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+        }
+      }
+    }
 
     &.showNav {
       left: 0;
@@ -22,18 +40,26 @@
 
 .SideNav__container {
   background: @color-module-background;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: min-content;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   overflow: auto;
 
-  > ul {
+  > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: min-content;
+    overflow: auto;
+  }
+
+  > div > ul {
     background: @color-page-background;
-    height: 100vh;
-    padding-bottom: @top-bar-height-mobile;
-    padding-top: 27px;
+    height: calc(100vh - @top-bar-height-mobile);
     margin-top: @top-bar-height-mobile;
+    padding-bottom: @top-bar-height-mobile;
+    padding-top: 1.6875rem;
 
     &.accountDetailsOpen {
       margin-top: 0;
@@ -74,7 +100,7 @@
     }
   }
 
-  > footer {
+  > div > footer {
     align-items: center;
     background: @color-module-background;
     bottom: 0px;
@@ -83,7 +109,7 @@
     justify-content: flex-start;
     padding: 0 @size-22;
     position: fixed;
-    width: 100%;
+    width: calc(100% - 52px);
 
     > div:nth-of-type(2) {
       .mono-10;

@@ -53,12 +53,7 @@ const TopBar: React.FC<TopBarProps> = ({
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
-            <LinearPropertyLabelMovement
-              showColors
-              label={realizedPL.label}
-              numberValue={realizedPL.value}
-              value={realizedPL.value}
-            />
+            <LinearPropertyLabel {...realizedPL} highlightAlternateBolded />
           </div>
           <div>
             <span>{realizedPL.label}</span>
