@@ -881,7 +881,11 @@ const TEMPLATES = {
         example: `Will Billy Crystal host the 2019 Academy Awards`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: 'If more than one person hosts the event, and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"'}
+          ]
+        },
       },
       {
         templateId: `ent-host-event2`,
@@ -908,7 +912,11 @@ const TEMPLATES = {
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: "Gross total should include 4-day weekend in if it is a holiday weekend"}
+          ]
+        },
       },
       {
         templateId: `ent-host-cat`,
@@ -917,7 +925,11 @@ const TEMPLATES = {
         example: `Who wll host the 2020 Emmy Awards`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: 'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.'}
+          ]
+        },
       },
       {
         templateId: `ent-win-award-cat`,
@@ -1956,6 +1968,11 @@ const INPUTS = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.ADDED_OUTCOME,
+      placeholder: `Multiple Hosts`,
     },
   ],
   [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4]: [
