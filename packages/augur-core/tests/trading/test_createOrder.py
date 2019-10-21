@@ -81,6 +81,7 @@ def test_publicCreateOrder_List_Logic(contractsFixture, cash, market):
 def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     orderType = BID
     amount = fix(1)
@@ -91,7 +92,6 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
     marketInitialCash = universe.marketBalance(market.address)
 
     orderID = None
-    shareToken = contractsFixture.getShareToken(market, 0)
 
     orderCreatedEventLog = {
 	    "eventType": 0,
@@ -152,15 +152,15 @@ def test_ask_withPartialShares(contractsFixture, universe, cash, market):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
     completeSets = contractsFixture.contracts['CompleteSets']
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     # buy fix(2) complete sets
     with BuyWithCash(cash, fix(2, market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, fix(2), sender = contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == fix(2)
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == fix(2)
+
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(2)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(2)
 
     orderID = None
 
@@ -173,8 +173,8 @@ def test_ask_withPartialShares(contractsFixture, universe, cash, market):
         with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):
             orderID = createOrder.publicCreateOrder(ASK, fix(3), 40, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == 0
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == fix(2)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(2)
 
     # validate the order contains expected results
     assert orderID != bytearray(32), "Order ID should be non-zero"

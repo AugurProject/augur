@@ -396,6 +396,7 @@ def test_share_transfer(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     # Buy shares for .5
     amount = fix(1)
@@ -406,8 +407,7 @@ def test_share_transfer(contractsFixture, cash, market, universe):
     assert cash.faucet(cost, sender = contractsFixture.accounts[1])
     fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[1])
 
-    yesShares = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    assert yesShares.balanceOf(contractsFixture.accounts[0]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[0]) == fix(1)
 
     # Transfer shares and confirm its as if sender sold for 0 and receiver bought for 0
     profitLossChangedLogSender = {
@@ -428,7 +428,7 @@ def test_share_transfer(contractsFixture, cash, market, universe):
 
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLogSender):
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLogReceiver, skip=1):
-            assert yesShares.transfer(contractsFixture.accounts[2], 100)
+            shareToken.safeTransferFrom(contractsFixture.accounts[0], contractsFixture.accounts[2], shareToken.getTokenId(market.address, YES), 100, "")
 
 def process_trades(contractsFixture, trade_data, cash, market, createOrder, fillOrder, profitLoss, minPrice = 0, displayRange = 1):
     for trade in trade_data:

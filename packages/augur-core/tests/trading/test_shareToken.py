@@ -5,100 +5,69 @@ from pytest import raises
 from utils import AssertLog, stringToBytes, BuyWithCash
 
 def test_init(contractsFixture, market):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
+    shareToken = contractsFixture.contracts['ShareToken']
 
     assert shareToken.name() == "Shares", "currency name"
-    assert shareToken.decimals() == 18, "number of decimals"
     assert shareToken.symbol() == "SHARE", "currency symbol"
 
     assert shareToken.getTypeName() == stringToBytes("ShareToken")
 
-def test_transfer(contractsFixture, market, cash):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
+def test_safeTransferFrom(contractsFixture, universe, market, cash):
+    shareToken = contractsFixture.contracts['ShareToken']
     completeSets = contractsFixture.contracts['CompleteSets']
 
     with BuyWithCash(cash, 7 * market.getNumTicks(), contractsFixture.accounts[0], "complete set buy"):
         completeSets.publicBuyCompleteSets(market.address, 7)
-    initialTotalSupply = shareToken.totalSupply()
-    initialBalance0 = shareToken.balanceOf(contractsFixture.accounts[0])
-    initialBalance1 = shareToken.balanceOf(contractsFixture.accounts[1])
+
+    initialTotalSupply = shareToken.totalSupplyForMarketOutcome(market.address, 0)
+
+    initialBalance0 = shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[0])
+    initialBalance1 = shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1])
+
+    tokenId = shareToken.getTokenId(market.address, 0)
 
     with raises(TransactionFailed):
-        shareToken.transfer(contractsFixture.accounts[0], 11, sender=contractsFixture.accounts[0])
+        shareToken.safeTransferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], tokenId, 11, "", sender=contractsFixture.accounts[0])
     with raises(TransactionFailed):
-        shareToken.transfer(contractsFixture.accounts[0], 5, sender=contractsFixture.accounts[1])
+        shareToken.safeTransferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], tokenId, 5, "", sender=contractsFixture.accounts[1])
+    with raises(TransactionFailed):
+        shareToken.safeTransferFrom(contractsFixture.accounts[1], contractsFixture.accounts[1], tokenId, 5, "", sender=contractsFixture.accounts[1])
 
-    transferLog = {
-        "from": contractsFixture.accounts[0],
-        "to": contractsFixture.accounts[1],
-        "value": 5,
-    }
-
-    tokensTransferredLog = {
-        "token": shareToken.address,
-        "from": contractsFixture.accounts[0],
-        "to": contractsFixture.accounts[1],
-        "universe": market.getUniverse(),
-        "tokenType": 1,
+    shareTokenBalanceChangedLog = {
+        "universe": universe.address,
+        "account": contractsFixture.accounts[1],
+        "outcome": 0,
+        "balance": 5,
         "market": market.address,
-        "value": 5,
     }
 
-    with AssertLog(contractsFixture, "Transfer", transferLog, contract=shareToken):
-        with AssertLog(contractsFixture, "TokensTransferred", tokensTransferredLog):
-            assert shareToken.transfer(contractsFixture.accounts[1], 5, sender=contractsFixture.accounts[0])
+    with AssertLog(contractsFixture, "ShareTokenBalanceChanged", shareTokenBalanceChangedLog, skip=1):
+        shareToken.safeTransferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], tokenId, 5, "", sender=contractsFixture.accounts[0])
 
-    afterTransferBalance0 = shareToken.balanceOf(contractsFixture.accounts[0])
-    afterTransferBalance1 = shareToken.balanceOf(contractsFixture.accounts[1])
+    afterTransferBalance0 = shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[0])
+    afterTransferBalance1 = shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1])
 
     assert(initialBalance0 - 5 == afterTransferBalance0), "Decrease in address 1's balance should equal amount transferred"
     assert(initialBalance1 + 5 == afterTransferBalance1), "Increase in address 2's balance should equal amount transferred"
-    assert(shareToken.totalSupply() == initialTotalSupply), "Total supply should be unchanged"
+    assert(shareToken.totalSupplyForMarketOutcome(market.address, 0) == initialTotalSupply), "Total supply should be unchanged"
 
 def test_approve(contractsFixture, market, cash):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
+    shareToken = contractsFixture.contracts['ShareToken']
     completeSets = contractsFixture.contracts['CompleteSets']
+
+    tokenId = shareToken.getTokenId(market.address, 0)
 
     with BuyWithCash(cash, 7 * market.getNumTicks(), contractsFixture.accounts[0], "complete set buy"):
         completeSets.publicBuyCompleteSets(market.address, 7)
 
-    assert(shareToken.allowance(contractsFixture.accounts[0], contractsFixture.accounts[1]) == 0), "initial allowance is 0"
-
-    approvalLog = {
-        "owner": contractsFixture.accounts[0],
-        "spender": contractsFixture.accounts[1],
-        "value": 10
-    }
-
-    with AssertLog(contractsFixture, "Approval", approvalLog, contract=shareToken):
-        assert shareToken.approve(contractsFixture.accounts[1], 10, sender=contractsFixture.accounts[0])
-    assert(shareToken.allowance(contractsFixture.accounts[0], contractsFixture.accounts[1]) == 10), "allowance is 10 after approval"
-
-    transferLog = {
-        "from": contractsFixture.accounts[0],
-        "to": contractsFixture.accounts[1],
-        "value": 7
-    }
-
-    tokensTransferredLog = {
-        "token": shareToken.address,
-        "from": contractsFixture.accounts[0],
-        "to": contractsFixture.accounts[1],
-        "universe": market.getUniverse(),
-        "tokenType": 1,
-        "market": market.address,
-        "value": 7
-    }
-
-    with AssertLog(contractsFixture, "Transfer", transferLog, contract=shareToken):
-        with AssertLog(contractsFixture, "TokensTransferred", tokensTransferredLog):
-            assert shareToken.transferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], 7, sender=contractsFixture.accounts[1])
-
-def test_transferFrom(contractsFixture, market, cash):
-    shareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
-    completeSets = contractsFixture.contracts['CompleteSets']
-    with BuyWithCash(cash, 7 * market.getNumTicks(), contractsFixture.accounts[0], "complete set buy"):
-        completeSets.publicBuyCompleteSets(market.address, 7)
+    assert(shareToken.isApprovedForAll(contractsFixture.accounts[0], contractsFixture.accounts[1]) == False), "Initialy Approved"
 
     with raises(TransactionFailed):
-        shareToken.transferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], 7, sender=contractsFixture.accounts[1])
+        shareToken.safeTransferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], tokenId, 5, "", sender=contractsFixture.accounts[1])
+
+    shareToken.setApprovalForAll(contractsFixture.accounts[1], True, sender=contractsFixture.accounts[0])
+    assert(shareToken.isApprovedForAll(contractsFixture.accounts[0], contractsFixture.accounts[1]) == True), "Not Approved"
+
+    shareToken.safeTransferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], tokenId, 5, "", sender=contractsFixture.accounts[1])
+
+

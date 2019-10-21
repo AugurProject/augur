@@ -25,6 +25,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     IAugur public augur;
     IOrders public orders;
     ICash public cash;
+    IShareToken public shareToken;
     IProfitLoss public profitLoss;
 
     function initialize(IAugur _augur) public beforeInitialized {
@@ -32,6 +33,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         augur = _augur;
         orders = IOrders(_augur.lookup("Orders"));
         cash = ICash(_augur.lookup("Cash"));
+        shareToken = IShareToken(_augur.lookup("ShareToken"));
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
     }
 
@@ -93,18 +95,19 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         if (_sharesEscrowed > 0) {
             // Return to user sharesEscrowed that weren't filled yet for all outcomes except the order outcome
             if (_type == Order.Types.Bid) {
-                IShareToken[] memory _shareTokens = _market.getShareTokens();
-                uint256 _numOutcomes = _shareTokens.length;
-                uint256 _i = 0;
-                for (; _i < _outcome; ++_i) {
-                    _shareTokens[_i].trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
+                uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+                uint256 _indexOutcome = 0;
+                for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+                    if (_i == _outcome) {
+                        _indexOutcome++;
+                    }
+                    _shortOutcomes[_i] = _indexOutcome;
+                    _indexOutcome++;
                 }
-                for (++_i; _i < _numOutcomes; ++_i) {
-                    _shareTokens[_i].trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
-                }
-            // Shares refund if has shares escrowed for this outcome
+                shareToken.trustedCancelOrderBatchTransfer(_market, _shortOutcomes, address(_market), _sender, _sharesEscrowed);
             } else {
-                _market.getShareToken(_outcome).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                shareToken.trustedCancelOrderTransfer(_market, _outcome, address(_market), _sender, _sharesEscrowed);
             }
         }
 

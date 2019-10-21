@@ -9,13 +9,10 @@ from constants import YES, NO
 def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
     completeSets = contractsFixture.contracts['CompleteSets']
     orders = contractsFixture.contracts['Orders']
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     assert not cash.balanceOf(contractsFixture.accounts[1])
     assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond()
-    assert not yesShareToken.totalSupply()
-    assert not noShareToken.totalSupply()
     assert universe.getOpenInterestInAttoCash() == 0
 
     cost = 10 * market.getNumTicks()
@@ -38,12 +35,12 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
         with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
             assert completeSets.publicBuyCompleteSets(market.address, 10, sender=contractsFixture.accounts[1])
 
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 1"
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 2"
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 1"
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 2"
     assert cash.balanceOf(contractsFixture.accounts[1]) == 0, "Sender's cash balance should be 0"
     assert universe.marketBalance(market.address) == cost + universe.getOrCacheValidityBond(), "Increase in market's cash should equal the cost to purchase the complete set"
-    assert yesShareToken.totalSupply() == 10, "Increase in yes shares purchased for this market should be 10"
-    assert noShareToken.totalSupply() == 10, "Increase in yes shares purchased for this market should be 10"
+    assert shareToken.totalSupplyForMarketOutcome(market.address, YES) == 10, "Increase in yes shares purchased for this market should be 10"
+    assert shareToken.totalSupplyForMarketOutcome(market.address, NO) == 10, "Increase in yes shares purchased for this market should be 10"
     assert universe.getOpenInterestInAttoCash() == cost, "Open interest in the universe increases by the cost in ETH of the sets purchased"
 
 def test_publicBuyCompleteSets_failure(contractsFixture, universe, cash, market):
@@ -64,13 +61,10 @@ def test_publicBuyCompleteSets_failure(contractsFixture, universe, cash, market)
 def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokensFail):
     completeSets = contractsFixture.contracts['CompleteSets']
     orders = contractsFixture.contracts['Orders']
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     assert not cash.balanceOf(contractsFixture.accounts[0])
     assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond()
-    assert not yesShareToken.totalSupply()
-    assert not noShareToken.totalSupply()
 
     cost = 10 * market.getNumTicks()
     assert cash.faucet(cost)
@@ -100,10 +94,10 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokens
     tokensFail.setFail(False)
     assert universe.getOpenInterestInAttoCash() == 1 * market.getNumTicks()
 
-    assert yesShareToken.balanceOf(contractsFixture.accounts[0]) == 1, "Should have 1 share of outcome yes"
-    assert noShareToken.balanceOf(contractsFixture.accounts[0]) == 1, "Should have 1 share of outcome no"
-    assert yesShareToken.totalSupply() == 1
-    assert noShareToken.totalSupply() == 1
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[0]) == 1, "Should have 1 share of outcome yes"
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[0]) == 1, "Should have 1 share of outcome no"
+    assert shareToken.totalSupplyForMarketOutcome(market.address, YES) == 1
+    assert shareToken.totalSupplyForMarketOutcome(market.address, NO) == 1
     assert cash.balanceOf(contractsFixture.accounts[0]) == 882
     assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond() + 100 + 9
     assert market.marketCreatorFeesAttoCash() == 9

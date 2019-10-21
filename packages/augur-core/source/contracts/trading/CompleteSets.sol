@@ -23,12 +23,14 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     IAugur public augur;
     ICash public cash;
     address public fillOrder;
+    IShareToken public shareToken;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         fillOrder = augur.lookup("FillOrder");
         cash = ICash(augur.lookup("Cash"));
+        shareToken = IShareToken(augur.lookup("ShareToken"));
     }
 
     /**
@@ -55,11 +57,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
 
         _universe.deposit(_sender, _cost, address(_market));
 
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
-        uint256 _numOutcomes = _shareTokens.length;
-        for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
-            _shareTokens[_outcome].createShares(_sender, _amount);
-        }
+        shareToken.createSet(_market, _sender, _amount);
 
         if (!_market.isFinalized()) {
             _universe.incrementOpenInterest(_cost);
@@ -94,7 +92,6 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         uint256 _cost = _amount.mul(_market.getNumTicks());
 
         uint256 _longCost = _amount.mul(_price);
-        uint256 _shortCost = _cost.sub(_longCost);
         IUniverse _universe = _market.getUniverse();
 
         // Transfer cost from both participants. If the funds were already escrowed in the market do nothing.
@@ -102,8 +99,12 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
             _universe.deposit(_longParticipant, _longCost, address(_market));
         }
         if (_shortParticipant != address(_market)) {
-            _universe.deposit(_shortParticipant, _shortCost, address(_market));
+            _universe.deposit(_shortParticipant, _cost.sub(_longCost), address(_market));
         }
+
+        // Mint shares as a set to the short party then transfer the long shares to the long buyer
+        shareToken.createSet(_market, _shortRecipient, _amount);
+        shareToken.trustedCompleteSetTransfer(_market, _longOutcome, _shortRecipient, _longRecipient, _amount);
 
         if (!_market.isFinalized()) {
             _universe.incrementOpenInterest(_cost);
@@ -141,11 +142,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         _payout = _payout.sub(_creatorFee).sub(_reportingFee);
 
         // Takes shares away from participant and decreases the amount issued in the market since we're exchanging complete sets
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
-        uint256 _numOutcomes = _shareTokens.length;
-        for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
-            _shareTokens[_outcome].destroyShares(_sender, _amount);
-        }
+        shareToken.destroySet(_market, _sender, _amount);
 
         if (_creatorFee != 0) {
             _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
@@ -164,7 +161,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         return (_creatorFee, _reportingFee);
     }
 
-    function jointSellCompleteSets(IMarket _market, uint256 _amount, address _shortParticipant, address _longParticipant, uint256 _shortOutcome, address _shortRecipient, address _longRecipient, uint256 _price, address _affiliateAddress) external nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+    function jointSellCompleteSets(IMarket _market, uint256 _shortOutcome, address _shortParticipant, address _longParticipant, uint256 _amount, address _shortRecipient, address _longRecipient, uint256 _price, address _affiliateAddress) external nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder);
 
@@ -196,6 +193,10 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         _creatorFee = _market.deriveMarketCreatorFeeAmount(_payout);
         _reportingFee = _payout.div(_universe.getOrCacheReportingFeeDivisor());
         _payout = _payout.sub(_creatorFee).sub(_reportingFee);
+
+        // Takes shares away from participants. Transfer short participants one share to the long participant and burn the set
+        shareToken.trustedCompleteSetTransfer(_market, _shortOutcome, _shortParticipant, _longParticipant, _amount);
+        shareToken.destroySet(_market, _longParticipant, _amount);
 
         distributePayout(_market, _price, _shortRecipient, _longRecipient, _payout, _creatorFee, _reportingFee, _affiliateAddress);
 

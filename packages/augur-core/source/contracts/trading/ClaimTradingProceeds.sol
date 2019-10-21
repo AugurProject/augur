@@ -22,12 +22,14 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
     IAugur public augur;
     IProfitLoss public profitLoss;
     ICash public cash;
+    IShareToken public shareToken;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         cash = ICash(augur.lookup("Cash"));
+        shareToken = IShareToken(augur.lookup("ShareToken"));
     }
 
     /**
@@ -57,9 +59,8 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             _market.finalize();
         }
         uint256[] memory _outcomeFees = new uint256[](8);
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
-        for (uint256 _outcome = 0; _outcome < _shareTokens.length; ++_outcome) {
-            uint256 _numberOfShares = _shareTokens[_outcome].balanceOf(_shareHolder);
+        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
+            uint256 _numberOfShares = shareToken.balanceOfMarketOutcome(_market, _outcome, _shareHolder);
 
             if (_numberOfShares > 0) {
                 uint256 _proceeds;
@@ -69,8 +70,8 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
                 (_proceeds, _shareHolderShare, _creatorShare, _reporterShare) = divideUpWinnings(_market, _outcome, _numberOfShares);
 
                 // always destroy shares as it gives a minor gas refund and is good for the network
-                _shareTokens[_outcome].destroyShares(_shareHolder, _numberOfShares);
-                logTradingProceedsClaimed(_market, _outcome, address(_shareTokens[_outcome]), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare.add(_reporterShare));
+                shareToken.destroyShares(_market, _outcome, _shareHolder, _numberOfShares);
+                logTradingProceedsClaimed(_market, _outcome, _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare.add(_reporterShare));
 
                 if (_proceeds > 0) {
                     _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));
@@ -99,8 +100,8 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         }
     }
 
-    function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private {
-        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _fees);
+    function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private {
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _fees);
     }
 
     function divideUpWinnings(IMarket _market, uint256 _outcome, uint256 _numberOfShares) public returns (uint256 _proceeds, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) {

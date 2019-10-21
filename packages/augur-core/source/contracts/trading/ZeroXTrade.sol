@@ -65,11 +65,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     IFillOrder public fillOrder;
     ICash public cash;
+    IShareToken public shareToken;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         fillOrder = IFillOrder(_augur.lookup("FillOrder"));
         cash = ICash(_augur.lookup("Cash"));
+        shareToken = IShareToken(_augur.lookup("ShareToken"));
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
@@ -120,29 +122,32 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         }
     }
 
-    function bidBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
-        uint256 _numberOfOutcomes = _shareTokens.length;
+    function totalSupply(uint256 id) external view returns (uint256) {
+        return 0;
+    }
+
+    function bidBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
+        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
-        uint256 _attoSharesOwned = 2**254;
-        uint256 _i = 0;
-        for (; _attoSharesOwned > 0 && _i < _outcome; _i++) {
-            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_owner);
-            _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
+        uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+        uint256 _indexOutcome = 0;
+        for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+            if (_i == _outcome) {
+                _indexOutcome++;
+            }
+            _shortOutcomes[_i] = _indexOutcome;
+            _indexOutcome++;
         }
 
-        for (_i++; _attoSharesOwned > 0 && _i < _numberOfOutcomes; _i++) {
-            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_owner);
-            _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
-        }
+        uint256 _attoSharesOwned = shareToken.lowestBalanceOfMarketOutcomes(_market, _shortOutcomes, _owner);
 
         uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
 
-    function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
-        uint256 _attoSharesOwned = _market.getShareToken(_outcome).balanceOf(_owner);
+    function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
+        uint256 _attoSharesOwned = shareToken.balanceOfMarketOutcome(_market, _outcome, _owner);
         uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_market.getNumTicks().sub(_price));
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
@@ -219,13 +224,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return _fillAmountRemaining;
     }
 
-    function validateOrder(IExchange.Order memory _order) internal pure {
+    function validateOrder(IExchange.Order memory _order) internal view {
         (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
         require(_zeroXTradeToken == _zeroXTradeTokenTaker);
         require(_tokenId == _tokenIdTaker);
-        // XXX: Needs merge from master to work
-        // XXX require(_zeroXTradeToken == this);
+        require(_zeroXTradeToken == this);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {

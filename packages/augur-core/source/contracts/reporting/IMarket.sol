@@ -26,8 +26,6 @@ contract IMarket is IOwnable {
     function getDisputeWindow() public view returns (IDisputeWindow);
     function getNumberOfOutcomes() public view returns (uint256);
     function getNumTicks() public view returns (uint256);
-    function getShareToken(uint256 _outcome)  public view returns (IShareToken);
-    function getShareTokens() public view returns (IShareToken[] memory);
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256);
     function getForkingMarket() public view returns (IMarket _market);
     function getEndTime() public view returns (uint256);
@@ -41,7 +39,6 @@ contract IMarket is IOwnable {
     function getValidityBondAttoCash() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
     function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool);
-    function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isInvalid() public view returns (bool);
     function finalize() public returns (bool);

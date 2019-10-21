@@ -12,6 +12,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IOrders.sol';
+import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 
 
@@ -31,6 +32,8 @@ library Order {
         // Contracts
         IMarket market;
         IERC20 kycToken;
+        IShareToken shareToken;
+        ICash cash;
 
         // Order
         bytes32 id;
@@ -53,9 +56,13 @@ library Order {
         require(_attoshares > 0, "Order.create: Cannot use amount of 0");
         require(_creator != address(0), "Order.create: Creator is 0x0");
 
+        IShareToken _shareToken = IShareToken(_augur.lookup("ShareToken"));
+
         return Data({
             market: _market,
             kycToken: _kycToken,
+            shareToken: _shareToken,
+            cash: ICash(_augur.lookup("Cash")),
             id: 0,
             creator: _creator,
             outcome: _outcome,
@@ -127,33 +134,24 @@ library Order {
         require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForBid: New order had shares escrowed. This should not be possible");
         uint256 _attosharesToCover = _orderData.amount;
 
-        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
-        uint256 _attosharesHeld = 2**254;
-        IShareToken[] memory _shareTokens = _orderData.market.getShareTokens();
-        uint256 _numOutcomes = _shareTokens.length;
+        uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+        uint256 _indexOutcome = 0;
+        for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+            if (_i == _orderData.outcome) {
+                _indexOutcome++;
+            }
+            _shortOutcomes[_i] = _indexOutcome;
+            _indexOutcome++;
+        }
 
-        uint256 _i = 0;
-        for (; _attosharesHeld > 0 && _i < _orderData.outcome; _i++) {
-            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_orderData.creator);
-            _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
-        }
-        for (_i++; _attosharesHeld > 0 && _i < _numOutcomes; _i++) {
-            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_orderData.creator);
-            _attosharesHeld = SafeMathUint256.min(_creatorShareTokenBalance, _attosharesHeld);
-        }
+        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
+        uint256 _attosharesHeld = _orderData.shareToken.lowestBalanceOfMarketOutcomes(_orderData.market, _shortOutcomes, _orderData.creator);
 
         // Take shares into escrow if they have any almost-complete-sets
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-
-            _i = 0;
-            for (; _i < _orderData.outcome; _i++) {
-                _shareTokens[_i].trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
-            }
-            for (_i++; _i < _numOutcomes; _i++) {
-                _shareTokens[_i].trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
-            }
+            _orderData.shareToken.trustedOrderBatchTransfer(_orderData.market, _shortOutcomes, _orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens
@@ -168,17 +166,16 @@ library Order {
     function escrowFundsForAsk(Order.Data memory _orderData) private returns (bool) {
         require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForAsk: New order had money escrowed. This should not be possible");
         require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForAsk: New order had shares escrowed. This should not be possible");
-        IShareToken _shareToken = _orderData.market.getShareToken(_orderData.outcome);
         uint256 _attosharesToCover = _orderData.amount;
 
         // Figure out how many shares of the outcome the creator has
-        uint256 _attosharesHeld = _shareToken.balanceOf(_orderData.creator);
+        uint256 _attosharesHeld = _orderData.shareToken.balanceOfMarketOutcome(_orderData.market, _orderData.outcome, _orderData.creator);
 
         // Take shares in escrow if user has shares
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-            _shareToken.trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
+            _orderData.shareToken.trustedOrderTransfer(_orderData.market, _orderData.outcome, _orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens

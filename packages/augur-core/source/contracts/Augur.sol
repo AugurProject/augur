@@ -30,10 +30,7 @@ contract Augur is IAugur {
 
     enum TokenType {
         ReputationToken,
-        ShareToken,
         DisputeCrowdsourcer,
-        FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
-        FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
         ParticipationToken
     }
 
@@ -77,7 +74,7 @@ contract Augur is IAugur {
 
     event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 timestamp);
     event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 fees, uint256 timestamp);
-    event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp);
+    event TradingProceedsClaimed(address indexed universe, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp);
     event TokensTransferred(address indexed universe, address token, address indexed from, address indexed to, uint256 value, TokenType tokenType, address market);
     event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
     event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
@@ -94,6 +91,7 @@ contract Augur is IAugur {
     event DesignatedReportStakeChanged(address indexed universe, uint256 designatedReportStake);
     event NoShowBondChanged(address indexed universe, uint256 noShowBond);
     event ReportingFeeChanged(address indexed universe, uint256 reportingFee);
+    event ShareTokenBalanceChanged(address indexed universe, address indexed account, address indexed market, uint256 outcome, uint256 balance);
 
     mapping(address => bool) private markets;
     mapping(address => bool) private universes;
@@ -197,20 +195,6 @@ contract Augur is IAugur {
         return true;
     }
 
-    //
-    // Share Tokens
-    //
-    function recordMarketShareTokens(IMarket _market) private {
-        uint256 _numOutcomes = _market.getNumberOfOutcomes();
-        for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
-            shareTokens[address(_market.getShareToken(_outcome))] = true;
-        }
-    }
-
-    function isKnownShareToken(IShareToken _token) public view returns (bool) {
-        return shareTokens[address(_token)];
-    }
-
     function isKnownFeeSender(address _feeSender) public view returns (bool) {
         return _feeSender == registry["CompleteSets"] || _feeSender == registry["ClaimTradingProceeds"] || markets[_feeSender];
     }
@@ -276,7 +260,6 @@ contract Augur is IAugur {
 
     function logCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] memory _outcomes) public returns (bool) {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
-        recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
@@ -287,7 +270,6 @@ contract Augur is IAugur {
 
     function logYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) public returns (bool) {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
-        recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
@@ -300,7 +282,6 @@ contract Augur is IAugur {
         IUniverse _universe = getAndValidateUniverse(msg.sender);
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
-        recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
@@ -431,9 +412,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {
+    function logTradingProceedsClaimed(IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {
         require(msg.sender == registry["ClaimTradingProceeds"]);
-        emit TradingProceedsClaimed(address(_universe), _shareToken, _sender, _market, _outcome, _numShares, _numPayoutTokens, _fees, getTimestamp());
+        emit TradingProceedsClaimed(address(_universe), _sender, _market, _outcome, _numShares, _numPayoutTokens, _fees, getTimestamp());
         return true;
     }
 
@@ -457,13 +438,6 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logShareTokensTransferred(IUniverse _universe, IMarket _market, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome) public returns (bool) {
-        IShareToken _shareToken = IShareToken(msg.sender);
-        require(isKnownShareToken(_shareToken));
-        logTokensTransferred(address(_universe), msg.sender, _from, _to, _value, TokenType.ShareToken, address(_market), _fromBalance, _toBalance, _outcome);
-        return true;
-    }
-
     function logReputationTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.getReputationToken() == IReputationToken(msg.sender));
@@ -478,17 +452,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logShareTokensBurned(IUniverse _universe, IMarket _market, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome) public returns (bool) {
-        IShareToken _shareToken = IShareToken(msg.sender);
-        require(isKnownShareToken(_shareToken));
-        logTokensBurned(address(_universe), msg.sender, _target, _amount, TokenType.ShareToken, address(_market), _totalSupply, _balance, _outcome);
-        return true;
-    }
-
-    function logShareTokensMinted(IUniverse _universe, IMarket _market, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome) public returns (bool) {
-        IShareToken _shareToken = IShareToken(msg.sender);
-        require(isKnownShareToken(_shareToken));
-        logTokensMinted(address(_universe), msg.sender, _target, _amount, TokenType.ShareToken, address(_market), _totalSupply, _balance, _outcome);
+    function logShareTokensBalanceChanged(address _account, IMarket _market, uint256 _outcome, uint256 _balance) public returns (bool) {
+        require(msg.sender == registry["ShareToken"]);
+        emit ShareTokenBalanceChanged(address(_market.getUniverse()), _account, address(_market), _outcome, _balance);
         return true;
     }
 

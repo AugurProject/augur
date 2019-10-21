@@ -577,6 +577,7 @@ try {
       {
         selector: {
           market: { $in: marketIds },
+          tokenType: 1, // ShareToken  TODO: Get from constants somewhere
         },
       }
     );

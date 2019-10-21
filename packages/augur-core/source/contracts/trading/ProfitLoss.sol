@@ -17,6 +17,7 @@ contract ProfitLoss is Initializable {
 
     IAugur public augur;
     IOrders public orders;
+    address public shareToken;
     address public createOrder;
     address public cancelOrder;
     address public fillOrder;
@@ -41,6 +42,7 @@ contract ProfitLoss is Initializable {
         fillOrder = augur.lookup("FillOrder");
         claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
         orders = IOrders(augur.lookup("Orders"));
+        shareToken = augur.lookup("ShareToken");
     }
 
     function recordFrozenFundChange(IUniverse _universe, IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) external returns (bool) {
@@ -51,10 +53,9 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordExternalTransfer(IUniverse _universe, IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _value) external returns (bool) {
-        IShareToken _shareToken = IShareToken(msg.sender);
-        require(augur.isKnownShareToken(_shareToken));
-        this.recordTrade(_universe, _market, _destination, _source, _outcome, int256(_value), 0, 0, 0, 0, _value);
+    function recordExternalTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _value) public returns (bool) {
+        require(msg.sender == shareToken);
+        this.recordTrade(_market, _destination, _source, _outcome, int256(_value), 0, 0, 0, 0, _value);
         return true;
     }
 

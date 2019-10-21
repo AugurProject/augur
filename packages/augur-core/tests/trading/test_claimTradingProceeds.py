@@ -13,31 +13,25 @@ def captureLog(contract, logs, message):
 
 def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
+    shareToken = kitchenSinkFixture.contracts["ShareToken"]
 
-    shareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(outcome))
     completeSets = kitchenSinkFixture.contracts['CompleteSets']
     cost = amount * market.getNumTicks()
     with BuyWithCash(cash, cost, sender, "complete set buy"):
         assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
-    assert shareToken.approve(approvalAddress, amount, sender = sender)
     for otherOutcome in range(0, market.getNumberOfOutcomes()):
         if otherOutcome == outcome: continue
-        otherShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(otherOutcome))
-        assert otherShareToken.transfer(kitchenSinkFixture.accounts[8], amount, sender = sender)
+        shareToken.safeTransferFrom(sender, kitchenSinkFixture.accounts[8], shareToken.getTokenId(market.address, otherOutcome), amount, "", sender = sender)
 
 def acquireShortShareSet(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
     cost = amount * market.getNumTicks()
+    shareToken = kitchenSinkFixture.contracts["ShareToken"]
 
-    shareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(outcome))
     completeSets = kitchenSinkFixture.contracts['CompleteSets']
     with BuyWithCash(cash, cost, sender, "complete set buy"):
         assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
-    assert shareToken.transfer(kitchenSinkFixture.accounts[8], amount, sender = sender)
-    for otherOutcome in range(0, market.getNumberOfOutcomes()):
-        if otherOutcome == outcome: continue
-        otherShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(otherOutcome))
-        assert otherShareToken.approve(approvalAddress, amount, sender = sender)
+    shareToken.safeTransferFrom(sender, kitchenSinkFixture.accounts[8], shareToken.getTokenId(market.address, outcome), amount, "", sender = sender)
 
 def finalizeMarket(fixture, market, payoutNumerators):
     prepare_finalize_market(fixture, market, payoutNumerators)
@@ -70,8 +64,7 @@ def test_helpers(kitchenSinkFixture, scalarMarket):
 
 def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, market):
     claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
-    yesShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 1 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
@@ -91,7 +84,6 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
 
     tradingProceedsClaimedLog = {
         'market': market.address,
-        'shareToken': yesShareToken.address,
         'numPayoutTokens': expectedPayout,
         'numShares': 1,
         'sender': kitchenSinkFixture.accounts[1],
@@ -108,17 +100,17 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
 
     # assert a1 ends up with cash (minus fees) and a2 does not
     assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
-    assert yesShareToken.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert yesShareToken.balanceOf(kitchenSinkFixture.accounts[2]) == 0
-    assert noShareToken.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert noShareToken.balanceOf(kitchenSinkFixture.accounts[2]) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[2]) == 0
 
 def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash, categoricalMarket):
     market = categoricalMarket
     claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
-    shareToken2 = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(2))
-    shareToken1 = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(1))
-    shareToken0 = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(0))
+    shareToken = kitchenSinkFixture.contracts["ShareToken"]
+
     numTicks = market.getNumTicks()
     expectedValue = numTicks
     expectedSettlementFees = expectedValue * 0.02
@@ -146,18 +138,17 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
     assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
     assert cash.balanceOf(kitchenSinkFixture.accounts[2]) == 0
 
-    assert shareToken2.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert shareToken2.balanceOf(kitchenSinkFixture.accounts[2]) == 0
-    assert shareToken1.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert shareToken1.balanceOf(kitchenSinkFixture.accounts[2]) == 0
-    assert shareToken0.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert shareToken0.balanceOf(kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, kitchenSinkFixture.accounts[2]) == 0
 
 def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scalarMarket):
     market = scalarMarket
     claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
-    yesShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 1 * market.getNumTicks()
     expectedSettlementFees = expectedValue * 0.02
     expectedPayout = expectedValue - expectedSettlementFees
@@ -181,10 +172,10 @@ def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scal
     assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout * 3 / 4
     assert cash.balanceOf(kitchenSinkFixture.accounts[2]) == expectedPayout * 1 / 4
 
-    assert yesShareToken.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert yesShareToken.balanceOf(kitchenSinkFixture.accounts[2]) == 0
-    assert noShareToken.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert noShareToken.balanceOf(kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[2]) == 0
 
 def test_reedem_failure(kitchenSinkFixture, cash, market):
     claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
@@ -233,8 +224,7 @@ def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, m
 
 def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
     claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
-    yesShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = kitchenSinkFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
@@ -261,7 +251,7 @@ def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
 
     # assert a1 ends up with cash (minus fees) and a2 does not
     assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
-    assert yesShareToken.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert yesShareToken.balanceOf(kitchenSinkFixture.accounts[2]) == 0
-    assert noShareToken.balanceOf(kitchenSinkFixture.accounts[1]) == 0
-    assert noShareToken.balanceOf(kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[2]) == 0
