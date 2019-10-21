@@ -1275,7 +1275,13 @@ const TEMPLATES = {
                 values: LIST_VALUES.TENNIS_EVENT,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                },
+              ],
+            },
           },
           {
             templateId: `ten-win-cat`,
@@ -1301,7 +1307,13 @@ const TEMPLATES = {
                 placeholder: `Other`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                },
+              ],
+            },
           },
           {
             templateId: `ten-win-cat`,
