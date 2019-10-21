@@ -101,7 +101,6 @@ export default class FormDetails extends React.Component<
       scalarDenomination,
       minPrice,
       maxPrice,
-      tickSize,
       detailsText,
       categories,
       expirySource,
@@ -112,7 +111,10 @@ export default class FormDetails extends React.Component<
       validations,
       timezone,
       endTimeFormatted,
+      template
     } = newMarket;
+
+    const tickSize = isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
 
     return (
       <div
@@ -135,8 +137,8 @@ export default class FormDetails extends React.Component<
                   subheader={categories[0]}
                 />
                 <SmallSubheaders
-                  header="Secondary category"
-                  subheader={categories[1]}
+                  header={"Secondary category"}
+                  subheader={categories[1] === '' ? '-' : categories[1]}
                 />
               </div>
               <LineBreak />
@@ -308,6 +310,7 @@ export default class FormDetails extends React.Component<
                     : 'Denomination'
                 }
                 value={tickSize}
+                disabled={isTemplate && template.tickSize}
                 errorMessage={validations.tickSize}
               />
             </>

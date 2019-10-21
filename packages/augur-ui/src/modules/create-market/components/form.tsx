@@ -462,6 +462,8 @@ export default class Form extends React.Component<FormProps, FormState> {
     const errorMsg = checkValidations.find(validation => {
       if (typeof validation === 'string') {
         return validation !== '';
+      } else if (validation === null) {
+        return false;
       } else {
         return !validation.every(
           error =>
