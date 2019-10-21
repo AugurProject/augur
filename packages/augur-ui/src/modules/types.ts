@@ -284,7 +284,6 @@ export interface NewMarketPropertiesValidations {
   expirySourceType?: string;
   setEndTime?: string;
   hour?: string;
-  hours?: string;
   minute?: string;
   meridiem?: string;
   outcomes?: string[];
