@@ -1224,7 +1224,13 @@ const TEMPLATES = {
                 values: LIST_VALUES.HORSE_RACING_EVENT,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the horse named in the market is scratched and does NOT run or is disqualified for any reason, the market should resolve as "No"`,
+                },
+              ],
+            },
           },
           {
             templateId: `hr-win-cat`,
@@ -1243,6 +1249,11 @@ const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
               },
             ],
             resolutionRules: {},
