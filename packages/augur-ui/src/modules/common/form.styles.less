@@ -144,6 +144,7 @@
     color: @color-primary-action;
     cursor: default;
     padding: 0 @size-12;
+    white-space: nowrap;
 
     &.Selected {
       color: @color-primary-text;
@@ -151,7 +152,7 @@
   }
 
   > svg {
-    width: @size-16;
+    min-width: @size-16;
     height: @size-16;
 
     > path {
@@ -162,6 +163,9 @@
   @media @breakpoint-mobile-mid {
     border: 0;
     padding: 0;
+    overflow-x: auto;
+    max-width: 100%;
+    justify-content: flex-start;
 
     > span:first-of-type {
       padding-left: @size-8;
@@ -216,10 +220,10 @@
   display: grid;
   grid-template-columns: 52px auto @size-16;
   grid-template-rows: auto;
-  height: 51px;
   margin-bottom: @size-8;
+  height: 51px;
 
-  > svg {
+  > svg{
     height: @size-20;
     grid-column: 1;
     grid-row: 1;
@@ -238,6 +242,16 @@
   > h5 {
     grid-column: 2;
     grid-row: 1;
+  }
+
+  &.MultiSelect {
+    height: unset;
+    padding: @size-16 0;
+
+    > div {
+      margin: auto;
+      margin-left: @size-18;
+    }
   }
 }
 
@@ -323,14 +337,13 @@
 .RadioTwoLineBar {
   .RadioBar;
 
-  height: 82px;
-  grid-template-rows: @size-20 @size-19 @size-4 @size-19 @size-20;
   cursor: pointer;
+  height: unset;
+  grid-template-columns: 52px 1fr;
 
   @media @breakpoint-mobile-mid {
     height: 128px;
     grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
-    width: 312px;
   }
 
   > svg {
@@ -338,13 +351,13 @@
   }
 
   > h5 {
-    width: 236px;
+    .text-14;
+
     grid-row: 2;
+    margin-top: @size-20;
 
     @media @breakpoint-mobile-mid {
       .text-14;
-
-      width: 244px;
     }
   }
 
@@ -354,14 +367,15 @@
     color: @color-secondary-text;
     grid-column: 2;
     grid-row: 4;
-    width: 236px;
+    margin: @size-4 0 @size-20;
+    padding: 0;
+    line-height: 160%;
 
     @media @breakpoint-mobile-mid {
       .text-12;
 
       max-height: 50px;
       white-space: normal;
-      width: 244px;
     }
   }
 
@@ -661,7 +675,7 @@
   font-size: @size-22;
   margin-bottom: @size-8;
   position: relative;
-  top: 3px;
+  top: 0;
   user-select: none;
 
   > input {
@@ -1096,7 +1110,6 @@ div.FormDropdownActive {
   :global {
     .SingleDatePicker_1 {
       display: block;
-      z-index: @above-all-content;
     }
 
     .SingleDatePickerInput {
@@ -1154,6 +1167,7 @@ div.FormDropdownActive {
 
     .SingleDatePicker_picker {
       margin-top: -1px;
+      z-index: @above-all-content;
     }
 
     .DayPicker_weekHeader.DayPicker_weekHeader_1 {

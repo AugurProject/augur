@@ -9603,25 +9603,6 @@ export class ProfitLoss<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public adjustForTrader = async (market: string, address: string, outcome: TBigNumber, amount: TBigNumber, price: TBigNumber, frozenTokenDelta: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_address","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_amount","type":"int256"},{"name":"_price","type":"int256"},{"name":"_frozenTokenDelta","type":"int256"}],"name":"adjustForTrader","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [market, address, outcome, amount, price, frozenTokenDelta], 'adjustForTrader', options.sender)
-	}
-	
-	public adjustForTrader_estimateGas = async (market: string, address: string, outcome: TBigNumber, amount: TBigNumber, price: TBigNumber, frozenTokenDelta: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_address","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_amount","type":"int256"},{"name":"_price","type":"int256"},{"name":"_frozenTokenDelta","type":"int256"}],"name":"adjustForTrader","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [market, address, outcome, amount, price, frozenTokenDelta], 'adjustForTrader', options.sender)
-	}
-
-	public adjustForTrader_ = async (market: string, address: string, outcome: TBigNumber, amount: TBigNumber, price: TBigNumber, frozenTokenDelta: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_address","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_amount","type":"int256"},{"name":"_price","type":"int256"},{"name":"_frozenTokenDelta","type":"int256"}],"name":"adjustForTrader","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [market, address, outcome, amount, price, frozenTokenDelta], options.sender)
-		return <boolean>result[0]
-	}
-
 	public claimTradingProceeds_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"claimTradingProceeds","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}

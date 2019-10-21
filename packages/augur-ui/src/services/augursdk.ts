@@ -1,5 +1,9 @@
 import { Augur, Provider } from '@augurproject/sdk';
 import {
+  SEOConnector,
+  SingleThreadConnector,
+} from '@augurproject/sdk/build/connector';
+import {
   ContractDependenciesEthers,
   EthersSigner,
 } from 'contract-dependencies-ethers';
@@ -10,6 +14,7 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
 import { EnvObject } from 'modules/types';
 import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
+import { isMobileSafari } from 'utils/is-safari';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -27,7 +32,7 @@ export class SDK {
     env: EnvObject,
     signerNetworkId?: string,
     isWeb3 = false
-  ) {
+  ):Promise<Augur<Provider>> {
     this.isWeb3Transport = isWeb3;
     this.env = env;
     this.account = account;
@@ -40,21 +45,24 @@ export class SDK {
       account
     );
 
-    this.sdk = await Augur.create<Provider>(
-      ethersProvider,
-      contractDependencies,
-      Addresses[this.networkId],
-      new WebWorkerConnector()
-    );
-
-    window.AugurSDK = this.sdk;
-
-    this.sdk.connect(
+    const connector = (isMobileSafari() ? new SEOConnector(): new WebWorkerConnector());
+    connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http
         : 'http://localhost:8545',
       account
     );
+
+    this.sdk = await Augur.create<Provider>(
+      ethersProvider,
+      contractDependencies,
+      Addresses[this.networkId],
+      connector,
+    );
+
+    window.AugurSDK = this.sdk;
+
+    return this.sdk;
   }
 
   async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string) {

@@ -10,6 +10,7 @@ import {
   TEMPLATE_CONTENT_PAGES,
   REVIEW,
   FORM_DETAILS,
+  TEMPLATE_FORM_DETAILS,
   LANDING,
   FEES_LIQUIDITY,
   DESCRIPTION,
@@ -29,6 +30,11 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
   MARKET_TYPE,
+  EMPTY_STATE,
+  TEMPLATE_PICKER,
+  TEMPLATE_INPUTS,
+  TEMPLATE,
+  NO_CAT_TEMPLATE_CONTENT_PAGES,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -55,7 +61,6 @@ import SubCategories from 'modules/create-market/containers/sub-categories';
 import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
-import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
 import {
   isBetween,
   isFilledNumber,
@@ -69,28 +74,35 @@ import {
   checkAddress,
   dividedBy,
   dateGreater,
-  isValidFee
+  isValidFee,
+  checkForUserInputFilled,
 } from 'modules/common/validations';
 import { buildformattedDate } from 'utils/format-date';
-import { createBigNumber } from 'utils/create-big-number';
+import TemplatePicker from 'modules/create-market/containers/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import {
+  buildResolutionDetails, hasNoTemplateCategoryChildren,
+} from 'modules/create-market/get-template';
+import deepClone from 'utils/deep-clone';
+
+import { Getters } from '@augurproject/sdk';
 
 interface FormProps {
   newMarket: NewMarket;
-  updateNewMarket: Function;
+  updateNewMarket: (newMarketData: NewMarket) => void;
   address: string;
-  updatePage: Function;
+  updatePage: (page: string) => void;
   addDraft: Function;
   drafts: Drafts;
   updateDraft: Function;
-  clearNewMarket: Function;
-  removeAllOrdersFromNewMarket: Function;
+  clearNewMarket: () => void;
+  removeAllOrdersFromNewMarket: () => void;
   discardModal: Function;
-  template: boolean;
+  isTemplate: boolean;
   openCreateMarketModal: Function;
   currentTimestamp: number;
   needsApproval: boolean;
@@ -98,7 +110,9 @@ interface FormProps {
 
 interface FormState {
   blockShown: Boolean;
-  contentPages: Array<any>;
+  contentPages: any[];
+  templateFormStarts: number;
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 interface Validations {
@@ -125,6 +139,9 @@ interface Validations {
   decimals?: number;
   checkDecimals?: Boolean;
   checkForAdresss?: Boolean;
+  checkUserInputFilled?: Boolean;
+  checkFee?: Boolean;
+  checkForAddress?: Boolean;
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
@@ -132,14 +149,16 @@ const draftError = 'ENTER A MARKET QUESTION';
 export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
-    contentPages: this.props.template
-      ? TEMPLATE_CONTENT_PAGES
+    templateFormStarts: hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? 3 : 4,
+    contentPages: this.props.isTemplate
+      ? (hasNoTemplateCategoryChildren(this.props.newMarket.categories[0]) ? NO_CAT_TEMPLATE_CONTENT_PAGES : TEMPLATE_CONTENT_PAGES)
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
+    categoryStats: null,
   };
 
   componentDidMount() {
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   }
 
   componentWillUnmount() {
@@ -147,28 +166,51 @@ export default class Form extends React.Component<FormProps, FormState> {
   }
 
   unblock = (cb?: Function) => {
-    const { drafts, newMarket, discardModal } = this.props;
+    const { drafts, newMarket, discardModal, isTemplate } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
 
-    let defaultState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    let defaultState = deepClone<NewMarket>(EMPTY_STATE);
     defaultState.validations = [];
 
-    let market = JSON.parse(JSON.stringify(newMarket));
+    let market = deepClone<NewMarket>(newMarket);
     market.validations = [];
+    market.currentStep = isTemplate ? this.state.templateFormStarts : 0;
 
     const disabledSave =
-      savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
-    const unsaved =
+      savedDraft && JSON.stringify(market) === JSON.stringify(savedDraft);
+    let unsaved =
       !newMarket.uniqueId &&
       JSON.stringify(market) !== JSON.stringify(defaultState);
+
+    if (!cb && isTemplate && newMarket.currentStep < this.state.templateFormStarts) {
+      let templateMarket = market;
+      let templateDefaultState = defaultState;
+      templateMarket = {
+        ...templateMarket,
+        categories: [],
+        marketType: '',
+        currentStep: 0,
+        template: null
+      };
+      templateDefaultState = {
+        ...templateDefaultState,
+        categories: [],
+        marketType: '',
+        template: null
+      };
+      unsaved =
+        !newMarket.uniqueId &&
+        JSON.stringify(templateMarket) !== JSON.stringify(templateDefaultState);
+      if (unsaved) return;
+    }
 
     if (unsaved && !disabledSave) {
       discardModal((close: Boolean) => {
         if (!close) {
           this.props.history.push({
             pathname: makePath(CREATE_MARKET, null),
-            state: SCRATCH,
+            state: isTemplate ? TEMPLATE : SCRATCH,
           });
           cb && cb(false);
         } else {
@@ -186,51 +228,68 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateNewMarket,
       updatePage,
       clearNewMarket,
-      template,
+      isTemplate,
     } = this.props;
 
-    const firstPage = template ? 1 : 0;
-    if (newMarket.currentStep <= firstPage) {
+    const firstPage = 0;
+    if (
+      (isTemplate && newMarket.currentStep === this.state.templateFormStarts) ||
+      (!isTemplate && newMarket.currentStep <= firstPage)
+    ) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
           this.setState({ blockShown: true }, () => {
-            updatePage(LANDING);
-            clearNewMarket();
+            if (isTemplate) {
+              updateNewMarket({
+                ...deepClone<NewMarket>(EMPTY_STATE),
+                marketType: newMarket.marketType,
+                categories: newMarket.categories,
+                currentStep: this.state.templateFormStarts - 1,
+                template: null,
+              });
+            } else {
+              updatePage(LANDING);
+              clearNewMarket();
+            }
           });
         }
       });
+    } else if (isTemplate && newMarket.currentStep === 1) {
+      clearNewMarket();
+      return updatePage(LANDING);
+    } else {
+      const newStep =
+        newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+      updateNewMarket({ currentStep: newStep });
+      this.node && this.node.scrollIntoView();
     }
-
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
-    updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
   };
 
   nextPage = () => {
-    const { newMarket, updateNewMarket, template } = this.props;
-    const { contentPages } = this.state;
+    const { newMarket, updateNewMarket, isTemplate } = this.props;
+    const { currentStep, marketType, template } = newMarket;
 
+    const { contentPages } = this.state;
     if (this.findErrors()) return;
 
     const newStep =
-      newMarket.currentStep >= contentPages.length - 1
+      currentStep >= contentPages.length - 1
         ? contentPages.length - 1
-        : newMarket.currentStep + 1;
+        : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    this.node.scrollIntoView();
+    this.node && this.node.scrollIntoView();
   };
 
   findErrors = () => {
-    const { newMarket } = this.props;
-    const {
-      currentStep,
-      expirySourceType,
-      designatedReporterType,
-      marketType,
-    } = newMarket;
+    const { newMarket, isTemplate } = this.props;
+    const { expirySourceType, designatedReporterType, marketType } = newMarket;
+
+    let { currentStep } = newMarket;
     let hasErrors = false;
 
     let fields = [];
+
+    if (isTemplate) currentStep = currentStep - this.state.templateFormStarts;
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
@@ -246,12 +305,18 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (marketType === SCALAR) {
         fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
       }
+      if (isTemplate) {
+        fields.push(TEMPLATE_INPUTS);
+      }
     } else if (currentStep === 1) {
       fields = [SETTLEMENT_FEE, AFFILIATE_FEE];
     }
 
     fields.map(field => {
       let value = newMarket[field];
+      if (field === TEMPLATE_INPUTS) {
+        value = newMarket.template[TEMPLATE_INPUTS];
+      }
       if (field === END_TIME && newMarket.endTimeFormatted) {
         value = newMarket.endTimeFormatted.timestamp;
       }
@@ -268,9 +333,8 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   isValid = currentStep => {
     const { newMarket } = this.props;
-    const validations = newMarket.validations[currentStep];
-    const validationsArray = Object.keys(validations);
-    return validationsArray.every(key => validations[key] === '');
+    const validations = newMarket.validations;
+    return validations.every(key => validations[key] === '');
   };
 
   saveDraft = () => {
@@ -281,19 +345,23 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateNewMarket,
       drafts,
       updateDraft,
+      isTemplate
     } = this.props;
 
-    if (newMarket.description === DEFAULT_STATE.description) {
+    if (newMarket.description === EMPTY_STATE.description) {
       this.onError('description', draftError);
       return;
     }
+
+    const currentStep = isTemplate ? this.state.templateFormStarts : 0;
 
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
       const updatedDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
-        updated: updatedDate,
+        currentStep,
+        updated: updatedDate
       };
       updateDraft(newMarket.uniqueId, draftMarket);
       updateNewMarket({
@@ -304,9 +372,10 @@ export default class Form extends React.Component<FormProps, FormState> {
       const createdDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
+        currentStep,
         uniqueId: createdDate,
         created: createdDate,
-        updated: createdDate,
+        updated: createdDate
       };
 
       addDraft(createdDate, draftMarket);
@@ -344,7 +413,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkDecimals,
       decimals,
       checkForAddress,
-      checkFee
+      checkFee,
+      checkUserInputFilled,
     } = validationsObj;
 
     const checkValidations = [
@@ -361,14 +431,17 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkLessThan
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
-      checkFee
-        ? isValidFee(value, readableName, newMarket.affiliateFee)
+      checkFee ? isValidFee(value, readableName, newMarket.affiliateFee) : '',
+      checkDividedBy
+        ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice)
         : '',
-      checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
-      checkDateGreater ? dateGreater(value, currentTimestamp, checkDateGreaterMessage) : '',
+      checkDateGreater
+        ? dateGreater(value, currentTimestamp, checkDateGreaterMessage)
+        : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
+      checkUserInputFilled ? checkForUserInputFilled(value) : '',
     ];
 
     if (label === END_TIME) {
@@ -380,10 +453,22 @@ export default class Form extends React.Component<FormProps, FormState> {
         newMarket.offsetName,
         newMarket.offset
       );
-      checkValidations.push(dateGreater(endTimeFormatted.timestamp, currentTimestamp));
+      checkValidations.push(
+        dateGreater(endTimeFormatted.timestamp, currentTimestamp)
+      );
     }
 
-    const errorMsg = checkValidations.find(validation => validation !== '');
+    const errorMsg = checkValidations.find(validation => {
+      if (typeof validation === 'string') {
+        return validation !== '';
+      } else {
+        return !validation.every(
+          error =>
+            error === '' ||
+            (error.constructor === Object && Object.entries(error).length === 0)
+        );
+      }
+    });
 
     if (errorMsg) {
       this.onError(label, errorMsg);
@@ -394,8 +479,12 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.onError(label, '');
   };
 
-  onChange = (name, value, callback) => {
-    const { updateNewMarket, newMarket, removeAllOrdersFromNewMarket } = this.props;
+  onChange = (name, value) => {
+    const {
+      updateNewMarket,
+      newMarket,
+      removeAllOrdersFromNewMarket,
+    } = this.props;
     updateNewMarket({ [name]: value });
 
     if (name === 'outcomes') {
@@ -412,7 +501,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         });
       } else if (newMarket.marketType === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
-        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
+        outcomesFormatted[1].description =
+          newMarket.scalarDenomination === ''
+            ? NON_EXISTENT
+            : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
@@ -426,7 +518,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         }));
       } else if (value === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
-        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
+        outcomesFormatted[1].description =
+          newMarket.scalarDenomination === ''
+            ? NON_EXISTENT
+            : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
@@ -435,7 +530,12 @@ export default class Form extends React.Component<FormProps, FormState> {
         this.onError('maxPrice', '');
         this.onError('scalarDenomination', '');
         this.onError('tickSize', '');
-        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: ZERO, maxPriceBigNumber: ONE });
+        updateNewMarket({
+          minPrice: 0,
+          maxPrice: 1,
+          minPriceBigNumber: ZERO,
+          maxPriceBigNumber: ONE,
+        });
       }
       if (value !== CATEGORICAL) {
         this.onError('outcomes', '');
@@ -455,8 +555,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       name === 'timeSelector'
     ) {
       // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
-      const setEndTime =
-        name === 'setEndTime' ? value : newMarket.setEndTime;
+      const setEndTime = name === 'setEndTime' ? value : newMarket.setEndTime;
       let hour = name === 'hour' ? value : newMarket.hour;
       let minute = name === 'minute' ? value : newMarket.minute;
       let meridiem = name === 'meridiem' ? value : newMarket.meridiem;
@@ -464,13 +563,13 @@ export default class Form extends React.Component<FormProps, FormState> {
       let offsetName = newMarket.offsetName;
       let timezone = newMarket.timezone;
 
-      if (name === "timeSelector") {
+      if (name === 'timeSelector') {
         hour = value.hour || hour;
         minute = value.minute || minute;
         meridiem = value.meridiem || meridiem;
         this.onError('hour', '');
       }
-      if (name === "timezoneDropdown") {
+      if (name === 'timezoneDropdown') {
         offset = value.offset;
         offsetName = value.offsetName;
         timezone = value.timezone;
@@ -484,10 +583,18 @@ export default class Form extends React.Component<FormProps, FormState> {
         offset
       );
 
-      updateNewMarket({ endTimeFormatted, setEndTime, hour, minute, meridiem, offset, offsetName, timezone });
+      updateNewMarket({
+        endTimeFormatted,
+        setEndTime,
+        hour,
+        minute,
+        meridiem,
+        offset,
+        offsetName,
+        timezone,
+      });
     }
     this.onError(name, '');
-    if (callback) callback(name);
   };
 
   onError = (name, error) => {
@@ -495,13 +602,13 @@ export default class Form extends React.Component<FormProps, FormState> {
     const { currentStep, validations } = newMarket;
     const updatedValidations = validations;
 
-    updatedValidations[currentStep][name] = error;
+    updatedValidations[name] = error;
     updateNewMarket({ validations: updatedValidations });
   };
 
   preview = () => {
     this.setState({ showPreview: !this.state.showPreview }, () => {
-      this.node.scrollIntoView();
+      this.node && this.node.scrollIntoView();
     });
   };
 
@@ -513,9 +620,9 @@ export default class Form extends React.Component<FormProps, FormState> {
       openCreateMarketModal,
       history,
       needsApproval,
-      template,
+      isTemplate,
     } = this.props;
-    const { contentPages } = this.state;
+    const { contentPages, categoryStats } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -528,23 +635,36 @@ export default class Form extends React.Component<FormProps, FormState> {
       largeHeader,
       noDarkBackground,
       previewButton,
+      disabledFunction
     } = contentPages[currentStep];
 
-    const savedDraft = drafts[uniqueId];
-    const disabledSave =
-      savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+    let savedDraft = drafts[uniqueId];
+    if (savedDraft) savedDraft.validations = [];
+    let comparableNewMarket = deepClone<NewMarket>(newMarket);
+    comparableNewMarket.currentStep = isTemplate ? this.state.templateFormStarts : 0;
+    comparableNewMarket.validations = [];
 
-    const noErrors = Object.values(
-      (validations && validations[currentStep]) || {}
-    ).every(field =>
-      Array.isArray(field)
-        ? field.every(val => val === '' || !val)
-        : !field || field === ''
-    );
+    const disabledSave =
+      savedDraft && JSON.stringify(comparableNewMarket) === JSON.stringify(savedDraft);
+
+    const noErrors = Object.values(validations || {}).every(field => {
+      if (Array.isArray(field)) {
+        return field.every(val => {
+          if (typeof val === 'string') {
+            return val === '' || !val;
+          } else {
+            return Object.values(val).map(val => val === '');
+          }
+        });
+      } else {
+        return !field || field === '';
+      }
+    });
+
     const saveDraftError =
-      validations &&
-      validations[currentStep] &&
-      validations[currentStep].description === draftError;
+      validations && validations.description === draftError;
+
+    const disabledNext = disabledFunction ? disabledFunction(newMarket) : false;
 
     return (
       <div
@@ -559,7 +679,18 @@ export default class Form extends React.Component<FormProps, FormState> {
           <div>
             <span>Your market preview</span>
             <PrimaryButton text="Close preview" action={this.preview} />
-            <MarketView market={newMarket} preview />
+            <MarketView
+              market={{
+                ...newMarket,
+                details: isTemplate
+                  ? buildResolutionDetails(
+                      newMarket.detailsText,
+                      newMarket.template.resolutionRules
+                    )
+                  : newMarket.detailsText,
+              }}
+              preview
+            />
             <PrimaryButton text="Close preview" action={this.preview} />
           </div>
         )}
@@ -580,6 +711,13 @@ export default class Form extends React.Component<FormProps, FormState> {
               {mainContent === FORM_DETAILS && (
                 <FormDetails onChange={this.onChange} onError={this.onError} />
               )}
+              {mainContent === TEMPLATE_FORM_DETAILS && (
+                <FormDetails
+                  isTemplate
+                  onChange={this.onChange}
+                  onError={this.onError}
+                />
+              )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
                   onChange={this.onChange}
@@ -587,8 +725,18 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && <Review />}
-              {mainContent === SUB_CATEGORIES && <SubCategories />}
-              {mainContent === MARKET_TYPE && <MarketType updateNewMarket={updateNewMarket} marketType={marketType} />}
+              {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
+              {mainContent === SUB_CATEGORIES && (
+                <SubCategories nextPage={this.nextPage} />
+              )}
+              {mainContent === MARKET_TYPE && (
+                <MarketType
+                  updateNewMarket={updateNewMarket}
+                  marketType={marketType}
+                  categories={newMarket.categories}
+                  nextPage={this.nextPage}
+                />
+              )}
               {saveDraftError && (
                 <Error
                   header="Unable to save draft"
@@ -601,35 +749,46 @@ export default class Form extends React.Component<FormProps, FormState> {
                   subheader="You must complete all required fields highlighted above before you can continue"
                 />
               )}
+              {secondButton === CREATE && (
+                <BulkTxLabel
+                  className={Styles.MultipleTransactions}
+                  buttonName={'Create'}
+                  count={1}
+                  needsApproval={needsApproval}
+                />
+              )}
               <div>
                 {firstButton === BACK && (
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  {!template && <SecondaryButton
-                    text={disabledSave ? 'Saved' : 'Save draft'}
-                    disabled={disabledSave}
-                    action={this.saveDraft}
-                  />}
+                  {((isTemplate && currentStep >= this.state.templateFormStarts) ||
+                    !isTemplate) && (
+                    <SecondaryButton
+                      text={disabledSave ? 'Saved' : 'Save draft'}
+                      disabled={disabledSave}
+                      action={this.saveDraft}
+                    />
+                  )}
                   {secondButton === NEXT && (
-                    <PrimaryButton text="Next" action={this.nextPage} />
+                    <PrimaryButton text="Next" action={this.nextPage} disabled={disabledNext}/>
                   )}
                   {secondButton === CREATE && (
-                    <PrimaryButton text="Create" action={() => {
-                      openCreateMarketModal(() => {
-                        this.setState({blockShown: true}, () => {
-                          history.push({
-                            pathname: makePath(MY_POSITIONS, null),
+                    <PrimaryButton
+                      text="Create"
+                      action={() => {
+                        openCreateMarketModal(() => {
+                          this.setState({ blockShown: true }, () => {
+                            history.push({
+                              pathname: makePath(MY_POSITIONS, null),
+                            });
                           });
                         });
-                      })
-                    }} />
+                      }}
+                    />
                   )}
                 </div>
               </div>
-              {secondButton === CREATE && (
-                  <BulkTxLabel className={Styles.MultipleTransactions} buttonName={"Create"} count={1} needsApproval={needsApproval}/>
-              )}
             </ContentBlock>
           </>
         )}

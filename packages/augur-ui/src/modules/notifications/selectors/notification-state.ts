@@ -2,15 +2,12 @@ import { createSelector } from 'reselect';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   selectLoginAccountAddress,
-  selectDisputeWindowStats,
   selectPendingLiquidityOrders,
   selectReadNotificationState,
   selectAccountPositionsState,
-  selectLoginAccountReportingState,
   selectMarketInfosState,
 } from 'store/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
-import { createBigNumber } from 'utils/create-big-number';
 import {
   NOTIFICATION_TYPES,
   TYPE_DISPUTE,
@@ -34,6 +31,7 @@ import {
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { isSameAddress } from 'utils/isSameAddress';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -43,8 +41,7 @@ export const selectResolvedMarketsOpenOrders = createSelector(
       return markets
         .filter(
           market =>
-            market.reportingState ===
-              REPORTING_STATE.AWAITING_FINALIZATION ||
+            market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
             market.reportingState === REPORTING_STATE.FINALIZED
         )
         .filter(market => userOpenOrders(market.id).length > 0)
@@ -65,7 +62,7 @@ export const selectReportOnMarkets = createSelector(
           market =>
             market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING
         )
-        .filter(market => market.designatedReporter === address)
+        .filter(market => isSameAddress(market.designatedReporter, address))
         .map(getRequiredMarketData);
     }
     return [];
@@ -80,10 +77,9 @@ export const selectFinalizeMarkets = createSelector(
   (marketInfos, address) => {
     const marketId = Object.keys(marketInfos).filter(
       id =>
-        (marketInfos[id].author === address &&
-          marketInfos[id].reportingState ===
-            REPORTING_STATE.AWAITING_FINALIZATION) ||
-        marketInfos[id].reportingState === REPORTING_STATE.FINALIZED
+        (isSameAddress(marketInfos[id].author, address) ||
+          isSameAddress(marketInfos[id].DesignatedReporter, address)) &&
+        marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION
     );
     if (marketId.length > 0) {
       return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
@@ -100,7 +96,8 @@ export const selectMarketsInDispute = createSelector(
   (markets, positions, address) => {
     const state = store.getState() as AppState;
     let marketIds = Object.keys(positions);
-    if (state.loginAccount.reporting.disputing.contracts) {
+    const { reporting, disputing } = state.loginAccount;
+    if (disputing && disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
@@ -110,7 +107,7 @@ export const selectMarketsInDispute = createSelector(
         ])
       );
     }
-    if (state.loginAccount.reporting.reporting.contracts) {
+    if (reporting.reporting && reporting.reporting.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
@@ -145,7 +142,7 @@ export const selectMarketsInDispute = createSelector(
 
 // Get reportingFees for signed in user
 export const selectUsersReportingFees: MarketReportClaimableContracts = selectReportingWinningsByMarket(
-  (store.getState() as AppState)
+  store.getState() as AppState
 );
 
 // Get all unsigned orders from localStorage
@@ -155,7 +152,7 @@ export const selectUnsignedOrders = createSelector(
   (pendingLiquidityOrders, markets) => {
     if (pendingLiquidityOrders) {
       return Object.keys(pendingLiquidityOrders)
-        .map(id => markets.find(market => market.id === id))
+        .map(id => markets.find(market => market.transactionHash === id))
         .filter(notification => notification)
         .map(getRequiredMarketData);
     }

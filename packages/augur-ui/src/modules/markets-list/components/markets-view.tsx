@@ -24,7 +24,7 @@ interface MarketsViewProps {
   isLogged: boolean;
   markets: MarketData[];
   location: object;
-  history: object;
+  history: History;
   isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
   loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
@@ -48,6 +48,9 @@ interface MarketsViewProps {
   updateMarketsListCardFormat: Function;
   marketCardFormat: string;
   updateMobileMenuState: Function;
+  updateLoginAccountSettings: Function;
+  showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
+  showInvalidMarketsBannerHideOrShow: boolean;
 }
 
 interface MarketsViewState {
@@ -182,7 +185,6 @@ export default class MarketsView extends Component<
             filterSortedMarkets,
             marketCount,
             showPagination,
-            marketCount,
           });
           this.props.updateMarketsListMeta(result.meta);
           this.props.setLoadMarketsPending(false);
@@ -194,7 +196,6 @@ export default class MarketsView extends Component<
   render() {
     const {
       history,
-      isLogged,
       isMobile,
       loadMarketsInfoIfNotLoaded,
       location,
@@ -205,17 +206,20 @@ export default class MarketsView extends Component<
       updateMarketsListCardFormat,
       search,
       updateMobileMenuState,
+      updateLoginAccountSettings,
       updateMarketsFilter,
       marketFilter,
       marketSort,
       isSearching,
+      showInvalidMarketsBannerFeesOrLiquiditySpread,
+      showInvalidMarketsBannerHideOrShow,
     } = this.props;
     const {
       filterSortedMarkets,
       marketCount,
       limit,
       offset,
-      showPagination,
+      showPagination
     } = this.state;
 
     const displayFee = this.props.maxFee !== MAX_FEE_100_PERCENT;
@@ -276,10 +280,15 @@ export default class MarketsView extends Component<
             updateQuery(param, value, this.props.location, this.props.history)
           }
         />
-
         <FilterNotice
           color="red"
           show={this.props.includeInvalidMarkets === 'show'}
+          showDismissButton={true}
+          updateLoginAccountSettings={updateLoginAccountSettings}
+          settings={{
+            propertyName: 'showInvalidMarketsBannerHideOrShow',
+            propertyValue: showInvalidMarketsBannerHideOrShow
+          }}
           content={
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
@@ -294,6 +303,12 @@ export default class MarketsView extends Component<
         <FilterNotice
           color="red"
           show={!displayFee || !displayLiquiditySpread}
+          showDismissButton={true}
+          updateLoginAccountSettings={updateLoginAccountSettings}
+          settings={{
+            propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
+            propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread
+          }}
           content={
             <span>
               {feesLiquidityMessage}{' '}
@@ -306,7 +321,6 @@ export default class MarketsView extends Component<
 
         <MarketsList
           testid='markets'
-          isLogged={isLogged}
           markets={markets}
           showPagination={showPagination && !isSearching}
           filteredMarkets={filterSortedMarkets}

@@ -8,7 +8,8 @@ import {
   MarketCreatedLog,
   TokenType,
   UniverseCreatedLog,
-  UniverseForkedLog
+  UniverseForkedLog,
+  MarketData
 } from '../logs/types';
 import {
   Augur,
@@ -44,7 +45,8 @@ export interface MigrationOutcome {
 }
 
 export interface UniverseDetails {
-  address: string;
+  id: string;
+  parentUniverseId: string | null;
   creationTimestamp: number;
   outcomeName: string;
   usersRep: string;
@@ -134,8 +136,10 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const universeCreationLog = await getUniverseCreationLog(db, address);
   if (universeCreationLog === null) return null;
 
+  const { parentUniverse } = universeCreationLog;
+
   let outcomeName: string;
-  if (universeCreationLog.parentUniverse === NULL_ADDRESS) {
+  if (parentUniverse === NULL_ADDRESS) {
     outcomeName = GENESIS;
   } else {
     const universeForkedLog = await getUniverseForkedLog(db, universeCreationLog.parentUniverse);
@@ -152,7 +156,8 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const children = []; // don't recurse
 
   return {
-    address,
+    id: address,
+    parentUniverseId: parentUniverse,
     creationTimestamp,
     outcomeName,
     usersRep,
@@ -165,7 +170,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
 
 function getOutcomeNameFromLogs(
   universeCreationLog: UniverseCreatedLog,
-  forkingMarketLog: MarketCreatedLog
+  forkingMarketLog: MarketData
 ): string {
   const outcome = calculateOutcomeFromLogs(universeCreationLog, forkingMarketLog);
   return describeUniverseOutcome(outcome, forkingMarketLog);
@@ -173,7 +178,7 @@ function getOutcomeNameFromLogs(
 
 function calculateOutcomeFromLogs(
   universeCreationLog: UniverseCreatedLog,
-  forkingMarketLog: MarketCreatedLog
+  forkingMarketLog: MarketData
 ) {
   const { marketType, prices, numTicks } = forkingMarketLog;
   return calculatePayoutNumeratorsValue(
@@ -187,7 +192,7 @@ function calculateOutcomeFromLogs(
 
 async function getMigrationOutcomes(
   augur: Augur,
-  forkingMarket: MarketCreatedLog,
+  forkingMarket: MarketData,
   children: UniverseCreatedLog[]
 ): Promise<MigrationOutcome[]> {
   const marketTypeName = marketTypeToName(forkingMarket.marketType);
@@ -234,7 +239,7 @@ async function getRepSupply(augur: Augur, universe: ContractInterfaces.Universe)
   return repToken.totalSupply_();
 }
 
-async function getMarket(db: DB, address: string): Promise<MarketCreatedLog|null> {
+async function getMarket(db: DB, address: string): Promise<MarketData|null> {
   const marketCreatedLogs = await db.findMarkets({
     selector: {
       market: address,
@@ -248,7 +253,7 @@ async function getMarket(db: DB, address: string): Promise<MarketCreatedLog|null
   return marketCreatedLogs[0];
 }
 
-async function getMarketsForUniverse(db: DB, address: string): Promise<MarketCreatedLog[]> {
+async function getMarketsForUniverse(db: DB, address: string): Promise<MarketData[]> {
   return db.findMarkets({
     selector: {
       universe: address,

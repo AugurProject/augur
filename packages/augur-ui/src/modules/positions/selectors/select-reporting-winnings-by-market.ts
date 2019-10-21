@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import {
   selectMarketInfosState,
   selectLoginAccountReportingState,
+  selectUniverseForkingState,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
@@ -16,10 +17,14 @@ import { formatAttoDai, formatAttoRep } from 'utils/format-number';
 export const selectReportingWinningsByMarket = createSelector(
   selectLoginAccountReportingState,
   selectMarketInfosState,
+  selectUniverseForkingState,
   (
     userReporting,
-    marketInfos // this is needed to trigger the selector if marketInfos changes
+    marketInfos, // this is needed to trigger the selector if marketInfos changes
+    forkingInfo
   ): MarketReportClaimableContracts => {
+    const releasingRep = !!forkingInfo;
+    const forkingMarket = releasingRep && forkingInfo.forkingMarket;
     let claimableMarkets = {
       unclaimedRep: ZERO,
       marketContracts: [],
@@ -37,7 +42,7 @@ export const selectReportingWinningsByMarket = createSelector(
     ) {
       const calcUnclaimed = userReporting.participationTokens.contracts.reduce(
         (p, c) =>
-          c.isClaimable
+          c.isClaimable || releasingRep
             ? {
                 contracts: [...p.contracts, c.address],
                 dai: p.dai.plus(c.amountFees),
@@ -49,7 +54,7 @@ export const selectReportingWinningsByMarket = createSelector(
       participationContracts = {
         contracts: calcUnclaimed.contracts,
         unclaimedDai: calcUnclaimed.dai,
-        unclaimedRep: calcUnclaimed.rep,
+        unclaimedRep: createBigNumber(userReporting.participationTokens.totalClaimable),
       };
     }
     if (
@@ -58,7 +63,10 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.reporting.contracts.length > 0
     ) {
       claimableMarkets = userReporting.reporting.contracts.reduce(
-        (p, contract) => (contract.isClaimable ? sumClaims(contract, p) : p),
+        (p, contract) =>
+          contract.isClaimable || releasingRep
+            ? sumClaims(contract, p, forkingMarket, releasingRep)
+            : p,
         claimableMarkets
       );
     }
@@ -68,7 +76,10 @@ export const selectReportingWinningsByMarket = createSelector(
       userReporting.disputing.contracts.length > 0
     ) {
       claimableMarkets = userReporting.disputing.contracts.reduce(
-        (p, contract) => (contract.isClaimable ? sumClaims(contract, p) : p),
+        (p, contract) =>
+          contract.isClaimable || releasingRep
+            ? sumClaims(contract, p, forkingMarket, false)
+            : p,
         claimableMarkets
       );
     }
@@ -89,9 +100,31 @@ export const selectReportingWinningsByMarket = createSelector(
 
 function sumClaims(
   contractInfo: Getters.Accounts.ContractInfo,
-  marketsCollection: marketsReportingCollection
+  marketsCollection: marketsReportingCollection,
+  forkingMarket: string,
+  filterForkingMarket: boolean
 ): marketsReportingCollection {
   const marketId = contractInfo.marketId;
+  // only add reporting contracts for the forking market
+  if (marketId === forkingMarket && filterForkingMarket) {
+    const addedValue = createBigNumber(contractInfo.amount);
+    marketsCollection.marketContracts = [
+      ...marketsCollection.marketContracts,
+      {
+        ...contractInfo,
+        contracts: [contractInfo.address],
+        totalAmount: createBigNumber(contractInfo.amount),
+        marketObject: selectMarket(contractInfo.marketId),
+      },
+    ];
+    marketsCollection.unclaimedRep = marketsCollection.unclaimedRep.plus(
+      addedValue
+    );
+    return marketsCollection;
+  }
+
+  if (filterForkingMarket) return marketsCollection;
+
   let addedValue = ZERO;
   const found = marketsCollection.marketContracts.find(
     c => c.marketId === marketId

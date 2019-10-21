@@ -1,3 +1,4 @@
+import { Augur, Provider } from '@augurproject/sdk';
 import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
@@ -15,20 +16,30 @@ import { isEmpty } from 'utils/is-empty';
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
-  MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED,
   ACCOUNT_TYPES,
-  DISCLAIMER_SEEN,
+  NETWORK_NAMES,
+  MODAL_LOADING,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback, WindowApp, LoginAccount } from 'modules/types';
+import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
-import { forceLoginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
-import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
+import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
+import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
+import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
+import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
+import {
+  updateAuthStatus,
+  RESTORED_ACCOUNT,
+} from 'modules/auth/actions/auth-status';
+import { logout } from 'modules/auth/actions/logout';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -38,58 +49,77 @@ function pollForAccount(
   getState: () => AppState
 ) {
   const windowApp = windowRef as WindowApp;
-  const { loginAccount } = getState();
-  let accountType =
-    loginAccount && loginAccount.meta && loginAccount.meta.accountType;
-  let usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
-  if (!accountType && isGlobalWeb3()) {
-    usingMetaMask = true;
-  }
-  setInterval(() => {
-    const { authStatus, connection } = getState();
-    if (connection.isConnected) {
-      let loggedInAccount: string = undefined;
-      let loggedInAccountType: string = undefined;
-      if (!loginAccount.address) {
-        if (windowApp.localStorage && windowApp.localStorage.getItem) {
-          loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-          loggedInAccountType = windowApp.localStorage.getItem('loggedInAccountType');
-        }
-      } else {
-        loggedInAccount = loginAccount.address;
-      }
-      if (!authStatus.isLogged && usingMetaMask && loggedInAccount && loggedInAccountType === ACCOUNT_TYPES.METAMASK) {
-        autoLoginAccount(dispatch, loggedInAccount);
-      }
-      const disclaimerSeen =
-        windowApp &&
-        windowApp.localStorage &&
-        windowApp.localStorage.getItem(DISCLAIMER_SEEN);
-      if (!disclaimerSeen) {
+
+  let attemptedLogin = false;
+  let intervalId = null;
+
+  async function attemptLogin() {
+    const { connection } = getState();
+    if (attemptedLogin) {
+      clearInterval(intervalId);
+    }
+
+    if (!attemptedLogin && connection.isConnected) {
+      attemptedLogin = true;
+
+      const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+      const loggedInAccountType = windowApp.localStorage.getItem(
+        'loggedInAccountType'
+      );
+
+      const showModal = accountType => {
         dispatch(
           updateModal({
-            type: MODAL_DISCLAIMER,
+            type: MODAL_LOADING,
+            callback: () => dispatch(closeModal()),
+            message: `Syncing 📡 ${accountType} account...`,
+            showCloseAfterDelay: true,
           })
         );
+      };
+
+      const errorModal = () => {
+        dispatch(logout());
+        dispatch(
+          updateModal({
+            type: MODA_WALLET_ERROR,
+          })
+        );
+      };
+
+      if (loggedInAccount) {
+        try {
+          if (
+            isGlobalWeb3() &&
+            loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET
+          ) {
+            showModal(ACCOUNT_TYPES.WEB3WALLET);
+            await dispatch(loginWithInjectedWeb3());
+          }
+          if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+            showModal(ACCOUNT_TYPES.PORTIS);
+            await dispatch(loginWithPortis(false));
+          }
+
+          if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+            showModal(ACCOUNT_TYPES.FORTMATIC);
+            await dispatch(loginWithFortmatic());
+          }
+
+          if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+            showModal(ACCOUNT_TYPES.TORUS);
+            await dispatch(loginWithTorus());
+          }
+        } catch (error) {
+          errorModal();
+        }
       }
     }
-  }, ACCOUNTS_POLL_INTERVAL_DURATION);
-}
-
-async function autoLoginAccount(
-  dispatch: ThunkDispatch<void, any, Action>,
-  loggedInAccount: string,
-) {
-  const windowApp = windowRef as WindowApp;
-  const accounts = await windowApp.ethereum.enable().catch((err: Error) => {
-    console.log('could not auto login account', err);
-  });
-  let account = null;
-  for (account of accounts) {
-    if (account === loggedInAccount) {
-      dispatch(forceLoginWithInjectedWeb3(account));
-    }
   }
+
+  intervalId = setInterval(() => {
+    attemptLogin();
+  }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
 function pollForNetwork(
@@ -114,7 +144,7 @@ function pollForNetwork(
 }
 
 export function connectAugur(
-  history: any,
+  history: History,
   env: any,
   isInitialConnection: boolean = false,
   callback: NodeStyleCallback = logError
@@ -124,25 +154,67 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
+    const windowApp = windowRef as WindowApp;
+
+    const loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+    const loggedInAccountType = windowApp.localStorage.getItem(
+      'loggedInAccountType'
+    );
+
+    // Preload Account
+    const preloadAccount = accountType => {
+      const accountObject = {
+        address: loggedInAccount,
+        mixedCaseAddress: toChecksumAddress(loggedInAccount),
+        meta: {
+          address: loggedInAccount,
+          signer: null,
+          email: null,
+          profileImage: null,
+          openWallet: null,
+          accountType,
+          isWeb3: true,
+          preloaded: true,
+        },
+      };
+      dispatch(updateAuthStatus(RESTORED_ACCOUNT, true));
+      dispatch(updateLoginAccount(accountObject));
+    };
+
+    if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+      preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
+    }
+
+    if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+      preloadAccount(ACCOUNT_TYPES.PORTIS);
+    }
+
+    if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+      preloadAccount(ACCOUNT_TYPES.FORTMATIC);
+    }
+
+    if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+      preloadAccount(ACCOUNT_TYPES.TORUS);
+    }
+
     connect(
       env,
-      async (err: any) => {
+      async (err: any, sdk: Augur<Provider>) => {
         if (err) {
           return callback(err, null);
         }
-        const Augur = augurSdk.get();
         const windowApp = windowRef as WindowApp;
-        let universeId = env.universe || Augur.contracts.universe.address;
+        let universeId = env.universe || sdk.contracts.universe.address;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
           loginAccount.address
         ) {
-          const localUniverse =
+          const loginAddress =
             (windowApp.localStorage.getItem &&
               windowApp.localStorage.getItem(loginAccount.address)) ||
             '';
-          const storedUniverseId = JSON.parse(localUniverse).selectedUniverse[
+          const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
             getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
@@ -153,22 +225,22 @@ export function connectAugur(
           dispatch(
             updateModal({
               type: MODAL_NETWORK_MISMATCH,
+              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
             })
           );
         } else {
           dispatch(updateUniverse({ id: universeId }));
-          dispatch(loadUniverseForkingInfo(universeId));
-          if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
+          if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) {
             dispatch(closeModal());
+          }
           if (isInitialConnection) {
             pollForAccount(dispatch, getState);
             pollForNetwork(dispatch, getState);
           }
           callback(null);
         }
-
         // wire up start up events for sdk
-        dispatch(listenForStartUpEvents(Augur));
+        dispatch(listenForStartUpEvents(sdk));
       }
     );
   };
@@ -177,11 +249,11 @@ export function connectAugur(
 interface initAugurParams {
   ethereumNodeHttp: string | null;
   ethereumNodeWs: string | null;
-  useWeb3Transport: Boolean;
+  useWeb3Transport: boolean;
 }
 
 export function initAugur(
-  history: any,
+  history: History,
   { ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) {

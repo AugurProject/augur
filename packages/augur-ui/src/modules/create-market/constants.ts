@@ -1,5 +1,18 @@
-import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
-import * as icons from 'modules/categories/icons';
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL,
+  YES_NO_OUTCOMES,
+  EXPIRY_SOURCE_GENERIC,
+  DESIGNATED_REPORTER_SELF,
+  SETTLEMENT_FEE_DEFAULT,
+  AFFILIATE_FEE_DEFAULT,
+  ZERO,
+  ONE,
+} from 'modules/common/constants';
+import { NewMarket } from 'modules/types';
+import * as icons from 'modules/common/icons';
+import { Popcorn } from 'modules/common/icons';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -19,6 +32,59 @@ export const MARKET_CREATION_PAGES = [LANDING, SCRATCH, TEMPLATE];
 export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
+export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
+
+export const EMPTY_STATE: NewMarket = {
+  isValid: false,
+  validations: {
+    description: null,
+    categories: ['', '', ''],
+    designatedReporterAddress: null,
+    expirySourceType: null,
+    setEndTime: null,
+    hour: null,
+    minute: null,
+    meridiem: null,
+    scalarDenomination: null,
+    outcomes: ['', ''],
+    settlementFee: '',
+    inputs: ['', ''],
+  },
+  currentStep: 0,
+  marketType: YES_NO,
+  outcomes: ['', ''],
+  outcomesFormatted: YES_NO_OUTCOMES,
+  scalarSmallNum: '',
+  scalarBigNum: '',
+  scalarDenomination: '',
+  description: '',
+  expirySourceType: EXPIRY_SOURCE_GENERIC,
+  expirySource: '',
+  backupSource: '',
+  designatedReporterType: DESIGNATED_REPORTER_SELF,
+  designatedReporterAddress: '',
+  endTime: null,
+  setEndTime: null,
+  tickSize: 0.01,
+  hour: null,
+  minute: null,
+  meridiem: 'AM',
+  offset: 0,
+  offsetName: null,
+  timezone: null,
+  detailsText: '',
+  categories: ['', '', ''],
+  settlementFee: SETTLEMENT_FEE_DEFAULT,
+  affiliateFee: AFFILIATE_FEE_DEFAULT,
+  orderBook: {}, // for submit orders
+  orderBookSorted: {}, // for order book table
+  minPrice: '0',
+  maxPrice: '1',
+  minPriceBigNumber: ZERO,
+  maxPriceBigNumber: ONE,
+  initialLiquidityDai: ZERO,
+  initialLiquidityGas: ZERO,
+};
 
 const EventDetailsContent = {
   title: 'Event details',
@@ -43,16 +109,16 @@ const LiquidityContent = {
 };
 
 const ReviewContent = {
-	title: "Review",
-	largeHeader: "Review market details",
-	previewButton: true,
-	explainerBlockTitle: "Double check the details",
-	explainerBlockSubtexts: [
-		"Reporting Start Time must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."
-	],
-	mainContent: REVIEW,
-	firstButton: BACK,
-	secondButton: CREATE
+  title: 'Review',
+  largeHeader: 'Review market details',
+  previewButton: true,
+  explainerBlockTitle: 'Double check the details',
+  explainerBlockSubtexts: [
+    'Event expiration must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid.',
+  ],
+  mainContent: REVIEW,
+  firstButton: BACK,
+  secondButton: CREATE,
 };
 
 export const CUSTOM_CONTENT_PAGES = [
@@ -64,6 +130,11 @@ export const CUSTOM_CONTENT_PAGES = [
 // template page content
 export const SUB_CATEGORIES = 'subCategories';
 export const MARKET_TYPE = 'marketType';
+export const TEMPLATE_PICKER = 'templatePicker';
+
+function checkValid(data) {
+  return data === '' || !data;
+}
 
 export const TEMPLATE_CONTENT_PAGES = [
   { title: 'Category' },
@@ -72,13 +143,40 @@ export const TEMPLATE_CONTENT_PAGES = [
     mainContent: SUB_CATEGORIES,
     firstButton: BACK,
     secondButton: NEXT,
+    disabledFunction: newMarket => checkValid(newMarket.categories[1]),
   },
-  { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
-  { title: 'Template', firstButton: BACK, secondButton: NEXT },
-  { title: 'Event Details', firstButton: BACK, secondButton: NEXT },
+  {
+    title: 'Market Type',
+    mainContent: MARKET_TYPE,
+    firstButton: BACK,
+    secondButton: NEXT,
+    disabledFunction: newMarket => checkValid(newMarket.marketType),
+  },
+  {
+    title: 'Template',
+    mainContent: TEMPLATE_PICKER,
+    firstButton: BACK,
+    secondButton: NEXT,
+    disabledFunction: newMarket => checkValid(newMarket.template),
+  },
+  {
+    title: 'Event Details',
+    largeHeader: 'Enter the event details',
+    explainerBlockTitle: 'A note on choosing a market',
+    explainerBlockSubtexts: [
+      "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
+      'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid.',
+    ],
+    mainContent: TEMPLATE_FORM_DETAILS,
+    firstButton: BACK,
+    secondButton: NEXT,
+  },
   LiquidityContent,
   ReviewContent,
 ];
+
+export const NO_CAT_TEMPLATE_CONTENT_PAGES = TEMPLATE_CONTENT_PAGES.filter(page => page.title !== 'Sub-Category');
+
 
 // Market Type Names
 export const MARKET_TYPE_NAME = {
@@ -118,35 +216,43 @@ export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
 
+const defaultDescription = '-  |  -';
+export interface MarketCardTemplate {
+  value: string;
+  header: string;
+  description: string;
+  icon: JSX.Element;
+}
+
 export const MARKET_TEMPLATES = [
   {
     value: SPORTS,
     header: SPORTS,
-    description: '80 Markets  |  76.1k',
+    description: defaultDescription,
     icon: icons.Sports,
   },
   {
     value: POLITICS,
     header: POLITICS,
-    description: '110 Markets  |  134.5k',
+    description: defaultDescription,
     icon: icons.Politics,
   },
   {
     value: FINANCE,
     header: FINANCE,
-    description: '100 Markets  |  127.4k',
+    description: defaultDescription,
     icon: icons.Finance,
   },
   {
     value: ENTERTAINMENT,
     header: ENTERTAINMENT,
-    description: '125 Markets  |  717.2k',
+    description: defaultDescription,
     icon: icons.Entertainment,
   },
   {
     value: CRYPTO,
     header: CRYPTO,
-    description: '148 Markets  |  827.4k',
+    description: defaultDescription,
     icon: icons.Crypto,
   },
 ];
@@ -156,49 +262,49 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: SOCCER,
       header: SOCCER,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Soccer,
     },
     {
       value: AMERICAN_FOOTBALL,
       header: AMERICAN_FOOTBALL,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.AmericanFootball,
     },
     {
       value: BASEBALL,
       header: BASEBALL,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Baseball,
     },
     {
       value: GOLF,
       header: GOLF,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Golf,
     },
     {
       value: BASKETBALL,
       header: BASKETBALL,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Basketball,
     },
     {
       value: TENNIS,
       header: TENNIS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Tennis,
     },
     {
       value: HOCKEY,
       header: HOCKEY,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Hockey,
     },
     {
       value: HORSE_RACING,
       header: HORSE_RACING,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.HorseRacing,
     },
   ],
@@ -206,19 +312,19 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: US_ELECTIONS,
       header: US_ELECTIONS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.USElections,
     },
     {
       value: US_POLITICS,
       header: US_POLITICS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.USPolitics,
     },
     {
       value: WORLD,
       header: WORLD,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.World,
     },
   ],
@@ -226,19 +332,19 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: STOCKS,
       header: STOCKS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Stocks,
     },
     {
       value: COMMONDITIES,
       header: COMMONDITIES,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Commodities,
     },
     {
       value: INDEXES,
       header: INDEXES,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Indexes,
     },
   ],
@@ -246,25 +352,25 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: AWARDS,
       header: AWARDS,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Awards,
     },
     {
       value: MOVIES,
       header: MOVIES,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Movies,
     },
     {
       value: MUSIC,
       header: MUSIC,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.Music,
     },
     {
       value: TV,
       header: TV,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.TV,
     },
   ],
@@ -272,29 +378,54 @@ export const MARKET_SUB_TEMPLATES = {
     {
       value: BITCOIN,
       header: BITCOIN,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.BTC,
     },
     {
       value: ETHEREUM,
       header: ETHEREUM,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.ETH,
     },
     {
       value: LITECOIN,
       header: LITECOIN,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.LTC,
     },
     {
       value: AUGUR,
       header: AUGUR,
-      description: '128 Markets  |  727.4k',
+      description: defaultDescription,
       icon: icons.REP,
     },
   ],
 };
+
+export const MARKET_TYPE_TEMPLATES = [
+  {
+    value: YES_NO,
+    header: 'Yes / No',
+    description: 'There are two possible outcomes: “Yes” or “No”',
+    icon: Popcorn,
+    useIconColors: true,
+  },
+  {
+    value: CATEGORICAL,
+    header: 'Multiple Choice',
+    description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
+    icon: Popcorn,
+    useIconColors: true,
+  },
+  {
+    value: SCALAR,
+    header: 'Scalar',
+    description:
+      'A range of numeric outcomes: “USD range” between “1” and “100”.',
+    icon: Popcorn,
+    useIconColors: true,
+  },
+];
 
 export const DESCRIPTION_PLACEHOLDERS = {
   [YES_NO]: 'Example: Will [person] win the [year] [event]?',
@@ -320,6 +451,8 @@ export const TICK_SIZE = 'tickSize';
 
 export const SETTLEMENT_FEE = 'settlementFee';
 export const AFFILIATE_FEE = 'affiliateFee';
+
+export const TEMPLATE_INPUTS = 'inputs';
 
 export const VALIDATION_ATTRIBUTES = {
   [DESCRIPTION]: {
@@ -376,7 +509,7 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Min',
     checkFilledNumber: true,
     checkLessThan: true,
-    lessThanMessage: 'Min can\'t be higher than max'
+    lessThanMessage: "Min can't be higher than max",
   },
   [MAX_PRICE]: {
     label: MAX_PRICE,
@@ -411,5 +544,10 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledNumber: true,
     min: 0,
     max: 100,
+  },
+  [TEMPLATE_INPUTS]: {
+    label: TEMPLATE_INPUTS,
+    readableName: 'Template inputs',
+    checkUserInputFilled: true,
   },
 };

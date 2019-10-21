@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .DismissableNotice {
-  margin: @size-16 0 0;
+  padding: @size-16 0 0;
 
   > div {
     align-items: center;
@@ -18,6 +18,7 @@
     > div > div:first-of-type {
       .mono-10-bold;
 
+      color: @color-secondary-action;
       display: flex;
       line-height: @size-12;
       text-transform: uppercase;
@@ -78,7 +79,6 @@
   border: 1px solid @color-dark-grey;
   display: flex;
   padding: @size-20;
-  width: 574px;
   flex-direction: column;
 
   > span:first-of-type {
@@ -559,6 +559,21 @@ div.ReportingSubheaders {
   }
 }
 
+.ReportingBondsViewCheckbox {
+  background-color: @color-table-header;
+  border: 1px solid @color-secondary-action-outline;
+  padding: @size-16;
+  margin-top: @size-16;
+
+  > label {
+    .text-12;
+
+    display: grid;
+    grid-template-columns: @size-32 auto;
+    margin-bottom: 0;
+  }
+}
+
 .ReportingCard {
   align-items: center;
   background: @color-dark-grey;
@@ -566,7 +581,7 @@ div.ReportingSubheaders {
   border: 1px solid @color-secondary-action-outline;
   display: flex;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 80px;
   padding: @size-12 @size-24;
 
   > span:first-of-type {

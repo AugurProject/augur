@@ -37,6 +37,7 @@ export const selectOrderCancellationState = (state: AppState) =>
 export const selectMarketTradingHistoryState = (state: AppState) =>
   state.marketTradingHistory;
 export const selectUniverseState = (state: AppState) => state.universe;
+export const selectUniverseForkingState = (state: AppState) => state.universe.forkingInfo;
 export const selectPendingLiquidityOrders = (state: AppState) =>
   state.pendingLiquidityOrders;
 export const selectFilledOrders = (state: AppState) => state.filledOrders;

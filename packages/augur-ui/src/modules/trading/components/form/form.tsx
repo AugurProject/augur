@@ -7,7 +7,7 @@ import {
   MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND,
   BUY,
-  SELL
+  SELL,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form/form.styles.less';
@@ -17,7 +17,7 @@ import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { Getters } from "@augurproject/sdk";
+import { Getters } from '@augurproject/sdk';
 import { CancelTextButton } from 'modules/common/buttons';
 
 interface FromProps {
@@ -218,7 +218,15 @@ class Form extends Component<FromProps, FormState> {
     nextProps
   ): TestResults {
     const props = nextProps || this.props;
-    const { maxPrice, minPrice, market, initialLiquidity, selectedNav, orderBook, selectedOutcome } = props;
+    const {
+      maxPrice,
+      minPrice,
+      market,
+      initialLiquidity,
+      selectedNav,
+      orderBook,
+      selectedOutcome,
+    } = props;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -247,7 +255,8 @@ class Form extends Component<FromProps, FormState> {
         `Price must be a multiple of ${tickSize}`
       );
     }
-    if (initialLiquidity &&
+    if (
+      initialLiquidity &&
       selectedNav === BUY &&
       orderBook.asks &&
       orderBook.asks.length &&
@@ -258,7 +267,8 @@ class Form extends Component<FromProps, FormState> {
       errors[this.INPUT_TYPES.PRICE].push(
         `Price must be less than best ask of ${orderBook.asks[0].price}`
       );
-    } else if (initialLiquidity &&
+    } else if (
+      initialLiquidity &&
       selectedNav === SELL &&
       orderBook.bids &&
       orderBook.bids.length &&
@@ -478,7 +488,8 @@ class Form extends Component<FromProps, FormState> {
                 order[this.INPUT_TYPES.QUANTITY] &&
                 order[this.INPUT_TYPES.PRICE] &&
                 order[this.INPUT_TYPES.QUANTITY] !== '0' &&
-                (((!this.state.lastInputModified || this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
+                (((!this.state.lastInputModified ||
+                  this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
                   property === this.INPUT_TYPES.PRICE) ||
                   property === this.INPUT_TYPES.QUANTITY)
               ) {
@@ -560,7 +571,7 @@ class Form extends Component<FromProps, FormState> {
       orderEscrowdEth,
       updateSelectedOutcome,
       sortedOutcomes,
-      initialLiquidity
+      initialLiquidity,
     } = this.props;
     const s = this.state;
 
@@ -592,9 +603,9 @@ class Form extends Component<FromProps, FormState> {
             options={sortedOutcomes
               .filter(outcome => outcome.isTradeable)
               .map(outcome => ({
-              label: outcome.description,
-              value: outcome.id,
-            }))}
+                label: outcome.description,
+                value: outcome.id,
+              }))}
             large
             showColor
           />
@@ -701,6 +712,7 @@ class Form extends Component<FromProps, FormState> {
                 )}
                 id="tr__input--limit-price"
                 type="number"
+                disabled={!!initialLiquidity}
                 step={MIN_QUANTITY.toFixed()}
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
@@ -725,12 +737,15 @@ class Form extends Component<FromProps, FormState> {
             {orderEscrowdEth && (
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
-                <span>Max cost of <span>{orderEscrowdEth} DAI </span> will be escrowed</span>
+                <span>
+                  Max cost of <span>{orderEscrowdEth} DAI </span> will be
+                  escrowed
+                </span>
               </label>
             )}
           </li>
           <li>
-            {!initialLiquidity &&
+            {!initialLiquidity && (
               <>
                 <Checkbox
                   id="tr__input--do-no-create-orders"
@@ -749,9 +764,12 @@ class Form extends Component<FromProps, FormState> {
                 <label htmlFor="tr__input--do-no-create-orders">
                   Fill Orders Only
                 </label>
-                <CancelTextButton text="clear" action={() => this.clearOrderFormProperties()} />
+                <CancelTextButton
+                  text="clear"
+                  action={() => this.clearOrderFormProperties()}
+                />
               </>
-            }
+            )}
           </li>
         </ul>
         {errors.length > 0 && (

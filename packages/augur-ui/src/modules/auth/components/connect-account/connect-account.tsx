@@ -12,8 +12,10 @@ import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 
 interface ConnectAccountProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
+  updateHelpMenuState: Function;
   updateMobileMenuState: Function;
   mobileMenuState: number;
   userInfo: LoginAccount['meta'];
@@ -23,15 +25,22 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   connectAccount;
   connectDropdown;
 
-
   toggleDropdown(cb?: Function) {
-    const { updateConnectionTray, updateMobileMenuState, isConnectionTrayOpen, mobileMenuState } = this.props;
+    const {
+      updateConnectionTray,
+      updateHelpMenuState,
+      updateMobileMenuState,
+      isConnectionTrayOpen,
+      mobileMenuState,
+    } = this.props;
     if (mobileMenuState > 0) {
       updateConnectionTray(!isConnectionTrayOpen);
+      updateHelpMenuState(false);
     }
     else {
       updateMobileMenuState(1);
       updateConnectionTray(!isConnectionTrayOpen);
+      updateHelpMenuState(false);
     }
 
     if (cb && typeof cb === 'function') cb();
@@ -40,14 +49,16 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
   render() {
     const {
       isLogged,
+      restoredAccount,
       isConnectionTrayOpen,
       userInfo,
     } = this.props;
 
-    if (!isLogged || !userInfo) return null;
+    if (!isLogged && !restoredAccount || !userInfo) return null;
 
     return (
       <div
+        onClick={(event) => event.stopPropagation()}
         className={classNames(Styles.ConnectAccount, {
           [Styles.selected]: isConnectionTrayOpen,
         })}

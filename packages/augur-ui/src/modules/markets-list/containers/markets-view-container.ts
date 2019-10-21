@@ -16,6 +16,7 @@ import { setLoadMarketsPending, updateMarketsListMeta, updateMarketsListCardForm
 import { MAX_SPREAD_ALL_SPREADS, MAX_FEE_100_PERCENT  } from 'modules/common/constants';
 import { updateFilterSortOptions, MARKET_FILTER, MARKET_MAX_FEES, MARKET_MAX_SPREAD } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
+import { updateLoginAccountSettings } from "modules/markets-list/actions/update-login-account-settings";
 
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
@@ -42,6 +43,8 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketSort: state.filterSortOptions.marketSort,
     marketFilter: state.filterSortOptions.marketFilter,
     marketCardFormat: state.marketsList.marketCardFormat,
+    showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {}).showInvalidMarketsBannerHideOrShow,
+    showInvalidMarketsBannerFeesOrLiquiditySpread: (state.loginAccount.settings || {}).showInvalidMarketsBannerFeesOrLiquiditySpread,
   };
 };
 
@@ -58,6 +61,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => 
   updateMarketsFilter: (filterOption) => dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
   updateMarketsListCardFormat: (format) => dispatch(updateMarketsListCardFormat(format)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
+  updateLoginAccountSettings: settings => dispatch(updateLoginAccountSettings(settings)),
 });
 
 const Markets = withRouter(

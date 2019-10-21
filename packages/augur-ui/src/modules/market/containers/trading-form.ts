@@ -4,8 +4,11 @@ import TradingForm from 'modules/market/components/trading-form/trading-form';
 import { createBigNumber } from 'utils/create-big-number';
 import { windowRef } from 'utils/window-ref';
 import {
-  MARKET_REVIEW_TRADE_SEEN,
-  MODAL_MARKET_REVIEW_TRADE,
+  DISCLAIMER_SEEN,
+  MODAL_DISCLAIMER,
+  MODAL_ADD_FUNDS,
+  MODAL_LOGIN,
+  MODAL_SIGNUP,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -21,7 +24,19 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { LoginAccount } from 'modules/types';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKET } from 'modules/routes/constants/views';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+
+const getMarketPath = id => {
+  return {
+    pathname: makePath(MARKET),
+    search: makeQuery({
+      [MARKET_ID_PARAM_NAME]: id,
+    }),
+  };
+};
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
@@ -67,11 +82,26 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
   updateTradeShares: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeShares({ marketId, outcomeId, ...order, callback })),
-  marketReviewTradeModal: modal =>
+  disclaimerModal: modal =>
     dispatch(
       updateModal({
-        type: MODAL_MARKET_REVIEW_TRADE,
+        type: MODAL_DISCLAIMER,
         ...modal,
+      })
+    ),
+  addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  loginModal: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_LOGIN,
+        pathName: getMarketPath(ownProps.market.id),
+      })
+    ),
+  signupModal: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_SIGNUP,
+        pathName: getMarketPath(ownProps.market.id),
       })
     ),
   onSubmitPlaceTrade: (
@@ -95,16 +125,16 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const marketReviewTradeSeen =
+  const disclaimerSeen =
     windowRef &&
     windowRef.localStorage &&
-    windowRef.localStorage.getItem(MARKET_REVIEW_TRADE_SEEN);
+    windowRef.localStorage.getItem(DISCLAIMER_SEEN);
 
   return {
     ...oP,
     ...sP,
     ...dP,
-    marketReviewTradeSeen: !!marketReviewTradeSeen,
+    disclaimerSeen: !!disclaimerSeen,
   };
 };
 

@@ -9,7 +9,8 @@ import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
-  updateAppStatus
+  updateAppStatus,
+  IS_HELP_MENU_OPEN
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -26,6 +27,7 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
+import { MODAL_GLOBAL_CHAT } from 'modules/common/constants';
 
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
@@ -36,6 +38,7 @@ const mapStateToProps = state => {
     connection: state.connection,
     env: state.env,
     isLogged: state.authStatus.isLogged,
+    restoredAccount: state.authStatus.restoredAccount,
     isMobile: state.appStatus.isMobile,
     isMobileSmall: state.appStatus.isMobileSmall,
     loginAccount: state.loginAccount,
@@ -66,6 +69,8 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
   updateConnectionTray: value =>
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
+  showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
+  updateHelpMenuState: (isHelpMenuOpen) => dispatch(updateAppStatus(IS_HELP_MENU_OPEN, isHelpMenuOpen)),
 });
 
 const AppContainer = compose(

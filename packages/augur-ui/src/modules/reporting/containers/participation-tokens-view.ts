@@ -11,8 +11,10 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'store';
 
 const mapStateToProps = (state: AppState) => {
+  const isLoggedIn = state.authStatus.isLogged;
   const { address, fees, purchased } =
     state.universe && state.universe.disputeWindow;
+  const disablePurchaseButton = !!state.universe.forkingInfo;
   const { participationTokens } =
     state.loginAccount && state.loginAccount.reporting;
   const tokenAmount =
@@ -31,9 +33,10 @@ const mapStateToProps = (state: AppState) => {
       : 0
   );
   const participationTokensClaimable =
-    (participationTokens && participationTokens.totalClaimable) || ZERO;
+    (participationTokens && createBigNumber(participationTokens.totalClaimable)) || ZERO;
   const participationTokensClaimableFees =
     (participationTokens && participationTokens.totalFees) || ZERO;
+  const hasRedeemable = isLoggedIn && participationTokensClaimable.gt(ZERO);
 
   return {
     disputeWindowFees: formatAttoDai(fees || 0),
@@ -44,6 +47,8 @@ const mapStateToProps = (state: AppState) => {
     participationTokensClaimableFees: formatAttoDai(
       participationTokensClaimableFees
     ),
+    disablePurchaseButton,
+    hasRedeemable,
   };
 };
 

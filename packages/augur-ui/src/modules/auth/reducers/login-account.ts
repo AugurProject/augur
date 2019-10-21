@@ -1,4 +1,4 @@
-import { RESET_STATE } from 'modules/app/actions/reset-state';
+import { RESET_STATE, SWITCH_UNIVERSE } from 'modules/app/actions/reset-state';
 import {
   UPDATE_LOGIN_ACCOUNT,
   CLEAR_LOGIN_ACCOUNT,
@@ -24,6 +24,10 @@ const DEFAULT_STATE: LoginAccount = {
   allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
     unrealizedRevenue24hChangePercent: "0",
+  },
+  settings: {
+    showInvalidMarketsBannerFeesOrLiquiditySpread: true,
+    showInvalidMarketsBannerHideOrShow: true,
   }
 };
 
@@ -37,6 +41,13 @@ export default function(
         ...loginAccount,
         ...(data || {}),
       };
+    case SWITCH_UNIVERSE:
+      delete loginAccount.reporting;
+      delete loginAccount.allowance;
+      delete loginAccount.tradingPositionsTotal;
+      return {
+        ...loginAccount
+      }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;

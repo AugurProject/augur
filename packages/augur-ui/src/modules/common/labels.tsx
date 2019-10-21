@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -29,6 +28,7 @@ import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
 import { FormattedNumber, SizeTypes, DateFormattedObject } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
+import {DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice} from "modules/reporting/common";
 
 export interface MarketTypeProps {
   marketType: string;
@@ -40,8 +40,6 @@ export interface MarketStatusProps {
 
 export interface InReportingLabelProps extends MarketStatusProps {
   disputeInfo: Getters.Markets.DisputeInfo;
-  endTimeFormatted: DateFormattedObject;
-  currentAugurTimestamp: number;
 }
 
 export interface MovementLabelProps {
@@ -72,7 +70,7 @@ export interface MovementTextProps {
 export interface PropertyLabelProps {
   label: string;
   value: string;
-  hint?: HTMLElement;
+  hint?: React.ReactNode;
 }
 
 export interface LinearPropertyLabelProps {
@@ -402,7 +400,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
 export class HoverValueLabel extends React.Component<
   ValueLabelProps,
   HoverValueLabelState
-> {
+  > {
   state: HoverValueLabelState = {
     hover: false,
   };
@@ -448,17 +446,17 @@ export class HoverValueLabel extends React.Component<
             <span>{secondHalfFull}</span>
           </span>
         ) : (
-          <span>
             <span>
-              {firstHalf}
-              {secondHalf && '.'}
+              <span>
+                {firstHalf}
+                {secondHalf && '.'}
+              </span>
+              <span>
+                {secondHalf}
+                {postfix}
+              </span>
             </span>
-            <span>
-              {secondHalf}
-              {postfix}
-            </span>
-          </span>
-        )}
+          )}
       </span>
     );
   }
@@ -503,43 +501,43 @@ export const LinearPropertyLabel = ({
   accentValue,
   value,
 }: LinearPropertyLabelProps) => (
-  <div
-    className={classNames(Styles.LinearPropertyLabel, {
-      [Styles.Highlight]: highlight,
-      [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
-      [Styles.HighlightFirst]: highlightFirst,
-    })}
-  >
-    <span>{label}</span>
-    <DashlineNormal />
-    {useValueLabel ? (
-      <ValueLabel value={value} showDenomination={showDenomination} />
-    ) : (
-      <span
-        className={classNames({
-          [Styles.isAccented]: accentValue,
-        })}
-      >
-        {value && value.formatted
-          ? `${value.formatted} ${showDenomination ? value.formatted : ''}`
-          : value}
-      </span>
-    )}
-    {useValueLabel ? (
-      <ValueLabel value={value} showDenomination={showDenomination} />
-    ) : (
-      <span
-        className={classNames({
-          [Styles.isAccented]: accentValue,
-        })}
-      >
-        {value && value.formatted
-          ? `${value.formatted} ${showDenomination ? value.denomination : ''}`
-          : value}
-      </span>
-    )}
-  </div>
-);
+    <div
+      className={classNames(Styles.LinearPropertyLabel, {
+        [Styles.Highlight]: highlight,
+        [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
+        [Styles.HighlightFirst]: highlightFirst,
+      })}
+    >
+      <span>{label}</span>
+      <DashlineNormal />
+      {useValueLabel ? (
+        <ValueLabel value={value} showDenomination={showDenomination} />
+      ) : (
+          <span
+            className={classNames({
+              [Styles.isAccented]: accentValue,
+            })}
+          >
+            {value && value.formatted
+              ? `${value.formatted} ${showDenomination ? value.formatted : ''}`
+              : value}
+          </span>
+        )}
+      {useValueLabel ? (
+        <ValueLabel value={value} showDenomination={showDenomination} />
+      ) : (
+          <span
+            className={classNames({
+              [Styles.isAccented]: accentValue,
+            })}
+          >
+            {value && value.formatted
+              ? `${value.formatted} ${showDenomination ? value.denomination : ''}`
+              : value}
+          </span>
+        )}
+    </div>
+  );
 
 export const MarketTypeLabel = (props: MarketTypeProps) => {
   if (!props.marketType) {
@@ -592,9 +590,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 export const InReportingLabel = (props: InReportingLabelProps) => {
   const {
     reportingState,
-    disputeInfo,
-    endTimeFormatted,
-    currentAugurTimestamp,
+    disputeInfo
   } = props;
 
   const reportingStates = [
@@ -609,7 +605,8 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   }
 
   let reportingExtraText: string | null;
-  const text: string = constants.IN_REPORTING;
+  // const text: string = constants.IN_REPORTING;
+  const text = '';
   let customLabel: string | null = null;
 
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
@@ -636,7 +633,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       {text}
       {reportingExtraText && (
         <span className={Styles.InReporting_reportingDetails}>
-          {DoubleArrows}
+          {/* {DoubleArrows} */}
           {reportingExtraText}
         </span>
       )}
@@ -659,23 +656,23 @@ export const PendingLabel = (props: PendingLabelProps) => (
     {(!props.status ||
       props.status === TXEventName.Pending ||
       props.status === TXEventName.AwaitingSigning) && (
-      <>
-        <span>
-          Processing <ClipLoader size={8} color="#ffffff" />
-        </span>
-        <ReactTooltip
-          id={'processing'}
-          className={TooltipStyles.Tooltip}
-          effect="solid"
-          place="top"
-          type="light"
-          data-event="mouseover"
-          data-event-off="blur scroll"
-        >
-          You will receive an alert when the transaction has finalized.
+        <>
+          <span>
+            Processing <ClipLoader size={8} color="#ffffff" />
+          </span>
+          <ReactTooltip
+            id={'processing'}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
+          >
+            You will receive an alert when the transaction has finalized.
         </ReactTooltip>
-      </>
-    )}
+        </>
+      )}
     {props.status && props.status === TXEventName.Failure && (
       <span>Failed</span>
     )}
@@ -842,72 +839,72 @@ export const PositionTypeLabel = (props: PositionTypeLabelProps) => {
 export const LinearPropertyLabelMovement = (
   props: LinearPropertyLabelPercentMovementProps
 ) => (
-  <span className={Styles.LinearPropertyLabelPercent}>
-    <LinearPropertyLabel
-      label={props.label}
-      value={props.value}
-      highlightFirst={props.highlightFirst}
-      highlightAlternate
-    />
-    <MovementLabel
-      showIcon={props.showIcon}
-      showPercent={props.showPercent}
-      showBrackets={props.showBrackets}
-      showPlusMinus={props.showPlusMinus}
-      showColors={props.showColors}
-      size={SizeTypes.NORMAL}
-      value={props.numberValue}
-    />
-  </span>
-);
+    <span className={Styles.LinearPropertyLabelPercent}>
+      <LinearPropertyLabel
+        label={props.label}
+        value={props.value}
+        highlightFirst={props.highlightFirst}
+        highlightAlternate
+      />
+      <MovementLabel
+        showIcon={props.showIcon}
+        showPercent={props.showPercent}
+        showBrackets={props.showBrackets}
+        showPlusMinus={props.showPlusMinus}
+        showColors={props.showColors}
+        size={SizeTypes.NORMAL}
+        value={props.numberValue}
+      />
+    </span>
+  );
 
 export const LinearPropertyLabelTooltip = (
   props: LinearPropertyLabelTooltipProps
 ) => (
-  <span className={Styles.LinearPropertyLabelTooltip}>
-    <LinearPropertyLabel label={props.label} value={props.value} />
-    <div>
-      <label
-        className={TooltipStyles.TooltipHint}
-        data-tip
-        data-for={`tooltip-${props.label}`}
-      >
-        {HintAlternate}
-      </label>
-      <ReactTooltip
-        id={`tooltip-${props.label}`}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
-      >
-        Information text
+    <span className={Styles.LinearPropertyLabelTooltip}>
+      <LinearPropertyLabel label={props.label} value={props.value} />
+      <div>
+        <label
+          className={TooltipStyles.TooltipHint}
+          data-tip
+          data-for={`tooltip-${props.label}`}
+        >
+          {HintAlternate}
+        </label>
+        <ReactTooltip
+          id={`tooltip-${props.label}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          data-event="mouseover"
+          data-event-off="blur scroll"
+        >
+          Information text
       </ReactTooltip>
-    </div>
-  </span>
-);
+      </div>
+    </span>
+  );
 
 export const LinearPropertyViewTransaction = (
   props: LinearPropertyLabelViewTransactionProps
 ) => (
-  <div
-    className={classNames(
-      Styles.LinearPropertyLabel,
-      Styles.LinearPropertyViewTransaction
-    )}
-  >
-    <LinearPropertyLabel
-      label="Transaction Details"
-      value=""
-      highlightFirst={props.highlightFirst}
-    />
-    <ViewTransactionDetailsButton light transactionHash={props.transactionHash} />
-  </div>
-);
+    <div
+      className={classNames(
+        Styles.LinearPropertyLabel,
+        Styles.LinearPropertyViewTransaction
+      )}
+    >
+      <LinearPropertyLabel
+        label="Transaction Details"
+        value=""
+        highlightFirst={props.highlightFirst}
+      />
+      <ViewTransactionDetailsButton light transactionHash={props.transactionHash} />
+    </div>
+  );
 
-export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
+export const WordTrail: React.FC<WordTrailProps> = ({ items, typeLabel, children }) => (
   <div className={Styles.WordTrail}>
     {children}
     {items.map(({ label, onClick }, index) => (
@@ -918,25 +915,13 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         onClick={e => onClick()}
       >
         <span>{label}</span>
-        <span>{index !== items.length - 1  && '/'}</span>
+        <span>{index !== items.length - 1 && '/'}</span>
       </button>
     ))}
   </div>
 );
 
-WordTrail.propTypes = {
-  typeLabel: PropTypes.string,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-    })
-  ),
-  children: PropTypes.array,
-};
-
 WordTrail.defaultProps = {
-  children: [],
   items: [],
   typeLabel: 'label-type',
 };
@@ -944,19 +929,10 @@ WordTrail.defaultProps = {
 export const CategoryTagTrail = ({
   categories,
 }: CategoryTagTrailProps) => (
-  <div className={Styles.CategoryTagTrail}>
-    <WordTrail items={categories} typeLabel='Category' />
-  </div>
-);
-
-CategoryTagTrail.propTypes = {
-  categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-    })
-  ).isRequired,
-};
+    <div className={Styles.CategoryTagTrail}>
+      <WordTrail items={categories} typeLabel='Category' />
+    </div>
+  );
 
 interface BulkTxLabelProps {
   count: number;
@@ -971,14 +947,18 @@ export const BulkTxLabel = ({
   className,
 }: BulkTxLabelProps) =>
   count > 1 || needsApproval ? (
-    <span
-      className={classNames(Styles.BulkTxLabel, className)}
-    >{`${buttonName} requires ${count} transaction${count > 1 ? `s` : ``}${
-      needsApproval ? `, and 1 approval` : ''
-    }`}</span>
+    <div className={classNames(Styles.BulkTxLabel, className)}>
+      <DismissableNotice
+        show={true}
+        description=""
+        title={`${buttonName} requires ${count} transaction${count > 1 ? `s` : ``}${
+          needsApproval ? `, and 1 approval` : ''}`}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+      />
+    </div>
   ) : null;
 
-export const ValueDenomination = ({
+export const ValueDenomination: React.FC<ValueDenominationProps> = ({
   className,
   prefix,
   hidePrefix,
@@ -990,47 +970,33 @@ export const ValueDenomination = ({
   postfix,
   hidePostfix,
   value,
-}: ValueDenominationProps) => (
-  <span className={Styles[className]}>
-    {prefix && !hidePrefix && <span className={Styles.prefix}>{prefix}</span>}
-    {formatted && fullPrecision && (
-      <span
-        data-tip={fullPrecision}
-        data-event="click focus"
-        className={`value_${valueClassname}`}
-      >
-        {formatted}
-      </span>
-    )}
-    {formatted && !fullPrecision && (
-      <span className={`value_${valueClassname}`}>{formatted}</span>
-    )}
-    {denomination && !hideDenomination && (
-      <span className={Styles.denomination}>{denomination}</span>
-    )}
-    {postfix && !hidePostfix && (
-      <span className={Styles.postfix}>{postfix}</span>
-    )}
-    {!value && value !== 0 && !formatted && formatted !== '0' && (
-      <span>&mdash;</span>
-    ) // null/undefined state handler
-    }
-  </span>
-);
-
-ValueDenomination.propTypes = {
-  valueClassname: PropTypes.string,
-  className: PropTypes.string,
-  value: PropTypes.number,
-  formatted: PropTypes.string,
-  fullPrecision: PropTypes.string,
-  denomination: PropTypes.string,
-  hidePrefix: PropTypes.bool,
-  hidePostfix: PropTypes.bool,
-  prefix: PropTypes.string,
-  postfix: PropTypes.string,
-  hideDenomination: PropTypes.bool,
-};
+}) => (
+    <span className={Styles[className]}>
+      {prefix && !hidePrefix && <span className={Styles.prefix}>{prefix}</span>}
+      {formatted && fullPrecision && (
+        <span
+          data-tip={fullPrecision}
+          data-event="click focus"
+          className={`value_${valueClassname}`}
+        >
+          {formatted}
+        </span>
+      )}
+      {formatted && !fullPrecision && (
+        <span className={`value_${valueClassname}`}>{formatted}</span>
+      )}
+      {denomination && !hideDenomination && (
+        <span className={Styles.denomination}>{denomination}</span>
+      )}
+      {postfix && !hidePostfix && (
+        <span className={Styles.postfix}>{postfix}</span>
+      )}
+      {!value && value !== 0 && !formatted && formatted !== '0' && (
+        <span>&mdash;</span>
+      ) // null/undefined state handler
+      }
+    </span>
+  );
 
 ValueDenomination.defaultProps = {
   className: null,
@@ -1049,24 +1015,24 @@ ValueDenomination.defaultProps = {
 export const MarketStateLabel = (
   props: MarketStateLabelProps
 ) => (
-  <div
-    onClick={() => props.handleClick()}
-    className={classNames(Styles.MarketLabel, {
-      [Styles.selected]: props.selected,
-      [Styles.loading]: props.loading,
-      [Styles.open]: props.marketType === constants.MARKET_OPEN,
-      [Styles.inReporting]: props.marketType === constants.MARKET_REPORTING,
-      [Styles.resolved]: props.marketType === constants.MARKET_CLOSED,
-    })}
-  >
-    <div>{props.label}</div>
-    {props.selected && !props.loading && (
-      <div>({props.count})</div>
-    )}
-    {props.loading && props.selected && (
-      <div>
-        <span>{LoadingEllipse}</span>
-      </div>
-    )}
-  </div>
-);
+    <div
+      onClick={() => props.handleClick()}
+      className={classNames(Styles.MarketLabel, {
+        [Styles.selected]: props.selected,
+        [Styles.loading]: props.loading,
+        [Styles.open]: props.marketType === constants.MARKET_OPEN,
+        [Styles.inReporting]: props.marketType === constants.MARKET_REPORTING,
+        [Styles.resolved]: props.marketType === constants.MARKET_CLOSED,
+      })}
+    >
+      <div>{props.label}</div>
+      {props.selected && !props.loading && (
+        <div>({props.count})</div>
+      )}
+      {props.loading && props.selected && (
+        <div>
+          <span>{LoadingEllipse}</span>
+        </div>
+      )}
+    </div>
+  );

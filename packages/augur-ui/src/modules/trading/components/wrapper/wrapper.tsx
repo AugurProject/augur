@@ -33,8 +33,8 @@ interface WrapperProps {
   orderBook: OutcomeOrderBook;
   allowanceBigNumber: BigNumber;
   market: MarketData;
-  marketReviewTradeSeen: boolean;
-  marketReviewTradeModal: Function;
+  disclaimerSeen: boolean;
+  disclaimerModal: Function;
   selectedOrderProperties: object;
   availableEth: BigNumber;
   availableDai: BigNumber;
@@ -374,8 +374,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedOutcome,
       gasPrice,
       updateSelectedOutcome,
-      marketReviewTradeSeen,
-      marketReviewTradeModal,
+      disclaimerSeen,
+      disclaimerModal,
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
@@ -513,13 +513,14 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else {
-                if (!marketReviewTradeSeen) {
-                  marketReviewTradeModal({
-                    marketId: market.id,
-                    cb: () => this.placeMarketTrade(market, selectedOutcome, s),
-                  });
-                } else {
+                if (disclaimerSeen) {
                   this.placeMarketTrade(market, selectedOutcome, s);
+                }
+                // Show Disclaimer
+                else {
+                  disclaimerModal({
+                    onApprove: () => this.placeMarketTrade(market, selectedOutcome, s),
+                  });
                 }
               }
             }}

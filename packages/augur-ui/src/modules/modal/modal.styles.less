@@ -124,40 +124,113 @@
   }
 }
 
+.TestBet {
+  margin: @size-42 0 @size-36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > img {
+    width: 230px;
+    height: 129px;
+  }
+}
+
 .LinkContentSection {
   .text-12;
 
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
   line-height: 140%;
+  text-align: center;
 
-  > a {
+  > div > a {
     color: @color-primary-action;
-    margin-left: @size-4;
   }
 }
 
 div.Onboarding {
   .Message;
 
+  align-items: center;
+  height: 454px;
+  justify-content: center;
   padding: @size-32 @size-40;
+  width: 454px;
+
+  @media @breakpoint-mobile-new {
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    max-height: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
 
   > main {
-    padding: 0;
-    justify-content: center;
     display: flex;
+    flex: 2;
     flex-direction: column;
+    justify-content: center;
+    padding: 0;
+
+    > div:first-of-type {
+      text-align: center;
+    }
+
+    @media @breakpoint-mobile-new {
+      flex: 1;
+    }
   }
 
   > div:last-of-type {
+    align-items: center;
     border-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 0;
-  }
 
-  @media @breakpoint-mobile-new {
-    padding: @size-24;
+    > div:first-of-type {
+      display: flex;
+      flex-direction: row-reverse;
+
+      > button:last-of-type {
+        margin-right: @size-16;
+      }
+
+      > button:only-of-type {
+        margin: 0;
+      }
+    }
+
+    @media @breakpoint-mobile-new {
+      flex: 1;
+    }
   }
 }
+
+.Stepper {
+  display: flex;
+  margin-top: @size-32;
+
+  > span {
+    background: @color-inactive-text;
+    border-radius: 50%;
+    height: @size-8;
+    margin-right: @size-10;
+    width: @size-8;
+
+    &.Current {
+      background: @color-primary-text;
+    }
+  }
+
+  > span:last-of-type {
+    margin-right: 0;
+  }
+}
+
 
 .TitleHeader {
   align-items: center;
@@ -166,11 +239,18 @@ div.Onboarding {
   flex-flow: row nowrap;
   justify-content: space-between;
   padding: @size-24;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
   &.Bright {
     > h1 {
       color: @color-reporting;
     }
+  }
+
+  &.ShortBorder {
+    padding: 0 0 @size-24;
+    margin: @size-24 @size-24 0;
   }
 
   @media @breakpoint-mobile {
@@ -189,7 +269,17 @@ div.Onboarding {
     text-transform: uppercase;
   }
 
+  > h2 {
+    .text-12;
+
+    color: @color-primary-text;
+    margin-top: @size-16;
+    grid-row: 2;
+  }
+
   > button:first-of-type {
+    display: flex;
+    justify-content: flex-end;
     > svg {
       height: @size-12;
       width: @size-12;
@@ -202,7 +292,6 @@ div.Onboarding {
 }
 
 div.ButtonsRow:last-of-type {
-  border-top: 1px solid fade(@color-dark-grey, 50%);
   padding: @size-12 @size-24;
 
   @media @breakpoint-mobile {
@@ -227,7 +316,12 @@ div.ButtonsRow:last-of-type {
 
     color: @color-secondary-text;
     line-height: 140%;
-    margin-bottom: @size-3;
+
+    > span {
+      width: @size-16;
+      height: @size-16;
+      margin: 0 @size-2;
+    }
   }
 
   @media @breakpoint-mobile-new {
@@ -243,6 +337,22 @@ div.ButtonsRow:last-of-type {
 }
 
 .AddFunds {
+
+
+  &.hideOnMobile {
+    @media @breakpoint-mobile-new {
+      display: none;
+    }
+  }
+
+  &.hideOnDesktop {
+    display: none;
+
+    @media @breakpoint-mobile-new {
+      display: flex;
+    }
+  }
+
   .Container;
 
   flex-direction: row;
@@ -309,7 +419,6 @@ div.ButtonsRow:last-of-type {
         .text-12;
 
         color: @color-secondary-text;
-        margin: @size-4 0 @size-24;
       }
 
       > h3 {
@@ -323,7 +432,11 @@ div.ButtonsRow:last-of-type {
       > h4 {
         .text-12;
 
-        color: @color-inactive-text;
+        @media @breakpoint-mobile-new {
+          .text-14;
+        }
+
+        color: @color-dark-text;
         line-height: 140%;
         display: flex;
         margin-top: @size-12;
@@ -439,6 +552,75 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.AddFundsToolTip {
+  > label {
+    display: inline;
+  }
+
+  svg > path {
+    fill: @color-secondary-text;
+  }
+}
+
+.AddFundsCreditDebitCoinbase {
+  > h2 {
+    margin: 0 0 @size-24;
+
+    svg {
+      transform: translateY(@size-4);
+    }
+  }
+}
+
+.AddFundsTransfer {
+  > h2 {
+    margin: @size-4 0 @size-24;
+  }
+
+  > ol svg {
+    transform: translateY(@size-3);
+  }
+}
+
+.DaiEthSelector {
+  display: flex;
+
+  > div {
+    .text-16-bold;
+
+    align-items: center;
+    background: @color-secondary-action;
+    border: 2px solid @color-secondary-action-outline;
+    border-radius: @border-radius-rounded;
+    cursor: pointer;
+    color: @color-primary-text;
+    display: flex;
+    height: 48px;
+    justify-content: center;
+    padding: @size-14 @size-12 @size-14 @size-4;
+    width: 87px;
+
+    &.selected {
+      border: 2px solid @color-primary-action;
+      }
+
+    > svg {
+      height: @size-28;
+      width: @size-28;
+      fill: @color-primary-text;
+    }
+  }
+
+  > div:last-of-type {
+    margin-left: @size-12;
+
+    > svg {
+      height: @size-21;
+      width: @size-21;
+    }
+  }
+}
+
 .CondensedContainer {
   .Container;
 
@@ -468,11 +650,19 @@ div.ButtonsRow:last-of-type {
   max-width: @login-signup-modal-width;
   padding: 48px 56px;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-new {
     padding: @size-24;
     flex: 1;
     max-width: unset;
     max-height: unset;
+  }
+}
+
+.Loading {
+  > button {
+    position: absolute;
+    top: @size-16;
+    right: @size-16;
   }
 }
 
@@ -484,7 +674,7 @@ div.ButtonsRow:last-of-type {
   top: 17px;
   width: @size-12;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-new {
     height: @size-16;
     width: @size-16;
   }
@@ -495,7 +685,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .SignIn {
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-new {
     padding-top: 57px;
   }
 
@@ -504,12 +694,12 @@ div.ButtonsRow:last-of-type {
   }
 
   > header {
-    align-items: center;
+    align-items: flex-end;
     display: flex;
     justify-content: space-between;
     margin-bottom: @size-32;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-new {
       align-items: end;
       flex-direction: column;
     }
@@ -519,7 +709,7 @@ div.ButtonsRow:last-of-type {
 
       color: @color-primary-text;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-new {
         margin-bottom: @size-4;
       }
     }
@@ -571,11 +761,11 @@ div.ButtonsRow:last-of-type {
     }
 
     &:before {
-      margin: 0 0 0 21px;
+      margin: 0 0 0 @size-21;
     }
 
     &:after {
-      margin: 0 21px 0 0;
+      margin: 0 @size-21 0 0;
     }
   }
 
@@ -591,8 +781,12 @@ div.ButtonsRow:last-of-type {
     background: #0095a3;
   }
 
+  > button:first-of-type:hover {
+    background: lighten(#0095a3, 5%);
+  }
+
   > button:last-of-type {
-    margin: 0 0 32px 0;
+    margin: 0 0 @size-32 0;
   }
 }
 
@@ -632,9 +826,14 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      .text-12;
+      .text-14;
 
       color: @color-secondary-text;
+      line-height: @size-20;
+
+      @media @breakpoint-mobile {
+        .text-12;
+      }
     }
   }
 
@@ -680,6 +879,12 @@ div.ButtonsRow:last-of-type {
     color: @color-secondary-text;
     text-align: center;
     margin-top: @size-28;
+  }
+
+  > button {
+    position: absolute;
+    right: @size-12;
+    top: @size-12;
   }
 }
 
@@ -1020,6 +1225,8 @@ div.ButtonsRow:last-of-type {
   .Message;
 
   > main {
+    padding: @size-24;
+
     > p {
       border-bottom: 1px solid @color-dark-grey;
       margin-bottom: @size-16;
@@ -1033,7 +1240,7 @@ div.ButtonsRow:last-of-type {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  margin-bottom: @size-16;
+  margin-bottom: @size-24;
 
   > div {
     height: 6.25rem;
@@ -1069,6 +1276,11 @@ div.ButtonsRow:last-of-type {
 
       color: @color-inactive-text;
       margin-bottom: @size-8;
+      text-transform: capitalize;
+    }
+
+    > div:first-of-type {
+      margin-bottom: @size-22;
     }
 
     > button {
@@ -1105,10 +1317,11 @@ div.ButtonsRow:last-of-type {
 
   > div:nth-of-type(2) {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
 
     > div {
       height: @size-40;
+      margin-bottom: 0;
 
       > button {
         padding: @size-10 @size-12;
@@ -1133,17 +1346,16 @@ div.ButtonsRow:last-of-type {
 
   > div:last-of-type {
     align-content: start;
-    align-items: flex-start;
-    display: flex;
-    flex-flow: row wrap;
-
-    > label {
-      height: 1rem;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 
     > button {
       height: 1rem;
       margin-left: auto;
+    }
+
+    > div {
+      grid-column: 1 / span 2;
     }
   }
 
@@ -1581,25 +1793,24 @@ div.ButtonsRow:last-of-type {
   .mono-12;
 
   align-items: center;
-  border: 1px solid @color-secondary-action;
-  border-radius: @border-radius-default;
+  background: @color-page-background;
+  border: 1px solid @color-secondary-action-outline;
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
-  line-height: @size-14;
-  margin: @size-18 0;
-  padding: @size-12;
-  padding-right: @size-8;
   justify-content: space-between;
-  background: @color-dark-grey;
+  line-height: @size-14;
+  margin: @size-8 0 @size-18 0;
+  padding: @size-12 @size-9;
+  padding-right: 0;
+  width: 234px;
+  position: relative;
 
-  @media @breakpoint-mobile {
-    .mono-10;
-
-    height: @size-40;
-    line-height: @size-14;
-  }
+  > div {
+    margin-right: @size-12;
+    word-break: break-all;
+ }
 
   > button {
     .mono-10;
@@ -1608,6 +1819,7 @@ div.ButtonsRow:last-of-type {
     color: @color-inactive-text;
     display: flex;
     margin-left: @size-8;
+    margin-right: @size-12;
     padding: @size-5;
     text-transform: uppercase;
     color: @color-primary-text;
@@ -1616,11 +1828,41 @@ div.ButtonsRow:last-of-type {
     border-radius: @border-radius-default;
 
     @media @breakpoint-mobile {
-      line-height: @size-10;
       margin-left: @size-4;
       padding: @size-6;
     }
   }
+
+  > button:hover {
+    background: lighten(@color-secondary-action, 5%);
+  }
+}
+
+.ShowConfirmaiton:after {
+  content: '';
+
+  border-top: solid @size-12 @color-primary-text;
+  border-left: solid @size-12 transparent;
+  border-right: solid @size-12 transparent;
+  position: absolute;
+  right: @size-16;
+  top: -6px;
+}
+
+.ShowConfirmaiton:before {
+  .text-10;
+  content: 'Copied!';
+  color: @color-inactive-text;
+  position: absolute;
+  bottom: 100%;
+  background: @color-primary-text;
+  padding: @size-8 @size-12;
+  border-radius: @border-radius-default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  text-transform: capitalize;
 }
 
 .ActionRow {
@@ -1878,6 +2120,50 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.ModalUniverseSelector {
+  .Container;
+
+  max-width: 50rem;
+
+  > div:first-of-type {
+    align-items: flex-start;
+    display: flex;
+    padding: @size-24;
+
+    > h1 {
+      color: @color-primary-text;
+      margin-bottom: 0;
+    }
+  }
+
+  > p {
+    .text-12;
+
+    color: @color-secondary-text;
+    padding: 0 @size-24;
+  }
+
+  > main {
+    align-items: flex-start;
+    display: flex;
+
+    > div:first-of-type {
+      flex: 1;
+    }
+
+    > div:nth-of-type(2) {
+      flex: 1;
+      padding-left: @size-24;
+    }
+  }
+
+  @media @breakpoint-mobile-small {
+    > main {
+      display: block;
+    }
+  }
+}
+
 .ModalReporting {
   .Message;
 
@@ -1936,6 +2222,7 @@ div.ButtonsRow:last-of-type {
     > main {
       > div:first-of-type {
         padding: 0 @size-16;
+        min-height: min-content;
       }
 
       > div:nth-of-type(2) {
@@ -1943,8 +2230,95 @@ div.ButtonsRow:last-of-type {
       }
 
       > div:last-of-type {
+        min-height: min-content;
         padding: @size-16;
       }
+    }
+  }
+}
+
+.ModalGlobalChat {
+  background: @color-dark-grey;
+  bottom: @size-4;
+  position: fixed;
+  right: @size-22;
+  z-index: @mask-modal;
+
+  // Closed global chat window
+  > button {
+    .mono-9-bold;
+
+    align-items: center;
+    background: @color-module-background;
+    color: @color-primary-text;
+    display: flex;
+    flex-direction: row-reverse;
+    text-transform: uppercase;
+
+    > svg {
+      fill: @color-primary-text;
+      height: @size-12;
+      margin-left: @size-8;
+      transform: rotate(180deg);
+      width: @size-12;
+    }
+  }
+
+  // Open global chat window
+  > div {
+    background-color: @color-module-background;
+    border: 1px solid @color-dark-grey;
+    height: 100vh;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+
+    // Header section
+    > div:first-of-type {
+      align-items: center;
+      border-bottom: 1px solid @color-dark-grey;
+      display: flex;
+      flex-direction: row;
+      padding: @size-8 @size-8;
+
+      > span {
+        color: @color-primary-text;
+        margin: 0 0;
+        text-transform: uppercase;
+      }
+
+      > span:first-of-type {
+        .mono-11;
+
+        margin: 0 @size-8 0 0;
+      }
+
+      > span:nth-of-type(2) {
+        .mono-9;
+
+        background: fade(@color-open, 15%);
+        border-radius: 0.1875rem;
+        color: @color-open;
+        padding: 0 1px;
+      }
+
+      > button {
+        margin: 2px 2px 0 auto;
+
+        > svg {
+          height: @size-12;
+          fill: @color-primary-text;
+          margin: 0;
+          width: @size-12;
+        }
+      }
+    }
+
+    iframe {
+      border: 0px;
+      height: calc(100% - 37px);
+      width: 100%;
     }
   }
 }

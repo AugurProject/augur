@@ -69,6 +69,7 @@ export const AUTH_TYPES = {
 
 export const DEFAULT_AUTH_TYPE = REGISTER;
 const SECONDS_PER_DAY = 3600 * 24;
+export const SIXTY_DAYS = 60 * SECONDS_PER_DAY;
 
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
@@ -81,6 +82,7 @@ export const ACCOUNT_TYPES = {
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
+  WEB3WALLET: 'MetaMask / Web3', // Mobile Wallets + Extensions (MetaMask, Dapper, Trust, Coinbase)
   UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
 };
 
@@ -113,49 +115,6 @@ export const ERROR_TYPES = {
     subheader: 'Portis is only available on mainnet/kovan/localhost',
   },
 };
-
-const DEFAULT_ITEM_INDEX = 0;
-export const ITEMS = [
-  {
-    param: ACCOUNT_TYPES.PORTIS,
-    title: 'Portis',
-    icon: Portis,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.FORTMATIC,
-    title: 'Fortmatic',
-    icon: Fortmatic,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.METAMASK,
-    title: 'Metamask / Web 3 Provider',
-    icon: MetaMask,
-    type: WALLET_TYPE.SOFTWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.TREZOR,
-    title: 'Trezor',
-    icon: Trezor,
-    type: WALLET_TYPE.HARDWARE,
-  },
-  {
-    param: ACCOUNT_TYPES.LEDGER,
-    title: 'Ledger',
-    icon: Ledger,
-    type: WALLET_TYPE.HARDWARE,
-  },
-];
-if (!process.env.AUGUR_HOSTED) {
-  ITEMS.unshift({
-    param: ACCOUNT_TYPES.EDGE,
-    title: 'Edge',
-    icon: Edge,
-    type: WALLET_TYPE.SOFTWARE,
-  });
-}
-ITEMS[DEFAULT_ITEM_INDEX].default = true;
 
 // sidebar related constants
 export const MOBILE_MENU_STATES = {
@@ -492,6 +451,8 @@ export const PERIODS = [
 export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
+export const ONBOARDING_SEEN_KEY = 'onboardingSeen';
+
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
@@ -521,7 +482,10 @@ export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
 export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
+export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
+export const MODAL_TEST_BET = 'MODAL_TEST_BET';
+export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
@@ -530,10 +494,7 @@ export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
-export const MARKET_REVIEWS = 'marketReviews';
-export const MARKET_REVIEW_TRADE_SEEN = 'marketReviewTradeSeen';
 export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
-export const MODAL_MARKET_REVIEW_TRADE = 'MODAL_MARKET_REVIEW_TRADE';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
@@ -542,6 +503,8 @@ export const MODAL_LOGIN = 'MODAL_LOGIN';
 export const MODAL_SIGNUP = 'MODAL_SIGNUP';
 export const MODAL_CONNECT = 'MODAL_CONNECT';
 export const MODAL_LOADING = 'MODAL_LOADING';
+export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
+export const MODA_WALLET_ERROR = 'MODA_WALLET_ERROR';
 
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
@@ -767,12 +730,12 @@ export const VOLUME_ETH_SHARES = [
 
 // Account Summary - Your Overview
 export const YOUR_OVERVIEW_TITLE = 'Your Overview';
-export const PROFIT_LOSS_CHART_TITLE = 'Profit and Loss (DAI)';
+export const PROFIT_LOSS_CHART_TITLE = 'Profit and Loss';
 export const AVAILABLE_TRADING_BALANCE = 'Available Trading Balance';
 export const TOTAL_FROZEN_FUNDS = 'Total Frozen Funds';
 export const REP_BALANCE = 'REP Balance';
 export const REP_STAKED = 'REP Staked';
-export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value (DAI)';
+export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value';
 export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REP Balance ';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
 export const MY_TOTOL_REP_STAKED = 'My Total REP Staked';

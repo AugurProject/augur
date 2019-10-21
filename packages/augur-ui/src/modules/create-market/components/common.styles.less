@@ -3,30 +3,30 @@
 .Header {
   .text-24-bold;
 
-	color: @color-primary-text;
-	margin-bottom: @size-24;
+  color: @color-primary-text;
+  margin-bottom: @size-24;
 
-	@media @breakpoint-mobile-mid {
-		.text-18-bold;
-	}
+  @media @breakpoint-mobile-mid {
+    .text-18-bold;
+  }
 }
 
 .LargeHeader {
-	.text-30-bold;
+  .text-30-bold;
 
-	color: @color-primary-text;
-	margin-top: @size-48;
-	margin-bottom: @size-24;
+  color: @color-primary-text;
+  margin-top: @size-48;
+  margin-bottom: @size-24;
 }
 
 .MediumHeader {
-	.text-default;
+  .text-default;
 
-	color: @color-secondary-text;
+  color: @color-secondary-text;
 
-	> span {
-		.text-16-bold;
-	}
+  > span {
+    .text-16-bold;
+  }
 }
 
 .Subheaders {
@@ -49,7 +49,7 @@
     margin-bottom: @size-8;
 
     > span {
-    	margin-right: 3px;
+      margin-right: 3px;
     }
   }
 
@@ -61,72 +61,72 @@
 }
 
 .LargeSubheaders {
-	margin-bottom: @size-32;
+  margin-bottom: @size-32;
 
-	> h2 {
-		margin-bottom: 0;
-	}
+  > h2 {
+    margin-bottom: 0;
+  }
 
-	> p {
-		margin-top: @size-4;
-		margin-bottom: 0;
+  > p {
+    margin-top: @size-4;
+    margin-bottom: 0;
 
-		> span {
-	    	margin-right: 3px;
-	    }
-	}
+    > span {
+      margin-right: 3px;
+    }
+  }
 
-	&.Small {
-		> p {
-			margin-top: @size-2;
-		}
-	}
+  &.Small {
+    > p {
+      margin-top: @size-2;
+    }
+  }
 }
 
 .XLargeSubheaders {
-	flex-direction: column;
-    align-items: center;
-    display: flex;
-    margin: 64px 0;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  margin: 64px 0;
 
-	> span:first-of-type {
-		margin-bottom: @size-4;
-		margin-top: 0;
-	}
+  > span:first-of-type {
+    margin-bottom: @size-4;
+    margin-top: 0;
+  }
 
-	@media @breakpoint-mobile-mid {
-		align-items: flex-start;
-		padding: 0 @size-8;
-	}
+  @media @breakpoint-mobile-mid {
+    align-items: flex-start;
+    padding: 0 @size-8;
+  }
 }
 
 .SmallHeaderLink {
-	> span,
-	> button {
-		.text-14;
-	}
+  > span,
+  > button {
+    .text-14;
+  }
 
-	> span {
-		color: @color-secondary-text;
-	}
+  > span {
+    color: @color-secondary-text;
+  }
 
-	&.XSmall {
-		> span,
-		> button {
-			.text-12;
-		}
+  &.XSmall {
+    > span,
+    > button {
+      .text-12;
+    }
 
-		> span {
-			color: @color-primary-text;
-		}
-	}
+    > span {
+      color: @color-primary-text;
+    }
+  }
 
-	@media @breakpoint-mobile-mid {
-		> span,
-		> button {
-			.text-12;
-		}
-	}
+  @media @breakpoint-mobile-mid {
+    > span,
+    > button {
+      .text-12;
+    }
+  }
 }
 
 .NumberedList {
@@ -138,8 +138,8 @@
     margin-bottom: 0;
 
     > button {
-			display: flex;
-			margin-left: 44px;
+      display: flex;
+      margin-left: 44px;
 
       > svg {
         height: @size-16;
@@ -149,19 +149,19 @@
         > path {
           fill: @color-primary-text;
         }
-			}
+      }
 
-			&:hover:enabled {
-				> svg > path {
-					fill: @color-primary-text;
-				}
-			}
+      &:hover:enabled {
+        > svg > path {
+          fill: @color-primary-text;
+        }
+      }
 
-			&:disabled {
-				> svg > path {
-					fill: @color-inactive-text;
-				}
-			}
+      &:disabled {
+        > svg > path {
+          fill: @color-inactive-text;
+        }
+      }
     }
   }
 }
@@ -177,44 +177,53 @@
     color: @color-primary-text;
     flex: 0 0 auto;
     padding: @size-16;
-	}
+  }
 
-	> div {
-		width: 440px;
-	}
+  > div {
+    width: 440px;
+  }
 
   > button {
     margin: @size-16;
 
-		svg {
-			height: @size-10;
-			width: @size-10;
+    svg {
+      height: @size-10;
+      width: @size-10;
 
-			> path {
-				stroke: @color-primary-text;
-			}
-		}
-	}
+      > path {
+        stroke: @color-primary-text;
+      }
+    }
+  }
+
+  > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-error;
+    margin-top: @size-4;
+  }
 }
 
 .SmallSubheaders {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-	> h1 {
-		.mono-10;
+  > h1 {
+    .mono-10;
 
-		color: @color-secondary-text;
-		margin-bottom: @size-4;
-		text-transform: uppercase;
-	}
-
-	> span,
-	> div > span {
-		.text-16-medium;
-
-		color: @color-primary-text;
+    color: @color-secondary-text;
+    margin-bottom: @size-4;
+    text-transform: uppercase;
   }
+
+  > span,
+  > div > span,
+  > label > p {
+    .text-16-medium;
+
+    color: @color-primary-text;
+  }
+  
   > span:nth-of-type(2) {
     .text-14-medium;
 
@@ -223,118 +232,119 @@
 }
 
 .SmallSubheadersTooltip {
-	.SmallSubheaders;
+  .SmallSubheaders;
 
-	> h1 > label {
-      margin-bottom: @size-2;
-      margin-left: @size-4;
+  > h1 > label {
+    margin-bottom: @size-2;
+    margin-left: @size-4;
 
-      > svg {
-        width: @size-12;
-        height: @size-12;
-      }
-	}
+    > svg {
+      width: @size-12;
+      height: @size-12;
+    }
+  }
 
-	> span > label {
-      margin-bottom: 0;
-      margin-left: @size-5;
+  > span > label {
+    margin-bottom: 0;
+    margin-left: @size-5;
 
-      > svg {
-        width: @size-16;
-        height: @size-16;
-      }
-	}
+    > svg {
+      width: @size-16;
+      height: @size-16;
+    }
+  }
 
-	> h1,
-	> span {
-		align-items: center;
-		display: flex;
+  > h1,
+  > span {
+    align-items: center;
+    display: flex;
 
-		> label > svg > path {
-			fill: @color-primary-action;
-		}
-	}
+    > label > svg > path {
+      fill: @color-primary-action;
+    }
+  }
 }
 
 .OutcomesList {
-	.SmallSubheaders;
+  .SmallSubheaders;
 
-	> div {
-		display: flex;
-    	flex-direction: column;
+  > div {
+    display: flex;
+    flex-direction: column;
 
-    	> span:not(:last-of-type) {
-    		margin-bottom: @size-8;
-    	}
-	}
+    > span:not(:last-of-type) {
+      margin-bottom: @size-8;
+    }
+  }
 }
 
 .ExplainerBlock {
-	border: 1px solid @color-secondary-action-outline;
-	border-radius: @border-radius-extra-rounded;
-	padding: @size-16;
-	margin-bottom: @size-24;
-	display: flex;
-	flex-direction: column;
+  border: 1px solid @color-secondary-action-outline;
+  border-radius: @border-radius-extra-rounded;
+  padding: @size-16;
+  margin-bottom: @size-24;
+  display: flex;
+  flex-direction: column;
 
-	> h2 {
-		.text-18-bold;
+  > h2 {
+    .text-18-bold;
 
-		color: @color-primary-text;
-		margin-bottom: @size-8;
-	}
+    color: @color-primary-text;
+    margin-bottom: @size-8;
+  }
 
-	> p {
-		.text-14;
+  > p {
+    .text-14;
 
-		color: @color-secondary-text;
-		line-height: 140%;
-		margin: 0;
+    color: @color-secondary-text;
+    line-height: 140%;
+    margin: 0;
 
-		> span {
-			color: @color-primary-text;
-		}
-	}
+    > span {
+      color: @color-primary-text;
+    }
+  }
 
-	> p:not(:last-of-type) {
-		margin-bottom: @size-8;
-	}
+  > p:not(:last-of-type) {
+    margin-bottom: @size-8;
+  }
 }
 
 .ContentBlock {
-	flex-direction: column;
+  flex-direction: column;
   display: flex;
   background: @color-module-background;
-	border-radius: @border-radius-extra-rounded;
-	padding: @size-40;
+  border-radius: @border-radius-extra-rounded;
+  padding: @size-40;
 
-    > button {
-    	max-width: 200px;
-    }
+  > button {
+    max-width: 200px;
+  }
 
-    > button {
-    	margin-top: @size-24;
-    }
+  > button {
+    margin-top: @size-24;
+  }
 
-    &.NoDark {
-    	background: transparent;
-    	padding: 0;
-    }
+  &.NoDark {
+    background: transparent;
+    padding: 0;
+  }
 
-    &.Dark {
-    	background: @color-dark-grey;
-    	padding: @size-24;
-    }
+  &.Dark {
+    background: @color-dark-grey;
+    padding: @size-24;
+  }
 
-    @media @breakpoint-mobile-mid {
-    	padding: @size-24 @size-16;
-    }
+  @media @breakpoint-mobile-mid {
+    padding: @size-24 @size-16;
+    width: 100%;
+  }
 }
 
 .LineBreak {
-	border-bottom: 1px solid @color-dark-grey;
-	margin-bottom: @size-48;
-	padding-bottom: @size-48;
+  border-bottom: 1px solid @color-dark-grey;
+  margin-bottom: @size-48;
+  padding-bottom: @size-48;
 }
 
 .HasError {
@@ -342,5 +352,103 @@
 
   > section {
     margin-top: @size-12;
+  }
+}
+
+.DateTimeSelector {
+  > span:first-of-type {
+    display: flex;
+    justify-content: space-between;
+
+    @media @breakpoint-mobile-mid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: @size-12;
+
+      > div > div > div > div:first-of-type {
+        min-width: 100%;
+      }
+    }
+  }
+
+  > span:nth-of-type(2) {
+    border: 1px solid @color-dark-grey;
+    border-radius: @size-8;
+    display: flex;
+    padding: @size-20;
+    margin-top: @size-24;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      min-width: 280px;
+	  margin-right: @size-22;
+	  
+      > span:first-of-type {
+        .text-14-medium;
+
+        color: @color-secondary-text;
+      }
+
+      > span:nth-of-type(2) {
+        .text-16-medium;
+
+        color: @color-positive;
+        margin-top: @size-4;
+      }
+    }
+
+    > span {
+      .text-12;
+
+      color: @color-secondary-text;
+      line-height: 140%;
+    }
+  }
+}
+
+.QuestionBuilder {
+  > div:nth-of-type(2) {
+    .text-14-medium;
+
+    color: @color-primary-text;
+    background: @color-dark-grey;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+    line-height: @size-18;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0 @size-20 @size-12;
+    align-items: center;
+
+    > span {
+      margin-right: @size-4;
+      margin-top: @size-12;
+    }
+
+    > div {
+      margin: @size-12 @size-8 0;
+    }
+  }
+}
+
+.EstimatedStartSelector {
+  margin-top: @size-32;
+}
+
+.ResolutionRules {
+  margin-top: @size-24;
+
+  > span {
+    .text-12;
+
+    color: @color-secondary-text;
+    line-height: @size-20;
+    display: flex;
+    margin: @size-8 0;
+
+    > span:nth-of-type(2) {
+      margin-top: @size-24;
+    }
   }
 }

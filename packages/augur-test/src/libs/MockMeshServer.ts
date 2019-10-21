@@ -23,7 +23,6 @@ export interface StoredOrder {
     fillableTakerAssetAmount: string,
 }
 
-// TODO: When there is a browser compatible Mesh Relay we should use that as this is not entirely accurate
 /**
  * Sets up a new test WS server
  * @return A WS server

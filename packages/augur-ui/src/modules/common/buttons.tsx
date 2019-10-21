@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ASCENDING, DESCENDING, BUY } from 'modules/common/constants';
 import {
@@ -24,6 +23,8 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
+import { addCategoryStats } from 'modules/create-market/get-template';
+import { Getters } from '@augurproject/sdk/src';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -399,32 +400,27 @@ export const SortButton = (props: SortButtonProps) => (
 );
 
 export interface CategoryButtonsProps {
-  categoryData: object;
   action: Function;
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 export const CategoryButtons = ({
-  categoryData,
   action,
+  categoryStats = {},
 }: CategoryButtonsProps) => (
   <div className={Styles.CategoryButtons}>
     {MARKET_TEMPLATES.map((item, idx) => {
-      const categoryName = item.value.toLowerCase();
-      let body = null;
-      if (categoryData) {
-        const marketText =
-          categoryData[categoryName].markets === 1 ? 'Market' : 'Markets';
-        body = `${categoryData[categoryName].markets} ${marketText} | ${categoryData[categoryName].OI}`;
-      }
+      const hasData = Object.keys(categoryStats).length > 0;
+      const card = addCategoryStats(null, item, categoryStats);
       return (
-        <div key={idx} onClick={() => action(categoryName)}>
+        <div key={idx} onClick={() => action(card.value.toLowerCase())}>
           <div>{item.icon}</div>
           <div>{item.header}</div>
-          <div className={!categoryData ? Styles.loading : ''}>{body}</div>
+          <div className={!hasData ? Styles.loading : ''}>{hasData ? card.description : ''}</div>
         </div>
       );
     })}
-  </div>
+   </div>
 );
 
 export const FilterButton = (props: DefaultActionButtonProps) => (
@@ -460,13 +456,6 @@ const EtherscanLinkTSX = ({
     {!baseUrl && showNonLink && <span>{label}</span>}
   </span>
 );
-
-EtherscanLinkTSX.propTypes = {
-  baseUrl: PropTypes.string,
-  txhash: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  showNonLink: PropTypes.bool,
-};
 
 EtherscanLinkTSX.defaultProps = {
   baseUrl: null,

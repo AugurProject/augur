@@ -4,7 +4,6 @@ import { DerivedDB } from './DerivedDB';
 import { DB } from './DB';
 import { Subscriptions } from '../../subscriptions';
 import { augurEmitter } from '../../events';
-import { SubscriptionEventName } from "../../constants";
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -16,13 +15,12 @@ import {
   WORST_CASE_FILL,
 } from '../../constants';
 import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
-import { MarketCreatedDoc } from './SyncableFlexSearch';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
-import { Block } from "ethereumjs-blockstream";
+import { Block } from 'ethereumjs-blockstream';
 
 
 interface MarketOrderBookData {
@@ -45,10 +43,12 @@ export class MarketDB extends DerivedDB {
   private readonly docProcessMap = {
     'MarketCreated': this.processMarketCreated,
     'InitialReportSubmitted': this.processInitialReportSubmitted,
-    'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted,
+    'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted.bind(this),
     'MarketFinalized': this.processMarketFinalized,
     'MarketVolumeChanged': this.processMarketVolumeChanged,
     'MarketOIChanged': this.processMarketOIChanged,
+    'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
+    'MarketMigrated': this.processMarketMigrated,
   };
 
   constructor(db: DB, networkId: number, augur: Augur) {
@@ -58,7 +58,9 @@ export class MarketDB extends DerivedDB {
       'MarketOIChanged',
       'InitialReportSubmitted',
       'DisputeCrowdsourcerCompleted',
-      'MarketFinalized'
+      'MarketFinalized',
+      'MarketParticipantsDisavowed',
+      'MarketMigrated'
     ], ['market']);
 
     this.augur = augur;
@@ -78,10 +80,10 @@ export class MarketDB extends DerivedDB {
 
   syncFTS = async (): Promise<void> => {
     if (Augur.syncableFlexSearch) {
-      const marketDocs = await this.allDocs();
-      let marketCreatedDocs: any[] = marketDocs.rows ? marketDocs.rows.map(row => row.doc) : [];
-      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
-      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+      const allDocs = await this.allDocs();
+      let marketDocs: any[] = allDocs.rows ? allDocs.rows.map(row => row.doc) : [];
+      marketDocs = marketDocs.slice(0, marketDocs.length - 1);
+      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
   }
 
@@ -163,7 +165,7 @@ export class MarketDB extends DerivedDB {
         numOutcomes,
         spread,
       });
-      marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, "0");
+      marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
     }
 
     return marketOrderBookData;
@@ -238,9 +240,6 @@ export class MarketDB extends DerivedDB {
   }
 
   private processMarketCreated(log: ParsedLog): ParsedLog {
-    if (Augur.syncableFlexSearch) {
-      Augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketCreatedDoc]);
-    }
     log['reportingState'] = MarketReportingState.PreReporting;
     log['invalidFilter'] = false;
     log['marketOI'] = '0x00';
@@ -249,15 +248,24 @@ export class MarketDB extends DerivedDB {
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = false;
     log['liquidity'] = {
-      0: "000000000000000000000000000000",
-      10: "000000000000000000000000000000",
-      15: "000000000000000000000000000000",
-      20: "000000000000000000000000000000",
-      100: "000000000000000000000000000000"
+      0: '000000000000000000000000000000',
+      10: '000000000000000000000000000000',
+      15: '000000000000000000000000000000',
+      20: '000000000000000000000000000000',
+      100: '000000000000000000000000000000'
     }
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
     log['lastTradedTimestamp'] = 0;
+    try {
+      log['extraInfo'] = JSON.parse(log['extraInfo']);
+      log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+    } catch (err) {
+      log['extraInfo'] = {};
+    }
+    if (Augur.syncableFlexSearch) {
+      Augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
+    }
     return log;
   }
 
@@ -272,7 +280,7 @@ export class MarketDB extends DerivedDB {
   private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
     const pacingOn: boolean = log['pacingOn'];
     log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
-    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
     log['totalRepStakedInMarket'] = padHex(log['totalRepStakedInMarket']);
     return log;
   }
@@ -294,17 +302,29 @@ export class MarketDB extends DerivedDB {
     return log;
   }
 
+  private processMarketParticipantsDisavowed(log: ParsedLog): ParsedLog {
+    log['disavowed'] = true;
+    return log;
+  }
+
+  private processMarketMigrated(log: ParsedLog): ParsedLog {
+    log['universe'] = log['newUniverse'];
+    return log;
+  }
+
   processNewBlock = async (block: Block): Promise<void> => {
     const timestamp = (await this.augur.getTimestamp()).toNumber();
-    await this.processTimestamp(timestamp, parseInt(block.number))
-  }
+    await this.processTimestamp(timestamp, Number(block.number))
+  };
 
   processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
     const timestamp = new BigNumber(log.newTimestamp).toNumber();
     await this.processTimestamp(timestamp, log.blockNumber)
-  }
+  };
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
+    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
+
     const eligibleMarketDocs = await this.find({
       selector: {
         reportingState: { $in: [

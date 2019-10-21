@@ -18,8 +18,8 @@ interface TradingFormProps {
   allowanceBigNumber: BigNumber;
   isConnectionTrayOpen: boolean;
   market: MarketData;
-  marketReviewTradeSeen: boolean;
-  marketReviewTradeModal: Function;
+  disclaimerSeen: boolean;
+  disclaimerModal: Function;
   selectedOrderProperties: object;
   selectedOutcomeId: number;
   sortedOutcomes: OutcomeFormatted[];
@@ -34,6 +34,9 @@ interface TradingFormProps {
   updateLiquidity?: Function;
   initialLiquidity?: boolean;
   orderBook: OutcomeOrderBook;
+  addFundsModal: Function;
+  loginModal: Function;
+  signupModal: Function;
 }
 
 interface TradingFormState {
@@ -96,12 +99,15 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       updateTradeShares,
       toggleConnectionTray,
       onSubmitPlaceTrade,
-      marketReviewTradeSeen,
-      marketReviewTradeModal,
+      disclaimerSeen,
+      disclaimerModal,
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
       orderBook,
+      addFundsModal,
+      loginModal,
+      signupModal,
     } = this.props;
     const s = this.state;
 
@@ -111,7 +117,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
     switch (true) {
       case !isLogged:
-        initialMessage = 'Connect a wallet to place an order.';
+        initialMessage = 'Login or Signup to place an order.';
         break;
       case isLogged && !hasFunds:
         initialMessage = 'Add funds to begin trading.';
@@ -142,8 +148,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           updateTradeCost={updateTradeCost}
           updateTradeShares={updateTradeShares}
           onSubmitPlaceTrade={onSubmitPlaceTrade}
-          marketReviewTradeModal={marketReviewTradeModal}
-          marketReviewTradeSeen={marketReviewTradeSeen}
+          disclaimerModal={disclaimerModal}
+          disclaimerSeen={disclaimerSeen}
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
           orderBook={orderBook}
@@ -152,20 +158,25 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           <div>
             {initialMessage && <p>{initialMessage}</p>}
             {!isLogged && (
-              <PrimaryButton
-                id='login-button'
-                action={() => toggleConnectionTray(!isConnectionTrayOpen)}
-                text='Connect a Wallet'
-              />
+              <div>
+                <PrimaryButton
+                  id='login-button'
+                  action={() => loginModal()}
+                  text='Login'
+                />
+                <PrimaryButton
+                  id='login-button'
+                  action={() => signupModal()}
+                  text='Signup'
+                />
+              </div>
             )}
             {!hasFunds && isLogged && (
-              <Link to={makePath(ACCOUNT_SUMMARY)}>
-                <PrimaryButton
-                  id='add-funds'
-                  action={() => {}}
-                  text='Add Funds'
-                />
-              </Link>
+              <PrimaryButton
+                id='add-funds'
+                action={() => addFundsModal()}
+                text='Add Funds'
+              />
             )}
           </div>
         )}

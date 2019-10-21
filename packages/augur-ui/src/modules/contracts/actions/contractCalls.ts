@@ -104,10 +104,18 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string): Promise<BigNumber> {
+export async function getRepBalance(
+  universe: string,
+  address: string
+): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
-  const RepToken = contracts.getReputationToken();
-  const balance = await RepToken.balanceOf_(address);
+  const networkId = getNetworkId();
+  const repToken = await contracts
+    .universeFromAddress(universe)
+    .getReputationToken_();
+  const balance = await contracts
+    .reputationTokenFromAddress(repToken, networkId)
+    .balanceOf_(address);
   return balance;
 }
 
@@ -156,9 +164,11 @@ export async function getRepThresholdForPacing() {
   return threshold;
 }
 
-export async function getDisputeThresholdForFork() {
+export async function getDisputeThresholdForFork(universeId: string) {
   const { contracts } = augurSdk.get();
-  const disputeThresholdForFork = await contracts.universe.getDisputeThresholdForFork_();
+  const disputeThresholdForFork = await contracts
+    .universeFromAddress(universeId)
+    .getDisputeThresholdForFork_();
   return createBigNumber(disputeThresholdForFork);
 }
 
@@ -168,27 +178,35 @@ export async function getOpenInterestInAttoCash() {
   return openInterestInAttoCash;
 }
 
-export async function getForkingMarket() {
+export async function getForkingMarket(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkingMarket = await contracts.universe.getForkingMarket_();
+  const forkingMarket = await contracts
+    .universeFromAddress(universeId)
+    .getForkingMarket_();
   return forkingMarket;
 }
 
-export async function getForkEndTime() {
+export async function getForkEndTime(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkEndTime = await contracts.universe.getForkEndTime_();
+  const forkEndTime = await contracts
+    .universeFromAddress(universeId)
+    .getForkEndTime_();
   return forkEndTime;
 }
 
-export async function getForkReputationGoal() {
+export async function getForkReputationGoal(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkReputationGoal = await contracts.universe.getForkReputationGoal_();
+  const forkReputationGoal = await contracts
+    .universeFromAddress(universeId)
+    .getForkReputationGoal_();
   return forkReputationGoal;
 }
 
-export async function getWinningChildUniverse() {
+export async function getWinningChildUniverse(universeId: string) {
   const { contracts } = augurSdk.get();
-  const winningChildUniverse = await contracts.universe.getWinningChildUniverse_();
+  const winningChildUniverse = await contracts
+    .universeFromAddress(universeId)
+    .getWinningChildUniverse_();
   return winningChildUniverse;
 }
 
@@ -270,15 +288,42 @@ export async function redeemUserStakesEstimateGas(
   );
 }
 
+export async function forkAndRedeem(reportingParticipantsContracts: string) {
+  const { contracts } = augurSdk.get();
+  try {
+    contracts
+      .getReportingParticipant(reportingParticipantsContracts)
+      .forkAndRedeem();
+  } catch (e) {
+    console.error(
+      'Could not fork and redeem sigle reporting participant contract',
+      e
+    );
+  }
+}
+
 export async function redeemUserStakes(
   reportingParticipantsContracts: string[],
   disputeWindows: string[]
 ) {
   const { contracts } = augurSdk.get();
-  return contracts.redeemStake.redeemStake(
-    reportingParticipantsContracts,
-    disputeWindows
-  );
+  try {
+    contracts.redeemStake.redeemStake(
+      reportingParticipantsContracts,
+      disputeWindows
+    );
+  } catch (e) {
+    console.error('Could not redeem REP', e);
+  }
+}
+
+export async function disavowMarket(marketId: string) {
+  const { contracts } = augurSdk.get();
+  try {
+    contracts.marketFromAddress(marketId).disavowCrowdsourcers();
+  } catch (e) {
+    console.error('Could not disavow market', marketId, e);
+  }
 }
 
 export interface doReportDisputeAddStake {
@@ -322,7 +367,11 @@ export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
-  return market.contribute(payoutNumerators, createBigNumber(dispute.attoRepAmount), dispute.description);
+  return market.contribute(
+    payoutNumerators,
+    createBigNumber(dispute.attoRepAmount),
+    dispute.description
+  );
 }
 
 function getMarket(marketId) {
@@ -670,7 +719,10 @@ export async function migrateThroughOneForkEstimateGas(
 ): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(marketId);
-  return market.migrateThroughOneFork_estimateGas(payoutNumerators, description);
+  return market.migrateThroughOneFork_estimateGas(
+    payoutNumerators,
+    description
+  );
 }
 
 export async function migrateThroughOneFork(
@@ -680,14 +732,24 @@ export async function migrateThroughOneFork(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(marketId);
-  return market.migrateThroughOneFork(payoutNumerators, description);
+  try {
+    market.migrateThroughOneFork(payoutNumerators, description);
+  } catch (e) {
+    console.error('Could not migrate market', e);
+  }
 }
 
-export async function reportAndMigrateMarket(migration: doReportDisputeAddStake) {
+export async function reportAndMigrateMarket(
+  migration: doReportDisputeAddStake
+) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
   const payoutNumerators = getPayoutNumerators(migration);
-  return market.migrateThroughOneFork(payoutNumerators, migration.description);
+  try {
+    market.migrateThroughOneFork(payoutNumerators, migration.description);
+  } catch (e) {
+    console.error('Could not report and migrate market', e);
+  }
 }
 
 export async function migrateRepToUniverseEstimateGas(
@@ -705,8 +767,12 @@ export async function migrateRepToUniverseEstimateGas(
 export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   const { contracts } = augurSdk.get();
   const payoutNumerators = getPayoutNumerators(migration);
-  return contracts.reputationToken.migrateOutByPayout(
-    payoutNumerators,
-    createBigNumber(migration.attoRepAmount)
-  );
+  try {
+    contracts.reputationToken.migrateOutByPayout(
+      payoutNumerators,
+      createBigNumber(migration.attoRepAmount)
+    );
+  } catch (e) {
+    console.error('Could not migrate REP to universe', e);
+  }
 }

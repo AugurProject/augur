@@ -22,17 +22,17 @@ const getPointRangeInfo = data => {
   };
 };
 
+const positiveColor = '#00F1C4';
 const negativeColor = '#FF7D5E';
-const positiveColor = '#09CFE1';
 
 const getGradientColor = data => {
   const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
 
   if (hasNegativePoints && !hasPositivePoints) {
-    return [[0, negativeColor], [1, '#211A32']];
+    return [[0, negativeColor], [1, 'transparent']];
   }
 
-  return [[0, positiveColor], [1, '#211A32']];
+  return [[0, positiveColor], [1, 'transparent']];
 };
 
 const getLineColor = data => {
@@ -86,7 +86,7 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
       },
       chart: {
         type: 'areaspline',
-        height: 100,
+        height: 120,
       },
       credits: {
         enabled: false,
@@ -116,8 +116,9 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
         showLastLabel: true,
         endOnTick: false,
         startOnTick: false,
+        tickLength: 4,
         labels: {
-          style: Styles.Labels,
+          style: null,
           format: '{value:%b %d}',
           formatter() {
             if (this.isLast) return 'Today';
@@ -135,9 +136,10 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
         startOnTick: false,
         endOnTick: false,
         labels: {
-          format: "{value:.4f} <span class='dai-label'>DAI</span>",
+          style: null,
+          format: '${value:.2f}',
           formatter() {
-            if (this.value === 0) return "0 <span class='dai-label'>DAI</span>";
+            if (this.value === 0) return '$0';
             return this.axis.defaultLabelFormatter.call(this);
           },
           align: 'left',
@@ -173,11 +175,20 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
       )
     );
 
-    const max = formatEther(bnMax, { decimalsRounded: 4 }).formattedValue;
-    const min = formatEther(bnMin, { decimalsRounded: 4 }).formattedValue;
-    const tickInterval = bnMax.abs().gt(bnMin.abs())
-      ? formatEther(bnMax.abs()).formattedValue
-      : formatEther(bnMin.abs()).formattedValue;
+    const max = formatEther(bnMax.gt(0) ? bnMax.times(1.05) : bnMax, {
+      decimalsRounded: 4,
+    }).formattedValue;
+    const min = formatEther(bnMin.lt(0) ? bnMin.times(1.05) : bnMin, {
+      decimalsRounded: 4,
+    }).formattedValue;
+    const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
+    const tickInterval = formatEther(
+      bnMax
+        .abs()
+        .plus(bnMin.abs())
+        .div(intervalDivision),
+      { decimalsRounded: 4 }
+    ).formattedValue;
 
     return {
       tickInterval,
@@ -188,14 +199,13 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
 
   buidOptions(data: number[][]) {
     const { width } = this.props;
-
     const options = this.getDefaultOptions(data);
     const intervalInfo = this.calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
 
     options.chart = {
       ...options.chart,
-      width: width - 10,
+      width,
     };
 
     if (Array.isArray(options.xAxis)) {

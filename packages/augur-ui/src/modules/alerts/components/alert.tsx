@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import moment from 'moment';
 import classNames from 'classnames';
 
 import { Close } from 'modules/common/icons';
@@ -12,6 +9,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 
 interface AlertProps {
   id: string;
+  uniqueId: string;
   title: string;
   description?: string;
   details?: string;
@@ -20,7 +18,6 @@ interface AlertProps {
   removeAlert: Function;
   seen: boolean;
   timestampInMilliseconds: number;
-  status: string;
   toggleAlerts: Function;
   noShow?: boolean;
   showToast?: boolean;

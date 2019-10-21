@@ -1,13 +1,15 @@
+import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import isAddress from 'modules/auth/helpers/is-address';
+import { createBigNumber } from 'utils/create-big-number';
+import { ZERO } from './constants';
 import {
-  INVALID_OUTCOME
-} from "modules/create-market/constants";
-import isAddress from "modules/auth/helpers/is-address";
-import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "./constants";
+  TemplateInputType,
+  ValidationType,
+} from 'modules/create-market/get-template';
 
 export function isFilledString(value, readable, message) {
-  if (value && value.trim().length > 0 && value !== "") return "";
-  return message ? message : readable + " is required";
+  if (value && value.trim().length > 0 && value !== '') return '';
+  return message ? message : readable + ' is required';
 }
 
 export function isMaxLength(value, maxLength) {
@@ -15,145 +17,150 @@ export function isMaxLength(value, maxLength) {
 }
 
 export function isFilledNumber(value, readable, message) {
-  if (value !== null && !checkValidNumber(value)) return "";
-  return message ? message : readable + " is required";
+  if (value !== null && !checkValidNumber(value)) return '';
+  return message ? message : readable + ' is required';
 }
 
 export function isBetween(value, readable, min, max) {
   if (!checkValidNumbers([value])) {
-    return "";
+    return '';
   }
 
   if (createBigNumber(value).gt(createBigNumber(max))) {
-    return readable + " must be less than " + max;
+    return readable + ' must be less than ' + max;
   } else if (createBigNumber(value).lt(createBigNumber(min))) {
-    return readable + " must be more than " + min;
+    return readable + ' must be more than ' + min;
   }
-  return "";
+  return '';
 }
 
 export function isLessThan(value, readable, target, message) {
   if (!checkValidNumbers([value, target])) {
-    return "";
+    return '';
   }
 
   if (target !== null && createBigNumber(value).gte(createBigNumber(target))) {
     return message ? message : 'Must be less than ' + target;
   }
-  return "";
+  return '';
 }
 
 export function isValidFee(value, readable, fee) {
   if (!checkValidNumbers([value, fee])) {
-    return "";
+    return '';
   }
 
   if (createBigNumber(value).eq(ZERO) && createBigNumber(fee).gt(ZERO)) {
     return 'Market creator fee must be greater than 0% when affiliate fee is greater than 0%';
   }
-  return "";
+  return '';
 }
 
 export function dividedBy(value, readable, min, max) {
   if (!checkValidNumbers([value, min, max])) {
-    return "";
+    return '';
   }
 
   const range = createBigNumber(max).minus(createBigNumber(min));
   if (range.mod(value).eq(ZERO)) {
-    return "";
+    return '';
   }
   return `Price range needs to be divisible by ${readable.toLowerCase()}`;
 }
 
 export function isMoreThan(value, readable, target) {
   if (!checkValidNumbers([value, target])) {
-    return "";
+    return '';
   }
 
   if (target !== null && createBigNumber(value).lte(createBigNumber(target))) {
     return 'Max can\'t be lower than min';
   }
-  return "";
+  return '';
 }
 
 export function dateGreater(value, target, message) {
   if (!checkValidNumbers([value, target])) {
-    return "";
+    return '';
   }
 
   if (value !== null && createBigNumber(value).lt(createBigNumber(target))) {
     return message;
   }
-  return "";
+  return '';
 }
 
 export function checkCategoriesArray(value) {
-  let errors = ["", "", ""];
-  if (value[0] === "") {
-    errors[0] = "Enter a category";
+  let errors = ['', '', ''];
+  if (value[0] === '') {
+    errors[0] = 'Enter a category';
   }
-  if (value[1] === "") {
-    errors[1] = "Enter a sub-category";
+  if (value[1] === '') {
+    errors[1] = 'Enter a sub-category';
   }
 
-  if (errors[0] !== "" || errors[1] !== "") {
+  if (errors[0] !== '' || errors[1] !== '') {
     return errors;
   } else {
-    return "";
+    return '';
   }
 }
 
 export function moreThanDecimals(value, decimals) {
-  if (Math.floor(value) === value) return "";
-  const splitValue = String(value).split(".");
-  const decimalsValue  = splitValue.length > 1 ? splitValue[1].length : 0;
-  if (decimalsValue > decimals) return "Can't enter more than " + decimals + " decimal points";
-  return "";
+  if (Math.floor(value) === value) return '';
+  const splitValue = String(value).split('.');
+  const decimalsValue = splitValue.length > 1 ? splitValue[1].length : 0;
+  if (decimalsValue > decimals)
+    return "Can't enter more than " + decimals + ' decimal points';
+  return '';
 }
 
 export function checkAddress(value) {
-  if (!isAddress(value)) return "Enter a valid address";
-  return "";
+  if (!isAddress(value)) return 'Enter a valid address';
+  return '';
 }
 
 export function checkOutcomesArray(value) {
-  const validOutcomes = value.filter(outcome => outcome && outcome !== "");
+  const validOutcomes = value.filter(outcome => outcome && outcome !== '');
   if (validOutcomes.length < 2) {
     if (!validOutcomes.length) {
-      return ["Enter an outcome", "Enter an outcome"];
-    } else if (validOutcomes.length === 1 && (!value[0] || value[0] === "")) {
-      return ["Enter an outcome"];
+      return ['Enter an outcome', 'Enter an outcome'];
+    } else if (validOutcomes.length === 1 && (!value[0] || value[0] === '')) {
+      return ['Enter an outcome'];
     } else {
-      return ["", "Enter an outcome"];
+      return ['', 'Enter an outcome'];
     }
   } else {
-    const errors = Array(value.length).fill("");
-    const invalid = value.findIndex(outcome => outcome.toLowerCase() === INVALID_OUTCOME.toLowerCase());
-    if (invalid !== -1) errors[invalid] = ["Can't enter \"Market is Invalid\" as an outcome"];
+    const errors = Array(value.length).fill('');
+    const invalid = value.findIndex(
+      outcome => outcome.toLowerCase() === INVALID_OUTCOME.toLowerCase()
+    );
+    if (invalid !== -1)
+      errors[invalid] = ['Can\'t enter "Market is Invalid" as an outcome'];
 
     let dupes = {};
-    value.forEach((outcome,index) => {
-      dupes[outcome] = dupes[outcome] || [];
-      dupes[outcome].push(index);
+    value.forEach((outcome, index) => {
+      dupes[outcome.toLowerCase()] = dupes[outcome.toLowerCase()] || [];
+      dupes[outcome.toLowerCase()].push(index);
     });
     Object.keys(dupes).map(key => {
       if (dupes[key].length > 1) {
-        errors[dupes[key][dupes[key].length - 1]] = "Can't enter a duplicate outcome";
+        errors[dupes[key][dupes[key].length - 1]] =
+          "Can't enter a duplicate outcome";
       }
-    })
-    if (errors.filter(error => error !== "").length > 0) return errors;
-    return "";
+    });
+    if (errors.filter(error => error !== '').length > 0) return errors;
+    return '';
   }
 }
 
 export function isPositive(value) {
   if (value && value < 0) return "Can't enter negative number";
-  return "";
+  return '';
 }
 
 export function checkValidNumber(value) {
-  return isNaN(value) || value === "" || value === "-";
+  return isNaN(value) || value === '' || value === '-';
 }
 
 function checkValidNumbers(values) {
@@ -162,4 +169,44 @@ function checkValidNumbers(values) {
     if (checkValidNumber(value)) valid = false;
   });
   return valid;
+}
+
+export function checkForUserInputFilled(inputs) {
+  const errors = inputs.map(input => {
+    if (
+      input.validationType === ValidationType.WHOLE_NUMBER &&
+      moreThanDecimals(input.userInput, 0)
+    ) {
+      return 'Must be a whole number';
+    } else if (
+      input.validationType === ValidationType.NUMBER &&
+      checkValidNumber(input.userInput)
+    ) {
+      return 'Must enter a valid number';
+    } else if (
+      (input.type === TemplateInputType.TEXT ||
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+        input.type === TemplateInputType.DATEYEAR ||
+        input.type === TemplateInputType.DROPDOWN ||
+        input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
+      (!input.userInput || input.userInput === '')
+    ) {
+      return 'Input is required';
+    } else if (input.type === TemplateInputType.DATETIME) {
+      if (input.userInputObject) {
+        let validations = {};
+        if (input.userInputObject.hour === null) {
+          validations.hour = 'Choose a time';
+        }
+        if (input.userInputObject.endTime === null) {
+          validations.setEndTime = 'Choose a date';
+        }
+        return validations;
+      } else {
+        return '';
+      }
+    } else return '';
+  });
+
+  return errors;
 }

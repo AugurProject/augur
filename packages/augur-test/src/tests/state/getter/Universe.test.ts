@@ -349,7 +349,8 @@ describe('State API :: Universe :: ', () => {
     });
 
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
+      parentUniverseId: NULL_ADDRESS,
       outcomeName: 'Genesis',
       usersRep: johnRep.toString(),
       totalRepSupply: totalRep.toString(),
@@ -370,7 +371,8 @@ describe('State API :: Universe :: ', () => {
     });
 
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
+      parentUniverseId: NULL_ADDRESS,
       outcomeName: 'Genesis',
       usersRep: bobRep.toString(), // aka zero
       totalRepSupply: totalRep.toString(),
@@ -392,7 +394,8 @@ describe('State API :: Universe :: ', () => {
       account: john.account.publicKey,
     });
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
+      parentUniverseId: NULL_ADDRESS,
       outcomeName: 'Genesis',
       usersRep: johnRep.toString(),
       totalRepSupply: totalRep.toString(),
@@ -407,16 +410,17 @@ describe('State API :: Universe :: ', () => {
     console.log('Fork to see how that affects the children.');
     const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
     await fork(john, marketInfo);
-    const SOME_REP = new BigNumber(1e18).times(6e7); // from fork()
-    johnRep = johnRep.plus(SOME_REP);
-    totalRep = totalRep.plus(SOME_REP);
-
-    const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
-    // Create child universe
-    const childUniverseRep = new BigNumber(1e21);
-    await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep);
+    // The fork script faucets a lot of REP then uses up a difficult-to-predict amount.
+    johnRep = await repToken.balanceOf_(john.account.publicKey);
+    totalRep = await repToken.totalSupply_();
+
+    const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
+    const childUniverseRep = johnRep;
+    // Call twice because there's a bug when the first migration meets the goal.
+    await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1));
+    await repToken.migrateOutByPayout(invalidNumerators, childUniverseRep.minus(1));
     johnRep = johnRep.minus(childUniverseRep);
     totalRep = totalRep.minus(childUniverseRep);
 
@@ -427,13 +431,16 @@ describe('State API :: Universe :: ', () => {
     });
 
     expect(universeChildren).toMatchObject({
-      address: genesisUniverse.address,
+      id: genesisUniverse.address,
       outcomeName: 'Genesis',
+      usersRep: '0', // all all migrated out
       totalRepSupply: totalRep.toString(),
       totalOpenInterest: '0',
       numberOfMarkets: 1,
+      parentUniverseId: NULL_ADDRESS,
       children: [
         {
+          parentUniverseId: genesisUniverse.address,
           outcomeName: 'Invalid',
           usersRep: childUniverseRep.toString(),
           totalRepSupply: childUniverseRep.toString(),
@@ -445,11 +452,7 @@ describe('State API :: Universe :: ', () => {
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
     expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
-    expect(universeChildren.children[0].address).not.toEqual(NULL_ADDRESS);
-    // John's REP is hard to calculate because contributing during a fork has caps
-    // that we're exceeding, so it rounds down to the cap.
-    expect(Number(universeChildren.usersRep)).toBeGreaterThan(0);
-    expect(Number(universeChildren.usersRep)).toBeLessThan(totalRep.toNumber());
+    expect(universeChildren.children[0].id).not.toEqual(NULL_ADDRESS);
   });
 
 });

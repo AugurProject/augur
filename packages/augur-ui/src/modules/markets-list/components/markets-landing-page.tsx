@@ -15,9 +15,10 @@ import { CategorySelector } from 'modules/common/selection';
 
 interface MarketsViewProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   markets: MarketData[];
   location: object;
-  history: object;
+  history: History;
   isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
   loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
@@ -28,12 +29,12 @@ interface MarketsViewProps {
   updateMarketsListMeta: Function;
   categoryData: object;
   signupModal: Function;
+  categoryStats: Getters.Markets.CategoryStats;
 }
 
 interface MarketsViewState {
   marketCategory: string;
   filterSortedMarkets: string[];
-  marketStats: object;
 }
 
 export default class MarketsView extends Component<
@@ -48,7 +49,6 @@ export default class MarketsView extends Component<
     this.state = {
       marketCategory: 'all',
       filterSortedMarkets: [],
-      marketStats: null,
     };
   }
 
@@ -60,16 +60,10 @@ export default class MarketsView extends Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { isConnected, categoryData, isSearching } = this.props;
+    const { isConnected } = this.props;
 
     if (isConnected !== prevProps.isConnected) {
       this.updateFilteredMarkets();
-    }
-
-    if (prevProps.isSearching && !isSearching && this.state.marketCategory === 'all') {
-      this.setState({
-        marketStats: categoryData
-      });
     }
   }
 
@@ -101,6 +95,7 @@ export default class MarketsView extends Component<
     const {
       history,
       isLogged,
+      restoredAccount,
       isMobile,
       loadMarketsInfoIfNotLoaded,
       location,
@@ -108,6 +103,7 @@ export default class MarketsView extends Component<
       toggleFavorite,
       signupModal,
       isSearching,
+      categoryStats,
     } = this.props;
 
     return (
@@ -125,7 +121,7 @@ export default class MarketsView extends Component<
           The world’s most accessible, no-limit betting platform.
         </div>
 
-        {!isLogged ? <div>
+        {!isLogged && !restoredAccount ? <div>
           <PrimaryButton
             action={() => signupModal()}
             text='Signup to start betting'
@@ -139,7 +135,7 @@ export default class MarketsView extends Component<
               search: `category=${categoryName}`,
             });
           }}
-          categoryData={this.state.marketStats}
+          categoryStats={categoryStats}
         />
 
         <div>
@@ -157,7 +153,6 @@ export default class MarketsView extends Component<
 
         <MarketsList
           testid='markets'
-          isLogged={isLogged}
           markets={markets}
           showPagination={false}
           filteredMarkets={this.state.filterSortedMarkets}

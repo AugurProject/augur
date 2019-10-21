@@ -1,5 +1,4 @@
 import React, { Component, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -23,7 +22,6 @@ import {
   Arrow,
   LoadingEllipse,
 } from 'modules/common/icons';
-import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import {
   CUSTOM,
@@ -42,10 +40,7 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown, NameValuePair } from 'modules/common/selection';
-import {
-  getTimezones,
-  UTC_Default,
-} from 'utils/get-timezones';
+import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues } from 'modules/types';
@@ -156,30 +151,37 @@ interface TimezoneDropdownProps {
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
-  const [value, setValue] = useState(UTC_Default);
+  const [value, setValue] = useState(
+    props.timezone ? props.timezone : UTC_Default
+  );
   const [timezones, setTimezones] = useState(getTimezones(props.timestamp));
   useEffect(() => {
-    props.timezone ? setValue(props.timezone): setValue(UTC_Default);
+    props.timezone ? setValue(props.timezone) : setValue(UTC_Default);
     setTimezones(getTimezones(props.timestamp));
   }, [props.timezone, props.timestamp]);
+
   return (
     <section className={Styles.Timezones}>
       <TextInput
-        value={value}
+        value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
         autoCompleteList={timezones.timezones}
         onChange={() => {}}
         onAutoCompleteListSelected={timezone => {
           const parse = /\(UTC (.*)\)/i;
-          const offset = timezone.match(parse)[1];
-          const offsetName = timezone.split(')')[1].trim();
-          props.onChange(offsetName, offset, timezone);
+          if (timezone !== '') {
+            const offset = timezone.match(parse)[1];
+            const offsetName = timezone.split(')')[1].trim();
+            props.onChange(offsetName, offset, timezone);
+          } else {
+            props.onChange(null, 0, null);
+          }
           setValue(timezone);
         }}
       />
     </section>
   );
-}
+};
 
 interface ErrorProps {
   header?: string;
@@ -227,7 +229,9 @@ interface RadioGroupProps {
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   stake?: Getters.Markets.StakeDetails;
-  userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[] | [];
+  userCurrentDisputeRound:
+    | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
+    | [];
   hideRadioButton?: boolean;
 }
 
@@ -250,6 +254,7 @@ export interface RadioBarProps extends BaseRadioButtonProp {
   secondTextValue?: string;
   secondErrorMessage?: string;
   secondHeader?: string;
+  multiSelect?: boolean;
 }
 
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
@@ -293,6 +298,8 @@ interface CategoryMultiSelectProps {
   initialValues?: string[];
   updateSelection: Function;
   errorMessage?: string[];
+  disableCategory?: boolean;
+  disableSubCategory?: boolean;
 }
 
 interface CategoryMultiSelectState {
@@ -314,6 +321,7 @@ interface DropdownInputGroupProps {
   showText: boolean;
   showIcon: boolean;
   showDropdown: boolean;
+  disabled: boolean;
 }
 
 const defaultMultiSelect = (amount: number, justStrings = false) => {
@@ -446,6 +454,7 @@ export const DropdownInputGroup = ({
   showText,
   showIcon,
   showDropdown,
+  disabled
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -456,6 +465,7 @@ export const DropdownInputGroup = ({
         onChange={onChangeDropdown}
         options={options}
         errorMessage={errorMessage}
+        disabled={disabled}
       />
     )}
     {showText && (
@@ -588,7 +598,7 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
-    const { errorMessage } = this.props;
+    const { errorMessage, disableCategory, disableSubCategory } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -615,28 +625,29 @@ export class CategoryMultiSelect extends Component<
       <ul className={Styles.CategoryMultiSelect}>
         <DropdownInputGroup
           defaultValue={selected[0]}
-          staticLabel='Primary Category'
+          staticLabel="Primary Category"
           onChangeDropdown={choice => this.onChangeDropdown(choice, 0)}
           options={primaryOptions}
-          errorMessage={errorMessage[0]}
+          errorMessage={errorMessage && errorMessage[0]}
           value={values[0]}
-          placeholder='Custom Primary Category'
+          placeholder="Custom Primary Category"
           onChangeInput={v =>
             this.handleUpdate(selected, getNewValues(v, 0, values))
           }
           showText={customPrimary}
           showIcon={false}
           showDropdown={true}
+          disabled={disableCategory}
         />
         {(showSecondaryDropdown || customSecondary) && (
           <DropdownInputGroup
             defaultValue={selected[1]}
-            staticLabel='Secondary Category'
+            staticLabel="Secondary Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 1)}
             options={secondaryOptions}
-            errorMessage={errorMessage[1]}
+            errorMessage={errorMessage && errorMessage[1]}
             value={values[1]}
-            placeholder='Custom Secondary Category'
+            placeholder="Custom Secondary Category"
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 1, values))
             }
@@ -644,17 +655,18 @@ export class CategoryMultiSelect extends Component<
             showIcon={showSecondaryDropdown || customSecondary}
             showDropdown={showSecondaryDropdown}
             autoCompleteList={secondaryAutoComplete}
+            disabled={disableSubCategory}
           />
         )}
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel='Tertiary Category'
+            staticLabel="Tertiary Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
-            errorMessage={errorMessage[2]}
+            errorMessage={errorMessage && errorMessage[2]}
             value={values[2]}
-            placeholder='Custom Tertiary Category'
+            placeholder="Custom Tertiary Category"
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
@@ -681,7 +693,7 @@ export const CheckboxBar = ({
       [Styles.RadioBarError]: error,
       [Styles.CheckboxBarChecked]: checked,
     })}
-    role='button'
+    role="button"
     onClick={e => onChange(value)}
   >
     {checked ? FilledCheckbox : EmptyCheckbox}
@@ -753,7 +765,7 @@ export const ReportingRadioBarGroup = ({
             updateInputtedStake={updateInputtedStake}
             isInvalid={tentativeWinning.isInvalid}
             updateScalarOutcome={updateScalarOutcome}
-            updateChecked={(selected, isInvalid )=> {
+            updateChecked={(selected, isInvalid) => {
               updateChecked(selected, isInvalid);
             }}
             reportAction={reportAction}
@@ -771,12 +783,14 @@ export const ReportingRadioBarGroup = ({
           ? 'Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake.'
           : 'If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome.'}
       </span>
-      {isDisputing && notNewTentativeWinner && tentativeWinning.id !== selected && (
-        <Error
-          header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
-          subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
-        />
-      )}
+      {isDisputing &&
+        notNewTentativeWinner &&
+        tentativeWinning.id !== selected && (
+          <Error
+            header={`Filling this bond of ${disputeAmount} REP only completes this current round`}
+            subheader={`Tentative Winning outcome has ${winningStakeCurrent} REP already staked for next round. More REP will be needed to make this outcome the Tentative Winner. This will require an additional transaction.`}
+          />
+        )}
       {radioButtons.map(
         (radio, index) =>
           !radio.isInvalid &&
@@ -851,27 +865,44 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   };
 
   render() {
-    const {
-      radioButtons,
-    } = this.props;
+    const { radioButtons } = this.props;
     const { selected } = this.state;
     return (
       <div className={Styles.RadioBarGroup}>
         {radioButtons.map(radio => (
-            <RadioBar
-              key={radio.value}
-              {...radio}
-              checked={radio.value === selected}
-              onChange={selected => {
-                this.props.onChange(selected);
-                this.setState({ selected });
-              }}
-            />
-          ))}
+          <RadioBar
+            key={radio.value}
+            {...radio}
+            checked={radio.value === selected}
+            onChange={selected => {
+              this.props.onChange(selected);
+              this.setState({ selected });
+            }}
+          />
+        ))}
       </div>
     );
   }
 }
+
+export const MultiSelectRadioBarGroup = ({
+  radioButtons,
+  onChange,
+}: RadioGroupProps) => (
+  <div className={Styles.RadioBarGroup}>
+    {radioButtons.map(radio => (
+      <RadioBar
+        key={radio.value}
+        {...radio}
+        checked={radio.isSelected}
+        multiSelect
+        onChange={selected => {
+          onChange(selected);
+        }}
+      />
+    ))}
+  </div>
+);
 
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
@@ -911,7 +942,9 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && inputtedReportingStake
-        ? createBigNumber(stake.stakeCurrent).plus(inputtedReportingStake.inputToAttoRep || ZERO)
+        ? createBigNumber(stake.stakeCurrent).plus(
+            inputtedReportingStake.inputToAttoRep || ZERO
+          )
         : '0';
 
     return (
@@ -920,15 +953,15 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           [Styles.RadioBarError]: error,
           [Styles.Invalid]: isInvalid,
           [Styles.Checked]: checked,
-          [Styles.Hide]: hideButton
+          [Styles.Hide]: hideButton,
         })}
         role="button"
-        onClick={e => { !hideButton && updateChecked(id, isInvalid)}}
+        onClick={e => {
+          !hideButton && updateChecked(id, isInvalid);
+        }}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>
-          {header}
-        </h5>
+        <h5>{header}</h5>
         <div onClick={e => e.stopPropagation()}>
           {isDisputing && ( // for disputing or for scalar
             <>
@@ -945,7 +978,9 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   )}
                   bondSizeCurrent={formatAttoRep(stake.bondSizeCurrent)}
                   inputtedStake={formatAttoRep(
-                    inputtedReportingStake && inputtedReportingStake.inputToAttoRep && checked
+                    inputtedReportingStake &&
+                      inputtedReportingStake.inputToAttoRep &&
+                      checked
                       ? inputtedReportingStake.inputToAttoRep
                       : ZERO
                   )}
@@ -1017,16 +1052,19 @@ export const RadioBar = ({
   secondTextValue,
   secondErrorMessage,
   secondHeader,
+  multiSelect,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
+      [Styles.MultiSelect]: multiSelect,
     })}
-    role='button'
+    role="button"
     onClick={e => onChange(value)}
   >
-    {checked ? FilledRadio : EmptyRadio}
+    {multiSelect && <Checkbox isChecked={checked} />}
+    {!multiSelect && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
     {expandable && checked ? (
       <>
@@ -1100,15 +1138,15 @@ export const RadioTwoLineBar = ({
   value,
   error,
   description,
-  hideRadioButton
+  hideRadioButton,
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
       [Styles.HideRadioButton]: hideRadioButton,
-      [Styles.Checked]: hideRadioButton && checked
+      [Styles.Checked]: hideRadioButton && checked,
     })}
-    role='button'
+    role="button"
     onClick={e => onChange(value)}
   >
     {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
@@ -1161,7 +1199,7 @@ const RadioCard = ({
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
     })}
-    role='button'
+    role="button"
     onClick={e => onChange(value)}
   >
     <div>{CheckMark}</div>
@@ -1195,6 +1233,10 @@ export const LocationDisplay = ({
 );
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
+  static defaultProps = {
+    onAutoCompleteListSelected: () => {},
+  };
+
   state: TextInputState = {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,
@@ -1225,11 +1267,16 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   toggleList = () => {
     let value = this.state.value;
     const showList = this.props.autoCompleteList && !this.state.showList;
-    if (showList) value = '';
-    this.setState({
-      value,
-      showList,
-    });
+    if (showList) {
+      value = '';
+    }
+    this.setState(
+      {
+        value,
+        showList,
+      },
+      () => showList && this.props.onAutoCompleteListSelected(value)
+    );
   };
 
   onChange = (e: any) => {
@@ -1327,6 +1374,7 @@ interface TimeSelectorProps {
   onDateChange: Function;
   focused?: boolean;
   errorMessage?: string;
+  uniqueKey?: string;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1372,12 +1420,14 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       meridiem,
       focused,
       errorMessage,
+      uniqueKey,
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
 
     return (
       <div
+        key={`timeSelector${uniqueKey}`}
         className={Styles.TimeSelector}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
@@ -1399,7 +1449,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
             {Arrow}
             <div>
               <IndividualTimeSelector
-                label='Hours'
+                label="Hours"
                 min={1}
                 max={12}
                 onChange={this.onChangeHours}
@@ -1407,7 +1457,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
               />
               <span>:</span>
               <IndividualTimeSelector
-                label='Minutes'
+                label="Minutes"
                 showLeadingZero
                 min={0}
                 max={59}
@@ -1415,7 +1465,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
                 value={minute !== null ? minute : '12'}
               />
               <IndividualTimeSelector
-                label='AM/PM'
+                label="AM/PM"
                 hasOptions
                 onChange={this.onChangeAM}
                 value={meridiem || 'AM'}
@@ -1510,7 +1560,7 @@ class IndividualTimeSelector extends React.Component<
         <button onClick={this.increment}>{Chevron}</button>
         {hasOptions && (
           <input
-            type='text'
+            type="text"
             onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
             disabled
@@ -1518,10 +1568,10 @@ class IndividualTimeSelector extends React.Component<
         )}
         {!hasOptions && (
           <input
-            type='number'
+            type="number"
             min={min}
             max={max}
-            step='1'
+            step="1"
             onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
           />
@@ -1543,7 +1593,7 @@ export const Checkbox = ({
     className={classNames(Styles.Checkbox, {
       [Styles.CheckboxSmall]: smallOnDesktop,
     })}
-    role='button'
+    role="button"
     onClick={e => {
       e.preventDefault();
       onClick(e);
@@ -1551,13 +1601,13 @@ export const Checkbox = ({
   >
     <input
       id={id}
-      type='checkbox'
+      type="checkbox"
       checked={isChecked}
       disabled={disabled}
       onChange={e => {}}
     />
     <span
-      role='button'
+      role="button"
       tabIndex={0}
       onClick={e => {}}
       className={classNames({
@@ -1568,15 +1618,6 @@ export const Checkbox = ({
     </span>
   </div>
 );
-
-Checkbox.propTypes = {
-  id: PropTypes.string.isRequired,
-  isChecked: PropTypes.bool.isRequired,
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func.isRequired,
-  small: PropTypes.bool,
-  smallOnDesktop: PropTypes.bool,
-};
 
 Checkbox.defaultProps = {
   disabled: false,
@@ -1605,7 +1646,7 @@ export const DatePicker = (props: DatePickerProps) => (
       numberOfMonths={props.numberOfMonths}
       navPrev={props.navPrev || OutlineChevron}
       navNext={props.navNext || OutlineChevron}
-      weekDayFormat='ddd'
+      weekDayFormat="ddd"
       customInputIcon={Calendar}
       readOnly={true}
     />
@@ -1652,35 +1693,6 @@ interface InputState {
 }
 
 export class Input extends Component<InputProps, InputState> {
-  // TODO -- Prop Validations
-  static propTypes = {
-    type: PropTypes.string,
-    className: PropTypes.string,
-    value: PropTypes.any.isRequired,
-    max: PropTypes.any,
-    min: PropTypes.any,
-    isMultiline: PropTypes.bool,
-    isClearable: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    updateValue: PropTypes.func,
-    onBlur: PropTypes.func,
-    isIncrementable: PropTypes.bool,
-    incrementAmount: PropTypes.number,
-    canToggleVisibility: PropTypes.bool,
-    shouldMatchValue: PropTypes.bool,
-    comparisonValue: PropTypes.string,
-    isSearch: PropTypes.bool,
-    placeholder: PropTypes.string,
-    maxButton: PropTypes.bool,
-    onMaxButtonClick: PropTypes.func,
-    noFocus: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    onFocus: PropTypes.func,
-    lightBorder: PropTypes.bool,
-    darkMaxBtn: PropTypes.bool,
-    style: PropTypes.object,
-  };
-
   static defaultProps = {
     type: 'text',
     className: null,
@@ -1864,7 +1876,7 @@ export class Input extends Component<InputProps, InputState> {
         {isMultiline && (
           <textarea
             {...p}
-            className='box'
+            className="box"
             value={value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
@@ -1875,8 +1887,8 @@ export class Input extends Component<InputProps, InputState> {
         {isSearch && (
           <div style={{ marginRight: '8px' }}>
             <PulseLoader
-              color='#AFA7C1'
-              sizeUnit='px'
+              color="#AFA7C1"
+              sizeUnit="px"
               size={6}
               loading={isLoading}
             />
@@ -1885,7 +1897,7 @@ export class Input extends Component<InputProps, InputState> {
 
         {isClearable && !isMultiline && !!value && (
           <button
-            type='button'
+            type="button"
             className={Styles.close}
             onClick={this.handleClear}
           >
@@ -1895,22 +1907,22 @@ export class Input extends Component<InputProps, InputState> {
 
         {canToggleVisibility && value && (
           <button
-            type='button'
-            className='button--text-only'
+            type="button"
+            className="button--text-only"
             onClick={this.handleToggleVisibility}
             tabIndex={-1}
           >
             {isHiddenContentVisible ? (
-              <i className='fa fa-eye-slash' />
+              <i className="fa fa-eye-slash" />
             ) : (
-              <i className='fa fa-eye' />
+              <i className="fa fa-eye" />
             )}
           </button>
         )}
 
         {maxButton && (
           <button
-            type='button'
+            type="button"
             className={classNames(Styles.Max, {
               [Styles.MaxDark]: darkMaxBtn,
             })}
@@ -1921,11 +1933,11 @@ export class Input extends Component<InputProps, InputState> {
         )}
 
         {shouldMatchValue && value && (
-          <div className='input-value-comparison'>
+          <div className="input-value-comparison">
             {value === comparisonValue ? (
-              <i className='fa fa-check-circle input-does-match' />
+              <i className="fa fa-check-circle input-does-match" />
             ) : (
-              <i className='fa fa-times-circle input-does-not-match' />
+              <i className="fa fa-times-circle input-does-not-match" />
             )}
           </div>
         )}
@@ -1933,7 +1945,7 @@ export class Input extends Component<InputProps, InputState> {
         {isIncrementable && (
           <div className={Styles.ValueIncrementers}>
             <button
-              type='button'
+              type="button"
               tabIndex={-1}
               className={classNames(Styles.IncrementValue, 'unstyled')}
               onClick={e => {
@@ -1960,12 +1972,12 @@ export class Input extends Component<InputProps, InputState> {
                 }
               }}
             >
-              <i className='fa fa-angle-up' />
+              <i className="fa fa-angle-up" />
             </button>
             <button
-              type='button'
+              type="button"
               tabIndex={-1}
-              className='decrement-value unstyled'
+              className="decrement-value unstyled"
               onClick={e => {
                 e.currentTarget.blur();
 
@@ -1990,7 +2002,7 @@ export class Input extends Component<InputProps, InputState> {
                 }
               }}
             >
-              <i className='fa fa-angle-down' />
+              <i className="fa fa-angle-down" />
             </button>
           </div>
         )}
@@ -2132,22 +2144,12 @@ export class InputDropdown extends Component<
           ))}
         </select>
         <span>
-          <ChevronFlip pointDown={!showList} stroke='white' />
+          <ChevronFlip pointDown={!showList} stroke="white" />
         </span>
       </div>
     );
   }
 }
-
-InputDropdown.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  default: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  isMobileSmall: PropTypes.bool.isRequired,
-  label: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  onKeyPress: PropTypes.func,
-};
 
 InputDropdown.defaultProps = {
   onKeyPress: null,
@@ -2188,33 +2190,32 @@ export const CategoryRow = ({
 );
 
 export const MigrateRepInfo = () => (
-         <section className={Styles.MigrateRepInfo}>
-           <span>A note on Forking</span>
-           <p>
-             Augur is now in a state of Forking. The fork state is a special
-             state that can last up to 60 days. Forking is the market resolution
-             method of last resort; it is a very disruptive process and is
-             intended to be a rare occurrence. The market below is the forking
-             market, as it has implications for the other markets that currenty
-             exist. When a fork is innitiated, disputing for all other
-             non-resolved markets are put on hold until this fork resolves. The
-             forking period is much longer than the usual fee window because the
-             platform needs to provide ample time for REP holders and service
-             providers (such as wallets and exchanges) to prepare. A fork’s
-             final outcome cannot be disputed.
-           </p>
-           <p>
-             Every Augur market and all REP tokens exist in some universe.
-             Currently there is only one universe - the genesis universe - since
-             there has never been a fork. REP tokens can be used to report on
-             outcomes (and thus earn fees) only for markets that exist in the
-             same universe as the REP tokens. When a market forks, new universes
-             are created. Forking creates a new child universe for each possible
-             outcome of the forking market (including Invalid).
-           </p>
-           <p>
-             NEED TO ADD MORE INFO HERE. POSSIBLY MAKE THIS A SCROLLABLE BOX.
-             CHECKBOX TO CONFIRM THEY HAVE READ IT?
-           </p>
-         </section>
-       );
+  <section className={Styles.MigrateRepInfo}>
+    <span>A note on Forking</span>
+    <p>
+      Augur is now in a state of Forking. The fork state is a special state that
+      can last up to 60 days. Forking is the market resolution method of last
+      resort; it is a very disruptive process and is intended to be a rare
+      occurrence. The market below is the forking market, as it has implications
+      for the other markets that currenty exist. When a fork is innitiated,
+      disputing for all other non-resolved markets are put on hold until this
+      fork resolves. The forking period is much longer than the usual fee window
+      because the platform needs to provide ample time for REP holders and
+      service providers (such as wallets and exchanges) to prepare. A fork’s
+      final outcome cannot be disputed.
+    </p>
+    <p>
+      Every Augur market and all REP tokens exist in some universe. Currently
+      there is only one universe - the genesis universe - since there has never
+      been a fork. REP tokens can be used to report on outcomes (and thus earn
+      fees) only for markets that exist in the same universe as the REP tokens.
+      When a market forks, new universes are created. Forking creates a new
+      child universe for each possible outcome of the forking market (including
+      Invalid).
+    </p>
+    <p>
+      NEED TO ADD MORE INFO HERE. POSSIBLY MAKE THIS A SCROLLABLE BOX. CHECKBOX
+      TO CONFIRM THEY HAVE READ IT?
+    </p>
+  </section>
+);

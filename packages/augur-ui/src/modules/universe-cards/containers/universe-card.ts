@@ -7,12 +7,15 @@ import { formatDai, formatAttoRep } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const universe = state.universe;
+  const universe = ownProps.universe;
   return {
-    universeId: universe.address,
-    creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp).formattedLocalShortTime,
+    universeId: universe.id,
+    currentUniverseId: state.universe.id,
+    parentUniverseId: state.universe.parentUniverseId,
+    creationTimestamp: convertUnixToFormattedDate(universe.creationTimestamp)
+      .formattedLocalShortTime,
     outcomeName: universe.outcomeName,
-    currentUniverse: state.universe.id,
+    account: state.loginAccount.address,
     breakdown: [
       {
         label: 'Your REP',
@@ -34,32 +37,14 @@ const mapStateToProps = (state: AppState, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    switchUniverse: (universeId: string) => dispatch(switchUniverse(universeId)),
-  };
-};
-
-const mergeProps = (sP: any, dP: any, oP: any) => {
-  return {
-    ...oP,
-    ...sP,
-    ...dP,
-    buttons: [
-      {
-        text: 'Switch to this Universe',
-        action: () => {
-          dP.switchUniverse(sP.universeId)
-        },
-      },
-    ],
-  };
-}
+const mapDispatchToProps = dispatch => ({
+    switchUniverse: (universeId: string, history: History) =>
+      dispatch(switchUniverse(universeId, history)),
+});
 
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
+    mapDispatchToProps
   )(UniverseCard)
 );

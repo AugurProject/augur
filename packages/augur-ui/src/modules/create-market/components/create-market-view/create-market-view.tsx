@@ -1,82 +1,73 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
+import { RouteComponentProps } from "react-router-dom";
 
 import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
 import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles.less";
+import { NewMarket, UIOrder, NodeStyleCallback, LoginAccountMeta, Universe } from "modules/types";
+import { Getters } from "@augurproject/sdk/src";
 
-import UniverseCard from 'modules/universe-cards/containers/universe-card';
-
-interface CreateMarketViewProps {
+interface CreateMarketViewProps extends RouteComponentProps<{}> {
+  categoryStats: Getters.Markets.CategoryStats;
+  isMobileSmall: boolean;
+  currentTimestamp: number;
+  gasPrice: number;
+  newMarket: NewMarket;
+  universe: Universe;
+  addOrderToNewMarket: (order: UIOrder) => void;
+  estimateSubmitNewMarket: (
+    newMarket: NewMarket,
+    callback?: NodeStyleCallback,
+  ) => void;
+  removeOrderFromNewMarket: (order: UIOrder) => void;
+  submitNewMarket: (
+    market: NewMarket,
+    callback?: NodeStyleCallback
+  ) => void;
+  updateNewMarket: (data: NewMarket) => void;
+  meta: LoginAccountMeta;
+  availableEth?: number;
+  availableRep?: number;
 }
 
 interface CreateMarketViewState {
-  selected: number;
-  page: number;
+  page: string;
 }
 
 export default class CreateMarketView extends React.Component<
   CreateMarketViewProps,
   CreateMarketViewState
 > {
-  state: FormState = {
-    page: this.props.history.location.state || LANDING
+  state: CreateMarketViewState = {
+    page: this.props.history.location.state || LANDING,
+
   };
 
   updatePage = (page: string) => {
-    this.setState({page});
+    this.setState({ page });
   }
 
   componentDidMount() {
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }
 
   render() {
     const { page } = this.state;
-
-    const showUniverseCard = false;
-
+    const { categoryStats } = this.props;
     return (
       <section className={Styles.CreateMarketView}>
         <Helmet>
           <title>Create Market</title>
         </Helmet>
         {page === LANDING &&
-          <Landing updatePage={this.updatePage} />
+          <Landing categoryStats={categoryStats} updatePage={this.updatePage} />
         }
-        {/* TODO: Remove once UniverseCard is moved to modal */}
-        {showUniverseCard &&
-          <UniverseCard
-            universe={this.props.universe.id}
-          />
-        }
+        {page === TEMPLATE && <Form {...this.props} isTemplate updatePage={this.updatePage} categoryStats={categoryStats} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );
   }
 }
-
-CreateMarketView.propTypes = {
-  isMobileSmall: PropTypes.bool.isRequired,
-  currentTimestamp: PropTypes.number.isRequired,
-  gasPrice: PropTypes.number.isRequired,
-  history: PropTypes.object.isRequired,
-  newMarket: PropTypes.object.isRequired,
-  universe: PropTypes.object.isRequired,
-  addOrderToNewMarket: PropTypes.func.isRequired,
-  estimateSubmitNewMarket: PropTypes.func.isRequired,
-  removeOrderFromNewMarket: PropTypes.func.isRequired,
-  submitNewMarket: PropTypes.func.isRequired,
-  updateNewMarket: PropTypes.func.isRequired,
-  meta: PropTypes.object.isRequired,
-  availableEth: PropTypes.number,
-  availableRep: PropTypes.number
-};
-
-CreateMarketView.defaultProps = {
-  availableEth: 0,
-  availableRep: 0
-};

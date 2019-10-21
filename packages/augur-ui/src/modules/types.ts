@@ -16,6 +16,7 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
+import { Template } from 'modules/create-market/get-template';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -25,6 +26,7 @@ export enum SizeTypes {
 
 export interface Alert {
   id: string;
+  uniqueId: string;
   title: string;
   name: string;
   description: string;
@@ -35,6 +37,12 @@ export interface Alert {
   seen: boolean;
   level: string;
   params: object;
+}
+
+export interface TimezoneDateObject {
+  formattedUtc: string;
+  formattedTimezone: string;
+  timestamp: number;
 }
 
 export interface DateFormattedObject {
@@ -120,14 +128,10 @@ export interface ForkingInfo {
   winningChildUniverseId?: string;
 }
 export interface Universe extends Getters.Universe.UniverseDetails {
-  id: string;
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
-}
-
-export interface Versions {
-  augurui: string | null;
+  timeframeData?: Getters.Platform.PlatformActivityStatsResult;
 }
 
 export interface UserReports {
@@ -295,9 +299,10 @@ export interface NewMarketPropertyValidations {
   affiliateFee?: number;
 }
 export interface NewMarket {
+  uniqueId: number;
   isValid: boolean;
   validations:
-    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
+  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
   backupSource: string;
   currentStep: number;
   type: string;
@@ -335,6 +340,7 @@ export interface NewMarket {
   offsetName: string;
   offset: number;
   timezone: string;
+  template: Template;
 }
 
 export interface LinkContent {
@@ -348,7 +354,7 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
+  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -377,6 +383,7 @@ export interface Draft {
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
+  template: Template;
 }
 
 export interface Drafts {
@@ -394,6 +401,12 @@ export interface MarketsList {
   marketCardFormat: string;
 }
 
+export interface DefaultOrderProperties {
+  orderPrice: string;
+  orderQuantity: string;
+  selectedNav: string;
+}
+
 export interface LoadReportingMarketsOptions {
   limit: number;
   offset: number;
@@ -408,6 +421,7 @@ export interface ReportingListState {
   [reportingState: string]: {
     marketIds: string[];
     params: Partial<LoadReportingMarketsOptions>;
+    isLoading: boolean;
   };
 }
 export interface FilledOrders {
@@ -495,10 +509,12 @@ export interface Blockchain {
 export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
+  isHelpMenuOpen: boolean;
 }
 
 export interface AuthStatus {
   isLogged?: boolean;
+  restoredAccount?: boolean;
   edgeLoading?: boolean;
   edgeContext?: string;
   isConnectionTrayOpen?: boolean;
@@ -537,18 +553,26 @@ export interface AccountBalances {
   dai: number;
   attoRep: string;
 }
+
+export interface LoginAccountMeta {
+  accountType: string;
+  address: string;
+  signer: any | EthersSigner;
+  isWeb3: boolean;
+  profileImage?: string;
+  email?: string;
+  openWallet?: Function;
+}
+
+export interface LoginAccountSettings {
+  showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
+  showInvalidMarketsBannerHideOrShow?: boolean;
+}
+
 export interface LoginAccount {
   address?: string;
   mixedCaseAddress?: string;
-  meta?: {
-    accountType: string;
-    address: string;
-    signer: any | EthersSigner;
-    isWeb3: boolean;
-    profileImage?: string;
-    email?: string;
-    openWallet?: Function;
-  };
+  meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
@@ -556,6 +580,7 @@ export interface LoginAccount {
   allowance?: BigNumber;
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
+  settings?: LoginAccountSettings;
 }
 
 export interface Web3 {
@@ -566,7 +591,8 @@ export interface WindowApp extends Window {
   app: object;
   web3: Web3;
   ethereum: {
-    selectedAddress
+    selectedAddress;
+    networkVersion: string;
   };
   localStorage: Storage;
   integrationHelpers: any;
@@ -658,6 +684,8 @@ export interface ClaimReportingOptions {
   reportingParticipants: string[],
   disputeWindows: string[],
   estimateGas?: boolean;
+  disavowed?: boolean;
+  isForkingMarket?: boolean;
 }
 
 export interface MarketReportContracts {
@@ -695,4 +723,11 @@ export interface NavMenuItem {
   title: string;
   requireLogin?: boolean;
   disabled?: boolean;
+}
+
+export interface SortedGroup {
+  value: string;
+  label: string;
+  subGroup?: Array<SortedGroup>;
+  autoCompleteList?: Array<SortedGroup>;
 }

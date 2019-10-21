@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import makePath from "modules/routes/helpers/make-path";
@@ -21,7 +20,13 @@ import {
   RETURN_PARAM_NAME,
 } from "modules/routes/constants/param-names";
 
-const MarketLink = ({ linkType, className, id, children }) => {
+interface MarketLinkProps {
+  id: string;
+  linkType?: string;
+  className?: string;
+}
+
+const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, children }) => {
   let path;
 
   switch (linkType) {
@@ -60,23 +65,15 @@ const MarketLink = ({ linkType, className, id, children }) => {
           {children}
         </Link>
       ) : (
-        children
-      )}
+          children
+        )}
     </span>
   );
 };
 
-MarketLink.propTypes = {
-  id: PropTypes.string.isRequired,
-  linkType: PropTypes.string,
-  className: PropTypes.string,
-  children: PropTypes.any
-};
-
 MarketLink.defaultProps = {
   linkType: null,
-  className: "",
-  children: null
+  className: ""
 };
 
 export default MarketLink;
