@@ -34,7 +34,7 @@ function ChannelHeader () {
           <span className='unreadMessages'>{networkStore.unreadEntriesCount}</span>
         ) : null}
       </div>
-      <div className='currentChannel'>{channel ? `#${channel}` : overrideName}</div>
+      {/*<div className='currentChannel'>{channel ? `#${channel}` : overrideName}</div>*/}
     </div>
   ))
 }
