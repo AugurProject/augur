@@ -22,6 +22,7 @@ import {
     SimulateTrade,
     ZeroXTrade,
     GnosisSafeRegistry,
+    WarpSync,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -394,6 +395,10 @@ Deploying to: ${networkConfiguration.networkName}
         const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, GnosisSafeRegistryContract);
         promises.push(gnosisSafeRegistry.initialize(this.augur!.address));
 
+        const WarpSyncContract = await this.getContractAddress("WarpSync");
+        const warpSync = new WarpSync(this.dependencies, WarpSyncContract);
+        promises.push(warpSync.initialize(this.augur!.address));
+
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
             const time = new TimeControlled(this.dependencies, timeContract);
@@ -473,6 +478,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
+        mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 

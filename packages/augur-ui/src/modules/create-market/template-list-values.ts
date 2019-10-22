@@ -579,8 +579,8 @@ export const LIST_VALUES = {
       label: 'US Open',
     },
     {
-      value: 'Masters',
-      label: 'Masters',
+      value: 'Masters Tournament',
+      label: 'Masters Tournament',
     },
     {
       value: 'British Open',
