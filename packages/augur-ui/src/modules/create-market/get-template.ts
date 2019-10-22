@@ -612,7 +612,7 @@ const TEMPLATES = {
       [LTC]: {
         templates: [
           {
-            templateId: `crypto-token-bin`,
+            templateId: `crypto-token-bin-ltc`,
             marketType: YES_NO,
             question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
             example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
@@ -724,7 +724,7 @@ const TEMPLATES = {
       [ETH]: {
         templates: [
           {
-            templateId: `crypto-token-bin`,
+            templateId: `crypto-token-bin-eth`,
             marketType: YES_NO,
             question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
             example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
@@ -760,7 +760,7 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `crypto-between-bin`,
+            templateId: `crypto-between-bin-eth`,
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] [2], on [3] anytime between the start of [4] (00:00 UTC-0) and end of [5] (23:59 UTC-0)`,
             example: `Will the price of REP exceed $40 USD on Poloniex anytime between the start of September 1, 2019 (00:00 UTC-0) and end of December 31, 2019 (23:59 UTC-0)`,
@@ -801,7 +801,7 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `crypto-close-scalar`,
+            templateId: `crypto-close-scalar-eth`,
             marketType: SCALAR,
             question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
             example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
@@ -832,11 +832,11 @@ const TEMPLATES = {
             resolutionRules: {},
           },
         ]
-      }
+      },
       [BTC]: {
         templates: [
           {
-            templateId: `crypto-token-bin`,
+            templateId: `crypto-token-bin-btc`,
             marketType: YES_NO,
             question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
             example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
@@ -872,7 +872,7 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `crypto-between-bin`,
+            templateId: `crypto-between-bin-btc`,
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] [2], on [3] anytime between the start of [4] (00:00 UTC-0) and end of [5] (23:59 UTC-0)`,
             example: `Will the price of REP exceed $40 USD on Poloniex anytime between the start of September 1, 2019 (00:00 UTC-0) and end of December 31, 2019 (23:59 UTC-0)`,
@@ -913,7 +913,7 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `crypto-close-scalar`,
+            templateId: `crypto-close-scalar-btc`,
             marketType: SCALAR,
             question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
             example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
