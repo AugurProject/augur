@@ -129,7 +129,8 @@ export interface Template {
   inputs: TemplateInput[];
   inputsType: TemplateInputTypeNames;
   resolutionRules: ResolutionRules;
-  denomination: string;
+  denomination?: string;
+  tickSize?: number;
 }
 
 export interface TemplateInput {
@@ -1187,6 +1188,7 @@ const TEMPLATES = {
             question: `Total number of wins the [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1707,6 +1709,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1789,6 +1792,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1966,6 +1970,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Giants will finish 2019 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
