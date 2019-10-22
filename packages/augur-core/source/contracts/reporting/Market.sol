@@ -18,6 +18,7 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/IWarpSync.sol';
 
 
 /**
@@ -38,6 +39,7 @@ contract Market is Initializable, Ownable, IMarket {
     ICash private cash;
     IAugur public augur;
     MapFactory public mapFactory;
+    IWarpSync public warpSync;
 
     // Attributes
     uint256 private numTicks;
@@ -68,6 +70,7 @@ contract Market is Initializable, Ownable, IMarket {
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
         cash = ICash(augur.lookup("Cash"));
+        warpSync = IWarpSync(augur.lookup("WarpSync"));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(augur), MAX_APPROVAL_AMOUNT);
@@ -90,9 +93,11 @@ contract Market is Initializable, Ownable, IMarket {
     function assessFees() private {
         repBond = universe.getOrCacheMarketRepBond();
         require(getReputationToken().balanceOf(address(this)) >= repBond);
-        validityBondAttoCash = cash.balanceOf(address(this));
-        require(validityBondAttoCash >= universe.getOrCacheValidityBond());
-        universe.deposit(address(this), validityBondAttoCash, address(this));
+        if (owner != address(warpSync)) {
+            validityBondAttoCash = cash.balanceOf(address(this));
+            require(validityBondAttoCash >= universe.getOrCacheValidityBond());
+            universe.deposit(address(this), validityBondAttoCash, address(this));
+        }
     }
 
     /**
@@ -285,6 +290,7 @@ contract Market is Initializable, Ownable, IMarket {
             IReportingParticipant _reportingParticipant = getWinningReportingParticipant();
             winningPayoutDistributionHash = _reportingParticipant.getPayoutDistributionHash();
             _winningPayoutNumerators = _reportingParticipant.getPayoutNumerators();
+            warpSync.notifyMarketFinalized();
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
             disputeWindow = universe.getOrCreatePreviousDisputeWindow(false);
             disputeWindow.onMarketFinalized();

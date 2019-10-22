@@ -129,7 +129,8 @@ export interface Template {
   inputs: TemplateInput[];
   inputsType: TemplateInputTypeNames;
   resolutionRules: ResolutionRules;
-  denomination: string;
+  denomination?: string;
+  tickSize?: number;
 }
 
 export interface TemplateInput {
@@ -890,7 +891,11 @@ const TEMPLATES = {
         example: `Will Billy Crystal host the 2019 Academy Awards`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: 'If more than one person hosts the event, and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"'}
+          ]
+        },
       },
       {
         templateId: `ent-host-event2`,
@@ -917,7 +922,11 @@ const TEMPLATES = {
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: "Gross total should include 4-day weekend in if it is a holiday weekend"}
+          ]
+        },
       },
       {
         templateId: `ent-host-cat`,
@@ -926,7 +935,11 @@ const TEMPLATES = {
         example: `Who wll host the 2020 Emmy Awards`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: 'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.'}
+          ]
+        },
       },
       {
         templateId: `ent-win-award-cat`,
@@ -996,8 +1009,8 @@ const TEMPLATES = {
           {
             templateId: `gf-cut`,
             marketType: YES_NO,
-            question: `Will [0] make the cut at [1] [2]`,
-            example: `Will Tiger Woods make the cut at 2020 PGA Championship`,
+            question: `Will [0] make the cut at the [1] [2]`,
+            example: `Will Tiger Woods make the cut at the 2020 PGA Championship`,
             inputs: [
               {
                 id: 0,
@@ -1175,6 +1188,7 @@ const TEMPLATES = {
             question: `Total number of wins the [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1695,6 +1709,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1777,6 +1792,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1954,6 +1970,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Giants will finish 2019 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1988,6 +2005,11 @@ const INPUTS = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.ADDED_OUTCOME,
+      placeholder: `Multiple Hosts`,
     },
   ],
   [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4]: [
