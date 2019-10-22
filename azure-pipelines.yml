@@ -502,14 +502,18 @@ jobs:
           docker push augurproject/augur-ipfs:v2
           aws --region=us-east-1 ecs update-service  --service augur-ipfs --cluster kovan-v2-ecs --force-new-deployment
           docker run -d --name augur-ipfs augurproject/augur-ipfs:v2
-          IPFS_PATH=$(docker exec augur-ipfs ipfs add -r -Q /export)
+          sleep 5
+          IPFS_PATH=`docker exec augur-ipfs ipfs add -r -Q /export`
+          echo "IPFS path: $IPFS_PATH"
           docker stop augur-ipfs
-          npm install -g dnslink-cloudflare
-          dnslink-cloudflare -d augur.net -l $IPFS_PATH -r v2-ipfs
+          sudo npm install -g dnslink-cloudflare
+          dnslink-cloudflare -d augur.net -l $IPFS_PATH -r _dnslink.v2-ipfs
         displayName: augur-ipfs build
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+          CF_API_KEY: $(CLOUDFLARE_API_KEY)
+          CF_API_EMAIL: $(CLOUDFLARE_API_EMAIL)
       - task: Docker@1
         displayName: docker logout
         inputs:
