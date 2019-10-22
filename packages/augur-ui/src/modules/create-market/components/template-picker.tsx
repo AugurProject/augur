@@ -55,7 +55,10 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                   ? createTemplateOutcomes(templates[value].inputs)
                   : ['', ''],
               currentStep: newMarket.currentStep,
-              tickSize: newMarket.marketType === SCALAR && templates[value].tickSize ? templates[value].tickSize : DEFAULT_TICK_SIZE;
+              tickSize:
+                newMarket.marketType === SCALAR && templates[value].tickSize
+                  ? templates[value].tickSize
+                  : DEFAULT_TICK_SIZE,
               scalarDenomination:
                 newMarket.marketType === SCALAR &&
                 templates[value].denomination,
