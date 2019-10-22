@@ -2263,7 +2263,7 @@ const TEMPLATES = {
             ],
           },
         }
-      }
+      },
       [BASEBALL]: {
         templates: [
           {
