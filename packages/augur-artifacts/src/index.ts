@@ -84,7 +84,7 @@ export interface NetworkContractAddresses {
 export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
   const filepath = path.join(__dirname, '../src/local-addresses.json'); // be sure to be in src dir, not build
 
-  let contents = {};
+  let contents: AllContractAddresses = {};
   if (await exists(filepath)) {
     contents = JSON.parse(await readFile(filepath, 'utf8'));
   }
@@ -92,4 +92,17 @@ export async function setAddresses(networkId: NetworkId, addresses: ContractAddr
   contents[networkId] = addresses;
 
   await writeFile(filepath, JSON.stringify(contents, null, 1), 'utf8');
+}
+
+export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: number): Promise<void> {
+  const filepath = path.join(__dirname, '../src/local-upload-block-numbers.json'); // be sure to be in src dir, not build
+
+  let contents: UploadBlockNumbers = {};
+  if (await exists(filepath)) {
+    contents = JSON.parse(await readFile(filepath, 'utf8'));
+  }
+
+  contents[networkId] = uploadBlock;
+
+  await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
 }
