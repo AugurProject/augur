@@ -42,94 +42,44 @@ export class DerivedDB extends RollbackTable {
     db.registerEventListener(mergeEventNames, this.handleMergeEvent.bind(this));
   }
 
-  async sync(highestAvailableBlockNumber: number): Promise<void> {
-    this.syncing = true;
-    await this.doSync(highestAvailableBlockNumber);
-    await this.syncStatus.setHighestSyncBlock(
-      this.dbName,
-      highestAvailableBlockNumber,
-      true
-    );
-    this.syncing = false;
-  }
-
-  // For all mergable event types get any new documents we haven't pulled in and pull them in
-  async doSync(highestAvailableBlockNumber: number): Promise<void> {
-    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
-      this.dbName
-    );
-    for (const eventName of this.mergeEventNames) {
-      const result = await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
-      if (result.length > 0) {
-        await this.handleMergeEvent(
-          highestAvailableBlockNumber,
-          (result as unknown[]) as ParsedLog[],
-          true
-        );
-      }
-    }
-
-    await this.syncStatus.updateSyncingToFalse(this.dbName);
-  }
-
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
   async handleMergeEvent (
     blocknumber: number,
     logs: ParsedLog[],
     syncing = false
   ): Promise<number> {
-    let success = true;
+    logs = _.cloneDeep(logs);
+
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
-      this.lock(this.HANDLE_MERGE_EVENT_LOCK);
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));
       documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
-        const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topic'), documents => {
-          return _.reduce(
-            documents,
-            (val, doc) => {
-              if (val.blockNumber < doc.blockNumber) {
-                val = doc;
-              } else if (
-                val.blockNumber === doc.blockNumber &&
-                val.logIndex < doc.logIndex
-              ) {
-                val = doc;
+        const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topics[0]'), documents => {
+          return documents.reduce((val, doc) => {
+              if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+                return doc;
               }
               return val;
             },
             documents[0]
           );
         });
-        const processedDocs = _.map(mostRecentTopics, this.processDoc.bind(this));
-        return _.assign({}, ...processedDocs);
-      }) as any[];
 
-      // NOTE: "!syncing" is because during bulk sync we can rely on the order of events provided as they are handled in sequence
-      if (this.requiresOrder && !syncing) documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex']);
+        return _.map(mostRecentTopics, this.processDoc.bind(this));
+      });
+
+      documentsByIdByTopic = _.sortBy(documentsByIdByTopic, ['blockNumber', 'logIndex'], ['asc', 'asc']);
       await this.bulkUpsertDocuments(documentsByIdByTopic);
-      this.clearLocks();
     }
 
-    if (success) {
-      if (!syncing) {
-        // The mutex behavior here is needed since a derived DB may be responding to multiple updates in parallel
-        while (this.updatingHighestSyncBlock) {
-          await sleep(10);
-        }
-        this.updatingHighestSyncBlock = true;
-        await this.syncStatus.setHighestSyncBlock(
-          this.dbName,
-          blocknumber,
-          syncing
-        );
-        this.updatingHighestSyncBlock = false;
-        if (logs.length > 0) {
-          this.augur.events.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
-        }
-      }
-    } else {
-      throw new Error(`Unable to add new block`);
+    await this.syncStatus.setHighestSyncBlock(
+      this.dbName,
+      blocknumber,
+      syncing
+    );
+    this.updatingHighestSyncBlock = false;
+    if (logs.length > 0) {
+      this.augur.events.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
     }
 
     return blocknumber;

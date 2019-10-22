@@ -1,6 +1,6 @@
-import puppeteer from 'puppeteer';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import puppeteer from 'puppeteer';
 
 const express = require('express');
 const helmet = require('helmet');

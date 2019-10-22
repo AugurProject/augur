@@ -1,9 +1,9 @@
-import { API } from "@augurproject/sdk/build/state/getter/API";
-import { Augur } from "@augurproject/sdk";
-import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { Router } from "@augurproject/sdk/build/state/getter/Router";
-import { makeTestAugur, makeDbMock } from "../../../libs";
-import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { Augur } from '@augurproject/sdk';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { Router } from '@augurproject/sdk/build/state/getter/Router';
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { makeDbMock, makeTestAugur } from '../../../libs';
 
 const mock = makeDbMock();
 

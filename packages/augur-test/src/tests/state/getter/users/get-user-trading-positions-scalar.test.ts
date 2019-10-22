@@ -1,16 +1,16 @@
-import { BigNumber } from 'bignumber.js';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI} from '@augurproject/tools';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { ContractAPI } from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import {
   _beforeAll,
   _beforeEach,
+  LONG,
   processTrades,
   SHORT,
   UTPTradeData,
-  LONG,
-  YES
+  YES,
 } from './common';
 
 describe('State API :: Users :: ', () => {

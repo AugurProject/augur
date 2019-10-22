@@ -1,17 +1,12 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
-import { TestEthersProvider } from '../../../../libs/TestEthersProvider';
-import { stringTo32ByteHex } from '../../../../libs/Utils';
-import {
-  _beforeAll,
-  _beforeEach,
-  CHUNK_SIZE,
-  outcome0,
-  outcome1,
-} from './common';
+import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { ContractAPI } from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { BigNumber } from 'bignumber.js';
+import { _beforeAll, _beforeEach, CHUNK_SIZE, outcome1 } from './common';
 
 describe('State API :: Markets :: Categories', () => {
   let db: Promise<DB>;
@@ -19,6 +14,7 @@ describe('State API :: Markets :: Categories', () => {
   let john: ContractAPI;
   let mary: ContractAPI;
   let bob: ContractAPI;
+  let bulkSyncStrategy: BulkSyncStrategy;
 
   let baseProvider: TestEthersProvider;
   let markets = {};
@@ -36,6 +32,7 @@ describe('State API :: Markets :: Categories', () => {
     john = state.john;
     mary = state.mary;
     bob = state.bob;
+    bulkSyncStrategy = state.johnBulkSyncStrategy;
   });
 
   test(':getCategoryStats', async () => {
@@ -96,7 +93,7 @@ describe('State API :: Markets :: Categories', () => {
       'oi',
     );
 
-    await (await db).sync(john.augur, CHUNK_SIZE, 0);
+    await bulkSyncStrategy.start(0, await john.provider.getBlockNumber());;
     const stats = await api.route('getCategoryStats', {
       universe: john.augur.contracts.universe.address,
       categories: [
