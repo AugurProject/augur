@@ -566,8 +566,7 @@ function drawTicks(options) {
   // Draw xAxis lines
   drawParams.xScale.ticks(tickCount).forEach((tick: number) => {
     if (
-      tick === drawParams.xScale.ticks(tickCount)[0] ||
-      tick === drawParams.xScale.ticks(tickCount)[length - 1]
+      tick === drawParams.xScale.ticks(tickCount)[0]
     ) {
       return;
     }
