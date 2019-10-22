@@ -11,7 +11,8 @@ function ChannelStatus ({ channel, theme }) {
     const userCount = channel ? channel.userCount : 0
     return (
       <div className='ChannelStatus' style={{ ...theme }}>
-        {userCount} {t('channel.status.users', { count: userCount })}
+        <div>{userCount}</div>
+        <div>{t('channel.status.users', { count: userCount })}</div>
       </div>
     )
   })

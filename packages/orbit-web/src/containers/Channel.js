@@ -17,8 +17,6 @@ const ChannelMessages = lazy(() =>
   import(/* webpackChunkName: "ChannelMessages" */ './ChannelMessages')
 )
 
-const DropZone = lazy(() => import(/* webpackChunkName: "DropZone" */ '../components/DropZone'))
-
 function Channel ({ channelName }) {
   const [channel, setChannel] = useState(null)
   const [dragActive, setDragActive] = useState(false)
@@ -51,44 +49,10 @@ function Channel ({ channelName }) {
 
   useEffect(handleChannelNameChange, [channelName])
 
-  const handleDropFiles = React.useCallback(
-    event => {
-      event.preventDefault()
-      setDragActive(false)
-
-      const files = []
-      if (event.dataTransfer.items) {
-        for (let i = 0; i < event.dataTransfer.items.length; i++) {
-          const file = event.dataTransfer.items[i]
-          file.kind === 'file' && files.push(file.getAsFile())
-        }
-      } else {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.push(event.dataTransfer.files.item(i))
-        }
-      }
-
-      channel.sendFiles(files)
-    },
-    [channel]
-  )
-
   return (
     <div
       className='Channel'
-      onDragOver={event => {
-        event.preventDefault()
-        !dragActive && setDragActive(true)
-      }}
     >
-      {dragActive && (
-        <DropZone
-          label={t('channel.file.dropzone.add', { channel: channelName })}
-          onDragLeave={() => setDragActive(false)}
-          onDrop={handleDropFiles}
-        />
-      )}
-
       <React.Suspense fallback={<BigSpinner />}>
         {channel ? <ChannelMessages channel={channel} /> : <BigSpinner />}
       </React.Suspense>

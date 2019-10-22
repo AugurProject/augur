@@ -8,8 +8,6 @@ import Logger from '../utils/logger'
 
 import RootContext from '../context/RootContext'
 
-import FileUploadButton from '../components/FileUploadButton'
-
 import ChannelStatus from './ChannelStatus'
 import SendMessage from './SendMessage'
 
@@ -27,15 +25,6 @@ function ChannelControls ({ channel, disabled }) {
     }
   }
 
-  async function sendFiles (files) {
-    try {
-      await channel.sendFiles(files)
-    } catch (err) {
-      logger.error(err)
-      throw err
-    }
-  }
-
   return useObserver(() => (
     <div className='Controls'>
       <SendMessage
@@ -46,7 +35,6 @@ function ChannelControls ({ channel, disabled }) {
         emojiSet={uiStore.emojiSet}
         disabled={disabled}
       />
-      <FileUploadButton onSelectFiles={sendFiles} theme={uiStore.theme} disabled={disabled} />
       <ChannelStatus channel={channel} theme={uiStore.theme} />
     </div>
   ))
