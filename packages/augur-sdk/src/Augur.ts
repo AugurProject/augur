@@ -143,7 +143,7 @@ export class Augur<TProvider extends Provider = Provider> {
       meshBrowser
     );
 
-    await augur.contracts.setReputationToken(networkId);
+    await augur.contracts.setReputationToken(networkId)
     return augur;
   }
 

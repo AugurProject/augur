@@ -3,6 +3,8 @@ import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { EndpointSettings } from "./getter/types";
 import { EventEmitter } from "events";
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+configureDexieForNode(false);
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");

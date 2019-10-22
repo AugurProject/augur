@@ -73,7 +73,7 @@
     "@types/mkdirp": "0.5.2",
     "async-mkdirp": "1.2.7",
     "async-parallel": "1.2.3",
-    "bignumber.js": "8.0.2",
+    "bignumber.js": "9.0.0",
     "binascii": "0.0.2",
     "bn.js": "5.0.0",
     "contract-dependencies-ethers": "2.0.0-alpha.2",

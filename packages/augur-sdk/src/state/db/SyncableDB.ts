@@ -78,7 +78,7 @@ export class SyncableDB extends RollbackTable {
       logs[i].sharesEscrowed = logs[i].uint256Data[8];
       logs[i].tokensEscrowed = logs[i].uint256Data[9];
 
-      delete logs[i].addressData;
+
       delete logs[i].uint256Data;
     }
   }
@@ -142,4 +142,10 @@ export class SyncableDB extends RollbackTable {
   getFullEventName(): string {
     return this.eventName;
   }
+
+  async* allRows() {
+    for (const r of await this.table.toArray()) {
+      yield r;
+    }
+   }
 }

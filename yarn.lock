@@ -13803,6 +13803,18 @@ ipld-dag-cbor@~0.15.0:
     multicodec "~0.5.0"
     multihashing-async "~0.7.0"
 
+ipld-dag-pb@0.18.1:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/ipld-dag-pb/-/ipld-dag-pb-0.18.1.tgz#96ee79aed8bdcddb913e82df5f70dd8bc5435ecd"
+  integrity sha512-YU2k7kfhV9uliVCAdIyJkYnTLNMdc4FyM2q2dZjfvegdzJFw5Ts8IHnMU77CCLIyD2cc/3xvf9dLIzMIBZpV1A==
+  dependencies:
+    cids "~0.7.1"
+    class-is "^1.1.0"
+    multicodec "~0.5.5"
+    multihashing-async "~0.7.0"
+    protons "^1.0.1"
+    stable "~0.1.8"
+
 ipld-dag-pb@^0.17.4, ipld-dag-pb@~0.17.0, ipld-dag-pb@~0.17.2, ipld-dag-pb@~0.17.3, ipld-dag-pb@~0.17.4:
   version "0.17.4"
   resolved "https://registry.yarnpkg.com/ipld-dag-pb/-/ipld-dag-pb-0.17.4.tgz#080841cfdd014d996f8da7f3a522ec8b1f6b6494"
