@@ -94,7 +94,7 @@ def test_randomSorting(market, orderType, numOrders, withBoundingOrders, deadOrd
             if deadOrders[i, 0]: betterOrderId = numOrders + 1
             if deadOrders[i, 1]: worseOrderId = numOrders + 1
         uints = [1, fxpPrices[i], outcomeId, 0, 0]
-        bytes32s = [longTo32Bytes(betterOrderId), longTo32Bytes(worseOrderId), stringToBytes("0")]
+        bytes32s = [longTo32Bytes(betterOrderId), longTo32Bytes(worseOrderId), stringToBytes("0"), stringToBytes("0")]
         assert orders.testSaveOrder(uints, bytes32s, orderType, market.address, fixture.accounts[1], nullAddress, getReturnData=False)
         actualOrderId = fixture.getLogValue("OrderEvent", "orderId")
         assert(actualOrderId != bytearray(32)), "Insert order into list"

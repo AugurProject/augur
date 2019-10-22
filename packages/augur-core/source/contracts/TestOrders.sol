@@ -16,17 +16,10 @@ contract TestOrders is Orders {
     }
 
     function testSaveOrder(uint256[] memory _uints, bytes32[] memory _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) public returns (bytes32 _orderId) {
-        uint256[5] memory _wtfUints;
-        _wtfUints[0] = _uints[0];
-        _wtfUints[1] = _uints[1];
-        _wtfUints[2] = _uints[2];
-        _wtfUints[3] = _uints[3];
-        _wtfUints[4] = _uints[4];
-        bytes32[3] memory _wtfBytes32s;
-        _wtfBytes32s[0] = _bytes32s[0];
-        _wtfBytes32s[1] = _bytes32s[1];
-        _wtfBytes32s[2] = _bytes32s[2];
-        return this.saveOrder(_wtfUints, _wtfBytes32s, _type, _market, _sender, _kycToken);
+        require(_uints.length == 5, "TestOrders: incorrect length for _uints array");
+        require(_bytes32s.length == 4, "TestOrders: incorrect length for _bytes32s array");
+        _bytes32s[3] = getOrderId(_type, _market, _uints[0], _uints[1], _sender, block.number, _uints[2], _uints[3], _uints[4], _kycToken);
+        return this.saveOrder(_uints, _bytes32s, _type, _market, _sender, _kycToken);
     }
 
     function testRemoveOrder(bytes32 _orderId) public returns (bool) {

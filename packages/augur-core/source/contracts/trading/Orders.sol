@@ -129,7 +129,7 @@ contract Orders is IOrders, Initializable {
         _outcome = _order.outcome;
         _creator = _order.creator;
     }
-    
+
     function getOrderDataForLogs(bytes32 _orderId) public view returns (Order.Types _type, address[] memory _addressData, uint256[] memory _uint256Data) {
         Order.Data storage _order = orders[_orderId];
         _addressData = new address[](3);
@@ -213,7 +213,7 @@ contract Orders is IOrders, Initializable {
      * @return The order id that satisfies the given parameters
      */
     function getOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, IERC20 _kycToken) public pure returns (bytes32) {
-        return sha256(abi.encodePacked(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken));
+        return Order.calculateOrderId(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken);
     }
 
     function isBetterPrice(Order.Types _type, uint256 _price, bytes32 _orderId) public view returns (bool) {
@@ -279,10 +279,11 @@ contract Orders is IOrders, Initializable {
     // _betterOrderId = _bytes32s[0]
     // _worseOrderId = _bytes32s[1]
     // _tradeGroupId = _bytes32s[2]
-    function saveOrder(uint256[5] calldata _uints, bytes32[3] calldata _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) external returns (bytes32 _orderId) {
+    // _orderId = _bytes32s[3]
+    function saveOrder(uint256[] calldata _uints, bytes32[] calldata _bytes32s, Order.Types _type, IMarket _market, address _sender, IERC20 _kycToken) external returns (bytes32 _orderId) {
         require(msg.sender == createOrder || msg.sender == address(this));
         require(_uints[2] < _market.getNumberOfOutcomes(), "Orders.saveOrder: Outcome not in market range");
-        _orderId = getOrderId(_type, _market, _uints[0], _uints[1], _sender, block.number, _uints[2], _uints[3], _uints[4], _kycToken);
+        _orderId = _bytes32s[3];
         Order.Data storage _order = orders[_orderId];
         _order.market = _market;
         _order.id = _orderId;
@@ -369,8 +370,7 @@ contract Orders is IOrders, Initializable {
         if (_bestBidOrderId == bytes32(0) || _price > orders[_bestBidOrderId].price) {
             bestOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
-        }
-        else {
+        } else {
             return _bestBidOrderId;
         }
     }
@@ -382,8 +382,7 @@ contract Orders is IOrders, Initializable {
         if (_worstBidOrderId == bytes32(0) || _price <= orders[_worstBidOrderId].price) {
             worstOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
-        }
-        else {
+        } else {
             return _worstBidOrderId;
         }
     }
@@ -395,8 +394,7 @@ contract Orders is IOrders, Initializable {
         if (_bestAskOrderId == bytes32(0) || _price < orders[_bestAskOrderId].price) {
             bestOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
-        }
-        else {
+        } else {
             return _bestAskOrderId;
         }
     }
@@ -408,8 +406,7 @@ contract Orders is IOrders, Initializable {
         if (_worstAskOrderId == bytes32(0) || _price >= orders[_worstAskOrderId].price) {
             worstOrder[_bestOrderWorstOrderHash] = _orderId;
             return _orderId;
-        }
-        else {
+        } else {
             return _worstAskOrderId;
         }
     }

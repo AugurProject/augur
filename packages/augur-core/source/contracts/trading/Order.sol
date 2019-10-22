@@ -75,11 +75,15 @@ library Order {
 
     function getOrderId(Order.Data memory _orderData, IOrders _orders) internal view returns (bytes32) {
         if (_orderData.id == bytes32(0)) {
-            bytes32 _orderId = _orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
+            bytes32 _orderId = calculateOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
             require(_orders.getAmount(_orderId) == 0, "Order.getOrderId: New order had amount. This should not be possible");
             _orderData.id = _orderId;
         }
         return _orderData.id;
+    }
+
+    function calculateOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, IERC20 _kycToken) internal pure returns (bytes32) {
+        return sha256(abi.encodePacked(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken));
     }
 
     function getOrderTradingTypeFromMakerDirection(Order.TradeDirections _creatorDirection) internal pure returns (Order.Types) {
@@ -99,16 +103,18 @@ library Order {
     }
 
     function saveOrder(Order.Data memory _orderData, bytes32 _tradeGroupId, IOrders _orders) internal returns (bytes32) {
-        uint256[5] memory _uints;
+        getOrderId(_orderData, _orders);
+        uint256[] memory _uints = new uint256[](5);
         _uints[0] = _orderData.amount;
         _uints[1] = _orderData.price;
         _uints[2] = _orderData.outcome;
         _uints[3] = _orderData.moneyEscrowed;
         _uints[4] = _orderData.sharesEscrowed;
-        bytes32[3] memory _bytes32s;
+        bytes32[] memory _bytes32s = new bytes32[](4);
         _bytes32s[0] = _orderData.betterOrderId;
         _bytes32s[1] = _orderData.worseOrderId;
         _bytes32s[2] = _tradeGroupId;
+        _bytes32s[3] = _orderData.id;
         return _orders.saveOrder(_uints, _bytes32s, _orderData.orderType, _orderData.market, _orderData.creator, _orderData.kycToken);
     }
 
@@ -140,7 +146,7 @@ library Order {
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-            
+
             _i = 0;
             for (; _i < _orderData.outcome; _i++) {
                 _shareTokens[_i].trustedOrderTransfer(_orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
