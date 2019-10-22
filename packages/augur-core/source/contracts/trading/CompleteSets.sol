@@ -75,6 +75,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(msg.sender == fillOrder);
 
         // Mint shares as specified to recipients
+        /* solium-disable indentation */
         {
             IShareToken[] memory _shareTokens = _market.getShareTokens();
             uint256 _numOutcomes = _shareTokens.length;
@@ -88,7 +89,8 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
                 _shareTokens[_outcome].createShares(_shortRecipient, _amount);
             }
         }
-        
+        /* solium-enable indentation */
+
         uint256 _cost = _amount.mul(_market.getNumTicks());
 
         uint256 _longCost = _amount.mul(_price);
@@ -167,6 +169,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(msg.sender == fillOrder);
 
         // Takes shares away from participants
+        /* solium-disable indentation */
         {
             IShareToken[] memory _shareTokens = _market.getShareTokens();
             uint256 _numOutcomes = _shareTokens.length;
@@ -180,6 +183,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
                 _shareTokens[_outcome].destroyShares(_longParticipant, _amount);
             }
         }
+        /* solium-enable indentation */
 
         uint256 _payout = _amount.mul(_market.getNumTicks());
 

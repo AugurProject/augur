@@ -432,7 +432,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     address public ZeroXTrade;
     address public trade;
-    
+
     Trade.StoredContracts private storedContracts;
 
     mapping (address => uint256[]) public marketOutcomeVolumes;
@@ -573,13 +573,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             marketOutcomeVolumes[address(_market)].length = _tradeData.contracts.shareTokens.length;
         }
         marketOutcomeVolumes[address(_market)][_tradeData.order.outcome] = marketOutcomeVolumes[address(_market)][_tradeData.order.outcome].add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
-        
+
         uint256[] memory tmpMarketOutcomeVolumes = marketOutcomeVolumes[address(_market)];
         uint256 volume;
         for (uint256 i = 0; i < tmpMarketOutcomeVolumes.length; i++) {
             volume += tmpMarketOutcomeVolumes[i];
         }
-        
+
         _tradeData.contracts.augur.logMarketVolumeChanged(_tradeData.contracts.universe, address(_market), volume, tmpMarketOutcomeVolumes);
     }
 

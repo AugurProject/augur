@@ -59,11 +59,13 @@ contract CreateOrder is Initializable, ReentrancyGuard {
         Order.Data memory _orderData = Order.create(_creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _kycToken);
         Order.escrowFunds(_orderData);
         profitLoss.recordFrozenFundChange(_market.getUniverse(), _market, _creator, _outcome, int256(_orderData.moneyEscrowed));
+        /* solium-disable indentation */
         {
             IOrders _orders = orders;
             require(_orders.getAmount(Order.getOrderId(_orderData, _orders)) == 0, "Createorder.createOrder: Order duplication in same block");
             return Order.saveOrder(_orderData, _tradeGroupId, _orders);
         }
+        /* solium-enable indentation */
     }
 
     /**
@@ -87,11 +89,13 @@ contract CreateOrder is Initializable, ReentrancyGuard {
             Order.Data memory _orderData = Order.create(msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _kycToken);
             Order.escrowFunds(_orderData);
             profitLoss.recordFrozenFundChange(_universe, _market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
+            /* solium-disable indentation */
             {
                 IOrders _ordersContract = orders;
                 require(_ordersContract.getAmount(Order.getOrderId(_orderData, _ordersContract)) == 0, "Createorder.publicCreateOrders: Order duplication in same block");
                 _orders[i] = Order.saveOrder(_orderData, _tradeGroupId, _ordersContract);
             }
+            /* solium-enable indentation */
         }
 
         return _orders;

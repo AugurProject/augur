@@ -68,10 +68,12 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         uint256 _outcome;
         // Check creator in inner scope to reduce stack depth
         {
+            /* solium-disable indentation */
             address _creator;
             (_moneyEscrowed, _sharesEscrowed, _type, _market, _outcome, _creator) = _orders.getOrderDataForCancel(_orderId);
             // Check that the order ID is correct and that the sender owns the order
             require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+            /* solium-enable indentation */
         }
 
         // Clear the order first

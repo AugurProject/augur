@@ -47,7 +47,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         doesNotUpdatePnl[_createOrder] = true;
         doesNotUpdatePnl[_fillOrder] = true;
         doesNotUpdatePnl[_cancelOrder] = true;
-        
+
         createOrder = _createOrder;
         fillOrder = _fillOrder;
         cancelOrder = _cancelOrder;

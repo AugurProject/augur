@@ -376,7 +376,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function getTokenIdFromOrder(IExchange.Order memory _order) public pure returns (uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken, IExchange _exchange) = decodeAssetData(_order.makerAssetData);        
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken, IExchange _exchange) = decodeAssetData(_order.makerAssetData);
         _tokenId = _tokenIds[0];
     }
 

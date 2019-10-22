@@ -89,19 +89,17 @@ contract ProfitLoss is Initializable {
             _outcomeData.realizedProfit = _tmpOutcomeData.realizedProfit;
             _outcomeData.realizedCost = _tmpOutcomeData.realizedCost;
             _outcomeData.frozenFunds = _tmpOutcomeData.frozenFunds;
-        }
-        else {
+        } else {
             _tmpOutcomeData.frozenFunds += _frozenTokenDelta;
             _outcomeData.frozenFunds = _tmpOutcomeData.frozenFunds;
         }
-        
+
         int256 _newNetPosition = _tmpOutcomeData.netPosition.add(_amount);
         bool _reversed = _tmpOutcomeData.netPosition < 0 && _newNetPosition > 0 || _tmpOutcomeData.netPosition > 0 && _newNetPosition < 0;
         if (_newNetPosition == 0) {
             _tmpOutcomeData.avgPrice = 0;
             _outcomeData.avgPrice = _tmpOutcomeData.avgPrice;
-        }
-        else if (_reversed) {
+        } else if (_reversed) {
             _tmpOutcomeData.avgPrice = _price;
             _outcomeData.avgPrice = _tmpOutcomeData.avgPrice;
         } else if (!_sold) {

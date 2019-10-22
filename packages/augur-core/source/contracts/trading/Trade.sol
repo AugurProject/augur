@@ -148,7 +148,7 @@ contract Trade is Initializable, ReentrancyGuard {
             _orderPrice = _orders.getPrice(_orderId);
             _tradeData.loopLimit -= 1;
         }
-        
+
         if (_lastTradePrice != 0) {
             _orders.setPrice(_tradeData.market, _tradeData.outcome, _lastTradePrice);
         }
