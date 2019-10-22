@@ -7,6 +7,7 @@ import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles.less';
 import { MarketDepth } from 'modules/markets/helpers/order-for-market-depth';
+import addCommasToNumber from 'utils/add-commas-to-number';
 
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
 
@@ -23,11 +24,12 @@ interface MarketOutcomeDepthProps {
   hasOrders: boolean;
   hoveredPrice?: any;
 }
+
 interface MarketOutcomeDepthState {
   zoom: number;
 }
 
-const ZOOM_LEVELS = [0, 1, 2, 3, 4, 5];
+const ZOOM_LEVELS = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
 // this is important to make sure we don't infinitely redraw the chart / have the container keep growing
 const MARGIN_OF_ERROR = 50;
 
@@ -49,6 +51,10 @@ export default class MarketOutcomeDepth extends Component<
     },
   };
 
+  state = {
+    zoom: 4,
+  };
+
   depthChart: any;
   depthContainer: any;
   xScale: number = 0;
@@ -56,15 +62,12 @@ export default class MarketOutcomeDepth extends Component<
   containerHeight: number = 0;
   containerWidth: number = 0;
 
-  state = {
-    zoom: ZOOM_LEVELS[0],
-  };
-
   constructor(props) {
     super(props);
 
     this.drawDepth = this.drawDepth.bind(this);
     this.drawCrosshairs = this.drawCrosshairs.bind(this);
+    this.handleZoom = this.handleZoom.bind(this);
   }
 
   componentDidMount() {
@@ -89,16 +92,19 @@ export default class MarketOutcomeDepth extends Component<
       updateHoveredPrice,
       updateSelectedOrderProperties,
       hasOrders,
+      zoom: this.state.zoom,
     });
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     const {
       hoveredPrice,
       marketDepth,
       orderBookKeys,
       sharedChartMargins,
     } = this.props;
+    const oldZoom = this.state.zoom;
+    const { zoom } = nextState;
     const { containerHeight, containerWidth } = this;
     const curMarketDepth = JSON.stringify(marketDepth);
     const nextMarketDepth = JSON.stringify(nextProps.marketDepth);
@@ -107,6 +113,7 @@ export default class MarketOutcomeDepth extends Component<
       JSON.stringify(orderBookKeys) !==
         JSON.stringify(nextProps.orderBookKeys) ||
       sharedChartMargins !== nextProps.sharedChartMargins ||
+      oldZoom !== zoom ||
       checkResize(
         this.depthChart.clientWidth,
         this.depthChart.clientHeight,
@@ -124,6 +131,7 @@ export default class MarketOutcomeDepth extends Component<
         updateHoveredPrice: nextProps.updateHoveredPrice,
         updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
         hasOrders: nextProps.hasOrders,
+        zoom,
       });
     }
 
@@ -153,6 +161,7 @@ export default class MarketOutcomeDepth extends Component<
         updateHoveredPrice,
         updateSelectedOrderProperties,
         hasOrders,
+        zoom,
       } = options;
 
       const drawParams = determineDrawParams({
@@ -163,6 +172,7 @@ export default class MarketOutcomeDepth extends Component<
         pricePrecision,
         marketMax,
         marketMin,
+        zoom,
       });
 
       this.xScale = drawParams.xScale;
@@ -293,7 +303,20 @@ export default class MarketOutcomeDepth extends Component<
     }
   }
 
+  handleZoom(direction: number) {
+    const { zoom } = this.state;
+    const newZoom = ZOOM_LEVELS[zoom + direction]
+      ? ZOOM_LEVELS[zoom + direction]
+      : ZOOM_LEVELS[zoom];
+    if (ZOOM_LEVELS[zoom] !== newZoom) {
+      this.setState({
+        zoom: zoom + direction,
+      });
+    }
+  }
+
   render() {
+    const { zoom } = this.state;
     return (
       <div
         ref={depthChart => {
@@ -301,10 +324,10 @@ export default class MarketOutcomeDepth extends Component<
         }}
         className={Styles.MarketOutcomeDepth__container}
       >
-        <button onClick={() => console.log('click Zoom Out', this.state.zoom)}>{ZoomOutIcon}</button>
+        <button onClick={() => this.handleZoom(-1)} disabled={zoom === 0}>{ZoomOutIcon}</button>
         <span>mid price</span>
         <span>{`$${this.props.orderBookKeys.mid.toFixed()}`}</span>
-        <button onClick={() => console.log('click Zoom In', this.state.zoom)}>{ZoomInIcon}</button>
+        <button onClick={() => this.handleZoom(1)} disabled={zoom === 9}>{ZoomInIcon}</button>
         {this.depthContainer}
       </div>
     );
@@ -363,6 +386,7 @@ function determineDrawParams(options) {
     marketMax,
     marketMin,
     orderBookKeys,
+    zoom,
   } = options;
 
   const chartDim = {
@@ -376,34 +400,49 @@ function determineDrawParams(options) {
   const containerWidth = depthChart.clientWidth;
   const containerHeight = depthChart.clientHeight - chartDim.top;
   const drawHeight = containerHeight - chartDim.bottom;
-
   const midPrice = orderBookKeys.mid;
   const minDistance = midPrice.minus(marketMin);
   const maxDistance = marketMax.minus(midPrice);
   const maxDistanceGreater = maxDistance.gt(minDistance);
+  const zoomLevel = ZOOM_LEVELS[zoom];
   const xDomainMin = maxDistanceGreater
-    ? midPrice.minus(maxDistance)
-    : midPrice.minus(minDistance);
+    ? midPrice.minus(maxDistance * zoomLevel)
+    : midPrice.minus(minDistance * zoomLevel);
   const xDomainMax = maxDistanceGreater
-    ? midPrice.plus(maxDistance)
-    : midPrice.plus(minDistance);
+    ? midPrice.plus(maxDistance * zoomLevel)
+    : midPrice.plus(minDistance * zoomLevel);
+
+  const yDomainMax = Object.keys(marketDepth)
+    .reduce((p, side) => {
+      const book = marketDepth[side];
+      if (book.length > 0) {
+        let firstFailingIndex = null;
+        let price = null;
+        if (side === BIDS) {
+          price = xDomainMin;
+          firstFailingIndex = book.findIndex(
+            ele => ele[3] && price.gte(createBigNumber(ele[1]))
+          );
+        } else {
+          price = xDomainMax;
+          firstFailingIndex = book.findIndex(
+            ele => ele[3] && price.lte(createBigNumber(ele[1]))
+          );
+        }
+        const LargestShareAmount = createBigNumber(
+          book[firstFailingIndex - 1] && book[firstFailingIndex - 1][0] || 
+          book[book.length -1][0] ||
+          0
+        );
+        if (LargestShareAmount.gt(p)) return LargestShareAmount;
+      }
+      return p;
+    }, ZERO)
+    .times(1.05)
+    .toNumber();
 
   const xDomain = [xDomainMin, xDomainMax];
-  const yDomain = [
-    0,
-    Object.keys(marketDepth)
-      .reduce((p, side) => {
-        if (marketDepth[side].length > 0) {
-          const result = createBigNumber(
-            marketDepth[side][marketDepth[side].length - 1][0] || 0
-          );
-          if (result.gt(p)) return result;
-        }
-        return p;
-      }, ZERO)
-      .times(1.05)
-      .toNumber(),
-  ];
+  const yDomain = [0, yDomainMax];
 
   const xScale = d3
     .scaleLinear()
@@ -565,9 +604,7 @@ function drawTicks(options) {
 
   // Draw xAxis lines
   drawParams.xScale.ticks(tickCount).forEach((tick: number) => {
-    if (
-      tick === drawParams.xScale.ticks(tickCount)[0]
-    ) {
+    if (tick === drawParams.xScale.ticks(tickCount)[0]) {
       return;
     }
     depthChart
