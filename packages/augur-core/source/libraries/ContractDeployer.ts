@@ -130,7 +130,7 @@ Deploying to: ${networkConfiguration.networkName}
                 cashFaucet.address = await this.uploadAndAddToAugur(cashFaucet, "CashFaucet", [this.augur!.address]);
             }
         } else {
-            this.uploadTestDaiContracts();
+            await this.uploadTestDaiContracts();
         }
 
         // Proxy Factory & Gnosis Safe
