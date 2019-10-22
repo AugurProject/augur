@@ -3,9 +3,13 @@ import {
   LargeSubheaders,
   SmallHeaderLink,
 } from 'modules/create-market/components/common';
-import { RadioCardGroup } from 'modules/common/form';
+import { RadioCardGroup, CategorySingleSelect } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
-import { getTemplateRadioCards } from 'modules/create-market/get-template';
+import {
+  getTemplateRadioCards,
+  getTemplateCategories,
+  getTemplateCategoriesList,
+} from 'modules/create-market/get-template';
 import { Getters } from '@augurproject/sdk/src';
 import { NewMarket } from 'modules/types';
 
@@ -32,6 +36,11 @@ export const SubCategories = ({
     categoryStats
   );
   if (cats.length === 0) nextPage();
+  const tertiaryOptions = getTemplateCategoriesList({
+    primary: newMarket.categories[0],
+    secondary: newMarket.categories[1],
+    tertiary: '',
+  });
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
@@ -46,12 +55,30 @@ export const SubCategories = ({
             updatedNewMarket.categories[1] = value;
             updatedNewMarket.categories[2] = '';
             updateNewMarket(updatedNewMarket);
-            nextPage();
           }}
           radioButtons={cats}
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>
+      </section>
+      <section>
+        <LargeSubheaders
+          header="Choose a further sub-category"
+          subheader="Optionally select another sub-category to help users find your market."
+        />
+        <CategorySingleSelect
+          options={tertiaryOptions}
+          disabled={tertiaryOptions.length === 0}
+          initialSelected={newMarket.categories[2]}
+          initialValue={newMarket.categories[2]}
+          staticLabel="Tertiary Category"
+          placeholder="Custom Tertiary Category"
+          updateSelection={(value: string) => {
+            const updatedNewMarket = { ...newMarket };
+            updatedNewMarket.categories[2] = value;
+            updateNewMarket(updatedNewMarket);
+          }}
+        />
       </section>
     </section>
   );

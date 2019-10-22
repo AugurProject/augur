@@ -222,7 +222,7 @@ export const ETH = 'ETH';
 export const LTC = 'LTC';
 export const NBA = 'NBA';
 export const NCAA = 'NCAA';
-export const NFL = 'NCAA';
+export const NFL = 'NFL';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {

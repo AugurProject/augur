@@ -486,10 +486,10 @@ interface CategorySingleSelectProps {
   initialSelected?: string;
   initialValue?: string;
   updateSelection: Function;
-  errorMessage?: string[];
-  staticLabel?: string;
   errorMessage?: string;
+  staticLabel?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 interface CategorySingleSelectState {
@@ -539,6 +539,7 @@ export class CategorySingleSelect extends Component<
       placeholder,
       defaultValue,
       autoCompleteList,
+      disabled,
     } = this.props;
     const { selected, value, showText } = this.state;
     return (
@@ -555,6 +556,7 @@ export class CategorySingleSelect extends Component<
           showText={showText}
           showDropdown={options.length > 0}
           autoCompleteList={autoCompleteList}
+          disabled={disabled}
         />
       </ul>
     );
