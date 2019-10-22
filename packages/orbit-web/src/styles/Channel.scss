@@ -171,18 +171,23 @@ input[type='button'],
   margin-left: 0.5em;
 
   color: rgba(228, 228, 228, 0.8);
+  font-family: 'Roboto Mono', sans-serif;
   font-size: 0.6em;
-  font-weight: bold;
-  display: flex;
+  font-weight: normal;
   justify-content: center;
   cursor: default;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
   text-transform: uppercase;
 
   padding: 0.5em 1em;
   border-radius: 16px;
   letter-spacing: 1px;
+
+  > div:first-of-type {
+    margin-bottom: 4px;
+  }
 }
 
 .Messages {

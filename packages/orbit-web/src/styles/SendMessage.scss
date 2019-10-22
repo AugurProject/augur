@@ -7,13 +7,13 @@
   color: rgb(128, 128, 128);
   display: flex;
   flex: 1 1 auto;
-  max-width: 60vmax;
+  max-width: 100%;
   margin-top: 0;
 
   form {
     display: flex;
     flex: 1 1 auto;
-    margin-right: 0.5em;
+    margin-right: 0;
   }
 
   input[type='text'] {
@@ -34,6 +34,40 @@
     padding: 0.5em;
     padding-left: 0.25em;
     padding-right: 0.25em;
+  }
+
+  textarea {
+    font-size: 10px;
+    font-family: "Roboto";
+    font-weight: 400;
+
+    color: $input-text-color;
+    background-color: #0E0E0F;
+
+    border: 1px solid #252429;
+
+    padding: 0.5em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+
+    margin-left: 0;
+    margin-right: 0;
+
+    height: 100%;
+    width: 100%;
+
+    box-sizing: border-box;
+
+    resize: none;
+  }
+
+  textarea::placeholder {
+    color: #848294;
+    opacity: 1;
+  }
+
+  input[type='submit'] {
+    display: none;
   }
 
   .username {

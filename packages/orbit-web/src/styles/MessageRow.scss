@@ -25,6 +25,7 @@ $timestamp-color: #848294;
     grid-column: 1;
     grid-row: 1;
     color: $timestamp-color;
+    font-family: 'Roboto Mono', sans-serif;
     font-size: 0.8em;
   }
 
@@ -55,6 +56,7 @@ $timestamp-color: #848294;
     grid-column: 2;
     grid-row: 1;
     color: rgba(255, 255, 255, 0.95);
+    font-family: 'Roboto Mono', sans-serif;
     font-weight: 400;
     user-select: none;
   }
@@ -71,7 +73,7 @@ $timestamp-color: #848294;
     align-items: center;
     font-weight: bold;
     font-size: 1.25em;
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
     color: rgb(95, 95, 95);
 
     // background-image: url('../images/earth.png') cover;
