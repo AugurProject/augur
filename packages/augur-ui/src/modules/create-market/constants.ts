@@ -217,6 +217,12 @@ export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
+export const BTC = 'BTC';
+export const ETH = 'ETH';
+export const LTC = 'LTC';
+export const NBA = 'NBA';
+export const NCAA = 'NCAA';
+export const NFL = 'NCAA';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
