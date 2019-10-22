@@ -9,7 +9,7 @@ import {
   buildMarketDescription,
 } from 'modules/create-market/get-template';
 import { YES_NO, SCALAR, CATEGORICAL } from 'modules/common/constants';
-import { EMPTY_STATE } from 'modules/create-market/constants';
+import { EMPTY_STATE, DEFAULT_TICK_SIZE } from 'modules/create-market/constants';
 import deepClone from 'utils/deep-clone';
 import { NewMarket } from 'modules/types';
 
@@ -55,6 +55,10 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                   ? createTemplateOutcomes(templates[value].inputs)
                   : ['', ''],
               currentStep: newMarket.currentStep,
+              tickSize:
+                newMarket.marketType === SCALAR && templates[value].tickSize
+                  ? templates[value].tickSize
+                  : DEFAULT_TICK_SIZE,
               scalarDenomination:
                 newMarket.marketType === SCALAR &&
                 templates[value].denomination,
