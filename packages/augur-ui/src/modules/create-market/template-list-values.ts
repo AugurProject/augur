@@ -157,6 +157,16 @@ export const LIST_VALUES = {
       label: 'Republican',
     },
   ],
+  PRES_OFFICES: [
+    {
+      value: 'President',
+      label: 'President',
+    },
+    {
+      value: 'Vice-President',
+      label: 'Vice-President',
+    },
+  ],
   OFFICES: [
     {
       value: 'President',
