@@ -76,6 +76,7 @@ contract Universe is IUniverse {
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
+        creationTime = _augur.getTimestamp();
         parentUniverse = _parentUniverse;
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
         payoutNumerators = _payoutNumerators;
@@ -666,6 +667,9 @@ contract Universe is IUniverse {
     }
 
     function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool) {
+        if (_amount == 0) {
+            return true;
+        }
         require(augur.isTrustedSender(msg.sender) || augur.isKnownMarket(IMarket(msg.sender)) || msg.sender == address(openInterestCash));
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);

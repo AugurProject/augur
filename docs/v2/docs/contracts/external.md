@@ -174,6 +174,22 @@ Fills an order with specified parameters and ECDSA signature.
 
 
 
+### `IProxy`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IProxy.masterCopy()"><code class="function-signature">masterCopy()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IProxy.masterCopy()"></a><code class="function-signature">masterCopy() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `IProxyFactory`
 
 

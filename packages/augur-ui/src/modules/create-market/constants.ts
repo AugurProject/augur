@@ -34,6 +34,8 @@ export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
 
+export const DEFAULT_TICK_SIZE = 0.01;
+
 export const EMPTY_STATE: NewMarket = {
   isValid: false,
   validations: {
@@ -65,7 +67,7 @@ export const EMPTY_STATE: NewMarket = {
   designatedReporterAddress: '',
   endTime: null,
   setEndTime: null,
-  tickSize: 0.01,
+  tickSize: DEFAULT_TICK_SIZE,
   hour: null,
   minute: null,
   meridiem: 'AM',
