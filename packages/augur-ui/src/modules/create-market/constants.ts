@@ -316,6 +316,20 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.HorseRacing,
     },
   ],
+  [AMERICAN_FOOTBALL]: [
+    {
+      value: NFL,
+      header: NFL,
+      description: defaultDescription,
+      icon: icons.AmericanFootball,
+    },
+    {
+      value: NCAA,
+      header: NCAA,
+      description: defaultDescription,
+      icon: icons.AmericanFootball,
+    },
+  ],
   [POLITICS]: [
     {
       value: US_ELECTIONS,
@@ -384,19 +398,19 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [CRYPTO]: [
     {
-      value: BITCOIN,
+      value: BTC,
       header: BITCOIN,
       description: defaultDescription,
       icon: icons.BTC,
     },
     {
-      value: ETHEREUM,
+      value: ETH,
       header: ETHEREUM,
       description: defaultDescription,
       icon: icons.ETH,
     },
     {
-      value: LITECOIN,
+      value: LTC,
       header: LITECOIN,
       description: defaultDescription,
       icon: icons.LTC,

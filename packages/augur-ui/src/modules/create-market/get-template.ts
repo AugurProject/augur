@@ -153,6 +153,7 @@ export interface TemplateInput {
 export interface Categories {
   primary: string;
   secondary: string;
+  tertiary: string;
 }
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
@@ -2704,9 +2705,9 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
             ],
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
   },
 };
