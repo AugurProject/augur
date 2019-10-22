@@ -1084,7 +1084,13 @@ const TEMPLATES = {
             example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: 'Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.'
+                }
+              ]
+            },
           },
           {
             templateId: `hk-championship`,
@@ -1427,7 +1433,7 @@ const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
               ],
             },
@@ -1748,7 +1754,7 @@ const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                  text: 'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner", and Extra innings count towards settlement purposes'
                 },
               ],
             },
@@ -1772,7 +1778,7 @@ const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                  text:  'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner". Extra innings count towards settlement purposes'
                 },
               ],
             },
@@ -1789,8 +1795,8 @@ const TEMPLATES = {
           {
             templateId: `baseball-total-wins`,
             marketType: SCALAR,
-            question: `Total number of wins [0] will finish [1] regular season with`,
-            example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
+            question: `Total number of wins the [0] will finish the [1] regular season with`,
+            example: `Total number of wins the LA Dodgers will finish the 2019 regular season with`,
             denomination: 'wins',
             tickSize: 1,
             inputs: [
@@ -2129,6 +2135,11 @@ const INPUTS = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.BASEBALL_EVENT,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.ADDED_OUTCOME,
+      placeholder: `Other (Field)`,
     },
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [
