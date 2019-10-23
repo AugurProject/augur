@@ -172,7 +172,7 @@ input[type='button'],
 
   color: rgba(228, 228, 228, 0.8);
   font-family: 'Roboto Mono', sans-serif;
-  font-size: 0.6em;
+  font-size: 0.5625rem; // 9px
   font-weight: normal;
   justify-content: center;
   cursor: default;
@@ -204,7 +204,7 @@ input[type='button'],
     display: flex;
     justify-content: flex-start;
     margin: 10px 0 10px 0;
-    font-size: 0.7em;
+    font-size: 0.5625rem; // 9px
     color: rgb(228, 228, 228);
     cursor: default;
     text-transform: capitalize;

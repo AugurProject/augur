@@ -19,14 +19,14 @@ $timestamp-color: #848294;
   grid-template-columns: min-content 1fr;
   grid-template-rows: auto auto;
   padding-bottom: 1em;
-  font-size: 10px;
+  font-size: 0.625rem; // 10px
 
   &__Timestamp {
     grid-column: 1;
     grid-row: 1;
     color: $timestamp-color;
     font-family: 'Roboto Mono', sans-serif;
-    font-size: 0.8em;
+    font-size: 0.5625rem; // 9px
   }
 
   &__Content {
@@ -57,6 +57,7 @@ $timestamp-color: #848294;
     grid-row: 1;
     color: rgba(255, 255, 255, 0.95);
     font-family: 'Roboto Mono', sans-serif;
+    font-size: 0.5625rem; // 9px
     font-weight: 400;
     user-select: none;
   }
