@@ -40,7 +40,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
     tertiary: tertiary.value,
   };
   const templates = getTemplates(categoriesFormatted, marketType);
-  const catLabels = categories.filter(c => c).join(' / ');
+  const catLabels = [categories[0], categories[1], tertiary.value].filter(c => c && c !== '').join(' / ');
   let subheader = `Popular ${catLabels} templates with up to 8 possible outcomes.`;
   if (marketType === YES_NO) {
     subheader = `Popular Yes/No ${catLabels} templates.`;
