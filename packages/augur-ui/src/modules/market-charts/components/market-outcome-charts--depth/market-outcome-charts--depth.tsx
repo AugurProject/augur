@@ -7,6 +7,10 @@ import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles.less';
 import { MarketDepth } from 'modules/markets/helpers/order-for-market-depth';
+import { descending } from 'modules/common/buttons.styles.less';
+import { timestamp } from 'modules/alerts/components/alert.styles.less';
+import addCommasToNumber from 'utils/add-commas-to-number';
+import { marketTimeline } from 'modules/common/progress.styles.less';
 import addCommasToNumber from 'utils/add-commas-to-number';
 
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
@@ -29,7 +33,8 @@ interface MarketOutcomeDepthState {
   zoom: number;
 }
 
-const ZOOM_LEVELS = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
+const ZOOM_LEVELS = [1, 0.8, 0.6, 0.4, 0.2];
+const ZOOM_MAX = ZOOM_LEVELS.length - 1;
 // this is important to make sure we don't infinitely redraw the chart / have the container keep growing
 const MARGIN_OF_ERROR = 50;
 
@@ -38,6 +43,31 @@ const checkResize = memoize(
     Math.abs(clientWidth + clientHeight - (containerWidth + containerHeight)) >
     MARGIN_OF_ERROR
 );
+function determineInitialZoom(props) {
+  const {
+    orderBookKeys,
+    marketMin,
+    midPrice,
+    marketMax
+  } = props;
+
+  const midPrice = orderBookKeys.mid;
+  const minDistance = midPrice.minus(marketMin);
+  const maxDistance = marketMax.minus(midPrice);
+  const maxDistanceGreater = maxDistance.gt(minDistance);
+  const ZoomLevelArray = ZOOM_LEVELS.map(zoomLevel => {
+    const xDomainMin = maxDistanceGreater
+      ? midPrice.minus(maxDistance * zoomLevel)
+      : midPrice.minus(minDistance * zoomLevel);
+    const xDomainMax = maxDistanceGreater
+      ? midPrice.plus(maxDistance * zoomLevel)
+      : midPrice.plus(minDistance * zoomLevel);
+      return [xDomainMin, xDomainMax];
+  });
+  const zoom = ZoomLevelArray.findIndex(ele => ele[0].gte(marketMin) && ele[1].lte(marketMax));
+
+  return zoom === -1 ? ZOOM_MAX : zoom;
+}
 
 export default class MarketOutcomeDepth extends Component<
   MarketOutcomeDepthProps,
@@ -51,10 +81,6 @@ export default class MarketOutcomeDepth extends Component<
     },
   };
 
-  state = {
-    zoom: 4,
-  };
-
   depthChart: any;
   depthContainer: any;
   xScale: number = 0;
@@ -64,6 +90,10 @@ export default class MarketOutcomeDepth extends Component<
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      zoom: determineInitialZoom(props)
+    };
 
     this.drawDepth = this.drawDepth.bind(this);
     this.drawCrosshairs = this.drawCrosshairs.bind(this);
@@ -197,7 +227,7 @@ export default class MarketOutcomeDepth extends Component<
         marketMax,
         marketMin,
         hasOrders,
-        marketDepth,
+        marketDepth: drawParams.newMarketDepth,
       });
 
       drawLines({
@@ -229,7 +259,7 @@ export default class MarketOutcomeDepth extends Component<
       this.drawCrosshairs({
         hoveredPrice: this.props.hoveredPrice,
         pricePrecision,
-        marketDepth: drawParams.newMarketDepth,
+        marketDepth,
         marketMin,
         marketMax,
       });
@@ -327,7 +357,7 @@ export default class MarketOutcomeDepth extends Component<
         <button onClick={() => this.handleZoom(-1)} disabled={zoom === 0}>{ZoomOutIcon}</button>
         <span>mid price</span>
         <span>{`$${this.props.orderBookKeys.mid.toFixed()}`}</span>
-        <button onClick={() => this.handleZoom(1)} disabled={zoom === 9}>{ZoomInIcon}</button>
+        <button onClick={() => this.handleZoom(1)} disabled={zoom === ZOOM_MAX}>{ZoomInIcon}</button>
         {this.depthContainer}
       </div>
     );
@@ -405,12 +435,14 @@ function determineDrawParams(options) {
   const maxDistance = marketMax.minus(midPrice);
   const maxDistanceGreater = maxDistance.gt(minDistance);
   const zoomLevel = ZOOM_LEVELS[zoom];
+  const scaledMaxDistance = maxDistance.times(zoomLevel);
+  const scaledMinDistance = minDistance.times(zoomLevel);
   const xDomainMin = maxDistanceGreater
-    ? midPrice.minus(maxDistance * zoomLevel)
-    : midPrice.minus(minDistance * zoomLevel);
+    ? midPrice.minus(scaledMaxDistance)
+    : midPrice.minus(scaledMinDistance);
   const xDomainMax = maxDistanceGreater
-    ? midPrice.plus(maxDistance * zoomLevel)
-    : midPrice.plus(minDistance * zoomLevel);
+    ? midPrice.plus(scaledMaxDistance)
+    : midPrice.plus(scaledMinDistance);
 
   const yDomainMax = Object.keys(marketDepth)
     .reduce((p, side) => {
@@ -441,9 +473,8 @@ function determineDrawParams(options) {
     .times(1.05)
     .toNumber();
 
-  const xDomain = [xDomainMin, xDomainMax];
+  const xDomain = [xDomainMin.toNumber(), xDomainMax.toNumber()];
   const yDomain = [0, yDomainMax];
-
   const xScale = d3
     .scaleLinear()
     .domain(d3.extent(xDomain))
@@ -582,6 +613,7 @@ function drawTicks(options) {
     }
     return acc;
   }, []);
+
   depthChart
     .append('g')
     .attr('id', 'depth-x-axis')
