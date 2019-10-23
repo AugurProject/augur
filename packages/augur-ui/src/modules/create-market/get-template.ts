@@ -161,7 +161,17 @@ export interface Categories {
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
-  const templates = getTemplates(categories, null);
+  const templates = getTemplatesPerSubcategory(categories, false);
+  if (!templates) return [];
+  const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
+  return [...new Set(marketTypes)].map(m =>
+    MARKET_TYPE_TEMPLATES.find(t => t.value === m)
+  );
+};
+
+export const getTemplatesByTertiaryMarketTypes = (categories: Categories) => {
+  if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
+  const templates = getTemplatesPerSubcategory(categories, true);
   if (!templates) return [];
   const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
   return [...new Set(marketTypes)].map(m =>
@@ -243,13 +253,70 @@ export const getTemplateCategories = (categories: Categories): string[] => {
   return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
 };
 
+export const getTemplateCategoriesByMarketType = (
+  categories: Categories,
+  marketType: string
+): string[] => {
+  let emptyCats = [];
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  const primaryCat = TEMPLATES[categories.primary];
+  if (!primaryCat) return emptyCats;
+  if (!categories.secondary)
+    return primaryCat.children ? Object.keys(primaryCat.children) : [];
+  const secondaryCat = primaryCat.children
+    ? primaryCat.children[categories.secondary]
+    : emptyCats;
+  if (!secondaryCat) return emptyCats;
+  if (secondaryCat.children) {
+    let children = [];
+    Object.keys(secondaryCat.children).map(tertiary => {
+      const marketTypes = getTemplatesByTertiaryMarketTypes({
+        ...categories,
+        tertiary: tertiary,
+      });
+      if (marketTypes.find(type => type.value === marketType)) {
+        children = children.concat(tertiary);
+      }
+    });
+    return children;
+  } else {
+    return [];
+  }
+};
+
 export const getTemplateCategoriesList = (
-  categories: Categories
+  categories: Categories,
+  marketType: string
 ): NameValuePair[] => {
-  const results = getTemplateCategories(categories);
+  const results = getTemplateCategoriesByMarketType(categories, marketType);
   if (!results || results.length === 0) return [];
   const mapped = results.map(v => ({ label: v, value: v }));
   return mapped as NameValuePair[];
+};
+
+export const getTemplatesPerSubcategory = (
+  categories: Categories,
+  filterByTertiary: boolean
+): Template[] => {
+  const primary: CategoryTemplate = TEMPLATES[categories.primary];
+  if (!primary.children) return primary.templates;
+  const secondary = primary.children[categories.secondary];
+  if (secondary.children) {
+    let allSubCategoryTemplates = [];
+    Object.keys(secondary.children).forEach(key => {
+      const child = secondary.children[key]
+      if (
+        (filterByTertiary && key === categories.tertiary) ||
+        !filterByTertiary
+      )
+        allSubCategoryTemplates = allSubCategoryTemplates.concat(
+          child.templates
+        );
+    });
+    return allSubCategoryTemplates;
+  } else {
+    return secondary.templates;
+  }
 };
 
 export const getTemplates = (

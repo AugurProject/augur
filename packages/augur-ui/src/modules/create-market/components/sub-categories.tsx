@@ -6,9 +6,7 @@ import {
 import { RadioCardGroup, CategorySingleSelect } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
 import {
-  getTemplateRadioCards,
-  getTemplateCategories,
-  getTemplateCategoriesList,
+  getTemplateRadioCards
 } from 'modules/create-market/get-template';
 import { Getters } from '@augurproject/sdk/src';
 import { NewMarket } from 'modules/types';
@@ -36,13 +34,6 @@ export const SubCategories = ({
     categoryStats
   );
   if (cats.length === 0) nextPage();
-  const tertiaryOptions = newMarket.categories[1]
-    ? getTemplateCategoriesList({
-        primary: newMarket.categories[0],
-        secondary: newMarket.categories[1],
-        tertiary: '',
-      })
-    : [];
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
@@ -62,26 +53,6 @@ export const SubCategories = ({
         >
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>
-      </section>
-      <section>
-        <LargeSubheaders
-          header="Choose a secondary sub-category"
-          subheader="Select additional category to get templates."
-        />
-        <CategorySingleSelect
-          options={tertiaryOptions}
-          disabled={tertiaryOptions.length === 0}
-          showDropdown={true}
-          initialSelected={newMarket.categories[2]}
-          initialValue={newMarket.categories[2]}
-          staticLabel="Secondary Sub Category"
-          placeholder="Category"
-          updateSelection={(value: string) => {
-            const updatedNewMarket = { ...newMarket };
-            updatedNewMarket.categories[2] = value;
-            updateNewMarket(updatedNewMarket);
-          }}
-        />
       </section>
     </section>
   );

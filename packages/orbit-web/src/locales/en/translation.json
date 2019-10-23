@@ -35,7 +35,7 @@
     "inputPlaceholder": "Join channel"
   },
   "login": {
-    "nickname": "Nickname",
+    "nickname": "Enter a name",
     "orLoginWith": "Or login with",
     "pressEnterToLogin": "Press ENTER to login"
   },
