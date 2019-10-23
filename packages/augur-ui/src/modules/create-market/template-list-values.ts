@@ -708,5 +708,257 @@ export const LIST_VALUES = {
       value: 'Washington Nationals',
       label: 'Washington Nationals',
     },
-  ]
+  ],
+  NFL_TEAMS: [
+    {
+      value: 'Arizona Cardinals',
+      label: 'Arizona Cardinals',
+    },
+    {
+      value: 'Atlanta Falcons',
+      label: 'Atlanta Falcons',
+    },
+    {
+      value: 'Baltimore Ravens',
+      label: 'Baltimore Ravens',
+    },
+    {
+      value: 'Buffalo Bills',
+      label: 'Buffalo Bills',
+    },
+    {
+      value: 'Carolina Panthers',
+      label: 'Carolina Panthers',
+    },
+    {
+      value: 'Chicago Bears',
+      label: 'Chicago Bears',
+    },
+    {
+      value: 'Cincinnati Bengals',
+      label: 'Cincinnati Bengals',
+    },
+    {
+      value: 'Cleveland Browns',
+      label: 'Cleveland Browns',
+    },
+    {
+      value: 'Dallas Cowboys',
+      label: 'Dallas Cowboys',
+    },
+    {
+      value: 'Denver Broncos',
+      label: 'Denver Broncos',
+    },
+    {
+      value: 'Detroit Lions',
+      label: 'Detroit Lions',
+    },
+    {
+      value: 'Green Bay Packers',
+      label: 'Green Bay Packers',
+    },
+    {
+      value: 'Houston Texans',
+      label: 'Houston Texans',
+    },
+    {
+      value: 'Indianapolis Colts',
+      label: 'Indianapolis Colts',
+    },
+    {
+      value: 'Jacksonville Jaguars',
+      label: 'Jacksonville Jaguars',
+    },
+    {
+      value: 'Kansas City Chiefs',
+      label: 'Kansas City Chiefs',
+    },
+    {
+      value: 'Los Angeles Chargers',
+      label: 'Los Angeles Chargers',
+    },
+    {
+      value: 'Los Angeles Rams',
+      label: 'Los Angeles Rams',
+    },
+    {
+      value: 'Miami Dolphins',
+      label: 'Miami Dolphins',
+    },
+    {
+      value: 'Minnesota Vikings',
+      label: 'Minnesota Vikings',
+    },
+    {
+      value: 'New England Patriots',
+      label: 'New England Patriots',
+    },
+    {
+      value: 'New Orleans Saints',
+      label: 'New Orleans Saints',
+    },
+    {
+      value: 'New York Giants',
+      label: 'New York Giants',
+    },
+    {
+      value: 'New York Jets',
+      label: 'New York Jets',
+    },
+    {
+      value: 'Oakland Raiders',
+      label: 'Oakland Raiders',
+    },
+    {
+      value: 'Philadelphia Eagles',
+      label: 'Philadelphia Eagles',
+    },
+    {
+      value: 'Pittsburgh Steelers',
+      label: 'Pittsburgh Steelers',
+    },
+    {
+      value: 'San Francisco 49ers',
+      label: 'San Francisco 49ers',
+    },
+    {
+      value: 'Seattle Seahawks',
+      label: 'Seattle Seahawks',
+    },
+    {
+      value: 'Tampa Bay Buccaneers',
+      label: 'Tampa Bay Buccaneers',
+    },
+    {
+      value: 'Tennessee Titans',
+      label: 'Tennessee Titans',
+    },
+    {
+      value: 'Washington Redskins',
+      label: 'Washington Redskins',
+    },
+  ],
+  NBA_TEAMS: [
+    {
+      value: 'Atlanta Hawks',
+      label: 'Atlanta Hawks',
+    },
+    {
+      value: 'Boston Celtics',
+      label: 'Boston Celtics',
+    },
+    {
+      value: 'Brooklyn Nets',
+      label: 'Brooklyn Nets',
+    },
+    {
+      value: 'Charlotte Hornets',
+      label: 'Charlotte Hornets',
+    },
+    {
+      value: 'Chicago Bulls',
+      label: 'Chicago Bulls',
+    },
+    {
+      value: 'Cleveland Cavaliers',
+      label: 'Cleveland Cavaliers',
+    },
+    {
+      value: 'Dallas Mavericks',
+      label: 'Dallas Mavericks',
+    },
+    {
+      value: 'Denver Nuggets',
+      label: 'Denver Nuggets',
+    },
+    {
+      value: 'Detroit Pistons',
+      label: 'Detroit Pistons',
+    },
+    {
+      value: 'Golden State Warriors',
+      label: 'Golden State Warriors',
+    },
+    {
+      value: 'Houston Rockets',
+      label: 'Houston Rockets',
+    },
+    {
+      value: 'Indiana Pacers',
+      label: 'Indiana Pacers',
+    },
+    {
+      value: 'LA Clippers',
+      label: 'LA Clippers',
+    },
+    {
+      value: 'LA Lakers',
+      label: 'LA Lakers',
+    },
+    {
+      value: 'Memphis Grizzlies',
+      label: 'Memphis Grizzlies',
+    },
+    {
+      value: 'Miami Heat',
+      label: 'Miami Heat',
+    },
+    {
+      value: 'Milwaukee Bucks',
+      label: 'Milwaukee Bucks',
+    },
+    {
+      value: 'Minnesota Timberwolves',
+      label: 'Minnesota Timberwolves',
+    },
+    {
+      value: 'New Orleans Pelicans',
+      label: 'New Orleans Pelicans',
+    },
+    {
+      value: 'New York Knicks',
+      label: 'New York Knicks',
+    },
+    {
+      value: 'Oklahoma City Thunder',
+      label: 'Oklahoma City Thunder',
+    },
+    {
+      value: 'Orlando Magic',
+      label: 'Orlando Magic',
+    },
+    {
+      value: 'Philadelphia 76ers',
+      label: 'Philadelphia 76ers',
+    },
+    {
+      value: 'Phoenix Suns',
+      label: 'Phoenix Suns',
+    },
+    {
+      value: 'Portland Trail Blazers',
+      label: 'Portland Trail Blazers',
+    },
+    {
+      value: 'Sacramento Kings',
+      label: 'Sacramento Kings',
+    },
+    {
+      value: 'San Antonio Spurs',
+      label: 'San Antonio Spurs',
+    },
+    {
+      value: 'Toronto Raptors',
+      label: 'Toronto Raptors',
+    },
+    {
+      value: 'Utah Jazz',
+      label: 'Utah Jazz',
+    },
+    {
+      value: 'Washington Wizards',
+      label: 'Washington Wizards',
+    },
+  ],
 };
