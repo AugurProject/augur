@@ -227,7 +227,7 @@ export const addCategoryStats = (
   return card;
 };
 
-const getTemplateCategories = (categories: Categories): string[] => {
+export const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
   if (!categories || !categories.primary) return Object.keys(TEMPLATES);
   const primaryCat = TEMPLATES[categories.primary];
