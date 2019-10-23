@@ -159,7 +159,7 @@ export interface Categories {
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
-  const templates = getTemplates(categories, null, false);
+  const templates = getTemplatesPerSubcategory(categories);
   if (!templates) return [];
   const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
   return [...new Set(marketTypes)].map(m =>
@@ -241,13 +241,53 @@ export const getTemplateCategories = (categories: Categories): string[] => {
   return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
 };
 
+export const getTemplateCategoriesByMarketType = (categories: Categories, marketType: string): string[] => {
+  let emptyCats = [];
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  const primaryCat = TEMPLATES[categories.primary];
+  if (!primaryCat) return emptyCats;
+  if (!categories.secondary)
+    return primaryCat.children ? Object.keys(primaryCat.children) : [];
+  const secondaryCat = primaryCat.children
+    ? primaryCat.children[categories.secondary]
+    : emptyCats;
+  if (!secondaryCat) return emptyCats;
+  if (secondaryCat.children) {
+    const marketTypes = getTemplateRadioCardsMarketTypes(categories);
+    if (marketTypes.find(type => type.value === marketType)) {
+      return Object.keys(secondaryCat.children);
+    } else {
+      return [];
+    }
+  } else {
+    return [];
+  }
+};
+
 export const getTemplateCategoriesList = (
-  categories: Categories
+  categories: Categories,
+  marketType: string
 ): NameValuePair[] => {
-  const results = getTemplateCategories(categories);
+  const results = getTemplateCategoriesByMarketType(categories, marketType);
   if (!results || results.length === 0) return [];
   const mapped = results.map(v => ({ label: v, value: v }));
   return mapped as NameValuePair[];
+};
+
+export const getTemplatesPerSubcategory = (
+  categories: Categories
+): Template[] => {
+  const primary: CategoryTemplate = TEMPLATES[categories.primary];
+  const secondary = primary.children[categories.secondary];
+  if (secondary.children) {
+    let allSubCategoryTemplates = [];
+    Object.values(secondary.children).forEach(child => {
+      allSubCategoryTemplates = allSubCategoryTemplates.concat(child.templates)
+    });
+    return allSubCategoryTemplates;
+  } else {
+    return secondary.templates;
+  }
 };
 
 export const getTemplates = (

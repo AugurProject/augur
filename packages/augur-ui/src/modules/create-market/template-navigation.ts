@@ -14,20 +14,6 @@ function checkValid(data) {
   return data === '' || !data;
 }
 
-function hasTemplates(categories) {
-  const templates = getTemplates(
-    {
-      primary: categories[0],
-      secondary: categories[1],
-      tertiary: categories[2],
-    },
-    null,
-    false
-  );
-  if (templates && templates.length > 0) return false;
-  return true;
-}
-
 export const TEMPLATE_CONTENT_PAGES = [
   { title: 'Category' },
   {
@@ -35,7 +21,7 @@ export const TEMPLATE_CONTENT_PAGES = [
     mainContent: SUB_CATEGORIES,
     firstButton: BACK,
     secondButton: NEXT,
-    disabledFunction: newMarket => hasTemplates(newMarket.categories),
+    disabledFunction: newMarket => checkValid(newMarket.categories[1]),
   },
   {
     title: 'Market Type',
