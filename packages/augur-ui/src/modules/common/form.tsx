@@ -538,7 +538,6 @@ export class CategorySingleSelect extends Component<
       errorMessage,
       staticLabel,
       placeholder,
-      defaultValue,
       autoCompleteList,
       disabled,
       showDropdown,

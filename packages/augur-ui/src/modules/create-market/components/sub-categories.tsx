@@ -64,26 +64,28 @@ export const SubCategories = ({
           <SmallHeaderLink text="Don't see your category?" link ownLine />
         </RadioCardGroup>
       </section>
-      <section>
-        <LargeSubheaders
-          header="Choose a further sub-category"
-          subheader="Optionally select another sub-category to help users find your market."
-        />
-        <CategorySingleSelect
-          options={tertiaryOptions}
-          disabled={tertiaryOptions.length === 0}
-          showDropdown={true}
-          initialSelected={newMarket.categories[2]}
-          initialValue={newMarket.categories[2]}
-          staticLabel="Tertiary Category"
-          placeholder="Custom Tertiary Category"
-          updateSelection={(value: string) => {
-            const updatedNewMarket = { ...newMarket };
-            updatedNewMarket.categories[2] = value;
-            updateNewMarket(updatedNewMarket);
-          }}
-        />
-      </section>
+      {tertiaryOptions.length > 0 && (
+        <section>
+          <LargeSubheaders
+            header="Choose a secondary sub-category"
+            subheader="Select additional category to get templates."
+          />
+          <CategorySingleSelect
+            options={tertiaryOptions}
+            disabled={tertiaryOptions.length === 0}
+            showDropdown={tertiaryOptions.length > 0}
+            initialSelected={newMarket.categories[2]}
+            initialValue={newMarket.categories[2]}
+            staticLabel="Tertiary Category"
+            placeholder="Custom Tertiary Category"
+            updateSelection={(value: string) => {
+              const updatedNewMarket = { ...newMarket };
+              updatedNewMarket.categories[2] = value;
+              updateNewMarket(updatedNewMarket);
+            }}
+          />
+        </section>
+      )}
     </section>
   );
 };
