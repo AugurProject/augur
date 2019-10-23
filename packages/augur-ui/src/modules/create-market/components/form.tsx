@@ -289,8 +289,8 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   nextPage = () => {
-    const { newMarket, updateNewMarket, isTemplate } = this.props;
-    const { currentStep, marketType, template } = newMarket;
+    const { newMarket, updateNewMarket } = this.props;
+    const { currentStep } = newMarket;
 
     const { contentPages } = this.state;
     if (this.findErrors()) return;
@@ -755,14 +755,13 @@ export default class Form extends React.Component<FormProps, FormState> {
               {mainContent === REVIEW && <Review />}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && (
-                <SubCategories nextPage={this.nextPage} />
+                <SubCategories />
               )}
               {mainContent === MARKET_TYPE && (
                 <MarketType
                   updateNewMarket={updateNewMarket}
                   marketType={marketType}
                   categories={newMarket.categories}
-                  nextPage={this.nextPage}
                 />
               )}
               {saveDraftError && (

@@ -14,14 +14,12 @@ import { NewMarket } from 'modules/types';
 export interface SubCategoriesProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
-  nextPage: Function;
   categoryStats: Getters.Markets.CategoryStats;
 }
 
 export const SubCategories = ({
   newMarket,
   updateNewMarket,
-  nextPage,
   categoryStats,
 }: SubCategoriesProps) => {
   const { categories } = newMarket;
@@ -33,7 +31,6 @@ export const SubCategories = ({
     },
     categoryStats
   );
-  if (cats.length === 0) nextPage();
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
