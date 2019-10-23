@@ -1,5 +1,5 @@
-import React from "react";
-import moment from "moment";
+import React, { useState, useRef } from "react";
+import moment, { Moment } from "moment";
 import {
   PrimaryButton,
   SecondaryButton,
@@ -149,57 +149,46 @@ const paginationOptions = [
   },
 ];
 
-const DEFAULT_STATE = {
-  coin: "ALL",
-  action: "ALL",
-  itemsPerPage: 20,
-  page: 1,
-  priceSort: NEUTRAL,
-  quantitySort: NEUTRAL,
-};
 
-export class Transactions extends React.Component<
-  TransactionsProps,
-  TransactionsState
-> {
-  // @ts-ignore
-  state: TransactionsState = {
-    ...DEFAULT_STATE,
-    startDate: moment(this.props.currentTimestamp * 1000).subtract(6, "M"),
-    endDate: moment(this.props.currentTimestamp * 1000),
-    startFocused: false,
-    endFocused: false,
-    AllTransactions: [],
-    filteredTransactions: [],
-  };
+export const Transactions: React.FC<TransactionsProps> = props => {
+  //Default states
+  const [coin, setCoin] = useState<string>("ALL");
+  const [action, setAction] = useState<string>("ALL");
+  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+  const [page, setPage] = useState<number>(1);
+  const [priceSort, setPriceSort] = useState<string>(NEUTRAL)
+  const [quantitySort, setQuantitySort] = useState<string>(NEUTRAL)
+  //Component states
+  const [startDate, setStartDate] = useState<Moment>(moment(props.currentTimestamp * 1000).subtract(6, "M"))
+  const [endDate, setEndDate] = useState<Moment>(moment(props.currentTimestamp * 1000));
+  const [startFocused, setStartFocused] = useState<boolean>(false);
+  const [endFocused, setEndFocused] = useState<boolean>(false);
+  const [AllTransactions, setAllTransactions] = useState<TransactionInfo[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<TransactionInfo[]>([])
+  //Refs
+  const tableHeaderRef = useRef<HTMLDivElement>(null);
+  const tableBodyRef = useRef<HTMLDivElement>(null);
 
-  public tableHeaderRef: any = null;
-  public tableBodyRef: any = null;
+  React.useEffect(() => {
+    triggerSearch();
+    tableBodyRef.current.addEventListener("scroll", handleScroll);
+    tableHeaderRef.current.addEventListener("scroll", handleScroll);
+    return () => {
+      tableBodyRef.current.removeEventListener("scroll", handleScroll);
+      tableHeaderRef.current.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+  
 
-  UNSAFE_componentWillMount = () => {
-    this.triggerSearch();
-  }
-
-  componentDidMount = () => {
-    this.tableBodyRef.addEventListener("scroll", this.handleScroll);
-    this.tableHeaderRef.addEventListener("scroll", this.handleScroll);
-  }
-
-  componentWillUnmount = () => {
-    this.tableBodyRef.removeEventListener("scroll", this.handleScroll);
-    this.tableHeaderRef.removeEventListener("scroll", this.handleScroll);
-  }
-
-  handleScroll = () => {
-    const body = this.tableBodyRef.scrollLeft;
-    const head = this.tableHeaderRef.scrollLeft;
+  const handleScroll = () => {
+    const body = tableBodyRef.current.scrollLeft;
+    const head = tableHeaderRef.current.scrollLeft;
     if (body !== head) {
-      this.tableHeaderRef.scrollTo(body, 0);
+      tableHeaderRef.current.scrollTo(body, 0);
     }
   }
 
-  cyclePriceSort = (e: Event) => {
-    const { filteredTransactions, priceSort } = this.state;
+  const cyclePriceSort = (e: Event) => {
     let updatedPriceSort = NEUTRAL;
     switch (priceSort) {
       case ASCENDING:
@@ -222,11 +211,11 @@ export class Transactions extends React.Component<
         break;
     }
     // @ts-ignore
-    this.setState({ priceSort: updatedPriceSort, filteredTransactions });
+    setPriceSort(updatedPriceSort);
+    setFilteredTransactions(filteredTransactions)
   }
 
-  cycleQuantitySort = (e: any) => {
-    const { filteredTransactions, quantitySort } = this.state;
+  const cycleQuantitySort = (e: Event) => {
     let updatedQuantitySort = NEUTRAL;
     switch (quantitySort) {
       case ASCENDING:
@@ -249,12 +238,12 @@ export class Transactions extends React.Component<
         break;
     }
     // @ts-ignore
-    this.setState({ quantitySort: updatedQuantitySort, filteredTransactions });
+    setQuantitySort(quantitySort);
+    setFilteredTransactions(filteredTransactions);
   };
 
-  triggerSearch = () => {
-    const { getTransactionsHistory } = this.props;
-    const { startDate, endDate, coin, action } = this.state;
+  const triggerSearch = () => {
+    const { getTransactionsHistory } = props;
     getTransactionsHistory(
       startDate.unix().valueOf(),
       endDate.unix().valueOf(),
@@ -262,34 +251,27 @@ export class Transactions extends React.Component<
       action,
       (err: any, AllTransactions: Array<TransactionInfo>) => {
         if (!err) {
-          const filteredTransactions = this.filterTransactions(
+          const filteredTransactions = filterTransactions(
             AllTransactions,
             coin,
             action
           );
-          if (this.tableHeaderRef)
-            this.setState({ AllTransactions, filteredTransactions });
+          if (tableHeaderRef)
+            setAllTransactions(AllTransactions);
+            setFilteredTransactions(filteredTransactions);
         }
       }
     );
   };
 
-  resetSearch = () => {
-    const { currentTimestamp } = this.props;
-    const { AllTransactions } = this.state;
-    this.setState(
-      // @ts-ignore
-      {
-        ...DEFAULT_STATE,
-        startDate: moment(currentTimestamp * 1000).subtract(6, "M"),
-        endDate: moment(currentTimestamp * 1000),
-        filteredTransactions: AllTransactions,
-      },
-      () => this.triggerSearch(),
-    );
+  const resetSearch = () => {
+    setStartDate(moment(currentTimestamp * 1000).subtract(6, "M"));
+    setEndDate(moment(currentTimestamp * 1000));
+    setFilteredTransactions(AllTransactions);
+    triggerSearch();
   };
 
-  filterTransactions = (
+  const filterTransactions = (
     transactions: Array<TransactionInfo>,
     coin: string,
     action: string,
@@ -302,8 +284,7 @@ export class Transactions extends React.Component<
     return filteredTransactions;
   };
 
-  triggerTransactionsExport = () => {
-    const { AllTransactions } = this.state;
+  const triggerTransactionsExport = () => {
     const items = AllTransactions;
     const replacer = (key: string, value: any) => (value === null ? "" : value);
     const header = Object.keys(items[0]);
@@ -323,7 +304,7 @@ export class Transactions extends React.Component<
     a.click();
   };
 
-  addTransactionRow = (tx: TransactionInfo) => {
+  const addTransactionRow = (tx: TransactionInfo) => {
     const timestamp = moment(tx.timestamp * 1000).format("D MMM YYYY HH:mm:ss");
     const key = `${tx.transactionHash}-${tx.timestamp}-${tx.outcome}-${
       tx.quantity
@@ -362,175 +343,154 @@ export class Transactions extends React.Component<
     );
   }
 
-  render() {
-    const { title, closeAction, currentTimestamp } = this.props;
-    const {
-      coin,
-      action,
-      startDate,
-      startFocused,
-      endDate,
-      endFocused,
-      itemsPerPage,
-      page,
-      filteredTransactions,
-      priceSort,
-      quantitySort,
-    } = this.state;
-    const pageInfo = {
-      page,
-      itemsPerPage,
-      itemCount: filteredTransactions.length,
-      action: (page: number) => this.setState({ page }),
-    };
-    const pageTransactions = filteredTransactions.slice(
-      page * itemsPerPage - itemsPerPage,
-      page * itemsPerPage,
-    );
+  const { title, closeAction, currentTimestamp } = props;
+  const pageInfo = {
+    page,
+    itemsPerPage,
+    itemCount: filteredTransactions.length,
+    action: (page: number) => setPage(page),
+  };
+  const pageTransactions = filteredTransactions.slice(
+    page * itemsPerPage - itemsPerPage,
+    page * itemsPerPage,
+  );
 
-    const startDatePicker = {
-      id: "startDatePicker",
-      date: startDate,
-      placeholder: "Start Date",
-      onDateChange: (startDate: number) =>
-        this.setState({ startDate }, () => this.triggerSearch()),
-      onFocusChange: ({ focused }) => {
-        if (this.state.startDate == null) {
-          const startDate = moment(currentTimestamp * 1000);
-          this.setState({
-            startDate,
-          });
-        }
-        this.setState({ startFocused: focused });
-      },
-      focused: startFocused,
-      displayFormat: "D MMM YYYY",
-      numberOfMonths: 1,
-    };
+  const startDatePicker = {
+    id: "startDatePicker",
+    date: startDate,
+    placeholder: "Start Date",
+    onDateChange: (startDate: string) =>{
+      setStartDate(moment(startDate));
+      triggerSearch();
+    },
+    onFocusChange: ({ focused }: { focused: boolean; }) => {
+      if (startDate == null) {
+        const startDate = moment(currentTimestamp * 1000);
+        setStartDate(startDate);
+      }
+      setStartFocused(focused);
+    },
+    focused: startFocused,
+    displayFormat: "D MMM YYYY",
+    numberOfMonths: 1,
+  };
 
-    const endDatePicker = {
-      id: "endDatePicker",
-      date: endDate,
-      placeholder: "End Date",
-      onDateChange: (endDate: number) =>
-        this.setState({ endDate }, () => this.triggerSearch()),
-      onFocusChange: ({ focused }) => {
-        if (this.state.endDate == null) {
-          const endDate = moment(currentTimestamp * 1000);
-          this.setState({
-            endDate,
-          });
-        }
-        this.setState({ endFocused: focused });
-      },
-      isOutsideRange: (day: any) =>
-        day.isAfter(moment(currentTimestamp * 1000).add(1, "hour")) ||
-        day.isBefore(startDate),
-      focused: endFocused,
-      displayFormat: "D MMM YYYY",
-      numberOfMonths: 1,
-    };
+  const endDatePicker = {
+    id: "endDatePicker",
+    date: endDate,
+    placeholder: "End Date",
+    onDateChange: (endDate: string) => {
+      setEndDate(moment(endDate));
+      triggerSearch();
+    },
+    onFocusChange: ({ focused }: { focused: boolean; }) => {
+      if (endDate == null) {
+        const endDate = moment(currentTimestamp * 1000);
+        setEndDate(endDate);
+      }
+      setEndFocused(focused);
+    },
+    isOutsideRange: (day: Moment) =>
+      day.isAfter(moment(currentTimestamp * 1000).add(1, "hour")) ||
+      day.isBefore(startDate),
+    focused: endFocused,
+    displayFormat: "D MMM YYYY",
+    numberOfMonths: 1,
+  };
 
-    return (
-      <div className={Styles.Transactions}>
-        <Title title={title} closeAction={closeAction} />
-        <section>
-          <span>Date From</span>
-          <span>Date To</span>
-          <span>Action</span>
-          <span>Coin</span>
-          <FormDropdown
-            options={paginationOptions}
-            defaultValue={itemsPerPage}
-            onChange={(itemsPerPage: number) => this.setState({ itemsPerPage })}
-          />
-          <DatePicker {...startDatePicker} />
-          <DatePicker {...endDatePicker} />
-          <FormDropdown
-            options={actionOptions}
-            defaultValue={action}
-            onChange={(action: string) =>
-              this.setState((state) => {
-                const filteredTransactions = this.filterTransactions(
-                  state.AllTransactions,
-                  state.coin,
-                  action,
-                );
-                return { filteredTransactions, action };
-              })
-            }
-          />
-          <FormDropdown
-            options={coinOptions}
-            defaultValue={coin}
-            onChange={(coin: string) =>
-              this.setState((state) => {
-                const filteredTransactions = this.filterTransactions(
-                  state.AllTransactions,
-                  coin,
-                  state.action,
-                );
-                return { filteredTransactions, coin };
-              })
-            }
-          />
-          <div>
-            <SecondaryButton action={this.resetSearch} text="Reset" />
-            <PrimaryButton action={this.triggerSearch} text="Search" />
-          </div>
-          <ExportButton action={this.triggerTransactionsExport} />
-        </section>
-        <div
-          ref={(tableHeader) => {
-            this.tableHeaderRef = tableHeader;
+  return (
+    <div className={Styles.Transactions}>
+      <Title title={title} closeAction={closeAction} />
+      <section>
+        <span>Date From</span>
+        <span>Date To</span>
+        <span>Action</span>
+        <span>Coin</span>
+        <FormDropdown
+          options={paginationOptions}
+          defaultValue={itemsPerPage}
+          onChange={(itemsPerPage: number) => setItemsPerPage(itemsPerPage)}
+        />
+        <DatePicker {...startDatePicker} />
+        <DatePicker {...endDatePicker} />
+        <FormDropdown
+          options={actionOptions}
+          defaultValue={action}
+          onChange={(action: string) => {
+            const filteredTransactions = filterTransactions(
+              AllTransactions,
+              coin,
+              action,
+            );
+            setFilteredTransactions(filteredTransactions)
+            setAction(action)
           }}
-        >
-          <span>Date</span>
-          <span>Market</span>
-          <span>Outcome</span>
-          <span>Action</span>
-          <span>
-            <SortButton
-              text="Price"
-              sortOption={priceSort}
-              action={(e: any) => this.cyclePriceSort(e)}
-            />
-          </span>
-          <span>
-            <SortButton
-              text="Quantity"
-              sortOption={quantitySort}
-              action={(e: any) => this.cycleQuantitySort(e)}
-            />
-          </span>
-          <span>Coin</span>
-          <span>Fee</span>
-          <span>Total</span>
-          <span>Etherscan</span>
-        </div>
-        <section
-          ref={(tableBody) => {
-            this.tableBodyRef = tableBody;
+        />
+        <FormDropdown
+          options={coinOptions}
+          defaultValue={coin}
+          onChange={(coin: string) => {
+            const filteredTransactions = filterTransactions(
+              AllTransactions,
+              coin,
+              action,
+            );
+            setFilteredTransactions(filteredTransactions)
+            setCoin(coin)
           }}
-        >
-          {pageTransactions.length === 0 && (
-            <span className={Styles.NullTransactionsRow}>No Transactions</span>
-          )}
-          {pageTransactions.map((transaction: TransactionInfo) =>
-            this.addTransactionRow(transaction),
-          )}
-        </section>
+        />
         <div>
-          <Pagination {...pageInfo} />
-          <span>Show</span>
-          <FormDropdown
-            options={paginationOptions}
-            defaultValue={itemsPerPage}
-            onChange={(itemsPerPage: number) => this.setState({ itemsPerPage })}
-            openTop
-          />
+          <SecondaryButton action={resetSearch} text="Reset" />
+          <PrimaryButton action={triggerSearch} text="Search" />
         </div>
+        <ExportButton action={triggerTransactionsExport} />
+      </section>
+      <div
+        ref={tableHeaderRef}
+      >
+        <span>Date</span>
+        <span>Market</span>
+        <span>Outcome</span>
+        <span>Action</span>
+        <span>
+          <SortButton
+            text="Price"
+            sortOption={priceSort}
+            action={(e: Event) => cyclePriceSort(e)}
+          />
+        </span>
+        <span>
+          <SortButton
+            text="Quantity"
+            sortOption={quantitySort}
+            action={(e: Event) => cycleQuantitySort(e)}
+          />
+        </span>
+        <span>Coin</span>
+        <span>Fee</span>
+        <span>Total</span>
+        <span>Etherscan</span>
       </div>
-    );
-  }
+      <section
+        ref={tableBodyRef}
+      >
+        {pageTransactions.length === 0 && (
+          <span className={Styles.NullTransactionsRow}>No Transactions</span>
+        )}
+        {pageTransactions.map((transaction: TransactionInfo) =>
+          addTransactionRow(transaction),
+        )}
+      </section>
+      <div>
+        <Pagination {...pageInfo} updateLimit={() => {}}/>
+        <span>Show</span>
+        <FormDropdown
+          options={paginationOptions}
+          defaultValue={itemsPerPage}
+          onChange={(itemsPerPage: number) => setItemsPerPage(itemsPerPage)}
+          openTop
+        />
+      </div>
+    </div>
+  );
 }
