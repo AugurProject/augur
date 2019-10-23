@@ -13,6 +13,7 @@ import {
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
+import { getTemplates } from './get-template';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -101,7 +102,7 @@ const EventDetailsContent = {
   secondButton: NEXT,
 };
 
-const LiquidityContent = {
+export const LiquidityContent = {
   title: 'Fees & liquidity',
   largeHeader: 'Fee & liquidity',
   noDarkBackground: true,
@@ -110,7 +111,7 @@ const LiquidityContent = {
   secondButton: NEXT,
 };
 
-const ReviewContent = {
+export const ReviewContent = {
   title: 'Review',
   largeHeader: 'Review market details',
   previewButton: true,
@@ -133,52 +134,6 @@ export const CUSTOM_CONTENT_PAGES = [
 export const SUB_CATEGORIES = 'subCategories';
 export const MARKET_TYPE = 'marketType';
 export const TEMPLATE_PICKER = 'templatePicker';
-
-function checkValid(data) {
-  return data === '' || !data;
-}
-
-export const TEMPLATE_CONTENT_PAGES = [
-  { title: 'Category' },
-  {
-    title: 'Sub-Category',
-    mainContent: SUB_CATEGORIES,
-    firstButton: BACK,
-    secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.categories[1]),
-  },
-  {
-    title: 'Market Type',
-    mainContent: MARKET_TYPE,
-    firstButton: BACK,
-    secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.marketType),
-  },
-  {
-    title: 'Template',
-    mainContent: TEMPLATE_PICKER,
-    firstButton: BACK,
-    secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.template),
-  },
-  {
-    title: 'Event Details',
-    largeHeader: 'Enter the event details',
-    explainerBlockTitle: 'A note on choosing a market',
-    explainerBlockSubtexts: [
-      "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
-      'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid.',
-    ],
-    mainContent: TEMPLATE_FORM_DETAILS,
-    firstButton: BACK,
-    secondButton: NEXT,
-  },
-  LiquidityContent,
-  ReviewContent,
-];
-
-export const NO_CAT_TEMPLATE_CONTENT_PAGES = TEMPLATE_CONTENT_PAGES.filter(page => page.title !== 'Sub-Category');
-
 
 // Market Type Names
 export const MARKET_TYPE_NAME = {
@@ -217,6 +172,12 @@ export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
+export const BTC = 'BTC';
+export const ETH = 'ETH';
+export const LTC = 'LTC';
+export const NBA = 'NBA';
+export const NCAA = 'NCAA';
+export const NFL = 'NFL';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -310,6 +271,20 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.HorseRacing,
     },
   ],
+  [AMERICAN_FOOTBALL]: [
+    {
+      value: NFL,
+      header: NFL,
+      description: defaultDescription,
+      icon: icons.AmericanFootball,
+    },
+    {
+      value: NCAA,
+      header: NCAA,
+      description: defaultDescription,
+      icon: icons.AmericanFootball,
+    },
+  ],
   [POLITICS]: [
     {
       value: US_ELECTIONS,
@@ -378,19 +353,19 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [CRYPTO]: [
     {
-      value: BITCOIN,
+      value: BTC,
       header: BITCOIN,
       description: defaultDescription,
       icon: icons.BTC,
     },
     {
-      value: ETHEREUM,
+      value: ETH,
       header: ETHEREUM,
       description: defaultDescription,
       icon: icons.ETH,
     },
     {
-      value: LITECOIN,
+      value: LTC,
       header: LITECOIN,
       description: defaultDescription,
       icon: icons.LTC,
