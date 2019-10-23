@@ -301,6 +301,7 @@ interface CategoryMultiSelectProps {
   errorMessage?: string[];
   disableCategory?: boolean;
   disableSubCategory?: boolean;
+  disableTertiaryCategory?: boolean;
 }
 
 interface CategoryMultiSelectState {
@@ -484,14 +485,18 @@ export const DropdownInputGroup = ({
         onChange={onChangeInput}
       />
     )}
-    {removable && (
-      <button onClick={e => {
-        if (showText) {
-          onChangeInput('');
-        } else if (showDropdown) {
-          onChangeDropdown('');
-        }
-      }}>{XIcon}</button>
+    {removable && !disabled && (
+      <button
+        onClick={e => {
+          if (showText) {
+            onChangeInput('');
+          } else if (showDropdown) {
+            onChangeDropdown('');
+          }
+        }}
+      >
+        {XIcon}
+      </button>
     )}
   </li>
 );
@@ -502,10 +507,11 @@ interface CategorySingleSelectProps {
   initialSelected?: string;
   initialValue?: string;
   updateSelection: Function;
-  errorMessage?: string[];
-  staticLabel?: string;
   errorMessage?: string;
+  staticLabel?: string;
   placeholder?: string;
+  disabled?: boolean;
+  showDropdown?: boolean;
 }
 
 interface CategorySingleSelectState {
@@ -556,8 +562,9 @@ export class CategorySingleSelect extends Component<
       errorMessage,
       staticLabel,
       placeholder,
-      defaultValue,
       autoCompleteList,
+      disabled,
+      showDropdown,
     } = this.props;
     const { selected, value, showText } = this.state;
     return (
@@ -572,8 +579,9 @@ export class CategorySingleSelect extends Component<
           placeholder={placeholder}
           onChangeInput={v => this.handleUpdate(selected, v)}
           showText={showText}
-          showDropdown={options.length > 0}
+          showDropdown={showDropdown || options.length > 0}
           autoCompleteList={autoCompleteList}
+          disabled={disabled}
         />
       </ul>
     );
@@ -621,7 +629,12 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
-    const { errorMessage, disableCategory, disableSubCategory } = this.props;
+    const {
+      errorMessage,
+      disableCategory,
+      disableSubCategory,
+      disableTertiaryCategory,
+    } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -698,6 +711,7 @@ export class CategoryMultiSelect extends Component<
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
             removable
+            disabled={disableTertiaryCategory}
           />
         )}
       </ul>
