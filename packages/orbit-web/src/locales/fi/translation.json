@@ -35,7 +35,7 @@
     "inputPlaceholder": "Liity kanavalle"
   },
   "login": {
-    "nickname": "Nimimerkki",
+    "nickname": "Kirjoita nimi",
     "orLoginWith": "Tai kirjaudu käyttäen",
     "pressEnterToLogin": "Paina ENTER kirjautuaksesi"
   },
