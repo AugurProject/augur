@@ -252,35 +252,32 @@ export const getTemplateCategoriesList = (
 
 export const getTemplates = (
   categories: Categories,
-  marketType: string,
-  filterByMarketType: boolean = true
+  marketType: string
 ): Template[] => {
-  if (!marketType && filterByMarketType) return [];
-
   if (categories.tertiary) {
     const primary: CategoryTemplate = TEMPLATES[categories.primary];
     const secondary = primary.children[categories.secondary];
     const tertiary = secondary.children[categories.tertiary];
-    return filterByMarketType
+    return marketType
       ? getTemplatesByMarketType(tertiary.templates, marketType)
       : tertiary.templates;
   }
   if (categories.secondary) {
     const primary: CategoryTemplate = TEMPLATES[categories.primary];
     const secondary = primary.children[categories.secondary];
-    return filterByMarketType
+    return marketType
       ? getTemplatesByMarketType(secondary.templates, marketType)
       : secondary.templates;
   }
   if (categories.primary) {
     const primary: CategoryTemplate = TEMPLATES[categories.primary];
-    return filterByMarketType
+    return marketType
       ? getTemplatesByMarketType(primary.templates, marketType)
       : primary.templates;
   }
   const categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
   if (!categoryTemplates) return [];
-  return filterByMarketType
+  return marketType
     ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
     : categoryTemplates.templates;
 };
