@@ -148,6 +148,9 @@ export const POLITICS = 'Politics';
 export const FINANCE = 'Finance';
 export const ENTERTAINMENT = 'Entertainment';
 export const CRYPTO = 'Crypto';
+export const USD = 'USD';
+export const USDT = 'USDT';
+export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Soccer';

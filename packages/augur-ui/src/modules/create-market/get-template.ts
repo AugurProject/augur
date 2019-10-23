@@ -25,6 +25,9 @@ import {
   NBA,
   NFL,
   NCAA,
+  USD,
+  USDT,
+  EUR,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
@@ -898,341 +901,44 @@ const TEMPLATES = {
   },
   [CRYPTO]: {
     children: {
-      [LTC]: {
-        templates: [
-          {
-            templateId: `crypto-token-bin-ltc`,
-            marketType: YES_NO,
-            question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
-            example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {},
+      [BTC]: {
+        children: {
+          [USD]: {
+
           },
-          {
-            templateId: `crypto-between-bin`,
-            marketType: YES_NO,
-            question: `Will the price of [0], exceed [1] [2], on [3] anytime between the start of [4] (00:00 UTC-0) and end of [5] (23:59 UTC-0)`,
-            example: `Will the price of REP exceed $40 USD on Poloniex anytime between the start of September 1, 2019 (00:00 UTC-0) and end of December 31, 2019 (23:59 UTC-0)`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Start Day of Year`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `End Day of Year`,
-              },
-            ],
-            resolutionRules: {},
+          [USDT]: {
+
           },
-          {
-            templateId: `crypto-close-scalar`,
-            marketType: SCALAR,
-            question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
-            example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
-            denomination: '[Denomination]',
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DENOMINATION_DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {},
-          },
-        ],
+          [EUR]: {
+
+          }
+        }
       },
       [ETH]: {
-        templates: [
-          {
-            templateId: `crypto-token-bin-eth`,
-            marketType: YES_NO,
-            question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
-            example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {},
+        children: {
+          [USD]: {
+
           },
-          {
-            templateId: `crypto-between-bin-eth`,
-            marketType: YES_NO,
-            question: `Will the price of [0], exceed [1] [2], on [3] anytime between the start of [4] (00:00 UTC-0) and end of [5] (23:59 UTC-0)`,
-            example: `Will the price of REP exceed $40 USD on Poloniex anytime between the start of September 1, 2019 (00:00 UTC-0) and end of December 31, 2019 (23:59 UTC-0)`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Start Day of Year`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `End Day of Year`,
-              },
-            ],
-            resolutionRules: {},
+          [USDT]: {
+
           },
-          {
-            templateId: `crypto-close-scalar-eth`,
-            marketType: SCALAR,
-            question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
-            example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
-            denomination: '[Denomination]',
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DENOMINATION_DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {},
-          },
-        ],
+          [EUR]: {
+
+          }
+        }
       },
-      [BTC]: {
-        templates: [
-          {
-            templateId: `crypto-token-bin-btc`,
-            marketType: YES_NO,
-            question: `Will the price of [0] close on or above [1] [2] on [3] on [4]`,
-            example: `Will the price of ETH close on or above $200 USD on Coinmarketcap on December 31, 2019`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {},
+      [LTC]: {
+        children: {
+          [USD]: {
+
           },
-          {
-            templateId: `crypto-between-bin-btc`,
-            marketType: YES_NO,
-            question: `Will the price of [0], exceed [1] [2], on [3] anytime between the start of [4] (00:00 UTC-0) and end of [5] (23:59 UTC-0)`,
-            example: `Will the price of REP exceed $40 USD on Poloniex anytime between the start of September 1, 2019 (00:00 UTC-0) and end of December 31, 2019 (23:59 UTC-0)`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Start Day of Year`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `End Day of Year`,
-              },
-            ],
-            resolutionRules: {},
+          [USDT]: {
+
           },
-          {
-            templateId: `crypto-close-scalar-btc`,
-            marketType: SCALAR,
-            question: `What price will [0] close at in [1] on [2] on [3] at (23:59 UTC-0)`,
-            example: `What price will BTC close at in USD on Coinbase pro on December 31, 2019 at (23:59 UTC-0)`,
-            denomination: '[Denomination]',
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Coin/Token`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DENOMINATION_DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {},
-          },
-        ],
+          [EUR]: {
+
+          }
+        }
       },
     },
   },
