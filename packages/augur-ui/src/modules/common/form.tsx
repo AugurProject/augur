@@ -490,6 +490,7 @@ interface CategorySingleSelectProps {
   staticLabel?: string;
   placeholder?: string;
   disabled?: boolean;
+  showDropdown?: boolean;
 }
 
 interface CategorySingleSelectState {
@@ -540,6 +541,7 @@ export class CategorySingleSelect extends Component<
       defaultValue,
       autoCompleteList,
       disabled,
+      showDropdown,
     } = this.props;
     const { selected, value, showText } = this.state;
     return (
@@ -554,7 +556,7 @@ export class CategorySingleSelect extends Component<
           placeholder={placeholder}
           onChangeInput={v => this.handleUpdate(selected, v)}
           showText={showText}
-          showDropdown={options.length > 0}
+          showDropdown={showDropdown || options.length > 0}
           autoCompleteList={autoCompleteList}
           disabled={disabled}
         />

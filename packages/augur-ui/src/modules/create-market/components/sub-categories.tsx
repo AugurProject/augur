@@ -69,6 +69,7 @@ export const SubCategories = ({
         <CategorySingleSelect
           options={tertiaryOptions}
           disabled={tertiaryOptions.length === 0}
+          showDropdown={true}
           initialSelected={newMarket.categories[2]}
           initialValue={newMarket.categories[2]}
           staticLabel="Tertiary Category"
