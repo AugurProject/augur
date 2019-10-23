@@ -54,7 +54,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   errorModal: (error) => dispatch(
     updateModal({
       type: MODA_WALLET_ERROR,
-      error: error ? error.toString() : ''
+      error: error ? JSON.stringify(error) : ''
     })
   ),
 });

@@ -8,7 +8,9 @@ import { Action } from 'redux';
 import { ONBOARDING_SEEN_KEY } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  isMobile: state.appStatus.isMobile,
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
@@ -20,19 +22,21 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: '2. Run a test bet',
-  smallHeader: 'Learn how to place a bet using Augur Trade',
+  largeHeader: sP.isMobile ? '2. Learn how to bet on Augur' : '2. Run a test bet',
+  smallHeader: sP.isMobile ? 'Watch a 30 second video' : 'Learn how to place a bet using Augur Trade',
   testBet: true,
   currentStep: 3,
   linkContent: [
     {
       content:
-        'See how betting works on Augur. You’ll get guidance and tips to help you get started.',
+        sP.isMobile
+          ? 'Watch our quick start video to learn how to place a bet using our trading app.'
+          : 'See how betting works on Augur. You’ll get guidance and tips to help you get started.',
     },
   ],
   buttons: [
     {
-      text: 'Place test bet',
+      text: sP.isMobile ? 'Watch video' : 'Place test bet',
       disabled: true,
       action: () => {
         dP.setOnboardingSeen();
