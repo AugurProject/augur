@@ -323,6 +323,7 @@ interface DropdownInputGroupProps {
   showIcon: boolean;
   showDropdown: boolean;
   disabled: boolean;
+  removable?: boolean;
 }
 
 const defaultMultiSelect = (amount: number, justStrings = false) => {
@@ -339,18 +340,19 @@ export const createGroups = (
   values: string[],
   selected: string[]
 ) => {
-  const primaryOptions = createOptions(groups);
+  const primaryOptions = createOptions(groups, selected[0]);
   const primarySubgroup = findSubgroup(groups, values[0]);
   const secondaryCustom = selected[1] === CUSTOM;
   const secondaryAutoComplete = secondaryCustom
     ? findAutoComplete(primarySubgroup, CUSTOM)
     : findAutoComplete(primarySubgroup, values[0]);
-  const secondaryOptions = createOptions(primarySubgroup);
+  const secondaryOptions = createOptions(primarySubgroup, selected[1]);
   const tertiaryAutoComplete = secondaryCustom
     ? findAutoComplete(secondaryAutoComplete, values[1])
     : findAutoComplete(primarySubgroup, values[1]);
   const tertiaryOptions = createOptions(
-    findSubgroup(primarySubgroup, values[1])
+    findSubgroup(primarySubgroup, values[1]),
+    selected[2]
   );
 
   return {
@@ -414,8 +416,12 @@ export const getNewSelected = (
   return updatedSelected;
 };
 
-export const createOptions = (sortedGroup: SortedGroup) => {
-  const options = sortedGroup.map(({ label, value }) => ({ label, value }));
+export const createOptions = (sortedGroup: SortedGroup, selected: string) => {
+  const options = sortedGroup.map(({ label, value }) => ({
+    label,
+    value,
+    selected: selected === value,
+  }));
   return options;
 };
 
@@ -455,7 +461,8 @@ export const DropdownInputGroup = ({
   showText,
   showIcon,
   showDropdown,
-  disabled
+  disabled,
+  removable,
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -476,6 +483,15 @@ export const DropdownInputGroup = ({
         autoCompleteList={autoCompleteList}
         onChange={onChangeInput}
       />
+    )}
+    {removable && (
+      <button onClick={e => {
+        if (showText) {
+          onChangeInput('');
+        } else if (showDropdown) {
+          onChangeDropdown('');
+        }
+      }}>{XIcon}</button>
     )}
   </li>
 );
@@ -522,6 +538,9 @@ export class CategorySingleSelect extends Component<
   onChangeDropdown(choice) {
     let value = choice;
     if (choice === CUSTOM) value = '';
+    if (choice === '') {
+      value = '';
+    }
     this.handleUpdate(choice, value);
   }
 
@@ -578,6 +597,9 @@ export class CategoryMultiSelect extends Component<
   onChangeDropdown(choice, position) {
     let value = choice;
     if (choice === CUSTOM) value = '';
+    if (choice === '') {
+      value = '';
+    }
 
     // Reset children categories when parents is changed
     const clearAllChildren = (category, idx) => {
@@ -678,6 +700,7 @@ export class CategoryMultiSelect extends Component<
             showIcon={showTertiaryDropdown || customTertiary}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
+            removable
           />
         )}
       </ul>
@@ -1057,7 +1080,7 @@ export const RadioBar = ({
   secondErrorMessage,
   secondHeader,
   multiSelect,
-  disabled
+  disabled,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
