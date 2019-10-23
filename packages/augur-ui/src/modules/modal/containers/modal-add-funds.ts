@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP, dP, oP) => {
   return {
+    fundType: sP.modal.fundType,
     closeAction: () => {
       if (sP.modal.cb) {
         sP.modal.cb();

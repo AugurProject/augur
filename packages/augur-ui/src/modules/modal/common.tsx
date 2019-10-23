@@ -25,7 +25,7 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
@@ -567,11 +567,15 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
   );
 }
 
-export const FundsHelp = () => (
+interface FundsHelpProps {
+  fundType: string;
+}
+
+export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy DAI {generateDaiTooltip()} and transfer it into your account.</span>
-    <ExternalLinkButton label="Learn More" />
+    <span>Learn how to buy {fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
+    <ExternalLinkButton label='Learn More' />
   </div>
 );
 

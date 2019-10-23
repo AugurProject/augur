@@ -23,12 +23,11 @@ interface TransactionsProps {
 
 export const Transactions = ({
   transactions,
-  deposit,
+  addFunds,
   withdraw,
   isMainnet,
   repFaucet,
   daiFaucet,
-  approval,
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"
@@ -37,7 +36,7 @@ export const Transactions = ({
         <p>Your transactions history</p>
         <ViewTransactionsButton action={transactions} />
         <p>Your wallet</p>
-        <DepositButton action={deposit} />
+        <DepositButton action={addFunds} />
         <WithdrawButton action={withdraw} />
         {!isMainnet && (
           <div>
