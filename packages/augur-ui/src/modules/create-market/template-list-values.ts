@@ -978,5 +978,33 @@ export const LIST_VALUES = {
       value: 'Bittrex',
       label: 'Bittrex',
     },
+  ],
+  USDT_EXCHANGES: [
+    {
+      value: 'Bittrex',
+      label: 'Bittrex',
+    },
+    {
+      value: 'Binance',
+      label: 'Binance',
+    },
+    {
+      value: 'Huobi Global',
+      label: 'Huobi Global',
+    },
+  ],
+  EUR_EXCHANGES: [
+    {
+      value: 'Coinbase Pro',
+      label: 'Coinbase Pro',
+    },
+    {
+      value: 'Bitstamp',
+      label: 'Bitstamp',
+    },
+    {
+      value: 'Kraken',
+      label: 'Kraken',
+    },
   ]
 };
