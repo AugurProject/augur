@@ -276,7 +276,6 @@ export const getTemplateCategoriesByMarketType = (
         children = children.concat(tertiary);
       }
     });
-    console.log(children);
     return children;
   } else {
     return [];
@@ -298,6 +297,7 @@ export const getTemplatesPerSubcategory = (
   filterByTertiary: boolean
 ): Template[] => {
   const primary: CategoryTemplate = TEMPLATES[categories.primary];
+  if (!primary.children) return primary.templates;
   const secondary = primary.children[categories.secondary];
   if (secondary.children) {
     let allSubCategoryTemplates = [];
