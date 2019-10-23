@@ -29,6 +29,7 @@ export const MarketType = (props: MarketTypeProps) => (
       radioButtons={getTemplateRadioCardsMarketTypes({
         primary: props.categories[0],
         secondary: props.categories[1],
+        tertiary: props.categories[2],
       })}
     />
   </section>

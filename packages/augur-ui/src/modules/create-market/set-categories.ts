@@ -1146,21 +1146,21 @@ export const setCategories: SortedGroup[] = [
     label: 'Crypto',
     subGroup: [
       {
-        value: 'Bitcoin',
-        label: 'Bitcoin',
+        value: 'BTC',
+        label: 'BTC',
       },
       {
-        value: 'Ethereum',
-        label: 'Ethereum',
+        value: 'ETH',
+        label: 'ETH',
         subGroup: [{ value: 'ICO', label: 'ICO' }, { value: CUSTOM, label: CUSTOM }],
       },
       {
-        value: 'Litecoin',
-        label: 'Litecoin',
+        value: 'LTC',
+        label: 'LTC',
       },
       {
-        value: 'Rep',
-        label: 'Rep',
+        value: 'REP',
+        label: 'REP',
       },
       { value: CUSTOM, label: CUSTOM }
     ],

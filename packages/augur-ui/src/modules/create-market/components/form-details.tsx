@@ -40,7 +40,10 @@ import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { hasNoTemplateCategoryChildren } from 'modules/create-market/get-template';
+import {
+  hasNoTemplateCategoryChildren,
+  hasNoTemplateCategoryTertiaryChildren,
+} from 'modules/create-market/get-template';
 
 interface FormDetailsProps {
   updateNewMarket: Function;
@@ -103,10 +106,11 @@ export default class FormDetails extends React.Component<
       validations,
       timezone,
       endTimeFormatted,
-      template
+      template,
     } = newMarket;
 
-    const tickSize = isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
+    const tickSize =
+      isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
     let sourceButtons = [
       {
         header: 'General knowledge',
@@ -151,7 +155,7 @@ export default class FormDetails extends React.Component<
                   subheader={categories[0]}
                 />
                 <SmallSubheaders
-                  header={"Secondary category"}
+                  header={'Secondary category'}
                   subheader={categories[1] === '' ? '-' : categories[1]}
                 />
               </div>
@@ -344,6 +348,13 @@ export default class FormDetails extends React.Component<
             disableSubCategory={
               isTemplate &&
               !hasNoTemplateCategoryChildren(newMarket.categories[0])
+            }
+            disableTertiaryCategory={
+              isTemplate &&
+              !hasNoTemplateCategoryTertiaryChildren(
+                newMarket.categories[0],
+                newMarket.categories[1]
+              )
             }
           />
         </div>
