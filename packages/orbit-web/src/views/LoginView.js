@@ -61,7 +61,7 @@ function LoginView () {
     !sessionStore.isAuthenticated ? (
       <div className='LoginView'>
         <h1 className='loginHeaderAnimation' onClick={focusUsernameInput}>
-          Orbit
+          Augur
         </h1>
 
         <LoginForm
@@ -69,10 +69,6 @@ function LoginView () {
           onSubmit={handleSubmit}
           usernameInputRef={usernameInputRef}
         />
-        <div className='Version'>
-          {t('version')}: {version}
-        </div>
-        <BackgroundAnimation size={480} theme={{ ...uiStore.theme }} onClick={focusUsernameInput} />
       </div>
     ) : (
       <Redirect to={next} />

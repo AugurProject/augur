@@ -2,7 +2,7 @@
 
 .SendMessage {
   box-sizing: border-box;
-  font-size: 0.9em;
+  font-size: 0.625rem; // 10px
   padding: 0.1em;
   color: rgb(128, 128, 128);
   display: flex;
@@ -22,7 +22,6 @@
     margin-bottom: 0.5em;
     flex: 1 1 100%;
 
-    font-size: 10px;
     font-family: "Roboto";
     font-weight: 400;
 
@@ -37,7 +36,6 @@
   }
 
   textarea {
-    font-size: 10px;
     font-family: "Roboto";
     font-weight: 400;
 
