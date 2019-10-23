@@ -1,5 +1,6 @@
 import { SortedGroup } from 'modules/types';
 import { CUSTOM } from 'modules/common/constants';
+import { BITCOIN, LITECOIN, ETHEREUM, USD, USDT, EUR } from 'modules/create-market/constants';
 
 export const setCategories: SortedGroup[] = [
   {
@@ -1146,17 +1147,19 @@ export const setCategories: SortedGroup[] = [
     label: 'Crypto',
     subGroup: [
       {
-        value: 'BTC',
-        label: 'BTC',
+        value: BITCOIN,
+        label: BITCOIN,
+        subGroup: [{ value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
       },
       {
-        value: 'ETH',
-        label: 'ETH',
-        subGroup: [{ value: 'ICO', label: 'ICO' }, { value: CUSTOM, label: CUSTOM }],
+        value: ETHEREUM,
+        label: ETHEREUM,
+        subGroup: [{ value: 'ICO', label: 'ICO' }, { value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
       },
       {
-        value: 'LTC',
-        label: 'LTC',
+        value: LITECOIN,
+        label: LITECOIN,
+        subGroup: [{ value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
       },
       {
         value: 'REP',
