@@ -16,7 +16,6 @@ import addCommasToNumber from 'utils/add-commas-to-number';
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
 
 interface MarketOutcomeDepthProps {
-  sharedChartMargins?: object;
   marketDepth: MarketDepth;
   orderBookKeys: { max: BigNumber; min: BigNumber; mid: BigNumber };
   pricePrecision: number;
@@ -44,12 +43,7 @@ const checkResize = memoize(
     MARGIN_OF_ERROR
 );
 function determineInitialZoom(props) {
-  const {
-    orderBookKeys,
-    marketMin,
-    midPrice,
-    marketMax
-  } = props;
+  const { orderBookKeys, marketMin, midPrice, marketMax } = props;
 
   const midPrice = orderBookKeys.mid;
   const minDistance = midPrice.minus(marketMin);
@@ -62,9 +56,11 @@ function determineInitialZoom(props) {
     const xDomainMax = maxDistanceGreater
       ? midPrice.plus(maxDistance * zoomLevel)
       : midPrice.plus(minDistance * zoomLevel);
-      return [xDomainMin, xDomainMax];
+    return [xDomainMin, xDomainMax];
   });
-  const zoom = ZoomLevelArray.findIndex(ele => ele[0].gte(marketMin) && ele[1].lte(marketMax));
+  const zoom = ZoomLevelArray.findIndex(
+    ele => ele[0].gte(marketMin) && ele[1].lte(marketMax)
+  );
 
   return zoom === -1 ? ZOOM_MAX : zoom;
 }
@@ -74,11 +70,7 @@ export default class MarketOutcomeDepth extends Component<
   MarketOutcomeDepthState
 > {
   static defaultProps = {
-    hoveredPrice: null,
-    sharedChartMargins: {
-      top: 35,
-      bottom: 20,
-    },
+    hoveredPrice: null
   };
 
   depthChart: any;
@@ -87,12 +79,20 @@ export default class MarketOutcomeDepth extends Component<
   yScale: number = 0;
   containerHeight: number = 0;
   containerWidth: number = 0;
+  chartDim: object = {
+    top: 10,
+    bottom: 20,
+    right: 10,
+    left: 10,
+    stick: 5,
+    tickOffset: 0,
+  };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      zoom: determineInitialZoom(props)
+      zoom: determineInitialZoom(props),
     };
 
     this.drawDepth = this.drawDepth.bind(this);
@@ -107,7 +107,6 @@ export default class MarketOutcomeDepth extends Component<
       marketMax,
       marketMin,
       orderBookKeys,
-      sharedChartMargins,
       updateHoveredPrice,
       updateSelectedOrderProperties,
       hasOrders,
@@ -115,7 +114,6 @@ export default class MarketOutcomeDepth extends Component<
     this.drawDepth({
       marketDepth,
       orderBookKeys,
-      sharedChartMargins,
       pricePrecision,
       marketMin,
       marketMax,
@@ -131,7 +129,6 @@ export default class MarketOutcomeDepth extends Component<
       hoveredPrice,
       marketDepth,
       orderBookKeys,
-      sharedChartMargins,
     } = this.props;
     const oldZoom = this.state.zoom;
     const { zoom } = nextState;
@@ -142,7 +139,6 @@ export default class MarketOutcomeDepth extends Component<
       curMarketDepth !== nextMarketDepth ||
       JSON.stringify(orderBookKeys) !==
         JSON.stringify(nextProps.orderBookKeys) ||
-      sharedChartMargins !== nextProps.sharedChartMargins ||
       oldZoom !== zoom ||
       checkResize(
         this.depthChart.clientWidth,
@@ -155,7 +151,6 @@ export default class MarketOutcomeDepth extends Component<
         marketDepth: nextProps.marketDepth,
         orderBookKeys: nextProps.orderBookKeys,
         pricePrecision: nextProps.pricePrecision,
-        sharedChartMargins: nextProps.sharedChartMargins,
         marketMin: nextProps.marketMin,
         marketMax: nextProps.marketMax,
         updateHoveredPrice: nextProps.updateHoveredPrice,
@@ -184,7 +179,6 @@ export default class MarketOutcomeDepth extends Component<
       const {
         marketDepth,
         orderBookKeys,
-        sharedChartMargins,
         pricePrecision,
         marketMin,
         marketMax,
@@ -196,7 +190,7 @@ export default class MarketOutcomeDepth extends Component<
 
       const drawParams = determineDrawParams({
         depthChart: this.depthChart,
-        sharedChartMargins,
+        chartDim: this.chartDim,
         marketDepth,
         orderBookKeys,
         pricePrecision,
@@ -270,11 +264,17 @@ export default class MarketOutcomeDepth extends Component<
   }
 
   drawCrosshairs(options) {
-    const { updateHoveredDepth, sharedChartMargins } = this.props;
+    const { updateHoveredDepth } = this.props;
     if (this.depthChart) {
       const { hoveredPrice, marketDepth, marketMin, marketMax } = options;
 
-      const { xScale, yScale, containerHeight, containerWidth } = this;
+      const {
+        xScale,
+        yScale,
+        containerHeight,
+        containerWidth,
+        chartDim,
+      } = this;
 
       if (hoveredPrice == null) {
         d3.select('#crosshairs').style('display', 'none');
@@ -302,7 +302,7 @@ export default class MarketOutcomeDepth extends Component<
             .attr('y1', 0)
             .attr('x2', xScale(nearestFillingOrder[1]))
             // @ts-ignore
-            .attr('y2', containerHeight - sharedChartMargins.bottom)
+            .attr('y2', containerHeight - chartDim.bottom)
             .style('display', null);
         } else {
           d3.select('#crosshairX').style('display', 'none');
@@ -354,10 +354,14 @@ export default class MarketOutcomeDepth extends Component<
         }}
         className={Styles.MarketOutcomeDepth__container}
       >
-        <button onClick={() => this.handleZoom(-1)} disabled={zoom === 0}>{ZoomOutIcon}</button>
+        <button onClick={() => this.handleZoom(-1)} disabled={zoom === 0}>
+          {ZoomOutIcon}
+        </button>
         <span>mid price</span>
         <span>{`$${this.props.orderBookKeys.mid.toFixed()}`}</span>
-        <button onClick={() => this.handleZoom(1)} disabled={zoom === ZOOM_MAX}>{ZoomInIcon}</button>
+        <button onClick={() => this.handleZoom(1)} disabled={zoom === ZOOM_MAX}>
+          {ZoomInIcon}
+        </button>
         {this.depthContainer}
       </div>
     );
@@ -410,7 +414,7 @@ export function nearestCompletelyFillingOrder(
 
 function determineDrawParams(options) {
   const {
-    sharedChartMargins,
+    chartDim,
     depthChart,
     marketDepth,
     marketMax,
@@ -418,14 +422,6 @@ function determineDrawParams(options) {
     orderBookKeys,
     zoom,
   } = options;
-
-  const chartDim = {
-    ...sharedChartMargins, // top, bottom
-    right: 10,
-    left: 10,
-    stick: 5,
-    tickOffset: 10,
-  };
 
   const containerWidth = depthChart.clientWidth;
   const containerHeight = depthChart.clientHeight - chartDim.top;
@@ -462,9 +458,9 @@ function determineDrawParams(options) {
           );
         }
         const LargestShareAmount = createBigNumber(
-          book[firstFailingIndex - 1] && book[firstFailingIndex - 1][0] || 
-          book[book.length -1][0] ||
-          0
+          (book[firstFailingIndex - 1] && book[firstFailingIndex - 1][0]) ||
+            book[book.length - 1][0] ||
+            0
         );
         if (LargestShareAmount.gt(p)) return LargestShareAmount;
       }
