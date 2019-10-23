@@ -36,11 +36,14 @@ export const SubCategories = ({
     categoryStats
   );
   if (cats.length === 0) nextPage();
-  const tertiaryOptions = getTemplateCategoriesList({
-    primary: newMarket.categories[0],
-    secondary: newMarket.categories[1],
-    tertiary: '',
-  });
+  const tertiaryOptions = newMarket.categories[1]
+    ? getTemplateCategoriesList({
+        primary: newMarket.categories[0],
+        secondary: newMarket.categories[1],
+        tertiary: '',
+      })
+    : [];
+  // ignore categories on the page
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
