@@ -85,6 +85,7 @@ import { BulkTxLabel } from 'modules/common/labels';
 import {
   buildResolutionDetails,
   hasNoTemplateCategoryChildren,
+  hasNoTemplateCategoryTertiaryChildren,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
 
@@ -258,7 +259,9 @@ export default class Form extends React.Component<FormProps, FormState> {
                 hasNoTemplateCategoryChildren(newMarket.categories[0])
                   ? ''
                   : newMarket.categories[1],
-                '',
+                hasNoTemplateCategoryTertiaryChildren(newMarket.categories[0], newMarket.categories[1])
+                  ? ''
+                  : newMarket.categories[2],
               ];
               updateNewMarket({
                 ...deepClone<NewMarket>(EMPTY_STATE),
