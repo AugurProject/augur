@@ -587,4 +587,126 @@ export const LIST_VALUES = {
       label: 'British Open',
     },
   ],
+  MLB_TEAMS: [
+    {
+      value: 'Arizona Diamondbacks',
+      label: 'Arizona Diamondbacks',
+    },
+    {
+      value: 'Atlanta Braves',
+      label: 'Atlanta Braves',
+    },
+    {
+      value: 'Baltimore Orioles',
+      label: 'Baltimore Orioles',
+    },
+    {
+      value: 'Boston Red Sox',
+      label: 'Boston Red Sox',
+    },
+    {
+      value: 'Chicago White Sox',
+      label: 'Chicago White Sox',
+    },
+    {
+      value: 'Chicago Cubs',
+      label: 'Chicago Cubs',
+    },
+    {
+      value: 'Cincinnati Reds',
+      label: 'Cincinnati Reds',
+    },
+    {
+      value: 'Cleveland Indians',
+      label: 'Cleveland Indians',
+    },
+    {
+      value: 'Colorado Rockies',
+      label: 'Colorado Rockies',
+    },
+    {
+      value: 'Detroit Tigers',
+      label: 'Detroit Tigers',
+    },
+    {
+      value: 'Houston Astros',
+      label: 'Houston Astros',
+    },
+    {
+      value: 'Kansas City Royals',
+      label: 'Kansas City Royals',
+    },
+    {
+      value: 'Los Angeles Angels',
+      label: 'Los Angeles Angels',
+    },
+    {
+      value: 'Los Angeles Dodgers',
+      label: 'Los Angeles Dodgers',
+    },
+    {
+      value: 'Miami Marlins',
+      label: 'Miami Marlins',
+    },
+    {
+      value: 'Milwaukee Brewers',
+      label: 'Milwaukee Brewers',
+    },
+    {
+      value: 'Minnesota Twins',
+      label: 'Minnesota Twins',
+    },
+    {
+      value: 'New York Yankees',
+      label: 'New York Yankees',
+    },
+    {
+      value: 'New York Mets',
+      label: 'New York Mets',
+    },
+    {
+      value: 'Oakland Athletics',
+      label: 'Oakland Athletics',
+    },
+    {
+      value: 'Philadelphia Phillies',
+      label: 'Philadelphia Phillies',
+    },
+    {
+      value: 'Pittsburgh Pirates',
+      label: 'Pittsburgh Pirates',
+    },
+    {
+      value: 'San Diego Padres',
+      label: 'San Diego Padres',
+    },
+    {
+      value: 'San Francisco Giants',
+      label: 'San Francisco Giants',
+    },
+    {
+      value: 'Seattle Mariners',
+      label: 'Seattle Mariners',
+    },
+    {
+      value: 'St. Louis Cardinals',
+      label: 'St. Louis Cardinals',
+    },
+    {
+      value: 'Tampa Bay Rays',
+      label: 'Tampa Bay Rays',
+    },
+    {
+      value: 'Texas Rangers',
+      label: 'Texas Rangers',
+    },
+    {
+      value: 'Toronto Blue Jays',
+      label: 'Toronto Blue Jays',
+    },
+    {
+      value: 'Washington Nationals',
+      label: 'Washington Nationals',
+    },
+  ]
 };
