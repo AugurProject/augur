@@ -99,8 +99,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   shouldComponentUpdate(nextProps: any, nextState: any) {
     if (
       nextState.selected !== this.state.selected ||
-      nextState.showList !== this.state.showList ||
-      this.props.disabled !== nextProps.disabled
+      nextState.showList !== this.state.showList
     ) {
       return true;
     }

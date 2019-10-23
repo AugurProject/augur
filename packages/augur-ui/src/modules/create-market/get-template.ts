@@ -405,6 +405,12 @@ export const hasNoTemplateCategoryChildren = category => {
   return true;
 };
 
+export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
+  if (!category || !subcategory) return false;
+  if (TEMPLATES[category].children[subcategory].children) return false;
+  return true;
+};
+
 const TEMPLATES = {
   [POLITICS]: {
     children: {
@@ -1234,7 +1240,6 @@ const TEMPLATES = {
     },
   },
   [SPORTS]: {
-    templates: [],
     children: {
       [GOLF]: {
         templates: [
