@@ -1362,7 +1362,7 @@ const TEMPLATES = {
           {
             templateId: `hk-championship`,
             marketType: YES_NO,
-            question: `Will the [0] win the [1] Stanley Cup?`,
+            question: `Will the [0] win the [1] Stanley Cup`,
             example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup`,
             inputs: [
               {
@@ -1784,7 +1784,7 @@ const TEMPLATES = {
               {
                 templateId: `bb-championship`,
                 marketType: YES_NO,
-                question: `Will the [0] win the [1] NBA Championship?`,
+                question: `Will the [0] win the [1] NBA Championship`,
                 example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
                 inputs: [
                   {
@@ -1872,7 +1872,7 @@ const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Award`,
+                    placeholder: `Event`,
                     values: LIST_VALUES.BASKETBALL_EVENT,
                   },
                   {
@@ -2077,7 +2077,7 @@ const TEMPLATES = {
               {
                 templateId: `bb-championship`,
                 marketType: YES_NO,
-                question: `Will the [0] win the [1] NBA Championship?`,
+                question: `Will the [0] win the [1] NBA Championship`,
                 example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
                 inputs: [
                   {
@@ -2165,7 +2165,7 @@ const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Award`,
+                    placeholder: `Event`,
                     values: LIST_VALUES.BASKETBALL_EVENT,
                   },
                   {
@@ -2462,7 +2462,7 @@ const TEMPLATES = {
                 templateId: `fb-player-award`,
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2] award`,
-                example: `Will Patrick Mahones win the 2019-20 MVP award?`,
+                example: `Will Patrick Mahones win the 2019-20 MVP award`,
                 inputs: [],
                 inputsType: TemplateInputTypeNames.PLAYER_AWARD,
                 resolutionRules: {},
@@ -2640,7 +2640,7 @@ const TEMPLATES = {
                 templateId: `fb-player-award`,
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2] award`,
-                example: `Will Patrick Mahones win the 2019-20 MVP award?`,
+                example: `Will Patrick Mahones win the 2019-20 MVP award`,
                 inputs: [],
                 inputsType: TemplateInputTypeNames.PLAYER_AWARD,
                 resolutionRules: {},

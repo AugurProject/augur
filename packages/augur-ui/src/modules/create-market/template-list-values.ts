@@ -637,12 +637,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Royals',
     },
     {
-      value: 'Los Angeles Angels',
-      label: 'Los Angeles Angels',
+      value: 'Las Angeles Angels',
+      label: 'Las Angeles Angels',
     },
     {
-      value: 'Los Angeles Dodgers',
-      label: 'Los Angeles Dodgers',
+      value: 'Las Angeles Dodgers',
+      label: 'Las Angeles Dodgers',
     },
     {
       value: 'Miami Marlins',
@@ -775,12 +775,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Chiefs',
     },
     {
-      value: 'Los Angeles Chargers',
-      label: 'Los Angeles Chargers',
+      value: 'Las Angeles Chargers',
+      label: 'Las Angeles Chargers',
     },
     {
-      value: 'Los Angeles Rams',
-      label: 'Los Angeles Rams',
+      value: 'Las Angeles Rams',
+      label: 'Las Angeles Rams',
     },
     {
       value: 'Miami Dolphins',
