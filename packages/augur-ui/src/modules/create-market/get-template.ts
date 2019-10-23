@@ -131,7 +131,6 @@ interface ResolutionRules {
 }
 
 export interface Template {
-  templateId: string;
   categories: Categories;
   marketType: string;
   question: string;
@@ -405,7 +404,10 @@ export const hasNoTemplateCategoryChildren = category => {
   return true;
 };
 
-export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
+export const hasNoTemplateCategoryTertiaryChildren = (
+  category,
+  subcategory
+) => {
   if (!category || !subcategory) return false;
   if (TEMPLATES[category].children[subcategory].children) return false;
   return true;
@@ -417,7 +419,6 @@ const TEMPLATES = {
       [US_POLITICS]: {
         templates: [
           {
-            templateId: `pol-win-event`,
             marketType: YES_NO,
             question: `Will [0] win the [1] presidential election`,
             example: `Will Donald Trump win the 2020 Presidential election`,
@@ -437,7 +438,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-pres-nom`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2] presidential nomination`,
             example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination`,
@@ -463,7 +463,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-office-nom`,
             marketType: YES_NO,
             question: `Will [0] run for [1] by [2]`,
             example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
@@ -490,7 +489,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-imp`,
             marketType: YES_NO,
             question: `Will [0] be impeached by [1]`,
             example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST`,
@@ -511,7 +509,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-prez-cat`,
             marketType: CATEGORICAL,
             question: `Who will win the [0] US presidential election`,
             example: `Who will win the 2020 US presidential election`,
@@ -526,7 +523,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-nom-cat`,
             marketType: CATEGORICAL,
             question: `Who will be the [0] [1] [2] nominee`,
             example: `Who will be the 2020 Republican Vice President nominee`,
@@ -553,7 +549,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-state-prez-cat`,
             marketType: CATEGORICAL,
             question: `Which party will win [0] in the [1] Presidential election`,
             example: `Which party will win Michigan in the 2020 Presidential election`,
@@ -578,7 +573,6 @@ const TEMPLATES = {
       [WORLD]: {
         templates: [
           {
-            templateId: `pol-world-pos-cat`,
             marketType: YES_NO,
             question: `Will [0] be [1] of [2] on [3]`,
             example: `Will Kim Jong Un be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
@@ -610,7 +604,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `pol-world-imp-cat`,
             marketType: YES_NO,
             question: `Will [0] be impeached by [1]`,
             example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST`,
@@ -637,7 +630,6 @@ const TEMPLATES = {
   [FINANCE]: {
     templates: [
       {
-        templateId: `fin-stock-bin`,
         marketType: YES_NO,
         question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]`,
         example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020`,
@@ -673,7 +665,6 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
-        templateId: `fin-stock-exceed-bin`,
         marketType: YES_NO,
         question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]`,
         example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020`,
@@ -714,7 +705,6 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
-        templateId: `fin-index-close-bin`,
         marketType: YES_NO,
         question: `Will the [0] close on or above [1] [2] on [3]`,
         example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019`,
@@ -745,7 +735,6 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
-        templateId: `fin-price-scalar`,
         marketType: SCALAR,
         question: `What price will [0] close at in [1] on the [2] on [3]`,
         example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019`,
@@ -776,7 +765,6 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
-        templateId: `fin-price-close-scalar`,
         marketType: SCALAR,
         question: `What price will the [0] close at in [1] on [2]`,
         example: `What Price will the S&P 500 close at in USD on December 31, 2019`,
@@ -806,7 +794,6 @@ const TEMPLATES = {
   [ENTERTAINMENT]: {
     templates: [
       {
-        templateId: `ent-host-event`,
         marketType: YES_NO,
         question: `Will [0] host the [1] [2]`,
         example: `Will Billy Crystal host the 2019 Academy Awards`,
@@ -822,7 +809,6 @@ const TEMPLATES = {
         },
       },
       {
-        templateId: `ent-host-event2`,
         marketType: YES_NO,
         question: `Will [0] win an award for [1] at the [2] [3]`,
         example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards`,
@@ -831,7 +817,6 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
-        templateId: `ent-host-event3`,
         marketType: YES_NO,
         question: `Will [0] win an award for [1] at the [2] [3]`,
         example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards`,
@@ -840,7 +825,6 @@ const TEMPLATES = {
         resolutionRules: {},
       },
       {
-        templateId: `ent-host-gross`,
         marketType: YES_NO,
         question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]`,
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
@@ -856,7 +840,6 @@ const TEMPLATES = {
         },
       },
       {
-        templateId: `ent-host-cat`,
         marketType: CATEGORICAL,
         question: `Who will host the [0] [1]`,
         example: `Who wll host the 2020 Emmy Awards`,
@@ -872,7 +855,6 @@ const TEMPLATES = {
         },
       },
       {
-        templateId: `ent-win-award-cat`,
         marketType: CATEGORICAL,
         question: `Who will win for [0] in the [1] [2]`,
         example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards`,
@@ -904,41 +886,725 @@ const TEMPLATES = {
       [BTC]: {
         children: {
           [USD]: {
-
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of BTC close on or above [0] USD on [1] on [2]`,
+                example: `Will the price of BTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of BTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will BTC close at in USD on [0] on [1]`,
+                example: `What price will BTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
           [USDT]: {
-
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of BTC close on or above [0] USDT on [1] on [2]`,
+                example: `Will the price of BTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of BTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will BTC close at in USDT on [0] on [1]`,
+                example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
           [EUR]: {
-
-          }
-        }
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of BTC close on or above [0] EUR on [1] on [2]`,
+                example: `Will the price of BTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of BTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will BTC close at in EUR on [0] on [1]`,
+                example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
+          },
+        },
       },
       [ETH]: {
         children: {
           [USD]: {
-
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of ETH close on or above [0] USD on [1] on [2]`,
+                example: `Will the price of ETH close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of ETH exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will ETH close at in USD on [0] on [1]`,
+                example: `What price will ETH close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
           [USDT]: {
-
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of ETH close on or above [0] USDT on [1] on [2]`,
+                example: `Will the price of ETH close on or above $200 USDT on Binance (binance.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of ETH exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will ETH close at in USDT on [0] on [1]`,
+                example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
           [EUR]: {
-
-          }
-        }
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of ETH close on or above [0] EUR on [1] on [2]`,
+                example: `Will the price of ETH close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of ETH exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will ETH close at in EUR on [0] on [1]`,
+                example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
+          },
+        },
       },
       [LTC]: {
         children: {
           [USD]: {
-
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of LTC close on or above [0] USD on [1] on [2]`,
+                example: `Will the price of LTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of LTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will LTC close at in USD on [0] on [1]`,
+                example: `What price will LTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.NON_BTC_USD_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
           [USDT]: {
-
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of LTC close on or above [0] USDT on [1] on [2]`,
+                example: `Will the price of LTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of LTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will LTC close at in USDT on [0] on [1]`,
+                example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.USDT_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
           },
           [EUR]: {
-
-          }
-        }
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will the price of LTC close on or above [0] EUR on [1] on [2]`,
+                example: `Will the price of LTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]`,
+                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Value #`,
+                    validationType: ValidationType.NUMBER,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Open, Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Close, Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: SCALAR,
+                question: `What price will LTC close at in EUR on [0] on [1]`,
+                example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                denomination: 'USD',
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Exchange`,
+                    values: LIST_VALUES.EUR_EXCHANGES,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DATEYEAR,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {},
+              },
+            ],
+          },
+        },
       },
     },
   },
@@ -947,7 +1613,6 @@ const TEMPLATES = {
       [GOLF]: {
         templates: [
           {
-            templateId: `gf-win`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2]`,
             example: `Will Tiger Woods win the 2020 PGA Championship`,
@@ -979,7 +1644,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `gf-cut`,
             marketType: YES_NO,
             question: `Will [0] make the cut at the [1] [2]`,
             example: `Will Tiger Woods make the cut at the 2020 PGA Championship`,
@@ -1011,7 +1675,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `gf-win-cat`,
             marketType: CATEGORICAL,
             question: `Which golfer will win the [0] [1]`,
             example: `Which golfer will win the 2020 PGA Championship`,
@@ -1041,7 +1704,6 @@ const TEMPLATES = {
       [HOCKEY]: {
         templates: [
           {
-            templateId: `hk-teamVsteam`,
             marketType: YES_NO,
             question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
             example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -1050,7 +1712,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `hk-teamVsteam`,
             marketType: YES_NO,
             question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]`,
             example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -1066,7 +1727,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `hk-championship`,
             marketType: YES_NO,
             question: `Will the [0] win the [1] Stanley Cup`,
             example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup`,
@@ -1086,7 +1746,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `hk-teamVsteam`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
             example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -1101,7 +1760,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `hk-overUnder`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
             example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -1116,7 +1774,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `hk-year-event-cat`,
             marketType: CATEGORICAL,
             question: `Which NHL team will win the [0] Stanley Cup`,
             example: `Which NHL team will win the 2019-2020 Stanley Cup`,
@@ -1136,7 +1793,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `hk-award`,
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1] award`,
             example: `Which NHL player will win the 2019-2020 Calder Trophy`,
@@ -1162,7 +1818,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `hk-point-year`,
             marketType: SCALAR,
             question: `Total number of wins the [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
@@ -1194,7 +1849,6 @@ const TEMPLATES = {
       [HORSE_RACING]: {
         templates: [
           {
-            templateId: `hr-win-year-event`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2]`,
             example: `Will American Pharoah win the 2020 Triple Crown`,
@@ -1226,7 +1880,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `hr-win-cat`,
             marketType: CATEGORICAL,
             question: `Which horse will win the [0] [1]`,
             example: `Which horse will win the 2020 Kentucky Derby`,
@@ -1256,7 +1909,6 @@ const TEMPLATES = {
       [TENNIS]: {
         templates: [
           {
-            templateId: `ten-playout-year-event`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2]`,
             example: `Will Roger Federer win the 2020 Wimbledon`,
@@ -1288,7 +1940,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `ten-win-cat`,
             marketType: CATEGORICAL,
             question: `Which tennis player will win the [0] [1]`,
             example: `Which tennis player will win the 2020 Australian Open`,
@@ -1320,7 +1971,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `ten-win-cat`,
             marketType: CATEGORICAL,
             question: `[0] [1] Match play winner: [2] vs [3]`,
             example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal`,
@@ -1372,7 +2022,6 @@ const TEMPLATES = {
       [SOCCER]: {
         templates: [
           {
-            templateId: `soccer-teamVsteam`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
             example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -1397,7 +2046,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `soccer-overUnder`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
             example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -1418,7 +2066,6 @@ const TEMPLATES = {
           [NBA]: {
             templates: [
               {
-                templateId: `bb-team-event`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
                 example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
@@ -1429,7 +2076,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-teamVsteam-point-year`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
                 example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
@@ -1440,7 +2086,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-teamVsteam-point-comb`,
                 marketType: YES_NO,
                 question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
                 example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
@@ -1456,7 +2101,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-teamVsteam-point-year`,
                 marketType: YES_NO,
                 question: `Will the [0] have [1] or more regular season wins in [2]`,
                 example: `Will the NY Knicks have 50 or more regular season wins in 2019-2020`,
@@ -1488,7 +2132,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-championship`,
                 marketType: YES_NO,
                 question: `Will the [0] win the [1] NBA Championship`,
                 example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
@@ -1508,7 +2151,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-year-event`,
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2]`,
                 example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award`,
@@ -1534,7 +2176,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-teamVsteam`,
                 marketType: CATEGORICAL,
                 question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
                 example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -1549,7 +2190,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-overUnder`,
                 marketType: CATEGORICAL,
                 question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]`,
                 example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -1564,7 +2204,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-year-event-cat`,
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]`,
                 example: `Which NBA team will win the 2019-2020 Western Conference Finals`,
@@ -1590,7 +2229,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-year-coll-cat`,
                 marketType: CATEGORICAL,
                 question: `Which college basketball team will win the [0] [1] [2] tournament`,
                 example: `Which college basketball team will win the men's 2020 ACC tournament`,
@@ -1627,7 +2265,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-leg-coll-cat`,
                 marketType: CATEGORICAL,
                 question: `Which [0] player will win the [1] [2] award`,
                 example: `Which NBA player will win the 2019-2020 Most Valuable Player award`,
@@ -1659,7 +2296,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-action-cat`,
                 marketType: CATEGORICAL,
                 question: `Which Player will have the most [0] at the end of the the [1] regular season`,
                 example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season`,
@@ -1685,7 +2321,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-total-wins`,
                 marketType: SCALAR,
                 question: `Total number of wins [0] will finish [1] regular season with`,
                 example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
@@ -1711,7 +2346,6 @@ const TEMPLATES = {
           [NCAA]: {
             templates: [
               {
-                templateId: `bb-team-event`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
                 example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
@@ -1722,7 +2356,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-teamVsteam-point-year`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
                 example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
@@ -1733,7 +2366,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-teamVsteam-point-comb`,
                 marketType: YES_NO,
                 question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
                 example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
@@ -1749,7 +2381,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-teamVsteam-point-year`,
                 marketType: YES_NO,
                 question: `Will the [0] have [1] or more regular season wins in [2]`,
                 example: `Will the NY Knicks have 50 or more regular season wins in 2019-2020`,
@@ -1781,7 +2412,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-championship`,
                 marketType: YES_NO,
                 question: `Will the [0] win the [1] NBA Championship`,
                 example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
@@ -1801,7 +2431,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-year-event`,
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2]`,
                 example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award`,
@@ -1827,7 +2456,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-teamVsteam`,
                 marketType: CATEGORICAL,
                 question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
                 example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -1842,7 +2470,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-overUnder`,
                 marketType: CATEGORICAL,
                 question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]`,
                 example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -1857,7 +2484,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-year-event-cat`,
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]`,
                 example: `Which NBA team will win the 2019-2020 Western Conference Finals`,
@@ -1883,7 +2509,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-year-coll-cat`,
                 marketType: CATEGORICAL,
                 question: `Which college basketball team will win the [0] [1] [2] tournament`,
                 example: `Which college basketball team will win the men's 2020 ACC tournament`,
@@ -1920,7 +2545,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `bb-leg-coll-cat`,
                 marketType: CATEGORICAL,
                 question: `Which [0] player will win the [1] [2] award`,
                 example: `Which NBA player will win the 2019-2020 Most Valuable Player award`,
@@ -1952,7 +2576,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-action-cat`,
                 marketType: CATEGORICAL,
                 question: `Which Player will have the most [0] at the end of the the [1] regular season`,
                 example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season`,
@@ -1978,7 +2601,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `bb-total-wins`,
                 marketType: SCALAR,
                 question: `Total number of wins [0] will finish [1] regular season with`,
                 example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
@@ -2006,7 +2628,6 @@ const TEMPLATES = {
       [BASEBALL]: {
         templates: [
           {
-            templateId: `baseball-team-event`,
             marketType: YES_NO,
             question: `Will the [0] win the [1] [2]`,
             example: `Will the NY Yankees win the 2020 World Series`,
@@ -2015,7 +2636,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `baseball-teamVsteam`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
             example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
@@ -2031,7 +2651,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `baseball-year-event`,
             marketType: CATEGORICAL,
             question: `Which MLB team will win the [0] [1]`,
             example: `Which MLB team will win the 2020 World Series`,
@@ -2040,7 +2659,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `baseball-overUnder`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]`,
             example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2056,7 +2674,6 @@ const TEMPLATES = {
             },
           },
           {
-            templateId: `baseball-year-event2`,
             marketType: CATEGORICAL,
             question: `Which player will win the [0] [1]`,
             example: `Which Player will win the 2019 American League Cy Young award`,
@@ -2065,7 +2682,6 @@ const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            templateId: `baseball-total-wins`,
             marketType: SCALAR,
             question: `Total number of wins the [0] will finish the [1] regular season with`,
             example: `Total number of wins the LA Dodgers will finish the 2019 regular season with`,
@@ -2093,7 +2709,6 @@ const TEMPLATES = {
           [NCAA]: {
             templates: [
               {
-                templateId: `fb-teamVsteam`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
                 example: `Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2109,7 +2724,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-point`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
                 example: `Will the NY Giants win vs. the New England Patriots by 3 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2125,7 +2739,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-point-comb`,
                 marketType: YES_NO,
                 question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
                 example: `Will the NY Giants & the New England Patriots score 44 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2141,7 +2754,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-point-year`,
                 marketType: YES_NO,
                 question: `Will the [0] have [1] or more regular season wins in [2]`,
                 example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
@@ -2156,7 +2768,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-team-event`,
                 marketType: YES_NO,
                 question: `Will the [0] win SuperBowl [1]`,
                 example: `Will the NY Giants win Superbowl LIV`,
@@ -2165,7 +2776,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-player-award`,
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2] award`,
                 example: `Will Patrick Mahones win the 2019-20 MVP award`,
@@ -2174,7 +2784,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-teamVsteam`,
                 marketType: CATEGORICAL,
                 question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]`,
                 example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2190,7 +2799,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-coll`,
                 marketType: CATEGORICAL,
                 question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]`,
                 example: `Which College Football Team will win: Alabama vs Michigan Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2206,7 +2814,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-overUnder`,
                 marketType: CATEGORICAL,
                 question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
                 example: `Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2221,7 +2828,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-year-event`,
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]`,
                 example: `Which NFL team will win the 2020 AFC Championship game`,
@@ -2230,7 +2836,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-year-event-coll`,
                 marketType: CATEGORICAL,
                 question: `Which college football player will win the [0] Heisman Trophy`,
                 example: `Which college football player will win the 2020 Heisman Trophy`,
@@ -2245,7 +2850,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-total-wins`,
                 marketType: SCALAR,
                 question: `Total number of wins [0] will finish [1] regular season with`,
                 example: `Total number of wins NY Giants will finish 2019 regular season with`,
@@ -2271,7 +2875,6 @@ const TEMPLATES = {
           [NFL]: {
             templates: [
               {
-                templateId: `fb-teamVsteam`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
                 example: `Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2287,7 +2890,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-point`,
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
                 example: `Will the NY Giants win vs. the New England Patriots by 3 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2303,7 +2905,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-point-comb`,
                 marketType: YES_NO,
                 question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
                 example: `Will the NY Giants & the New England Patriots score 44 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2319,7 +2920,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-point-year`,
                 marketType: YES_NO,
                 question: `Will the [0] have [1] or more regular season wins in [2]`,
                 example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
@@ -2334,7 +2934,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-team-event`,
                 marketType: YES_NO,
                 question: `Will the [0] win SuperBowl [1]`,
                 example: `Will the NY Giants win Superbowl LIV`,
@@ -2343,7 +2942,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-player-award`,
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2] award`,
                 example: `Will Patrick Mahones win the 2019-20 MVP award`,
@@ -2352,7 +2950,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-teamVsteam`,
                 marketType: CATEGORICAL,
                 question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]`,
                 example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2368,7 +2965,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-teamVsteam-coll`,
                 marketType: CATEGORICAL,
                 question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]`,
                 example: `Which College Football Team will win: Alabama vs Michigan Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2384,7 +2980,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-overUnder`,
                 marketType: CATEGORICAL,
                 question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
                 example: `Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
@@ -2399,7 +2994,6 @@ const TEMPLATES = {
                 },
               },
               {
-                templateId: `fb-year-event`,
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]`,
                 example: `Which NFL team will win the 2020 AFC Championship game`,
@@ -2408,7 +3002,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-year-event-coll`,
                 marketType: CATEGORICAL,
                 question: `Which college football player will win the [0] Heisman Trophy`,
                 example: `Which college football player will win the 2020 Heisman Trophy`,
@@ -2423,7 +3016,6 @@ const TEMPLATES = {
                 resolutionRules: {},
               },
               {
-                templateId: `fb-total-wins`,
                 marketType: SCALAR,
                 question: `Total number of wins [0] will finish [1] regular season with`,
                 example: `Total number of wins NY Giants will finish 2019 regular season with`,

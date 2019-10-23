@@ -961,7 +961,21 @@ export const LIST_VALUES = {
       label: 'Washington Wizards',
     },
   ],
-  USD_EXCHANGES: [
+  BTC_USD_EXCHANGES: [
+    {
+      value: 'Coinbase Pro',
+      label: 'Coinbase Pro',
+    },
+    {
+      value: 'Bitstamp',
+      label: 'Bitstamp',
+    },
+    {
+      value: 'Bittrex',
+      label: 'Bittrex',
+    },
+  ],
+  NON_BTC_USD_EXCHANGES: [
     {
       value: 'Coinbase Pro',
       label: 'Coinbase Pro',
