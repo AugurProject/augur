@@ -27,7 +27,7 @@ import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
-export const OPTIONAL = 'OPTIONAL';
+export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 
 export enum TemplateInputTypeNames {
@@ -116,7 +116,7 @@ interface ResolutionRule {
 }
 
 interface ResolutionRules {
-  [OPTIONAL]: ResolutionRule[];
+  [REQUIRED]: ResolutionRule[];
   [CHOICE]: ResolutionRule[];
 }
 
@@ -129,13 +129,15 @@ export interface Template {
   inputs: TemplateInput[];
   inputsType: TemplateInputTypeNames;
   resolutionRules: ResolutionRules;
-  denomination: string;
+  denomination?: string;
+  tickSize?: number;
 }
 
 export interface TemplateInput {
   id: number;
   type: TemplateInputType;
   placeholder: string;
+  label?: string;
   tooltip?: string;
   userInput?: string;
   userInputObject?: UserInputtedType;
@@ -202,12 +204,12 @@ export const addCategoryStats = (
   if (!categories || !categories.primary) stats = categoryStats[cardValue];
   if (categories && categories.primary && !categories.secondary) {
     const catStats = categoryStats[categories.primary.toLowerCase()];
-    stats = catStats.categories[cardValue];
+    stats = catStats && catStats.categories[cardValue];
   }
   if (categories && categories.primary && categories.secondary) {
     let catStats = categoryStats[categories.primary.toLowerCase()];
     catStats = catStats[categories.secondary.toLowerCase()];
-    stats = catStats.categories[cardValue];
+    stats = catStats && catStats.categories[cardValue];
   }
   if (stats) {
     const vol = formatDai(stats.volume || '0').formatted;
@@ -355,11 +357,11 @@ export const buildResolutionDetails = (
   resolutionRules: ResolutionRules
 ) => {
   let details = userDetails;
-  Object.values(resolutionRules).forEach(
+  Object.keys(resolutionRules).forEach(
     type =>
       type &&
-      type.forEach(rule => {
-        if (rule.isSelected) {
+      resolutionRules[type].forEach(rule => {
+        if (type === CHOICE && rule.isSelected || type === REQUIRED) {
           if (details.length > 0) {
             details = details.concat('\n');
           }
@@ -447,7 +449,9 @@ const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -466,7 +470,9 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -508,7 +514,7 @@ const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
-                values: LIST_VALUES.OFFICES,
+                values: LIST_VALUES.PRES_OFFICES,
               },
             ],
             resolutionRules: {},
@@ -563,7 +569,9 @@ const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -582,7 +590,9 @@ const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATETIME,
-                placeholder: `By Specific Datetime`,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`
               },
             ],
             resolutionRules: {},
@@ -881,7 +891,11 @@ const TEMPLATES = {
         example: `Will Billy Crystal host the 2019 Academy Awards`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: 'If more than one person hosts the event, and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"'}
+          ]
+        },
       },
       {
         templateId: `ent-host-event2`,
@@ -908,7 +922,11 @@ const TEMPLATES = {
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: "Gross total should include 4-day weekend in if it is a holiday weekend"}
+          ]
+        },
       },
       {
         templateId: `ent-host-cat`,
@@ -917,7 +935,11 @@ const TEMPLATES = {
         example: `Who wll host the 2020 Emmy Awards`,
         inputs: [],
         inputsType: TemplateInputTypeNames.ENTERTAINMNET_AWARDS_CAT,
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {text: 'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.'}
+          ]
+        },
       },
       {
         templateId: `ent-win-award-cat`,
@@ -977,7 +999,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
                 },
@@ -987,8 +1009,8 @@ const TEMPLATES = {
           {
             templateId: `gf-cut`,
             marketType: YES_NO,
-            question: `Will [0] make the cut at [1] [2]`,
-            example: `Will Tiger Woods make the cut at 2020 PGA Championship`,
+            question: `Will [0] make the cut at the [1] [2]`,
+            example: `Will Tiger Woods make the cut at the 2020 PGA Championship`,
             inputs: [
               {
                 id: 0,
@@ -1009,7 +1031,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
                 },
@@ -1062,7 +1084,13 @@ const TEMPLATES = {
             example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: 'Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.'
+                }
+              ]
+            },
           },
           {
             templateId: `hk-championship`,
@@ -1092,7 +1120,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
@@ -1107,7 +1135,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
                 },
@@ -1166,6 +1194,7 @@ const TEMPLATES = {
             question: `Total number of wins the [0] will finish [1] regular season with`,
             example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1180,7 +1209,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
                 },
@@ -1215,7 +1244,13 @@ const TEMPLATES = {
                 values: LIST_VALUES.HORSE_RACING_EVENT,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the horse named in the market is scratched and does NOT run or is disqualified for any reason, the market should resolve as "No"`,
+                },
+              ],
+            },
           },
           {
             templateId: `hr-win-cat`,
@@ -1234,6 +1269,11 @@ const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.HORSE_RACING_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
               },
             ],
             resolutionRules: {},
@@ -1266,7 +1306,13 @@ const TEMPLATES = {
                 values: LIST_VALUES.TENNIS_EVENT,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                },
+              ],
+            },
           },
           {
             templateId: `ten-win-cat`,
@@ -1292,7 +1338,13 @@ const TEMPLATES = {
                 placeholder: `Other`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                },
+              ],
+            },
           },
           {
             templateId: `ten-win-cat`,
@@ -1329,7 +1381,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                 },
@@ -1364,7 +1416,7 @@ const TEMPLATES = {
                     'Include Regulation, any added injury or stoppage time and any Overtime or Penalty shoot-out',
                 },
               ],
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
@@ -1379,9 +1431,9 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
-                  text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
               ],
             },
@@ -1398,7 +1450,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
             resolutionRules: {
-              [OPTIONAL]: [{ text: `Include Regulation and Overtime` }],
+              [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
             },
           },
           {
@@ -1409,7 +1461,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
-              [OPTIONAL]: [{ text: `Include Regulation and Overtime` }],
+              [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
             },
           },
           {
@@ -1420,7 +1472,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 { text: `Include Regulation and Overtime` },
                 {
                   text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
@@ -1453,7 +1505,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
                 },
@@ -1514,7 +1566,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
@@ -1529,7 +1581,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
                 },
@@ -1592,7 +1644,7 @@ const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `winner will be determined by the team that wins their conference tournament championship game`,
                 },
@@ -1663,6 +1715,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1699,9 +1752,9 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
-                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                  text: 'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner", and Extra innings count towards settlement purposes'
                 },
               ],
             },
@@ -1723,9 +1776,9 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
-                  text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                  text:  'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner". Extra innings count towards settlement purposes'
                 },
               ],
             },
@@ -1742,9 +1795,10 @@ const TEMPLATES = {
           {
             templateId: `baseball-total-wins`,
             marketType: SCALAR,
-            question: `Total number of wins [0] will finish [1] regular season with`,
-            example: `Total number of wins the LA Dodgers will finish 2019 regular season with`,
+            question: `Total number of wins the [0] will finish the [1] regular season with`,
+            example: `Total number of wins the LA Dodgers will finish the 2019 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1772,7 +1826,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_BIN,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 { text: `Include Regulation and Overtime` },
                 {
                   text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
@@ -1788,7 +1842,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 { text: `Include Regulation and Overtime` },
                 {
                   text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
@@ -1804,7 +1858,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_POINTS_BIN,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 { text: `Include Regulation and Overtime` },
                 {
                   text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
@@ -1820,7 +1874,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_WINS_BIN_YEAR,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
                 },
@@ -1853,7 +1907,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 { text: `Include Regulation and Overtime` },
                 {
                   text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
@@ -1869,7 +1923,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.TEAM_VS_TEAM_CAT,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 { text: `Include Regulation and Overtime` },
                 {
                   text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
@@ -1885,7 +1939,7 @@ const TEMPLATES = {
             inputs: [],
             inputsType: TemplateInputTypeNames.OVER_UNDER,
             resolutionRules: {
-              [OPTIONAL]: [
+              [REQUIRED]: [
                 {
                   text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
                 },
@@ -1922,6 +1976,7 @@ const TEMPLATES = {
             question: `Total number of wins [0] will finish [1] regular season with`,
             example: `Total number of wins NY Giants will finish 2019 regular season with`,
             denomination: 'wins',
+            tickSize: 1,
             inputs: [
               {
                 id: 0,
@@ -1956,6 +2011,11 @@ const INPUTS = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.ENTERTAINMENT_EVENT,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.ADDED_OUTCOME,
+      placeholder: `Multiple Hosts`,
     },
   ],
   [TemplateInputTypeNames.ENTERTAINMNET_AWARDS_BIN_4]: [
@@ -2075,6 +2135,11 @@ const INPUTS = {
       type: TemplateInputType.DROPDOWN,
       placeholder: `Event`,
       values: LIST_VALUES.BASEBALL_EVENT,
+    },
+    {
+      id: 2,
+      type: TemplateInputType.ADDED_OUTCOME,
+      placeholder: `Other (Field)`,
     },
   ],
   [TemplateInputTypeNames.PLAYER_AWARD]: [

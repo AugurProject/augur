@@ -16,8 +16,8 @@
     "loadMore": "Klikkaa tai rullaa ylös ladataksesi vanhempia viestejä",
     "sendMessagePlaceholder": "Kirjoita viesti...",
     "status": {
-      "users": "käyttäjä",
-      "users_plural": "käyttäjää"
+      "users": "Online",
+      "users_plural": "Online"
     }
   },
   "configuration": "Asetukset",

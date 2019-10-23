@@ -15,6 +15,12 @@
 }
 
 @font-face {
+  font-family: 'roboto';
+  font-weight: 400;
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Regular.woff2') format('woff2');
+}
+
+@font-face {
   font-family: 'Roboto Mono';
   src: url('~fonts/robotomono/RobotoMono-Light.woff2') format('woff2'),
        url('https://fonts.googleapis.com/css?family=Roboto+Mono'),

@@ -14,16 +14,17 @@
         fill: @color-module-background;
       }
 
-      g.highcharts-axis-labels > text > tspan {
-        .mono-12;
+      g.highcharts-yaxis-labels {
+        .mono-10-bold;
 
-        color: @color-primary-text;
         fill: @color-primary-text;
       }
 
-      .highcharts-yaxis-labels,
-      .highcharts-label {
-        .mono-12;
+      g.highcharts-xaxis-labels,
+      g.highcharts-xaxis-labels > text,
+      g.highcharts-xaxis-labels > text > tspan,
+      g.highcharts-xaxis-labels > text > title {
+        .mono-9;
 
         fill: @color-primary-text;
       }
@@ -43,7 +44,7 @@
 
       .highcharts-tick,
       .highcharts-axis-line {
-        stroke: fade(@color-primary-text, 40%);
+        stroke: @color-secondary-action-outline;
       }
 
       .highcharts-xaxis-grid,
@@ -56,7 +57,7 @@
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: fade(@color-primary-text, 40%);
+          stroke: @color-secondary-action-outline;
         }
       }
 
@@ -79,41 +80,71 @@
         .dashline-long;
       }
 
-      .eth-label {
-        font-size: @size-9;
-      }
-
       // --- mulitple line styling
       g.highcharts-line-series.highcharts-color-0 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-0 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-0.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-0 {
+      .highcharts-line-series.highcharts-color-0,
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-0 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-0.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-0.highcharts-area-series.highcharts-color-0.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-0 {
         fill: @color-outcome-one;
         stroke: @color-outcome-one;
       }
 
-      .highcharts-line-series.highcharts-color-0 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-area {
+        fill: fade(@color-outcome-one, 40);
+        stroke: fade(@color-outcome-one, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
         stroke: @color-outcome-one;
       }
 
       g.highcharts-line-series.highcharts-color-1 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-1 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-1.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-1 {
+      .highcharts-line-series.highcharts-color-1,
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-1 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-1.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-1.highcharts-area-series.highcharts-color-1.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-1 {
         fill: @color-outcome-two;
         stroke: @color-outcome-two;
       }
 
-      .highcharts-line-series.highcharts-series-hover.highcharts-color-1,
-      .highcharts-line-series.highcharts-color-1 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-area {
+        fill: fade(@color-outcome-two, 40);
+        stroke: fade(@color-outcome-two, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-graph {
         stroke: @color-outcome-two;
       }
+
 
       g.highcharts-line-series.highcharts-color-2 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-2 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-2.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-2 {
+      .highcharts-line-series.highcharts-color-2,
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-2 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-2.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-2.highcharts-area-series.highcharts-color-2.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-2 {
         fill: @color-outcome-three;
+        stroke: @color-outcome-three;
+      }
+
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-area {
+        fill: fade(@color-outcome-three, 40);
+        stroke: fade(@color-outcome-three, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-graph {
         stroke: @color-outcome-three;
       }
 
@@ -125,77 +156,121 @@
       g.highcharts-line-series.highcharts-color-3 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-3 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-3.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-3 {
+      .highcharts-line-series.highcharts-color-3,
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-3 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-3.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-3.highcharts-area-series.highcharts-color-3.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-3 {
         fill: @color-outcome-four;
         stroke: @color-outcome-four;
       }
 
-      .highcharts-line-series.highcharts-halo.highcharts-color-3,
-      .highcharts-line-series.highcharts-color-3 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-area {
+        fill: fade(@color-outcome-four, 40);
+        stroke: fade(@color-outcome-four, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-graph {
         stroke: @color-outcome-four;
       }
 
       g.highcharts-line-series.highcharts-color-4 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-4 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-4.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-4 {
+      .highcharts-line-series.highcharts-color-4,
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-4 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-4.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-4.highcharts-area-series.highcharts-color-4.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-4 {
         fill: @color-outcome-five;
         stroke: @color-outcome-five;
       }
 
-      .highcharts-line-series.highcharts-halo.highcharts-color-4,
-      .highcharts-line-series.highcharts-color-4 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-area {
+        fill: fade(@color-outcome-five, 40);
+        stroke: fade(@color-outcome-five, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-graph {
         stroke: @color-outcome-five;
       }
 
       g.highcharts-line-series.highcharts-color-5 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-5 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-5.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-5 {
+      .highcharts-line-series.highcharts-color-5,
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-5 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-5.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-5.highcharts-area-series.highcharts-color-5.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-5 {
         fill: @color-outcome-six;
         stroke: @color-outcome-six;
       }
 
-      .highcharts-line-series.highcharts-halo.highcharts-color-5,
-      .highcharts-line-series.highcharts-color-5 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-area {
+        fill: fade(@color-outcome-six, 40);
+        stroke: fade(@color-outcome-six, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-graph {
         stroke: @color-outcome-six;
       }
 
       g.highcharts-line-series.highcharts-color-6 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-6 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-6.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-6 {
+      .highcharts-line-series.highcharts-color-6,
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-6 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-6.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-6.highcharts-area-series.highcharts-color-6.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-6 {
         fill: @color-outcome-seven;
         stroke: @color-outcome-seven;
       }
 
-      .highcharts-line-series.highcharts-halo.highcharts-color-6,
-      .highcharts-line-series.highcharts-color-6 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-area {
+        fill: fade(@color-outcome-seven, 40);
+        stroke: fade(@color-outcome-seven, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-graph {
         stroke: @color-outcome-seven;
       }
 
       g.highcharts-line-series.highcharts-color-7 > path.highcharts-point,
       .highcharts-line-series.highcharts-color-7 > .highcharts-halo,
       g.highcharts-line-series.highcharts-color-7.highcharts-tracker > path:nth-child(2),
-      .highcharts-line-series.highcharts-color-7 {
+      .highcharts-line-series.highcharts-color-7,
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-point,
+      .highcharts-area-series.highcharts-color-7 > .highcharts-halo,
+      g.highcharts-area-series.highcharts-color-7.highcharts-tracker > path,
+      g.highcharts-markers.highcharts-series-7.highcharts-area-series.highcharts-color-7.highcharts-tracker > path,
+      .highcharts-area-series.highcharts-color-7 {
         fill: @color-outcome-invalid;
         stroke: @color-outcome-invalid;
       }
 
-      .highcharts-line-series.highcharts-halo.highcharts-color-7,
-      .highcharts-line-series.highcharts-color-7 > path.highcharts-graph {
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-area {
+        fill: fade(@color-outcome-invalid, 40);
+        stroke: fade(@color-outcome-invalid, 40);
+      }
+
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-graph {
         stroke: @color-outcome-invalid;
       }
 
-      text.highcharts-title tspan {
-        .mono-10;
+      text.highcharts-title tspan,
+      text.highcharts-title > tspan {
+        .text-10;
 
+        color: @color-primary-text;
         fill: @color-primary-text;
+        text-transform: capitalize;
       }
     }
   }
-}
-
-.MarketOutcomeChartsHighcharts__yLabels {
-  color: @color-primary-text;
 }

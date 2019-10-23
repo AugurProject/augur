@@ -16,8 +16,8 @@
     "loadMore": "Click or scroll up to load older messages",
     "sendMessagePlaceholder": "Type a message...",
     "status": {
-      "users": "user",
-      "users_plural": "users"
+      "users": "online",
+      "users_plural": "online"
     }
   },
   "configuration": "Configuration",

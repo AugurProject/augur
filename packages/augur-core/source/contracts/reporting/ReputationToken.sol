@@ -27,11 +27,13 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     uint256 internal totalMigrated;
     IERC20 public legacyRepToken;
     IAugur public augur;
+    address public warpSync;
 
     constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc1820RegistryAddress) public {
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
+        warpSync = _augur.lookup("WarpSync");
         legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
@@ -75,9 +77,10 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
-    function mintForUniverse(uint256 _amountToMint, address _target) public returns (bool) {
-        require(universe == IUniverse(msg.sender));
+    function mintForWarpSync(uint256 _amountToMint, address _target) public returns (bool) {
+        require(warpSync == msg.sender);
         mint(_target, _amountToMint);
+        universe.updateForkValues();
         return true;
     }
 
