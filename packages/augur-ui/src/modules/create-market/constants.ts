@@ -356,19 +356,19 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [CRYPTO]: [
     {
-      value: BTC,
+      value: BITCOIN,
       header: BITCOIN,
       description: defaultDescription,
       icon: icons.BTC,
     },
     {
-      value: ETH,
+      value: ETHEREUM,
       header: ETHEREUM,
       description: defaultDescription,
       icon: icons.ETH,
     },
     {
-      value: LTC,
+      value: LITECOIN,
       header: LITECOIN,
       description: defaultDescription,
       icon: icons.LTC,

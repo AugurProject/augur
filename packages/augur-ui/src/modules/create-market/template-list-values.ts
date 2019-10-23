@@ -963,62 +963,62 @@ export const LIST_VALUES = {
   ],
   BTC_USD_EXCHANGES: [
     {
-      value: 'Coinbase Pro',
-      label: 'Coinbase Pro',
+      value: 'Coinbase Pro (pro.coinbase.com)',
+      label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp',
-      label: 'Bitstamp',
+      value: 'Bitstamp (bitstamp.net)',
+      label: 'Bitstamp (bitstamp.net)',
     },
     {
-      value: 'Bittrex',
-      label: 'Bittrex',
+      value: 'Bittrex (bittrex.com)',
+      label: 'Bittrex (bittrex.com)',
     },
   ],
   NON_BTC_USD_EXCHANGES: [
     {
-      value: 'Coinbase Pro',
-      label: 'Coinbase Pro',
+      value: 'Coinbase Pro (pro.coinbase.com)',
+      label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp',
-      label: 'Bitstamp',
+      value: 'Bitstamp (bitstamp.net)',
+      label: 'Bitstamp (bitstamp.net)',
     },
     {
-      value: 'Kraken',
-      label: 'Kraken',
+      value: 'Kraken (kraken.com)',
+      label: 'Kraken (kraken.com)',
     },
     {
-      value: 'Bittrex',
-      label: 'Bittrex',
+      value: 'Bittrex (bittrex.com)',
+      label: 'Bittrex (bittrex.com)',
     },
   ],
   USDT_EXCHANGES: [
     {
-      value: 'Bittrex',
-      label: 'Bittrex',
+      value: 'Bittrex (bittrex.com)',
+      label: 'Bittrex (bittrex.com)',
     },
     {
-      value: 'Binance',
-      label: 'Binance',
+      value: 'Binance (binance.com)',
+      label: 'Binance (binance.com)',
     },
     {
-      value: 'Huobi Global',
-      label: 'Huobi Global',
+      value: 'Huobi Global (hbg.com)',
+      label: 'Huobi Global (hbg.com)',
     },
   ],
   EUR_EXCHANGES: [
     {
-      value: 'Coinbase Pro',
-      label: 'Coinbase Pro',
+      value: 'Coinbase Pro (pro.coinbase.com)',
+      label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp',
-      label: 'Bitstamp',
+      value: 'Bitstamp (bitstamp.net)',
+      label: 'Bitstamp (bitstamp.net)',
     },
     {
-      value: 'Kraken',
-      label: 'Kraken',
+      value: 'Kraken (kraken.com)',
+      label: 'Kraken (kraken.com)',
     },
   ]
 };

@@ -19,15 +19,15 @@ import {
   HORSE_RACING,
   TENNIS,
   GOLF,
-  BTC,
-  ETH,
-  LTC,
   NBA,
   NFL,
   NCAA,
   USD,
   USDT,
   EUR,
+  LITECOIN,
+  ETHEREUM,
+  BITCOIN,
 } from 'modules/create-market/constants';
 import { LIST_VALUES } from 'modules/create-market/template-list-values';
 import { ValueLabelPair, TimezoneDateObject } from 'modules/types';
@@ -161,7 +161,7 @@ export interface Categories {
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
-  const templates = getTemplates(categories, null, false);
+  const templates = getTemplates(categories, null);
   if (!templates) return [];
   const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
   return [...new Set(marketTypes)].map(m =>
@@ -883,7 +883,7 @@ const TEMPLATES = {
   },
   [CRYPTO]: {
     children: {
-      [BTC]: {
+      [BITCOIN]: {
         children: {
           [USD]: {
             templates: [
@@ -1124,7 +1124,7 @@ const TEMPLATES = {
           },
         },
       },
-      [ETH]: {
+      [ETHEREUM]: {
         children: {
           [USD]: {
             templates: [
@@ -1365,7 +1365,7 @@ const TEMPLATES = {
           },
         },
       },
-      [LTC]: {
+      [LITECOIN]: {
         children: {
           [USD]: {
             templates: [
