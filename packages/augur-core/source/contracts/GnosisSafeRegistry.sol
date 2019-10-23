@@ -3,9 +3,11 @@ pragma solidity 0.5.10;
 import 'ROOT/Augur.sol';
 import 'ROOT/external/IGnosisSafe.sol';
 import 'ROOT/external/IProxyFactory.sol';
+import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/external/IProxy.sol';
 
 
-contract GnosisSafeRegistry {
+contract GnosisSafeRegistry is Initializable {
     // mapping of user to created safes. The first safe wins but we store additional safes in case a user accidentally makes multiple.
     mapping (address => IGnosisSafe[]) public accountSafes;
 
@@ -15,7 +17,8 @@ contract GnosisSafeRegistry {
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
-    function initialize(IAugur _augur) public returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+        endInitialization();
         augur = _augur;
         gnosisSafeMasterCopy = _augur.lookup("GnosisSafe");
         IProxyFactory _proxyFactory = IProxyFactory(_augur.lookup("ProxyFactory"));
@@ -38,8 +41,7 @@ contract GnosisSafeRegistry {
             _codeHash := extcodehash(_safe)
         }
         require(_codeHash == proxyCodeHash, "Safe instance does not match expected code hash of the Proxy contract");
-        // TODO: Below will not work in production currently as the proxy contract does not expose the masterCopy param
-        require(_safe.masterCopy() == gnosisSafeMasterCopy, "Proxy master contract is not the Gnosis Safe");
+        require(IProxy(msg.sender).masterCopy() == gnosisSafeMasterCopy, "Proxy master contract is not the Gnosis Safe");
         require(_safe.getThreshold() == 1, "Safe may only have a threshold of 1");
         address[] memory _owners = _safe.getOwners();
         require(_owners.length == 1, "Safe may only have 1 user");

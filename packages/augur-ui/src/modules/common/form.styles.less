@@ -23,10 +23,26 @@
     }
 
     &:nth-of-type(3) {
-      grid-template-columns: @size-24 @size-24 252px 252px;
+      grid-template-columns: @size-24 @size-24 252px 230px @size-16;
 
       > svg {
         grid-column: 2 / span 1;
+        height: @size-32;
+        margin: 0;
+      }
+
+      > button {
+        z-index: @above-all-content;
+        max-width: @size-32;
+
+        > svg {
+          height: @size-10;
+          width: @size-10;
+
+          > path {
+            stroke: @color-primary-text;
+          }
+        }
       }
     }
 
@@ -223,7 +239,7 @@
   margin-bottom: @size-8;
   height: 51px;
 
-  > svg{
+  > svg {
     height: @size-20;
     grid-column: 1;
     grid-row: 1;
@@ -252,6 +268,10 @@
       margin: auto;
       margin-left: @size-18;
     }
+  }
+
+  &.Disabled {
+    pointer-events: none;
   }
 }
 
@@ -775,7 +795,6 @@
         background-color: @color-dark-grey;
         border: 1px solid @color-inactive-text;
         color: @color-inactive-text;
-        opacity: 0.5;
 
         &::placeholder {
           color: @color-inactive-text;
@@ -1782,6 +1801,6 @@ div.error > div > div > div > div > input {
     .text-18-bold;
 
     color: @color-primary-text;
-    margin: 0 @size-8
+    margin: 0 @size-8;
   }
 }

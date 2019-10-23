@@ -364,12 +364,14 @@ jobs:
     - PreFlightCheck
     - TestAugurCore
     - TestAndLint
+    - ContractSanityCheck
     condition: |
       and
       (
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
@@ -496,14 +498,24 @@ jobs:
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
       - bash: |
           set -euo pipefail
-          ls -l packages/augur-ui/build
           DOCKER_BUILDKIT=1 docker build --progress=plain -t augurproject/augur-ipfs:v2 -f packages/augur-tools/docker-builder/Dockerfile-ipfs .
           docker push augurproject/augur-ipfs:v2
           aws --region=us-east-1 ecs update-service  --service augur-ipfs --cluster kovan-v2-ecs --force-new-deployment
+          docker run -d --name augur-ipfs augurproject/augur-ipfs:v2
+          sleep 5
+          IPFS_HASH=`docker exec augur-ipfs ipfs add -r -Q /export`
+          echo "IPFS hash: $IPFS_HASH"
+          docker stop augur-ipfs
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python3 -m pip install requests
+          packages/augur-tools/docker-builder/dnslink-cloudflare.py -d augur.net -r _dnslink.v2-ipfs  -l $IPFS_HASH
         displayName: augur-ipfs build
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+          CF_API_KEY: $(CLOUDFLARE_API_KEY)
+          CF_API_EMAIL: $(CLOUDFLARE_API_EMAIL)
       - task: Docker@1
         displayName: docker logout
         inputs:

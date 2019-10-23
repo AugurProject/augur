@@ -28,7 +28,9 @@ contract MarketFactory is CloneFactory, IMarketFactory {
         require(_augur.isKnownUniverse(_universe), "MarketFactory: Universe specified is unrecognized by Augur");
         IReputationToken _reputationToken = _universe.getReputationToken();
         require(_reputationToken.transfer(address(_market), _reputationToken.balanceOf(address(this))));
-        require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));
+        if (_sender != _augur.lookup("WarpSync")) {
+            require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));
+        }
 
         // Market param validation
         require(_numTicks.isMultipleOf(2), "MarketFactory.createMarket: numTicks must be multiple of 2");
