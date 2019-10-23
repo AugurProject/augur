@@ -33,8 +33,7 @@ function LoginForm ({ theme, onSubmit, usernameInputRef }) {
         />
       </div>
       <div className='connectButtonRow'>
-        <span className='hint'>{currentLength > 0 ? t('login.pressEnterToLogin') : null}</span>
-        <input type='submit' value='Connect' style={{ display: 'none' }} />
+        <input type='submit' value='Login' />
       </div>
     </form>
   )
