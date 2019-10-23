@@ -43,7 +43,6 @@ export const SubCategories = ({
         tertiary: '',
       })
     : [];
-  // ignore categories on the page
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
