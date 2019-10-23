@@ -509,7 +509,7 @@ jobs:
           python3 -m venv venv && \
           source venv/bin/activate && \
           python3 -m pip install requests
-          packages/augur-tools/docker-builder/dnslink-cloudflare.py -d augur.net -r _dnslink.v2-ipfs  -l $IPFS_HASH
+          packages/augur-ui/support/dnslink-cloudflare.py -d augur.net -r _dnslink.v2-ipfs  -l $IPFS_HASH
         displayName: augur-ipfs build
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
