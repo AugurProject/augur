@@ -256,21 +256,30 @@ export const getTemplates = (
   filterByMarketType: boolean = true
 ): Template[] => {
   if (!marketType && filterByMarketType) return [];
-  let categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
 
-  if (!categoryTemplates) return [];
-
-  const useParentValues = hasNoTemplateCategoryChildren(categories.primary);
-  if (!categories.secondary || useParentValues)
+  if (categories.tertiary) {
+    const primary: CategoryTemplate = TEMPLATES[categories.primary];
+    const secondary = primary.children[categories.secondary];
+    const tertiary = secondary.children[categories.tertiary];
     return filterByMarketType
-      ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
-      : categoryTemplates.templates;
-
-  categoryTemplates =
-    categoryTemplates.children &&
-    categoryTemplates.children[categories.secondary];
+      ? getTemplatesByMarketType(tertiary.templates, marketType)
+      : tertiary.templates;
+  }
+  if (categories.secondary) {
+    const primary: CategoryTemplate = TEMPLATES[categories.primary];
+    const secondary = primary.children[categories.secondary];
+    return filterByMarketType
+      ? getTemplatesByMarketType(secondary.templates, marketType)
+      : secondary.templates;
+  }
+  if (categories.primary) {
+    const primary: CategoryTemplate = TEMPLATES[categories.primary];
+    return filterByMarketType
+      ? getTemplatesByMarketType(primary.templates, marketType)
+      : primary.templates;
+  }
+  const categoryTemplates: CategoryTemplate = TEMPLATES[categories.primary];
   if (!categoryTemplates) return [];
-
   return filterByMarketType
     ? getTemplatesByMarketType(categoryTemplates.templates, marketType)
     : categoryTemplates.templates;
@@ -310,7 +319,8 @@ export const buildMarketDescription = (
   inputs.forEach((input: TemplateInput) => {
     const userInputFormatted =
       input.type === TemplateInputType.DATEYEAR
-        ? convertUnixToFormattedDate(input.userInput).formattedSimpleData
+        ? convertUnixToFormattedDate(Number(input.userInput))
+            .formattedSimpleData
         : input.userInput;
     question = question.replace(
       `[${input.id}]`,
