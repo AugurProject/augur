@@ -66,8 +66,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
 
   const redirect = () => {
-    dP.closeModal();
-    oP.history.push({ pathname: makePath(MARKETS, null) });
+    setTimeout(() => {
+      dP.closeModal();
+      oP.history.push({ pathname: makePath(MARKETS, null) });
+    });
   };
 
   const connectMethods = [
