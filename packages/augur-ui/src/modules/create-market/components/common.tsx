@@ -22,23 +22,24 @@ import {
   DateFormattedObject,
   NewMarket,
   TimezoneDateObject,
+  TemplateInput,
+  Template,
+  UserInputDateTime,
 } from 'modules/types';
 import moment, { Moment } from 'moment';
 import {
-  TemplateInputType,
-  TemplateInput,
-  Template,
-  buildMarketDescription,
-  tellIfEditableOutcomes,
-  substituteUserOutcome,
-  UserInputDateTime,
-  createTemplateOutcomes,
-  CHOICE,
-  REQUIRED,
-} from 'modules/create-market/get-template';
-import { CATEGORICAL, CATEGORICAL_OUTCOMES_MIN_NUM } from 'modules/common/constants';
+  CATEGORICAL,
+  CATEGORICAL_OUTCOMES_MIN_NUM,
+} from 'modules/common/constants';
 import { buildformattedDate } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
+import {
+  buildMarketDescription,
+  tellIfEditableOutcomes,
+  createTemplateOutcomes,
+  substituteUserOutcome,
+} from 'modules/create-market/get-template';
+import { TemplateInputType, CHOICE, REQUIRED } from 'modules/create-market/constants';
 
 export interface HeaderProps {
   text: string;
@@ -163,9 +164,7 @@ export const DateTimeHeaders = (props: DateTimeHeadersProps) => (
 export const SmallSubheaders = (props: SubheadersProps) => (
   <div className={Styles.SmallSubheaders}>
     <h1>{props.header}</h1>
-    {props.renderMarkdown &&
-      <MarkdownRenderer text={props.subheader}/>
-    }
+    {props.renderMarkdown && <MarkdownRenderer text={props.subheader} />}
     {!props.renderMarkdown && <span>{props.subheader}</span>}
   </div>
 );
@@ -247,7 +246,7 @@ export const OutcomesList = (props: OutcomesListProps) => (
     <div>
       {props.outcomes.map((outcome: string, index: Number) => (
         <span key={String(index)}>
-          {index + 1}. {outcome}
+          {Number(index) + 1}. {outcome}
         </span>
       ))}
     </div>
@@ -319,42 +318,42 @@ interface DatePickerSelectorProps {
 }
 
 export const DatePickerSelector = (props: DatePickerSelectorProps) => {
-    const {
-      setEndTime,
-      onChange,
-      currentTimestamp,
-      errorMessage,
-      placeholder
-    } = props;
+  const {
+    setEndTime,
+    onChange,
+    currentTimestamp,
+    errorMessage,
+    placeholder,
+  } = props;
 
-    const [dateFocused, setDateFocused] = useState(false);
+  const [dateFocused, setDateFocused] = useState(false);
 
-    return (
-      <DatePicker
-        date={setEndTime ? moment(setEndTime * 1000) : null}
-        placeholder={placeholder}
-        displayFormat="MMM D, YYYY"
-        id="input-date"
-        onDateChange={(date: Moment) => {
-          if (!date) return onChange('setEndTime', '');
-          onChange(date.startOf('day').unix());
-        }}
-        isOutsideRange={day =>
-          day.isAfter(moment(currentTimestamp * 1000).add(6, 'M')) ||
-          day.isBefore(moment(currentTimestamp * 1000))
+  return (
+    <DatePicker
+      date={setEndTime ? moment(setEndTime * 1000) : null}
+      placeholder={placeholder}
+      displayFormat="MMM D, YYYY"
+      id="input-date"
+      onDateChange={(date: Moment) => {
+        if (!date) return onChange('setEndTime', '');
+        onChange(date.startOf('day').unix());
+      }}
+      isOutsideRange={day =>
+        day.isAfter(moment(currentTimestamp * 1000).add(6, 'M')) ||
+        day.isBefore(moment(currentTimestamp * 1000))
+      }
+      numberOfMonths={1}
+      onFocusChange={({ focused }) => {
+        if (setEndTime === null) {
+          onChange(currentTimestamp);
         }
-        numberOfMonths={1}
-        onFocusChange={({ focused }) => {
-          if (setEndTime === null) {
-            onChange(currentTimestamp);
-          }
-          setDateFocused(() => focused);
-        }}
-        focused={dateFocused}
-        errorMessage={errorMessage}
-      />
-    );
-}
+        setDateFocused(() => focused);
+      }}
+      focused={dateFocused}
+      errorMessage={errorMessage}
+    />
+  );
+};
 
 export const DateTimeSelector = (props: DateTimeSelectorProps) => {
   const {
@@ -751,7 +750,7 @@ export const InputFactory = (props: InputFactoryProps) => {
   } else if (input.type === TemplateInputType.DATEYEAR) {
     return (
       <DatePickerSelector
-        onChange={(value) => {
+        onChange={value => {
           updateData(value);
         }}
         currentTimestamp={currentTimestamp}
@@ -761,8 +760,15 @@ export const InputFactory = (props: InputFactoryProps) => {
       />
     );
   } else if (input.type === TemplateInputType.DATETIME) {
-    return <span>{input.userInput ? input.userInput : `[${input.placeholder}]`}</span>;
-  } else if (input.type === TemplateInputType.DROPDOWN || input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
+    return (
+      <span>
+        {input.userInput ? input.userInput : `[${input.placeholder}]`}
+      </span>
+    );
+  } else if (
+    input.type === TemplateInputType.DROPDOWN ||
+    input.type === TemplateInputType.DENOMINATION_DROPDOWN
+  ) {
     return (
       <FormDropdown
         options={input.values}
@@ -888,7 +894,9 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
         header={props.input.label || 'Estimated start time'}
-        subheader={props.input.sublabel || 'When is the event estimated to begin?'}
+        subheader={
+          props.input.sublabel || 'When is the event estimated to begin?'
+        }
         setEndTime={endTime}
         onChange={(label, value) => {
           switch (label) {
@@ -919,7 +927,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               break;
           }
         }}
-        validations={newMarket.validations.inputs && newMarket.validations.inputs[inputIndex]}
+        validations={
+          newMarket.validations.inputs &&
+          newMarket.validations.inputs[inputIndex]
+        }
         hour={hour ? String(hour) : null}
         minute={minute ? String(minute) : null}
         meridiem={meridiem}
@@ -960,7 +971,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           const bracketPos2 = word.indexOf(']');
 
           if (bracketPos === -1 || bracketPos === -1) {
-            return <span key={word+index}>{word}</span>;
+            return <span key={word + index}>{word}</span>;
           } else {
             const id = word.substring(bracketPos + 1, bracketPos2);
             const inputIndex = inputs.findIndex(
@@ -1040,7 +1051,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
     if (initialList.filter(option => option.value === outcome).length === 0) {
       initialList.push({
         value: outcome,
-        editable: true
+        editable: true,
       });
     }
   });
@@ -1098,50 +1109,48 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
         <>
           <span>Choose one:</span>
           <RadioBarGroup
-            radioButtons={resolutionRules[CHOICE].map((rule, index) =>
-              {
-                return {
-                  header: rule.text,
-                  value: index.toString()
-                }
-              }
-            )}
+            radioButtons={resolutionRules[CHOICE].map((rule, index) => {
+              return {
+                header: rule.text,
+                value: index.toString(),
+              };
+            })}
             onChange={(value: string) => {
-              const newResolutionRulesChoice = resolutionRules[CHOICE].map((rule, index) => {
+              const newResolutionRulesChoice = resolutionRules[CHOICE].map(
+                (rule, index) => {
                   return {
                     ...rule,
-                    isSelected: index.toString() === value
-                  }
-              });
+                    isSelected: index.toString() === value,
+                  };
+                }
+              );
               onChange('template', {
                 ...template,
                 resolutionRules: {
                   [REQUIRED]: resolutionRules[REQUIRED],
-                  [CHOICE]: newResolutionRulesChoice
-                }
-              })
+                  [CHOICE]: newResolutionRulesChoice,
+                },
+              });
             }}
           />
         </>
       )}
-       {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
+      {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
         <>
           <span>Added Resolution details:</span>
           <MultiSelectRadioBarGroup
-            radioButtons={resolutionRules[REQUIRED].map((rule, index) =>
-              {
-                return {
-                  header: rule.text,
-                  value: index.toString(),
-                  isSelected: true,
-                  disabled: true
-                }
-              }
-            )}
+            radioButtons={resolutionRules[REQUIRED].map((rule, index) => {
+              return {
+                header: rule.text,
+                value: index.toString(),
+                isSelected: true,
+                disabled: true,
+              };
+            })}
             onChange={(value: string) => {}}
           />
         </>
-       )}
+      )}
     </div>
   );
 };
