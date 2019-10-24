@@ -19,6 +19,8 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertPayoutNumeratorsToStrings,
   MALFORMED_OUTCOME,
+  convertDisplayValuetoAttoValue,
+  numTicksToTickSize
 } from '@augurproject/sdk';
 import {
   BUY,
@@ -63,15 +65,12 @@ function getInfo(params: any, status: string, marketInfo: MarketData) {
       new BigNumber(params._direction).toNumber() === BUY_INDEX ? BUY : SELL;
   }
 
-  const price = convertOnChainPriceToDisplayPrice(
-    createBigNumber(params.price || params._price),
-    createBigNumber(marketInfo.minPrice),
-    createBigNumber(marketInfo.tickSize)
-  );
-  const amount = convertOnChainAmountToDisplayAmount(
-    createBigNumber(params.amount || params._amount),
-    createBigNumber(marketInfo.tickSize)
-  );
+  const onChainMinPrice = convertDisplayValuetoAttoValue(createBigNumber(marketInfo.minPrice));
+  const onChainMaxPrice = convertDisplayValuetoAttoValue(createBigNumber(marketInfo.maxPrice));
+  const numTicks = createBigNumber(marketInfo.numTicks);
+  const tickSize = numTicksToTickSize(numTicks, onChainMinPrice, onChainMaxPrice);
+  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params._price || params.price), onChainMinPrice, tickSize).toString(10);
+  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount || params._amount), tickSize).toString();
 
   return {
     price,
@@ -326,6 +325,7 @@ export default function setAlertText(alert: any, callback: Function) {
               alert.status,
               marketInfo
             );
+            
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;

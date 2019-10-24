@@ -1,15 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import classNames from 'classnames';
-import moment, { Moment } from 'moment';
 
 import {
   RadioCardGroup,
-  FormDropdown,
   TextInput,
-  DatePicker,
-  TimeSelector,
   RadioBarGroup,
-  TimezoneDropdown,
   CategoryMultiSelect,
 } from 'modules/common/form';
 import {
@@ -21,7 +16,7 @@ import {
   SmallSubheaders,
   QuestionBuilder,
   DateTimeSelector,
-  ResolutionRules
+  ResolutionRules,
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
@@ -33,22 +28,22 @@ import {
   DESIGNATED_REPORTER_SPECIFIC,
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
-import { RepLogoIcon } from 'modules/common/icons';
 import {
   DESCRIPTION_PLACEHOLDERS,
-  DESCRIPTION,
   DESIGNATED_REPORTER_ADDRESS,
   EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
 } from 'modules/create-market/constants';
-import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { hasNoTemplateCategoryChildren } from "modules/create-market/get-template";
+import {
+  hasNoTemplateCategoryChildren,
+  hasNoTemplateCategoryTertiaryChildren,
+} from 'modules/create-market/get-template';
 
 interface FormDetailsProps {
   updateNewMarket: Function;
@@ -73,7 +68,7 @@ interface TimeSelectorParams {
 export default class FormDetails extends React.Component<
   FormDetailsProps,
   FormDetailsState
-  > {
+> {
   state = {
     dateFocused: false,
     timeFocused: false,
@@ -101,7 +96,6 @@ export default class FormDetails extends React.Component<
       scalarDenomination,
       minPrice,
       maxPrice,
-      tickSize,
       detailsText,
       categories,
       expirySource,
@@ -112,7 +106,33 @@ export default class FormDetails extends React.Component<
       validations,
       timezone,
       endTimeFormatted,
+      template,
     } = newMarket;
+
+    const tickSize =
+      isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
+    let sourceButtons = [
+      {
+        header: 'General knowledge',
+        value: EXPIRY_SOURCE_GENERIC,
+      },
+    ];
+
+    if (!isTemplate) {
+      sourceButtons.push({
+        header: 'Outcome available on a public website',
+        value: EXPIRY_SOURCE_SPECIFIC,
+        expandable: true,
+        placeholder: 'Enter website',
+        textValue: expirySource,
+        onTextChange: (value: string) => onChange('expirySource', value),
+        errorMessage: validations.expirySource,
+        secondPlaceholder: 'Back up website (optional)',
+        secondTextValue: backupSource,
+        secondHeader: 'If the primary resolution source is not available',
+        onSecondTextChange: (value: string) => onChange('backupSource', value),
+      });
+    }
 
     return (
       <div
@@ -135,8 +155,8 @@ export default class FormDetails extends React.Component<
                   subheader={categories[0]}
                 />
                 <SmallSubheaders
-                  header="Secondary category"
-                  subheader={categories[1]}
+                  header={'Secondary category'}
+                  subheader={categories[1] === '' ? '-' : categories[1]}
                 />
               </div>
               <LineBreak />
@@ -308,6 +328,7 @@ export default class FormDetails extends React.Component<
                     : 'Denomination'
                 }
                 value={tickSize}
+                disabled={isTemplate && template.tickSize}
                 errorMessage={validations.tickSize}
               />
             </>
@@ -324,7 +345,17 @@ export default class FormDetails extends React.Component<
             }
             errorMessage={validations.categories}
             disableCategory={isTemplate}
-            disableSubCategory={isTemplate && !hasNoTemplateCategoryChildren(newMarket.categories[0])}
+            disableSubCategory={
+              isTemplate &&
+              !hasNoTemplateCategoryChildren(newMarket.categories[0])
+            }
+            disableTertiaryCategory={
+              isTemplate &&
+              !hasNoTemplateCategoryTertiaryChildren(
+                newMarket.categories[0],
+                newMarket.categories[1]
+              )
+            }
           />
         </div>
         <LineBreak />
@@ -352,28 +383,7 @@ export default class FormDetails extends React.Component<
             link
           />
           <RadioBarGroup
-            radioButtons={[
-              {
-                header: 'General knowledge',
-                value: EXPIRY_SOURCE_GENERIC,
-              },
-              {
-                header: 'Outcome available on a public website',
-                value: EXPIRY_SOURCE_SPECIFIC,
-                expandable: true,
-                placeholder: 'Enter website',
-                textValue: expirySource,
-                onTextChange: (value: string) =>
-                  onChange('expirySource', value),
-                errorMessage: validations.expirySource,
-                secondPlaceholder: 'Back up website (optional)',
-                secondTextValue: backupSource,
-                secondHeader:
-                  'If the primary resolution source is not available',
-                onSecondTextChange: (value: string) =>
-                  onChange('backupSource', value),
-              },
-            ]}
+            radioButtons={sourceButtons}
             defaultSelected={expirySourceType}
             onChange={(value: string) => {
               if (value === EXPIRY_SOURCE_GENERIC) {
@@ -384,9 +394,9 @@ export default class FormDetails extends React.Component<
             }}
           />
 
-          {isTemplate &&
+          {isTemplate && (
             <ResolutionRules newMarket={newMarket} onChange={onChange} />
-          }
+          )}
 
           <Subheaders
             header="Resolution details"

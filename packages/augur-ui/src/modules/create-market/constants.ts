@@ -14,6 +14,7 @@ import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
 
+
 export const INVALID_OUTCOME = 'Market is Invalid';
 
 // Button Types
@@ -33,6 +34,8 @@ export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
+
+export const DEFAULT_TICK_SIZE = 0.01;
 
 export const EMPTY_STATE: NewMarket = {
   isValid: false,
@@ -65,7 +68,7 @@ export const EMPTY_STATE: NewMarket = {
   designatedReporterAddress: '',
   endTime: null,
   setEndTime: null,
-  tickSize: 0.01,
+  tickSize: DEFAULT_TICK_SIZE,
   hour: null,
   minute: null,
   meridiem: 'AM',
@@ -99,7 +102,7 @@ const EventDetailsContent = {
   secondButton: NEXT,
 };
 
-const LiquidityContent = {
+export const LiquidityContent = {
   title: 'Fees & liquidity',
   largeHeader: 'Fee & liquidity',
   noDarkBackground: true,
@@ -108,7 +111,7 @@ const LiquidityContent = {
   secondButton: NEXT,
 };
 
-const ReviewContent = {
+export const ReviewContent = {
   title: 'Review',
   largeHeader: 'Review market details',
   previewButton: true,
@@ -132,52 +135,6 @@ export const SUB_CATEGORIES = 'subCategories';
 export const MARKET_TYPE = 'marketType';
 export const TEMPLATE_PICKER = 'templatePicker';
 
-function checkValid(data) {
-  return data === '' || !data;
-}
-
-export const TEMPLATE_CONTENT_PAGES = [
-  { title: 'Category' },
-  {
-    title: 'Sub-Category',
-    mainContent: SUB_CATEGORIES,
-    firstButton: BACK,
-    secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.categories[1]),
-  },
-  {
-    title: 'Market Type',
-    mainContent: MARKET_TYPE,
-    firstButton: BACK,
-    secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.marketType),
-  },
-  {
-    title: 'Template',
-    mainContent: TEMPLATE_PICKER,
-    firstButton: BACK,
-    secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.template),
-  },
-  {
-    title: 'Event Details',
-    largeHeader: 'Enter the event details',
-    explainerBlockTitle: 'A note on choosing a market',
-    explainerBlockSubtexts: [
-      "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
-      'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability of resolving as invalid.',
-    ],
-    mainContent: TEMPLATE_FORM_DETAILS,
-    firstButton: BACK,
-    secondButton: NEXT,
-  },
-  LiquidityContent,
-  ReviewContent,
-];
-
-export const NO_CAT_TEMPLATE_CONTENT_PAGES = TEMPLATE_CONTENT_PAGES.filter(page => page.title !== 'Sub-Category');
-
-
 // Market Type Names
 export const MARKET_TYPE_NAME = {
   [YES_NO]: 'Yes/No',
@@ -185,12 +142,17 @@ export const MARKET_TYPE_NAME = {
   [CATEGORICAL]: 'Categorical',
 };
 
+export const REQUIRED = 'REQUIRED';
+export const CHOICE = 'CHOICE';
 // Market templates
 export const SPORTS = 'Sports';
 export const POLITICS = 'Politics';
 export const FINANCE = 'Finance';
 export const ENTERTAINMENT = 'Entertainment';
 export const CRYPTO = 'Crypto';
+export const USD = 'USD';
+export const USDT = 'USDT';
+export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Soccer';
@@ -215,6 +177,12 @@ export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
+export const BTC = 'BTC';
+export const ETH = 'ETH';
+export const LTC = 'LTC';
+export const NBA = 'NBA';
+export const NCAA = 'NCAA';
+export const NFL = 'NFL';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -306,6 +274,20 @@ export const MARKET_SUB_TEMPLATES = {
       header: HORSE_RACING,
       description: defaultDescription,
       icon: icons.HorseRacing,
+    },
+  ],
+  [AMERICAN_FOOTBALL]: [
+    {
+      value: NFL,
+      header: NFL,
+      description: defaultDescription,
+      icon: icons.AmericanFootball,
+    },
+    {
+      value: NCAA,
+      header: NCAA,
+      description: defaultDescription,
+      icon: icons.AmericanFootball,
     },
   ],
   [POLITICS]: [
@@ -551,3 +533,19 @@ export const VALIDATION_ATTRIBUTES = {
     checkUserInputFilled: true,
   },
 };
+
+export enum TemplateInputType {
+  TEXT = 'TEXT',
+  DATEYEAR = 'DATEYEAR',
+  DATETIME = 'DATETIME',
+  DROPDOWN = 'DROPDOWN',
+  DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN',
+  ADDED_OUTCOME = 'ADDED_OUTCOME',
+  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
+  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
+}
+
+export enum ValidationType {
+  WHOLE_NUMBER = 'WHOLE_NUMBER',
+  NUMBER = 'NUMBER',
+}

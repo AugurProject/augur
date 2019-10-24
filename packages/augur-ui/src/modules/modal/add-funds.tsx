@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
   ExternalLinkButton,
   PrimaryButton,
@@ -13,10 +14,8 @@ import {
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
-
-import { ACCOUNT_TYPES } from 'modules/common/constants';
+import { ACCOUNT_TYPES, DAI, REP } from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
-
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/modal/modal.styles.less';
 import { helpIcon } from 'modules/common/icons';
@@ -28,6 +27,7 @@ interface AddFundsProps {
   accountMeta: LoginAccount['meta'];
   isGnosis: boolean;
   autoSelect?: boolean;
+  fundType: string;
 }
 
 export const generateDaiTooltip = (
@@ -61,33 +61,46 @@ export const AddFunds = ({
   address,
   isGnosis = false,
   autoSelect = false,
+  fundType = DAI,
 }: AddFundsProps) => {
-  const [selectedOption, setSelectedOption] = useState(autoSelect ? [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(accountMeta.accountType) ? '0' : '1' : null);
+  let autoSelection = '2'; // default Coinbase
+
+  if (autoSelect) {
+    if ([ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(accountMeta.accountType) && fundType !== REP) {
+      autoSelection = '1'; // default Credit/Debit Card
+    }
+  }
+
+  const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelection : null);
   const [daiSelected, setDaiSelected] = useState(true);
 
-  let addFundsOptions = [
+  const FUND_OTPIONS = [
+    // TODO build uniswap component
+    { header: 'Swap',
+      description: 'Swap funds in your account for REP',
+      value: '0',
+    },
     {
       header: 'Credit/debit card',
       description: 'Add Funds instantly using a credit/debit card',
-      value: '0',
+      value: '1',
     },
     {
       header: 'Coinbase',
       description: 'Add funds using a Coinbase account',
-      value: '1',
+      value: '2',
     },
     {
       header: 'Transfer',
       description: 'Transfer funds to your account address',
-      value: '2',
+      value: '3',
     },
   ];
 
-  if (
-    accountMeta.accountType !== ACCOUNT_TYPES.TORUS &&
-    accountMeta.accountType !== ACCOUNT_TYPES.PORTIS
-  ) {
-    addFundsOptions = addFundsOptions.slice(1, 3);
+  const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
+
+  if (fundType !== REP && (accountMeta.accountType === ACCOUNT_TYPES.TORUS || accountMeta.accountType === ACCOUNT_TYPES.PORTIS)) {
+    addFundsOptions.unshift(FUND_OTPIONS[1]);
   }
 
   return (
@@ -104,7 +117,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>Add Funds</h1>
+          <h1>{fundType === REP ? 'Get REP' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -114,7 +127,7 @@ export const AddFunds = ({
               setSelectedOption(() => value && value.toString());
             }}
           />
-          <FundsHelp />
+          <FundsHelp fundType={fundType} />
         </div>
       </div>
       <div>
@@ -122,8 +135,8 @@ export const AddFunds = ({
           <BackButton action={() => setSelectedOption(() => null)} />
           <CloseButton action={() => closeAction()} />
         </div>
-        <div className={selectedOption === '2' ? Styles.AddFundsTransfer : Styles.AddFundsCreditDebitCoinbase}>
-          {selectedOption === '0' && (
+        <div className={selectedOption === '3' ? Styles.AddFundsTransfer : Styles.AddFundsCreditDebitCoinbase}>
+          {selectedOption === '1' && (
             <>
               <h1>Credit/debit card</h1>
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -180,11 +193,11 @@ export const AddFunds = ({
               )}
             </>
           )}
-          {selectedOption === '1' && (
+          {selectedOption === '2' && (
             <>
               <h1>Coinbase</h1>
               <h2>
-                Add up to $25,000 worth of DAI ($) {generateDaiTooltip()} using
+                Add up to $25,000 worth of {fundType} {fundType === DAI ? <>($) {generateDaiTooltip()}</> : ''} using
                 a Coinbase account
               </h2>
               <ol>
@@ -194,14 +207,14 @@ export const AddFunds = ({
                     www.coinbase.com
                   </a>
                 </li>
-                <li>Buy the cryptocurrency DAI</li>
-                <li>Send the DAI to your account address</li>
+                <li>Buy the cryptocurrency {fundType}</li>
+                <li>Send the {fundType} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
               <AccountAddressDisplay copyable address={address} />
             </>
           )}
-          {selectedOption === '2' && (
+          {selectedOption === '3' && (
             <>
               <h1>Transfer</h1>
               <h2>
@@ -209,17 +222,17 @@ export const AddFunds = ({
               </h2>
               <ol>
                 <li>
-                  Buy DAI {generateDaiTooltip()} using any external service
+                  Buy {fundType === DAI ? <>{fundType} {generateDaiTooltip()}</> : fundType} using any external service
                 </li>
-                <li>Transfer the DAI to your account address</li>
+                <li>Transfer the {fundType} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
               <AccountAddressDisplay copyable address={address} />
-              <ExternalLinkButton label='popular services for buying dai' />
+              <ExternalLinkButton label={`popular services for buying ${fundType}`} />
             </>
           )}
         </div>
-        <FundsHelp />
+        <FundsHelp fundType={fundType} />
       </div>
     </div>
   );

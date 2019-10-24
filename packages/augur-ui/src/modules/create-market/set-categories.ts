@@ -1,5 +1,6 @@
 import { SortedGroup } from 'modules/types';
 import { CUSTOM } from 'modules/common/constants';
+import { BITCOIN, LITECOIN, ETHEREUM, USD, USDT, EUR } from 'modules/create-market/constants';
 
 export const setCategories: SortedGroup[] = [
   {
@@ -401,10 +402,6 @@ export const setCategories: SortedGroup[] = [
         subGroup: [
           { value: 'NHL', label: 'NHL' },
           { value: 'Olympics', label: 'Olympics' },
-          {
-            value: 'International Ice Hockey Federation (IIHF)',
-            label: 'International Ice Hockey Federation (IIHF)',
-          },
           { value: CUSTOM, label: CUSTOM }
         ],
       },
@@ -1146,21 +1143,23 @@ export const setCategories: SortedGroup[] = [
     label: 'Crypto',
     subGroup: [
       {
-        value: 'Bitcoin',
-        label: 'Bitcoin',
+        value: BITCOIN,
+        label: BITCOIN,
+        subGroup: [{ value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
       },
       {
-        value: 'Ethereum',
-        label: 'Ethereum',
-        subGroup: [{ value: 'ICO', label: 'ICO' }, { value: CUSTOM, label: CUSTOM }],
+        value: ETHEREUM,
+        label: ETHEREUM,
+        subGroup: [{ value: 'ICO', label: 'ICO' }, { value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
       },
       {
-        value: 'Litecoin',
-        label: 'Litecoin',
+        value: LITECOIN,
+        label: LITECOIN,
+        subGroup: [{ value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
       },
       {
-        value: 'Rep',
-        label: 'Rep',
+        value: 'REP',
+        label: 'REP',
       },
       { value: CUSTOM, label: CUSTOM }
     ],

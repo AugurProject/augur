@@ -67,11 +67,6 @@ function AppView ({ isAuthenticated }) {
         {/* Controlpanel */}
         <ControlPanel />
 
-        {/* Channelheader */}
-        <Route path={['/channel/:channel', '/settings']}>
-          <ChannelHeader />
-        </Route>
-
         <Switch>
           {/* Channel */}
           <Route exact path='/channel/:channel'>
@@ -98,11 +93,6 @@ function AppView ({ isAuthenticated }) {
             <IndexView />
           </Route>
         </Switch>
-
-        {/* Render an alpha disclaimer on login page */}
-        <Route path={loginPath}>
-          <AlphaDisclaimer />
-        </Route>
 
         {redirectToLogin ? (
           <Redirect

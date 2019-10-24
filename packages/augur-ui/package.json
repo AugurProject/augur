@@ -17,8 +17,8 @@
     "nuke": "yarn clean; rm yarn.lock; rm package-lock.json",
     "dev": "yarn workspace orbit-web build && node scripts/dev.js",
     "build": "yarn workspace orbit-web build && webpack",
-    "build:kovan": "ETHEREUM_NETWORK=kovan yarn workspace orbit-web build && webpack",
-    "build:mainnet": "ETHEREUM_NETWORK=mainnet yarn workspace orbit-web build && webpack",
+    "build:kovan": "ETHEREUM_NETWORK=kovan yarn workspace orbit-web build && ETHEREUM_NETWORK=kovan webpack",
+    "build:mainnet": "ETHEREUM_NETWORK=mainnet yarn workspace orbit-web build && ETHEREUM_NETWORK=mainnet webpack",
     "start": "node server.js",
     "__": "",
     "integration:headless": "AUGUR_URL='http://localhost:8080/' jest --runInBand --detectOpenHandles --forceExit",
@@ -128,6 +128,7 @@
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-prettier": "3.1.1",
     "eslint-plugin-react": "7.14.3",
+    "eslint-plugin-react-hooks": "^2.1.2",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "4.2.0",
     "git-revision-webpack-plugin": "3.0.3",
@@ -181,5 +182,14 @@
   },
   "resolutions": {
     "**/sha3": "2.0.1"
+  },
+  "eslint":{
+    "plugins": [
+      "react-hooks"
+    ],
+    "rules": {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
+    }
   }
 }
