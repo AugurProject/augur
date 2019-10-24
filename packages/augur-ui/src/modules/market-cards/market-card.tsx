@@ -17,6 +17,7 @@ import {
   COPY_AUTHOR,
   REPORTING_STATE,
   MARKET_REPORTING,
+  SCALAR,
 } from 'modules/common/constants';
 import { FavoritesButton } from 'modules/common/buttons';
 import Clipboard from 'clipboard';
@@ -143,31 +144,31 @@ export default class MarketCard extends React.Component<
       <>
         {address && address.toUpperCase() === author.toUpperCase() && (
           <HoverIcon
-            label='marketCreator'
+            label="marketCreator"
             icon={MarketCreator}
-            hoverText='Market Creator'
+            hoverText="Market Creator"
           />
         )}
         {address &&
           address.toUpperCase() === designatedReporter.toUpperCase() && (
             <HoverIcon
-              label='reporter'
+              label="reporter"
               icon={DesignatedReporter}
-              hoverText='Designated Reporter'
+              hoverText="Designated Reporter"
             />
           )}
         {hasPosition && (
           <HoverIcon
-            label='Position'
+            label="Position"
             icon={PositionIcon}
-            hoverText='Position'
+            hoverText="Position"
           />
         )}
         {hasStaked && (
           <HoverIcon
-            label='dispute'
+            label="dispute"
             icon={DisputeStake}
-            hoverText='Dispute Stake'
+            hoverText="Dispute Stake"
           />
         )}
       </>
@@ -194,9 +195,12 @@ export default class MarketCard extends React.Component<
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
       reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
-    const showOutcomeNumber = inDispute
+    let showOutcomeNumber = inDispute
       ? MARKET_CARD_FOLD_OUTCOME_COUNT
       : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+    if (marketType === SCALAR && inDispute) {
+      showOutcomeNumber = MARKET_CARD_FOLD_OUTCOME_COUNT - 1;
+    }
     const canDispute =
       inDispute &&
       reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
@@ -235,10 +239,10 @@ export default class MarketCard extends React.Component<
               />
             </div>
             <DotSelection>
-              <div id='copy_marketId' data-clipboard-text={id}>
+              <div id="copy_marketId" data-clipboard-text={id}>
                 {PaperClip} {COPY_MARKET_ID}
               </div>
-              <div id='copy_author' data-clipboard-text={author}>
+              <div id="copy_author" data-clipboard-text={author}>
                 {Person} {COPY_AUTHOR}
               </div>
             </DotSelection>
@@ -247,13 +251,13 @@ export default class MarketCard extends React.Component<
             {reportingState === REPORTING_STATE.PRE_REPORTING && (
               <>
                 <LabelValue
-                  label='Total Volume'
+                  label="Total Volume"
                   value={volumeFormatted.formatted}
                   condensed
                 />
                 {!condensed && (
                   <LabelValue
-                    label='Open Interest'
+                    label="Open Interest"
                     value={openInterestFormatted.formatted}
                     condensed
                   />
@@ -263,7 +267,7 @@ export default class MarketCard extends React.Component<
             {reportingState !== REPORTING_STATE.PRE_REPORTING && (
               <LabelValue
                 condensed
-                label='Total Dispute Stake'
+                label="Total Dispute Stake"
                 value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
               />
             )}
@@ -299,7 +303,7 @@ export default class MarketCard extends React.Component<
                 !expandedView && (
                   <button onClick={this.expand}>
                     <ChevronFlip
-                      stroke='#fff'
+                      stroke="#fff"
                       pointDown={s.expanded}
                       quick
                       filledInIcon
