@@ -655,8 +655,7 @@ function drawTicks(options) {
   // Draw yAxis Lines
   drawParams.yScale.ticks(tickCount).forEach((tick: number) => {
     if (
-      tick === drawParams.yScale.ticks(tickCount)[0] ||
-      tick === drawParams.yScale.ticks(tickCount)[length - 1]
+      tick === drawParams.yScale.ticks(tickCount)[0]
     ) {
       return;
     }
