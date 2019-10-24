@@ -228,7 +228,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Winner`,
+                placeholder: `No Winner`,
               },
             ],
             resolutionRules: {
@@ -236,6 +236,9 @@ export const TEMPLATES = {
                 {
                   text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
+                {
+                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`
+                }
               ],
             },
           },
@@ -303,7 +306,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {},
@@ -328,7 +331,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {},

@@ -402,10 +402,6 @@ export const setCategories: SortedGroup[] = [
         subGroup: [
           { value: 'NHL', label: 'NHL' },
           { value: 'Olympics', label: 'Olympics' },
-          {
-            value: 'International Ice Hockey Federation (IIHF)',
-            label: 'International Ice Hockey Federation (IIHF)',
-          },
           { value: CUSTOM, label: CUSTOM }
         ],
       },
