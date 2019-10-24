@@ -254,7 +254,8 @@ export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
     inputs.filter(
       input =>
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME
+        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
     ).length > 0
   );
 };
@@ -265,7 +266,8 @@ export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
         input.type === TemplateInputType.ADDED_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
     )
     .map((input: TemplateInput) => {
       if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
