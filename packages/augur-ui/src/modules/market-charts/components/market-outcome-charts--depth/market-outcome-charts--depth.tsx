@@ -31,7 +31,7 @@ const ZOOM_MAX = ZOOM_LEVELS.length - 1;
 // this is important to make sure we don't infinitely redraw the chart / have the container keep growing
 const MARGIN_OF_ERROR = 50;
 const CHART_DIM = {
-  top: 0,
+  top: 10,
   bottom: 20,
   right: 10,
   left: 10,
@@ -77,6 +77,7 @@ export default class MarketOutcomeDepth extends Component<
 
   depthChart: any;
   depthContainer: any;
+  drawParams: any;
   xScale: number = 0;
   yScale: number = 0;
   containerHeight: number = 0;
@@ -165,6 +166,7 @@ export default class MarketOutcomeDepth extends Component<
         marketDepth: nextProps.marketDepth,
         marketMin: nextProps.marketMin,
         marketMax: nextProps.marketMax,
+        drawParams: this.drawParams,
       });
     }
   }
@@ -180,7 +182,7 @@ export default class MarketOutcomeDepth extends Component<
     } = options;
 
     const containerWidth = this.containerWidth ? this.containerWidth : this.depthChart.clientWidth;
-    const containerHeight = this.containerHeight ? this.containerHeight : this.depthChart.clientHeight - CHART_DIM.top;
+    const containerHeight = this.containerHeight ? this.containerHeight : this.depthChart.clientHeight;
     this.containerWidth = containerWidth;
     this.containerHeight = containerHeight;
     const drawHeight = containerHeight - CHART_DIM.bottom;
@@ -224,7 +226,7 @@ export default class MarketOutcomeDepth extends Component<
         }
         return p;
       }, ZERO)
-      .times(1.05)
+      // .times(1.05)
       .toNumber();
   
     const xDomain = [xDomainMin.toNumber(), xDomainMax.toNumber()];
@@ -238,7 +240,7 @@ export default class MarketOutcomeDepth extends Component<
       .scaleLinear()
       .clamp(true)
       .domain(d3.extent(yDomain))
-      .range([drawHeight, 0]);
+      .range([drawHeight, CHART_DIM.top]);
   
     const newMarketDepth = {
       asks: [...marketDepth.asks],
@@ -268,7 +270,6 @@ export default class MarketOutcomeDepth extends Component<
         ]);
       }
     }
-  
     return {
       containerWidth,
       containerHeight,
@@ -306,6 +307,7 @@ export default class MarketOutcomeDepth extends Component<
 
       this.xScale = drawParams.xScale;
       this.yScale = drawParams.yScale;
+      this.drawParams = drawParams;
       
       const depthContainer = new ReactFauxDOM.Element('div');
 
@@ -360,6 +362,7 @@ export default class MarketOutcomeDepth extends Component<
         marketDepth,
         marketMin,
         marketMax,
+        drawParams,
       });
 
       this.depthContainer = depthContainer.toReact();
@@ -370,7 +373,7 @@ export default class MarketOutcomeDepth extends Component<
   drawCrosshairs(options) {
     const { updateHoveredDepth } = this.props;
     if (this.depthChart) {
-      const { hoveredPrice, marketDepth, marketMin, marketMax } = options;
+      const { hoveredPrice, marketDepth, marketMin, marketMax, drawParams } = options;
 
       const {
         xScale,
@@ -388,7 +391,8 @@ export default class MarketOutcomeDepth extends Component<
           hoveredPrice,
           marketDepth,
           marketMin,
-          marketMax
+          marketMax,
+          
         );
         if (nearestFillingOrder === null) return;
 
@@ -475,9 +479,11 @@ function nearestCompletelyFillingOrder(
   price,
   { asks = [], bids = [] },
   marketMin,
-  marketMax
+  marketMax,
+  drawParams
 ) {
   const marketRange = createBigNumber(marketMax).minus(marketMin);
+  // const { xDomain } = drawParams;
   const PRICE_INDEX = 1;
   const items = [
     ...asks.filter(it => it[3]).map(it => [...it, ASKS]),
@@ -510,6 +516,17 @@ function nearestCompletelyFillingOrder(
     items[closestIndex].push(cost);
   } else {
     return null;
+  }
+
+  // final check to make sure not to snap to invisible prices
+  if (drawParams) {
+    const { xDomain } = drawParams;
+    const price = Number(items[closestIndex][1]);
+    if (items[closestIndex][4] === BIDS && price < xDomain[0]) {
+      return null;
+    } else if(items[closestIndex][4] === ASKS && price > xDomain[1]) {
+      return null;
+    }
   }
 
   return items[closestIndex];
@@ -881,7 +898,8 @@ function attachHoverClickHandlers(options) {
         hoveredPrice,
         marketDepth,
         marketMin,
-        marketMax
+        marketMax,
+        drawParams
       );
       if (nearestFillingOrder === null) return;
 
@@ -964,7 +982,8 @@ function attachHoverClickHandlers(options) {
         orderPrice,
         marketDepth,
         marketMin,
-        marketMax
+        marketMax,
+        drawParams
       );
 
       if (
