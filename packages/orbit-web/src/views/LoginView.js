@@ -6,17 +6,11 @@ import { useLocation, Redirect } from 'react-router-dom'
 import { useObserver } from 'mobx-react'
 import { useTranslation } from 'react-i18next'
 
-import { version } from '../../package.json'
-
 import Logger from '../utils/logger'
 
 import RootContext from '../context/RootContext'
 
 import '../styles/LoginView.scss'
-
-const BackgroundAnimation = lazy(() =>
-  import(/* webpackChunkName: "BackgroundAnimation" */ '../components/BackgroundAnimation')
-)
 
 const LoginForm = lazy(() => import(/* webpackChunkName: "LoginForm" */ '../components/LoginForm'))
 
@@ -61,9 +55,14 @@ function LoginView () {
     !sessionStore.isAuthenticated ? (
       <div className='LoginView'>
         <h1 className='loginHeaderAnimation' onClick={focusUsernameInput}>
-          Augur
+          Welcome to Augur<br />Global Chat
         </h1>
-
+        <p>Disclaimer</p>
+        <p>
+          The comment section is for entertainment purposes only.
+          Augur does not monitor or assess the accuracy of comments.
+          Traders should seek out independent information before making any investment decision.
+        </p>
         <LoginForm
           theme={{ ...uiStore.theme }}
           onSubmit={handleSubmit}

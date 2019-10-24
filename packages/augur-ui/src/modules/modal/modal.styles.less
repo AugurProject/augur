@@ -144,8 +144,12 @@
   line-height: 140%;
   text-align: center;
 
-  > div > a {
-    color: @color-primary-action;
+  > div {
+    margin-top: @size-4;
+
+    > a {
+      color: @color-primary-action;
+    }
   }
 }
 
@@ -153,7 +157,7 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  height: 454px;
+  min-height: 454px;
   justify-content: center;
   padding: @size-32 @size-40;
   width: 454px;
@@ -175,7 +179,13 @@ div.Onboarding {
     padding: 0;
 
     > div:first-of-type {
+      .text-24-bold;
+
       text-align: center;
+
+      @media @breakpoint-mobile-new {
+        .text-18-bold;
+      }
     }
 
     @media @breakpoint-mobile-new {
@@ -326,8 +336,7 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile-new {
     flex-direction: column;
-    flex: 1;
-    justify-content: flex-end;
+     justify-content: flex-end;
     display: flex;
 
     > button {
@@ -1224,13 +1233,86 @@ div.ButtonsRow:last-of-type {
 .WithdrawForm {
   .Message;
 
-  > main {
-    padding: @size-24;
+  background: @color-module-background;
+  border-radius: @border-radius-extra-rounded;
+  max-width: 432px;
 
-    > p {
-      border-bottom: 1px solid @color-dark-grey;
-      margin-bottom: @size-16;
-      padding-bottom: @size-24;
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
+  > header {
+    margin: @size-32 @size-32 0;
+
+    @media @breakpoint-mobile {
+      margin: @size-24 @size-24 0;
+    }
+
+    > div:first-of-type {
+      > button {
+        position: absolute;
+        top: @size-24;
+        right: @size-24;
+      }
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
+
+      > h1 {
+        .text-24-bold;
+
+        color: @color-primary-text;
+        text-transform: none;
+        margin: 0;
+      }
+
+      > h2 {
+        .text-14;
+
+        color: @color-secondary-text;
+        margin-top: @size-4;
+      }
+    }
+  }
+
+  > main {
+    padding: 0 @size-32;
+
+    @media @breakpoint-mobile {
+      padding: 0 @size-24;
+    }
+
+    > div:first-of-type {
+      border: 0;
+      margin: 0;
+
+      > div > label {
+        .mono-11-bold;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+      }
+
+      > div > div > div > input {
+        background: @color-dark-grey;
+        border: 1px solid @color-secondary-action;
+      }
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
+    }
+  }
+
+  > div:last-of-type {
+    padding: 0;
+    margin: @size-24 @size-32 @size-32;
+
+    @media @breakpoint-mobile {
+      margin: @size-24;
     }
   }
 }
@@ -1243,8 +1325,6 @@ div.ButtonsRow:last-of-type {
   margin-bottom: @size-24;
 
   > div {
-    height: 6.25rem;
-
     > span {
       .text-10;
 
@@ -1279,8 +1359,8 @@ div.ButtonsRow:last-of-type {
       text-transform: capitalize;
     }
 
-    > div:first-of-type {
-      margin-bottom: @size-22;
+    > div:last-of-type {
+      margin-bottom: @size-24;
     }
 
     > button {
@@ -1319,9 +1399,29 @@ div.ButtonsRow:last-of-type {
     display: flex;
     flex-flow: column;
 
+    > div:first-of-type {
+      align-items: flex-end;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: @size-8;
+    }
+
     > div {
-      height: @size-40;
-      margin-bottom: 0;
+      > label {
+        .mono-11-bold;
+
+        text-transform: uppercase;
+        color: @color-primary-text;
+        margin-bottom: 0;
+      }
+
+      > span {
+        .mono-9-bold;
+
+        color: @color-dark-text;
+        margin-left: auto;
+        text-transform: uppercase;
+      }
 
       > button {
         padding: @size-10 @size-12;
@@ -1334,14 +1434,6 @@ div.ButtonsRow:last-of-type {
         line-height: @size-16;
       }
     }
-
-    > span {
-      .mono-10;
-
-      color: @color-inactive-text;
-      margin-left: auto;
-      text-transform: uppercase;
-    }
   }
 
   > div:last-of-type {
@@ -1350,7 +1442,9 @@ div.ButtonsRow:last-of-type {
     grid-template-columns: 1fr 1fr;
 
     > button {
-      height: 1rem;
+      .mono-11-bold;
+
+      height: @size-16;
       margin-left: auto;
     }
 

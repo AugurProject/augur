@@ -18,7 +18,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 export const loginWithInjectedWeb3 = () => (dispatch: ThunkDispatch<void, any, Action>) => {
   const failure = (error) => {
     dispatch(closeModal());
-    throw Error(error);
+    throw error;
   };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure();
