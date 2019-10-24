@@ -56,9 +56,9 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
   const [show, setShow] = useState(props.show);
 
   return (
-    <div className={Styles.DismissableNotice}>
+    <>
       {show ? (
-        <div>
+        <div className={Styles.DismissableNotice}>
           <span>
             {ExclamationCircle}
           </span>
@@ -86,7 +86,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
           }
         </div>
       ) : null}
-    </div>
+    </>
   );
 }
 
