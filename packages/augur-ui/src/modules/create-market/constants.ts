@@ -13,7 +13,7 @@ import {
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
-import { getTemplates } from './get-template';
+
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -142,6 +142,8 @@ export const MARKET_TYPE_NAME = {
   [CATEGORICAL]: 'Categorical',
 };
 
+export const REQUIRED = 'REQUIRED';
+export const CHOICE = 'CHOICE';
 // Market templates
 export const SPORTS = 'Sports';
 export const POLITICS = 'Politics';
@@ -531,3 +533,19 @@ export const VALIDATION_ATTRIBUTES = {
     checkUserInputFilled: true,
   },
 };
+
+export enum TemplateInputType {
+  TEXT = 'TEXT',
+  DATEYEAR = 'DATEYEAR',
+  DATETIME = 'DATETIME',
+  DROPDOWN = 'DROPDOWN',
+  DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN',
+  ADDED_OUTCOME = 'ADDED_OUTCOME',
+  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
+  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
+}
+
+export enum ValidationType {
+  WHOLE_NUMBER = 'WHOLE_NUMBER',
+  NUMBER = 'NUMBER',
+}

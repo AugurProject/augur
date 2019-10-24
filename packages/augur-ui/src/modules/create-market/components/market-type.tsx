@@ -1,7 +1,7 @@
 import React from 'react';
 import { LargeSubheaders } from 'modules/create-market/components/common';
 import { RadioCardGroup } from 'modules/common/form';
-import { getTemplateRadioCardsMarketTypes } from '../get-template';
+import { getTemplateRadioCardsMarketTypes } from 'modules/create-market/get-template';
 
 interface MarketTypeProps {
   categories: string[];
