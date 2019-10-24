@@ -771,7 +771,6 @@ export const InputFactory = (props: InputFactoryProps) => {
   } else if (
     input.type === TemplateInputType.DROPDOWN ||
     input.type === TemplateInputType.DENOMINATION_DROPDOWN ||
-    input.type === TemplateInputType.DROPDOWN_TEXT ||
     input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
   ) {
     return (
