@@ -132,11 +132,11 @@ contract MockAugur {
         return true;
     }
 
-    function logShareTokensBurned(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logShareTokensBurned(IUniverse _universe, IMarket _market, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
-    function logShareTokensMinted(IUniverse _universe, address _target, uint256 _amount) public returns (bool) {
+    function logShareTokensMinted(IUniverse _universe, IMarket _market, address _target, uint256 _amount) public returns (bool) {
         return true;
     }
 
@@ -179,7 +179,7 @@ contract MockAugur {
         return true;
     }
 
-    function logShareTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value) public returns (bool) {
+    function logShareTokensTransferred(IUniverse _universe, IMarket _market, address _from, address _to, uint256 _value) public returns (bool) {
         return true;
     }
 

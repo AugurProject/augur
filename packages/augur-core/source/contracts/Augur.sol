@@ -427,15 +427,8 @@ contract Augur is IAugur {
 
     function logMarketOIChanged(IUniverse _universe, IMarket _market) public returns (bool) {
         require(msg.sender == registry["CompleteSets"]);
-        emit MarketOIChanged(address(_universe), address(_market), getMarketOpenInterest(_market));
+        emit MarketOIChanged(address(_universe), address(_market), _market.getOpenInterest());
         return true;
-    }
-
-    function getMarketOpenInterest(IMarket _market) public view returns (uint256) {
-        if (_market.isFinalized()) {
-            return 0;
-        }
-        return _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
     }
 
     function logTradingProceedsClaimed(IUniverse _universe, address _shareToken, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {
@@ -464,10 +457,10 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logShareTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome) public returns (bool) {
+    function logShareTokensTransferred(IUniverse _universe, IMarket _market, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(isKnownShareToken(_shareToken));
-        logTokensTransferred(address(_universe), msg.sender, _from, _to, _value, TokenType.ShareToken, address(_shareToken.getMarket()), _fromBalance, _toBalance, _outcome);
+        logTokensTransferred(address(_universe), msg.sender, _from, _to, _value, TokenType.ShareToken, address(_market), _fromBalance, _toBalance, _outcome);
         return true;
     }
 
@@ -485,17 +478,17 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logShareTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome) public returns (bool) {
+    function logShareTokensBurned(IUniverse _universe, IMarket _market, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(isKnownShareToken(_shareToken));
-        logTokensBurned(address(_universe), msg.sender, _target, _amount, TokenType.ShareToken, address(_shareToken.getMarket()), _totalSupply, _balance, _outcome);
+        logTokensBurned(address(_universe), msg.sender, _target, _amount, TokenType.ShareToken, address(_market), _totalSupply, _balance, _outcome);
         return true;
     }
 
-    function logShareTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome) public returns (bool) {
+    function logShareTokensMinted(IUniverse _universe, IMarket _market, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance, uint256 _outcome) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(isKnownShareToken(_shareToken));
-        logTokensMinted(address(_universe), msg.sender, _target, _amount, TokenType.ShareToken, address(_shareToken.getMarket()), _totalSupply, _balance, _outcome);
+        logTokensMinted(address(_universe), msg.sender, _target, _amount, TokenType.ShareToken, address(_market), _totalSupply, _balance, _outcome);
         return true;
     }
 
@@ -594,9 +587,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool) {
+    function logProfitLossChanged(IUniverse _universe, IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool) {
         require(msg.sender == registry["ProfitLoss"]);
-        emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds, _realizedCost, getTimestamp());
+        emit ProfitLossChanged(address(_universe), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds, _realizedCost, getTimestamp());
         return true;
     }
 
