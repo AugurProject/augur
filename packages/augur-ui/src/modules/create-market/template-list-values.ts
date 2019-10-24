@@ -52,6 +52,10 @@ export const LIST_VALUES = {
       value: 'Defensive Rookie of the year',
       label: 'Defensive Rookie of the year',
     },
+    {
+      value: 'AP Most Valuable Player',
+      label: 'AP Most Valuable Player'
+    }
   ],
   FOOTBALL_EVENT: [
     {

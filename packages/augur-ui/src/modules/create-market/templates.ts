@@ -1656,6 +1656,9 @@ export const TEMPLATES = {
                     {
                       text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
                     },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`
+                    }
                   ],
                 },
               },
@@ -1689,7 +1692,15 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`
+                    }
+                  ],
                 },
               },
               {
@@ -1722,7 +1733,15 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`
+                    }
+                  ],
                 },
               },
               {
@@ -1789,7 +1808,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Years`,
+                    placeholder: `Year/Year`,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -1824,22 +1843,25 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `Tie/No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
                     },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`
+                    }
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]`,
-                example: `Which College Football Team will win: Alabama vs Michigan Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]`,
+                example: `Which NFL Team will win: Seattle Seahawks vs Dallas Cowboys Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1859,15 +1881,18 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `Tie/No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
                     },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`
+                    }
                   ],
                 },
               },
@@ -1915,9 +1940,13 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
                     },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`
+                    }
                   ],
                 },
               },
@@ -1938,19 +1967,30 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     values: LIST_VALUES.FOOTBALL_EVENT,
                   },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college football player will win the [0] Heisman Trophy`,
-                example: `Which college football player will win the 2020 Heisman Trophy`,
+                question: `Which NFL player will win the [0] [1] award`,
+                example: `Which NFL player will win the 2020 Most Valuable Player award`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Award`,
+                    values: LIST_VALUES.FOOTBALL_AWARDS,
                   },
                 ],
                 resolutionRules: {},
@@ -2141,7 +2181,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2] award`,
-                example: `Will Patrick Mahones win the 2019-20 MVP award`,
+                example: `Will Patrick Mahomes win the 2019-20 MVP award`,
                 inputs: [
                   {
                     id: 0,
@@ -2151,7 +2191,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Years`,
+                    placeholder: `Year/Year`,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
