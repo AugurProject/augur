@@ -118,7 +118,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {},
@@ -237,8 +237,8 @@ export const TEMPLATES = {
                   text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
                 },
                 {
-                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`
-                }
+                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`,
+                },
               ],
             },
           },
@@ -418,7 +418,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {},
@@ -478,7 +478,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {
@@ -887,25 +887,17 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
-                  },
-                  {
-                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
-                    },
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }
                   ],
                 },
               },
@@ -929,7 +921,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {},
@@ -959,7 +951,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {
@@ -996,7 +988,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {},
@@ -1021,7 +1013,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {},
@@ -1323,7 +1315,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {},
@@ -1353,7 +1345,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {
@@ -1390,7 +1382,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {},
@@ -1415,7 +1407,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other`,
+                    placeholder: `Other (Field)`,
                   },
                 ],
                 resolutionRules: {},
@@ -1697,12 +1689,7 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                  ],
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
                 },
               },
               {
@@ -1735,12 +1722,7 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                  ],
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
                 },
               },
               {
@@ -1789,7 +1771,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    placeholder: `Roman Num`,
+                    placeholder: `numeral`,
                   },
                 ],
                 resolutionRules: {},
@@ -1797,7 +1779,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2] award`,
-                example: `Will Patrick Mahones win the 2019-20 MVP award`,
+                example: `Will Patrick Mahomes win the 2019-20 MVP award`,
                 inputs: [
                   {
                     id: 0,
@@ -1813,7 +1795,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Award`,
+                    placeholder: `Select Award`,
                     values: LIST_VALUES.FOOTBALL_AWARDS,
                   },
                 ],
@@ -1884,7 +1866,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
                     },
                   ],
                 },
@@ -1993,7 +1975,13 @@ export const TEMPLATES = {
                     values: LIST_VALUES.YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                  ],
+                },
               },
             ],
           },
