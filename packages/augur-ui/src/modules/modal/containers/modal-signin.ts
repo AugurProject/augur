@@ -43,7 +43,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  approveAccount: () => approveToTrade(),
+  // approveAccount: () => approveToTrade(),
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   connectModal: loginOrSignup =>
@@ -82,16 +82,18 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
 
   const redirect = () => {
-    dP.closeModal();
+    setTimeout(() => {
+      dP.closeModal();
 
-    const path = sP.modal.pathName ? sP.modal.pathName : makePath(MARKETS, null);
-    oP.history.push(path);
+      const path = sP.modal.pathName ? sP.modal.pathName : makePath(MARKETS, null);
+      oP.history.push(path);
 
-    const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
-    if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
-      // Kicks off onboarding
-      dP.accountCreatedModal();
-    }
+      const showOnboardingSeen = windowRef.localStorage.getItem(ONBOARDING_SEEN_KEY);
+      if (LOGIN_OR_SIGNUP === 'Signup' &&!showOnboardingSeen) {
+        // Kicks off onboarding
+        dP.accountCreatedModal();
+      }
+    });
   };
 
   const connectMethods = [
