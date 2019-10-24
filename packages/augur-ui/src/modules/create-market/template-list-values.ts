@@ -637,12 +637,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Royals',
     },
     {
-      value: 'Los Angeles Angels',
-      label: 'Los Angeles Angels',
+      value: 'Las Angeles Angels',
+      label: 'Las Angeles Angels',
     },
     {
-      value: 'Los Angeles Dodgers',
-      label: 'Los Angeles Dodgers',
+      value: 'Las Angeles Dodgers',
+      label: 'Las Angeles Dodgers',
     },
     {
       value: 'Miami Marlins',
@@ -775,12 +775,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Chiefs',
     },
     {
-      value: 'Los Angeles Chargers',
-      label: 'Los Angeles Chargers',
+      value: 'Las Angeles Chargers',
+      label: 'Las Angeles Chargers',
     },
     {
-      value: 'Los Angeles Rams',
-      label: 'Los Angeles Rams',
+      value: 'Las Angeles Rams',
+      label: 'Las Angeles Rams',
     },
     {
       value: 'Miami Dolphins',
@@ -961,50 +961,64 @@ export const LIST_VALUES = {
       label: 'Washington Wizards',
     },
   ],
-  USD_EXCHANGES: [
+  BTC_USD_EXCHANGES: [
     {
-      value: 'Coinbase Pro',
-      label: 'Coinbase Pro',
+      value: 'Coinbase Pro (pro.coinbase.com)',
+      label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp',
-      label: 'Bitstamp',
+      value: 'Bitstamp (bitstamp.net)',
+      label: 'Bitstamp (bitstamp.net)',
     },
     {
-      value: 'Kraken',
-      label: 'Kraken',
+      value: 'Bittrex (bittrex.com)',
+      label: 'Bittrex (bittrex.com)',
+    },
+  ],
+  NON_BTC_USD_EXCHANGES: [
+    {
+      value: 'Coinbase Pro (pro.coinbase.com)',
+      label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bittrex',
-      label: 'Bittrex',
+      value: 'Bitstamp (bitstamp.net)',
+      label: 'Bitstamp (bitstamp.net)',
+    },
+    {
+      value: 'Kraken (kraken.com)',
+      label: 'Kraken (kraken.com)',
+    },
+    {
+      value: 'Bittrex (bittrex.com)',
+      label: 'Bittrex (bittrex.com)',
     },
   ],
   USDT_EXCHANGES: [
     {
-      value: 'Bittrex',
-      label: 'Bittrex',
+      value: 'Bittrex (bittrex.com)',
+      label: 'Bittrex (bittrex.com)',
     },
     {
-      value: 'Binance',
-      label: 'Binance',
+      value: 'Binance (binance.com)',
+      label: 'Binance (binance.com)',
     },
     {
-      value: 'Huobi Global',
-      label: 'Huobi Global',
+      value: 'Huobi Global (hbg.com)',
+      label: 'Huobi Global (hbg.com)',
     },
   ],
   EUR_EXCHANGES: [
     {
-      value: 'Coinbase Pro',
-      label: 'Coinbase Pro',
+      value: 'Coinbase Pro (pro.coinbase.com)',
+      label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp',
-      label: 'Bitstamp',
+      value: 'Bitstamp (bitstamp.net)',
+      label: 'Bitstamp (bitstamp.net)',
     },
     {
-      value: 'Kraken',
-      label: 'Kraken',
+      value: 'Kraken (kraken.com)',
+      label: 'Kraken (kraken.com)',
     },
   ]
 };

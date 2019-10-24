@@ -362,8 +362,9 @@
   grid-template-columns: 52px 1fr;
 
   @media @breakpoint-mobile-mid {
-    height: 128px;
-    grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
+    > svg {
+      grid-row: 1 / span 4;
+    }
   }
 
   > svg {

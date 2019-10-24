@@ -40,12 +40,12 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
     tertiary: tertiary.value,
   };
   const templates = getTemplates(categoriesFormatted, marketType);
-
-  let subheader = `Popular ${categories[0]} templates with up to 8 possible outcomes.`;
+  const catLabels = Object.values(categoriesFormatted).filter(c => c).join(' / ');
+  let subheader = `Popular ${catLabels} templates with up to 8 possible outcomes.`;
   if (marketType === YES_NO) {
-    subheader = `Popular Yes/No ${categories[0]} templates.`;
+    subheader = `Popular Yes/No ${catLabels} templates.`;
   } else if (marketType === SCALAR) {
-    subheader = `Popular Scalar ${categories[0]} templates.`;
+    subheader = `Popular Scalar ${catLabels} templates.`;
   }
 
   const templateOptions = templates.map((template, index) => {
@@ -106,7 +106,11 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                 newMarket.marketType === SCALAR &&
                 templates[value].denomination,
               marketType: newMarket.marketType,
-              categories: newMarket.categories,
+              categories: [
+                newMarket.categories[0],
+                newMarket.categories[1],
+                tertiary.label,
+              ],
               template: templates[value],
             });
           }}

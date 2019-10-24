@@ -148,6 +148,9 @@ export const POLITICS = 'Politics';
 export const FINANCE = 'Finance';
 export const ENTERTAINMENT = 'Entertainment';
 export const CRYPTO = 'Crypto';
+export const USD = 'USD';
+export const USDT = 'USDT';
+export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Soccer';
@@ -353,19 +356,19 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [CRYPTO]: [
     {
-      value: BTC,
+      value: BITCOIN,
       header: BITCOIN,
       description: defaultDescription,
       icon: icons.BTC,
     },
     {
-      value: ETH,
+      value: ETHEREUM,
       header: ETHEREUM,
       description: defaultDescription,
       icon: icons.ETH,
     },
     {
-      value: LTC,
+      value: LITECOIN,
       header: LITECOIN,
       description: defaultDescription,
       icon: icons.LTC,
