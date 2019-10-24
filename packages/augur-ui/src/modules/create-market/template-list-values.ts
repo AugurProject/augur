@@ -452,14 +452,6 @@ export const LIST_VALUES = {
       value: 'Most Improved player',
       label: 'Most Improved player',
     },
-    {
-      value: 'John Wooden',
-      label: 'John Wooden',
-    },
-    {
-      value: 'Oscar Robertson',
-      label: 'Oscar Robertson',
-    },
   ],
   NCAA_BASKETBALL_EVENTS: [
     {
@@ -507,6 +499,14 @@ export const LIST_VALUES = {
     {
       value: 'Sporting News College Basketball Player of the year',
       label: 'Sporting News College Basketball Player of the year',
+    },
+    {
+      value: 'John Wooden',
+      label: 'John Wooden',
+    },
+    {
+      value: 'Oscar Robertson',
+      label: 'Oscar Robertson',
     },
   ],
   MENS_WOMENS: [
