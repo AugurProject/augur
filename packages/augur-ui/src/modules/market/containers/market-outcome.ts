@@ -38,7 +38,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: outcomeName,
       keyId: outcomeName,
       showExtraNumber: !oP.scalarDenomination,
-      value: lastPricePercent,
     },
     {
       key: "topBidShares",
