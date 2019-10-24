@@ -5,15 +5,7 @@
     "rootDir": "src"
   },
   "include": [
-    "src/**/*"
-  ],
-  "files": [
-    "src/abi.json",
-    "src/abi.v1.json",
-    "src/addresses.json",
-    "src/contracts.json",
-    "src/networks.json",
-    "src/upload-block-numbers.json"
-  ],
-  "references": []
+    "src/**/*",
+    "src/**/*.json"
+  ]
 }
