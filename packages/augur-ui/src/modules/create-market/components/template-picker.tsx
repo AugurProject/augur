@@ -50,8 +50,8 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
 
   const templateOptions = templates.map((template, index) => {
     return {
-      header: `${getTemplateReadableDescription(template)}?`,
-      description: `Example: ${template.example}?`,
+      header: `${getTemplateReadableDescription(template)}`,
+      description: `Example: ${template.example}`,
       value: index.toString(),
     };
   });
