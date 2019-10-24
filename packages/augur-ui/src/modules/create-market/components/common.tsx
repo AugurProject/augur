@@ -39,7 +39,11 @@ import {
   createTemplateOutcomes,
   substituteUserOutcome,
 } from 'modules/create-market/get-template';
-import { TemplateInputType, CHOICE, REQUIRED } from 'modules/create-market/constants';
+import {
+  TemplateInputType,
+  CHOICE,
+  REQUIRED,
+} from 'modules/create-market/constants';
 
 export interface HeaderProps {
   text: string;
@@ -724,8 +728,7 @@ export const InputFactory = (props: InputFactoryProps) => {
           let newOutcomes = outcomes;
           const newInputs = updateData(value);
           if (marketType === CATEGORICAL && tellIfEditableOutcomes(newInputs)) {
-            // todo: this is done because of substitute_user_outcomes,
-            // if more substitute_user_outcomes get added relating to other input types will need to add them to other types
+            // this is done because we need to see if any other inputs, like SUBSTITUTE_USER_OUTCOME, rely on this input and then update them
             newOutcomes = createTemplateOutcomes(newInputs);
           }
           onChange('outcomes', newOutcomes);
@@ -767,7 +770,8 @@ export const InputFactory = (props: InputFactoryProps) => {
     );
   } else if (
     input.type === TemplateInputType.DROPDOWN ||
-    input.type === TemplateInputType.DENOMINATION_DROPDOWN
+    input.type === TemplateInputType.DENOMINATION_DROPDOWN ||
+    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
   ) {
     return (
       <FormDropdown
@@ -778,6 +782,10 @@ export const InputFactory = (props: InputFactoryProps) => {
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
             onChange('scalarDenomination', value);
+          } else if (input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME) {
+            let newOutcomes = outcomes;
+            newOutcomes[inputIndex] = value;
+            onChange('outcomes', newOutcomes);
           }
           updateData(value);
         }}
@@ -1025,7 +1033,8 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
         input.type === TemplateInputType.ADDED_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
     )
     .map(input => {
       if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
@@ -1038,7 +1047,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
           value: input.placeholder,
           editable: false,
         };
-      } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME) {
+      } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME || input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME) {
         return {
           value: input.userInput || input.placeholder,
           editable: false,
