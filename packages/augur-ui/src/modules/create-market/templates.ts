@@ -627,6 +627,16 @@ export const TEMPLATES = {
               },
             ],
             resolutionRules: {
+              [CHOICE]: [
+                {
+                  text:
+                    'Include Regulation and any added injury or stoppage time',
+                },
+                {
+                  text:
+                    'Include Regulation, any added injury or stoppage time and any Overtime or Penalty shoot-out',
+                },
+              ],
               [REQUIRED]: [
                 {
                   text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
