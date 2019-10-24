@@ -689,21 +689,4 @@ contract Universe is IUniverse {
         cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }
-
-    function assertMarketBalance() public view returns (bool) {
-        IMarket _market = IMarket(msg.sender);
-        // Escrowed funds for open orders
-        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
-        // Market Open Interest. If we're finalized we need actually calculate the value
-        if (_market.isFinalized()) {
-            for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
-                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_market.getWinningPayoutNumerator(i)));
-            }
-        } else {
-            _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
-        }
-
-        assert(marketBalance[msg.sender] >= _expectedBalance);
-        return true;
-    }
 }

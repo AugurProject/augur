@@ -30,9 +30,9 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
-        orders = IOrders(augur.lookup("Orders"));
-        cash = ICash(augur.lookup("Cash"));
-        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
+        orders = IOrders(_augur.lookup("Orders"));
+        cash = ICash(_augur.lookup("Cash"));
+        profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
     }
 
     /**
@@ -59,25 +59,32 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     function cancelOrderInternal(address _sender, bytes32 _orderId) internal returns (bool) {
         require(_orderId != bytes32(0), "CancelOrder.cancelOrderInternal: Order id is 0x0");
 
+        IOrders _orders = orders;
         // Look up the order the sender wants to cancel
-        uint256 _moneyEscrowed = orders.getOrderMoneyEscrowed(_orderId);
-        uint256 _sharesEscrowed = orders.getOrderSharesEscrowed(_orderId);
-        Order.Types _type = orders.getOrderType(_orderId);
-        IMarket _market = orders.getMarket(_orderId);
-        uint256 _outcome = orders.getOutcome(_orderId);
-        address _creator = orders.getOrderCreator(_orderId);
-
-        // Check that the order ID is correct and that the sender owns the order
-        require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+        uint256 _moneyEscrowed;
+        uint256 _sharesEscrowed;
+        Order.Types _type;
+        IMarket _market;
+        uint256 _outcome;
+        // Check creator in inner scope to reduce stack depth
+        {
+            /* solium-disable indentation */
+            address _creator;
+            (_moneyEscrowed, _sharesEscrowed, _type, _market, _outcome, _creator) = _orders.getOrderDataForCancel(_orderId);
+            // Check that the order ID is correct and that the sender owns the order
+            require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+            /* solium-enable indentation */
+        }
 
         // Clear the order first
-        orders.removeOrder(_orderId);
+        _orders.removeOrder(_orderId);
 
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
-        _market.assertBalances();
+        _market.assertBalances(address(_orders));
 
-        augur.logOrderCanceled(_market.getUniverse(), _market, _creator, _moneyEscrowed, _sharesEscrowed, _orderId);
-        profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
+        IUniverse _universe = _market.getUniverse();
+        augur.logOrderCanceled(_universe, _market, _sender, _moneyEscrowed, _sharesEscrowed, _orderId);
+        profitLoss.recordFrozenFundChange(_universe, _market, _sender, _outcome, -int256(_moneyEscrowed));
 
         return true;
     }
@@ -86,10 +93,14 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         if (_sharesEscrowed > 0) {
             // Return to user sharesEscrowed that weren't filled yet for all outcomes except the order outcome
             if (_type == Order.Types.Bid) {
-                for (uint256 _i = 0; _i < _market.getNumberOfOutcomes(); ++_i) {
-                    if (_i != _outcome) {
-                        _market.getShareToken(_i).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
-                    }
+                IShareToken[] memory _shareTokens = _market.getShareTokens();
+                uint256 _numOutcomes = _shareTokens.length;
+                uint256 _i = 0;
+                for (; _i < _outcome; ++_i) {
+                    _shareTokens[_i].trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                }
+                for (++_i; _i < _numOutcomes; ++_i) {
+                    _shareTokens[_i].trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
                 }
             // Shares refund if has shares escrowed for this outcome
             } else {
