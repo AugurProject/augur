@@ -182,7 +182,6 @@ export function checkForUserInputFilled(inputs) {
       return 'Must enter a valid number';
     } else if (
       (input.type === TemplateInputType.TEXT ||
-        input.type === TemplateInputType.DROPDOWN_TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
