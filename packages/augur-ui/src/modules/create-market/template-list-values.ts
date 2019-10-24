@@ -431,7 +431,7 @@ export const LIST_VALUES = {
       label: 'NBA Championship',
     },
   ],
-  BASKETBALL_AWARD: [
+  NBA_BASKETBALL_AWARD: [
     {
       value: 'Most Valuable Player',
       label: 'Most Valuable Player',
@@ -453,6 +453,46 @@ export const LIST_VALUES = {
       label: 'Most Improved player',
     },
     {
+      value: 'John Wooden',
+      label: 'John Wooden',
+    },
+    {
+      value: 'Oscar Robertson',
+      label: 'Oscar Robertson',
+    },
+  ],
+  NCAA_BASKETBALL_EVENTS: [
+    {
+      value: 'NCAA Tournament',
+      label: 'NCAA Tournament',
+    },
+    {
+      value: 'Sweet 16',
+      label: 'Sweet 16',
+    },
+    {
+      value: 'Elite 8',
+      label: 'Elite 8',
+    },
+    {
+      value: 'Final Four',
+      label: 'Final Four',
+    },
+  ],
+  NCAA_BASKETBALL_AWARD: [
+    {
+      value: 'Most Valuable Player',
+      label: 'Most Valuable Player',
+    },
+    {
+      value: 'Defensive Player of the Year',
+      label: 'Defensive Player of the Year',
+    },
+    {
+      value: 'Most Improved player',
+      label: 'Most Improved player',
+    },
+    {
       value: 'Coach of the year',
       label: 'Coach of the year',
     },
@@ -463,14 +503,6 @@ export const LIST_VALUES = {
     {
       value: 'AP college Player of the year',
       label: 'AP college Player of the year',
-    },
-    {
-      value: 'John Wooden',
-      label: 'John Wooden',
-    },
-    {
-      value: 'Oscar Robertson',
-      label: 'Oscar Robertson',
     },
     {
       value: 'Sporting News College Basketball Player of the year',
