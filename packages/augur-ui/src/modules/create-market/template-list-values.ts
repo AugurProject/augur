@@ -519,16 +519,6 @@ export const LIST_VALUES = {
       label: "Women's",
     },
   ],
-  BASKETBALL_LEAGUE: [
-    {
-      value: 'NBA',
-      label: 'NBA',
-    },
-    {
-      value: 'NCAA',
-      label: 'NCAA',
-    },
-  ],
   BASKETBALL_ACTION: [
     {
       value: 'Points Scored',
