@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER, SCALAR } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -80,7 +80,7 @@ export default class Visibility extends Component<
     };
   }
 
-  validate(newMarket) {
+  validate(newMarket: NewMarket) {
     const validations = DEFAULT_VALIDATIONS;
     let validationMessage = '';
 
@@ -102,9 +102,18 @@ export default class Visibility extends Component<
           closestOutcome = parseInt(outcome);
         }
         if (spread) {
-          validations.validSpread = createBigNumber(spread).isLessThanOrEqualTo(
-            bnSpreadFilter
-          );
+          if (newMarket.marketType === SCALAR) {
+            const range = createBigNumber(newMarket.maxPrice).minus(
+              createBigNumber(newMarket.minPrice)
+            );
+            validations.validSpread = createBigNumber(spread)
+              .dividedBy(range)
+              .isLessThanOrEqualTo(bnSpreadFilter);
+          } else {
+            validations.validSpread = createBigNumber(
+              spread
+            ).isLessThanOrEqualTo(bnSpreadFilter);
+          }
         }
         if (validations.validSpread) return { validations, validationMessage };
       }
