@@ -3,7 +3,7 @@ import {
   LargeSubheaders,
   SmallHeaderLink,
 } from 'modules/create-market/components/common';
-import { RadioCardGroup, CategorySingleSelect } from 'modules/common/form';
+import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
 import {
   getTemplateRadioCards

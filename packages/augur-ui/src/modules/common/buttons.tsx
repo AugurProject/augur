@@ -23,8 +23,8 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { addCategoryStats } from 'modules/create-market/get-template';
 import { Getters } from '@augurproject/sdk/src';
+import { addCategoryStats } from 'modules/create-market/get-template';
 
 export interface DefaultButtonProps {
   id?: string;

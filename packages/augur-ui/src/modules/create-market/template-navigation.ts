@@ -1,4 +1,3 @@
-import { getTemplates } from 'modules/create-market/get-template';
 import {
   SUB_CATEGORIES,
   BACK,

@@ -1,11 +1,7 @@
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import { INVALID_OUTCOME, ValidationType, TemplateInputType } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
-import {
-  TemplateInputType,
-  ValidationType,
-} from 'modules/create-market/get-template';
 import { NewMarketPropertiesValidations } from 'modules/types';
 
 export function isFilledString(value, readable, message) {
