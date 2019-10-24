@@ -71,7 +71,7 @@ function pollForAccount(
         dispatch(
           updateModal({
             type: MODAL_LOADING,
-            callback: () => dispatch(closeModal()),
+            callback: () => setTimeout(() => dispatch(closeModal())),
             message: `Syncing 📡 ${accountType} account...`,
             showCloseAfterDelay: true,
           })
