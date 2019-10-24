@@ -835,7 +835,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `No Winner`,
                   },
                 ],
                 resolutionRules: {
@@ -1229,7 +1229,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `No Winner`,
                   },
                 ],
                 resolutionRules: {
@@ -1482,7 +1482,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Winner`,
+                placeholder: `No Winner`,
               },
             ],
             resolutionRules: {
