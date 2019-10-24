@@ -114,7 +114,7 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
 
 def test_createOrder_failure(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
 
     with raises(TransactionFailed):
         createOrder.createOrder(contractsFixture.accounts[1], ASK, fix(1), 40, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
@@ -138,7 +138,7 @@ def test_createOrder_failure(contractsFixture, cash, market):
         createOrder.publicCreateOrder(ASK, fix(1), 40, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
 
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender=contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender=contractsFixture.accounts[1])
 
     with raises(TransactionFailed):
         createOrder.publicCreateOrder(ASK, fix(1), 12000, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
@@ -151,12 +151,12 @@ def test_createOrder_failure(contractsFixture, cash, market):
 def test_ask_withPartialShares(contractsFixture, universe, cash, market):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts["ShareToken"]
 
     # buy fix(2) complete sets
     with BuyWithCash(cash, fix(2, market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(2), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(2), sender = contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(2)

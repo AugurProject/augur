@@ -251,7 +251,6 @@ def test_fees(contractsFixture, cash, market, universe):
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
     cash = contractsFixture.contracts["Cash"]
-    completeSets = contractsFixture.contracts["CompleteSets"]
     shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
@@ -275,7 +274,7 @@ def test_fees(contractsFixture, cash, market, universe):
 
     # Buy and distribute complete sets
     cash.faucet(amount * market.getNumTicks(), sender=makerAccount)
-    completeSets.publicBuyCompleteSets(market.address, amount, sender=makerAccount)
+    shareToken.publicBuyCompleteSets(market.address, amount, sender=makerAccount)
 
     shareToken.safeTransferFrom(makerAccount, fillerAccount, shareToken.getTokenId(market.address, 0), amount, "", sender=makerAccount)
     shareToken.safeTransferFrom(makerAccount, fillerAccount, shareToken.getTokenId(market.address, NO), amount, "", sender=makerAccount)

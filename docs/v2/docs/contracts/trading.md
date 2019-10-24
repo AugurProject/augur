@@ -1766,7 +1766,7 @@ title: Trading
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ClaimTradingProceeds.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#ClaimTradingProceeds.claimMarketsProceeds(contract IMarket[],address,address)"><code class="function-signature">claimMarketsProceeds(contract IMarket[] _markets, address _shareHolder, address _affiliateAddress)</code></a></li><li><a href="#ClaimTradingProceeds.claimTradingProceeds(contract IMarket,address,address)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, address _affiliateAddress)</code></a></li><li><a href="#ClaimTradingProceeds.divideUpWinnings(contract IMarket,uint256,uint256)"><code class="function-signature">divideUpWinnings(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#ClaimTradingProceeds.calculateProceeds(contract IMarket,uint256,uint256)"><code class="function-signature">calculateProceeds(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#ClaimTradingProceeds.calculateReportingFee(contract IMarket,uint256)"><code class="function-signature">calculateReportingFee(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ClaimTradingProceeds.calculateCreatorFee(contract IMarket,uint256)"><code class="function-signature">calculateCreatorFee(contract IMarket _market, uint256 _amount)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ClaimTradingProceeds.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#shareToken.claimMarketsProceeds(contract IMarket[],address,address)"><code class="function-signature">claimMarketsProceeds(contract IMarket[] _markets, address _shareHolder, address _affiliateAddress)</code></a></li><li><a href="#ClaimTradingProceeds.claimTradingProceeds(contract IMarket,address,address)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, address _affiliateAddress)</code></a></li><li><a href="#ClaimTradingProceeds.divideUpWinnings(contract IMarket,uint256,uint256)"><code class="function-signature">divideUpWinnings(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#shareToken.calculateProceeds(contract IMarket,uint256,uint256)"><code class="function-signature">calculateProceeds(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#shareToken.calculateReportingFee(contract IMarket,uint256)"><code class="function-signature">calculateReportingFee(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#shareToken.calculateCreatorFee(contract IMarket,uint256)"><code class="function-signature">calculateCreatorFee(contract IMarket _market, uint256 _amount)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -1776,7 +1776,7 @@ title: Trading
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ClaimTradingProceeds.claimMarketsProceeds(contract IMarket[],address,address)"></a><code class="function-signature">claimMarketsProceeds(contract IMarket[] _markets, address _shareHolder, address _affiliateAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="shareToken.claimMarketsProceeds(contract IMarket[],address,address)"></a><code class="function-signature">claimMarketsProceeds(contract IMarket[] _markets, address _shareHolder, address _affiliateAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1794,19 +1794,19 @@ title: Trading
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ClaimTradingProceeds.calculateProceeds(contract IMarket,uint256,uint256)"></a><code class="function-signature">calculateProceeds(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="shareToken.calculateProceeds(contract IMarket,uint256,uint256)"></a><code class="function-signature">calculateProceeds(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ClaimTradingProceeds.calculateReportingFee(contract IMarket,uint256)"></a><code class="function-signature">calculateReportingFee(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="shareToken.calculateReportingFee(contract IMarket,uint256)"></a><code class="function-signature">calculateReportingFee(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ClaimTradingProceeds.calculateCreatorFee(contract IMarket,uint256)"></a><code class="function-signature">calculateCreatorFee(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="shareToken.calculateCreatorFee(contract IMarket,uint256)"></a><code class="function-signature">calculateCreatorFee(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 

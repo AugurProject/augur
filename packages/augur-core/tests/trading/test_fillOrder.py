@@ -118,15 +118,14 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    completeSets = contractsFixture.contracts['CompleteSets']
     shareToken = contractsFixture.contracts['ShareToken']
 
     # buy complete sets for both users
     with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[1], fix(1), sender=contractsFixture.accounts[1])
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(1)
     with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1))
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[0], fix(1))
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[0]) == fix(1)
 
     # create order with shares
@@ -152,15 +151,14 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    completeSets = contractsFixture.contracts['CompleteSets']
     shareToken = contractsFixture.contracts['ShareToken']
 
     # buy complete sets for both users
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[1], fix(1), sender=contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[2], fix(1), sender=contractsFixture.accounts[2])
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[2]) == fix(1)
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == fix(1)
     assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[2]) == fix(1)
@@ -226,7 +224,6 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     augur = contractsFixture.contracts['Augur']
-    completeSets = contractsFixture.contracts['CompleteSets']
     shareToken = contractsFixture.contracts['ShareToken']
 
     maliciousTrader = contractsFixture.upload('solidity_test_helpers/MaliciousTrader.sol', 'maliciousTrader')
@@ -238,7 +235,7 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     price = 60
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1))
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[0], fix(1))
     shareToken.unsafeTransferFrom(account, maliciousTrader.address, shareToken.getTokenId(market.address, 0), fix(1))
     shareToken.unsafeTransferFrom(account, maliciousTrader.address, shareToken.getTokenId(market.address, 1), fix(1))
     shareToken.unsafeTransferFrom(account, maliciousTrader.address, shareToken.getTokenId(market.address, 2), fix(1))

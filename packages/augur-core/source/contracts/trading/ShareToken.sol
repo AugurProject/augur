@@ -2,6 +2,7 @@ pragma solidity 0.5.10;
 
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/libraries/token/ERC1155.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';
@@ -13,19 +14,23 @@ import 'ROOT/IAugur.sol';
  * @title Share Token
  * @notice ERC1155 contract to hold all Augur share token balances
  */
-contract ShareToken is ITyped, Initializable, ERC1155, IShareToken {
+contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGuard {
 
     string constant public name = "Shares";
     string constant public symbol = "SHARE";
 
-    mapping(address => uint256) marketOutcomes;
+    struct MarketData {
+        uint256 numOutcomes;
+        uint256 numTicks;
+    }
+
+    mapping(address => MarketData) markets;
 
     IAugur public augur;
+    ICash public cash;
     address public createOrder;
     address public fillOrder;
     address public cancelOrder;
-    address public completeSets;
-    address public claimTradingProceeds;
     IProfitLoss public profitLoss;
 
     mapping(address => bool) private doesNotUpdatePnl;
@@ -45,10 +50,8 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken {
         createOrder = _createOrder;
         fillOrder = _fillOrder;
         cancelOrder = _cancelOrder;
-
-        completeSets = _augur.lookup("CompleteSets");
-        claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
+        cash = ICash(_augur.lookup("Cash"));
     }
 
     /**
@@ -78,79 +81,350 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken {
         _batchTransferFrom(_from, _to, _ids, _values, bytes(""), false);
     }
 
-    function initializeMarket(IMarket _market, uint256 _numOutcomes) public {
+    function initializeMarket(IMarket _market, uint256 _numOutcomes, uint256 _numTicks) public {
         require (augur.isKnownUniverse(IUniverse(msg.sender)));
-        marketOutcomes[address(_market)] = _numOutcomes;
+        markets[address(_market)].numOutcomes = _numOutcomes;
+        markets[address(_market)].numTicks = _numTicks;
     }
 
-    function createSet(IMarket _market, address _owner, uint256 _amount) external returns(bool) {
-        require(msg.sender == completeSets);
-        uint256 _marketNumOutcomes = marketOutcomes[address(_market)];
-        uint256[] memory _tokenIds = new uint256[](_marketNumOutcomes);
-        uint256[] memory _values = new uint256[](_marketNumOutcomes);
+    /**
+     * @notice Buy some amount of complete sets for a market
+     * @param _market The market to purchase complete sets in
+     * @param _amount The number of complete sets to purchase
+     * @return Bool True
+     */
+    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
+        buyCompleteSetsInternal(_market, msg.sender, _amount);
+    }
 
-        for (uint256 _i = 0; _i < _marketNumOutcomes; _i++) {
+    /**
+     * @notice Buy some amount of complete sets for a market
+     * @param _market The market to purchase complete sets in
+     * @param _account The account receiving the complete sets
+     * @param _amount The number of complete sets to purchase
+     * @return Bool True
+     */
+    function buyCompleteSets(IMarket _market, address _account, uint256 _amount) external returns (bool) {
+        buyCompleteSetsInternal(_market, _account, _amount);
+    }
+
+    function buyCompleteSetsInternal(IMarket _market, address _account, uint256 _amount) internal returns (bool) {
+        uint256 _numOutcomes = markets[address(_market)].numOutcomes;
+        uint256 _numTicks = markets[address(_market)].numTicks;
+
+        require(_numOutcomes != 0, "Invalid Market provided");
+
+        IUniverse _universe = _market.getUniverse();
+
+        uint256 _cost = _amount.mul(_numTicks);
+        _universe.deposit(msg.sender, _cost, address(_market));
+
+        uint256[] memory _tokenIds = new uint256[](_numOutcomes);
+        uint256[] memory _values = new uint256[](_numOutcomes);
+
+        for (uint256 _i = 0; _i < _numOutcomes; _i++) {
             _tokenIds[_i] = getTokenId(_market, _i);
             _values[_i] = _amount;
         }
-        _mintBatch(_owner, _tokenIds, _values, bytes(""), false);
-        return true;
-    }
 
-    function destroySet(IMarket _market, address _owner, uint256 _amount) external returns(bool) {
-        require(msg.sender == completeSets);
-        uint256 _marketNumOutcomes = marketOutcomes[address(_market)];
-        uint256[] memory _tokenIds = new uint256[](_marketNumOutcomes);
-        uint256[] memory _values = new uint256[](_marketNumOutcomes);
+        _mintBatch(_account, _tokenIds, _values, bytes(""), false);
 
-        for (uint256 i = 0; i < _marketNumOutcomes; i++) {
-            _tokenIds[i] = getTokenId(_market, i);
-            _values[i] = _amount;
+        if (!_market.isFinalized()) {
+            _universe.incrementOpenInterest(_cost);
         }
-        _burnBatch(_owner, _tokenIds, _values, bytes(""), false);
+
+        augur.logCompleteSetsPurchased(_market.getUniverse(), _market, _account, _amount);
+        augur.logMarketOIChanged(_universe, _market);
+
+        _market.assertBalances();
         return true;
     }
 
-    function destroyShares(IMarket _market, uint256 _outcome, address _owner, uint256 _amount) external returns(bool) {
-        require(msg.sender == claimTradingProceeds);
-        uint256 _tokenId = getTokenId(_market, _outcome);
-        _burn(_owner, _tokenId, _amount, bytes(""), false);
+    /**
+     * @notice Buy some amount of complete sets for a market and distribute the shares according to the positions of two accounts
+     * @param _market The market to purchase complete sets in
+     * @param _amount The number of complete sets to purchase
+     * @param _longOutcome The outcome for the trade being fulfilled
+     * @param _longRecipient The account which should recieve the _longOutcome shares
+     * @param _shortRecipient The account which should recieve shares of every outcome other than _longOutcome
+     * @return Bool True
+     */
+    function buyCompleteSetsForTrade(IMarket _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient) external returns (bool) {
+        uint256 _numOutcomes = markets[address(_market)].numOutcomes;
+        uint256 _numTicks = markets[address(_market)].numTicks;
+
+        require(_numOutcomes != 0, "Invalid Market provided");
+
+        IUniverse _universe = _market.getUniverse();
+
+        uint256 _cost = _amount.mul(_numTicks);
+        _universe.deposit(msg.sender, _cost, address(_market));
+
+        uint256[] memory _tokenIds = new uint256[](_numOutcomes - 1);
+        uint256[] memory _values = new uint256[](_numOutcomes - 1);
+        uint256 _outcome = 0;
+
+        for (uint256 _i = 0; _i < _numOutcomes - 1; _i++) {
+            if (_outcome == _longOutcome) {
+                _outcome++;
+            }
+            _tokenIds[_i] = getTokenId(_market, _outcome);
+            _values[_i] = _amount;
+            _outcome++;
+        }
+
+        _mintBatch(_shortRecipient, _tokenIds, _values, bytes(""), false);
+        _mint(_longRecipient, getTokenId(_market, _longOutcome), _amount, bytes(""), false);
+
+        if (!_market.isFinalized()) {
+            _universe.incrementOpenInterest(_cost);
+        }
+
+        augur.logMarketOIChanged(_universe, _market);
+
+        _market.assertBalances();
         return true;
     }
 
-    function trustedOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    /**
+     * @notice Sell some amount of complete sets for a market
+     * @param _market The market to sell complete sets in
+     * @param _amount The number of complete sets to sell
+     * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
+     */
+    function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, msg.sender, _amount, address(0));
+
+        require(cash.transfer(msg.sender, _payout));
+
+        IUniverse _universe = _market.getUniverse();
+        augur.logCompleteSetsSold(_universe, _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
+
+        _market.assertBalances();
+        return (_creatorFee, _reportingFee);
+    }
+
+    /**
+     * @notice Sell some amount of complete sets for a market
+     * @param _market The market to sell complete sets in
+     * @param _holder The holder of the complete sets
+     * @param _recipient The recipient of funds from the sale
+     * @param _amount The number of complete sets to sell
+     * @param _affiliateAddress The affiliate address for the trade if one exists
+     * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
+     */
+    function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, address _affiliateAddress) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+        require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
+        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _affiliateAddress);
+
+        require(cash.transfer(_recipient, _payout));
+
+        IUniverse _universe = _market.getUniverse();
+        augur.logCompleteSetsSold(_universe, _market, _holder, _amount, _creatorFee.add(_reportingFee));
+
+        _market.assertBalances();
+        return (_creatorFee, _reportingFee);
+    }
+
+    /**
+     * @notice Sell some amount of complete sets for a market
+     * @param _market The market to sell complete sets in
+     * @param _amount The number of complete sets to sell
+     * @param _shortParticipant The account which should provide the short party portion of shares
+     * @param _longParticipant The account which should provide the long party portion of shares
+     * @param _longRecipient The account which should receive the remaining payout for providing the matching shares to the short recipients shares
+     * @param _shortRecipient The account which should recieve the (price * shares provided) payout for selling their side of the sale
+     * @param _price The price of the trade being done. This determines how much each recipient recieves from the sale proceeds
+     * @param _affiliateAddress The affiliate address for the trade if one exists
+     * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
+     */
+    function sellCompleteSetsForTrade(IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _affiliateAddress) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+        require(isApprovedForAll(_shortParticipant, msg.sender) == true, "ERC1155: need operator approval to burn short account shares");
+        require(isApprovedForAll(_longParticipant, msg.sender) == true, "ERC1155: need operator approval to burn long account shares");
+
+        _internalTransferFrom(_shortParticipant, _longParticipant, getTokenId(_market, _outcome), _amount, bytes(""), false);
+        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount,  _affiliateAddress);
+
+        uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
+        require(cash.transfer(_longRecipient, _longPayout));
+        require(cash.transfer(_shortRecipient, _payout.sub(_longPayout)));
+
+        _market.assertBalances();
+        return (_creatorFee, _reportingFee);
+    }
+
+    function burnCompleteSets(IMarket _market, address _account, uint256 _amount, address _affiliateAddress) private returns (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) {
+        uint256 _numOutcomes = markets[address(_market)].numOutcomes;
+        uint256 _numTicks = markets[address(_market)].numTicks;
+
+        require(_numOutcomes != 0, "Invalid Market provided");
+
+        // solium-disable indentation
+        {
+            uint256[] memory _tokenIds = new uint256[](_numOutcomes);
+            uint256[] memory _values = new uint256[](_numOutcomes);
+
+            for (uint256 i = 0; i < _numOutcomes; i++) {
+                _tokenIds[i] = getTokenId(_market, i);
+                _values[i] = _amount;
+            }
+
+            _burnBatch(_account, _tokenIds, _values, bytes(""), false);
+        }
+        // solium-enable indentation
+
+        _payout = _amount.mul(_numTicks);
+        IUniverse _universe = _market.getUniverse();
+
+        if (!_market.isFinalized()) {
+            _universe.decrementOpenInterest(_payout);
+        }
+
+        _creatorFee = _market.deriveMarketCreatorFeeAmount(_payout);
+        uint256 _reportingFeeDivisor = _universe.getOrCacheReportingFeeDivisor();
+        _reportingFee = _payout.div(_reportingFeeDivisor);
+        _payout = _payout.sub(_creatorFee).sub(_reportingFee);
+
+        if (_creatorFee != 0) {
+            _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
+        }
+
+        _universe.withdraw(address(this), _payout.add(_reportingFee), address(_market));
+
+        if (_reportingFee != 0) {
+            require(cash.transfer(address(_universe.getOrCreateNextDisputeWindow(false)), _reportingFee));
+        }
+
+        augur.logMarketOIChanged(_universe, _market);
+    }
+
+    /**
+     * @notice Claims winnings for multiple markets and for a particular shareholder
+     * @param _markets Array of markets to claim winnings for
+     * @param _shareHolder The account to claim winnings for
+     * @param _affiliateAddress An affiliate address to share market creator fees with
+     * @return Bool True
+     */
+    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder, address _affiliateAddress) external returns(bool) {
+        for (uint256 i=0; i < _markets.length; i++) {
+            claimTradingProceedsInternal(_markets[i], _shareHolder, _affiliateAddress);
+        }
+        return true;
+    }
+
+    /**
+     * @notice Claims winnings for a market and for a particular shareholder
+     * @param _market The market to claim winnings for
+     * @param _shareHolder The account to claim winnings for
+     * @param _affiliateAddress An affiliate address to share market creator fees with
+     * @return Bool True
+     */
+    function claimTradingProceeds(IMarket _market, address _shareHolder, address _affiliateAddress) external nonReentrant returns(bool) {
+        claimTradingProceedsInternal(_market, _shareHolder, _affiliateAddress);
+    }
+
+    function claimTradingProceedsInternal(IMarket _market, address _shareHolder, address _affiliateAddress) internal returns(bool) {
+        require(augur.isKnownMarket(_market));
+        if (!_market.isFinalized()) {
+            _market.finalize();
+        }
+        uint256[] memory _outcomeFees = new uint256[](8);
+        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
+            uint256 _numberOfShares = balanceOfMarketOutcome(_market, _outcome, _shareHolder);
+
+            if (_numberOfShares > 0) {
+                uint256 _proceeds;
+                uint256 _shareHolderShare;
+                uint256 _creatorShare;
+                uint256 _reporterShare;
+                uint256 _tokenId = getTokenId(_market, _outcome);
+                (_proceeds, _shareHolderShare, _creatorShare, _reporterShare) = divideUpWinnings(_market, _outcome, _numberOfShares);
+
+                // always destroy shares as it gives a minor gas refund and is good for the network
+                _burn(_shareHolder, _tokenId, _numberOfShares, bytes(""), false);
+                logTradingProceedsClaimed(_market, _outcome, _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare.add(_reporterShare));
+
+                if (_proceeds > 0) {
+                    _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));
+                    distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare, _affiliateAddress);
+                }
+                _outcomeFees[_outcome] = _creatorShare.add(_reporterShare);
+            }
+        }
+
+        profitLoss.recordClaim(_market, _shareHolder, _outcomeFees);
+
+        _market.assertBalances();
+
+        return true;
+    }
+
+    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare, address _affiliateAddress) private {
+        if (_shareHolderShare > 0) {
+            require(cash.transfer(_shareHolder, _shareHolderShare));
+        }
+        if (_creatorShare > 0) {
+            _market.recordMarketCreatorFees(_creatorShare, _affiliateAddress);
+        }
+        if (_reporterShare > 0) {
+            require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
+        }
+    }
+
+    function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private {
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _fees);
+    }
+
+    function divideUpWinnings(IMarket _market, uint256 _outcome, uint256 _numberOfShares) public returns (uint256 _proceeds, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) {
+        _proceeds = calculateProceeds(_market, _outcome, _numberOfShares);
+        _creatorShare = calculateCreatorFee(_market, _proceeds);
+        _reporterShare = calculateReportingFee(_market, _proceeds);
+        _shareHolderShare = _proceeds.sub(_creatorShare).sub(_reporterShare);
+        return (_proceeds, _shareHolderShare, _creatorShare, _reporterShare);
+    }
+
+    function calculateProceeds(IMarket _market, uint256 _outcome, uint256 _numberOfShares) public view returns (uint256) {
+        uint256 _payoutNumerator = _market.getWinningPayoutNumerator(_outcome);
+        return _numberOfShares.mul(_payoutNumerator);
+    }
+
+    function calculateReportingFee(IMarket _market, uint256 _amount) public returns (uint256) {
+        uint256 _reportingFeeDivisor = _market.getUniverse().getOrCacheReportingFeeDivisor();
+        return _amount.div(_reportingFeeDivisor);
+    }
+
+    function calculateCreatorFee(IMarket _market, uint256 _amount) public view returns (uint256) {
+        return _market.deriveMarketCreatorFeeAmount(_amount);
+    }
+
+    function trustedOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == createOrder);
         marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
     }
 
-    function trustedOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == createOrder);
         marketOutcomesBatchTransfer(_market, _outcomes, _source, _destination, _attotokens);
     }
 
-    function trustedFillOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedFillOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == fillOrder);
         marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
     }
 
-    function trustedFillOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedFillOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == fillOrder);
         marketOutcomesBatchTransfer(_market, _outcomes, _source, _destination, _attotokens);
     }
 
-    function trustedCancelOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedCancelOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == cancelOrder);
         marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
     }
 
-    function trustedCancelOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedCancelOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == cancelOrder);
         marketOutcomesBatchTransfer(_market, _outcomes, _source, _destination, _attotokens);
-    }
-
-    function trustedCompleteSetTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
-        require(msg.sender == completeSets);
-        marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
     }
 
     function marketOutcomeTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) internal {
@@ -226,9 +500,6 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken {
 
     function onTokenTransfer(uint256 _tokenId, address _from, address _to, uint256 _value) internal {
         (address _marketAddress, uint256 _outcome) = unpackTokenId(_tokenId);
-        if (shouldUpdatePL) {
-            profitLoss.recordExternalTransfer(IMarket(_marketAddress), _outcome, _from, _to, _value);
-        }
         augur.logShareTokensBalanceChanged(_from, IMarket(_marketAddress), _outcome, balanceOf(_from, _tokenId));
         augur.logShareTokensBalanceChanged(_to, IMarket(_marketAddress), _outcome, balanceOf(_to, _tokenId));
     }

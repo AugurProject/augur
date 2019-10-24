@@ -7,7 +7,7 @@ from constants import BID, ASK, YES, NO
 
 
 def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
@@ -16,9 +16,9 @@ def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market)
 
     # 1. both accounts buy a complete set
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[2])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[2])
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(12)
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == fix(12)
@@ -46,14 +46,14 @@ def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_ask_with_shares_fill_with_cash(contractsFixture, cash, market):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
 
     # 1. buy a complete set with account 1
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(12), "Account 1 should have 12 shares of outcome 1"
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(12), "Account 1 should have 12 shares of outcome 2"
@@ -77,14 +77,14 @@ def test_create_ask_with_shares_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_ask_with_cash_fill_with_shares(contractsFixture, cash, market):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
 
     # 1. buy complete sets with account 2
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender=contractsFixture.accounts[2])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender=contractsFixture.accounts[2])
     assert cash.balanceOf(contractsFixture.accounts[2]) == fix('0')
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == fix(12)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
@@ -108,7 +108,7 @@ def test_create_ask_with_cash_fill_with_shares(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_ask_with_cash_fill_with_cash(contractsFixture, cash, market):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
@@ -133,7 +133,7 @@ def test_create_ask_with_cash_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market, universe):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
@@ -145,9 +145,9 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
 
     # 1. buy complete sets with both accounts
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[2])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[2])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
     assert cash.balanceOf(contractsFixture.accounts[2]) == fix('0')
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == fix(12)
@@ -184,14 +184,14 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
 
 def test_create_bid_with_shares_fill_with_cash(contractsFixture, cash, market):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
 
     # 1. buy complete sets with account 1
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(12)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(12)
@@ -215,14 +215,14 @@ def test_create_bid_with_shares_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
 
 def test_create_bid_with_cash_fill_with_shares(contractsFixture, cash, market):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
 
     # 1. buy complete sets with account 2
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[2])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[2])
     assert cash.balanceOf(contractsFixture.accounts[2]) == fix('0')
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == fix(12)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
@@ -335,7 +335,7 @@ def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, 
     fillerAddress = contractsFixture.accounts[2]
     fillerKey = contractsFixture.accounts[2]
 
-    completeSets = fixture.contracts['CompleteSets']
+    shareToken = fixture.contracts['ShareToken']
     createOrder = fixture.contracts['CreateOrder']
     fillOrder = fixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
@@ -343,7 +343,7 @@ def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, 
     def acquireShares(outcome, amount, sender):
         if amount == 0: return
         with BuyWithCash(cash, amount * market.getNumTicks(), sender, "The sender didn't get cost deducted for complete set sale"):
-            assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
+            assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)
         if outcome == YES:
             shareToken.safeTransferFrom(sender, contractsFixture.accounts[8], shareToken.getTokenId(market.address, NO), amount, "", sender = sender)
         if outcome == NO:

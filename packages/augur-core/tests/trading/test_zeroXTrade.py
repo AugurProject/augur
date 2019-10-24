@@ -16,7 +16,7 @@ def signOrder(orderHash, private_key):
 
 def test_trade_1155_behavior(contractsFixture, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts['ShareToken']
 
     account = contractsFixture.accounts[0]
@@ -65,8 +65,8 @@ def test_trade_1155_behavior(contractsFixture, cash, market, categoricalMarket, 
     cash.transfer(contractsFixture.accounts[3], accountCash, sender=account)
 
     # Make some complete sets for both markets and transfer our outcome shares to account 1
-    completeSets.publicBuyCompleteSets(market.address, 10, sender=account2)
-    completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=account2)
+    shareToken.publicBuyCompleteSets(market.address, 10, sender=account2)
+    shareToken.publicBuyCompleteSets(categoricalMarket.address, 10, sender=account2)
 
     shareToken.unsafeTransferFrom(account2, account, shareToken.getTokenId(market.address, outcome), 10, sender=account2)
     shareToken.unsafeTransferFrom(account2, account, shareToken.getTokenId(categoricalMarket.address, outcome), 10, sender=account2)
@@ -488,7 +488,7 @@ def test_two_asks_on_books_buy_full_and_partial(contractsFixture, cash, market):
 def test_take_order_with_shares_buy_with_cash(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
@@ -497,7 +497,7 @@ def test_take_order_with_shares_buy_with_cash(contractsFixture, cash, market, un
     # buy complete sets
     account = contractsFixture.accounts[1]
     with BuyWithCash(cash, fix('1', '100'), account, "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=account)
+        assert shareToken.publicBuyCompleteSets(market.address, fix(1), sender=account)
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account) == fix(1)
 
@@ -521,7 +521,7 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     market = categoricalMarket
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
@@ -530,9 +530,9 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     # buy complete sets for both users
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
 
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[2]) == fix(1)
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == fix(1)
@@ -571,12 +571,12 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
 def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
 
     if finalized:
         if invalid:
@@ -592,9 +592,9 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     # buy complete sets for both users
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
 
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[2]) == fix(1)
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == fix(1)
@@ -664,8 +664,7 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
 def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    completeSets = contractsFixture.contracts['CompleteSets']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.contracts['ShareToken']
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
@@ -698,7 +697,7 @@ def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
 def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5

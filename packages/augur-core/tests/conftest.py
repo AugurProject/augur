@@ -477,7 +477,7 @@ class ContractsFixture:
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTrade','GnosisSafeRegistry','ShareToken','WarpSync']
+        contractsToInitialize = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTrade','GnosisSafeRegistry','ShareToken','WarpSync']
         for contractName in contractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
@@ -491,12 +491,19 @@ class ContractsFixture:
     ####
 
     def approveCentralAuthority(self):
-        authority = self.contracts['Augur']
+        contractsNeedingApproval = ['Augur','FillOrder']
         contractsToApprove = ['Cash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
             for contractName in contractsToApprove:
-                self.contracts[contractName].approve(authority.address, 2**254, sender=testerKey)
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].approve(self.contracts[authorityName].address, 2**254, sender=testerKey)
+        contractsToSetApproval = ['ShareToken']
+        for testerKey in testersGivingApproval:
+            for contractName in contractsToSetApproval:
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].setApprovalForAll(self.contracts[authorityName].address, True, sender=testerKey)
+
 
     def uploadAugur(self):
         # We have to upload Augur first

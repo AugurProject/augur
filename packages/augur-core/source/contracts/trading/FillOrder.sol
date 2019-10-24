@@ -7,7 +7,6 @@ import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/ICash.sol';
-import 'ROOT/trading/ICompleteSets.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IProfitLoss.sol';
@@ -35,7 +34,6 @@ library Trade {
     struct Contracts {
         IOrders orders;
         IMarket market;
-        ICompleteSets completeSets;
         ICash denominationToken;
         IShareToken shareToken;
         IAugur augur;
@@ -186,7 +184,9 @@ library Trade {
         // transfer shares and sell complete sets distributing payouts based on the price
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
-        (_marketCreatorFees, _reporterFees) = _data.contracts.completeSets.jointSellCompleteSets(_data.contracts.market, _data.order.outcome, _data.shortFundsAccount, _data.longFundsAccount, _numberOfCompleteSets, getLongShareSellerDestination(_data), getShortShareSellerDestination(_data), _data.order.sharePriceLong, _data.affiliateAddress);
+
+        // Sell both account shares
+        (_marketCreatorFees, _reporterFees) = _data.contracts.shareToken.sellCompleteSetsForTrade(_data.contracts.market, _data.longOutcome, _numberOfCompleteSets, _data.shortFundsAccount, _data.longFundsAccount, getShortShareSellerDestination(_data), getLongShareSellerDestination(_data), _data.order.sharePriceLong, _data.affiliateAddress);
 
         // update available shares for creator and filler
         _data.creator.sharesToSell -= _numberOfCompleteSets;
@@ -262,10 +262,26 @@ library Trade {
         }
 
         // buy complete sets and distribute shares to participants
+        uint256 _longCost = _numberOfCompleteSets.mul(_data.order.sharePriceLong);
+        uint256 _shortCost = _numberOfCompleteSets.mul(_data.order.sharePriceShort);
+        IUniverse _universe = _data.contracts.market.getUniverse();
+
+        // Bring in cash from both parties
+        if (_data.longFundsAccount == address(_data.contracts.market)) {
+            _universe.withdraw(address(this), _longCost, address(_data.contracts.market));
+        } else {
+            _data.contracts.denominationToken.transferFrom(_data.longFundsAccount, address(this), _longCost);
+        }
+        if (_data.shortFundsAccount == address(_data.contracts.market)) {
+            _universe.withdraw(address(this), _shortCost, address(_data.contracts.market));
+        } else {
+            _data.contracts.denominationToken.transferFrom(_data.shortFundsAccount, address(this), _shortCost);
+        }
+
+        // Buy and distribute complete sets
         address _longRecipient = getLongShareBuyerDestination(_data);
         address _shortRecipient = getShortShareBuyerDestination(_data);
-
-        _data.contracts.completeSets.jointBuyCompleteSets(_data.contracts.market, _numberOfCompleteSets, _data.longFundsAccount, _data.shortFundsAccount, _data.order.outcome, _longRecipient, _shortRecipient, _data.order.sharePriceLong);
+        _data.contracts.shareToken.buyCompleteSetsForTrade(_data.contracts.market, _numberOfCompleteSets, _data.order.outcome, _longRecipient, _shortRecipient);
 
         _data.creator.sharesToBuy -= _numberOfCompleteSets;
         _data.filler.sharesToBuy -= _numberOfCompleteSets;
@@ -335,10 +351,7 @@ library Trade {
         return Contracts({
             orders: _storedContracts.orders,
             market: _market,
-            completeSets: _storedContracts.completeSets,
             denominationToken: _storedContracts.denominationToken,
-            longShareToken: _shareTokens[_outcome],
-            shareTokens: _shareTokens,
             augur: _storedContracts.augur,
             universe: _market.getUniverse(),
             profitLoss: _storedContracts.profitLoss
@@ -423,18 +436,22 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     mapping (address => uint256[]) public marketOutcomeVolumes;
 
+    uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
+
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
+        ICash _cash = ICash(augur.lookup("Cash"));
         storedContracts = Trade.StoredContracts({
             augur: _augur,
             orders: IOrders(_augur.lookup("Orders")),
             completeSets: ICompleteSets(_augur.lookup("CompleteSets")),
-            denominationToken: ICash(_augur.lookup("Cash")),
+            denominationToken: _cash,
             profitLoss: IProfitLoss(_augur.lookup("ProfitLoss")),
             shareToken: IShareToken(augur.lookup("ShareToken"))
         });
         trade = _augur.lookup("Trade");
         ZeroXTrade = _augur.lookup("ZeroXTrade");
+        _cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
     }
 
     /**
@@ -512,17 +529,16 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _creatorCompleteSets = shareToken.lowestBalanceOfMarketOutcomes(_market, _outcomes, _creator);
 
         if (_fillerCompleteSets > 0) {
-            _tradeData.contracts.completeSets.sellCompleteSets(_filler, _market, _fillerCompleteSets, _tradeData.affiliateAddress);
+            shareToken.sellCompleteSets(_market, _filler, _filler, _fillerCompleteSets, _tradeData.affiliateAddress);
         }
 
         if (_creatorCompleteSets > 0) {
-            _tradeData.contracts.completeSets.sellCompleteSets(_creator, _market, _creatorCompleteSets, _tradeData.affiliateAddress);
+            shareToken.sellCompleteSets(_market, _creator, _creator, _creatorCompleteSets, _tradeData.affiliateAddress);
         }
 
         return true;
     }
 
-    // TODO when orderId is bytes32(0) will need special handling
     function logOrderFilled(Trade.Data memory _tradeData, uint256 _price, uint256 _fees, uint256 _amountFilled, bytes32 _tradeGroupId) private returns (bool) {
         if (_tradeData.order.orderId == bytes32(0)) {
             address[] memory _addressData = new address[](3);

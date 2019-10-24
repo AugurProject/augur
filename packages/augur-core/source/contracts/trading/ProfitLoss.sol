@@ -21,7 +21,6 @@ contract ProfitLoss is Initializable {
     address public createOrder;
     address public cancelOrder;
     address public fillOrder;
-    address public claimTradingProceeds;
 
     struct OutcomeData {
         int256 netPosition;
@@ -40,7 +39,6 @@ contract ProfitLoss is Initializable {
         createOrder = augur.lookup("CreateOrder");
         cancelOrder = augur.lookup("CancelOrder");
         fillOrder = augur.lookup("FillOrder");
-        claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
         orders = IOrders(augur.lookup("Orders"));
         shareToken = augur.lookup("ShareToken");
     }
@@ -114,7 +112,7 @@ contract ProfitLoss is Initializable {
     }
 
     function recordClaim(IMarket _market, address _account, uint256[] calldata _outcomeFees) external returns (bool) {
-        require(msg.sender == claimTradingProceeds);
+        require(msg.sender == shareToken);
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         IUniverse _universe = _market.getUniverse();
         IAugur _augur = augur;

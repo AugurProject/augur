@@ -128,7 +128,7 @@ contract Augur is IAugur {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists());
         registry[_key] = _address;
-        if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
+        if (_key == "ShareToken" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "MarketFactory") {
             trustedSender[_address] = true;
         }
         if (_key == "Time") {
@@ -196,7 +196,7 @@ contract Augur is IAugur {
     }
 
     function isKnownFeeSender(address _feeSender) public view returns (bool) {
-        return _feeSender == registry["CompleteSets"] || _feeSender == registry["ClaimTradingProceeds"] || markets[_feeSender];
+        return _feeSender == registry["ShareToken"] || markets[_feeSender];
     }
 
     //
@@ -395,25 +395,25 @@ contract Augur is IAugur {
     }
 
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
-        require(msg.sender == registry["CompleteSets"] || (isKnownUniverse(_universe) && _universe.isOpenInterestCash(msg.sender)));
+        require(msg.sender == registry["ShareToken"] || (isKnownUniverse(_universe) && _universe.isOpenInterestCash(msg.sender)));
         emit CompleteSetsPurchased(address(_universe), address(_market), _account, _numCompleteSets, getTimestamp());
         return true;
     }
 
     function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) public returns (bool) {
-        require(msg.sender == registry["CompleteSets"]);
+        require(msg.sender == registry["ShareToken"]);
         emit CompleteSetsSold(address(_universe), address(_market), _account, _numCompleteSets, _fees, getTimestamp());
         return true;
     }
 
     function logMarketOIChanged(IUniverse _universe, IMarket _market) public returns (bool) {
-        require(msg.sender == registry["CompleteSets"]);
+        require(msg.sender == registry["ShareToken"]);
         emit MarketOIChanged(address(_universe), address(_market), _market.getOpenInterest());
         return true;
     }
 
     function logTradingProceedsClaimed(IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {
-        require(msg.sender == registry["ClaimTradingProceeds"]);
+        require(msg.sender == registry["ShareToken"]);
         emit TradingProceedsClaimed(address(_universe), _sender, _market, _outcome, _numShares, _numPayoutTokens, _fees, getTimestamp());
         return true;
     }

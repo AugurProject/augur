@@ -11,13 +11,12 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
         if amount == 0: return
 
         shareToken = fixture.contracts['ShareToken']
-        completeSets = fixture.contracts['CompleteSets']
         createOrder = fixture.contracts['CreateOrder']
         fillOrder = fixture.contracts['FillOrder']
 
         ethRequired = amount * numTicks
         fixture.contracts['Cash'].faucet(ethRequired, sender=sender)
-        assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
+        assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)
         for otherOutcome in range(0, market.getNumberOfOutcomes()):
             if otherOutcome == outcome: continue
             shareToken.safeTransferFrom(sender, fixture.accounts[8], shareToken.getTokenId(market.address, otherOutcome), amount, "", sender = sender)
@@ -26,13 +25,12 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
         if amount == 0: return
 
         shareToken = fixture.contracts['ShareToken']
-        completeSets = fixture.contracts['CompleteSets']
         createOrder = fixture.contracts['CreateOrder']
         fillOrder = fixture.contracts['FillOrder']
 
         ethRequired = amount * numTicks
         fixture.contracts['Cash'].faucet(ethRequired, sender=sender)
-        assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
+        assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)
         shareToken.safeTransferFrom(sender, fixture.accounts[8], shareToken.getTokenId(market.address, outcome), amount, "", sender = sender)
 
     fixture.resetToSnapshot(snapshot)
@@ -44,7 +42,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     orders = fixture.contracts['Orders']
     createOrder = fixture.contracts['CreateOrder']
     fillOrder = fixture.contracts['FillOrder']
-    completeSets = fixture.contracts['CompleteSets']
+    shareToken = fixture.contracts['ShareToken']
     shareToken = fixture.contracts['ShareToken']
 
     account1 = fixture.accounts[1]
@@ -110,9 +108,9 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     fixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()
 
-    claimTradingProceeds = fixture.contracts['ClaimTradingProceeds']
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account1, nullAddress)
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account2, nullAddress)
+    shareToken= fixture.contracts['ShareToken']
+    assert shareToken.claimTradingProceeds(market.address, account1, nullAddress)
+    assert shareToken.claimTradingProceeds(market.address, account2, nullAddress)
 
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):

@@ -15,6 +15,7 @@ import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
+import 'ROOT/libraries/token/IERC1155.sol';
 
 
 /**

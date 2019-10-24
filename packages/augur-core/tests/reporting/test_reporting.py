@@ -212,7 +212,6 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
-    claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
     shareToken = localFixture.contracts["ShareToken"]
 
     time = localFixture.contracts["Time"].getTimestamp()
@@ -280,11 +279,10 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     newUniverse = localFixture.applySignature("Universe", newUniverseAddress)
 
     # Let's make sure fork payouts work correctly for the forking market
-    completeSets = localFixture.contracts['CompleteSets']
     numSets = 10
     cost = market.getNumTicks() * numSets
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, numSets)
+        assert shareToken.publicBuyCompleteSets(market.address, numSets)
 
     shareToken.safeTransferFrom(localFixture.accounts[0], localFixture.accounts[1], shareToken.getTokenId(market.address, NO), shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[0]), "")
 
@@ -293,11 +291,11 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[0], nullAddress)
 
     expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .98 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
     # Migrate a market that has not ended yet
     assert farOutMarket.migrateThroughOneFork([], "")
@@ -306,7 +304,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     numSets = 10
     cost = categoricalMarket.getNumTicks() * numSets
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, numSets)
+        assert shareToken.publicBuyCompleteSets(categoricalMarket.address, numSets)
     assert universe.getOpenInterestInAttoCash() == cost
 
     marketMigratedLog = {

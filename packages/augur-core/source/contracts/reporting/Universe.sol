@@ -60,8 +60,6 @@ contract Universe is IUniverse {
     mapping (address => uint256) private shareSettlementFeeDivisor;
     uint256 public previousReportingFeeDivisor;
 
-    address public completeSets;
-
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
     uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
     uint256 constant public DEFAULT_NUM_TICKS = 100;
@@ -85,7 +83,6 @@ contract Universe is IUniverse {
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
-        completeSets = augur.lookup("CompleteSets");
         shareToken = IShareToken(augur.lookup("ShareToken"));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
@@ -401,7 +398,7 @@ contract Universe is IUniverse {
     }
 
     function decrementOpenInterest(uint256 _amount) public returns (bool) {
-        require(msg.sender == completeSets);
+        require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
@@ -414,7 +411,7 @@ contract Universe is IUniverse {
     }
 
     function incrementOpenInterest(uint256 _amount) public returns (bool) {
-        require(msg.sender == completeSets);
+        require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
     }
@@ -622,7 +619,7 @@ contract Universe is IUniverse {
         getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
         _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
-        shareToken.initializeMarket(_newMarket, _numOutcomes + 1); // To account for Invalid
+        shareToken.initializeMarket(_newMarket, _numOutcomes + 1, _numTicks); // To account for Invalid
         return _newMarket;
     }
 
