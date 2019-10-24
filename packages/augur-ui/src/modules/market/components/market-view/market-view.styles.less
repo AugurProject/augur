@@ -214,14 +214,10 @@
 
 .MarketView__comments {
   display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   justify-content: center;
-  align-items: center;
-  padding: 0 22.5625rem;
-  width: 100%;
-
-  > div {
-    width: 100%;
-  }
+  margin: 0 22.5625rem;
 }
 
 .Hide {
@@ -339,6 +335,8 @@ div.OutcomeNameDisplay {
   }
 
   .MarketView__comments {
-    padding: 0;
+    justify-content: center;
+    margin: 0rem;
+    width: 100%;
   }
 }
