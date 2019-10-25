@@ -28,6 +28,7 @@ import * as _ from 'lodash';
 import * as t from 'io-ts';
 import { QUINTILLION } from '../../utils';
 import { Trading, MarketTradingHistory } from './Trading';
+import { MarketInfo, Markets } from './Markets';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -144,6 +145,7 @@ export interface ProfitLossResult {
 export class UserAccountDataResult {
   userTradeHistory: MarketTradingHistory;
   marketTradeHistory: MarketTradingHistory;
+  marketsInfo: MarketInfo[];
 }
 
 export class Users {
@@ -186,10 +188,11 @@ export class Users {
     // collect marketIds
     const marketIds = Object.keys(userTradeHistory);
     const marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds });
-
+    let marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
     return {
       userTradeHistory,
-      marketTradeHistory
+      marketTradeHistory,
+      marketsInfo
     } as UserAccountDataResult;
   }
 

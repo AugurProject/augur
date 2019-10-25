@@ -12,6 +12,7 @@ import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-r
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -37,6 +38,11 @@ async function loadTransactions(
   const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: address})
   dispatch(updateUserFilledOrders(address, userData.userTradeHistory));
   dispatch(bulkMarketTradingHistory(userData.marketTradeHistory));
+  const marketsDataById = userData.marketsInfo.reduce((acc, marketData) => ({
+    [marketData.id]: marketData,
+    ...acc,
+  }), {});
+  dispatch(updateMarketsData(marketsDataById));
 
   promises.push(
     new Promise(resolve =>
