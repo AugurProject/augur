@@ -25,6 +25,19 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   private performQueue: AsyncQueue<PerformQueueTask>;
   readonly provider: ethers.providers.JsonRpcProvider;
 
+  private _overrideGasPrice: ethers.utils.BigNumber | null = null;
+  get overrideGasPrice() {
+    return this._overrideGasPrice;
+  }
+
+  set overrideGasPrice(gasPrice: ethers.utils.BigNumber|null) {
+    if (gasPrice !== null && gasPrice.eq(new ethers.utils.BigNumber(0))) {
+      this._overrideGasPrice = null;
+    } else {
+      this._overrideGasPrice = gasPrice;
+    }
+  }
+
   constructor(provider: ethers.providers.JsonRpcProvider, times: number, interval: number, concurrency: number) {
     super(provider.getNetwork());
     this.provider = provider;
@@ -67,6 +80,13 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
 
   public async getBlockNumber(): Promise<number> {
     return super.getBlockNumber();
+  }
+
+  public async getGasPrice(): Promise<ethers.utils.BigNumber> {
+    if(this.overrideGasPrice !== null) {
+      return this.overrideGasPrice;
+    }
+    return super.getGasPrice();
   }
 
   public storeAbiData(abi: Abi, contractName: string): void {
