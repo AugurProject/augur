@@ -1241,12 +1241,21 @@ div.ButtonsRow:last-of-type {
 
       color: @color-primary-text;
       text-transform: unset;
+      margin: 0;
     }
 
     > h2 {
       .text-14;
 
       color: @color-secondary-text;
+      margin: @size-6 0 0;
+
+      > button {
+        .text-14;
+
+        margin-left: @size-3;
+        text-transform: unset;
+      }
     }
 
     > div:first-of-type {
@@ -1266,19 +1275,25 @@ div.ButtonsRow:last-of-type {
           .text-14;
 
           color: @color-secondary-text;
+          margin-bottom: @size-4;
+          line-height: @size-16;
         }
 
         > span:nth-of-type(2) {
           .mono-24-bold;
 
           color: @color-primary-text;
+          margin-bottom: @size-4;
+          line-height: @size-28;
         }
 
         > span:last-of-type {
           .mono-14;
 
           color: @color-secondary-text;
+          line-height: @size-16;
         }
+
         &:first-of-type {
           margin-right: @size-24;
         }
@@ -1322,14 +1337,19 @@ div.ButtonsRow:last-of-type {
 
       color: @color-secondary-text;
       margin-top: @size-24;
+      display: flex;
+      align-items: center;
 
       > span {
         .text-11-bold;
+
+        margin: 0 @size-3;
       }
 
       > svg {
         width: @size-10;
         height: @size-10;
+        margin-right: @size-3;
 
         > path {
           fill: @color-secondary-text;
