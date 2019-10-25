@@ -17,6 +17,7 @@ import {
   COPY_AUTHOR,
   REPORTING_STATE,
   MARKET_REPORTING,
+  SCALAR,
 } from 'modules/common/constants';
 import { FavoritesButton } from 'modules/common/buttons';
 import Clipboard from 'clipboard';
@@ -194,9 +195,12 @@ export default class MarketCard extends React.Component<
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
       reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
-    const showOutcomeNumber = inDispute
+    let showOutcomeNumber = inDispute
       ? MARKET_CARD_FOLD_OUTCOME_COUNT
       : NON_DISPUTING_SHOW_NUM_OUTCOMES;
+    if (marketType === SCALAR && inDispute) {
+      showOutcomeNumber = MARKET_CARD_FOLD_OUTCOME_COUNT - 1;
+    }
     const canDispute =
       inDispute &&
       reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&

@@ -236,31 +236,15 @@
 	padding-left: @size-12;
 	border-left: 1px solid @color-dark-grey;
 
-	&.Categorical {
-		grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 
-		@media @breakpoint-mobile-mid {
-			grid-template-columns: repeat(1, 1fr);
-		}
-	}
-
-	&.YesNo {
-		grid-template-columns: repeat(3, 1fr);
-
-		@media @breakpoint-mobile-mid {
-			grid-template-columns: repeat(1, 1fr);
-		}
+	@media @breakpoint-mobile-mid {
+		grid-template-columns: repeat(1, 1fr);
 	}
 
 	&.Scalar {
-		grid-template-columns: repeat(3, 1fr);
-
 		> div:first-of-type {
 			grid-column: 1 / span 2;
-		}
-
-		@media @breakpoint-mobile-mid {
-			grid-template-columns: repeat(1, 1fr);
 		}
 	}
 

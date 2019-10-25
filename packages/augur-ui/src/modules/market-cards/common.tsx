@@ -129,7 +129,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
             </span>
           )}
         </div>
-        {showButton &&
+        {showButton && (
           <SecondaryButton
             small
             disabled={!props.canDispute}
@@ -140,7 +140,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
             }
             action={() => props.dispute(props.id.toString())}
           />
-        }
+        )}
       </div>
     </div>
   );
@@ -231,10 +231,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
       dipsutingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
-    if (
-      !props.expanded &&
-      props.outcomes.length > showOutcomeNumber
-    ) {
+    if (!props.expanded && props.outcomes.length > showOutcomeNumber) {
       outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
     } else {
       outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
@@ -244,10 +241,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   return (
     <div
       className={classNames(Styles.OutcomeGroup, {
-        [Styles.Categorical]: props.marketType === CATEGORICAL,
-        [Styles.Scalar]: props.marketType === SCALAR,
-        [Styles.YesNo]: props.marketType === YES_NO,
         [Styles.Dispute]: inDispute,
+        [Styles.Scalar]: props.marketType === SCALAR && !inDispute,
       })}
     >
       {props.marketType === SCALAR && !inDispute && (
@@ -256,7 +251,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             min={props.min}
             max={props.max}
             lastPrice={
-              props.outcomes[SCALAR_UP_ID].price ? formatNumber(props.outcomes[SCALAR_UP_ID].price) : null
+              props.outcomes[SCALAR_UP_ID].price
+                ? formatNumber(props.outcomes[SCALAR_UP_ID].price)
+                : null
             }
             scalarDenomination={props.scalarDenomination}
           />
