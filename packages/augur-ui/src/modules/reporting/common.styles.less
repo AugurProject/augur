@@ -2,73 +2,70 @@
 
 .DismissableNotice {
   padding: @size-16 0 0;
+  align-items: center;
+  background: @color-dismissable-notice-background;
+  border: 1px solid @color-outcome-two;
+  border-left-width: @size-4;
+  border-radius: @border-radius-rounded;
+  display: flex;
+  justify-content: flex-start;
+  line-height: @size-12;
+  padding: @size-8 @size-16;
+  width: 100%;
 
-  > div {
-    align-items: center;
-    background: @color-dismissable-notice-background;
-    border: 1px solid @color-outcome-two;
-    border-left-width: @size-4;
-    border-radius: @border-radius-rounded;
+  > div > div:first-of-type {
+    .mono-10-bold;
+
+    color: @color-secondary-action;
     display: flex;
-    justify-content: flex-start;
     line-height: @size-12;
-    padding: @size-8 @size-16;
-    width: 100%;
+    text-transform: uppercase;
+  }
 
-    > div > div:first-of-type {
-      .mono-10-bold;
+  > div > div:last-of-type {
+    .text-11;
 
-      color: @color-secondary-action;
-      display: flex;
-      line-height: @size-12;
-      text-transform: uppercase;
+    display: flex;
+    line-height: @size-13;
+  }
+
+  > span:first-of-type {
+    align-items: flex-end;
+    display: flex;
+    margin: 0 @size-16 0 0;
+
+    svg {
+      height: @size-16;
+      width: @size-16;
+      fill: @color-primary-action;
     }
 
-    > div > div:last-of-type {
-      .text-11;
-
-      display: flex;
-      line-height: @size-13;
+    circle {
+      fill: @color-dismissable-notice-background;
+      stroke: @color-outcome-two;
     }
+  }
 
-    > span:first-of-type {
-      align-items: flex-end;
-      display: flex;
-      margin: 0 @size-16 0 0;
+  > div > span:last-of-type {
+    .mono-10-bold;
 
-      svg {
-        height: @size-16;
-        width: @size-16;
-        fill: @color-primary-action;
-      }
+    color: @color-module-background;
+    text-transform: uppercase;
+  }
 
-      circle {
-        fill: @color-dismissable-notice-background;
-        stroke: @color-outcome-two;
-      }
-    }
+  > button {
+    .mono-12-bold;
+    margin-left: auto;
+  }
 
-    > div > span:last-of-type {
-      .mono-10-bold;
+  > .close {
+    background-color: transparent;
+    height: @size-10;
+    line-height: @size-10;
+    width: @size-10;
 
-      color: @color-module-background;
-      text-transform: uppercase;
-    }
-
-    > button {
-      .mono-12-bold;
-      margin-left: auto;
-    }
-
-    > .close {
-      background-color: transparent;
-      height: @size-10;
-      line-height: @size-10;
-      width: @size-10;
-
-      > svg > path {
-        stroke: @color-module-background;
-      }
+    > svg > path {
+      stroke: @color-module-background;
     }
   }
 }
@@ -301,7 +298,6 @@ div.ReportingSubheaders {
   }
 
   > div {
-
     &:not(:first-of-type) {
       margin-top: @size-16;
     }
@@ -380,7 +376,6 @@ div.ReportingSubheaders {
       }
     }
   }
-
 }
 
 .AllTimeProfitLoss {
@@ -397,108 +392,107 @@ div.ReportingSubheaders {
 
     > span {
       .mono-11;
-
     }
   }
 }
 
 .DisputingButtonView {
-	> div:first-of-type {
-	  display: flex;
-	  justify-content: space-between;
-	  margin-bottom: @size-8;
+  > div:first-of-type {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: @size-8;
 
-	  > span:first-of-type {
-	    .mono-10;
+    > span:first-of-type {
+      .mono-10;
 
-	    color: @color-secondary-text;
-	    line-height: @size-12;
-	    text-transform: uppercase;
-	  }
+      color: @color-secondary-text;
+      line-height: @size-12;
+      text-transform: uppercase;
+    }
 
-	  > span:nth-of-type(2) {
-	    .mono-12;
+    > span:nth-of-type(2) {
+      .mono-12;
 
-	    color: @color-secondary-text;
-	    line-height: @size-14;
+      color: @color-secondary-text;
+      line-height: @size-14;
 
-	    > span:first-of-type {
-	      color: @color-primary-text;
-	      margin-left: @size-4;
-	    }
-	  }
-	}
+      > span:first-of-type {
+        color: @color-primary-text;
+        margin-left: @size-4;
+      }
+    }
+  }
 }
 
 .ScalarOutcomesView {
-	> h2 {
-	    .mono-11;
+  > h2 {
+    .mono-11;
 
-	    color: @color-primary-text;
-	    margin-top: @size-8;
-	}
-	> div:first-of-type {
-        margin-top: 0;
-        max-width: 300px;
-    }
+    color: @color-primary-text;
+    margin-top: @size-8;
+  }
+  > div:first-of-type {
+    margin-top: 0;
+    max-width: 300px;
+  }
 }
 
 .DisputingBondsView {
-   > span:first-of-type {
-      .text-14-medium;
+  > span:first-of-type {
+    .text-14-medium;
 
-      color: @color-primary-text;
-      display: flex;
-      margin-bottom: @size-12;
+    color: @color-primary-text;
+    display: flex;
+    margin-bottom: @size-12;
+    margin-top: @size-16;
+  }
+
+  > div:first-of-type {
+    max-width: 340px;
+    margin-top: @size-16;
+  }
+
+  > section {
+    color: fade(@color-secondary-text, 30);
+    display: flex;
+    margin-top: @size-8;
+
+    > button:first-of-type {
+      margin-right: @size-10;
+    }
+
+    > button:last-of-type {
+      margin-left: @size-10;
+    }
+  }
+
+  > button {
+    margin-top: @size-16;
+    margin-bottom: @size-4;
+  }
+
+  &.Scalar {
+    > div:nth-of-type(2) {
       margin-top: @size-16;
+      max-width: 340px;
     }
+  }
 
-  	> div:first-of-type {
-	    max-width: 340px;
-	    margin-top: @size-16;
-	}
-
-    > section {
-    	color: fade(@color-secondary-text, 30);
-        display: flex;
-        margin-top: @size-8;
-
-        > button:first-of-type {
-          margin-right: @size-10;
-        }
-
-        > button:last-of-type {
-          margin-left: @size-10;
-        }
-    }
-
+  @media @breakpoint-mobile-mid {
     > button {
-      margin-top: @size-16;
-      margin-bottom: @size-4;
+      width: 100%;
     }
-
-    &.Scalar {
-	    > div:nth-of-type(2) {
-	    	margin-top: @size-16;
-	    	max-width: 340px;
-	    }
-    }
-
-    @media @breakpoint-mobile-mid {
-    	> button {
-    		width: 100%;
-    	}
-	}
+  }
 }
 
 .ReportingBondsView {
-	> span {
-		.text-14-medium;
+  > span {
+    .text-14-medium;
 
-		color: @color-primary-text;
-		margin-bottom: @size-12;
-		display: flex;
-	}
+    color: @color-primary-text;
+    margin-bottom: @size-12;
+    display: flex;
+  }
 
   &.InitialReport {
     > div:last-of-type {
@@ -522,39 +516,39 @@ div.ReportingSubheaders {
     }
   }
 
-	> div:nth-of-type(3) {
-		margin-top: @size-16;
-	}
+  > div:nth-of-type(3) {
+    margin-top: @size-16;
+  }
 
-	> button {
-		margin-top: @size-16;
-	}
+  > button {
+    margin-top: @size-16;
+  }
 
-	&.Scalar {
-		> div:first-of-type {
-			margin-bottom: @size-20;
-		}
+  &.Scalar {
+    > div:first-of-type {
+      margin-bottom: @size-20;
+    }
 
-		> div:nth-of-type(3) {
-			margin-top: 0;
-		}
+    > div:nth-of-type(3) {
+      margin-top: 0;
+    }
 
-		> div:nth-of-type(4) {
-			margin-top: @size-16;
-		}
+    > div:nth-of-type(4) {
+      margin-top: @size-16;
+    }
   }
 
   &.MigrateRep {
-		> div:first-of-type {
-			margin-bottom: @size-20;
-		}
+    > div:first-of-type {
+      margin-bottom: @size-20;
+    }
 
-		> div:nth-of-type(3) {
-			margin-top: 0;
-		}
+    > div:nth-of-type(3) {
+      margin-top: 0;
+    }
 
-		> div:nth-of-type(4) {
-			margin-top: @size-16;
+    > div:nth-of-type(4) {
+      margin-top: @size-16;
     }
   }
 }

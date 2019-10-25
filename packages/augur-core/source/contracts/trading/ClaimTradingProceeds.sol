@@ -57,9 +57,9 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             _market.finalize();
         }
         uint256[] memory _outcomeFees = new uint256[](8);
-        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
-            IShareToken _shareToken = _market.getShareToken(_outcome);
-            uint256 _numberOfShares = _shareToken.balanceOf(_shareHolder);
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
+        for (uint256 _outcome = 0; _outcome < _shareTokens.length; ++_outcome) {
+            uint256 _numberOfShares = _shareTokens[_outcome].balanceOf(_shareHolder);
 
             if (_numberOfShares > 0) {
                 uint256 _proceeds;
@@ -69,8 +69,8 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
                 (_proceeds, _shareHolderShare, _creatorShare, _reporterShare) = divideUpWinnings(_market, _outcome, _numberOfShares);
 
                 // always destroy shares as it gives a minor gas refund and is good for the network
-                _shareToken.destroyShares(_shareHolder, _numberOfShares);
-                logTradingProceedsClaimed(_market, _outcome, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare.add(_reporterShare));
+                _shareTokens[_outcome].destroyShares(_shareHolder, _numberOfShares);
+                logTradingProceedsClaimed(_market, _outcome, address(_shareTokens[_outcome]), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare.add(_reporterShare));
 
                 if (_proceeds > 0) {
                     _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));

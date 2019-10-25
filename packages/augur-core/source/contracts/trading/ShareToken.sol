@@ -20,6 +20,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     string constant public symbol = "SHARE";
 
     IMarket private market;
+    IUniverse private universe;
     uint256 private outcome;
 
     IAugur public augur;
@@ -30,28 +31,37 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     address public claimTradingProceeds;
     IProfitLoss public profitLoss;
 
-    bool private shouldUpdatePL;
-
-    modifier doesNotUpdatePL() {
-        shouldUpdatePL = false;
-        _;
-        shouldUpdatePL = true;
-    }
+    mapping(address => bool) private doesNotUpdatePnl;
 
     function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external beforeInitialized {
         endInitialization();
         market = _market;
+        universe = _market.getUniverse();
         outcome = _outcome;
         augur = _augur;
-        shouldUpdatePL = true;
-        createOrder = _augur.lookup("CreateOrder");
-        fillOrder = _augur.lookup("FillOrder");
-        cancelOrder = _augur.lookup("CancelOrder");
+
+        address _createOrder = _augur.lookup("CreateOrder");
+        address _fillOrder = _augur.lookup("FillOrder");
+        address _cancelOrder = _augur.lookup("CancelOrder");
+
+        doesNotUpdatePnl[_createOrder] = true;
+        doesNotUpdatePnl[_fillOrder] = true;
+        doesNotUpdatePnl[_cancelOrder] = true;
+
+        createOrder = _createOrder;
+        fillOrder = _fillOrder;
+        cancelOrder = _cancelOrder;
+
         completeSets = _augur.lookup("CompleteSets");
         claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+    }
+
+    function setUniverse(IUniverse _universe) external {
+        require(msg.sender == address(market));
+        universe = _universe;
     }
 
     function createShares(address _owner, uint256 _fxpValue) external returns(bool) {
@@ -66,18 +76,18 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         return true;
     }
 
-    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == createOrder);
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == fillOrder);
         // We do not call ERC777 hooks here as it would allow a malicious order creator to halt trading
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
+    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(msg.sender == cancelOrder);
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
@@ -101,17 +111,17 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {
-        if (shouldUpdatePL) {
-            profitLoss.recordExternalTransfer(_from, _to, _value);
+        if (!doesNotUpdatePnl[msg.sender]) {
+            profitLoss.recordExternalTransfer(universe, market, outcome, _from, _to, _value);
         }
-        augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value, balances[_from], balances[_to], outcome);
+        augur.logShareTokensTransferred(universe, market, _from, _to, _value, balances[_from], balances[_to], outcome);
     }
 
     function onMint(address _target, uint256 _amount) internal {
-        augur.logShareTokensMinted(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
+        augur.logShareTokensMinted(universe, market, _target, _amount, totalSupply(), balances[_target], outcome);
     }
 
     function onBurn(address _target, uint256 _amount) internal {
-        augur.logShareTokensBurned(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
+        augur.logShareTokensBurned(universe, market, _target, _amount, totalSupply(), balances[_target], outcome);
     }
 }
