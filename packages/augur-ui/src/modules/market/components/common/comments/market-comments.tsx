@@ -43,6 +43,7 @@ export const MarketComments = (props: MarketCommentsProps) => {
         data-href={fbCommentsUrl}
         data-width='100%'
         data-numposts={numPosts.toString()}
+        data-order-by='social' // social is seen as "Top" in the select input
       />
     </section>
   );
