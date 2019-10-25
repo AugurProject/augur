@@ -1017,7 +1017,14 @@ async function getMarketsInfo(
   const orderFilledLogsByMarket = _.groupBy(orderFilledLogs, "market");
 
   return _.map(markets, (marketData) => {
-    const orderFilledLogs = orderFilledLogsByMarket[marketData.market] || [];
+    const orderFilledLogs = (orderFilledLogsByMarket[marketData.market] || []).sort((a, b) => {
+      // Same block, need to sort by logIndex.
+      if(a.blockNumber === b.blockNumber) {
+        return b.logIndex - a.logIndex;
+      }
+
+      return b.blockNumber - a.blockNumber;
+    });
 
     const minPrice = new BigNumber(marketData.prices[0]);
     const maxPrice = new BigNumber(marketData.prices[1]);
