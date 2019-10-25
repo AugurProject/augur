@@ -71,7 +71,7 @@ export const LIST_VALUES = {
       label: 'NFC Championship game',
     },
   ],
-  NCAA_BASKETBALL_EVENTS: [
+  NCAA_BASKETBALL_CONF: [
     {
       label: 'American East',
       value: 'American East',
@@ -581,6 +581,24 @@ export const LIST_VALUES = {
     {
       value: 'Most Improved player',
       label: 'Most Improved player',
+    },
+  ],
+  NCAA_BASKETBALL_EVENTS: [
+    {
+      value: 'NCAA Tournament',
+      label: 'NCAA Tournament',
+    },
+    {
+      value: 'Sweet 16',
+      label: 'Sweet 16',
+    },
+    {
+      value: 'Elite 8',
+      label: 'Elite 8',
+    },
+    {
+      value: 'Final Four',
+      label: 'Final Four',
     },
   ],
   NCAA_BASKETBALL_AWARD: [
