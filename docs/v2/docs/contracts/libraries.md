@@ -38,6 +38,65 @@ title: Libraries
 
 
 
+### `ERC165`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC165.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#ERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li><li><a href="#ERC165._registerInterface(bytes4)"><code class="function-signature">_registerInterface(bytes4 interfaceId)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC165.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC165.supportsInterface(bytes4)"></a><code class="function-signature">supportsInterface(bytes4 interfaceId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+See {IERC165-supportsInterface}.
+
+Time complexity O(1), guaranteed to always use less than 30 000 gas.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC165._registerInterface(bytes4)"></a><code class="function-signature">_registerInterface(bytes4 interfaceId)</code><span class="function-visibility">internal</span></h4>
+
+Registers the contract as an implementer of the interface defined by
+`interfaceId`. Support of the actual ERC165 interface is automatic and
+registering its interface id is not required.
+
+See {IERC165-supportsInterface}.
+
+Requirements:
+
+- `interfaceId` cannot be the ERC165 invalid interface (`0xffffffff`).
+
+
+
+
+
+### `IERC165`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC165.supportsInterface(bytes4)"></a><code class="function-signature">supportsInterface(bytes4 interfaceId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+Returns true if this contract implements the interface defined by
+`interfaceId`. See the corresponding
+https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
+to learn more about how these ids are created.
+
+This function call must use less than 30 000 gas.
+
+
+
+
+
 ### `ERC1820Implementer`
 
 
@@ -57,8 +116,8 @@ title: Libraries
 Declares the contract as willing to be an implementer of
 `interfaceHash` for `account`.
 
-See [`IERC1820Registry.setInterfaceImplementer`](trading#IERC1820Registry.setInterfaceImplementer(address,bytes32,address)) and
-[`IERC1820Registry.interfaceHash`](trading#IERC1820Registry.interfaceHash(string)).
+See [`IERC1820Registry.setInterfaceImplementer`](reporting#IERC1820Registry.setInterfaceImplementer(address,bytes32,address)) and
+[`IERC1820Registry.interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)).
 
 
 
@@ -77,7 +136,7 @@ See [`IERC1820Registry.setInterfaceImplementer`](trading#IERC1820Registry.setInt
 Returns a special value (`ERC1820_ACCEPT_MAGIC`) if this contract
 implements `interfaceHash` for `account`.
 
-See [`IERC1820Registry.setInterfaceImplementer`](trading#IERC1820Registry.setInterfaceImplementer(address,bytes32,address)).
+See [`IERC1820Registry.setInterfaceImplementer`](reporting#IERC1820Registry.setInterfaceImplementer(address,bytes32,address)).
 
 
 
@@ -99,7 +158,7 @@ account is able to set interface implementers for it.
 By default, each account is its own manager. Passing a value of `0x0` in
 `newManager` will reset the manager to this initial state.
 
-Emits a [`ManagerChanged`](trading#IERC1820Registry.ManagerChanged(address,address)) event.
+Emits a [`ManagerChanged`](reporting#IERC1820Registry.ManagerChanged(address,address)) event.
 
 Requirements:
 
@@ -111,26 +170,26 @@ Requirements:
 
 Returns the manager for `account`.
 
-See [`setManager`](trading#IERC1820Registry.setManager(address,address)).
+See [`setManager`](reporting#IERC1820Registry.setManager(address,address)).
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="IERC1820Registry.setInterfaceImplementer(address,bytes32,address)"></a><code class="function-signature">setInterfaceImplementer(address account, bytes32 interfaceHash, address implementer)</code><span class="function-visibility">external</span></h4>
 
 Sets the `implementer` contract as `account`&#x27;s implementer for
-[`interfaceHash`](trading#IERC1820Registry.interfaceHash(string)).
+[`interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)).
 
 `account` being the zero address is an alias for the caller&#x27;s address.
 The zero address can also be used in `implementer` to remove an old one.
 
-See [`interfaceHash`](trading#IERC1820Registry.interfaceHash(string)) to learn how these are created.
+See [`interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)) to learn how these are created.
 
-Emits an [`InterfaceImplementerSet`](trading#IERC1820Registry.InterfaceImplementerSet(address,bytes32,address)) event.
+Emits an [`InterfaceImplementerSet`](reporting#IERC1820Registry.InterfaceImplementerSet(address,bytes32,address)) event.
 
 Requirements:
 
 - the caller must be the current manager for `account`.
-- [`interfaceHash`](trading#IERC1820Registry.interfaceHash(string)) must not be an `IERC165` interface id (i.e. it must not
+- [`interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)) must not be an [`IERC165`](reporting#ierc165) interface id (i.e. it must not
 end in 28 zeroes).
 - `implementer` must implement [`IERC1820Implementer`](#ierc1820implementer) and return true when
 queried for support, unless `implementer` is the caller. See
@@ -140,10 +199,10 @@ queried for support, unless `implementer` is the caller. See
 
 <h4><a class="anchor" aria-hidden="true" id="IERC1820Registry.getInterfaceImplementer(address,bytes32)"></a><code class="function-signature">getInterfaceImplementer(address account, bytes32 interfaceHash) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
-Returns the implementer of [`interfaceHash`](trading#IERC1820Registry.interfaceHash(string)) for `account`. If no such
+Returns the implementer of [`interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)) for `account`. If no such
 implementer is registered, returns the zero address.
 
-If [`interfaceHash`](trading#IERC1820Registry.interfaceHash(string)) is an `IERC165` interface id (i.e. it ends with 28
+If [`interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)) is an [`IERC165`](reporting#ierc165) interface id (i.e. it ends with 28
 zeroes), `account` will be queried for support of it.
 
 `account` being the zero address is an alias for the caller&#x27;s address.
