@@ -38,8 +38,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2]`,
-            example: `Will Tiger Woods win the 2020 PGA Championship`,
+            question: `Will [0] win the [1] [2]?`,
+            example: `Will Tiger Woods win the 2020 PGA Championship?`,
             inputs: [
               {
                 id: 0,
@@ -69,8 +69,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] make the cut at the [1] [2]`,
-            example: `Will Tiger Woods make the cut at the 2020 PGA Championship`,
+            question: `Will [0] make the cut at the [1] [2]?`,
+            example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
             inputs: [
               {
                 id: 0,
@@ -100,8 +100,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which golfer will win the [0] [1]`,
-            example: `Which golfer will win the 2020 PGA Championship`,
+            question: `Which golfer will win the [0] [1]?`,
+            example: `Which golfer will win the 2020 PGA Championship?`,
             inputs: [
               {
                 id: 0,
@@ -129,8 +129,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
-            example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+            example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -152,8 +152,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]`,
-            example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
+            example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -188,8 +188,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will the [0] win the [1] Stanley Cup`,
-            example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup`,
+            question: `Will the [0] win the [1] Stanley Cup?`,
+            example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup?`,
             inputs: [
               {
                 id: 0,
@@ -207,8 +207,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
-            example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -244,8 +244,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-            example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -294,8 +294,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which NHL team will win the [0] Stanley Cup`,
-            example: `Which NHL team will win the 2019-2020 Stanley Cup`,
+            question: `Which NHL team will win the [0] Stanley Cup?`,
+            example: `Which NHL team will win the 2019-2020 Stanley Cup?`,
             inputs: [
               {
                 id: 0,
@@ -313,8 +313,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which NHL player will win the [0] [1] award`,
-            example: `Which NHL player will win the 2019-2020 Calder Trophy`,
+            question: `Which NHL player will win the [0] [1]?`,
+            example: `Which NHL player will win the 2019-2020 Calder Trophy?`,
             inputs: [
               {
                 id: 0,
@@ -338,8 +338,8 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `Total number of wins the [0] will finish [1] regular season with`,
-            example: `Total number of wins the LA Kings will finish 2019-2020 regular season with`,
+            question: `Total number of wins the [0] will finish [1] regular season with?`,
+            example: `Total number of wins the LA Kings will finish 2019-2020 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
             inputs: [
@@ -369,8 +369,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2]`,
-            example: `Will American Pharoah win the 2020 Triple Crown`,
+            question: `Will [0] win the [1] [2]?`,
+            example: `Will American Pharoah win the 2020 Triple Crown?`,
             inputs: [
               {
                 id: 0,
@@ -400,8 +400,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which horse will win the [0] [1]`,
-            example: `Which horse will win the 2020 Kentucky Derby`,
+            question: `Which horse will win the [0] [1]?`,
+            example: `Which horse will win the 2020 Kentucky Derby?`,
             inputs: [
               {
                 id: 0,
@@ -429,8 +429,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2]`,
-            example: `Will Roger Federer win the 2020 Wimbledon`,
+            question: `Will [0] win the [1] [2]?`,
+            example: `Will Roger Federer win the 2020 Wimbledon?`,
             inputs: [
               {
                 id: 0,
@@ -460,8 +460,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which tennis player will win the [0] [1]`,
-            example: `Which tennis player will win the 2020 Australian Open`,
+            question: `Which tennis player will win the [0] [1]?`,
+            example: `Which tennis player will win the 2020 Australian Open?`,
             inputs: [
               {
                 id: 0,
@@ -491,8 +491,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] [1] Match play winner: [2] vs [3]`,
-            example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal`,
+            question: `[0] [1] Match play winner: [2] vs [3]?`,
+            example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal?`,
             inputs: [
               {
                 id: 0,
@@ -542,8 +542,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
-            example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -586,8 +586,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-            example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -652,8 +652,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
-                example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+                example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -674,46 +674,21 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
-                example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Team A`,
-                    values: LIST_VALUES.NBA_TEAMS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Team B`,
-                    values: LIST_VALUES.NBA_TEAMS,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATETIME,
-                    placeholder: `Date time`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
-                },
-              },
-              {
-                marketType: YES_NO,
-                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
-                example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
+                example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -741,49 +716,61 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] have [1] or more regular season wins in [2]`,
-                example: `Will the NY Knicks have 50 or more regular season wins in 2019-2020`,
+                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
+                example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Team`,
+                    placeholder: `Team A`,
                     values: LIST_VALUES.NBA_TEAMS,
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win the [1] NBA Championship`,
-                example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
+                question: `Will the [0] win the [1] NBA Championship?`,
+                example: `Will the Golden State Warriors win the 2019-20 NBA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -802,8 +789,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]`,
-                example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award`,
+                question: `Will [0] win the [1] [2] award?`,
+                example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -820,59 +807,58 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Award`,
-                    values: LIST_VALUES.BASKETBALL_AWARD,
+                    values: LIST_VALUES.NBA_BASKETBALL_AWARD,
                   },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
-                example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NBA_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NBA_TEAMS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.DATETIME,
                     placeholder: `Date time`,
                   },
-                  {
-                    id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
-                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                      text: `Includes Regulation and Overtime`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-                example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NBA_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NBA_TEAMS,
                   },
                   {
                     id: 2,
@@ -897,14 +883,13 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }
-                  ],
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NBA team will win the [0] [1]`,
-                example: `Which NBA team will win the 2019-2020 Western Conference Finals`,
+                question: `Which NBA team will win the [0] [1]?`,
+                example: `Which NBA team will win the 2019-2020 Western Conference Finals?`,
                 inputs: [
                   {
                     id: 0,
@@ -924,79 +909,41 @@ export const TEMPLATES = {
                     placeholder: `Other (Field)`,
                   },
                 ],
-                resolutionRules: {},
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Which college basketball team will win the [0] [1] [2] tournament`,
-                example: `Which college basketball team will win the men's 2020 ACC tournament`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's/Women's`,
-                    values: LIST_VALUES.MENS_WOMENS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Conference`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other (Field)`,
-                  },
-                ],
                 resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `winner will be determined by the team that wins their conference tournament championship game`,
-                    },
-                  ],
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which [0] player will win the [1] [2] award`,
-                example: `Which NBA player will win the 2019-2020 Most Valuable Player award`,
+                question: `Which NBA player will win the [0] [1] award?`,
+                example: `Which NBA player will win the 2019-2020 Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `League`,
-                    values: LIST_VALUES.BASKETBALL_LEAGUE,
-                  },
-                  {
-                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
-                    id: 2,
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Award`,
-                    values: LIST_VALUES.BASKETBALL_AWARD,
+                    values: LIST_VALUES.NBA_BASKETBALL_AWARD,
                   },
                   {
-                    id: 3,
+                    id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which Player will have the most [0] at the end of the the [1] regular season`,
-                example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season`,
+                question: `Which Player will have the most [0] at the end of the the [1] regular season?`,
+                example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season?`,
                 inputs: [
                   {
                     id: 0,
@@ -1016,12 +963,14 @@ export const TEMPLATES = {
                     placeholder: `Other (Field)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                },
               },
               {
                 marketType: SCALAR,
-                question: `Total number of wins [0] will finish [1] regular season with`,
-                example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
+                question: `Total number of wins [0] will finish [1] regular season with?`,
+                example: `Total number of wins NY Knicks will finish 2019-20 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [
@@ -1046,8 +995,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
-                example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `Will [0] win vs [1]; [2] basketball, Estimated schedule start time: [3]?`,
+                example: `Will Duke win vs Kentucky; Men's baskeball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1061,18 +1010,32 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.DATETIME,
                     placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO' `,
+                    },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
-                example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `Will [0] win vs [1] by [2] or more points, [3] basketball, Estimated schedule start time: [4]?`,
+                example: `Will Duke Blue Devils win vs Kentucky Wildcats by 3 or more points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1092,18 +1055,32 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 4,
                     type: TemplateInputType.DATETIME,
                     placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO' `,
+                    },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
-                example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `Will [0] & [1] score [2] or more combined points; [3] basketball, Estimated schedule start time: [4]?`,
+                example: `Will UNC & Arizona score 142 or more combined points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1123,6 +1100,12 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 4,
                     type: TemplateInputType.DATETIME,
                     placeholder: `Date time`,
                   },
@@ -1138,83 +1121,64 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] have [1] or more regular season wins in [2]`,
-                example: `Will the NY Knicks have 50 or more regular season wins in 2019-2020`,
+                question: `Will [0] win the [1] NCAA [2] National Championship?`,
+                example: `Will Villanova win the 2020 NCAA Men's National Championship?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.TEXT,
                     placeholder: `Team`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: YES_NO,
-                question: `Will the [0] win the [1] NBA Championship`,
-                example: `Will the Golden State Warriors win the 2019-20 NBA Championship`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                ],
-                resolutionRules: {},
-              },
-              {
-                marketType: YES_NO,
-                question: `Will [0] win the [1] [2]`,
-                example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Name`,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Award`,
-                    values: LIST_VALUES.BASKETBALL_AWARD,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `Will [0] make the [1] [2] [3]?`,
+                example: `Will USC make the 2020 Men's Final Four?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_EVENTS,
                   },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
-                example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Which team will win: [0] vs [1], [2] basketball, Estimated schedule start time: [3]?`,
+                example: `Which Team will win: Duke vs Kentucky, Men's basketball, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1228,53 +1192,55 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DATETIME,
-                    placeholder: `Date time`,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                      text: `Includes Regulation and Overtime`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-                example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0] basketball; [1] vs [2]: Total Points scored; Over/Under [3].5, Estimated schedule start time: [4]?`,
+                example: `Men's basketball; Duke Blue Devils vs Arizona Wildcats: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
+                    placeholder: `Team A`,
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.DATETIME,
                     placeholder: `Date time`,
-                  },
-                  {
-                    id: 4,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
                   },
                   {
                     id: 5,
@@ -1297,33 +1263,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NBA team will win the [0] [1]`,
-                example: `Which NBA team will win the 2019-2020 Western Conference Finals`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Event`,
-                    values: LIST_VALUES.BASKETBALL_EVENT,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other (Field)`,
-                  },
-                ],
-                resolutionRules: {},
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Which college basketball team will win the [0] [1] [2] tournament`,
-                example: `Which college basketball team will win the men's 2020 ACC tournament`,
+                question: `Which college basketball team will win the [0] [1] [2] tournament?`,
+                example: `Which college basketball team will win the men's 2020 ACC tournament?`,
                 inputs: [
                   {
                     id: 0,
@@ -1351,87 +1292,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `winner will be determined by the team that wins their conference tournament championship game`,
+                      text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
                   ],
                 },
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Which [0] player will win the [1] [2] award`,
-                example: `Which NBA player will win the 2019-2020 Most Valuable Player award`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `League`,
-                    values: LIST_VALUES.BASKETBALL_LEAGUE,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Award`,
-                    values: LIST_VALUES.BASKETBALL_AWARD,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other (Field)`,
-                  },
-                ],
-                resolutionRules: {},
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Which Player will have the most [0] at the end of the the [1] regular season`,
-                example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Action`,
-                    values: LIST_VALUES.BASKETBALL_ACTION,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other (Field)`,
-                  },
-                ],
-                resolutionRules: {},
-              },
-              {
-                marketType: SCALAR,
-                question: `Total number of wins [0] will finish [1] regular season with`,
-                example: `Total number of wins NY Knicks will finish 2019-20 regular season with`,
-                denomination: 'wins',
-                tickSize: 1,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                ],
-                resolutionRules: {},
               },
             ],
           },
@@ -1441,8 +1305,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] win the [1] [2]`,
-            example: `Will the NY Yankees win the 2020 World Series`,
+            question: `Will the [0] win the [1] [2]?`,
+            example: `Will the NY Yankees win the 2020 World Series?`,
             inputs: [
               {
                 id: 0,
@@ -1466,8 +1330,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]`,
-            example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -1501,8 +1365,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which MLB team will win the [0] [1]`,
-            example: `Which MLB team will win the 2020 World Series`,
+            question: `Which MLB team will win the [0] [1]?`,
+            example: `Which MLB team will win the 2020 World Series?`,
             inputs: [
               {
                 id: 0,
@@ -1526,8 +1390,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -1577,8 +1441,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which player will win the [0] [1]`,
-            example: `Which Player will win the 2019 American League Cy Young award`,
+            question: `Which player will win the [0] [1]?`,
+            example: `Which Player will win the 2019 American League Cy Young award?`,
             inputs: [
               {
                 id: 0,
@@ -1602,8 +1466,8 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `Total number of wins the [0] will finish the [1] regular season with`,
-            example: `Total number of wins the LA Dodgers will finish the 2019 regular season with`,
+            question: `Total number of wins the [0] will finish the [1] regular season with?`,
+            example: `Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
             inputs: [
@@ -1629,8 +1493,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
-                example: `Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+                example: `Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1656,13 +1520,16 @@ export const TEMPLATES = {
                     {
                       text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
                     },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
-                example: `Will the NY Giants win vs. the New England Patriots by 3 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
+                example: `Will the NY Giants win vs. the New England Patriots by 3 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1689,13 +1556,21 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                  ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
-                example: `Will the NY Giants & the New England Patriots score 44 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
+                example: `Will the NY Giants & the New England Patriots score 44 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1722,13 +1597,21 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                  ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] have [1] or more regular season wins in [2]`,
-                example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
+                question: `Will the [0] have [1] or more regular season wins in [2]?`,
+                example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -1759,8 +1642,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win SuperBowl [1]`,
-                example: `Will the NY Giants win Superbowl LIV`,
+                question: `Will the [0] win SuperBowl [1]?`,
+                example: `Will the NY Giants win Superbowl LIV?`,
                 inputs: [
                   {
                     id: 0,
@@ -1778,8 +1661,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2] award`,
-                example: `Will Patrick Mahomes win the 2019-20 MVP award`,
+                question: `Will [0] win the [1] [2] award?`,
+                example: `Will Patrick Mahomes win the 2019-20 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -1789,7 +1672,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Years`,
+                    placeholder: `Year/Year`,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -1803,18 +1686,20 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]`,
-                example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]?`,
+                example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 2,
@@ -1824,32 +1709,37 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `Tie/No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]`,
-                example: `Which College Football Team will win: Alabama vs Michigan Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]?`,
+                example: `Which NFL Team will win: Seattle Seahawks vs Dallas Cowboys Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 2,
@@ -1859,32 +1749,37 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `Tie/No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-                example: `Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `NY Giants vs Dallas Cowboys: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 2,
@@ -1915,16 +1810,20 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL team will win the [0] [1]`,
-                example: `Which NFL team will win the 2020 AFC Championship game`,
+                question: `Which NFL team will win the [0] [1]?`,
+                example: `Which NFL team will win the 2020 AFC Championship game?`,
                 inputs: [
                   {
                     id: 0,
@@ -1938,13 +1837,18 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     values: LIST_VALUES.FOOTBALL_EVENT,
                   },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college football player will win the [0] Heisman Trophy`,
-                example: `Which college football player will win the 2020 Heisman Trophy`,
+                question: `Which NFL player will win the [0] [1] award?`,
+                example: `Which NFL player will win the 2020 Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -1952,13 +1856,19 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
                   },
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Award`,
+                    values: LIST_VALUES.FOOTBALL_AWARDS,
+                  },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: SCALAR,
-                question: `Total number of wins [0] will finish [1] regular season with`,
-                example: `Total number of wins NY Giants will finish 2019 regular season with`,
+                question: `Total number of wins [0] will finish [1] regular season with?`,
+                example: `Total number of wins NY Giants will finish 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [
@@ -1989,8 +1899,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]`,
-                example: `Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+                example: `Will Alabama Crimson Tide win vs. Florida Gators, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2010,53 +1920,20 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]`,
-                example: `Will the NY Giants win vs. the New England Patriots by 3 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATETIME,
-                    placeholder: `Date time`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: YES_NO,
-                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]`,
-                example: `Will the NY Giants & the New England Patriots score 44 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
+                example: `Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2082,91 +1959,59 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] have [1] or more regular season wins in [2]`,
-                example: `Will the Dallas Cowboys have 9 or more regular season wins in 2019`,
+                question: `Will [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
+                example: `Will USC & UCLA score 51 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.TEXT,
-                    placeholder: `Team`,
+                    placeholder: `Team A`,
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
-                    values: LIST_VALUES.YEARS,
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
-              },
-              {
-                marketType: YES_NO,
-                question: `Will the [0] win SuperBowl [1]`,
-                example: `Will the NY Giants win Superbowl LIV`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Roman Num`,
-                  },
-                ],
-                resolutionRules: {},
-              },
-              {
-                marketType: YES_NO,
-                question: `Will [0] win the [1] [2] award`,
-                example: `Will Patrick Mahones win the 2019-20 MVP award`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Player`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Years`,
-                    values: LIST_VALUES.YEAR_RANGE,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Award`,
-                    values: LIST_VALUES.FOOTBALL_AWARDS,
-                  },
-                ],
-                resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]`,
-                example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]?`,
+                example: `Which College Football Team will win:  Alabama vs Michigan, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2191,52 +2036,20 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]`,
-                example: `Which College Football Team will win: Alabama vs Michigan Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team A`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team B`,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DATETIME,
-                    placeholder: `Date time`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game is not played or is NOT completed for any reason, or ends in a tie, the market should resolve as "No Winner".`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]`,
-                example: `Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0] vs [1]: Total points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2277,16 +2090,20 @@ export const TEMPLATES = {
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL team will win the [0] [1]`,
-                example: `Which NFL team will win the 2020 AFC Championship game`,
+                question: `Which team will win the [0] [1]: [2] vs [3]?`,
+                example: `Which team will win the 2020 Cotton Bowl: Tennessee Volunteers vs Miami Hurricanes?`,
                 inputs: [
                   {
                     id: 0,
@@ -2296,17 +2113,41 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Event`,
-                    values: LIST_VALUES.FOOTBALL_EVENT,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Game`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                  ],
+                },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college football player will win the [0] Heisman Trophy`,
-                example: `Which college football player will win the 2020 Heisman Trophy`,
+                question: `Which college football team will win [0] National Championship?`,
+                example: `Which college football team will win 2020 National Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -2314,13 +2155,47 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
                   },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
                 ],
                 resolutionRules: {},
               },
               {
+                marketType: CATEGORICAL,
+                question: `Which college football player will win the [0] Heisman Trophy?`,
+                example: `Which college football player will win the 2020 Heisman Trophy?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                  ],
+                },
+              },
+              {
                 marketType: SCALAR,
-                question: `Total number of wins [0] will finish [1] regular season with`,
-                example: `Total number of wins NY Giants will finish 2019 regular season with`,
+                question: `Total number of wins [0] will finish [1] regular season with?`,
+                example: `Total number of wins Michigan Wolverines will finish 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [
@@ -2336,7 +2211,13 @@ export const TEMPLATES = {
                     values: LIST_VALUES.YEARS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                  ],
+                },
               },
             ],
           },
@@ -2350,8 +2231,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] presidential election`,
-            example: `Will Donald Trump win the 2020 Presidential election`,
+            question: `Will [0] win the [1] presidential election?`,
+            example: `Will Donald Trump win the 2020 Presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -2369,8 +2250,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2] presidential nomination`,
-            example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination`,
+            question: `Will [0] win the [1] [2] presidential nomination?`,
+            example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination?`,
             inputs: [
               {
                 id: 0,
@@ -2394,8 +2275,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] run for [1] by [2]`,
-            example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
+            question: `Will [0] run for [1] by [2]?`,
+            example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -2420,8 +2301,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] be impeached by [1]`,
-            example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST`,
+            question: `Will [0] be impeached by [1]?`,
+            example: `Will Donald Trump be impeached by December 31, 2019 11:59 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -2440,8 +2321,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Who will win the [0] US presidential election`,
-            example: `Who will win the 2020 US presidential election`,
+            question: `Who will win the [0] US presidential election?`,
+            example: `Who will win the 2020 US presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -2454,8 +2335,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Who will be the [0] [1] [2] nominee`,
-            example: `Who will be the 2020 Republican Vice President nominee`,
+            question: `Who will be the [0] [1] [2] nominee?`,
+            example: `Who will be the 2020 Republican Vice President nominee?`,
             inputs: [
               {
                 id: 0,
@@ -2480,8 +2361,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which party will win [0] in the [1] Presidential election`,
-            example: `Which party will win Michigan in the 2020 Presidential election`,
+            question: `Which party will win [0] in the [1] Presidential election?`,
+            example: `Which party will win Michigan in the 2020 Presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -2504,8 +2385,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] be [1] of [2] on [3]`,
-            example: `Will Kim Jong Un be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+            question: `Will [0] be [1] of [2] on [3]?`,
+            example: `Will Kim Jong Un be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -2535,8 +2416,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] be impeached by [1]`,
-            example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST`,
+            question: `Will [0] be impeached by [1]?`,
+            example: `Will Benjamin Netanyahu be impeached be December 31, 2019 11:59 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -2561,8 +2442,8 @@ export const TEMPLATES = {
     templates: [
       {
         marketType: YES_NO,
-        question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]`,
-        example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020`,
+        question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]?`,
+        example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020?`,
         inputs: [
           {
             id: 0,
@@ -2596,8 +2477,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]`,
-        example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020`,
+        question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]?`,
+        example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
         inputs: [
           {
             id: 0,
@@ -2636,8 +2517,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will the [0] close on or above [1] [2] on [3]`,
-        example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019`,
+        question: `Will the [0] close on or above [1] [2] on [3]?`,
+        example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019?`,
         inputs: [
           {
             id: 0,
@@ -2666,8 +2547,8 @@ export const TEMPLATES = {
       },
       {
         marketType: SCALAR,
-        question: `What price will [0] close at in [1] on the [2] on [3]`,
-        example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019`,
+        question: `What price will [0] close at in [1] on the [2] on [3]?`,
+        example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019?`,
         denomination: '[Denomination]',
         inputs: [
           {
@@ -2696,8 +2577,8 @@ export const TEMPLATES = {
       },
       {
         marketType: SCALAR,
-        question: `What price will the [0] close at in [1] on [2]`,
-        example: `What Price will the S&P 500 close at in USD on December 31, 2019`,
+        question: `What price will the [0] close at in [1] on [2]?`,
+        example: `What Price will the S&P 500 close at in USD on December 31, 2019?`,
         denomination: '[Denomination]',
         inputs: [
           {
@@ -2725,8 +2606,8 @@ export const TEMPLATES = {
     templates: [
       {
         marketType: YES_NO,
-        question: `Will [0] host the [1] [2]`,
-        example: `Will Billy Crystal host the 2019 Academy Awards`,
+        question: `Will [0] host the [1] [2]?`,
+        example: `Will Billy Crystal host the 2019 Academy Awards?`,
         inputs: [
           {
             id: 0,
@@ -2757,8 +2638,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] win an award for [1] at the [2] [3]`,
-        example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards`,
+        question: `Will [0] win an award for [1] at the [2] [3]?`,
+        example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards?`,
         inputs: [
           {
             id: 0,
@@ -2787,8 +2668,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] win an award for [1] at the [2] [3]`,
-        example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards`,
+        question: `Will [0] win an award for [1] at the [2] [3]?`,
+        example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards?`,
         inputs: [
           {
             id: 0,
@@ -2817,8 +2698,8 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]`,
-        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US`,
+        question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]?`,
+        example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -2854,8 +2735,8 @@ export const TEMPLATES = {
       },
       {
         marketType: CATEGORICAL,
-        question: `Who will host the [0] [1]`,
-        example: `Who wll host the 2020 Emmy Awards`,
+        question: `Who will host the [0] [1]?`,
+        example: `Who wll host the 2020 Emmy Awards?`,
         inputs: [
           {
             id: 0,
@@ -2886,8 +2767,8 @@ export const TEMPLATES = {
       },
       {
         marketType: CATEGORICAL,
-        question: `Who will win for [0] in the [1] [2]`,
-        example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards`,
+        question: `Who will win for [0] in the [1] [2]?`,
+        example: `Who will win for Best Pop Vocal Album in the 2020 Grammy Awards?`,
         inputs: [
           {
             id: 0,
@@ -2919,8 +2800,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of BTC close on or above [0] USD on [1] on [2]`,
-                example: `Will the price of BTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                question: `Will the price of BTC close on or above [0] USD on [1] on [2]?`,
+                example: `Will the price of BTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -2944,8 +2825,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of BTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of BTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -2974,8 +2855,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will BTC close at in USD on [0] on [1]`,
-                example: `What price will BTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                question: `What price will BTC close at in USD on [0] on [1]?`,
+                example: `What price will BTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -2998,8 +2879,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of BTC close on or above [0] USDT on [1] on [2]`,
-                example: `Will the price of BTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019`,
+                question: `Will the price of BTC close on or above [0] USDT on [1] on [2]?`,
+                example: `Will the price of BTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3023,8 +2904,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of BTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of BTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3053,8 +2934,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will BTC close at in USDT on [0] on [1]`,
-                example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)`,
+                question: `What price will BTC close at in USDT on [0] on [1]?`,
+                example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3077,8 +2958,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of BTC close on or above [0] EUR on [1] on [2]`,
-                example: `Will the price of BTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                question: `Will the price of BTC close on or above [0] EUR on [1] on [2]?`,
+                example: `Will the price of BTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3102,8 +2983,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of BTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of BTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3132,8 +3013,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will BTC close at in EUR on [0] on [1]`,
-                example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                question: `What price will BTC close at in EUR on [0] on [1]?`,
+                example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3160,8 +3041,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of ETH close on or above [0] USD on [1] on [2]`,
-                example: `Will the price of ETH close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                question: `Will the price of ETH close on or above [0] USD on [1] on [2]?`,
+                example: `Will the price of ETH close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3185,8 +3066,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of ETH exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of ETH exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3215,8 +3096,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will ETH close at in USD on [0] on [1]`,
-                example: `What price will ETH close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                question: `What price will ETH close at in USD on [0] on [1]?`,
+                example: `What price will ETH close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3239,8 +3120,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of ETH close on or above [0] USDT on [1] on [2]`,
-                example: `Will the price of ETH close on or above $200 USDT on Binance (binance.com) on December 31, 2019`,
+                question: `Will the price of ETH close on or above [0] USDT on [1] on [2]?`,
+                example: `Will the price of ETH close on or above $200 USDT on Binance (binance.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3264,8 +3145,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of ETH exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of ETH exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3294,8 +3175,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will ETH close at in USDT on [0] on [1]`,
-                example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)`,
+                question: `What price will ETH close at in USDT on [0] on [1]?`,
+                example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3318,8 +3199,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of ETH close on or above [0] EUR on [1] on [2]`,
-                example: `Will the price of ETH close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                question: `Will the price of ETH close on or above [0] EUR on [1] on [2]?`,
+                example: `Will the price of ETH close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3343,8 +3224,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of ETH exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of ETH exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3373,8 +3254,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will ETH close at in EUR on [0] on [1]`,
-                example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                question: `What price will ETH close at in EUR on [0] on [1]?`,
+                example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3401,8 +3282,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of LTC close on or above [0] USD on [1] on [2]`,
-                example: `Will the price of LTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                question: `Will the price of LTC close on or above [0] USD on [1] on [2]?`,
+                example: `Will the price of LTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3426,8 +3307,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of LTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of LTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3456,8 +3337,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will LTC close at in USD on [0] on [1]`,
-                example: `What price will LTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                question: `What price will LTC close at in USD on [0] on [1]?`,
+                example: `What price will LTC close at in USD on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3480,8 +3361,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of LTC close on or above [0] USDT on [1] on [2]`,
-                example: `Will the price of LTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019`,
+                question: `Will the price of LTC close on or above [0] USDT on [1] on [2]?`,
+                example: `Will the price of LTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3505,8 +3386,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of LTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of LTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3535,8 +3416,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will LTC close at in USDT on [0] on [1]`,
-                example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)`,
+                question: `What price will LTC close at in USDT on [0] on [1]?`,
+                example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
@@ -3559,8 +3440,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the price of LTC close on or above [0] EUR on [1] on [2]`,
-                example: `Will the price of LTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019`,
+                question: `Will the price of LTC close on or above [0] EUR on [1] on [2]?`,
+                example: `Will the price of LTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3584,8 +3465,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]`,
-                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019`,
+                question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
+                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -3614,8 +3495,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `What price will LTC close at in EUR on [0] on [1]`,
-                example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)`,
+                question: `What price will LTC close at in EUR on [0] on [1]?`,
+                example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
                 denomination: 'USD',
                 inputs: [
                   {
