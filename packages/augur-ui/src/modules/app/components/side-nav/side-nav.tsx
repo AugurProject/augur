@@ -44,6 +44,7 @@ const SideNav = ({
       })}
     >
       <div>
+        {isLogged && <HelpResources />}
         <ConnectAccount />
       </div>
 
@@ -82,10 +83,7 @@ const SideNav = ({
               />
             </div>
             {isLogged && (
-              <>
-                <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
-                <HelpResources />
-              </>
+              <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
             )}
           </footer>
         </div>
