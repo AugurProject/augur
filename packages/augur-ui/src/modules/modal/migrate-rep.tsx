@@ -16,11 +16,12 @@ import { InfoIcon } from 'modules/common/icons';
 interface MigrateRepForm {
   closeAction: Function;
   loginAccount: LoginAccount;
+  convertV1ToV2: Function;
 }
 
 export class MigrateRep extends Component<MigrateRepForm, {}> {
   render() {
-    const { closeAction } = this.props;
+    const { closeAction, convertV1ToV2 } = this.props;
 
     return (
       <div className={Styles.MigrateRep}>
@@ -76,7 +77,7 @@ export class MigrateRep extends Component<MigrateRepForm, {}> {
           buttons={[
             {
               text: 'Convert',
-              action: () => null,
+              action: () => convertV1ToV2,
             },
             {
               text: 'Cancel',

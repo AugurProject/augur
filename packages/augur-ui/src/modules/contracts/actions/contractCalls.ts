@@ -92,6 +92,10 @@ export async function checkIsKnownUniverse(universeId: string) {
   return result;
 }
 
+export async function convertV1ToV2() {
+  return null;
+}
+
 export async function getCurrentBlock() {
   const Augur = augurSdk.get();
   const blockNumber = await Augur.provider.getBlockNumber();
