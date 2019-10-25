@@ -47,8 +47,6 @@ export class DisputeWindowFactory extends c.DisputeWindowFactory<BigNumber> {
 }
 export class InitialReporterFactory extends c.InitialReporterFactory<BigNumber> {
 }
-export class MapFactory extends c.MapFactory<BigNumber> {
-}
 export class MarketFactory extends c.MarketFactory<BigNumber> {
 }
 export class OICashFactory extends c.OICashFactory<BigNumber> {
@@ -62,8 +60,6 @@ export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFacto
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 }
 export class DelegationTarget extends c.DelegationTarget<BigNumber> {
-}
-export class Map extends c.Map<BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }
