@@ -142,7 +142,7 @@ export interface ProfitLossResult {
   total: string;
 }
 
-export class UserAccountDataResult {
+export interface UserAccountDataResult {
   userTradeHistory: MarketTradingHistory;
   marketTradeHistory: MarketTradingHistory;
   marketsInfo: MarketInfo[];
