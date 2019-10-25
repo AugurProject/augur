@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/libraries/token/ERC1155.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/libraries/ITyped.sol';
@@ -299,36 +299,22 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
     }
 
     /**
-     * @notice Claims winnings for multiple markets and for a particular shareholder
-     * @param _markets Array of markets to claim winnings for
-     * @param _shareHolder The account to claim winnings for
-     * @param _affiliateAddress An affiliate address to share market creator fees with
-     * @return Bool True
-     */
-    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder, address _affiliateAddress) external returns(bool) {
-        for (uint256 i=0; i < _markets.length; i++) {
-            claimTradingProceedsInternal(_markets[i], _shareHolder, _affiliateAddress);
-        }
-        return true;
-    }
-
-    /**
      * @notice Claims winnings for a market and for a particular shareholder
      * @param _market The market to claim winnings for
      * @param _shareHolder The account to claim winnings for
      * @param _affiliateAddress An affiliate address to share market creator fees with
      * @return Bool True
      */
-    function claimTradingProceeds(IMarket _market, address _shareHolder, address _affiliateAddress) external nonReentrant returns(bool) {
-        claimTradingProceedsInternal(_market, _shareHolder, _affiliateAddress);
+    function claimTradingProceeds(IMarket _market, address _shareHolder, address _affiliateAddress) external nonReentrant returns (uint256[] memory _outcomeFees) {
+        return claimTradingProceedsInternal(_market, _shareHolder, _affiliateAddress);
     }
 
-    function claimTradingProceedsInternal(IMarket _market, address _shareHolder, address _affiliateAddress) internal returns(bool) {
+    function claimTradingProceedsInternal(IMarket _market, address _shareHolder, address _affiliateAddress) internal returns (uint256[] memory _outcomeFees) {
         require(augur.isKnownMarket(_market));
         if (!_market.isFinalized()) {
             _market.finalize();
         }
-        uint256[] memory _outcomeFees = new uint256[](8);
+        _outcomeFees = new uint256[](8);
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
             uint256 _numberOfShares = balanceOfMarketOutcome(_market, _outcome, _shareHolder);
 
@@ -352,11 +338,8 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
             }
         }
 
-        profitLoss.recordClaim(_market, _shareHolder, _outcomeFees);
-
         _market.assertBalances();
-
-        return true;
+        return _outcomeFees;
     }
 
     function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare, address _affiliateAddress) private {
@@ -395,54 +378,6 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
     function calculateCreatorFee(IMarket _market, uint256 _amount) public view returns (uint256) {
         return _market.deriveMarketCreatorFeeAmount(_amount);
-    }
-
-    function trustedOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(msg.sender == createOrder);
-        marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
-    }
-
-    function trustedOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(msg.sender == createOrder);
-        marketOutcomesBatchTransfer(_market, _outcomes, _source, _destination, _attotokens);
-    }
-
-    function trustedFillOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(msg.sender == fillOrder);
-        marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
-    }
-
-    function trustedFillOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(msg.sender == fillOrder);
-        marketOutcomesBatchTransfer(_market, _outcomes, _source, _destination, _attotokens);
-    }
-
-    function trustedCancelOrderTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(msg.sender == cancelOrder);
-        marketOutcomeTransfer(_market, _outcome, _source, _destination, _attotokens);
-    }
-
-    function trustedCancelOrderBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(msg.sender == cancelOrder);
-        marketOutcomesBatchTransfer(_market, _outcomes, _source, _destination, _attotokens);
-    }
-
-    function marketOutcomeTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _attotokens) internal {
-        uint256 _tokenId = getTokenId(_market, _outcome);
-        // We do not call ERC1155 ERC165 hooks here as it would allow a malicious order creator to halt trading
-        return _internalTransferFrom(_source, _destination, _tokenId, _attotokens, bytes(""), false);
-    }
-
-    function marketOutcomesBatchTransfer(IMarket _market, uint256[] memory _outcomes, address _source, address _destination, uint256 _attotokens) internal {
-        uint256[] memory _tokenIds = new uint256[](_outcomes.length);
-        uint256[] memory _values = new uint256[](_outcomes.length);
-
-        for (uint256 _i = 0; _i < _outcomes.length; _i++) {
-            _tokenIds[_i] = getTokenId(_market, _outcomes[_i]);
-            _values[_i] = _attotokens;
-        }
-        // We do not call ERC1155 ERC165 hooks here as it may allow a malicious order creator to halt trading
-        return _internalBatchTransferFrom(_source, _destination, _tokenIds, _values, bytes(""), false);
     }
 
     function getTypeName() public view returns(bytes32) {
@@ -488,6 +423,13 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         bytes memory _tokenIdBytes = abi.encodePacked(_market, uint8(_outcome));
         assembly {
             _tokenId := mload(add(_tokenIdBytes, add(0x20, 0)))
+        }
+    }
+
+    function getTokenIds(IMarket _market, uint256[] memory _outcomes) public pure returns (uint256[] memory _tokenIds) {
+        _tokenIds = new uint256[](_outcomes.length);
+        for (uint256 _i = 0; _i < _outcomes.length; _i++) {
+            _tokenIds[_i] = getTokenId(_market, _outcomes[_i]);
         }
     }
 

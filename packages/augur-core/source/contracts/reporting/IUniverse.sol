@@ -5,7 +5,7 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 
 
 contract IUniverse {

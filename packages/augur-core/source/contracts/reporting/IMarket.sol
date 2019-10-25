@@ -2,10 +2,10 @@ pragma solidity 0.5.10;
 
 
 import 'ROOT/libraries/IOwnable.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IInitialReporter.sol';

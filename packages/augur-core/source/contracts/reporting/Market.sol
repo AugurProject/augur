@@ -8,7 +8,7 @@ import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/factories/InitialReporterFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';

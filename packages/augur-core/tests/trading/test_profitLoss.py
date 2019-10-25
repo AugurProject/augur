@@ -14,7 +14,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]
-    shareToken= contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.contracts['ShareToken']
+    augurTrading = contractsFixture.contracts['AugurTrading']
     test_data = [
         {
             "direction": SHORT,
@@ -73,8 +74,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     assert market.finalize()
 
     # Claim proceeds
-    shareToken.claimTradingProceeds(market.address, contractsFixture.accounts[1], nullAddress)
-    shareToken.claimTradingProceeds(market.address, contractsFixture.accounts[2], nullAddress)
+    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[1], nullAddress)
+    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[2], nullAddress)
 
     assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[1], YES) == 0
     assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[1], YES) == 0

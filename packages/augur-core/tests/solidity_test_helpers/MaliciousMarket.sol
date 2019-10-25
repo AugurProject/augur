@@ -2,8 +2,8 @@ pragma solidity 0.5.10;
 
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IUniverse.sol';
-import 'ROOT/trading/IShareToken.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/reporting/IShareToken.sol';
+import 'ROOT/ICash.sol';
 
 
 contract MaliciousMarket {

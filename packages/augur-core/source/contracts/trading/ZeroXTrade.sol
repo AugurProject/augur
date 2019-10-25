@@ -6,9 +6,10 @@ import "ROOT/libraries/ContractExists.sol";
 import "ROOT/libraries/token/IERC20.sol";
 import "ROOT/external/IExchange.sol";
 import "ROOT/trading/IFillOrder.sol";
-import "ROOT/trading/ICash.sol";
+import "ROOT/ICash.sol";
 import "ROOT/trading/Order.sol";
 import "ROOT/trading/IZeroXTrade.sol";
+import "ROOT/trading/IAugurTrading.sol";
 import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
@@ -67,11 +68,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     ICash public cash;
     IShareToken public shareToken;
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        fillOrder = IFillOrder(_augur.lookup("FillOrder"));
         cash = ICash(_augur.lookup("Cash"));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
+
+        fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(

@@ -3,7 +3,7 @@ pragma solidity 0.5.10;
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
-import 'ROOT/trading/IOICash.sol';
+import 'ROOT/reporting/IOICash.sol';
 
 
 /**

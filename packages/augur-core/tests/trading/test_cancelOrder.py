@@ -88,7 +88,6 @@ def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
     shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
     orders = contractsFixture.contracts['Orders']
 
     totalProceeds = fix('12', market.getNumTicks())

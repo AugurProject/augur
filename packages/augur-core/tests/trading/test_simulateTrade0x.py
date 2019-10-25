@@ -312,7 +312,7 @@ def simulate_then_trade(contractsFixture, market, outcome, orderDirection, order
 
     expectedSharesFilled = 0
     expectedNumFills = 0
-    orderEventLogs = contractsFixture.contracts["Augur"].getLogs("OrderEvent")
+    orderEventLogs = contractsFixture.contracts["AugurTrading"].getLogs("OrderEvent")
     for log in orderEventLogs:
         if log.args.eventType == 2: # Fill Event
             expectedSharesFilled += log.args.uint256Data[6]

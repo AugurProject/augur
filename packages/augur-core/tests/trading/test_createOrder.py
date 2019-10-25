@@ -32,8 +32,6 @@ def test_publicCreateOrder_ask(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
 
-    marketInitialCashBalance = universe.marketBalance(market.address)
-
     with BuyWithCash(cash, fix(1, 60), contractsFixture.accounts[0], "create order"):
         orderID = createOrder.publicCreateOrder(ASK, fix(1), 40, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), nullAddress)
 
@@ -44,7 +42,7 @@ def test_publicCreateOrder_ask(contractsFixture, cash, market, universe):
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == bytearray(32)
     assert orders.getWorseOrderId(orderID) == bytearray(32)
-    assert universe.marketBalance(market.address) == fix(1, 60) + marketInitialCashBalance
+    assert orders.getTotalEscrowed(market.address) == fix(1, 60)
 
 def test_publicCreateOrder_List_Logic(contractsFixture, cash, market):
     orders = contractsFixture.contracts['Orders']
@@ -89,8 +87,6 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
     outcome = 0
     tradeGroupID = longTo32Bytes(42)
 
-    marketInitialCash = universe.marketBalance(market.address)
-
     orderID = None
 
     orderCreatedEventLog = {
@@ -110,7 +106,7 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
     assert orders.getOrderMoneyEscrowed(orderID) == fix(1, 40)
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert cash.balanceOf(contractsFixture.accounts[1]) == 0
-    assert universe.marketBalance(market.address) - marketInitialCash == 40 * 10**18
+    assert orders.getTotalEscrowed(market.address) == 40 * 10**18
 
 def test_createOrder_failure(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']

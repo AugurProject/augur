@@ -225,9 +225,10 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     augur = contractsFixture.contracts['Augur']
     shareToken = contractsFixture.contracts['ShareToken']
+    augurTrading = contractsFixture.contracts['AugurTrading']
 
     maliciousTrader = contractsFixture.upload('solidity_test_helpers/MaliciousTrader.sol', 'maliciousTrader')
-    maliciousTrader.approveAugur(cash.address, augur.address)
+    maliciousTrader.doApprovals(cash.address, augur.address, augurTrading.address)
 
     account = contractsFixture.accounts[0]
 

@@ -11,8 +11,9 @@ pragma solidity 0.5.10;
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/trading/IOrders.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 
 
@@ -31,6 +32,8 @@ library Order {
     struct Data {
         // Contracts
         IMarket market;
+        IAugur augur;
+        IAugurTrading augurTrading;
         IERC20 kycToken;
         IShareToken shareToken;
         ICash cash;
@@ -49,7 +52,7 @@ library Order {
     }
 
     // No validation is needed here as it is simply a library function for organizing data
-    function create(address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, IERC20 _kycToken) internal view returns (Data memory) {
+    function create(IAugur _augur, IAugurTrading _augurTrading, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, IERC20 _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes(), "Order.create: Outcome is not within market range");
         require(_price != 0, "Order.create: Price may not be 0");
         require(_price < _market.getNumTicks(), "Order.create: Price is outside of market range");
@@ -60,6 +63,8 @@ library Order {
 
         return Data({
             market: _market,
+            augur: _augur,
+            augurTrading: _augurTrading,
             kycToken: _kycToken,
             shareToken: _shareToken,
             cash: ICash(_augur.lookup("Cash")),
@@ -133,10 +138,11 @@ library Order {
         require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForBid: New order had money escrowed. This should not be possible");
         require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForBid: New order had shares escrowed. This should not be possible");
         uint256 _attosharesToCover = _orderData.amount;
+        uint256 _numberOfShortOutcomes = _orderData.market.getNumberOfOutcomes() - 1;
 
-        uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+        uint256[] memory _shortOutcomes = new uint256[](_numberOfShortOutcomes);
         uint256 _indexOutcome = 0;
-        for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+        for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
             if (_i == _orderData.outcome) {
                 _indexOutcome++;
             }
@@ -151,13 +157,17 @@ library Order {
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-            _orderData.shareToken.trustedOrderBatchTransfer(_orderData.market, _shortOutcomes, _orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
+            uint256[] memory _values = new uint256[](_numberOfShortOutcomes);
+            for (uint256 _i = 0; _i < _numberOfShortOutcomes; _i++) {
+                _values[_i] = _orderData.sharesEscrowed;
+            }
+            _orderData.shareToken.unsafeBatchTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenIds(_orderData.market, _shortOutcomes), _values);
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
-            _orderData.market.getUniverse().deposit(_orderData.creator, _orderData.moneyEscrowed, address(_orderData.market));
+            _orderData.cash.transferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
         }
 
         return true;
@@ -175,13 +185,13 @@ library Order {
         if (_attosharesHeld > 0) {
             _orderData.sharesEscrowed = SafeMathUint256.min(_attosharesHeld, _attosharesToCover);
             _attosharesToCover -= _orderData.sharesEscrowed;
-            _orderData.shareToken.trustedOrderTransfer(_orderData.market, _orderData.outcome, _orderData.creator, address(_orderData.market), _orderData.sharesEscrowed);
+            _orderData.shareToken.unsafeTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.shareToken.getTokenId(_orderData.market, _orderData.outcome), _orderData.sharesEscrowed);
         }
 
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
-            _orderData.market.getUniverse().deposit(_orderData.creator, _orderData.moneyEscrowed, address(_orderData.market));
+            _orderData.cash.transferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
         }
 
         return true;

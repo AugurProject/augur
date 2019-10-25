@@ -61,7 +61,6 @@ def test_helpers(kitchenSinkFixture, scalarMarket):
     assert shareholderShare == 13.0 * market.getNumTicks() * 0.98
 
 def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, market):
-    shareToken= kitchenSinkFixture.contracts['ShareToken']
     shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 1 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
@@ -106,7 +105,6 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
 
 def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash, categoricalMarket):
     market = categoricalMarket
-    shareToken= kitchenSinkFixture.contracts['ShareToken']
     shareToken = kitchenSinkFixture.contracts["ShareToken"]
 
     numTicks = market.getNumTicks()
@@ -145,7 +143,6 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
 
 def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scalarMarket):
     market = scalarMarket
-    shareToken= kitchenSinkFixture.contracts['ShareToken']
     shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 1 * market.getNumTicks()
     expectedSettlementFees = expectedValue * 0.02
@@ -176,7 +173,7 @@ def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scal
     assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[2]) == 0
 
 def test_reedem_failure(kitchenSinkFixture, cash, market):
-    shareToken= kitchenSinkFixture.contracts['ShareToken']
+    shareToken = kitchenSinkFixture.contracts['ShareToken']
 
     # get YES shares with a1
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 1, shareToken.address, sender = kitchenSinkFixture.accounts[1])
@@ -201,7 +198,8 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     assert market.isFinalized()
 
 def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, market, scalarMarket):
-    shareToken= kitchenSinkFixture.contracts['ShareToken']
+    shareToken = kitchenSinkFixture.contracts['ShareToken']
+    augurTrading = kitchenSinkFixture.contracts['AugurTrading']
 
     # Get scalar LONG shares with a1
     expectedValue = 1 * scalarMarket.getNumTicks() * 3 / 4
@@ -218,11 +216,10 @@ def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, m
     finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
 
     with TokenDelta(cash, expectedPayout, kitchenSinkFixture.accounts[1], "Claiming multiple markets did not give expected payout"):
-        assert shareToken.claimMarketsProceeds([market.address, scalarMarket.address], kitchenSinkFixture.accounts[1], nullAddress)
+        assert augurTrading.claimMarketsProceeds([market.address, scalarMarket.address], kitchenSinkFixture.accounts[1], nullAddress)
 
 def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
-    shareToken= kitchenSinkFixture.contracts['ShareToken']
-    shareToken = kitchenSinkFixture.contracts["ShareToken"]
+    shareToken = kitchenSinkFixture.contracts['ShareToken']
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()

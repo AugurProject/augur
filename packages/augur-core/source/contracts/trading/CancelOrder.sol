@@ -9,11 +9,12 @@ import 'ROOT/trading/ICancelOrder.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
+import 'ROOT/trading/IAugurTrading.sol';
 
 
 /**
@@ -22,19 +23,20 @@ import 'ROOT/trading/IProfitLoss.sol';
  */
 contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
-    IAugur public augur;
+    IAugurTrading public augurTrading;
     IOrders public orders;
     ICash public cash;
     IShareToken public shareToken;
     IProfitLoss public profitLoss;
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        augur = _augur;
-        orders = IOrders(_augur.lookup("Orders"));
         cash = ICash(_augur.lookup("Cash"));
         shareToken = IShareToken(_augur.lookup("ShareToken"));
-        profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
+
+        augurTrading = _augurTrading;
+        orders = IOrders(_augurTrading.lookup("Orders"));
+        profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
     }
 
     /**
@@ -82,12 +84,9 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         _orders.removeOrder(_orderId);
 
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
-        _market.assertBalances(address(_orders));
 
-        IUniverse _universe = _market.getUniverse();
-        augur.logOrderCanceled(_universe, _market, _sender, _moneyEscrowed, _sharesEscrowed, _orderId);
-        profitLoss.recordFrozenFundChange(_universe, _market, _sender, _outcome, -int256(_moneyEscrowed));
-
+        augurTrading.logOrderCanceled(_market.getUniverse(), _market, _creator, _moneyEscrowed, _sharesEscrowed, _orderId);
+        profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
         return true;
     }
 
@@ -97,23 +96,26 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
             if (_type == Order.Types.Bid) {
                 uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
                 uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+                uint256[] memory _values = new uint256[](_numberOfOutcomes - 1);
                 uint256 _indexOutcome = 0;
                 for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
                     if (_i == _outcome) {
                         _indexOutcome++;
                     }
                     _shortOutcomes[_i] = _indexOutcome;
+                    _values[_i] = _sharesEscrowed;
                     _indexOutcome++;
                 }
-                shareToken.trustedCancelOrderBatchTransfer(_market, _shortOutcomes, address(_market), _sender, _sharesEscrowed);
+                uint256[] memory _tokenIds = shareToken.getTokenIds(_market, _shortOutcomes);
+                shareToken.unsafeBatchTransferFrom(address(augurTrading), _sender, _tokenIds, _values);
             } else {
-                shareToken.trustedCancelOrderTransfer(_market, _outcome, address(_market), _sender, _sharesEscrowed);
+                shareToken.unsafeTransferFrom(address(augurTrading), _sender, shareToken.getTokenId(_market, _outcome), _sharesEscrowed);
             }
         }
 
         // Return to user moneyEscrowed that wasn't filled yet
         if (_moneyEscrowed > 0) {
-            _market.getUniverse().withdraw(_sender, _moneyEscrowed, address(_market));
+            cash.transferFrom(address(augurTrading), _sender, _moneyEscrowed);
         }
 
         return true;
