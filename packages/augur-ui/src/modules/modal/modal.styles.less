@@ -241,7 +241,6 @@ div.Onboarding {
   }
 }
 
-
 .TitleHeader {
   align-items: center;
   border-bottom: 1px solid fade(@color-dark-grey, 50%);
@@ -336,7 +335,7 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile-new {
     flex-direction: column;
-     justify-content: flex-end;
+    justify-content: flex-end;
     display: flex;
 
     > button {
@@ -346,8 +345,6 @@ div.ButtonsRow:last-of-type {
 }
 
 .AddFunds {
-
-
   &.hideOnMobile {
     @media @breakpoint-mobile-new {
       display: none;
@@ -611,7 +608,7 @@ div.ButtonsRow:last-of-type {
 
     &.selected {
       border: 2px solid @color-primary-action;
-      }
+    }
 
     > svg {
       height: @size-28;
@@ -1227,6 +1224,122 @@ div.ButtonsRow:last-of-type {
     .text-14-paragraph;
 
     color: @color-secondary-text;
+  }
+}
+
+.MigrateRep {
+  .Message;
+
+  > main {
+    margin: @size-22 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > h1 {
+      .text-16-medium;
+
+      color: @color-primary-text;
+      text-transform: unset;
+    }
+
+    > h2 {
+      .text-14;
+
+      color: @color-secondary-text;
+    }
+
+    > div:first-of-type {
+      margin: @size-24 0;
+      display: flex;
+
+      > div {
+        padding: @size-12 0;
+        background: @color-secondary-action;
+        border-radius: @size-6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 222px;
+
+        > span:first-of-type {
+          .text-14;
+
+          color: @color-secondary-text;
+        }
+
+        > span:nth-of-type(2) {
+          .mono-24-bold;
+
+          color: @color-primary-text;
+        }
+
+        > span:last-of-type {
+          .mono-14;
+
+          color: @color-secondary-text;
+        }
+        &:first-of-type {
+          margin-right: @size-24;
+        }
+      }
+    }
+
+    > div:nth-of-type(2),
+    > div:nth-of-type(3) {
+      width: 330px;
+    }
+
+    > div:nth-of-type(2) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      > label {
+        .mono-10;
+
+        color:@color-secondary-text;
+      }
+
+      > button {
+        .mono-10;
+
+        color: @color-outcome-seven;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      > div {
+        grid-column: 1 / span 2;
+      }
+    }
+
+    > div:nth-of-type(3) {
+      margin-top: @size-34;
+    }
+
+    > div:last-of-type {
+      .text-11;
+
+      color: @color-secondary-text;
+      margin-top: @size-24;
+
+      > span {
+        .text-11-bold;
+      }
+
+      > svg {
+        width: @size-10;
+        height: @size-10;
+
+        > path {
+          fill: @color-secondary-text;
+        }
+
+        > circle {
+          stroke: @color-secondary-text;
+        }
+      }
+    }
   }
 }
 
@@ -1904,7 +2017,7 @@ div.ButtonsRow:last-of-type {
   > div {
     margin-right: @size-12;
     word-break: break-all;
- }
+  }
 
   > button {
     .mono-10;
