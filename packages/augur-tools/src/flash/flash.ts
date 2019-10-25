@@ -195,7 +195,11 @@ export class FlashSession {
 
   makeProvider(config: NetworkConfiguration): EthersProvider {
     const provider = new providers.JsonRpcProvider(config.http);
-    return new EthersProvider(provider, 5, 0, 40);
+    const ethersProvider = new EthersProvider(provider, 5, 0, 40);
+    if (config.gasPrice !== null) {
+      ethersProvider.overrideGasPrice = config.gasPrice;
+    }
+    return ethersProvider;
   }
 
   async getNetworkId(provider: EthersProvider): Promise<string> {
