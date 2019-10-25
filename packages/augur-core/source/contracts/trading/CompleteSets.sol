@@ -49,16 +49,16 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(msg.sender == fillOrder || msg.sender == address(this) || _market.getUniverse().isOpenInterestCash(msg.sender));
         require(_sender != address(0));
 
-        uint256 _numOutcomes = _market.getNumberOfOutcomes();
-
         uint256 _cost = _amount.mul(_market.getNumTicks());
 
         IUniverse _universe = _market.getUniverse();
 
         _universe.deposit(_sender, _cost, address(_market));
 
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
+        uint256 _numOutcomes = _shareTokens.length;
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
-            _market.getShareToken(_outcome).createShares(_sender, _amount);
+            _shareTokens[_outcome].createShares(_sender, _amount);
         }
 
         if (!_market.isFinalized()) {
@@ -74,6 +74,23 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder);
 
+        // Mint shares as specified to recipients
+        /* solium-disable indentation */
+        {
+            IShareToken[] memory _shareTokens = _market.getShareTokens();
+            uint256 _numOutcomes = _shareTokens.length;
+            _shareTokens[_longOutcome].createShares(_longRecipient, _amount);
+            uint256 _outcome = 0;
+            for (; _outcome < _longOutcome; ++_outcome) {
+                _shareTokens[_outcome].createShares(_shortRecipient, _amount);
+            }
+
+            for (++_outcome; _outcome < _numOutcomes; ++_outcome) {
+                _shareTokens[_outcome].createShares(_shortRecipient, _amount);
+            }
+        }
+        /* solium-enable indentation */
+
         uint256 _cost = _amount.mul(_market.getNumTicks());
 
         uint256 _longCost = _amount.mul(_price);
@@ -86,16 +103,6 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         }
         if (_shortParticipant != address(_market)) {
             _universe.deposit(_shortParticipant, _shortCost, address(_market));
-        }
-
-        // Mint shares as specified to recipients
-
-        _market.getShareToken(_longOutcome).createShares(_longRecipient, _amount);
-        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
-            if (_longOutcome == _outcome) {
-                continue;
-            }
-            _market.getShareToken(_outcome).createShares(_shortRecipient, _amount);
         }
 
         if (!_market.isFinalized()) {
@@ -123,7 +130,6 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 
-        uint256 _numOutcomes = _market.getNumberOfOutcomes();
         uint256 _payout = _amount.mul(_market.getNumTicks());
         IUniverse _universe = _market.getUniverse();
         if (!_market.isFinalized()) {
@@ -135,8 +141,10 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         _payout = _payout.sub(_creatorFee).sub(_reportingFee);
 
         // Takes shares away from participant and decreases the amount issued in the market since we're exchanging complete sets
+        IShareToken[] memory _shareTokens = _market.getShareTokens();
+        uint256 _numOutcomes = _shareTokens.length;
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
-            _market.getShareToken(_outcome).destroyShares(_sender, _amount);
+            _shareTokens[_outcome].destroyShares(_sender, _amount);
         }
 
         if (_creatorFee != 0) {
@@ -160,6 +168,23 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder);
 
+        // Takes shares away from participants
+        /* solium-disable indentation */
+        {
+            IShareToken[] memory _shareTokens = _market.getShareTokens();
+            uint256 _numOutcomes = _shareTokens.length;
+            _shareTokens[_shortOutcome].destroyShares(_shortParticipant, _amount);
+            uint256 _outcome = 0;
+            for (; _outcome < _shortOutcome; ++_outcome) {
+                _shareTokens[_outcome].destroyShares(_longParticipant, _amount);
+            }
+
+            for (++_outcome; _outcome < _numOutcomes; ++_outcome) {
+                _shareTokens[_outcome].destroyShares(_longParticipant, _amount);
+            }
+        }
+        /* solium-enable indentation */
+
         uint256 _payout = _amount.mul(_market.getNumTicks());
 
         IUniverse _universe = _market.getUniverse();
@@ -171,15 +196,6 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         _creatorFee = _market.deriveMarketCreatorFeeAmount(_payout);
         _reportingFee = _payout.div(_universe.getOrCacheReportingFeeDivisor());
         _payout = _payout.sub(_creatorFee).sub(_reportingFee);
-
-        // Takes shares away from participants
-        _market.getShareToken(_shortOutcome).destroyShares(_shortParticipant, _amount);
-        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
-            if (_outcome == _shortOutcome) {
-                continue;
-            }
-            _market.getShareToken(_outcome).destroyShares(_longParticipant, _amount);
-        }
 
         distributePayout(_market, _price, _shortRecipient, _longRecipient, _payout, _creatorFee, _reportingFee, _affiliateAddress);
 

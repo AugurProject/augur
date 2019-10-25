@@ -27,6 +27,7 @@ contract IMarket is IOwnable {
     function getNumberOfOutcomes() public view returns (uint256);
     function getNumTicks() public view returns (uint256);
     function getShareToken(uint256 _outcome)  public view returns (IShareToken);
+    function getShareTokens() public view returns (IShareToken[] memory);
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256);
     function getForkingMarket() public view returns (IMarket _market);
     function getEndTime() public view returns (uint256);
@@ -48,4 +49,6 @@ contract IMarket is IOwnable {
     function designatedReporterShowed() public view returns (bool);
     function isFinalized() public view returns (bool);
     function assertBalances() public view returns (bool);
+    function assertBalances(address _orders) public view returns (bool);
+    function getOpenInterest() public view returns (uint256);
 }
