@@ -52,6 +52,10 @@ export const LIST_VALUES = {
       value: 'Defensive Rookie of the year',
       label: 'Defensive Rookie of the year',
     },
+    {
+      value: 'AP Most Valuable Player',
+      label: 'AP Most Valuable Player'
+    }
   ],
   FOOTBALL_EVENT: [
     {
@@ -427,7 +431,7 @@ export const LIST_VALUES = {
       label: 'NBA Championship',
     },
   ],
-  BASKETBALL_AWARD: [
+  NBA_BASKETBALL_AWARD: [
     {
       value: 'Most Valuable Player',
       label: 'Most Valuable Player',
@@ -439,6 +443,38 @@ export const LIST_VALUES = {
     {
       value: '6th Man',
       label: '6th Man',
+    },
+    {
+      value: 'Defensive Player of the Year',
+      label: 'Defensive Player of the Year',
+    },
+    {
+      value: 'Most Improved player',
+      label: 'Most Improved player',
+    },
+  ],
+  NCAA_BASKETBALL_EVENTS: [
+    {
+      value: 'NCAA Tournament',
+      label: 'NCAA Tournament',
+    },
+    {
+      value: 'Sweet 16',
+      label: 'Sweet 16',
+    },
+    {
+      value: 'Elite 8',
+      label: 'Elite 8',
+    },
+    {
+      value: 'Final Four',
+      label: 'Final Four',
+    },
+  ],
+  NCAA_BASKETBALL_AWARD: [
+    {
+      value: 'Most Valuable Player',
+      label: 'Most Valuable Player',
     },
     {
       value: 'Defensive Player of the Year',
@@ -461,16 +497,16 @@ export const LIST_VALUES = {
       label: 'AP college Player of the year',
     },
     {
+      value: 'Sporting News College Basketball Player of the year',
+      label: 'Sporting News College Basketball Player of the year',
+    },
+    {
       value: 'John Wooden',
       label: 'John Wooden',
     },
     {
       value: 'Oscar Robertson',
       label: 'Oscar Robertson',
-    },
-    {
-      value: 'Sporting News College Basketball Player of the year',
-      label: 'Sporting News College Basketball Player of the year',
     },
   ],
   MENS_WOMENS: [
@@ -481,16 +517,6 @@ export const LIST_VALUES = {
     {
       value: "Women's",
       label: "Women's",
-    },
-  ],
-  BASKETBALL_LEAGUE: [
-    {
-      value: 'NBA',
-      label: 'NBA',
-    },
-    {
-      value: 'NCAA',
-      label: 'NCAA',
     },
   ],
   BASKETBALL_ACTION: [
