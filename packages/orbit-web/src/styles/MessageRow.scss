@@ -16,7 +16,7 @@ $timestamp-color: #848294;
 
 .Message {
   display: grid;
-  grid-template-columns: min-content 1fr;
+  grid-template-columns: 54px calc(100% - 54px);
   grid-template-rows: auto auto;
   padding-bottom: 1em;
   font-size: 0.625rem; // 10px
@@ -85,7 +85,6 @@ $timestamp-color: #848294;
 
 .size-normal {
   .Message {
-    align-items: baseline;
     padding-bottom: 1em;
 
     &__User {
@@ -95,8 +94,7 @@ $timestamp-color: #848294;
     &__Timestamp {
       border-right: 1px solid $timestamp-color;
       font-style: normal;
-      margin-left: 0.5em;
-      padding-right: 0.5em;
+      padding: 0 0.5em;
     }
   }
 }
@@ -123,7 +121,7 @@ $timestamp-color: #848294;
     &__Timestamp {
       border: none;
       font-style: italic;
-      margin-left: 0.5em;
+      padding: 0 0.5em;
     }
   }
 }
