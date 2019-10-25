@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce'
 import orbitLogo from '../images/orbit_logo_32x32.png'
 
 export function askPermission () {
-  Notification.requestPermission()
+  if ('Notification' in window) Notification.requestPermission()
 }
 
 const notify = (title, body, tag) => {
