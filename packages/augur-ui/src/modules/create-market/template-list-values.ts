@@ -71,6 +71,136 @@ export const LIST_VALUES = {
       label: 'NFC Championship game',
     },
   ],
+  NCAA_BASKETBALL_CONF: [
+    {
+      label: 'American East',
+      value: 'American East',
+    },
+    {
+      label: 'American',
+      value: 'American',
+    },
+    {
+      label: 'Atlantic 10',
+      value: 'Atlantic 10',
+    },
+    {
+      label: 'ACC',
+      value: 'ACC',
+    },
+    {
+      label: 'Atlantic Sun',
+      value: 'Atlantic Sun',
+    },
+    {
+      label: 'Big 12',
+      value: 'Big 12',
+    },
+    {
+      label: 'Big East',
+      value: 'Big East',
+    },
+    {
+      label: 'Big Sky',
+      value: 'Big Sky',
+    },
+    {
+      label: 'Big South',
+      value: 'Big South',
+    },
+    {
+      label: 'Big Ten',
+      value: 'Big Ten',
+    },
+    {
+      label: 'Big West',
+      value: 'Big West',
+    },
+    {
+      label: 'Colonial',
+      value: 'Colonial',
+    },
+    {
+      label: 'Conference USA',
+      value: 'Conference USA',
+    },
+    {
+      label: 'Horizon',
+      value: 'Horizon',
+    },
+    {
+      label: 'Ivy',
+      value: 'Ivy',
+    },
+    {
+      label: 'MAAC',
+      value: 'MAAC',
+    },
+    {
+      label: 'Mid-American',
+      value: 'Mid-American',
+    },
+    {
+      label: 'MEAC',
+      value: 'MEAC',
+    },
+    {
+      label: 'Missouri Valley',
+      value: 'Missouri Valley',
+    },
+    {
+      label: 'Mountain West',
+      value: 'Mountain West',
+    },
+    {
+      label: 'Northeast',
+      value: 'Northeast',
+    },
+    {
+      label: 'Ohio Valley',
+      value: 'Ohio Valley',
+    },
+    {
+      label: 'Pac-12',
+      value: 'Pac-12',
+    },
+    {
+      label: 'Patriot League',
+      value: 'Patriot League',
+    },
+    {
+      label: 'SEC',
+      value: 'SEC',
+    },
+    {
+      label: 'Southern',
+      value: 'Southern',
+    },
+    {
+      label: 'Southland',
+      value: 'Southland',
+    },
+    {
+      label: 'SWAC',
+      value: 'SWAC',
+    },
+    {
+      label: 'Summit League',
+      value: 'Summit League',
+    },
+    {
+      label: 'Sun Belt',
+      value: 'Sun Belt',
+    },
+    {
+      label: 'West Coast',
+      value: 'West Coast',
+    },
+    {
+      label: 'WAC',
+      value: 'WAC',
+    },
+  ],
   BASEBALL_EVENT: [
     {
       value: 'American League Division Series',
@@ -1046,5 +1176,5 @@ export const LIST_VALUES = {
       value: 'Kraken (kraken.com)',
       label: 'Kraken (kraken.com)',
     },
-  ]
+  ],
 };
