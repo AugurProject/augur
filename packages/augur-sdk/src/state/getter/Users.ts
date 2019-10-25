@@ -193,7 +193,7 @@ export class Users {
       userTradeHistory,
       marketTradeHistory,
       marketsInfo
-    } as UserAccountDataResult;
+    };
   }
 
   @Getter('getAccountTimeRangedStatsParams')
