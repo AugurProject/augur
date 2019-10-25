@@ -8,7 +8,6 @@ import {
   Doc,
   Timestamped,
   MarketData,
-  OrderState,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
