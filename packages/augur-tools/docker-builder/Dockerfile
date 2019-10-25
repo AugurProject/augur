@@ -1,3 +1,4 @@
+# populated geth docker file
 FROM augurproject/dev-node-geth:latest as geth
 
 ARG normal_time=false
