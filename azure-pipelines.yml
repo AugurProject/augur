@@ -371,6 +371,7 @@ jobs:
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
         in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
