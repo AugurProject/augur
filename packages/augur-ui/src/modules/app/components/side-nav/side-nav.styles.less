@@ -19,8 +19,20 @@
       display: flex;
       justify-content: flex-end;
 
-      > div {
-        width: 100%;
+      > div:first-of-type {
+        position: unset;
+        display: flex;
+
+        > div:first-of-type {
+          background: @color-page-background;
+          border-bottom: 1px solid @color-dark-grey;
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+        }
+      }
+
+      > div:nth-of-type(2) {
 
         > div:first-of-type {
           background: @color-page-background;
@@ -123,15 +135,6 @@
       > svg {
         width: @size-9;
         height: @size-13;
-      }
-    }
-
-    > div:nth-of-type(3) {
-      @media @breakpoint-mobile {
-        bottom: 75px;
-        display: flex;
-        position: absolute;
-        right: 24px;
       }
     }
 
