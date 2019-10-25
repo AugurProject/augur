@@ -1280,8 +1280,9 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Conference`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_CONF
                   },
                   {
                     id: 3,
