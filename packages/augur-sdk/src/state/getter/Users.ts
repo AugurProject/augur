@@ -27,6 +27,8 @@ import { MarketReportingState } from '../../constants';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import { QUINTILLION } from '../../utils';
+import { Trading, MarketTradingHistory } from './Trading';
+import { MarketInfo, Markets } from './Markets';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -40,6 +42,11 @@ const userTradingPositionsParams = t.intersection([
     outcome: t.number,
   }),
 ]);
+
+const getUserAccountParams = t.partial({
+  universe: t.string,
+  account: t.string,
+});
 
 const getProfitLossSummaryParams = t.partial({
   universe: t.string,
@@ -135,6 +142,12 @@ export interface ProfitLossResult {
   total: string;
 }
 
+export interface UserAccountDataResult {
+  userTradeHistory: MarketTradingHistory;
+  marketTradeHistory: MarketTradingHistory;
+  marketsInfo: MarketInfo[];
+}
+
 export class Users {
   static getAccountTimeRangedStatsParams = t.intersection([
     t.type({
@@ -153,6 +166,35 @@ export class Users {
   ]);
   static getProfitLossParams = getProfitLossParams;
   static getProfitLossSummaryParams = getProfitLossSummaryParams;
+  static getUserAccountParams = getUserAccountParams;
+
+  @Getter('getUserAccountParams')
+  static async getUserAccountData(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getUserAccountParams>
+  ): Promise<UserAccountDataResult> {
+    if (!params.universe || !params.account) {
+      throw new Error(
+        "'getUserAccountData' requires a 'universe' and 'account' param be provided"
+      );
+    }
+
+    const userTradeHistory = await Trading.getTradingHistory(augur, db, {
+      account: params.account,
+      universe: params.universe,
+      ignoreReportingStates: [MarketReportingState.Finalized]
+    });
+    // collect marketIds
+    const marketIds = Object.keys(userTradeHistory);
+    const marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds });
+    let marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
+    return {
+      userTradeHistory,
+      marketTradeHistory,
+      marketsInfo
+    };
+  }
 
   @Getter('getAccountTimeRangedStatsParams')
   static async getAccountTimeRangedStats(
