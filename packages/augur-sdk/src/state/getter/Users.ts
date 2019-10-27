@@ -192,7 +192,10 @@ export class Users {
     });
 
     const uniqMarketIds = Object.keys(userTradeHistory);
-    const marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
+    let marketTradeHistory = {};
+    if (uniqMarketIds.length > 0) {
+      marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
+    }
 
     const userOpenOrders = await Trading.getOrders(augur, db, {
       account: params.account,
@@ -200,7 +203,7 @@ export class Users {
       orderState: OrderState.OPEN,
     });
 
-
+    // user created markets are included, REP staked as no-show bond
     const userStakedRep: AccountReportingHistory = await Accounts.getAccountRepStakeSummary(augur, db, {
       account: params.account,
       universe: params.universe,

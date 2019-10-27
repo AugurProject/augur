@@ -27,7 +27,6 @@ async function loadTransactions(
   const { universe, loginAccount } = appState;
   const { address } = loginAccount;
   dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
-  dispatch(loadCreateMarketHistory()); // uses getMarkets so marketInfo objects are already returned
 
   const Augur = augurSdk.get();
   const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: address})
