@@ -8,6 +8,7 @@ import {
   Doc,
   Timestamped,
   MarketData,
+  OrderState,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
@@ -27,8 +28,9 @@ import { MarketReportingState } from '../../constants';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import { QUINTILLION } from '../../utils';
-import { Trading, MarketTradingHistory } from './Trading';
+import { Trading, MarketTradingHistory, Orders } from './Trading';
 import { MarketInfo, Markets } from './Markets';
+import { Accounts, AccountReportingHistory } from './Accounts';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -145,6 +147,9 @@ export interface ProfitLossResult {
 export interface UserAccountDataResult {
   userTradeHistory: MarketTradingHistory;
   marketTradeHistory: MarketTradingHistory;
+  userOpenOrders: Orders;
+  userStakedRep: AccountReportingHistory;
+  userPositions: UserTradingPositions;
   marketsInfo: MarketInfo[];
 }
 
@@ -185,13 +190,61 @@ export class Users {
       universe: params.universe,
       ignoreReportingStates: [MarketReportingState.Finalized]
     });
-    // collect marketIds
-    const marketIds = Object.keys(userTradeHistory);
-    const marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds });
-    let marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
+
+    const uniqMarketIds = Object.keys(userTradeHistory);
+    let marketTradeHistory = {};
+    if (uniqMarketIds.length > 0) {
+      marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
+    }
+
+    const userOpenOrders = await Trading.getOrders(augur, db, {
+      account: params.account,
+      universe: params.universe,
+      orderState: OrderState.OPEN,
+    });
+
+    // user created markets are included, REP staked as no-show bond
+    const userStakedRep: AccountReportingHistory = await Accounts.getAccountRepStakeSummary(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+
+    const stakedRepMarketIds = [];
+    if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0)
+    userStakedRep.reporting.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
+    if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
+    userStakedRep.disputing.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
+
+    const userPositions = await Users.getUserTradingPositions(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+
+    const userPositionsMarketIds: string[] = Array.from(
+      new Set([
+        ...userPositions.tradingPositions.reduce(
+          (p, position) => [...p, position.marketId],
+          []
+        ),
+      ])
+    );
+
+    const userOpenOrdersMarketIds = Object.keys(userOpenOrders);
+    const marketIds: string[] = Array.from(
+      new Set(
+        ...uniqMarketIds,
+        ...userOpenOrdersMarketIds,
+        ...stakedRepMarketIds,
+        ...userPositionsMarketIds,
+      )
+    );
+    const marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
     return {
       userTradeHistory,
       marketTradeHistory,
+      userOpenOrders,
+      userStakedRep,
+      userPositions,
       marketsInfo
     };
   }
