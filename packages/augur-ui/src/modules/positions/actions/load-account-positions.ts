@@ -107,6 +107,11 @@ export const userPositionProcessing = (
   dispatch: ThunkDispatch<void, any, Action>,
   callback?: NodeStyleCallback
 ) => {
+  if (!positions || !positions.tradingPositions) {
+    if (callback) return callback(null);
+    return;
+  }
+
   const userPositionsMarketIds: string[] = Array.from(
     new Set([
       ...positions.tradingPositions.reduce(
