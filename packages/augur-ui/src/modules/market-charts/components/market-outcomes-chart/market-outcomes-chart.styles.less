@@ -5,7 +5,8 @@
   flex: 1 100%;
   flex-direction: column;
   max-height: @charts-max-height;
-  min-height: @charts-min-height;
+  height: @charts-max-height;
+  min-height: @charts-max-height;
   position: relative;
 
   svg {
@@ -71,6 +72,7 @@
 
       .highcharts-crosshair-label {
         background-color: @color-module-background;
+        border-radius: 5px;
         color: @color-primary-text;
         font-size: @size-10;
         z-index: @above-all-content;

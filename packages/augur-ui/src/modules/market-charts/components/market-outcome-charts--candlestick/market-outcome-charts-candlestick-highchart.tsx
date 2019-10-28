@@ -8,13 +8,6 @@ import { PriceTimeSeriesData } from 'modules/types';
 
 NoDataToDisplay(Highcharts);
 
-const HIGH_CHART_CONFIG = {
-  ShowNavigator: 350,
-  YLableXposition: -15,
-  YLableYposition: -8,
-  MobileMargin: [30, 0, 0, 0],
-};
-
 interface HighChartsWrapperProps {
   priceTimeSeries: PriceTimeSeriesData[];
   selectedPeriod: number;
@@ -108,7 +101,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
 
-    const max = marketMax.toNumber();
     const options = {
       lang: {
         noData: 'No Completed Trades',
@@ -116,7 +108,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       credits: { enabled: false },
       tooltip: { enabled: false },
       scrollbar: { enabled: false },
-      navigator: { enabled: true, height: 20, margin: 12 },
+      navigator: { enabled: false },
       rangeSelector: { enabled: false },
       plotOptions: {
         candlestick: {
@@ -137,7 +129,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         panning: isMobile,
         styledMode: false,
         animation: false,
-        spacing: [15, 0, 0, 0],
+        spacing: [10, 0, 4, 0],
       },
       xAxis: {
         ordinal: false,
@@ -145,7 +137,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         labels: {
           format,
           align: 'center',
-          reserveSpace: true,
         },
         range,
         crosshair: {
@@ -155,9 +146,10 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           label: {
             enabled: true,
             format: crosshair,
-            align: 'center',
+            shape: 'square',
+            padding: 4,
             y: 0,
-            x: -5,
+            x: 0,
           },
         },
       },
@@ -171,23 +163,21 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             .minus(marketMin)
             .dividedBy(2)
             .toNumber(),
-          showFirstLabel: true,
+          showFirstLabel: false,
           showLastLabel: true,
           labels: {
             format: '${value:.2f}',
-            align: 'center',
             style: Styles.Candlestick_display_yLables,
-            x:
-              max > 1
-                ? HIGH_CHART_CONFIG.YLableXposition - 15
-                : HIGH_CHART_CONFIG.YLableXposition,
-            y: HIGH_CHART_CONFIG.YLableYposition,
+            x: 0,
+            y: 16,
           },
           crosshair: {
             snap: false,
             label: {
               enabled: true,
               format: '${value:.2f}',
+              shape: 'square',
+              padding: 4
             },
           },
         },
