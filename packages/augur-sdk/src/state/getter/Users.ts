@@ -228,12 +228,15 @@ export class Users {
       universe: params.universe,
     })
 
-    const userPositionTotals = {
-      totalFrozenFunds: positions[30].frozenFunds,
-      tradingPositionsTotal: {
-        unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
-      },
-    };
+    let userPositionTotals = null;
+    if (positions) {
+      userPositionTotals = {
+        totalFrozenFunds: positions[30].frozenFunds,
+        tradingPositionsTotal: {
+          unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
+        },
+      };
+    }
 
     const userPositions = await Users.getUserTradingPositions(augur, db, {
       account: params.account,
