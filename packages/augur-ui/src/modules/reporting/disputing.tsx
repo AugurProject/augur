@@ -48,10 +48,6 @@ const Disputing: React.FC<DisputingProps> = ({
               </ModulePane>
               <ModulePane label="markets in dispute">
                 <MarketsInDispute />
-                <ReportingModalButton
-                  text="Need Help? Disputing Quick Guide"
-                  action={() => console.log('TODO add popup')}
-                />
               </ModulePane>
             </ModuleTabs>
           ) : (

@@ -503,7 +503,7 @@ jobs:
           docker push augurproject/augur-ipfs:v2
           aws --region=us-east-1 ecs update-service  --service augur-ipfs --cluster kovan-v2-ecs --force-new-deployment
           docker run -d --name augur-ipfs augurproject/augur-ipfs:v2
-          sleep 5
+          sleep 10
           IPFS_HASH=`docker exec augur-ipfs ipfs add -r -Q /export`
           echo "IPFS hash: $IPFS_HASH"
           docker stop augur-ipfs

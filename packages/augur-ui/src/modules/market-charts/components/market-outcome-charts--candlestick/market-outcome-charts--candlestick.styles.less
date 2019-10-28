@@ -7,7 +7,7 @@
   flex-direction: column;
   max-height: @charts-max-height;
   min-height: @charts-min-height;
-  padding: @size-8;
+  padding: @size-8 0 0;
   position: relative;
 
   @media @breakpoint-mobile {
@@ -21,6 +21,7 @@
   grid-template-columns: minmax(92px, 130px) 1fr minmax(130px, 155px);
   grid-template-rows: 1fr;
   margin-bottom: @size-8;
+  padding: 0 @size-8;
 
   @media @breakpoint-mobile {
     grid-gap: @size-8;
@@ -65,6 +66,9 @@
   & > div {
     display: flex;
     flex: 1 100%;
+    max-height: @charts-max-height;
+    height: @charts-min-height;
+    min-height: @charts-min-height;
   }
 }
 
