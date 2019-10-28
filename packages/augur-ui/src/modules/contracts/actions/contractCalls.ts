@@ -92,6 +92,10 @@ export async function checkIsKnownUniverse(universeId: string) {
   return result;
 }
 
+export async function convertV1ToV2() {
+  return null;
+}
+
 export async function getCurrentBlock() {
   const Augur = augurSdk.get();
   const blockNumber = await Augur.provider.getBlockNumber();
@@ -234,6 +238,54 @@ export async function finalizeMarket(marketId: string) {
 export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+}
+
+export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(102);
+}
+
+export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(100);
+}
+
+export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(106);
+}
+
+export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(104);
+}
+
+export async function uniswapRepForDaiRate(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(108);
+}
+
+export async function uniswapDaiForRepRate(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(110);
+}
+
+export async function uniswapEthForRep(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(103);
+}
+
+export async function uniswapRepForEth(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(101);
+}
+
+export async function uniswapEthForDai(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(107);
+}
+
+export async function uniswapDaiForEth(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(105);
+}
+
+export async function uniswapRepForDai(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(109);
+}
+
+export async function uniswapDaiForRep(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(111);
 }
 
 export function getRep() {

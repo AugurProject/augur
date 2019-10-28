@@ -16,8 +16,8 @@
     "loadMore": "Klikkaa tai rullaa ylös ladataksesi vanhempia viestejä",
     "sendMessagePlaceholder": "Kirjoita viesti...",
     "status": {
-      "users": "käyttäjä",
-      "users_plural": "käyttäjää"
+      "users": "Online",
+      "users_plural": "Online"
     }
   },
   "configuration": "Asetukset",
@@ -35,7 +35,7 @@
     "inputPlaceholder": "Liity kanavalle"
   },
   "login": {
-    "nickname": "Nimimerkki",
+    "nickname": "Kirjoita nimi",
     "orLoginWith": "Tai kirjaudu käyttäen",
     "pressEnterToLogin": "Paina ENTER kirjautuaksesi"
   },

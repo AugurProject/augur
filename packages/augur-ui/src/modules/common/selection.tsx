@@ -83,7 +83,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.defaultValue !== nextProps.defaultValue) {
+    if (this.props.defaultValue !== nextProps.defaultValue || JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)) {
       this.setState({
         selected: nextProps.options.find(
           o => o.value === nextProps.defaultValue
@@ -99,7 +99,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   shouldComponentUpdate(nextProps: any, nextState: any) {
     if (
       nextState.selected !== this.state.selected ||
-      nextState.showList !== this.state.showList
+      nextState.showList !== this.state.showList ||
+      this.props.disabled !== nextProps.disabled
     ) {
       return true;
     }

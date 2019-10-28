@@ -15,11 +15,12 @@ import 'ROOT/IAugur.sol';
  */
 contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, IDisputeCrowdsourcer, Initializable {
     IUniverse internal universe;
+    uint256 internal crowdsourcerGeneration;
 
     string constant public name = "Dispute Crowdsourcer Token";
     string constant public symbol = "DISP";
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, address _erc1820RegistryAddress) public beforeInitialized {
+    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, address _erc1820RegistryAddress, uint256 _crowdsourcerGeneration) public beforeInitialized {
         endInitialization();
         augur = _augur;
         market = _market;
@@ -30,6 +31,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         payoutDistributionHash = _payoutDistributionHash;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+        crowdsourcerGeneration = _crowdsourcerGeneration;
     }
 
     /**
@@ -121,5 +123,9 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         require(IMarket(msg.sender) == market);
         size = totalSupply();
         return true;
+    }
+
+    function getCrowdsourcerGeneration() public view returns (uint256) {
+        return crowdsourcerGeneration;
     }
 }

@@ -301,6 +301,7 @@ interface CategoryMultiSelectProps {
   errorMessage?: string[];
   disableCategory?: boolean;
   disableSubCategory?: boolean;
+  disableTertiaryCategory?: boolean;
 }
 
 interface CategoryMultiSelectState {
@@ -323,6 +324,7 @@ interface DropdownInputGroupProps {
   showIcon: boolean;
   showDropdown: boolean;
   disabled: boolean;
+  removable?: boolean;
 }
 
 const defaultMultiSelect = (amount: number, justStrings = false) => {
@@ -339,18 +341,19 @@ export const createGroups = (
   values: string[],
   selected: string[]
 ) => {
-  const primaryOptions = createOptions(groups);
+  const primaryOptions = createOptions(groups, selected[0]);
   const primarySubgroup = findSubgroup(groups, values[0]);
   const secondaryCustom = selected[1] === CUSTOM;
   const secondaryAutoComplete = secondaryCustom
     ? findAutoComplete(primarySubgroup, CUSTOM)
     : findAutoComplete(primarySubgroup, values[0]);
-  const secondaryOptions = createOptions(primarySubgroup);
+  const secondaryOptions = createOptions(primarySubgroup, selected[1]);
   const tertiaryAutoComplete = secondaryCustom
     ? findAutoComplete(secondaryAutoComplete, values[1])
     : findAutoComplete(primarySubgroup, values[1]);
   const tertiaryOptions = createOptions(
-    findSubgroup(primarySubgroup, values[1])
+    findSubgroup(primarySubgroup, values[1]),
+    selected[2]
   );
 
   return {
@@ -414,8 +417,12 @@ export const getNewSelected = (
   return updatedSelected;
 };
 
-export const createOptions = (sortedGroup: SortedGroup) => {
-  const options = sortedGroup.map(({ label, value }) => ({ label, value }));
+export const createOptions = (sortedGroup: SortedGroup, selected: string) => {
+  const options = sortedGroup.map(({ label, value }) => ({
+    label,
+    value,
+    selected: selected === value,
+  }));
   return options;
 };
 
@@ -455,7 +462,8 @@ export const DropdownInputGroup = ({
   showText,
   showIcon,
   showDropdown,
-  disabled
+  disabled,
+  removable,
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -477,6 +485,19 @@ export const DropdownInputGroup = ({
         onChange={onChangeInput}
       />
     )}
+    {removable && !disabled && (
+      <button
+        onClick={e => {
+          if (showText) {
+            onChangeInput('');
+          } else if (showDropdown) {
+            onChangeDropdown('');
+          }
+        }}
+      >
+        {XIcon}
+      </button>
+    )}
   </li>
 );
 
@@ -486,10 +507,11 @@ interface CategorySingleSelectProps {
   initialSelected?: string;
   initialValue?: string;
   updateSelection: Function;
-  errorMessage?: string[];
-  staticLabel?: string;
   errorMessage?: string;
+  staticLabel?: string;
   placeholder?: string;
+  disabled?: boolean;
+  showDropdown?: boolean;
 }
 
 interface CategorySingleSelectState {
@@ -521,6 +543,9 @@ export class CategorySingleSelect extends Component<
   onChangeDropdown(choice) {
     let value = choice;
     if (choice === CUSTOM) value = '';
+    if (choice === '') {
+      value = '';
+    }
     this.handleUpdate(choice, value);
   }
 
@@ -537,8 +562,9 @@ export class CategorySingleSelect extends Component<
       errorMessage,
       staticLabel,
       placeholder,
-      defaultValue,
       autoCompleteList,
+      disabled,
+      showDropdown,
     } = this.props;
     const { selected, value, showText } = this.state;
     return (
@@ -553,8 +579,9 @@ export class CategorySingleSelect extends Component<
           placeholder={placeholder}
           onChangeInput={v => this.handleUpdate(selected, v)}
           showText={showText}
-          showDropdown={options.length > 0}
+          showDropdown={showDropdown || options.length > 0}
           autoCompleteList={autoCompleteList}
+          disabled={disabled}
         />
       </ul>
     );
@@ -575,6 +602,9 @@ export class CategoryMultiSelect extends Component<
   onChangeDropdown(choice, position) {
     let value = choice;
     if (choice === CUSTOM) value = '';
+    if (choice === '') {
+      value = '';
+    }
 
     // Reset children categories when parents is changed
     const clearAllChildren = (category, idx) => {
@@ -599,7 +629,12 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
-    const { errorMessage, disableCategory, disableSubCategory } = this.props;
+    const {
+      errorMessage,
+      disableCategory,
+      disableSubCategory,
+      disableTertiaryCategory,
+    } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -675,6 +710,8 @@ export class CategoryMultiSelect extends Component<
             showIcon={showTertiaryDropdown || customTertiary}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
+            removable
+            disabled={disableTertiaryCategory}
           />
         )}
       </ul>
@@ -1054,7 +1091,7 @@ export const RadioBar = ({
   secondErrorMessage,
   secondHeader,
   multiSelect,
-  disabled
+  disabled,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {

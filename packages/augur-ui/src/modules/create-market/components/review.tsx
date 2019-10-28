@@ -35,7 +35,6 @@ import {
 import { NewMarket, FormattedNumber } from 'modules/types';
 
 import Styles from "modules/create-market/components/review.styles.less";
-import { buildformattedDate } from "utils/format-date";
 import { buildResolutionDetails } from "modules/create-market/get-template";
 
 interface ReviewProps {

@@ -91,7 +91,7 @@ export const WALLET_TYPE = {
   HARDWARE: 'hardware',
 };
 
-export const SIGNIN_LOADING_TEXT = 'Sit tight - we are loading your account.';
+export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS = 'Follow instructions in the Portis window.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC = 'Follow instructions in the Fortmatic window.';
 export const SIGNIN_LOADING_TEXT_TORUS = 'Follow instructions in the Tor.us window.';
@@ -479,6 +479,7 @@ export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
 export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
+export const MODAL_MIGRATE_REP = 'MODAL_MIGRATE_REP';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
 export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';

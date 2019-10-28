@@ -23,10 +23,26 @@
     }
 
     &:nth-of-type(3) {
-      grid-template-columns: @size-24 @size-24 252px 252px;
+      grid-template-columns: @size-24 @size-24 252px 230px @size-16;
 
       > svg {
         grid-column: 2 / span 1;
+        height: @size-32;
+        margin: 0;
+      }
+
+      > button {
+        z-index: @above-all-content;
+        max-width: @size-32;
+
+        > svg {
+          height: @size-10;
+          width: @size-10;
+
+          > path {
+            stroke: @color-primary-text;
+          }
+        }
       }
     }
 
@@ -223,7 +239,7 @@
   margin-bottom: @size-8;
   height: 51px;
 
-  > svg{
+  > svg {
     height: @size-20;
     grid-column: 1;
     grid-row: 1;
@@ -346,8 +362,9 @@
   grid-template-columns: 52px 1fr;
 
   @media @breakpoint-mobile-mid {
-    height: 128px;
-    grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
+    > svg {
+      grid-row: 1 / span 4;
+    }
   }
 
   > svg {
@@ -532,11 +549,11 @@
 
   cursor: pointer;
   display: grid;
-  grid-template-rows: @size-20 64px 44px 64px 38px;
+  grid-template-rows: @size-20 auto auto auto;
   grid-template-columns: 100%;
   max-height: 230px;
   max-width: 210px;
-  min-height: 230px;
+  min-height: 154px;
   min-width: 210px;
 
   @media @breakpoint-mobile-mid {
@@ -580,7 +597,7 @@
   > svg {
     height: @size-40;
     width: @size-40;
-    margin: @size-24 auto 0;
+    margin: @size-4 auto 0;
 
     @media @breakpoint-mobile-mid {
       align-self: center;
@@ -600,7 +617,7 @@
   > h5 {
     .text-16-bold;
 
-    margin: @size-24 @size-12 0;
+    margin: @size-16 @size-12 0;
     text-align: center;
     text-transform: capitalize;
 
@@ -617,7 +634,7 @@
 
     color: @color-secondary-text;
     line-height: @size-18;
-    margin: @size-12 @size-12 0;
+    margin: @size-12 0 @size-24;
     text-align: center;
 
     @media @breakpoint-mobile-mid {
@@ -633,8 +650,8 @@
 
   &.CustomIcon {
     > svg {
-      width: @size-48;
-      height: @size-48;
+      width: @size-40;
+      height: @size-40;
 
       > path {
         stroke: @color-primary-text;
@@ -779,7 +796,6 @@
         background-color: @color-dark-grey;
         border: 1px solid @color-inactive-text;
         color: @color-inactive-text;
-        opacity: 0.5;
 
         &::placeholder {
           color: @color-inactive-text;
@@ -893,6 +909,7 @@
 
     > div {
       left: 0;
+      right: 0;
     }
 
     > button {
@@ -1786,6 +1803,6 @@ div.error > div > div > div > div > input {
     .text-18-bold;
 
     color: @color-primary-text;
-    margin: 0 @size-8
+    margin: 0 @size-8;
   }
 }

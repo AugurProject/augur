@@ -6,6 +6,7 @@
   display: flex;
   flex: 1;
   max-width: 57px;
+  z-index: @above-all-content-above;
 
   @media @breakpoint-mobile {
     display: none;
@@ -80,11 +81,13 @@
     }
 
     @media @breakpoint-mobile {
-      top: inherit;
-      bottom: 100%;
+      bottom: unset;
       margin-bottom: -1px;
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
+      position: absolute;
+      right: 0px;
+      top: 65px;
 
       > span:not(:first-of-type) {
         border-bottom: 1px solid @color-dark-grey;

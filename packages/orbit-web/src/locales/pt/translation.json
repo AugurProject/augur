@@ -14,8 +14,8 @@
     "loadMore": "Clique ou role para cima para carregar mensagens antigas",
     "sendMessagePlaceholder": "Digite uma mensagem",
     "status": {
-      "users": "Usário",
-      "users_plural": "Usários"
+      "users": "Online",
+      "users_plural": "Online"
     }
   },
   "configuration": "Configuração",
@@ -33,7 +33,7 @@
     "inputPlaceholder": "Junte-se ao canal"
   },
   "login": {
-    "nickname": "Apelido",
+    "nickname": "Digite um nome",
     "orLoginWith": "Ou entrar como",
     "pressEnterToLogin": "Pressione ENTER para entrar"
   },

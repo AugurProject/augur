@@ -5,7 +5,9 @@ import {
 } from 'modules/create-market/components/common';
 import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
-import { getTemplateRadioCards } from 'modules/create-market/get-template';
+import {
+  getTemplateRadioCards
+} from 'modules/create-market/get-template';
 import { Getters } from '@augurproject/sdk/src';
 import { NewMarket } from 'modules/types';
 
@@ -46,7 +48,6 @@ export const SubCategories = ({
             updatedNewMarket.categories[1] = value;
             updatedNewMarket.categories[2] = '';
             updateNewMarket(updatedNewMarket);
-            nextPage();
           }}
           radioButtons={cats}
         >

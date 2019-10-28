@@ -1,13 +1,12 @@
 import React from 'react';
 import { LargeSubheaders } from 'modules/create-market/components/common';
 import { RadioCardGroup } from 'modules/common/form';
-import { getTemplateRadioCardsMarketTypes } from '../get-template';
+import { getTemplateRadioCardsMarketTypes } from 'modules/create-market/get-template';
 
 interface MarketTypeProps {
   categories: string[];
   marketType: string;
   updateNewMarket: Function;
-  nextPage: Function;
 }
 
 export const MarketType = (props: MarketTypeProps) => (
@@ -22,13 +21,13 @@ export const MarketType = (props: MarketTypeProps) => (
     <RadioCardGroup
       onChange={value => {
           props.updateNewMarket({ marketType: value })
-          props.nextPage();
         }
       }
       defaultSelected={props.marketType}
       radioButtons={getTemplateRadioCardsMarketTypes({
         primary: props.categories[0],
         secondary: props.categories[1],
+        tertiary: props.categories[2],
       })}
     />
   </section>

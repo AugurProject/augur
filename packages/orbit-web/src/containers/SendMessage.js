@@ -18,6 +18,7 @@ function SendMessage ({ channelName, onSendMessage, theme, useEmojis, emojiSet, 
 
   const inputRef = React.useRef()
   const emojiPickerRef = React.useRef()
+  const submitHiddenButton = React.useRef()
 
   const focusInput = React.useCallback(() => {
     if (inputRef.current) inputRef.current.focus()
@@ -70,10 +71,12 @@ function SendMessage ({ channelName, onSendMessage, theme, useEmojis, emojiSet, 
     setEmojiPickerActive(emojiPickerActive)
   }, [useEmojis])
 
-  const handleInputKeyDown = React.useCallback(e => {
-    if (!emojiPickerRef.current) return
-    emojiPickerRef.current.handleKeyDown(e)
-  }, [])
+  const handleInputKeyDown = (e) => {
+    if(e.keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      submitHiddenButton.current.click();
+    }
+  };
 
   const handleEmojiChange = React.useCallback(
     (emoji, done = false) => {
@@ -114,7 +117,19 @@ function SendMessage ({ channelName, onSendMessage, theme, useEmojis, emojiSet, 
             style={getEmojiPickerStyle(pickerEmojiSize)}
           />
         ) : null}
-        <input
+        {/*<input*/}
+        {/*  ref={inputRef}*/}
+        {/*  type='text'*/}
+        {/*  placeholder={t('channel.sendMessagePlaceholder')}*/}
+        {/*  style={theme}*/}
+        {/*  value={inputValue}*/}
+        {/*  onKeyDown={handleInputKeyDown}*/}
+        {/*  onChange={handleInputChange}*/}
+        {/*  disabled={disabled}*/}
+        {/*/>*/}
+        <textarea
+          cols="30"
+          rows="2"
           ref={inputRef}
           type='text'
           placeholder={t('channel.sendMessagePlaceholder')}
@@ -124,6 +139,7 @@ function SendMessage ({ channelName, onSendMessage, theme, useEmojis, emojiSet, 
           onChange={handleInputChange}
           disabled={disabled}
         />
+        <input type="submit" ref={submitHiddenButton} />
       </form>
     </div>
   )

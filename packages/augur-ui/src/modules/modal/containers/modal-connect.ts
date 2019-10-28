@@ -54,7 +54,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   errorModal: (error) => dispatch(
     updateModal({
       type: MODA_WALLET_ERROR,
-      error: error ? error.toString() : ''
+      error: error ? JSON.stringify(error) : ''
     })
   ),
 });
@@ -66,8 +66,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
 
   const redirect = () => {
-    dP.closeModal();
-    oP.history.push({ pathname: makePath(MARKETS, null) });
+    setTimeout(() => {
+      dP.closeModal();
+      oP.history.push({ pathname: makePath(MARKETS, null) });
+    });
   };
 
   const connectMethods = [
