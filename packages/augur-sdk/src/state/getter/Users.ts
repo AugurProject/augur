@@ -229,7 +229,7 @@ export class Users {
     })
 
     let userPositionTotals = null;
-    if (positions) {
+    if (positions && Object.keys(positions).length > 0) {
       userPositionTotals = {
         totalFrozenFunds: positions[30].frozenFunds,
         tradingPositionsTotal: {
