@@ -2152,24 +2152,6 @@ export class GnosisSafeRegistry<TBigNumber> extends Contract<TBigNumber> {
 		await this.localCall(abi, [], options.sender)
 	}
 
-	public callRegister = async (gnosisSafeRegistry: string, augur: string, cash: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_cash","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [gnosisSafeRegistry, augur, cash], 'callRegister', options.sender)
-	}
-	
-	public callRegister_estimateGas = async (gnosisSafeRegistry: string, augur: string, cash: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_cash","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [gnosisSafeRegistry, augur, cash], 'callRegister', options.sender)
-	}
-
-	public callRegister_ = async (gnosisSafeRegistry: string, augur: string, cash: string, options?: { sender?: string }): Promise<void> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_cash","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [gnosisSafeRegistry, augur, cash], options.sender)
-	}
-
 	public accountSafes_ = async (arg0: string, arg1: TBigNumber, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"uint256"}],"name":"accountSafes","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -2189,6 +2171,49 @@ export class GnosisSafeRegistry<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_account","type":"address"}],"name":"getSafe","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [account], options.sender)
 		return <string>result[0]
+	}
+
+	public accountSafeIndexes_ = async (arg0: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"}],"name":"accountSafeIndexes","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public deRegister = async (options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"deRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [], 'deRegister', options.sender)
+	}
+	
+	public deRegister_estimateGas = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"deRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [], 'deRegister', options.sender)
+	}
+
+	public deRegister_ = async (options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"deRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [], options.sender)
+	}
+
+	public callRegister = async (gnosisSafeRegistry: string, augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [gnosisSafeRegistry, augur, createOrder, fillOrder, cash, shareToken], 'callRegister', options.sender)
+	}
+	
+	public callRegister_estimateGas = async (gnosisSafeRegistry: string, augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [gnosisSafeRegistry, augur, createOrder, fillOrder, cash, shareToken], 'callRegister', options.sender)
+	}
+
+	public callRegister_ = async (gnosisSafeRegistry: string, augur: string, createOrder: string, fillOrder: string, cash: string, shareToken: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_gnosisSafeRegistry","type":"address"},{"name":"_augur","type":"address"},{"name":"_createOrder","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_cash","type":"address"},{"name":"_shareToken","type":"address"}],"name":"callRegister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [gnosisSafeRegistry, augur, createOrder, fillOrder, cash, shareToken], options.sender)
 	}
 
 	public initialize = async (augur: string, options?: { sender?: string }): Promise<Array<Event>> => {

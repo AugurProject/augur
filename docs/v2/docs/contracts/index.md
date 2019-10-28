@@ -2990,7 +2990,7 @@ Setup function sets initial storage of contract.
  @param data Data payload for optional delegate call.
  @param paymentToken Token that should be used for the payment (0 is ETH)
  @param payment Value that should be paid
- @param paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
+ @param paymentReceiver Address that should receive the payment (or 0 if tx.origin)
 
 
 
@@ -3421,13 +3421,25 @@ divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.callRegister(address,address,contract IERC20)"></a><code class="function-signature">callRegister(address _gnosisSafeRegistry, address _augur, contract IERC20 _cash)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.callRegister(address,address,address,address,contract IERC20,contract IERC1155)"></a><code class="function-signature">callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, contract IERC20 _cash, contract IERC1155 _shareToken)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.register()"></a><code class="function-signature">register()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.deRegister()"></a><code class="function-signature">deRegister()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafeRegistry.getAndValidateSafeFromSender()"></a><code class="function-signature">getAndValidateSafeFromSender() <span class="return-arrow">→</span> <span class="return-type">contract IGnosisSafe</span></code><span class="function-visibility">internal</span></h4>
 
 
 

@@ -587,7 +587,7 @@ contract GnosisSafe is MasterCopy, BaseSafe, SignatureDecoder, SecuredTokenTrans
     /// @param data Data payload for optional delegate call.
     /// @param paymentToken Token that should be used for the payment (0 is ETH)
     /// @param payment Value that should be paid
-    /// @param paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
+    /// @param paymentReceiver Address that should receive the payment (or 0 if tx.origin)
     function setup(address[] calldata _owners, uint256 _threshold, address to, bytes calldata data, address paymentToken, uint256 payment, address payable paymentReceiver)
         external
     {

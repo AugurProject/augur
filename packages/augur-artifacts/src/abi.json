@@ -4518,28 +4518,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_gnosisSafeRegistry",
-					"type": "address"
-				},
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_cash",
-					"type": "address"
-				}
-			],
-			"name": "callRegister",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -4593,6 +4571,68 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "accountSafeIndexes",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "deRegister",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_gnosisSafeRegistry",
+					"type": "address"
+				},
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_createOrder",
+					"type": "address"
+				},
+				{
+					"name": "_fillOrder",
+					"type": "address"
+				},
+				{
+					"name": "_cash",
+					"type": "address"
+				},
+				{
+					"name": "_shareToken",
+					"type": "address"
+				}
+			],
+			"name": "callRegister",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
