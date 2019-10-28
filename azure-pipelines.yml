@@ -124,6 +124,8 @@ jobs:
           set -euo pipefail
           yarn build
         displayName: yarn build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
       - bash: |
           set -euo pipefail
           yarn workspace @augurproject/ui build:kovan
