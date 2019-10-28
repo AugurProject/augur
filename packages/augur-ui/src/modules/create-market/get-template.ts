@@ -4,6 +4,8 @@ import {
   MARKET_TYPE_TEMPLATES,
   MarketCardTemplate,
   TemplateInputType,
+  CHOICE,
+  REQUIRED,
 } from 'modules/create-market/constants';
 import {
   CategoryTemplate,
