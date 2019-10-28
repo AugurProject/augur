@@ -188,7 +188,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
         <>
           {filteredData.length === 0 && (
             <EmptyDisplay
-              selectedTab={selectedLabel}
+              selectedTab={''}
               filterLabel={filterLabel}
               search={search}
             />
