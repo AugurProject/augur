@@ -53,12 +53,6 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordExternalTransfer(IMarket _market, uint256 _outcome, address _source, address _destination, uint256 _value) public returns (bool) {
-        require(msg.sender == shareToken);
-        this.recordTrade(_market, _destination, _source, _outcome, int256(_value), 0, 0, 0, 0, _value);
-        return true;
-    }
-
     function adjustTraderProfitForFees(IMarket _market, address _trader, uint256 _outcome, uint256 _fees) external returns (bool) {
         require(msg.sender == fillOrder);
         profitLossData[_trader][address(_market)][_outcome].realizedProfit -= int256(_fees);
@@ -117,7 +111,6 @@ contract ProfitLoss is Initializable {
         require(msg.sender == address(augurTrading));
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         IUniverse _universe = _market.getUniverse();
-        IAugur _augur = augur;
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
             OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
             if (_outcomeData.netPosition == 0) {

@@ -95,7 +95,7 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
 
     with AssertLog(contractsFixture, "CompleteSetsPurchased", completeSetsPurchasedLog):
         with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
-            assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[1], 10, sender=contractsFixture.accounts[1])
+            assert shareToken.publicBuyCompleteSets(market.address, 10, sender=contractsFixture.accounts[1])
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 1"
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 2"
@@ -137,7 +137,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokens
 
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
         with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
-            result = shareToken.sellCompleteSets(market.address, account, account, 9, nullAddress)
+            result = shareToken.publicSellCompleteSets(market.address, 9, nullAddress)
 
     tokensFail.setFail(False)
     assert universe.getOpenInterestInAttoCash() == 1 * market.getNumTicks()

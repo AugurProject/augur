@@ -25,8 +25,8 @@ library Trade {
 
     struct StoredContracts {
         IAugur augur;
+        IAugurTrading augurTrading;
         IOrders orders;
-        ICompleteSets completeSets;
         ICash denominationToken;
         IProfitLoss profitLoss;
         IShareToken shareToken;
@@ -365,8 +365,8 @@ library Trade {
             augur: _storedContracts.augur,
             augurTrading: _storedContracts.augurTrading,
             universe: _market.getUniverse(),
-            profitLoss: _storedContracts.profitLoss
-            shareToken: _storedContracts.shareToken,
+            profitLoss: _storedContracts.profitLoss,
+            shareToken: _storedContracts.shareToken
         });
     }
 
@@ -442,9 +442,6 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     IAugur public augur;
     IAugurTrading public augurTrading;
-    IOrders public orders;
-    IShareToken public shareToken;
-    IProfitLoss public profitLoss;
     address public zeroXTrade;
     address public trade;
 
@@ -461,10 +458,11 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         ICash _cash = ICash(augur.lookup("Cash"));
         storedContracts = Trade.StoredContracts({
             augur: _augur,
+            augurTrading: _augurTrading,
             orders: IOrders(_augurTrading.lookup("Orders")),
             denominationToken: _cash,
             profitLoss: IProfitLoss(_augurTrading.lookup("ProfitLoss")),
-            shareToken: IShareToken(augur.lookup("ShareToken"))
+            shareToken: IShareToken(_augur.lookup("ShareToken"))
         });
         trade = _augurTrading.lookup("Trade");
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
@@ -483,8 +481,8 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         address _filler = msg.sender;
         Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _affiliateAddress);
         uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
-        _tradeData.contracts.market.assertBalances(address(_tradeData.contracts.orders));
-        return _result;
+        //_tradeData.contracts.market.assertBalances();
+        return 0;//_result;
     }
 
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
@@ -495,7 +493,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
 
     function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) external returns (uint256) {
         require(msg.sender == zeroXTrade);
-        Trade.OrderData memory _orderData = Trade.createOrderData(shareToken, _market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
+        Trade.OrderData memory _orderData = Trade.createOrderData(storedContracts.shareToken, _market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
         Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _affiliateAddress);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
@@ -530,6 +528,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
             _tradeData.contracts.profitLoss.recordFrozenFundChange(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
         }
+
         return _amountRemainingFillerWants;
     }
 
@@ -543,15 +542,15 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         for (uint256 _i = 0; _i < _numOutcomes; _i++) {
             _outcomes[_i] = _i;
         }
-        uint256 _fillerCompleteSets = shareToken.lowestBalanceOfMarketOutcomes(_market, _outcomes, _filler);
-        uint256 _creatorCompleteSets = shareToken.lowestBalanceOfMarketOutcomes(_market, _outcomes, _creator);
+        uint256 _fillerCompleteSets = _tradeData.contracts.shareToken.lowestBalanceOfMarketOutcomes(_market, _outcomes, _filler);
+        uint256 _creatorCompleteSets = _tradeData.contracts.shareToken.lowestBalanceOfMarketOutcomes(_market, _outcomes, _creator);
 
         if (_fillerCompleteSets > 0) {
-            shareToken.sellCompleteSets(_market, _filler, _filler, _fillerCompleteSets, _tradeData.affiliateAddress);
+            _tradeData.contracts.shareToken.sellCompleteSets(_market, _filler, _filler, _fillerCompleteSets, _tradeData.affiliateAddress);
         }
 
         if (_creatorCompleteSets > 0) {
-            shareToken.sellCompleteSets(_market, _creator, _creator, _creatorCompleteSets, _tradeData.affiliateAddress);
+            _tradeData.contracts.shareToken.sellCompleteSets(_market, _creator, _creator, _creatorCompleteSets, _tradeData.affiliateAddress);
         }
 
         return true;
@@ -587,14 +586,14 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _fillerTokensDepleted = _tradeData.getFillerTokensDepleted();
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         if (marketOutcomeVolumes[address(_market)].length == 0) {
-            marketOutcomeVolumes[address(_market)].length = _tradeData.contracts.shareTokens.length;
+            marketOutcomeVolumes[address(_market)].length = _tradeData.shortOutcomes.length + 1;
         }
         marketOutcomeVolumes[address(_market)][_tradeData.order.outcome] = marketOutcomeVolumes[address(_market)][_tradeData.order.outcome].add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
 
         uint256[] memory tmpMarketOutcomeVolumes = marketOutcomeVolumes[address(_market)];
-        uint256 volume;
+        uint256 _volume;
         for (uint256 i = 0; i < tmpMarketOutcomeVolumes.length; i++) {
-            volume += tmpMarketOutcomeVolumes[i];
+            _volume += tmpMarketOutcomeVolumes[i];
         }
 
         _tradeData.contracts.augurTrading.logMarketVolumeChanged(_tradeData.contracts.universe, address(_market), _volume, tmpMarketOutcomeVolumes);

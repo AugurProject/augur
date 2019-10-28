@@ -36,6 +36,7 @@ contract Market is Initializable, Ownable, IMarket {
     ICash private cash;
     IAugur public augur;
     IWarpSync public warpSync;
+    IShareToken public shareToken;
 
     // Attributes
     uint256 private numTicks;
@@ -80,6 +81,7 @@ contract Market is Initializable, Ownable, IMarket {
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
         participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
+        shareToken = IShareToken(augur.lookup("ShareToken"));
     }
 
     function assessFees() private {
@@ -429,9 +431,6 @@ contract Market is Initializable, Ownable, IMarket {
         universe.migrateMarketOut(_destinationUniverse);
         universe = _destinationUniverse;
         uint256 _numOutcomes = numOutcomes;
-        for (uint256 i = 0; i < _numOutcomes; i++) {
-            shareTokens[i].setUniverse(_destinationUniverse);
-        }
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();
@@ -731,19 +730,14 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function assertBalances() public view returns (bool) {
-        return assertBalances(augur.lookup("Orders"));
-    }
-
-    function assertBalances(address _orders) public view returns (bool) {
-        // Escrowed funds for open orders
-        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
+        uint256 _expectedBalance = 0;
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (isFinalized()) {
-            for (uint8 i = 0; i < _market.getNumberOfOutcomes(); i++) {
-                _expectedBalance = _expectedBalance.add(shareToken.totalSupplyForMarketOutcome(_market, i).mul(_market.getWinningPayoutNumerator(i)));
+            for (uint8 i = 0; i < numOutcomes; i++) {
+                _expectedBalance = _expectedBalance.add(shareToken.totalSupplyForMarketOutcome(this, i).mul(getWinningPayoutNumerator(i)));
             }
         } else {
-            _expectedBalance = _expectedBalance.add(shareToken.totalSupplyForMarketOutcome(_market, 0).mul(_market.getNumTicks()));
+            _expectedBalance = shareToken.totalSupplyForMarketOutcome(this, 0).mul(numTicks);
         }
 
         assert(universe.marketBalance(address(this)) >= _expectedBalance);
@@ -762,6 +756,6 @@ contract Market is Initializable, Ownable, IMarket {
         if (isFinalized()) {
             return 0;
         }
-        return shareTokens[0].totalSupply().mul(numTicks);
+        return shareToken.totalSupplyForMarketOutcome(this, 0).mul(numTicks);
     }
 }
