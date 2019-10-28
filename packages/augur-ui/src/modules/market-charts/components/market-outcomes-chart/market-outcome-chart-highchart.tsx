@@ -55,8 +55,9 @@ export default class MarketOutcomesChartHighchart extends Component<
           type: 'line',
           styledMode: false,
           animation: false,
-          marginTop: 40,
-          marginRight: 45,
+          marginTop: 20,
+          marginRight: 0,
+          spacing: [0, 0, 4, 0]
         },
         credits: {
           enabled: false,
@@ -100,13 +101,13 @@ export default class MarketOutcomesChartHighchart extends Component<
           opposite: true,
           max: createBigNumber(props.maxPrice).toFixed(props.pricePrecision),
           min: createBigNumber(props.minPrice).toFixed(props.pricePrecision),
-          showFirstLabel: true,
+          showFirstLabel: false,
           showLastLabel: true,
           labels: {
             format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
             style: null,
-            x: 35,
-            y: -2,
+            x: 0,
+            y: 16,
           },
           height: '100%',
           resize: {
@@ -115,7 +116,9 @@ export default class MarketOutcomesChartHighchart extends Component<
           crosshair: {
             snap: true,
             label: {
+              padding: 4,
               enabled: true,
+              shape: 'square',
               format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
             },
           },
@@ -205,6 +208,8 @@ export default class MarketOutcomesChartHighchart extends Component<
         snap: true,
         label: {
           enabled: true,
+          shape: 'square',
+          padding: 4,
         },
       },
     };
@@ -239,8 +244,6 @@ export default class MarketOutcomesChartHighchart extends Component<
       width: this.container.clientWidth,
     };
 
-    const useArea =
-      priceTimeSeries && Object.keys(priceTimeSeries).length === 1;
     const hasData =
       priceTimeSeries &&
       Object.keys(priceTimeSeries) &&
