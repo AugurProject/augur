@@ -237,7 +237,7 @@ export async function finalizeMarket(marketId: string) {
 
 export function getDai() {
   const { contracts } = augurSdk.get();
-  return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+  return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
 
 export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {
