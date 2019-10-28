@@ -13,15 +13,6 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 
-interface UserTradingPositions {
-  frozenFundsTotal: {
-    frozenFunds: string;
-  };
-  tradingPositions: Getters.Users.TradingPosition[];
-  tradingPositionsPerMarket: Getters.Users.MarketTradingPosition;
-  tradingPositionsTotal?: Getters.Users.TradingPosition;
-}
-
 export const loadAllAccountPositions = (
   options: any = {},
   callback: NodeStyleCallback = logError,
@@ -32,7 +23,7 @@ export const loadAllAccountPositions = (
       options,
       (err: any, { marketIds = [], positions = {} }: any) => {
         if (marketIdAggregator) marketIdAggregator(marketIds);
-        if (!err) postProcessing(marketIds, dispatch, positions, callback);
+        if (!err) userPositionProcessing(positions, dispatch, callback);
       }
     )
   );
@@ -45,8 +36,8 @@ export const loadMarketAccountPositions = (
   dispatch(
     loadAccountPositionsInternal(
       { marketId },
-      (err: any, { marketIds = [], positions = {} }: any) => {
-        if (!err) postProcessing(marketIds, dispatch, positions, callback);
+      (err: any, { positions = {} }: any) => {
+        if (!err) userPositionProcessing(positions, dispatch, callback);
         dispatch(loadAccountPositionsTotals());
       }
     )
@@ -111,21 +102,33 @@ const loadAccountPositionsInternal = (
   callback(null, { marketIds, positions });
 };
 
-const postProcessing = (
-  marketIds: Array<string>,
+export const userPositionProcessing = (
+  positions: Getters.Users.UserTradingPositions,
   dispatch: ThunkDispatch<void, any, Action>,
-  positions: UserTradingPositions,
-  callback: NodeStyleCallback
+  callback?: NodeStyleCallback
 ) => {
-  marketIds.forEach((marketId: string) => {
+  if (!positions || !positions.tradingPositions) {
+    if (callback) return callback(null);
+    return;
+  }
+
+  const userPositionsMarketIds: string[] = Array.from(
+    new Set([
+      ...positions.tradingPositions.reduce(
+        (p, position) => [...p, position.marketId],
+        []
+      ),
+    ])
+  );
+  userPositionsMarketIds.forEach((marketId: string) => {
     const marketPositionData: AccountPosition = {};
     const marketPositions = positions.tradingPositions.filter(
       (position: any) => position.marketId === marketId
     );
-    const outcomeIds: Array<number> = Array.from(
+    const outcomeIds: number[] = Array.from(
       new Set([
         ...marketPositions.reduce(
-          (p: Array<number>, position: Getters.Users.TradingPosition) => [
+          (p: number[], position: Getters.Users.TradingPosition) => [
             ...p,
             position.outcome,
           ],

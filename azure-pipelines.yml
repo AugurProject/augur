@@ -129,7 +129,7 @@ jobs:
           yarn workspace @augurproject/ui build:kovan
         displayName: ui build
         env:
-          NODE_OPTIONS: "--max_old_space_size=6144"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
           set -euo pipefail
@@ -143,7 +143,7 @@ jobs:
         displayName: yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
         env:
-          NODE_OPTIONS: "--max_old_space_size=2048"
+          NODE_OPTIONS: "--max_old_space_size=4096"
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:

@@ -91,7 +91,7 @@ export const WALLET_TYPE = {
   HARDWARE: 'hardware',
 };
 
-export const SIGNIN_LOADING_TEXT = 'Sit tight - we are loading your account.';
+export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
 export const SIGNIN_LOADING_TEXT_PORTIS = 'Follow instructions in the Portis window.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC = 'Follow instructions in the Fortmatic window.';
 export const SIGNIN_LOADING_TEXT_TORUS = 'Follow instructions in the Tor.us window.';
