@@ -134,6 +134,12 @@ export interface UserTradingPositions {
   unrealizedRevenue24hChangePercent: string;
 }
 
+export interface UserPositionTotals {
+  totalFrozenFunds: string,
+  tradingPositionsTotal: {
+    unrealizedRevenue24hChangePercent: string
+  }
+}
 export interface ProfitLossResult {
   timestamp: number;
   position: string;
@@ -150,6 +156,7 @@ export interface UserAccountDataResult {
   userOpenOrders: Orders;
   userStakedRep: AccountReportingHistory;
   userPositions: UserTradingPositions;
+  userPositionTotals: UserPositionTotals;
   marketsInfo: MarketInfo[];
 }
 
@@ -215,6 +222,19 @@ export class Users {
     if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
     userStakedRep.disputing.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
 
+
+    const positions = Users.getProfitLossSummary(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    })
+
+    const userPositionTotals = {
+      totalFrozenFunds: positions[30].frozenFunds,
+      tradingPositionsTotal: {
+        unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
+      },
+    };
+
     const userPositions = await Users.getUserTradingPositions(augur, db, {
       account: params.account,
       universe: params.universe,
@@ -245,6 +265,7 @@ export class Users {
       userOpenOrders,
       userStakedRep,
       userPositions,
+      userPositionTotals,
       marketsInfo
     };
   }
