@@ -59,7 +59,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       ),
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: TradingFormProps) {
+  getDerivedStateFromProps(nextProps: TradingFormProps) {
     const { selectedOutcomeId } = this.props;
     const { market } = nextProps;
     if (
