@@ -71,7 +71,6 @@ describe('State API :: Universe :: ', () => {
         description: 'market for dispute window test',
         longDescription: 'looooong',
         resolutionSource: 'http://www.blah.com',
-        backupSource: 'http://www.blah2.com',
       }),
     });
 

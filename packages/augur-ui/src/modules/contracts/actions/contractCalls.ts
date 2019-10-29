@@ -465,7 +465,6 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
-  backupSource?: string;
 }
 
 export function createMarket(
@@ -509,7 +508,6 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
-    backupSource: extraInfo.backupSource,
   };
 
   return createMarket(newMarket, true);

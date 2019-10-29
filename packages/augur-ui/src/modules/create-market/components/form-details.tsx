@@ -99,7 +99,6 @@ export default class FormDetails extends React.Component<
       detailsText,
       categories,
       expirySource,
-      backupSource,
       expirySourceType,
       designatedReporterAddress,
       designatedReporterType,

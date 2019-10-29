@@ -63,7 +63,6 @@ export const EMPTY_STATE: NewMarket = {
   description: '',
   expirySourceType: EXPIRY_SOURCE_GENERIC,
   expirySource: '',
-  backupSource: '',
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: '',
   endTime: null,

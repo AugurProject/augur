@@ -304,7 +304,6 @@ export interface NewMarket {
   validations:
     | NewMarketPropertiesValidations
     | NewMarketPropertyValidations;
-  backupSource: string;
   currentStep: number;
   type: string;
   outcomes: string[];
