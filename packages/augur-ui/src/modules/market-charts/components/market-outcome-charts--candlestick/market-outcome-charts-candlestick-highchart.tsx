@@ -129,11 +129,13 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         panning: isMobile,
         styledMode: false,
         animation: false,
-        spacing: [10, 0, 4, 0],
+        spacing: [10, 8, 10, 0],
       },
       xAxis: {
         ordinal: false,
-        tickLength: 8,
+        tickLength: 7,
+        gridLineWidth: 1,
+        gridLineColor: null,
         labels: {
           format,
           align: 'center',
@@ -141,15 +143,12 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         range,
         crosshair: {
           width: 0,
-          snap: true,
           className: Styles.Candlestick_display_none,
           label: {
             enabled: true,
             format: crosshair,
             shape: 'square',
             padding: 4,
-            y: 0,
-            x: 0,
           },
         },
       },
@@ -165,10 +164,11 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             .toNumber(),
           showFirstLabel: false,
           showLastLabel: true,
+          offset: 2,
           labels: {
             format: '${value:.2f}',
             style: Styles.Candlestick_display_yLables,
-            x: 0,
+            reserveSpace: true,
             y: 16,
           },
           crosshair: {
@@ -176,8 +176,9 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             label: {
               enabled: true,
               format: '${value:.2f}',
+              borderRadius: 5,
               shape: 'square',
-              padding: 4
+              padding: 2,
             },
           },
         },
@@ -212,7 +213,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         {
           type: 'column',
           name: 'volume',
-          color: '#0E0E0F',
+          // color: '#0E0E0F',
           data: volume,
           yAxis: 1,
           maxPointWidth: 20,

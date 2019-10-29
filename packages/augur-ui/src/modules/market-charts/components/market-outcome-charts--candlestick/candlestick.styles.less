@@ -36,15 +36,22 @@
         }
       }
 
-      .highcharts-tick,
-      .highcharts-axis-line {
+      .highcharts-tick {
         stroke: @color-inactive-text;
       }
 
-      .highcharts-xaxis-grid,
+      .highcharts-axis-line {
+        stroke: @color-inactive-text;
+        transform: scaleX(1.15);
+      }
+
       g.highcharts-yaxis-grid path.highcharts-grid-line:nth-child(1),
       g.highcharts-yaxis path.highcharts-axis-line {
         display: none;
+      }
+
+      .highcharts-xaxis-grid > .highcharts-grid-line {
+        stroke: fade(@color-secondary-action-outline, 25);
       }
 
       .highcharts-yaxis-grid {
@@ -52,6 +59,7 @@
 
         .highcharts-grid-line {
           stroke: fade(@color-primary-text, 40%);
+          transform: scaleX(1.15);
         }
       }
 
@@ -71,6 +79,28 @@
         background-color: @color-module-background;
         padding: @size-8;
         z-index: @above-all-content;
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateX(38px);
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-10;
+
+        fill: @color-primary-text;
+        transform: translateX(38px);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateY(4px);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-9;
+
+        fill: @color-primary-text;
+        transform: translateY(4px);
       }
 
       .highcharts-crosshair {
