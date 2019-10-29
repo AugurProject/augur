@@ -213,7 +213,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         {
           type: 'column',
           name: 'volume',
-          // color: '#0E0E0F',
           data: volume,
           yAxis: 1,
           maxPointWidth: 20,
