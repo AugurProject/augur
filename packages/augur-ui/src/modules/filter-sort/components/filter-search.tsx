@@ -48,22 +48,22 @@ export default class FilterSearch extends Component<
     this.timeout = null;
   }
 
-  getDerivedStateFromProps() {
+  UNSAFE_componentWillMount() {
     const { location } = this.props;
     const search = parseQuery(location.search)[FILTER_SEARCH_PARAM];
     if (search) this.setState({ search });
   }
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (
-      this.props.location !== prevProps.location &&
-      !this.props.location.search.includes(FILTER_SEARCH_PARAM)
+      nextProps.location !== this.props.location &&
+      !nextProps.location.search.includes(FILTER_SEARCH_PARAM)
     ) {
       clearTimeout(this.timeout);
       this.resetSearch();
     }
-    if (this.state.search !== prevState.search) {
-      this.updateQuery(this.state.search, this.props.location);
+    if (this.state.search !== nextState.search) {
+      this.updateQuery(nextState.search, nextProps.location);
     }
   }
 
