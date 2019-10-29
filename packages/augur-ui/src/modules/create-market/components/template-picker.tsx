@@ -61,8 +61,9 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
       <LargeSubheaders header="Choose a template" subheader={subheader} />
       {tertiaryOptions.length > 0 && (
         <div>
-          {tertiaryOptions.map(option => (
+          {tertiaryOptions.map((option, index) => (
             <button
+              key={index}
               className={classNames({
                 [Styles.Selected]: option.value === tertiary.value,
               })}
