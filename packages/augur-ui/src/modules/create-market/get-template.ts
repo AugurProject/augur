@@ -102,16 +102,16 @@ export const addCategoryStats = (
 
 export const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
-  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES).sort();
   const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary)
-    return primaryCat.children ? Object.keys(primaryCat.children) : [];
+    return primaryCat.children ? Object.keys(primaryCat.children).sort() : [];
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
+  return secondaryCat.children ? Object.keys(secondaryCat.children).sort() : [];
 };
 
 export const getTemplateCategoriesByMarketType = (
