@@ -42,5 +42,5 @@ async function loadTransactions(
   dispatch(updateUserOpenOrders(userData.userOpenOrders));
   dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
   userPositionProcessing(userData.userPositions, dispatch);
-  dispatch(updateLoginAccount(userData.userPositionTotals));
+  if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
 }
