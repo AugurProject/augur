@@ -1621,7 +1621,7 @@ div.ButtonsRow:last-of-type {
     > p:last-of-type {
       .text-10;
 
-      color: #848294;
+      color: @color-dark-text;
       margin-top: @size-24;
     }
 
@@ -1637,26 +1637,26 @@ div.ButtonsRow:last-of-type {
       }
 
       > div {
-        background-color: #252429;
+        background-color: @color-secondary-action;
         cursor: pointer;
         padding: 4px 8px;
-        color: #fff;
+        color: @color-primary-text;
         border-radius: @size-3;
-        border: @size-1 solid #3C3B43;
+        border: @size-1 solid @color-secondary-action-outline;
         width: 100%;
 
         > div:first-of-type {
           font-weight: @weight-bold;
 
           > span:first-of-type {
-            color: #AFA7C1;
+            color: @color-secondary-text;
             font-family: @roboto-mono;
             font-size: @size-11;
             text-transform: uppercase;
           }
 
           > span:nth-of-type(2) {
-            color: #848294;
+            color: @color-dark-text;
             font-family: @roboto;
             font-size: @size-10;
             font-weight: @weight-normal;
@@ -1667,12 +1667,12 @@ div.ButtonsRow:last-of-type {
           font-size: @size-10;
 
           > span:first-of-type {
-            color: #AFA7C1;
+            color: @color-secondary-text;
             font-family: @roboto-mono;
           }
 
           > span:nth-of-type(2) {
-            color: #848294;
+            color: @color-dark-text;
             font-family: @roboto;
           }
         }
@@ -1687,13 +1687,13 @@ div.ButtonsRow:last-of-type {
       }
 
       div.GasCheckedButton {
-        background-color: #252429;
-        color: #fff;
-        border: @size-1 solid #09CFE1;
+        background-color: @color-secondary-action;
+        color: @color-primary-text;
+        border: @size-1 solid @color-primary-action;
 
         > div:first-of-type {
           > span:first-of-type {
-            color: #E9E5F2;
+            color: @color-primary-text;
             font-family: @roboto-mono;
             font-size: @size-11;
             text-transform: uppercase;
@@ -1709,7 +1709,7 @@ div.ButtonsRow:last-of-type {
       grid-gap: @size-16;
       align-items: flex-end;
       justify-content: space-between;
-      background-color: #161518;
+      background-color: @color-table-header;
       border-radius: @size-3;
       padding: @size-12;
 
@@ -1721,47 +1721,47 @@ div.ButtonsRow:last-of-type {
         label {
           .mono-9-bold;
 
-          color: #AFA7C1;
+          color: @color-secondary-text;
         }
 
         input[type='number'] {
           .mono-11;
 
-          border: @size-1 solid #3C3B43;
-          color: #E9E5F2;
+          border: @size-1 solid @color-secondary-action-outline;
+          color: @color-primary-text;
           padding: @size-6 @size-16;
         }
       }
 
       > div:nth-of-type(2) {
         margin: 0 @size-5;
-        border-right: @size-1 solid #3C3B43;
+        border-right: @size-1 solid @color-secondary-action-outline;
 
         > div {
           > span:first-of-type {
             .mono-10-bold;
 
-            color: #E9E5F2;
+            color: @color-primary-text;
           }
 
           > span:last-of-type {
             .text-10-bold;
 
-            color: #848294;
+            color: @color-dark-text;
           }
         }
 
         > span {
           .text-10;
 
-          color: #848294;
+          color: @color-dark-text;
         }
       }
 
       > div:nth-of-type(3) {
         .text-14-bold;
 
-        color: #E9E5F2;
+        color: @color-primary-text;
         padding: 0 0 @size-10 @size-5;
       }
     }
