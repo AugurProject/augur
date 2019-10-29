@@ -27,7 +27,6 @@ import {
   AMERICAN_FOOTBALL,
   NFL,
   REQUIRED,
-  CHOICE,
 } from 'modules/create-market/constants';
 import { YES_NO, CATEGORICAL, SCALAR } from 'modules/common/constants';
 
