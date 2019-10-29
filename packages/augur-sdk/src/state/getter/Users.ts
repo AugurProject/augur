@@ -210,6 +210,11 @@ export class Users {
       orderState: OrderState.OPEN,
     });
 
+    const marketList = await Markets.getMarkets(augur, db, {
+      creator: params.account,
+      universe: params.universe,
+    });
+
     // user created markets are included, REP staked as no-show bond
     const userStakedRep: AccountReportingHistory = await Accounts.getAccountRepStakeSummary(augur, db, {
       account: params.account,
@@ -269,7 +274,7 @@ export class Users {
       userStakedRep,
       userPositions,
       userPositionTotals,
-      marketsInfo
+      marketsInfo: [...marketList.markets, ...marketsInfo]
     };
   }
 
