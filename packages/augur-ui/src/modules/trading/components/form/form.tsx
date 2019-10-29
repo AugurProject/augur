@@ -42,6 +42,7 @@ interface FromProps {
   clearOrderConfirmation: Function;
   initialLiquidity?: Boolean;
   orderBook: OutcomeOrderBook;
+  availableDai: BigNumber;
 }
 
 interface TestResults {
@@ -560,6 +561,16 @@ class Form extends Component<FromProps, FormState> {
     updateSelectedOutcome(value);
   }
 
+  updateTotalValue(percent: Number) {
+    const {
+      availableDai
+    } = this.props;
+
+    const value = availableDai.times(createBigNumber(percent));
+
+    this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString());
+  }
+
   render() {
     const {
       market,
@@ -747,23 +758,24 @@ class Form extends Component<FromProps, FormState> {
           <li>
             {!initialLiquidity && (
               <>
-                <Checkbox
-                  id="tr__input--do-no-create-orders"
-                  type="checkbox"
-                  isChecked={!!s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-                  value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-                  smallOnDesktop
-                  onClick={e =>
-                    updateState({
-                      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: !s[
-                        this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
-                      ],
-                    })
-                  }
-                />
-                <label htmlFor="tr__input--do-no-create-orders">
-                  Fill Orders Only
-                </label>
+                <div>
+                  <CancelTextButton
+                    text="25%"
+                    action={() => this.updateTotalValue(.25)}
+                  />
+                  <CancelTextButton
+                    text="50%"
+                    action={() => this.updateTotalValue(.50)}
+                  />
+                  <CancelTextButton
+                    text="75%"
+                    action={() => this.updateTotalValue(.75)}
+                  />
+                  <CancelTextButton
+                    text="100%"
+                    action={() => this.updateTotalValue(1)}
+                  />
+                </div>
                 <CancelTextButton
                   text="clear"
                   action={() => this.clearOrderFormProperties()}
