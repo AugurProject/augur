@@ -1592,7 +1592,12 @@ div.ButtonsRow:last-of-type {
 }
 
 .Gas {
-  .CondensedContainer;
+  .Container;
+
+  max-width: 27.8125rem; // 445px
+  @media @breakpoint-max-tablet {
+    max-width: 21.5rem; // 340px
+  }
 
   > main {
     > h2 {
@@ -1602,11 +1607,99 @@ div.ButtonsRow:last-of-type {
       margin-top: @size-16;
     }
 
-    > p {
-      .mono-10;
+    > p:first-of-type {
+      .text-12;
 
       color: @color-primary-text;
-      margin: 0 0 @size-16;
+      margin: 0 0 @size-24;
+
+      @media @breakpoint-max-tablet {
+        margin: 0 0 @size-16;
+      }
+    }
+
+    > p:last-of-type {
+      .text-10;
+
+      color: #848294;
+      margin-top: @size-24;
+    }
+
+    > div:first-of-type {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: @size-12;
+
+      @media @breakpoint-max-tablet {
+        flex-direction: column;
+        margin-bottom: @size-16;
+      }
+
+      > div {
+        background-color: #252429;
+        cursor: pointer;
+        padding: 4px 8px;
+        color: #fff;
+        border-radius: @size-3;
+        border: @size-1 solid #3C3B43;
+        width: 100%;
+
+        > div:first-of-type {
+          font-weight: @weight-bold;
+
+          > span:first-of-type {
+            color: #AFA7C1;
+            font-family: @roboto-mono;
+            font-size: @size-11;
+            text-transform: uppercase;
+          }
+
+          > span:nth-of-type(2) {
+            color: #848294;
+            font-family: @roboto;
+            font-size: @size-10;
+            font-weight: @weight-normal;
+          }
+        }
+
+        > div:nth-of-type(2) {
+          font-size: @size-10;
+
+          > span:first-of-type {
+            color: #AFA7C1;
+            font-family: @roboto-mono;
+          }
+
+          > span:nth-of-type(2) {
+            color: #848294;
+            font-family: @roboto;
+          }
+        }
+      }
+
+      > div:nth-of-type(2) {
+        margin: 0 @size-5;
+
+        @media @breakpoint-max-tablet {
+          margin: @size-8 0;
+        }
+      }
+
+      div.GasCheckedButton {
+        background-color: #252429;
+        color: #fff;
+        border: @size-1 solid #09CFE1;
+
+        > div:first-of-type {
+          > span:first-of-type {
+            color: #E9E5F2;
+            font-family: @roboto-mono;
+            font-size: @size-11;
+            text-transform: uppercase;
+          }
+        }
+      }
     }
   }
 }
