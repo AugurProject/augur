@@ -476,6 +476,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateTradeNumShares={this.updateTradeNumShares}
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
+              availableDai={availableDai}
             />
           )}
         </div>
