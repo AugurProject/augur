@@ -87,46 +87,46 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  public getSnapshotBeforeUpdate(prevProps: HardwareWalletProps, prevState: HardwareWalletState) {
-    const { isLoading, isClicked, showAdvanced } = prevProps;
+  public UNSAFE_componentWillUpdate(nextProps: HardwareWalletProps, nextState: HardwareWalletState) {
+    const { isLoading, isClicked, showAdvanced } = this.props;
     if (
-      this.state.walletAddresses !== this.state.walletAddresses &&
-      !this.state.walletAddresses.every((element: number) => !element)
+      nextState.walletAddresses !== this.state.walletAddresses &&
+      !nextState.walletAddresses.every((element: number) => !element)
     ) {
-      this.props.setShowAdvancedButton(true);
+      nextProps.setShowAdvancedButton(true);
     }
 
-    if (this.props.isClicked && !prevState.showWallet) {
+    if (nextProps.isClicked && !this.state.showWallet) {
       // only if connection option was clicked and previously not shown do we want to show it
-      if (!this.props.isLoading && isLoading && this.state.displayInstructions) {
+      if (!nextProps.isLoading && isLoading && nextState.displayInstructions) {
         // if it is not loading and before it was loading and instructions are going to be shown do we show it
         this.showHardwareWallet();
-        this.props.setShowAdvancedButton(false);
+        nextProps.setShowAdvancedButton(false);
       } else if (
-        !this.props.isLoading &&
+        !nextProps.isLoading &&
         isLoading &&
-        !this.state.walletAddresses.every((element: number) => !element)
+        !nextState.walletAddresses.every((element: number) => !element)
       ) {
         // if it is not loading and before it was loading and addresses have been loaded
         this.showHardwareWallet();
-        this.props.setShowAdvancedButton(true);
+        nextProps.setShowAdvancedButton(true);
       }
-    } else if (!this.props.isClicked && prevState.showWallet) {
+    } else if (!nextProps.isClicked && this.state.showWallet) {
       // if it has been clicked off and previously it was being shown do we hide
       this.hideHardwareWallet();
     }
 
-    if (isClicked !== this.props.isClicked && this.props.isClicked) {
+    if (isClicked !== nextProps.isClicked && nextProps.isClicked) {
       // this is if the button was clicked, need to reupdate on click
       this.getWalletAddressesWithBalance().catch(logError);
     }
 
-    if (showAdvanced !== this.props.showAdvanced) {
+    if (showAdvanced !== nextProps.showAdvanced) {
       this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1).catch(logError);
     }
 
-    if (this.state.displayInstructions !== this.state.displayInstructions) {
-      this.updateDisplayInstructions(this.state.displayInstructions);
+    if (this.state.displayInstructions !== nextState.displayInstructions) {
+      this.updateDisplayInstructions(nextState.displayInstructions);
     }
   }
 
