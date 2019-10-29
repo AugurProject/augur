@@ -33,6 +33,15 @@
         font-size: @size-12;
         min-height: @size-16;
 
+        > div {
+          display: flex;
+          flex: 1;
+
+          > button:not(:first-of-type) {
+            margin-left: @size-4;
+          }
+        }
+
         > label {
           .mono-9-bold;
 
