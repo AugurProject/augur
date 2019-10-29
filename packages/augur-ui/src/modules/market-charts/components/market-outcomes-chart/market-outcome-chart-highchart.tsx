@@ -57,7 +57,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           animation: false,
           marginTop: 20,
           marginRight: 0,
-          spacing: [0, 0, 4, 0]
+          spacing: [0, 0, 4, 0],
         },
         credits: {
           enabled: false,
@@ -253,12 +253,16 @@ export default class MarketOutcomesChartHighchart extends Component<
 
     const series = [];
     Object.keys(priceTimeSeries).forEach(id => {
+      const isSelected = selectedOutcomeId && selectedOutcomeId == id
       const baseSeriesOptions = {
-        type: 'line',
+        type: isSelected ? 'area' : 'line',
         lineWidth:
-          selectedOutcomeId && selectedOutcomeId === id
+          isSelected
             ? HIGHLIGHTED_LINE_WIDTH
             : NORMAL_LINE_WIDTH,
+        marker: {
+          symbol: 'cicle',
+        },
         // @ts-ignore
         data: priceTimeSeries[id].map(pts => [
           pts.timestamp,
@@ -266,29 +270,8 @@ export default class MarketOutcomesChartHighchart extends Component<
         ]),
       };
 
-      const events = {
-        mouseOver() {
-          if (this.type === 'line') {
-            this.update({ ...baseSeriesOptions, type: 'area' }, true);
-          }
-        },
-        mouseOut() {
-          this.update({ ...baseSeriesOptions }, true);
-        },
-        click() {
-          this.update(
-            {
-              ...baseSeriesOptions,
-              type: this.type === 'line' ? 'area' : 'line',
-            },
-            true
-          );
-        },
-      };
-
       series.push({
         ...baseSeriesOptions,
-        events: events,
       });
     });
 
@@ -310,7 +293,6 @@ export default class MarketOutcomesChartHighchart extends Component<
       this.chart = Highcharts.stockChart(this.container, newOptions);
       return;
     }
-
     // rebuild chart when we get chart data, afterwards just update
     if (this.chart && hasData && this.chart.xAxis[0].series.length === 0) {
       this.chart = Highcharts.stockChart(this.container, newOptions);
