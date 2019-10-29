@@ -1701,6 +1701,70 @@ div.ButtonsRow:last-of-type {
         }
       }
     }
+
+    > div:nth-of-type(2) {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto;
+      grid-gap: @size-16;
+      align-items: flex-end;
+      justify-content: space-between;
+      background-color: #161518;
+      border-radius: @size-3;
+      padding: @size-12;
+
+      > div {
+        width: 100%;
+      }
+
+      > div:first-of-type {
+        label {
+          .mono-9-bold;
+
+          color: #AFA7C1;
+        }
+
+        input[type='number'] {
+          .mono-11;
+
+          border: @size-1 solid #3C3B43;
+          color: #E9E5F2;
+          padding: @size-6 @size-16;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        margin: 0 @size-5;
+        border-right: @size-1 solid #3C3B43;
+
+        > div {
+          > span:first-of-type {
+            .mono-10-bold;
+
+            color: #E9E5F2;
+          }
+
+          > span:last-of-type {
+            .text-10-bold;
+
+            color: #848294;
+          }
+        }
+
+        > span {
+          .text-10;
+
+          color: #848294;
+        }
+      }
+
+      > div:nth-of-type(3) {
+        .text-14-bold;
+
+        color: #E9E5F2;
+        padding: 0 0 @size-10 @size-5;
+      }
+    }
   }
 }
 
