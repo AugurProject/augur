@@ -22,9 +22,6 @@ export interface FilterBoxProps {
   sortByStyles?: object;
   noBackgroundBottom?: boolean;
   normalOnMobile?: boolean;
-  toggle?: Function;
-  extend?: boolean;
-  hide?:boolean;
 }
 
 interface FilterBoxState {
@@ -43,7 +40,7 @@ export default class FilterSwitchBox extends React.Component<
     view: false,
   };
 
-  getDerivedStateFromProps(
+  UNSAFE_componentWillUpdate(
     { data }: FilterBoxProps,
     { search, view }: FilterBoxState
   ) {

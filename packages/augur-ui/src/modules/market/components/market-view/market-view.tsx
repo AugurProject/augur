@@ -118,7 +118,7 @@ export default class MarketView extends Component<
     this.toggleMiddleColumn = this.toggleMiddleColumn.bind(this);
   }
 
-  getDerivedStateFromProps() {
+  UNSAFE_componentWillMount() {
     const {
       isConnected,
       loadFullMarket,
@@ -144,23 +144,23 @@ export default class MarketView extends Component<
     }
   }
 
-  getSnapshotBeforeUpdate(prevProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     const {
       isConnected,
       marketId,
       isMarketLoading,
       closeMarketLoadingModal,
-    } = prevProps;
+    } = this.props;
     if (
-      isConnected !== this.props.isConnected &&
-      (this.props.isConnected &&
-        !!this.props.marketId &&
-        (this.props.marketId !== marketId || this.props.marketType === undefined))
+      isConnected !== nextProps.isConnected &&
+      (nextProps.isConnected &&
+        !!nextProps.marketId &&
+        (nextProps.marketId !== marketId || nextProps.marketType === undefined))
     ) {
-      this.props.loadFullMarket(this.props.marketId);
-      this.props.loadMarketTradingHistory(marketId);
+      nextProps.loadFullMarket(nextProps.marketId);
+      nextProps.loadMarketTradingHistory(marketId);
     }
-    if (isMarketLoading !== this.props.isMarketLoading) {
+    if (isMarketLoading !== nextProps.isMarketLoading) {
       closeMarketLoadingModal();
       this.showMarketDisclaimer();
     }
