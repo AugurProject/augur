@@ -891,7 +891,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     selected: this.props.defaultSelected || null,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  getDerivedStateFromProps(nextProps) {
     if (nextProps.defaultSelected !== this.props.defaultSelected) {
       this.updateChecked(nextProps.defaultSelected);
     }
@@ -1138,7 +1138,7 @@ export class RadioTwoLineBarGroup extends Component<
     selected: this.props.defaultSelected || null,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  getDerivedStateFromProps(nextProps) {
     if (nextProps.defaultSelected !== this.props.defaultSelected) {
       this.updateChecked(nextProps.defaultSelected);
     }
@@ -1287,7 +1287,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: TextInputProps) {
+  getDerivedStateFromProps(nextProps: TextInputProps) {
     const { value } = this.props;
     if (value !== nextProps.value) {
       this.setState({ value: nextProps.value });
@@ -1542,7 +1542,7 @@ class IndividualTimeSelector extends React.Component<
     value: this.props.value,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
+  getDerivedStateFromProps(nextProps: IndividualTimeSelectorProps) {
     const { value } = this.props;
     if (value !== nextProps.value) {
       this.setState({ value: nextProps.value });
@@ -1784,25 +1784,25 @@ export class Input extends Component<InputProps, InputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  getDerivedStateFromProps(nextProps) {
     const { value } = this.props;
     if (value !== nextProps.value) {
       this.setState({ value: nextProps.value });
     }
   }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
     if (
-      nextProps.canToggleVisibility &&
-      !nextState.value &&
-      nextState.isHiddenContentVisible
+      this.props.canToggleVisibility &&
+      !this.state.value &&
+      this.state.isHiddenContentVisible
     ) {
       this.updateIsHiddenContentVisible(false);
     }
 
     if (
-      this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible &&
-      nextState.isHiddenContentVisible
+      prevState.isHiddenContentVisible !== this.state.isHiddenContentVisible &&
+      this.state.isHiddenContentVisible
     ) {
       this.timeoutVisibleHiddenContent();
     }
