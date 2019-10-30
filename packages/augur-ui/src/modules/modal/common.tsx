@@ -129,7 +129,6 @@ export interface MarketReviewProps {
   description: string;
   details: string;
   endTime: any;
-  resolutionSource: string;
 }
 
 export interface MarketReviewState {
@@ -589,7 +588,7 @@ export class MarketReview extends Component<
   };
 
   render() {
-    const { description, details, endTime, resolutionSource } = this.props;
+    const { description, details, endTime } = this.props;
     const { readMore } = this.state;
 
     const showReadMore = details && details.length > 126;
@@ -624,11 +623,6 @@ export class MarketReview extends Component<
             <div>{endTime.formattedTimezone}</div>
           </div>
         )}
-
-        <div>
-          <p>Resolution source</p>
-          {resolutionSource || 'General knowledge'}
-        </div>
       </section>
     );
   }
