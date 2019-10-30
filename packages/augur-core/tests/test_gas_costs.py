@@ -115,22 +115,22 @@ def test_orderFilling(localFixture, market):
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[2])
 
 def test_winningShareRedmption(localFixture, cash, market):
-    claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
+    shareToken= localFixture.contracts['ShareToken']
 
-    acquireLongShares(localFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
+    acquireLongShares(localFixture, cash, market, YES, 1, shareToken.address, sender = localFixture.accounts[1])
     finalizeMarket(localFixture, market, [0, 0, market.getNumTicks()])
 
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds", CLAIM_PROCEEDS):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
 def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categorical8Market):
-    claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
+    shareToken= localFixture.contracts['ShareToken']
 
-    acquireLongShares(localFixture, cash, categorical8Market, 7, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
+    acquireLongShares(localFixture, cash, categorical8Market, 7, 1, shareToken.address, sender = localFixture.accounts[1])
     finalizeMarket(localFixture, categorical8Market, [0, 0, 0, 0, 0, 0, 0, categorical8Market.getNumTicks()])
 
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds categorical market", CLAIM_PROCEEDS_CATEGORICAL_MARKET):
-        claimTradingProceeds.claimTradingProceeds(categorical8Market.address, localFixture.accounts[1], nullAddress)
+        shareToken.claimTradingProceeds(categorical8Market.address, localFixture.accounts[1], nullAddress)
 
 def test_initial_report(localFixture, universe, cash, market):
     proceedToDesignatedReporting(localFixture, market)

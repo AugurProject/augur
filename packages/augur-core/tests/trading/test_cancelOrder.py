@@ -9,18 +9,18 @@ def test_cancelBid(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     orderType = BID
     amount = fix(1)
     fxpPrice = 60
     outcomeID = YES
     tradeGroupID = longTo32Bytes(42)
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
-    creatorInitialShares = yesShareToken.balanceOf(contractsFixture.accounts[1])
+
+    creatorInitialShares = shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])
     marketInitialCash = cash.balanceOf(market.address)
-    marketInitialYesShares = yesShareToken.totalSupply()
-    marketInitialNoShares = noShareToken.totalSupply()
+    marketInitialYesShares = shareToken.totalSupplyForMarketOutcome(market.address, YES)
+    marketInitialNoShares = shareToken.totalSupplyForMarketOutcome(market.address, NO)
     with BuyWithCash(cash, fix(fxpPrice), contractsFixture.accounts[1], "The sender didn't get cost deducted for create order"):
         orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender=contractsFixture.accounts[1])
 
@@ -46,26 +46,25 @@ def test_cancelBid(contractsFixture, cash, market, universe):
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert(cash.balanceOf(contractsFixture.accounts[1]) == fix('60')), "Maker's cash balance should be order size"
     assert(marketInitialCash == cash.balanceOf(market.address)), "Market's cash balance should be the same as before the order was placed"
-    assert(creatorInitialShares == yesShareToken.balanceOf(contractsFixture.accounts[1])), "Maker's shares should be unchanged"
-    assert(marketInitialYesShares == yesShareToken.totalSupply()), "Market's yes shares should be unchanged"
-    assert marketInitialNoShares == noShareToken.totalSupply(), "Market's no shares should be unchanged"
+    assert(creatorInitialShares == shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])), "Maker's shares should be unchanged"
+    assert(marketInitialYesShares == shareToken.totalSupplyForMarketOutcome(market.address, YES)), "Market's yes shares should be unchanged"
+    assert marketInitialNoShares == shareToken.totalSupplyForMarketOutcome(market.address, NO), "Market's no shares should be unchanged"
 
 def test_cancelAsk(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
+    shareToken = contractsFixture.contracts["ShareToken"]
 
     orderType = ASK
     amount = fix(1)
     fxpPrice = 60
     outcomeID = 1
     tradeGroupID = longTo32Bytes(42)
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
-    creatorInitialShares = yesShareToken.balanceOf(contractsFixture.accounts[1])
+    creatorInitialShares = shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])
     marketInitialCash = cash.balanceOf(market.address)
-    marketInitialYesShares = yesShareToken.totalSupply()
-    marketInitialNoShares = noShareToken.totalSupply()
+    marketInitialYesShares = shareToken.totalSupplyForMarketOutcome(market.address, YES)
+    marketInitialNoShares = shareToken.totalSupplyForMarketOutcome(market.address, NO)
     with BuyWithCash(cash, fix(100 - fxpPrice), contractsFixture.accounts[1], "create order"):
         orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender=contractsFixture.accounts[1])
     assert(orderID != bytearray(32)), "Order ID should be non-zero"
@@ -81,18 +80,16 @@ def test_cancelAsk(contractsFixture, cash, market):
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert(marketInitialCash == cash.balanceOf(market.address)), "Market's cash balance should be the same as before the order was placed"
-    assert(creatorInitialShares == yesShareToken.balanceOf(contractsFixture.accounts[1])), "Maker's shares should be unchanged"
-    assert(marketInitialYesShares == yesShareToken.totalSupply()), "Market's yes shares should be unchanged"
-    assert marketInitialNoShares == noShareToken.totalSupply(), "Market's no shares should be unchanged"
+    assert(creatorInitialShares == shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])), "Maker's shares should be unchanged"
+    assert(marketInitialYesShares == shareToken.totalSupplyForMarketOutcome(market.address, YES)), "Market's yes shares should be unchanged"
+    assert marketInitialNoShares == shareToken.totalSupplyForMarketOutcome(market.address, NO), "Market's no shares should be unchanged"
 
 def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
 
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
     totalProceeds = fix('12', market.getNumTicks())
     marketCreatorFee = totalProceeds / market.getMarketCreatorSettlementFeeDivisor()
     reporterFee = totalProceeds / universe.getOrCacheReportingFeeDivisor()
@@ -100,23 +97,22 @@ def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
 
     # buy complete sets
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == fix(12)
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == fix(12)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(12)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(12)
 
-    creatorInitialShares = yesShareToken.balanceOf(contractsFixture.accounts[1])
+    creatorInitialShares = shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])
     marketInitialCash = cash.balanceOf(market.address)
-    marketInitialYesShares = yesShareToken.totalSupply()
-    marketInitialNoShares = noShareToken.totalSupply()
+    marketInitialYesShares = shareToken.totalSupplyForMarketOutcome(market.address, YES)
+    marketInitialNoShares = shareToken.totalSupplyForMarketOutcome(market.address, NO)
 
     # create BID order for YES with NO shares escrowed
-    assert noShareToken.approve(createOrder.address, fix(12), sender = contractsFixture.accounts[1])
     orderID = createOrder.publicCreateOrder(BID, fix(12), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[1])
     assert orderID
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == fix(12)
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(12)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == 0
 
     # now cancel the order
     assert(cancelOrder.cancelOrder(orderID, sender=contractsFixture.accounts[1]) == 1), "cancelOrder should succeed"
@@ -129,18 +125,17 @@ def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert(marketInitialCash == cash.balanceOf(market.address)), "Market's cash balance should be the same as before the order was placed"
-    assert(creatorInitialShares == yesShareToken.balanceOf(contractsFixture.accounts[1])), "Maker's shares should be unchanged"
-    assert(marketInitialYesShares == yesShareToken.totalSupply()), "Market's yes shares should be unchanged"
-    assert marketInitialNoShares == noShareToken.totalSupply(), "Market's no shares should be unchanged"
+    assert(creatorInitialShares == shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])), "Maker's shares should be unchanged"
+    assert(marketInitialYesShares == shareToken.totalSupplyForMarketOutcome(market.address, YES)), "Market's yes shares should be unchanged"
+    assert marketInitialNoShares == shareToken.totalSupplyForMarketOutcome(market.address, NO), "Market's no shares should be unchanged"
 
 def test_cancelWithSharesInEscrowAsk(contractsFixture, cash, market, universe):
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
+    shareToken = contractsFixture.contracts["ShareToken"]
 
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
     totalProceeds = fix('12', market.getNumTicks())
     marketCreatorFee = totalProceeds / market.getMarketCreatorSettlementFeeDivisor()
     reporterFee = totalProceeds / universe.getOrCacheReportingFeeDivisor()
@@ -148,23 +143,22 @@ def test_cancelWithSharesInEscrowAsk(contractsFixture, cash, market, universe):
 
     # buy complete sets
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
+        assert shareToken.publicBuyCompleteSets(market.address, fix(12), sender = contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == fix(12)
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == fix(12)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(12)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(12)
 
-    creatorInitialShares = yesShareToken.balanceOf(contractsFixture.accounts[1])
+    creatorInitialShares = shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])
     marketInitialCash = cash.balanceOf(market.address)
-    marketInitialYesShares = yesShareToken.totalSupply()
-    marketInitialNoShares = noShareToken.totalSupply()
+    marketInitialYesShares = shareToken.totalSupplyForMarketOutcome(market.address, YES)
+    marketInitialNoShares = shareToken.totalSupplyForMarketOutcome(market.address, NO)
 
     # create ASK order for YES with YES shares escrowed
-    assert noShareToken.approve(createOrder.address, fix(12), sender = contractsFixture.accounts[1])
     orderID = createOrder.publicCreateOrder(ASK, fix(12), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[1])
     assert orderID
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == 0
-    assert noShareToken.balanceOf(contractsFixture.accounts[1]) == fix(12)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == fix(12)
 
     # now cancel the order
     assert(cancelOrder.cancelOrder(orderID, sender=contractsFixture.accounts[1]) == 1), "cancelOrder should succeed"
@@ -177,9 +171,9 @@ def test_cancelWithSharesInEscrowAsk(contractsFixture, cash, market, universe):
     assert orders.getBetterOrderId(orderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert(marketInitialCash == cash.balanceOf(market.address)), "Market's cash balance should be the same as before the order was placed"
-    assert(creatorInitialShares == yesShareToken.balanceOf(contractsFixture.accounts[1])), "Maker's shares should be unchanged"
-    assert(marketInitialYesShares == yesShareToken.totalSupply()), "Market's yes shares should be unchanged"
-    assert marketInitialNoShares == noShareToken.totalSupply(), "Market's no shares should be unchanged"
+    assert(creatorInitialShares == shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1])), "Maker's shares should be unchanged"
+    assert(marketInitialYesShares == shareToken.totalSupplyForMarketOutcome(market.address, YES)), "Market's yes shares should be unchanged"
+    assert marketInitialNoShares == shareToken.totalSupplyForMarketOutcome(market.address, NO), "Market's no shares should be unchanged"
 
 def test_exceptions(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']

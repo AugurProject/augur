@@ -748,13 +748,13 @@ export async function claimMarketsProceeds(
   const augur = augurSdk.get();
 
   if (markets.length > 1) {
-    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+    augur.contracts.augurTrading.claimMarketsProceeds(
       markets,
       shareHolder,
       affiliateAddress
     );
   } else {
-    augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    augur.contracts.augurTrading.claimTradingProceeds(
       markets[0],
       shareHolder,
       affiliateAddress

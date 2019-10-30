@@ -120,7 +120,7 @@ Claim Trading Proceeds Call API
 // Claim Trading Proceeds Call API Examples:
 var _market = "0xc4ba20cbafe3a3655a2f2e4df4ac7f942a722017";
 
-augur.api.ClaimTradingProceeds.calculateCreatorFee({
+augur.api.shareToken.calculateCreatorFee({
   _market: _market,
   _amount: "0xc3280e4b4b",
 }, function(error, creatorFee) {
@@ -129,7 +129,7 @@ augur.api.ClaimTradingProceeds.calculateCreatorFee({
 // example output:
 "1"
 
-augur.api.ClaimTradingProceeds.calculateProceeds({
+augur.api.shareToken.calculateProceeds({
   _market: _market,
   _outcome: "0x0",
   _numberOfShares: "0x2b5e3af16b1880000"
@@ -141,7 +141,7 @@ augur.api.ClaimTradingProceeds.calculateProceeds({
 ```
 Provides JavaScript bindings for the [ClaimTradingProceeds Solidity Contract](https://github.com/AugurProject/augur-core/blob/master/source/contracts/trading/ClaimTradingProceeds.sol), which allows profits earned from trading to be claimed.
 
-### augur.api.ClaimTradingProceeds.calculateCreatorFee(p, callback)
+### augur.api.shareToken.calculateCreatorFee(p, callback)
 
 Calculates the [Creator Fee](#creator-fee) that will be paid when settling a specific number of [Shares](#share) in a given [Market](#market).
 
@@ -156,7 +156,7 @@ Calculates the [Creator Fee](#creator-fee) that will be paid when settling a spe
 
 * (string) Creator Fee, in attoETH, as a stringified unsigned integer.
 
-### augur.api.ClaimTradingProceeds.calculateProceeds(p, callback)
+### augur.api.shareToken.calculateProceeds(p, callback)
 
 Calculates the amount of [attoETH](#atto-prefix) that a number of [Shares](#share) in a particular [Outcome](#outcome) of a given [Market](#market) are worth. (NOTE: This calculation does not deduct [Reporting Fees](#reporting-fee).
 

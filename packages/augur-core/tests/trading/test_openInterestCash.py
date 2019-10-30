@@ -89,6 +89,7 @@ def test_openInterestCash_payFees(contractsFixture, augur, universe, cash, marke
             assert openInterestCash.withdraw(depositAmount)
 
 def test_completeSets(contractsFixture, augur, universe, cash, market):
+    shareToken = contractsFixture.contracts["ShareToken"]
     openInterestCashAddress = universe.openInterestCash()
     openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
 
@@ -106,6 +107,6 @@ def test_completeSets(contractsFixture, augur, universe, cash, market):
     assert openInterestCash.buyCompleteSets(market.address, numCompleteSets)
 
     for i in range(0, 3):
-        assert contractsFixture.applySignature("ShareToken", market.getShareToken(i)).balanceOf(account1) == numCompleteSets
+        assert shareToken.balanceOfMarketOutcome(market.address, i, account1) == numCompleteSets
 
     assert openInterestCash.feesPaid() == initialFeesPaid + (numCompleteSets * market.getNumTicks() / universe.getOrCacheReportingFeeDivisor())
