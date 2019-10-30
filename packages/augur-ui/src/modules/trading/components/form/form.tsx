@@ -624,8 +624,6 @@ class Form extends Component<FromProps, FormState> {
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
 
-    console.log(s);
-
     return (
       <div className={Styles.TradingForm}>
         <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
