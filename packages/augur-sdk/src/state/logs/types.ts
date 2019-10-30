@@ -351,6 +351,14 @@ export interface TokenBalanceChangedLog extends Log, Doc {
   outcome: string;
 }
 
+export interface ShareTokenBalanceChangedLog extends Log, Doc {
+  universe: Address;
+  account: Address;
+  market: Address;
+  outcome: string;
+  balance: string;
+}
+
 export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
   universe: Address;
   shareToken: Address;

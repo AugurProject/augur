@@ -10,8 +10,6 @@ export interface EthersSigner {
   sendTransaction(transaction: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse>;
   getAddress(): Promise<string>;
   signMessage(message: ethers.utils.Arrayish | string): Promise<string>;
-  // TODO: Review use of this.
-  signDigest(message: ethers.utils.Arrayish | string): Promise<ethers.utils.Signature>;
 }
 
 export interface EthersProvider {

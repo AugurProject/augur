@@ -210,6 +210,11 @@ export class Users {
       orderState: OrderState.OPEN,
     });
 
+    const marketList = await Markets.getMarkets(augur, db, {
+      creator: params.account,
+      universe: params.universe,
+    });
+
     // user created markets are included, REP staked as no-show bond
     const userStakedRep: AccountReportingHistory = await Accounts.getAccountRepStakeSummary(augur, db, {
       account: params.account,
@@ -269,7 +274,7 @@ export class Users {
       userStakedRep,
       userPositions,
       userPositionTotals,
-      marketsInfo
+      marketsInfo: [...marketList.markets, ...marketsInfo]
     };
   }
 
@@ -517,13 +522,11 @@ try {
     );
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const shareTokenBalances = await db.findTokenBalanceChangedLogs(
-      params.account,
+    const shareTokenBalances = await db.findShareTokenBalanceChangedLogs(
       {
         selector: {
           universe: params.universe,
-          owner: params.account,
-          tokenType: 1, // ShareToken  TODO: Get from constants somewhere
+          account: params.account,
         },
       }
     );
@@ -596,11 +599,11 @@ try {
     );
 
     // Create mapping for market/outcome balances
-    const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
-      params.account,
+    const tokenBalanceChangedLogs = await db.findShareTokenBalanceChangedLogs(
       {
         selector: {
           market: { $in: marketIds },
+          account: params.account,
         },
       }
     );

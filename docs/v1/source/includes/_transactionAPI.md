@@ -506,7 +506,7 @@ var claimTradingProceedsAddress = "0x53ebdf8b5babda8e59a217436266696efcd8d166";
 
 var _market = "0xc4ba20cbafe3a3655a2f2e4df4ac7f942a722017";
 
-augur.api.ClaimTradingProceeds.calculateReportingFee({
+augur.api.shareToken.calculateReportingFee({
   _market: _market,
   _amount: "0xc3280e4b4b",
   tx: { 
@@ -539,7 +539,7 @@ augur.api.ClaimTradingProceeds.claimTradingProceeds({
 ```
 Provides JavaScript bindings for the [ClaimTradingProceeds Solidity Contract](https://github.com/AugurProject/augur-core/blob/master/source/contracts/trading/ClaimTradingProceeds.sol), which allows profits earned from trading to be claimed.
 
-### augur.api.ClaimTradingProceeds.calculateReportingFee(p)
+### augur.api.shareToken.calculateReportingFee(p)
 
 Calculates the [Reporting Fee](#reporting-fee) that will be paid when settling a specific number of [Shares](#share) in a given [Market](#market).
 

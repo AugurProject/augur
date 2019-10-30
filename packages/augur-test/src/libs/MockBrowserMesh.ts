@@ -1,21 +1,13 @@
-import { BigNumber } from "bignumber.js";
-import {
-    BrowserMesh,
-    BrowserMeshConfiguration,
-    WrapperOrderEvent,
-    ZeroXTradeOrder,
-    WrapperValidationResults,
-    WrapperAcceptedOrderInfo,
-    WrapperSignedOrder
-} from '@augurproject/sdk';
-import { WSClient } from '@0x/mesh-rpc-client';
+import { OrderInfo, WSClient, OrderEvent, ValidationResults, AcceptedOrderInfo } from '@0x/mesh-rpc-client';
+import { SignedOrder } from '@0x/types';
+import { orderHashUtils } from '@0x/order-utils';
 import * as _ from 'lodash';
 
 export class MockBrowserMesh {
     readonly meshClient: WSClient;
-    readonly orders: {[orderHash: string]: WrapperAcceptedOrderInfo};
+    readonly orders: {[orderHash: string]: OrderInfo};
     private errorCallback: (err: Error) => void = console.log;
-    private orderEventsCallback: (events: WrapperOrderEvent[]) => void;
+    private orderEventsCallback: (events: OrderEvent[]) => void;
 
     constructor(meshClient: WSClient) {
         this.meshClient = meshClient;
@@ -30,22 +22,23 @@ export class MockBrowserMesh {
         this.errorCallback = handler;
     }
 
-    onOrderEvents(handler: (events: WrapperOrderEvent[]) => void): void {
+    onOrderEvents(handler: (events: OrderEvent[]) => void): void {
         this.orderEventsCallback = handler;
     }
 
-    async addOrdersAsync(orders: WrapperSignedOrder[]): Promise<WrapperValidationResults> {
+    async addOrdersAsync(orders: SignedOrder[]): Promise<ValidationResults> {
         const accepted = [];
         const rejected = [];
         try {
             for (const order of orders) {
-                const storedOrder: WrapperAcceptedOrderInfo = {
-                    orderHash: order.orderHash,
+                const orderHash = orderHashUtils.getOrderHashHex(order);
+                const storedOrder: AcceptedOrderInfo = {
+                    orderHash,
                     signedOrder: order,
                     fillableTakerAssetAmount: order.takerAssetAmount,
                     isNew: true
                 }
-                this.orders[order.orderHash] = storedOrder;
+                this.orders[orderHash] = storedOrder;
                 accepted.push(storedOrder);
             }
             this.broadcastOrders(orders);
@@ -61,21 +54,11 @@ export class MockBrowserMesh {
         }
     }
 
-    broadcastOrders(orders: WrapperSignedOrder[]): void {
-        const clientOrders = _.map(orders, (order) => {
-            return Object.assign(order, {
-                makerAssetAmount: new BigNumber(order.makerAssetAmount),
-                takerAssetAmount: new BigNumber(order.takerAssetAmount),
-                makerFee: new BigNumber(order.makerFee),
-                takerFee: new BigNumber(order.takerFee),
-                expirationTimeSeconds: new BigNumber(order.expirationTimeSeconds),
-                salt: new BigNumber(order.salt),
-            })
-        })
-        this.meshClient.addOrdersAsync(clientOrders);
+    broadcastOrders(orders: SignedOrder[]): void {
+        this.meshClient.addOrdersAsync(orders);
     }
 
-    notifySubscribersOrderAdded(orders: WrapperOrderEvent[]): void {
+    notifySubscribersOrderAdded(orders: OrderEvent[]): void {
         if (this.orderEventsCallback) {
             this.orderEventsCallback(orders);
         }

@@ -7,91 +7,12 @@ import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
-import { OrderInfo, WSClient } from '@0x/mesh-rpc-client';
+import { OrderInfo, WSClient, OrderEvent, ValidationResults } from '@0x/mesh-rpc-client';
+import { SignedOrder } from '@0x/types';
 import { signatureUtils } from '@0x/order-utils';
 import { Web3ProviderEngine } from '@0x/subproviders';
 import { SignerSubprovider } from "../zeroX/SignerSubprovider";
 import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
-
-export enum OrderEventEndState {
-  Invalid = 'INVALID',
-  Added = 'ADDED',
-  Filled = 'FILLED',
-  FullyFilled = 'FULLY_FILLED',
-  Cancelled = 'CANCELLED',
-  Expired = 'EXPIRED',
-  Unfunded = 'UNFUNDED',
-  FillabilityIncreased = 'FILLABILITY_INCREASED',
-}
-
-export interface WrapperOrderEvent {
-  orderHash: string;
-  signedOrder: ZeroXTradeOrder;
-  endState: OrderEventEndState;
-  fillableTakerAssetAmount: string;
-  contractEvents: any[];
-}
-
-export interface WrapperValidationResults {
-  accepted: WrapperAcceptedOrderInfo[];
-  rejected: WrapperRejectedOrderInfo[];
-}
-
-export interface WrapperSignedOrder {
-  makerAddress: string;
-  makerAssetData: string;
-  makerAssetAmount: string;
-  makerFee: string;
-  takerAddress: string;
-  takerAssetData: string;
-  takerAssetAmount: string;
-  takerFee: string;
-  senderAddress: string;
-  exchangeAddress: string;
-  feeRecipientAddress: string;
-  expirationTimeSeconds: string;
-  orderHash: string;
-  salt: string;
-  signature: string;
-}
-
-// The type for accepted orders exposed by MeshWrapper.
-export interface WrapperAcceptedOrderInfo {
-  orderHash: string;
-  signedOrder: WrapperSignedOrder;
-  fillableTakerAssetAmount: string;
-  isNew: boolean;
-}
-
-export interface RejectedOrderInfo {
-  orderHash: string;
-  signedOrder: WrapperSignedOrder;
-  kind: RejectedOrderKind;
-  status: RejectedOrderStatus;
-}
-
-export interface RejectedOrderStatus {
-  code: string;
-  message: string;
-}
-
-/**
-* A set of categories for rejected orders.
-*/
-export enum RejectedOrderKind {
-  ZeroExValidation = 'ZEROEX_VALIDATION',
-  MeshError = 'MESH_ERROR',
-  MeshValidation = 'MESH_VALIDATION',
-  CoordinatorError = 'COORDINATOR_ERROR',
-}
-
-// The type for rejected orders exposed by MeshWrapper.
-export interface WrapperRejectedOrderInfo {
-  orderHash: string;
-  signedOrder: ZeroXTradeOrder;
-  kind: RejectedOrderKind;
-  status: RejectedOrderStatus;
-}
 
 export enum Verbosity {
   Panic = 0,
@@ -117,8 +38,8 @@ export interface BrowserMeshConfiguration {
 export interface BrowserMesh {
   startAsync(): Promise<void>;
   onError(handler: (err: Error) => void): void;
-  onOrderEvents(handler: (events: WrapperOrderEvent[]) => void): void;
-  addOrdersAsync(orders: WrapperSignedOrder[]): Promise<WrapperValidationResults>;
+  onOrderEvents(handler: (events: OrderEvent[]) => void): void;
+  addOrdersAsync(orders: SignedOrder[]): Promise<ValidationResults>;
 }
 
 export interface ZeroXPlaceTradeDisplayParams extends PlaceTradeDisplayParams {
@@ -183,19 +104,30 @@ export class ZeroX {
   private readonly browserMesh: BrowserMesh;
   private readonly providerEngine: Web3ProviderEngine;
 
-  constructor(augur: Augur, meshClient: WSClient, browserMesh: BrowserMesh) {
+  constructor(augur: Augur, meshClient: WSClient, browserMesh?: BrowserMesh) {
     this.augur = augur;
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
-    this.browserMesh.startAsync();
+    if (this.browserMesh) {
+      this.browserMesh.startAsync();
+    }
     this.providerEngine = new Web3ProviderEngine();
     this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
     this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
     this.providerEngine.start();
   }
 
-  async subscribeToMeshEvents(callback: (orderEvents: WrapperOrderEvent[]) => void): Promise<void> {
-    await this.browserMesh.onOrderEvents(callback);
+  async subscribeToMeshEvents(callback: (orderEvents: OrderEvent[]) => void): Promise<void> {
+    if (this.browserMesh) {
+      await this.browserMesh.onOrderEvents(callback);
+    } else {
+      await this.meshClient.subscribeToOrdersAsync(callback);
+    }
+  }
+
+  async getOrders(): Promise<OrderInfo[]> {
+    return await this.meshClient.getOrdersAsync();
+    // TODO when browser mesh supports this back out to using it if meshClient not provided
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -221,7 +153,9 @@ export class ZeroX {
 
     const { orders, signatures, orderIds } = await this.getMatchingOrders(params, ignoreOrders);
 
-    if (_.size(orders) < 1 && !params.doNotCreateOrders) {
+    const numOrders = _.size(orders);
+
+    if (numOrders < 1 && !params.doNotCreateOrders) {
       await this.placeOnChainOrder(params);
       return;
     }
@@ -231,12 +165,17 @@ export class ZeroX {
 
     let result: Event[] = [];
 
+    const gasPrice = await this.augur.getGasPrice();
+
+    const protocolFee = gasPrice.multipliedBy(150000 * numOrders);
+
     result = await this.augur.contracts.ZeroXTrade.trade(
       params.amount,
       params.affiliateAddress,
       params.tradeGroupId,
       orders,
-      signatures);
+      signatures,
+      { attachedEth: protocolFee });
 
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
     if (amountRemaining.gt(0)) {
@@ -273,19 +212,23 @@ export class ZeroX {
       takerAddress: signedOrder[1],
       feeRecipientAddress: signedOrder[2],
       senderAddress: signedOrder[3],
-      makerAssetAmount: signedOrder[4]._hex,
-      takerAssetAmount: signedOrder[5]._hex,
-      makerFee: signedOrder[6]._hex,
-      takerFee: signedOrder[7]._hex,
-      expirationTimeSeconds: signedOrder[8]._hex,
-      salt: signedOrder[9]._hex,
+      makerAssetAmount: new BigNumber(signedOrder[4]._hex),
+      takerAssetAmount: new BigNumber(signedOrder[5]._hex),
+      makerFee: new BigNumber(signedOrder[6]._hex),
+      takerFee: new BigNumber(signedOrder[7]._hex),
+      expirationTimeSeconds: new BigNumber(signedOrder[8]._hex),
+      salt: new BigNumber(signedOrder[9]._hex),
       makerAssetData: signedOrder[10],
       takerAssetData: signedOrder[11],
       signature,
       exchangeAddress: NULL_ADDRESS,
       orderHash
     }
-    await this.browserMesh.addOrdersAsync([zeroXOrder]);
+    if (this.browserMesh) {
+      await this.browserMesh.addOrdersAsync([zeroXOrder]);
+    } else {
+      await this.meshClient.addOrdersAsync([zeroXOrder]);
+    }
     return orderHash;
   }
 
@@ -440,9 +383,5 @@ export class ZeroX {
       loopLimit,
       gasLimit,
     };
-  }
-
-  async getOrders(): Promise<OrderInfo[]> {
-    return await this.meshClient.getOrdersAsync();
   }
 }

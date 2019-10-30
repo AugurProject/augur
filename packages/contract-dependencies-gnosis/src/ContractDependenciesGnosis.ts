@@ -161,12 +161,13 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       gasToken,
       refundReceiver,
       nonce);
-    let sig = await this.signer.signDigest(ethers.utils.arrayify(txHashBytes));
+    let flatSig = await this.signer.signMessage(ethers.utils.arrayify(txHashBytes));
+    let sig = ethers.utils.splitSignature(flatSig);
 
     const signatures = [{
       s: new BigNumber(sig.s, 16).toFixed(),
       r: new BigNumber(sig.r, 16).toFixed(),
-      v: sig.v!
+      v: sig.v! + 4
     }];
 
     const relayTransaction = Object.assign({
