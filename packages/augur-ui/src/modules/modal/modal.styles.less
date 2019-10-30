@@ -2689,7 +2689,14 @@ div.ButtonsRow:last-of-type {
     }
   }
 
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+  
   @media @breakpoint-mobile-mid {
+
     > main {
       > div:first-of-type {
         padding: 0 @size-16;
