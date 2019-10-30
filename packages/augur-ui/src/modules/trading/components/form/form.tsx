@@ -36,6 +36,21 @@ enum EXPIRATION_DATE_OPTIONS {
   CUSTOM = '1',
 }
 
+const advancedDropdownOptions = [
+  {
+    label: 'Good till cancelled',
+    value: ADVANCED_OPTIONS.GOOD_TILL,
+  },
+  {
+    label: 'Order expiration',
+    value: ADVANCED_OPTIONS.EXPIRATION,
+  },
+  {
+    label: 'Fill only',
+    value: ADVANCED_OPTIONS.FILL,
+  },
+];
+
 interface FromProps {
   market: MarketData;
   marketType: string;
@@ -61,6 +76,7 @@ interface FromProps {
   orderBook: OutcomeOrderBook;
   availableDai: BigNumber;
   currentTimestamp: number;
+  Ox_ENABLED: boolean;
 }
 
 interface TestResults {
@@ -131,7 +147,7 @@ class Form extends Component<FromProps, FormState> {
       lastInputModified: '',
       errorCount: 0,
       showAdvanced: false,
-      advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
+      advancedOption: advancedDropdownOptions[0].value,
       fastForwardDays: DEFAULT_EXPIRATION_DAYS,
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
     };
@@ -614,6 +630,7 @@ class Form extends Component<FromProps, FormState> {
       sortedOutcomes,
       initialLiquidity,
       currentTimestamp,
+      Ox_ENABLED
     } = this.props;
     const s = this.state;
 
@@ -635,6 +652,11 @@ class Form extends Component<FromProps, FormState> {
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
+
+    let advancedOptions = advancedDropdownOptions;
+    if (!Ox_ENABLED) {
+      advancedOptions = [advancedOptions[0], advancedOptions[2]];
+    }
 
     return (
       <div className={Styles.TradingForm}>
@@ -827,58 +849,40 @@ class Form extends Component<FromProps, FormState> {
           {s.showAdvanced && (
             <li>
               <SquareDropdown
-                defaultValue={ADVANCED_OPTIONS.GOOD_TILL}
-                options={[
-                  {
-                    label: 'Good till cancelled',
-                    value: ADVANCED_OPTIONS.GOOD_TILL,
-                  },
-                  {
-                    label: 'Order expiration',
-                    value: ADVANCED_OPTIONS.EXPIRATION,
-                  },
-                  {
-                    label: 'Fill only',
-                    value: ADVANCED_OPTIONS.FILL,
-                  },
-                ]}
+                defaultValue={advancedOptions[0].value}
+                options={advancedOptions}
                 onChange={value => {
-                  if (value === ADVANCED_OPTIONS.FILL) {
-                    updateState({
-                      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: true,
-                    });
-                  } else if (value !== ADVANCED_OPTIONS.FILL) {
-                    updateState({
-                      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
-                    });
-                  }
+                  const date =
+                    value === ADVANCED_OPTIONS.EXPIRATION
+                      ? moment(currentTimestamp * 1000)
+                          .add(DEFAULT_EXPIRATION_DAYS, 'days')
+                          .unix()
+                      : '';
 
-                  if (value === ADVANCED_OPTIONS.EXPIRATION) {
-                    updateState({
-                      [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
-                        currentTimestamp * 1000
-                      )
-                        .add(DEFAULT_EXPIRATION_DAYS, 'days')
-                        .unix(),
-                    });
-                  } else if (value !== ADVANCED_OPTIONS.EXPIRATION) {
-                    updateState({
-                      [this.INPUT_TYPES.EXPIRATION_DATE]: '',
-                    });
-                  }
+                  updateState({
+                    [this.INPUT_TYPES.EXPIRATION_DATE]: date,
+                    [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
+                      value === ADVANCED_OPTIONS.FILL,
+                  });
 
-                  this.setState({ advancedOption: value, fastForwardDays: DEFAULT_EXPIRATION_DAYS, expirationDateOption: '0' });
+                  this.setState({
+                    advancedOption: value,
+                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: '0',
+                  });
                 }}
               />
               {s.advancedOption === '1' && (
                 <div>
                   <div>
-                    {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                    {s.expirationDateOption ===
+                      EXPIRATION_DATE_OPTIONS.DAYS && (
                       <TextInput
                         value={s.fastForwardDays.toString()}
                         placeholder={'0'}
                         onChange={value => {
-                          const days = value === '' || isNaN(value) ? 0 : parseInt(value);
+                          const days =
+                            value === '' || isNaN(value) ? 0 : parseInt(value);
                           updateState({
                             [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
                               currentTimestamp * 1000
@@ -918,7 +922,7 @@ class Form extends Component<FromProps, FormState> {
                   )}
                 </div>
               )}
-              {s.advancedOption === ADVANCED_OPTIONS.FILLS && (
+              {s.advancedOption === ADVANCED_OPTIONS.FILL && (
                 <span>
                   Fill Only will fill up to the specified amount. Can be
                   partially filled and will cancel the remaining balance.

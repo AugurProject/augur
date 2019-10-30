@@ -486,6 +486,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
               availableDai={availableDai}
+              Ox_ENABLED={true}
             />
           )}
         </div>
