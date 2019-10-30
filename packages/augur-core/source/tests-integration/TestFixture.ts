@@ -7,7 +7,7 @@ import { CreateDeployerConfiguration } from '../libraries/DeployerConfiguration'
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import {
-  DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe,
+  DisputeWindow, ShareToken, TimeControlled, Cash, Universe,
   Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer,
   TestNetReputationToken, CashFaucet } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
@@ -25,6 +25,7 @@ export class TestFixture {
     get universe() { return this.contractDeployer.universe!; }
     get cash() { return new Cash(this.dependencies, this.contractDeployer.getContractAddress('Cash')); }
     get cashFaucet() { return new CashFaucet(this.dependencies, this.contractDeployer.getContractAddress('CashFaucet')); }
+    get shareToken() { return new ShareToken(this.dependencies, this.contractDeployer.getContractAddress('ShareToken')); }
 
     constructor(dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, contractDeployer: ContractDeployer, account: string) {
         this.contractDeployer = contractDeployer;
@@ -55,6 +56,14 @@ export class TestFixture {
     async approveCentralAuthority(): Promise<void> {
         const authority = this.contractDeployer.getContractAddress('Augur');
         await this.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+
+        const fillOrder = this.contractDeployer.getContractAddress('FillOrder');
+        await this.cash.approve(fillOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+        await this.shareToken.setApprovalForAll(fillOrder, true);
+
+        const createOrder = this.contractDeployer.getContractAddress('CreateOrder');
+        await this.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+        await this.shareToken.setApprovalForAll(createOrder, true);
     }
 
     async faucet(attoCash: BigNumber): Promise<void> {
@@ -131,9 +140,9 @@ export class TestFixture {
     }
 
     async claimTradingProceeds(market: Market, shareholder: string, affailiateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
-        const claimTradingProceedsContract = await this.contractDeployer.getContractAddress('ClaimTradingProceeds');
-        const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
-        await claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affailiateAddress);
+        const shareTokenContract = await this.contractDeployer.getContractAddress('ShareToken');
+        const shareToken = new ShareToken(this.dependencies, shareTokenContract);
+        await shareToken.claimTradingProceeds(market.address, shareholder, affailiateAddress);
         return;
     }
 
@@ -166,22 +175,22 @@ export class TestFixture {
     }
 
     async buyCompleteSets(market: Market, amount: BigNumber): Promise<void> {
-        const completeSetsContract = await this.contractDeployer.getContractAddress('CompleteSets');
-        const completeSets = new CompleteSets(this.dependencies, completeSetsContract);
+        const shareTokenContract = await this.contractDeployer.getContractAddress('ShareToken');
+        const shareToken = new ShareToken(this.dependencies, shareTokenContract);
 
         const numTicks = await market.getNumTicks_();
         const ethValue = amount.multipliedBy(numTicks);
 
         await this.cashFaucet.faucet(ethValue);
-        await completeSets.publicBuyCompleteSets(market.address, amount);
+        await shareToken.publicBuyCompleteSets(market.address, amount);
         return;
     }
 
     async sellCompleteSets(market: Market, amount: BigNumber): Promise<void> {
-        const completeSetsContract = await this.contractDeployer.getContractAddress('CompleteSets');
-        const completeSets = new CompleteSets(this.dependencies, completeSetsContract);
+        const shareTokenContract = await this.contractDeployer.getContractAddress('ShareToken');
+        const shareToken = new ShareToken(this.dependencies, shareTokenContract);
 
-        await completeSets.publicSellCompleteSets(market.address, amount);
+        await shareToken.publicSellCompleteSets(market.address, amount);
         return;
     }
 
@@ -203,9 +212,9 @@ export class TestFixture {
     }
 
     async getNumSharesInMarket(market: Market, outcome: BigNumber): Promise<BigNumber> {
-        const shareTokenAddress = await market.getShareToken_(outcome);
+        const shareTokenAddress = await this.contractDeployer.getContractAddress('ShareToken');
         const shareToken = new ShareToken(this.dependencies, shareTokenAddress);
-        return shareToken.balanceOf_(this.account);
+        return shareToken.balanceOfMarketOutcome_(market.address, outcome, this.account);
     }
 
     async getDisputeWindow(market: Market): Promise<DisputeWindow> {

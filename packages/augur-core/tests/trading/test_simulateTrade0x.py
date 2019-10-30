@@ -81,7 +81,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert numFills == 1
 
     cash.faucet(cost, sender=account1)
-    assert ZeroXTrade.trade(amount, nullAddress, tradeGroupID, orders, signatures, sender=account1) == 0
+    assert ZeroXTrade.trade(amount, nullAddress, tradeGroupID, orders, signatures, sender=account1, value=150000) == 0
 
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(SHORT, amount, price, market.address, outcome, kycToken, expirationTime, zeroXExchange.address, salt, sender=account0)
     signature = signOrder(orderHash, senderPrivateKey0)
@@ -251,7 +251,7 @@ def test_fees(contractsFixture, cash, market, universe):
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
     cash = contractsFixture.contracts["Cash"]
-    completeSets = contractsFixture.contracts["CompleteSets"]
+    shareToken = contractsFixture.contracts["ShareToken"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
     direction = SHORT
@@ -274,11 +274,10 @@ def test_fees(contractsFixture, cash, market, universe):
 
     # Buy and distribute complete sets
     cash.faucet(amount * market.getNumTicks(), sender=makerAccount)
-    completeSets.publicBuyCompleteSets(market.address, amount, sender=makerAccount)
-    invalidShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(0))
-    noShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(NO))
-    invalidShareToken.transfer(fillerAccount, amount, sender=makerAccount)
-    noShareToken.transfer(fillerAccount, amount, sender=makerAccount)
+    shareToken.publicBuyCompleteSets(market.address, amount, sender=makerAccount)
+
+    shareToken.safeTransferFrom(makerAccount, fillerAccount, shareToken.getTokenId(market.address, 0), amount, "", sender=makerAccount)
+    shareToken.safeTransferFrom(makerAccount, fillerAccount, shareToken.getTokenId(market.address, NO), amount, "", sender=makerAccount)
 
     # Make order
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, kycToken, expirationTime, zeroXExchange.address, salt, sender=makerAccount)
@@ -292,28 +291,28 @@ def simulate_then_trade(contractsFixture, market, outcome, orderDirection, order
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    shareToken = contractsFixture.contracts["ShareToken"]
     cash = contractsFixture.contracts["Cash"]
     shareTokenOutcome = outcome if orderDirection == LONG else ((outcome + 1) % 3)
-    shareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(shareTokenOutcome))
     tradeGroupID = longTo32Bytes(42)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateZeroXTrade(orders, fillAmount, fillOnly, sender=fillerAccount)
 
     cash.faucet(tokensDepleted, sender=fillerAccount)
     initialCashBalance = cash.balanceOf(fillerAccount)
-    initialShareBalance = shareToken.balanceOf(fillerAccount)
+    initialShareBalance = shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, fillerAccount)
 
     expectedAmountRemaining = fillAmount - sharesFilled
-    assert ZeroXTrade.trade(fillAmount, nullAddress, tradeGroupID, orders, signatures, sender=fillerAccount) == expectedAmountRemaining 
+    assert ZeroXTrade.trade(fillAmount, nullAddress, tradeGroupID, orders, signatures, sender=fillerAccount, value=150000*len(orders)) == expectedAmountRemaining 
 
     if (tokensDepleted > 0):
         assert tokensDepleted == initialCashBalance - cash.balanceOf(fillerAccount)
     if (sharesDepleted > 0):
-        assert sharesDepleted == initialShareBalance - shareToken.balanceOf(fillerAccount)
+        assert sharesDepleted == initialShareBalance - shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, fillerAccount)
 
     expectedSharesFilled = 0
     expectedNumFills = 0
-    orderEventLogs = contractsFixture.contracts["Augur"].getLogs("OrderEvent")
+    orderEventLogs = contractsFixture.contracts["AugurTrading"].getLogs("OrderEvent")
     for log in orderEventLogs:
         if log.args.eventType == 2: # Fill Event
             expectedSharesFilled += log.args.uint256Data[6]
