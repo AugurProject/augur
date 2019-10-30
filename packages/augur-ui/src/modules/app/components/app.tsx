@@ -405,7 +405,7 @@ export default class AppView extends Component<AppProps> {
               )}
               <section
                 className={classNames(Styles.Main__content, {
-                  [Styles.ModalShowing: Object.keys(modal).length !== 0,
+                  [Styles.ModalShowing]: Object.keys(modal).length !== 0,
                   [Styles.SideNavOpen]:
                     sidebarStatus.mobileMenuState ===
                     MOBILE_MENU_STATES.SIDEBAR_OPEN,
