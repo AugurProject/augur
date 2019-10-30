@@ -451,7 +451,6 @@ function getPayoutNumerators(inputs: doReportDisputeAddStake) {
 export interface CreateNewMarketParams {
   outcomes?: string[];
   scalarDenomination: string;
-  expirySource: string;
   description: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -497,7 +496,6 @@ export function createMarketRetry(market: CreateMarketData) {
     scalarDenomination: extraInfo._scalarDenomination,
     marketType: market.marketType,
     endTime: market.endTime.timestamp,
-    expirySource: extraInfo.resolutionSource,
     description: market.description,
     designatedReporterAddress: market.txParams._designatedReporterAddress,
     minPrice: market.txParams._prices && market.txParams._prices[0],

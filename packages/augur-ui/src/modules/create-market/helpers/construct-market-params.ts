@@ -33,7 +33,6 @@ export function constructMarketParams(
     categories: newMarket.categories,
     description: newMarket.description,
     longDescription: newMarket.detailsText,
-    resolutionSource: newMarket.expirySource,
     _scalarDenomination: newMarket.scalarDenomination,
     offsetName: newMarket.offsetName,
   });
@@ -95,7 +94,6 @@ export function constructMarketParamsReturn(
     categories: newMarket.categories,
     description: newMarket.description,
     longDescription: newMarket.detailsText,
-    resolutionSource: newMarket.expirySource,
     _scalarDenomination: newMarket.scalarDenomination,
     offsetName: newMarket.offsetName,
   });

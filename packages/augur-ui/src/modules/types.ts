@@ -281,7 +281,6 @@ export interface NewMarketPropertiesValidations {
   type?: string;
   designatedReporterType?: string;
   designatedReporterAddress?: string;
-  expirySourceType?: string;
   setEndTime?: string;
   hour?: string;
   minute?: string;
@@ -311,8 +310,6 @@ export interface NewMarket {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -362,8 +359,6 @@ export interface Draft {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;

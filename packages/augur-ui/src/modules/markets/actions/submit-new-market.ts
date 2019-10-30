@@ -53,7 +53,6 @@ export function submitNewMarket(
           outcomes: market.outcomes,
           scalarDenomination: market.scalarDenomination,
           description: market.description,
-          expirySource: market.expirySource,
           designatedReporterAddress: market.designatedReporterAddress,
           minPrice: market.minPrice,
           maxPrice: market.maxPrice,
