@@ -21,8 +21,20 @@ import { Getters } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment from 'moment';
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
+import { DateTimeSelector } from 'modules/create-market/components/common';
 
 const DEFAULT_EXPIRATION_DAYS = 30;
+
+enum ADVANCED_OPTIONS {
+  GOOD_TILL = '0',
+  EXPIRATION = '1',
+  FILL = '2',
+}
+
+enum EXPIRATION_DATE_OPTIONS {
+  DAYS = '0',
+  CUSTOM = '1',
+}
 
 interface FromProps {
   market: MarketData;
@@ -119,9 +131,9 @@ class Form extends Component<FromProps, FormState> {
       lastInputModified: '',
       errorCount: 0,
       showAdvanced: false,
-      advancedOption: '0',
+      advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
       fastForwardDays: DEFAULT_EXPIRATION_DAYS,
-      expirationDateOption: '0',
+      expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
     };
 
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
@@ -815,33 +827,33 @@ class Form extends Component<FromProps, FormState> {
           {s.showAdvanced && (
             <li>
               <SquareDropdown
-                defaultValue={'0'}
+                defaultValue={ADVANCED_OPTIONS.GOOD_TILL}
                 options={[
                   {
                     label: 'Good till cancelled',
-                    value: '0',
+                    value: ADVANCED_OPTIONS.GOOD_TILL,
                   },
                   {
                     label: 'Order expiration',
-                    value: '1',
+                    value: ADVANCED_OPTIONS.EXPIRATION,
                   },
                   {
                     label: 'Fill only',
-                    value: '2',
+                    value: ADVANCED_OPTIONS.FILL,
                   },
                 ]}
                 onChange={value => {
-                  if (value === '2') {
+                  if (value === ADVANCED_OPTIONS.FILL) {
                     updateState({
                       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: true,
                     });
-                  } else if (value !== '2') {
+                  } else if (value !== ADVANCED_OPTIONS.FILL) {
                     updateState({
                       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
                     });
                   }
 
-                  if (value === '1') {
+                  if (value === ADVANCED_OPTIONS.EXPIRATION) {
                     updateState({
                       [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
                         currentTimestamp * 1000
@@ -849,7 +861,7 @@ class Form extends Component<FromProps, FormState> {
                         .add(DEFAULT_EXPIRATION_DAYS, 'days')
                         .unix(),
                     });
-                  } else if (value !== '1') {
+                  } else if (value !== ADVANCED_OPTIONS.EXPIRATION) {
                     updateState({
                       [this.INPUT_TYPES.EXPIRATION_DATE]: '',
                     });
@@ -861,7 +873,7 @@ class Form extends Component<FromProps, FormState> {
               {s.advancedOption === '1' && (
                 <div>
                   <div>
-                    {s.expirationDateOption === '0' && (
+                    {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                       <TextInput
                         value={s.fastForwardDays.toString()}
                         placeholder={'0'}
@@ -879,15 +891,15 @@ class Form extends Component<FromProps, FormState> {
                       />
                     )}
                     <SquareDropdown
-                      defaultValue={'0'}
+                      defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
                       options={[
                         {
                           label: 'Days',
-                          value: '0',
+                          value: EXPIRATION_DATE_OPTIONS.DAYS,
                         },
                         {
                           label: 'Custom',
-                          value: '1',
+                          value: EXPIRATION_DATE_OPTIONS.CUSTOM,
                         },
                       ]}
                       onChange={value => {
@@ -895,7 +907,7 @@ class Form extends Component<FromProps, FormState> {
                       }}
                     />
                   </div>
-                  {s.expirationDateOption === '0' && (
+                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
                     <span>
                       {
                         convertUnixToFormattedDate(
@@ -906,7 +918,7 @@ class Form extends Component<FromProps, FormState> {
                   )}
                 </div>
               )}
-              {s.advancedOption === '2' && (
+              {s.advancedOption === ADVANCED_OPTIONS.FILLS && (
                 <span>
                   Fill Only will fill up to the specified amount. Can be
                   partially filled and will cancel the remaining balance.
