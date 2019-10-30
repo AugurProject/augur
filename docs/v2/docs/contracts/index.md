@@ -2969,7 +2969,7 @@ Setup function sets initial storage of contract.
  @param fallbackHandler Handler for fallback calls to this contract
  @param paymentToken Token that should be used for the payment (0 is ETH)
  @param payment Value that should be paid
- @param paymentReceiver Address that should receive the payment (or 0 if tx.origin)
+ @param paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
 
 
 
