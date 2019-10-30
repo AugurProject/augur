@@ -10,7 +10,7 @@ DAI_ONE = 10**27
 def test_dsr_interest(contractsFixture, market, universe, cash):
     daiPot = contractsFixture.contracts["DaiPot"]
     daiVat = contractsFixture.contracts["DaiVat"]
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
 
     assert daiPot.setDSR(DAI_ONE)
 
@@ -18,7 +18,7 @@ def test_dsr_interest(contractsFixture, market, universe, cash):
     numCompleteSets = 10**18
     cost = numCompleteSets * market.getNumTicks()
     assert cash.faucet(cost)
-    assert completeSets.publicBuyCompleteSets(market.address, numCompleteSets)
+    assert shareToken.publicBuyCompleteSets(market.address, numCompleteSets)
 
     initialUniverseCashBalance = universe.totalBalance()
 
@@ -35,4 +35,4 @@ def test_dsr_interest(contractsFixture, market, universe, cash):
     assert cash.balanceOf(nextDisputeWindow.address) == initialUniverseCashBalance * 0.05
 
     # close out complete sets
-    assert completeSets.publicSellCompleteSets(market.address, numCompleteSets)
+    assert shareToken.publicSellCompleteSets(market.address, numCompleteSets)

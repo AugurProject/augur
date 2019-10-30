@@ -7,6 +7,7 @@ export type SomeTime = ContractInterfaces.Time | ContractInterfaces.TimeControll
 
 export class Contracts {
   augur: ContractInterfaces.Augur;
+  augurTrading: ContractInterfaces.AugurTrading;
   universe: ContractInterfaces.Universe;
   cash: ContractInterfaces.Cash;
   orders: ContractInterfaces.Orders;
@@ -14,8 +15,7 @@ export class Contracts {
   cancelOrder: ContractInterfaces.CancelOrder;
   fillOrder: ContractInterfaces.FillOrder;
   trade: ContractInterfaces.Trade;
-  completeSets: ContractInterfaces.CompleteSets;
-  claimTradingProceeds: ContractInterfaces.ClaimTradingProceeds;
+  shareToken: ContractInterfaces.ShareToken;
   time: SomeTime | void;
   legacyReputationToken: ContractInterfaces.LegacyReputationToken;
   simulateTrade: ContractInterfaces.SimulateTrade;
@@ -33,6 +33,7 @@ export class Contracts {
   constructor (addresses: ContractAddresses, dependencies: ContractDependenciesEthers) {
     this.dependencies = dependencies;
     this.augur = new ContractInterfaces.Augur(dependencies, addresses.Augur);
+    this.augurTrading = new ContractInterfaces.AugurTrading(dependencies, addresses.AugurTrading);
 
     this.universe = new ContractInterfaces.Universe(dependencies, addresses.Universe);
     this.cash = new ContractInterfaces.Cash(dependencies, addresses.Cash);
@@ -41,8 +42,7 @@ export class Contracts {
     this.cancelOrder = new ContractInterfaces.CancelOrder(dependencies, addresses.CancelOrder);
     this.fillOrder = new ContractInterfaces.FillOrder(dependencies, addresses.FillOrder);
     this.trade = new ContractInterfaces.Trade(dependencies, addresses.Trade);
-    this.completeSets = new ContractInterfaces.CompleteSets(dependencies, addresses.CompleteSets);
-    this.claimTradingProceeds = new ContractInterfaces.ClaimTradingProceeds(dependencies, addresses.ClaimTradingProceeds);
+    this.shareToken = new ContractInterfaces.ShareToken(dependencies, addresses.ShareToken);
     this.legacyReputationToken = new ContractInterfaces.LegacyReputationToken(dependencies, addresses.LegacyReputationToken);
     this.simulateTrade = new ContractInterfaces.SimulateTrade(dependencies, addresses.SimulateTrade);
     this.gnosisSafe = new ContractInterfaces.GnosisSafe(dependencies, addresses.GnosisSafe);

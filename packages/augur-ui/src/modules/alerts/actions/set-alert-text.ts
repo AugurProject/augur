@@ -266,14 +266,16 @@ export default function setAlertText(alert: any, callback: Function) {
               : getOutcomeNameWithOutcome(
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
-                  false
+                  false,
+                  true
                 );
             payoutNumeratorResultObject.malformed
               ? MALFORMED_OUTCOME
               : getOutcomeNameWithOutcome(
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
-                  payoutNumeratorResultObject.invalid
+                  payoutNumeratorResultObject.invalid,
+                  true
                 );
             alert.description = marketInfo.description;
             alert.details = `${repAmount} REP added to "${outcomeDescription}"`;
@@ -304,6 +306,7 @@ export default function setAlertText(alert: any, callback: Function) {
                   marketInfo,
                   payoutNumeratorResultObject.outcome,
                   payoutNumeratorResultObject.invalid,
+                  true
                 );
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;

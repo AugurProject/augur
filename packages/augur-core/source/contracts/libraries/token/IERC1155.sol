@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity ^0.5.5;
+pragma solidity 0.5.10;
 
 
 /// @title ERC-1155 Multi Token Standard
@@ -137,6 +137,11 @@ interface IERC1155 {
     /// @param id     ID of the Token
     /// @return        The _owner's balance of the Token type requested
     function balanceOf(address owner, uint256 id) external view returns (uint256);
+
+    /// @notice Get the total supply of a Token.
+    /// @param id     ID of the Token
+    /// @return        The total supply of the Token type requested
+    function totalSupply(uint256 id) external view returns (uint256);
 
     /// @notice Get the balance of multiple account/token pairs
     /// @param owners The addresses of the token holders

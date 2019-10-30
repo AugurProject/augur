@@ -3,7 +3,6 @@ import React from 'react';
 import {
   Title,
   ButtonsRow,
-  SelectableTable,
   AlertMessage,
 } from 'modules/modal/common';
 
@@ -93,7 +92,7 @@ export class Gas extends React.Component<GasProps, GasState> {
             For more important transactions such as securing a sell order before anyone else takes it,
             we recommend a faster transaction fee.*
           </p>
-          <div className='gas-buttons'>
+          <div>
             {gasButtonsData.map(data => (
               <div onClick={data.action}
                    className={classNames({
@@ -105,16 +104,30 @@ export class Gas extends React.Component<GasProps, GasState> {
               </div>
             ))}
           </div>
-          <input
-            id='price'
-            placeholder='price'
-            step={1}
-            type='number'
-            value={this.state.amount}
-            onChange={(e) => {
-              this.updateAmount(parseFloat(e.target.value));
-            }}
-          />
+          <div>
+            <div>
+              <label>Gas Price (GWEI)</label>
+              <input
+                id='price'
+                placeholder='price'
+                step={1}
+                type='number'
+                value={this.state.amount}
+                onChange={(e) => {
+                  this.updateAmount(parseFloat(e.target.value));
+                }}
+              />
+            </div>
+            <div>
+              <div>
+                <span>&lt; $0.059</span><span> / Trade</span>
+              </div>
+              <span>0.012441 ETH</span>
+            </div>
+            <div>
+              <span>~ 30 seconds</span>
+            </div>
+          </div>
           {showLowAlert && (
             <AlertMessage preText='Transactions are unlikely to be processed at your current gas price.' />
           )}

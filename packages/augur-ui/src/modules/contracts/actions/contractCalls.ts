@@ -465,7 +465,6 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
-  backupSource?: string;
 }
 
 export function createMarket(
@@ -509,7 +508,6 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
-    backupSource: extraInfo.backupSource,
   };
 
   return createMarket(newMarket, true);
@@ -750,13 +748,13 @@ export async function claimMarketsProceeds(
   const augur = augurSdk.get();
 
   if (markets.length > 1) {
-    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+    augur.contracts.augurTrading.claimMarketsProceeds(
       markets,
       shareHolder,
       affiliateAddress
     );
   } else {
-    augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    augur.contracts.augurTrading.claimTradingProceeds(
       markets[0],
       shareHolder,
       affiliateAddress

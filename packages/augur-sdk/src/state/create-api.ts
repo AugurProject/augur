@@ -21,7 +21,7 @@ async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch 
   const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, account);
 
   const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], new EmptyConnector(), undefined, enableFlexSearch);
-  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, Addresses[networkId].Augur, augur.events.getEventTopics, augur.events.parseLogs);
+  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, augur.events.getEventTopics, augur.events.parseLogs, augur.events.getEventContractAddress);
   const db = DB.createAndInitializeDB(
     Number(networkId),
     settings.blockstreamDelay,

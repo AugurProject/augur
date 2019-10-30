@@ -522,13 +522,11 @@ try {
     );
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const shareTokenBalances = await db.findTokenBalanceChangedLogs(
-      params.account,
+    const shareTokenBalances = await db.findShareTokenBalanceChangedLogs(
       {
         selector: {
           universe: params.universe,
-          owner: params.account,
-          tokenType: 1, // ShareToken  TODO: Get from constants somewhere
+          account: params.account,
         },
       }
     );
@@ -601,11 +599,11 @@ try {
     );
 
     // Create mapping for market/outcome balances
-    const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
-      params.account,
+    const tokenBalanceChangedLogs = await db.findShareTokenBalanceChangedLogs(
       {
         selector: {
           market: { $in: marketIds },
+          account: params.account,
         },
       }
     );
