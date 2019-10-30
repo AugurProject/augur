@@ -64,7 +64,7 @@ const mapStateToProps = (state, ownProps) => {
     availableEth: createBigNumber(state.loginAccount.balances.eth),
     availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
-    currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
+    currentTimestamp: state.blockchain.currentAugurTimestamp,
     orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
