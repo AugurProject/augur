@@ -81,7 +81,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   componentWillUnmount() {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
-
+/*
   static getDerivedStateFromProps(nextProps) {
     if (
       this.props.defaultValue !== nextProps.defaultValue ||
@@ -94,7 +94,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       });
     }
   }
-
+*/
   componentDidUpdate() {
     this.measure();
   }
@@ -278,7 +278,7 @@ export class StaticLabelDropdown extends Dropdown {
     if (!selected) {
       return null;
     }
-    
+
     return (
       <div
         style={sortByStyles}
