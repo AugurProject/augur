@@ -451,7 +451,6 @@ function getPayoutNumerators(inputs: doReportDisputeAddStake) {
 export interface CreateNewMarketParams {
   outcomes?: string[];
   scalarDenomination: string;
-  expirySource: string;
   description: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -465,7 +464,6 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
-  backupSource?: string;
 }
 
 export function createMarket(
@@ -498,7 +496,6 @@ export function createMarketRetry(market: CreateMarketData) {
     scalarDenomination: extraInfo._scalarDenomination,
     marketType: market.marketType,
     endTime: market.endTime.timestamp,
-    expirySource: extraInfo.resolutionSource,
     description: market.description,
     designatedReporterAddress: market.txParams._designatedReporterAddress,
     minPrice: market.txParams._prices && market.txParams._prices[0],
@@ -509,7 +506,6 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
-    backupSource: extraInfo.backupSource,
   };
 
   return createMarket(newMarket, true);

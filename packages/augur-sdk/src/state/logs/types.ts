@@ -125,8 +125,6 @@ export interface InitialReportSubmittedLog extends Log, Doc, Timestamped {
 export interface MarketCreatedLogExtraInfo {
   description: string;
   longDescription?: string;
-  resolutionSource?: string;
-  backupSource?: string;
   _scalarDenomination?: string;
   categories?: string[];
   tags?: string[];
@@ -388,8 +386,6 @@ export interface LiquidityData {
 
 export interface ExtraInfo {
   _scalarDenomination?: string;
-  resolutionSource?: string;
-  backupSource?: string;
   longDescription?: string;
   description?: string;
   categories?: string[];

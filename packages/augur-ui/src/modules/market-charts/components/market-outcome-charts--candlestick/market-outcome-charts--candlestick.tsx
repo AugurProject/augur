@@ -98,11 +98,12 @@ class MarketOutcomeCandlestick extends React.PureComponent<
       containerHeight,
       defaultCandlePeriod,
     } = this.state;
+    const staticMenuLabel = 'Show Volume in';
     const staticLabel = hoveredPeriod.volume
     ? `V: ${hoveredPeriod.volume
         .toFixed(fixedPrecision)
         .toString()}`
-    : 'Show Volume in';
+    : staticMenuLabel;
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
@@ -120,6 +121,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             defaultValue={DAI}
             options={VOLUME_DAI_SHARES}
             staticLabel={staticLabel}
+            staticMenuLabel={staticMenuLabel}
             onChange={this.updateVolumeType}
             highlight={!!hoveredPeriod.volume}
           />
