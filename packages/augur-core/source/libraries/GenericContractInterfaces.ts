@@ -89,7 +89,11 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925': {"name":"Approval","signature":"Approval(address,address,uint256)","signatureHash":"0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925","parameters":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0x93baa6efbd2244243bfee6ce4cfdd1d04fc4c0e9a786abd3a41313bd352db153': {"name":"InterfaceImplementerSet","signature":"InterfaceImplementerSet(address,bytes32,address)","signatureHash":"0x93baa6efbd2244243bfee6ce4cfdd1d04fc4c0e9a786abd3a41313bd352db153","parameters":[{"indexed":true,"name":"addr","type":"address"},{"indexed":true,"name":"interfaceHash","type":"bytes32"},{"indexed":true,"name":"implementer","type":"address"}]},
 	'0x605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350': {"name":"ManagerChanged","signature":"ManagerChanged(address,address)","signatureHash":"0x605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350","parameters":[{"indexed":true,"name":"addr","type":"address"},{"indexed":true,"name":"newManager","type":"address"}]},
-	'0xabfd711ecdd15ae3a6b3ad16ff2e9d81aec026a39d16725ee164be4fbf857a7c': {"name":"ExecutionFailed","signature":"ExecutionFailed(bytes32)","signatureHash":"0xabfd711ecdd15ae3a6b3ad16ff2e9d81aec026a39d16725ee164be4fbf857a7c","parameters":[{"indexed":false,"name":"txHash","type":"bytes32"}]},
+	'0xf2a0eb156472d1440255b0d7c1e19cc07115d1051fe605b0dce69acfec884d9c': {"name":"ApproveHash","signature":"ApproveHash(bytes32,address)","signatureHash":"0xf2a0eb156472d1440255b0d7c1e19cc07115d1051fe605b0dce69acfec884d9c","parameters":[{"indexed":true,"name":"approvedHash","type":"bytes32"},{"indexed":true,"name":"owner","type":"address"}]},
+	'0xe7f4675038f4f6034dfcbbb24c4dc08e4ebf10eb9d257d3d02c0f38d122ac6e4': {"name":"SignMsg","signature":"SignMsg(bytes32)","signatureHash":"0xe7f4675038f4f6034dfcbbb24c4dc08e4ebf10eb9d257d3d02c0f38d122ac6e4","parameters":[{"indexed":true,"name":"msgHash","type":"bytes32"}]},
+	'0x23428b18acfb3ea64b08dc0c1d296ea9c09702c09083ca5272e64d115b687d23': {"name":"ExecutionFailure","signature":"ExecutionFailure(bytes32,uint256)","signatureHash":"0x23428b18acfb3ea64b08dc0c1d296ea9c09702c09083ca5272e64d115b687d23","parameters":[{"indexed":false,"name":"txHash","type":"bytes32"},{"indexed":false,"name":"payment","type":"uint256"}]},
+	'0x442e715f626346e8c54381002da614f62bee8d27386535b2521ec8540898556e': {"name":"ExecutionSuccess","signature":"ExecutionSuccess(bytes32,uint256)","signatureHash":"0x442e715f626346e8c54381002da614f62bee8d27386535b2521ec8540898556e","parameters":[{"indexed":false,"name":"txHash","type":"bytes32"},{"indexed":false,"name":"payment","type":"uint256"}]},
+	'0x91dd3a56c77e57dda9f470fd8d03a3a6b30a9693edc3a446510682d686cc6d2f': {"name":"IncomingTransaction","signature":"IncomingTransaction(address,uint256)","signatureHash":"0x91dd3a56c77e57dda9f470fd8d03a3a6b30a9693edc3a446510682d686cc6d2f","parameters":[{"indexed":false,"name":"from","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0x9465fa0c962cc76958e6373a993326400c1c94f8be2fe3a952adfa7f60b2ea26': {"name":"AddedOwner","signature":"AddedOwner(address)","signatureHash":"0x9465fa0c962cc76958e6373a993326400c1c94f8be2fe3a952adfa7f60b2ea26","parameters":[{"indexed":false,"name":"owner","type":"address"}]},
 	'0xf8d49fc529812e9a7c5c50e69c20f0dccc0db8fa95c98bc58cc9a4f1c1299eaf': {"name":"RemovedOwner","signature":"RemovedOwner(address)","signatureHash":"0xf8d49fc529812e9a7c5c50e69c20f0dccc0db8fa95c98bc58cc9a4f1c1299eaf","parameters":[{"indexed":false,"name":"owner","type":"address"}]},
 	'0x610f7ff2b304ae8903c3de74c60c6ab1f7d6226b3f52c5161905bb5ad4039c93': {"name":"ChangedThreshold","signature":"ChangedThreshold(uint256)","signatureHash":"0x610f7ff2b304ae8903c3de74c60c6ab1f7d6226b3f52c5161905bb5ad4039c93","parameters":[{"indexed":false,"name":"threshold","type":"uint256"}]},
@@ -1758,19 +1762,19 @@ export class GnosisSafe<TBigNumber> extends Contract<TBigNumber> {
 
 	public execTransaction = async (to: string, value: TBigNumber, data: string, operation: TBigNumber, safeTxGas: TBigNumber, baseGas: TBigNumber, gasPrice: TBigNumber, gasToken: string, refundReceiver: string, signatures: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"}],"name":"execTransaction","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"}],"name":"execTransaction","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, signatures], 'execTransaction', options.sender)
 	}
 	
 	public execTransaction_estimateGas = async (to: string, value: TBigNumber, data: string, operation: TBigNumber, safeTxGas: TBigNumber, baseGas: TBigNumber, gasPrice: TBigNumber, gasToken: string, refundReceiver: string, signatures: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"}],"name":"execTransaction","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"}],"name":"execTransaction","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, signatures], 'execTransaction', options.sender)
 	}
 
 	public execTransaction_ = async (to: string, value: TBigNumber, data: string, operation: TBigNumber, safeTxGas: TBigNumber, baseGas: TBigNumber, gasPrice: TBigNumber, gasToken: string, refundReceiver: string, signatures: string, options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"}],"name":"execTransaction","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"}],"name":"execTransaction","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, signatures], options.sender)
 		return <boolean>result[0]
 	}
@@ -1853,24 +1857,6 @@ export class GnosisSafe<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public setup = async (owners: Array<string>, threshold: TBigNumber, to: string, data: string, paymentToken: string, payment: TBigNumber, paymentReceiver: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_owners","type":"address[]"},{"name":"_threshold","type":"uint256"},{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"paymentToken","type":"address"},{"name":"payment","type":"uint256"},{"name":"paymentReceiver","type":"address"}],"name":"setup","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [owners, threshold, to, data, paymentToken, payment, paymentReceiver], 'setup', options.sender)
-	}
-	
-	public setup_estimateGas = async (owners: Array<string>, threshold: TBigNumber, to: string, data: string, paymentToken: string, payment: TBigNumber, paymentReceiver: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_owners","type":"address[]"},{"name":"_threshold","type":"uint256"},{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"paymentToken","type":"address"},{"name":"payment","type":"uint256"},{"name":"paymentReceiver","type":"address"}],"name":"setup","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [owners, threshold, to, data, paymentToken, payment, paymentReceiver], 'setup', options.sender)
-	}
-
-	public setup_ = async (owners: Array<string>, threshold: TBigNumber, to: string, data: string, paymentToken: string, payment: TBigNumber, paymentReceiver: string, options?: { sender?: string }): Promise<void> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_owners","type":"address[]"},{"name":"_threshold","type":"uint256"},{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"paymentToken","type":"address"},{"name":"payment","type":"uint256"},{"name":"paymentReceiver","type":"address"}],"name":"setup","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [owners, threshold, to, data, paymentToken, payment, paymentReceiver], options.sender)
-	}
-
 	public nonce_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"nonce","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -1883,6 +1869,24 @@ export class GnosisSafe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getModules","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <Array<string>>result[0]
+	}
+
+	public setup = async (owners: Array<string>, threshold: TBigNumber, to: string, data: string, fallbackHandler: string, paymentToken: string, payment: TBigNumber, paymentReceiver: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_owners","type":"address[]"},{"name":"_threshold","type":"uint256"},{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"fallbackHandler","type":"address"},{"name":"paymentToken","type":"address"},{"name":"payment","type":"uint256"},{"name":"paymentReceiver","type":"address"}],"name":"setup","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver], 'setup', options.sender)
+	}
+	
+	public setup_estimateGas = async (owners: Array<string>, threshold: TBigNumber, to: string, data: string, fallbackHandler: string, paymentToken: string, payment: TBigNumber, paymentReceiver: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_owners","type":"address[]"},{"name":"_threshold","type":"uint256"},{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"fallbackHandler","type":"address"},{"name":"paymentToken","type":"address"},{"name":"payment","type":"uint256"},{"name":"paymentReceiver","type":"address"}],"name":"setup","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver], 'setup', options.sender)
+	}
+
+	public setup_ = async (owners: Array<string>, threshold: TBigNumber, to: string, data: string, fallbackHandler: string, paymentToken: string, payment: TBigNumber, paymentReceiver: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_owners","type":"address[]"},{"name":"_threshold","type":"uint256"},{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"fallbackHandler","type":"address"},{"name":"paymentToken","type":"address"},{"name":"payment","type":"uint256"},{"name":"paymentReceiver","type":"address"}],"name":"setup","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver], options.sender)
 	}
 
 	public SAFE_MSG_TYPEHASH_ = async (options?: { sender?: string }): Promise<string> => {
@@ -1991,6 +1995,24 @@ export class GnosisSafe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},{"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},{"name":"refundReceiver","type":"address"},{"name":"_nonce","type":"uint256"}],"name":"encodeTransactionData","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, nonce], options.sender)
 		return <string>result[0]
+	}
+
+	public setFallbackHandler = async (handler: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"handler","type":"address"}],"name":"setFallbackHandler","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [handler], 'setFallbackHandler', options.sender)
+	}
+	
+	public setFallbackHandler_estimateGas = async (handler: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"handler","type":"address"}],"name":"setFallbackHandler","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [handler], 'setFallbackHandler', options.sender)
+	}
+
+	public setFallbackHandler_ = async (handler: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"handler","type":"address"}],"name":"setFallbackHandler","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [handler], options.sender)
 	}
 
 	public domainSeparator_ = async (options?: { sender?: string }): Promise<string> => {
