@@ -21,7 +21,7 @@ def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSaf
 
     gnosisSafeRegistryData = gnosisSafeRegistry.callRegister_encode(gnosisSafeRegistry.address, augur.address, createOrder.address, fillOrder.address, cash.address, shareToken.address)
 
-    gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, 0, nullAddress)
+    gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
     gnosisSafeAddress = proxyFactory.createProxyWithNonce(gnosisSafeMaster.address, gnosisSafeData, saltNonce)
 
     gnosisSafe = contractsFixture.applySignature("GnosisSafe", gnosisSafeAddress)

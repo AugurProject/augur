@@ -137,10 +137,6 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.dependencies.signer.signMessage(message);
   }
 
-  async signDigest(message: Arrayish) {
-    return this.dependencies.signer.signDigest(message);
-  }
-
   async getTimestamp(): Promise<BigNumber> {
     return this.contracts.augur.getTimestamp_();
   }
