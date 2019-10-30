@@ -5,7 +5,6 @@ import {
   ThickChevron,
   Chevron,
   DotDotDot,
-  TwoArrows,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -24,6 +23,7 @@ export interface DropdownProps {
   options: Array<NameValuePair>;
   large?: boolean;
   staticLabel?: string;
+  staticMenuLabel?: string;
   stretchOutOnMobile?: boolean;
   sortByStyles?: object;
   openTop?: boolean;
@@ -82,8 +82,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.defaultValue !== nextProps.defaultValue || JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)) {
+  static getDerivedStateFromProps(nextProps) {
+    if (
+      this.props.defaultValue !== nextProps.defaultValue ||
+      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
+    ) {
       this.setState({
         selected: nextProps.options.find(
           o => o.value === nextProps.defaultValue
@@ -100,7 +103,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     if (
       nextState.selected !== this.state.selected ||
       nextState.showList !== this.state.showList ||
-      this.props.disabled !== nextProps.disabled
+      this.props.disabled !== nextProps.disabled ||
+      this.props.staticLabel !== nextProps.staticLabel
     ) {
       return true;
     }
@@ -161,7 +165,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       staticLabel,
       id,
       showColor,
-      disabled
+      disabled,
     } = this.props;
     const { selected, showList, isDisabled } = this.state;
 
@@ -256,9 +260,7 @@ export class StaticLabelDropdown extends Dropdown {
     const { options, defaultValue } = this.props;
     if (defaultValue) {
       this.setState({
-        selected: options.find(
-          o => o.value === defaultValue
-        ),
+        selected: options.find(o => o.value === defaultValue),
       });
     }
   }
@@ -269,12 +271,14 @@ export class StaticLabelDropdown extends Dropdown {
       options,
       large,
       staticLabel,
+      staticMenuLabel,
       highlight,
     } = this.props;
     const { selected, showList } = this.state;
     if (!selected) {
       return null;
     }
+    
     return (
       <div
         style={sortByStyles}
@@ -282,7 +286,6 @@ export class StaticLabelDropdown extends Dropdown {
           [Styles.Large]: large,
           [Styles.Normal]: !large,
           [Styles.isOpen]: showList,
-          [Styles.highlight]: highlight,
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
@@ -307,7 +310,7 @@ export class StaticLabelDropdown extends Dropdown {
               value={option.value}
               onClick={() => this.dropdownSelect(option)}
             >
-              {staticLabel}
+              {staticMenuLabel}
               &nbsp;
               <b>{option.label}</b>
             </button>

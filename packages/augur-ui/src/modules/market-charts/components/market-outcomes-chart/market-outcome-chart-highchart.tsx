@@ -22,10 +22,9 @@ interface MarketOutcomeChartsHighchartsProps {
 }
 
 interface MarketOutcomeChartsHighchartsState {
-  containerHeight: number;
-  containerWidth: number;
   options: any;
 }
+
 export default class MarketOutcomesChartHighchart extends Component<
   MarketOutcomeChartsHighchartsProps,
   MarketOutcomeChartsHighchartsState
@@ -42,8 +41,6 @@ export default class MarketOutcomesChartHighchart extends Component<
   constructor(props) {
     super(props);
     this.state = {
-      containerHeight: 0,
-      containerWidth: 0,
       options: {
         lang: {
           noData: 'No Completed Trades',
@@ -55,9 +52,9 @@ export default class MarketOutcomesChartHighchart extends Component<
           type: 'line',
           styledMode: false,
           animation: false,
+          reflow: true,
           marginTop: 20,
-          marginRight: 0,
-          spacing: [0, 0, 4, 0],
+          spacing: [0, 8, 10, 0],
         },
         credits: {
           enabled: false,
@@ -84,12 +81,14 @@ export default class MarketOutcomesChartHighchart extends Component<
           ordinal: false,
           showFirstLabel: true,
           showLastLabel: true,
+          tickLength: 7,
+          gridLineWidth: 1,
+          gridLineColor: null,
           labels: {
             format: '{value:%b %d}',
             style: { fontSize: '9px' },
           },
           crosshair: {
-            snap: true,
             label: {
               enabled: true,
               format: '{value:%b %d}',
@@ -103,21 +102,19 @@ export default class MarketOutcomesChartHighchart extends Component<
           min: createBigNumber(props.minPrice).toFixed(props.pricePrecision),
           showFirstLabel: false,
           showLastLabel: true,
+          offset: 2,
           labels: {
             format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
             style: null,
-            x: 0,
+            reserveSpace: true,
             y: 16,
           },
-          height: '100%',
-          resize: {
-            enabled: true,
-          },
           crosshair: {
-            snap: true,
             label: {
-              padding: 4,
+              padding: 2,
               enabled: true,
+              style: null,
+              borderRadius: 5,
               shape: 'square',
               format: props.isScalar ? '{value:.4f}' : '${value:.2f}',
             },
@@ -147,16 +144,12 @@ export default class MarketOutcomesChartHighchart extends Component<
       daysPassed,
       selectedOutcomeId,
     } = this.props;
-    const { containerHeight, containerWidth } = this.state;
     if (
       JSON.stringify(bucketedPriceTimeSeries) !==
         JSON.stringify(nextProps.bucketedPriceTimeSeries) ||
       daysPassed !== nextProps.daysPassed ||
-      selectedOutcomeId !== nextProps.selectedOutcomeId ||
-      containerHeight !== this.container.clientHeight ||
-      containerWidth !== this.container.clientWidth
+      selectedOutcomeId !== nextProps.selectedOutcomeId
     ) {
-      this.onResize();
       this.buidOptions(
         nextProps.daysPassed,
         nextProps.bucketedPriceTimeSeries,
@@ -171,25 +164,6 @@ export default class MarketOutcomesChartHighchart extends Component<
       this.chart = null;
     }
   }
-
-  onResize = () => {
-    if (
-      this.container.clientHeight !== this.state.containerHeight ||
-      this.container.clientWidth !== this.state.containerWidth
-    ) {
-      this.setState({
-        containerHeight: this.container.clientHeight,
-        containerWidth: this.container.clientWidth,
-      });
-
-      const {
-        bucketedPriceTimeSeries,
-        selectedOutcomeId,
-        daysPassed,
-      } = this.props;
-      this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
-    }
-  };
 
   getxAxisProperties = (daysPassed, useTickInterval) => {
     const hours = '{value:%H:%M}';
@@ -239,9 +213,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     }
 
     options.chart = {
-      ...options.chart,
-      height: this.container.clientHeight,
-      width: this.container.clientWidth,
+      ...options.chart
     };
 
     const hasData =
