@@ -503,6 +503,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
+        mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {
