@@ -17,6 +17,7 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
+import LandingHero from 'modules/markets-list/containers/landing-hero';
 
 const PAGINATION_COUNT = 10;
 
@@ -213,6 +214,7 @@ export default class MarketsView extends Component<
       isSearching,
       showInvalidMarketsBannerFeesOrLiquiditySpread,
       showInvalidMarketsBannerHideOrShow,
+      isLogged
     } = this.props;
     const {
       filterSortedMarkets,
@@ -242,6 +244,7 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
+        {!isLogged && <LandingHero/>}
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearching}
