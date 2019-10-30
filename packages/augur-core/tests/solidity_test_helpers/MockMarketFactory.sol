@@ -3,7 +3,7 @@ pragma solidity 0.5.10;
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IReputationToken.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/IAugur.sol';
 
 

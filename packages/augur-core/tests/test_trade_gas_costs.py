@@ -111,7 +111,7 @@ def test_orderCreationMax(numOutcomes, localFixture, markets):
     cost = fix('1', '50')
 
     localFixture.contracts["Cash"].faucet(1000000)
-    assert completeSets.publicBuyCompleteSets(market.address, 100)
+    assert shareToken.publicBuyCompleteSets(market.address, 100)
     outcome = 0
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[7], 100)
@@ -129,7 +129,7 @@ def test_orderCancelationMax(numOutcomes, localFixture, markets):
     market = markets[marketIndex]
 
     localFixture.contracts["Cash"].faucet(1000000)
-    assert completeSets.publicBuyCompleteSets(market.address, 100)
+    assert shareToken.publicBuyCompleteSets(market.address, 100)
     outcome = 0
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[7], 100)
@@ -152,7 +152,7 @@ def test_order_filling_take_shares(numOutcomes, localFixture, markets):
 
     cost = 100 * market.getNumTicks()
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, 100)
+        assert shareToken.publicBuyCompleteSets(market.address, 100)
     outcome = 0
     orderID = createOrder.publicCreateOrder(ASK, 100, 50, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7), nullAddress)
 
@@ -192,7 +192,7 @@ def test_order_filling_maker_reverse(numOutcomes, localFixture, markets):
     cost = fix('1', '50')
 
     localFixture.contracts["Cash"].faucet(1000000)
-    assert completeSets.publicBuyCompleteSets(market.address, 100)
+    assert shareToken.publicBuyCompleteSets(market.address, 100)
     outcome = 0
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[2], 100)
@@ -215,7 +215,7 @@ def test_order_filling_taker_reverse(numOutcomes, localFixture, markets):
     cost = fix('1', '50')
 
     localFixture.contracts["Cash"].faucet(1000000)
-    assert completeSets.publicBuyCompleteSets(market.address, 100)
+    assert shareToken.publicBuyCompleteSets(market.address, 100)
     outcome = 0
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[1], 100)
@@ -238,7 +238,7 @@ def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
     cost = fix('1', '50')
 
     localFixture.contracts["Cash"].faucet(1000000)
-    assert completeSets.publicBuyCompleteSets(market.address, 100)
+    assert shareToken.publicBuyCompleteSets(market.address, 100)
     outcome = 0
     shareToken = localFixture.applySignature('ShareToken', market.getShareToken(outcome))
     shareToken.transfer(localFixture.accounts[1], 100)

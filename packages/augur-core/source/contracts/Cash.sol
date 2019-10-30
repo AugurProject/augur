@@ -2,7 +2,7 @@ pragma solidity 0.5.10;
 
 import 'ROOT/ICashFaucet.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiJoin.sol';
@@ -56,7 +56,6 @@ contract Cash is ITyped, ICash, ICashFaucet {
     function transferFrom(address _from, address _to, uint256 _amount) public returns (bool) {
         uint256 _allowance = allowed[_from][msg.sender];
         require(_amount <= _allowance, "Not enough funds allowed");
-
         if (_allowance != ETERNAL_APPROVAL_VALUE) {
             allowed[_from][msg.sender] = _allowance.sub(_amount);
         }

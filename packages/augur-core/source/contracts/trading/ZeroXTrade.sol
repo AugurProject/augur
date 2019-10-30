@@ -6,9 +6,10 @@ import "ROOT/libraries/ContractExists.sol";
 import "ROOT/libraries/token/IERC20.sol";
 import "ROOT/external/IExchange.sol";
 import "ROOT/trading/IFillOrder.sol";
-import "ROOT/trading/ICash.sol";
+import "ROOT/ICash.sol";
 import "ROOT/trading/Order.sol";
 import "ROOT/trading/IZeroXTrade.sol";
+import "ROOT/trading/IAugurTrading.sol";
 import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
@@ -65,11 +66,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
     IFillOrder public fillOrder;
     ICash public cash;
+    IShareToken public shareToken;
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        fillOrder = IFillOrder(_augur.lookup("FillOrder"));
         cash = ICash(_augur.lookup("Cash"));
+        shareToken = IShareToken(_augur.lookup("ShareToken"));
+
+        fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
@@ -120,29 +124,32 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         }
     }
 
-    function bidBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
-        IShareToken[] memory _shareTokens = _market.getShareTokens();
-        uint256 _numberOfOutcomes = _shareTokens.length;
+    function totalSupply(uint256 id) external view returns (uint256) {
+        return 0;
+    }
+
+    function bidBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
+        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
-        uint256 _attoSharesOwned = 2**254;
-        uint256 _i = 0;
-        for (; _attoSharesOwned > 0 && _i < _outcome; _i++) {
-            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_owner);
-            _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
+        uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+        uint256 _indexOutcome = 0;
+        for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+            if (_i == _outcome) {
+                _indexOutcome++;
+            }
+            _shortOutcomes[_i] = _indexOutcome;
+            _indexOutcome++;
         }
 
-        for (_i++; _attoSharesOwned > 0 && _i < _numberOfOutcomes; _i++) {
-            uint256 _creatorShareTokenBalance = _shareTokens[_i].balanceOf(_owner);
-            _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
-        }
+        uint256 _attoSharesOwned = shareToken.lowestBalanceOfMarketOutcomes(_market, _shortOutcomes, _owner);
 
         uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
 
-    function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) private view returns (uint256) {
-        uint256 _attoSharesOwned = _market.getShareToken(_outcome).balanceOf(_owner);
+    function askBalance(address _owner, IMarket _market, uint8 _outcome, uint256 _price) public view returns (uint256) {
+        uint256 _attoSharesOwned = shareToken.balanceOfMarketOutcome(_market, _outcome, _owner);
         uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_market.getNumTicks().sub(_price));
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
@@ -187,11 +194,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         bytes[] memory _signatures
     )
         public
+        payable
         returns (uint256)
     {
         uint256 _fillAmountRemaining = _requestedFillAmount;
 
         transferFromAllowed = true;
+
+        uint256 _protocolFee = 150000 * tx.gasprice;
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
@@ -199,12 +209,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             validateOrder(_order);
             IExchange _exchange = getExchangeFromAssetData(_order.makerAssetData);
 
-            // Update 0x. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow(
+            // Update 0x and pay protocol fee. This will also validate signatures and order state for us.
+            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow.value(_protocolFee)(
                 _order,
                 _fillAmountRemaining,
                 _signatures[i]
             );
+
             if (totalFillResults.takerAssetFilledAmount == 0) {
                 continue;
             }
@@ -216,16 +227,19 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
 
         transferFromAllowed = false;
 
+        if (address(this).balance > 0) {
+            msg.sender.transfer(address(this).balance);
+        }
+
         return _fillAmountRemaining;
     }
 
-    function validateOrder(IExchange.Order memory _order) internal pure {
+    function validateOrder(IExchange.Order memory _order) internal view {
         (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order.makerAssetData);
         (IERC1155 _zeroXTradeTokenTaker, uint256 _tokenIdTaker) = getZeroXTradeTokenData(_order.takerAssetData);
         require(_zeroXTradeToken == _zeroXTradeTokenTaker);
         require(_tokenId == _tokenIdTaker);
-        // XXX: Needs merge from master to work
-        // XXX require(_zeroXTradeToken == this);
+        require(_zeroXTradeToken == this);
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {

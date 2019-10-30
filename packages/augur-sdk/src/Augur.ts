@@ -81,6 +81,9 @@ export class Augur<TProvider extends Provider = Provider> {
     { EventName: "TradingProceedsClaimed", indexes: []},
     { EventName: "UniverseCreated", indexes: []},
     { EventName: "UniverseForked", indexes: ["universe"]},
+    { EventName: "TransferSingle", indexes: []},
+    { EventName: "TransferBatch", indexes: []},
+    { EventName: "ShareTokenBalanceChanged", indexes: []},
   ];
 
   constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, browserMesh: BrowserMesh = undefined) {
@@ -98,7 +101,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.trade = new Trade(this);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
-    this.events = new Events(this.provider, this.addresses.Augur);
+    this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.universe = new Universe();
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     this.zeroX = meshClient && browserMesh ? new ZeroX(this, meshClient, browserMesh) : undefined;
@@ -132,10 +135,6 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async signMessage(message: Arrayish) {
     return this.dependencies.signer.signMessage(message);
-  }
-
-  async signDigest(message: Arrayish) {
-    return this.dependencies.signer.signDigest(message);
   }
 
   async getTimestamp(): Promise<BigNumber> {

@@ -19,7 +19,7 @@ def test_crowdsourcer_transfer(contractsFixture, market, universe):
         'to': contractsFixture.accounts[1],
         'token': crowdsourcer.address,
         'universe': universe.address,
-        'tokenType': 2,
+        'tokenType': 1,
         'value': transferAmount,
     }
 
@@ -27,7 +27,7 @@ def test_crowdsourcer_transfer(contractsFixture, market, universe):
         'owner': contractsFixture.accounts[0],
         'token': crowdsourcer.address,
         'universe': universe.address,
-        'tokenType': 2,
+        'tokenType': 1,
         'balance': tester0Balance,
     }
 
@@ -35,10 +35,9 @@ def test_crowdsourcer_transfer(contractsFixture, market, universe):
         'owner': contractsFixture.accounts[1],
         'token': crowdsourcer.address,
         'universe': universe.address,
-        'tokenType': 2,
+        'tokenType': 1,
         'balance': tester1Balance,
     }
-
 
     with AssertLog(contractsFixture, "TokensTransferred", crowdsourcerTokenTransferLog):
         with AssertLog(contractsFixture, "TokenBalanceChanged", crowdsourcerTokenBalance0Log):
@@ -47,9 +46,6 @@ def test_crowdsourcer_transfer(contractsFixture, market, universe):
 
 def test_malicious_shady_parties(contractsFixture, universe):
     maliciousMarketHaver = contractsFixture.upload('solidity_test_helpers/MaliciousMarketHaver.sol', 'maliciousMarketHaver')
-
-    maliciousMarketHaver.setMarket(universe.address)
-    assert not universe.isContainerForShareToken(maliciousMarketHaver.address)
 
     maliciousMarketHaver.setMarket(nullAddress)
     assert not universe.isContainerForReportingParticipant(maliciousMarketHaver.address)
