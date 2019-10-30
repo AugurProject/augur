@@ -38,16 +38,15 @@ export interface UploadBlockNumbers {[networkId: string]: number}
 export interface ContractAddresses {
     Universe: string;
     Augur: string;
+    AugurTrading: string;
     LegacyReputationToken: string;
     CancelOrder: string;
     Cash: string;
-    ClaimTradingProceeds: string;
-    CompleteSets: string;
+    ShareToken: string;
     CreateOrder: string;
     FillOrder: string;
     Order: string;
     Orders: string;
-    ShareToken: string;
     Trade: string;
     SimulateTrade: string;
     Controller?: string;

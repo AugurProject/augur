@@ -34,8 +34,11 @@ export class Gnosis {
   async createGnosisSafeDirectlyWithETH(account: string): Promise<string> {
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
     const cashAddress = this.augur.contracts.cash.address;
+    const shareTokenAddress = this.augur.contracts.shareToken.address;
     const augurAddress = this.augur.contracts.augur.address;
-    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, cashAddress]);
+    const createOrderAddress = this.augur.contracts.createOrder.address;
+    const fillOrderAddress = this.augur.contracts.fillOrder.address;
+    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress]);
     const gnosisSafeData = await this.provider.encodeContractFunction("GnosisSafe", "setup", [[account], 1, gnosisSafeRegistryAddress, registrationData, NULL_ADDRESS, 0, NULL_ADDRESS]);
     // Make transaction to proxy factory
     const nonce = Date.now();
@@ -47,8 +50,11 @@ export class Gnosis {
   async createGnosisSafeViaRelay(params: GetGnosisSafeAddressParams): Promise<string> {
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry.address;
     const cashAddress = this.augur.contracts.cash.address;
+    const shareTokenAddress = this.augur.contracts.shareToken.address;
     const augurAddress = this.augur.contracts.augur.address;
-    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, cashAddress]);
+    const createOrderAddress = this.augur.contracts.createOrder.address;
+    const fillOrderAddress = this.augur.contracts.fillOrder.address;
+    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress]);
     if (this.gnosisRelay === undefined) throw new Error("No Gnosis Relay provided to Augur SDK");
     const nonce = Date.now();
     const response = await this.gnosisRelay.createSafe({

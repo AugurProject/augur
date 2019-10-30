@@ -2,8 +2,8 @@ pragma solidity 0.5.10;
 
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IUniverse.sol';
-import 'ROOT/trading/IShareToken.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/reporting/IShareToken.sol';
+import 'ROOT/ICash.sol';
 
 
 contract MaliciousMarket {
@@ -12,10 +12,6 @@ contract MaliciousMarket {
 
     constructor(IMarket _market) public {
         victimMarket = _market;
-    }
-
-    function getShareToken(uint256 _outcome)  public view returns (IShareToken) {
-        return victimMarket.getShareToken(_outcome);
     }
 
     function getNumberOfOutcomes() public view returns (uint256) {

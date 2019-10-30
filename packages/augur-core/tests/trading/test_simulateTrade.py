@@ -184,16 +184,16 @@ def test_use_shares_multiple(contractsFixture, cash, market, universe):
 def simulate_then_trade(contractsFixture, direction, market, outcome, amount, price, kycToken, fillOnly, sender=None, expectedFees=0):
     trade = contractsFixture.contracts["Trade"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    shareToken = contractsFixture.contracts["ShareToken"]
     cash = contractsFixture.contracts["Cash"]
     sender = sender if sender is not None else contractsFixture.accounts[0]
     shareTokenOutcome = outcome if direction == SHORT else ((outcome + 1) % 3)
-    shareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(shareTokenOutcome))
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, kycToken, fillOnly, sender=sender)
 
     cash.faucet(tokensDepleted, sender=sender)
     initialCashBalance = cash.balanceOf(sender)
-    initialShareBalance = shareToken.balanceOf(sender)
+    initialShareBalance = shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, sender)
 
     if fillOnly:
         orderId = trade.publicFillBestOrder(direction, market.address, outcome, amount, price, "42", 10, nullAddress, kycToken, sender=sender)
@@ -203,11 +203,11 @@ def simulate_then_trade(contractsFixture, direction, market, outcome, amount, pr
     if (tokensDepleted > 0):
         assert tokensDepleted == initialCashBalance - cash.balanceOf(sender)
     if (sharesDepleted > 0):
-        assert sharesDepleted == initialShareBalance - shareToken.balanceOf(sender)
+        assert sharesDepleted == initialShareBalance - shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, sender)
 
     expectedSharesFilled = 0
     expectedNumFills = 0
-    orderEventLogs = contractsFixture.contracts["Augur"].getLogs("OrderEvent")
+    orderEventLogs = contractsFixture.contracts["AugurTrading"].getLogs("OrderEvent")
     for log in orderEventLogs:
         if log.args.eventType == 2: # Fill Event
             expectedSharesFilled += log.args.uint256Data[6]
