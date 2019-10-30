@@ -39,7 +39,7 @@ export class Gnosis {
     const createOrderAddress = this.augur.contracts.createOrder.address;
     const fillOrderAddress = this.augur.contracts.fillOrder.address;
     const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress]);
-    const gnosisSafeData = await this.provider.encodeContractFunction("GnosisSafe", "setup", [[account], 1, gnosisSafeRegistryAddress, registrationData, NULL_ADDRESS, 0, NULL_ADDRESS]);
+    const gnosisSafeData = await this.provider.encodeContractFunction("GnosisSafe", "setup", [[account], 1, gnosisSafeRegistryAddress, registrationData, NULL_ADDRESS, NULL_ADDRESS, 0, NULL_ADDRESS]);
     // Make transaction to proxy factory
     const nonce = Date.now();
     const proxy = this.augur.contracts.proxyFactory.createProxyWithNonce_(this.augur.contracts.gnosisSafe.address, gnosisSafeData, new BigNumber(nonce));
@@ -61,6 +61,7 @@ export class Gnosis {
       saltNonce: nonce,
       owners: [params.owner],
       threshold: 1,
+      fallbackHandler: NULL_ADDRESS,
       to: gnosisSafeRegistryAddress,
       data: registrationData,
       paymentToken: params.paymentToken

@@ -14,6 +14,7 @@ export interface CreateSafeData {
   to?: string;
   data?: string;
   paymentToken: string;
+  fallbackHandler?: string;
 }
 
 export interface RelayTxEstimateData {
