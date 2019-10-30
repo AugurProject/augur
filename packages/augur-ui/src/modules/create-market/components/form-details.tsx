@@ -22,8 +22,6 @@ import {
   YES_NO,
   SCALAR,
   CATEGORICAL,
-  EXPIRY_SOURCE_GENERIC,
-  EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC,
 } from 'modules/common/constants';
@@ -31,7 +29,6 @@ import { NewMarket } from 'modules/types';
 import {
   DESCRIPTION_PLACEHOLDERS,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
@@ -98,8 +95,6 @@ export default class FormDetails extends React.Component<
       maxPrice,
       detailsText,
       categories,
-      expirySource,
-      expirySourceType,
       designatedReporterAddress,
       designatedReporterType,
       validations,

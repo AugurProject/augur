@@ -18,7 +18,6 @@ import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/
 import {
   SCALAR,
   CATEGORICAL,
-  EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
   ETH,
   DAI,
@@ -224,8 +223,6 @@ export default class Review extends React.Component<
       marketType,
       description,
       detailsText,
-      expirySourceType,
-      expirySource,
       designatedReporterType,
       designatedReporterAddress,
       scalarDenomination,
