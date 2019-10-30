@@ -854,9 +854,8 @@ class Form extends Component<FromProps, FormState> {
                 onChange={value => {
                   const date =
                     value === ADVANCED_OPTIONS.EXPIRATION
-                      ? moment(currentTimestamp * 1000)
+                      ? moment.unix(currentTimestamp)
                           .add(DEFAULT_EXPIRATION_DAYS, 'days')
-                          .unix()
                       : '';
 
                   updateState({
@@ -884,11 +883,10 @@ class Form extends Component<FromProps, FormState> {
                           const days =
                             value === '' || isNaN(value) ? 0 : parseInt(value);
                           updateState({
-                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
-                              currentTimestamp * 1000
+                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment.unix(
+                              currentTimestamp
                             )
-                              .add(days, 'days')
-                              .unix(),
+                              .add(days, 'days'),
                           });
                           this.setState({ fastForwardDays: days });
                         }}
