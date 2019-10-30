@@ -115,6 +115,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
   outcomesFormatted: OutcomeFormatted[];
+  isTemplate: boolean;
 }
 
 export interface ForkingInfo {
@@ -784,6 +785,7 @@ export interface ResolutionRules {
 }
 
 export interface Template {
+  hash: string;
   categories: Categories;
   marketType: string;
   question: string;
@@ -811,3 +813,4 @@ export interface Categories {
   secondary: string;
   tertiary: string;
 }
+
