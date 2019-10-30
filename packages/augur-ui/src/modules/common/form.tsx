@@ -250,12 +250,8 @@ export interface RadioBarProps extends BaseRadioButtonProp {
   placeholder?: string;
   textValue?: string;
   errorMessage?: string;
-  onSecondTextChange?: Function;
-  secondPlaceholder?: string;
-  secondTextValue?: string;
-  secondErrorMessage?: string;
-  secondHeader?: string;
   multiSelect?: boolean;
+  disabled?: boolean;
 }
 
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
@@ -1085,11 +1081,6 @@ export const RadioBar = ({
   placeholder,
   textValue,
   errorMessage,
-  onSecondTextChange,
-  secondPlaceholder,
-  secondTextValue,
-  secondErrorMessage,
-  secondHeader,
   multiSelect,
   disabled,
 }: RadioBarProps) => (
@@ -1114,17 +1105,6 @@ export const RadioBar = ({
           onChange={onTextChange}
           errorMessage={errorMessage}
         />
-        {onSecondTextChange && (
-          <>
-            <h5>{secondHeader}</h5>
-            <TextInput
-              placeholder={secondPlaceholder}
-              value={secondTextValue}
-              onChange={onSecondTextChange}
-              errorMessage={secondErrorMessage}
-            />
-          </>
-        )}
       </>
     ) : null}
   </div>

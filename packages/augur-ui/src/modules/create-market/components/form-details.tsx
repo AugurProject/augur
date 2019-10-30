@@ -99,7 +99,6 @@ export default class FormDetails extends React.Component<
       detailsText,
       categories,
       expirySource,
-      backupSource,
       expirySourceType,
       designatedReporterAddress,
       designatedReporterType,
@@ -127,10 +126,6 @@ export default class FormDetails extends React.Component<
         textValue: expirySource,
         onTextChange: (value: string) => onChange('expirySource', value),
         errorMessage: validations.expirySource,
-        secondPlaceholder: 'Back up website (optional)',
-        secondTextValue: backupSource,
-        secondHeader: 'If the primary resolution source is not available',
-        onSecondTextChange: (value: string) => onChange('backupSource', value),
       });
     }
 

@@ -40,7 +40,6 @@ const yesNoOrderBook: OrderBook = {
 export interface ExtraInfo {
   categories: string[];
   resolutionSource?: string;
-  backupSource?: string;
   description: string;
   tags: string[];
   longDescription?: string;
