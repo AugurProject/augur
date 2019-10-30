@@ -25,6 +25,7 @@ import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import { Getters } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
+import ChevronFlip from 'modules/common/chevron-flip';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -36,6 +37,7 @@ export interface DefaultButtonProps {
   small?: boolean;
   noIcon?: boolean;
   subText?: string;
+  pointDown?: boolean;
 }
 
 export interface SortButtonProps {
@@ -137,13 +139,23 @@ export const PrimarySignInButton = (props: DefaultButtonProps) => (
 );
 
 export const CloseButton = (props: DefaultButtonProps) => (
-  <button className={Styles.CloseButton} onClick={e => props.action(e)} disabled={props.disabled}>
+  <button
+    className={Styles.CloseButton}
+    onClick={e => props.action(e)}
+    disabled={props.disabled}
+  >
     {XIcon}
   </button>
 );
 
 export const BackButton = (props: DefaultButtonProps) => (
-  <button className={Styles.BackButton} onClick={e => props.action(e)} disabled={props.disabled}>{BackIcon} back</button>
+  <button
+    className={Styles.BackButton}
+    onClick={e => props.action(e)}
+    disabled={props.disabled}
+  >
+    {BackIcon} back
+  </button>
 );
 
 export const SecondarySignInButton = (props: DefaultButtonProps) => (
@@ -243,6 +255,18 @@ export const CancelTextButton = (props: DefaultButtonProps) => (
     title={props.title}
   >
     {props.text}
+  </button>
+);
+
+export const TextButtonFlip = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CancelTextButton}
+    disabled={props.disabled}
+    title={props.title}
+  >
+    {props.text}
+    <ChevronFlip pointDown={props.pointDown} stroke="#BFB8CE" filledInIcon quick />
   </button>
 );
 
@@ -372,7 +396,9 @@ export const ViewTransactionDetailsButton = (
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
   <button
-    className={classNames(Styles.ExternalLinkButton, {[Styles.LightAlternate]: props.light})}
+    className={classNames(Styles.ExternalLinkButton, {
+      [Styles.LightAlternate]: props.light,
+    })}
     onClick={e => props.action && props.action(e)}
   >
     {props.URL && (
@@ -416,11 +442,13 @@ export const CategoryButtons = ({
         <div key={idx} onClick={() => action(card.value.toLowerCase())}>
           <div>{item.icon}</div>
           <div>{item.header}</div>
-          <div className={!hasData ? Styles.loading : ''}>{hasData ? card.description : ''}</div>
+          <div className={!hasData ? Styles.loading : ''}>
+            {hasData ? card.description : ''}
+          </div>
         </div>
       );
     })}
-   </div>
+  </div>
 );
 
 export const FilterButton = (props: DefaultActionButtonProps) => (
