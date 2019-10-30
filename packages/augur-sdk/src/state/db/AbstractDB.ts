@@ -28,11 +28,18 @@ export abstract class AbstractDB {
   protected networkId: number;
   readonly dbName: string;
   public numIndexes: number = 0;
+  readonly dbFactory: PouchDBFactoryType;
 
   protected constructor(networkId: number, dbName: string, dbFactory: PouchDBFactoryType) {
     this.networkId = networkId;
     this.dbName = dbName;
-    this.db = dbFactory(dbName);
+    this.dbFactory = dbFactory;
+    this.db = this.dbFactory(dbName);
+  }
+
+  async clearDB(): Promise<void> {
+    await this.db.destroy();
+    this.db = this.dbFactory(this.dbName);
   }
 
   async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
