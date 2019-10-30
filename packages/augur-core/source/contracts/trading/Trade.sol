@@ -12,6 +12,7 @@ import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
+import 'ROOT/trading/IAugurTrading.sol';
 
 
 /**
@@ -43,13 +44,14 @@ contract Trade is Initializable, ReentrancyGuard {
 
     address private constant NULL_ADDRESS = address(0);
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
         augur = _augur;
-        createOrder = ICreateOrder(augur.lookup("CreateOrder"));
-        fillOrder = IFillOrder(augur.lookup("FillOrder"));
-        orders = IOrders(augur.lookup("Orders"));
         cash = ICash(augur.lookup("Cash"));
+
+        createOrder = ICreateOrder(_augurTrading.lookup("CreateOrder"));
+        fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
+        orders = IOrders(_augurTrading.lookup("Orders"));
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, address _affiliateAddress, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {
@@ -111,7 +113,7 @@ contract Trade is Initializable, ReentrancyGuard {
         require(augur.isKnownMarket(_market));
         Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _affiliateAddress, _sender, _kycToken);
         bytes32 _result = trade(_tradeData);
-        _market.assertBalances(address(orders));
+        _market.assertBalances();
         return _result;
     }
 
@@ -119,7 +121,7 @@ contract Trade is Initializable, ReentrancyGuard {
         require(augur.isKnownMarket(_market));
         Data memory _tradeData = create(_direction, _market, _outcome, _amount, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _affiliateAddress, _sender, _kycToken);
         uint256 _result = fillBestOrder(_tradeData);
-        _market.assertBalances(address(orders));
+        _market.assertBalances();
         return _result;
     }
 

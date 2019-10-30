@@ -203,6 +203,8 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
+
 class ContractsFixture:
     signatures = {}
     compiledCode = {}
@@ -364,7 +366,10 @@ class ContractsFixture:
         #with PrintGasUsed(self, "UPLOAD CONTRACT %s" % lookupKey, 0):
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
-        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
+        if lookupKey in TRADING_CONTRACTS:
+            self.contracts['AugurTrading'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
+        else:
+            self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
         return(contract)
 
     def generateAndStoreSignature(self, relativePath):
@@ -477,31 +482,47 @@ class ContractsFixture:
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTrade','GnosisSafeRegistry','WarpSync']
-        for contractName in contractsToInitialize:
+        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync']
+        for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
             elif getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
+        for contractName in TRADING_CONTRACTS:
+            self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address)
 
     ####
     #### Helpers
     ####
 
     def approveCentralAuthority(self):
-        authority = self.contracts['Augur']
+        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder']
         contractsToApprove = ['Cash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
             for contractName in contractsToApprove:
-                self.contracts[contractName].approve(authority.address, 2**254, sender=testerKey)
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].approve(self.contracts[authorityName].address, 2**254, sender=testerKey)
+        contractsToSetApproval = ['ShareToken']
+        for testerKey in testersGivingApproval:
+            for contractName in contractsToSetApproval:
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].setApprovalForAll(self.contracts[authorityName].address, True, sender=testerKey)
+
 
     def uploadAugur(self):
         # We have to upload Augur first
         with PrintGasUsed(self, "AUGUR CREATION", 0):
             return self.upload("../source/contracts/Augur.sol")
+
+    def uploadAugurTrading(self):
+        # We have to upload Augur Trading before trading contracts
+        return self.upload("../source/contracts/trading/AugurTrading.sol", constructorArgs=[self.contracts["Augur"].address])
+
+    def doAugurTradingApprovals(self):
+        self.contracts["AugurTrading"].doApprovals()
 
     def createUniverse(self):
         augur = self.contracts['Augur']
@@ -521,7 +542,8 @@ class ContractsFixture:
         reputationToken.migrateFromLegacyReputationToken()
 
     def getLogValue(self, eventName, argName):
-        augur = self.contracts['Augur']
+        tradeEvents = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged']
+        augur = self.contracts['AugurTrading'] if eventName in tradeEvents else self.contracts['Augur']
         logs = augur.getLogs(eventName)
         log = logs[0]
         return log.args.__dict__[argName]
@@ -607,9 +629,11 @@ def baseSnapshot(fixture):
 def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
+    fixture.uploadAugurTrading()
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.initializeAllContracts()
+    fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()
     return fixture.createSnapshot()
 

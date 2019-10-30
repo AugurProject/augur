@@ -8,6 +8,7 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
+import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 
 
@@ -29,7 +30,7 @@ contract Orders is IOrders, Initializable {
     mapping(bytes32 => bytes32) private bestOrder;
     mapping(bytes32 => bytes32) private worstOrder;
 
-    IAugur public augur;
+    IAugurTrading public augurTrading;
     ICash public cash;
     address public trade;
     address public fillOrder;
@@ -37,15 +38,16 @@ contract Orders is IOrders, Initializable {
     address public createOrder;
     IProfitLoss public profitLoss;
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        augur = _augur;
-        createOrder = augur.lookup("CreateOrder");
-        fillOrder = augur.lookup("FillOrder");
-        cancelOrder = augur.lookup("CancelOrder");
-        trade = augur.lookup("Trade");
-        cash = ICash(augur.lookup("Cash"));
-        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
+        cash = ICash(_augur.lookup("Cash"));
+
+        augurTrading = _augurTrading;
+        createOrder = _augurTrading.lookup("CreateOrder");
+        fillOrder = _augurTrading.lookup("FillOrder");
+        cancelOrder = _augurTrading.lookup("CancelOrder");
+        trade = _augurTrading.lookup("Trade");
+        profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
     }
 
     /**
@@ -297,7 +299,7 @@ contract Orders is IOrders, Initializable {
         marketOrderData[address(_market)].totalEscrowed += _uints[3];
         _order.sharesEscrowed = _uints[4];
         insertOrderIntoList(_order, _bytes32s[0], _bytes32s[1]);
-        augur.logOrderCreated(_order.market.getUniverse(), _orderId, _bytes32s[2]);
+        augurTrading.logOrderCreated(_order.market.getUniverse(), _orderId, _bytes32s[2]);
         return _orderId;
     }
 

@@ -345,7 +345,7 @@ describe('State API :: Users :: ', () => {
     await winningReportingParticipant.redeem(john.account.publicKey);
 
     // Claim trading proceeds
-    await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
       '0x0000000000000000000000000000000000000000'
@@ -695,7 +695,7 @@ describe('State API :: Users :: ', () => {
     await winningReportingParticipant.redeem(john.account.publicKey);
 
     // Claim trading proceeds
-    await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket2.address,
       john.account.publicKey,
       '0x0000000000000000000000000000000000000000'
