@@ -256,7 +256,6 @@ export default class ModalReporting extends Component<
     const {
       description,
       marketType,
-      resolutionSource,
       details,
       creationTimeFormatted,
       endTimeFormatted,
@@ -272,11 +271,6 @@ export default class ModalReporting extends Component<
             }
             <MarketTypeLabel marketType={marketType} />
             <span>{description}</span>
-            <Subheaders
-              small
-              header="Resolution Source"
-              subheader={resolutionSource}
-            />
             <Subheaders
               small
               header="Resolution Details"
