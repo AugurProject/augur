@@ -110,24 +110,6 @@ export default class FormDetails extends React.Component<
 
     const tickSize =
       isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
-    let sourceButtons = [
-      {
-        header: 'General knowledge',
-        value: EXPIRY_SOURCE_GENERIC,
-      },
-    ];
-
-    if (!isTemplate) {
-      sourceButtons.push({
-        header: 'Outcome available on a public website',
-        value: EXPIRY_SOURCE_SPECIFIC,
-        expandable: true,
-        placeholder: 'Enter website',
-        textValue: expirySource,
-        onTextChange: (value: string) => onChange('expirySource', value),
-        errorMessage: validations.expirySource,
-      });
-    }
 
     return (
       <div
@@ -371,23 +353,6 @@ export default class FormDetails extends React.Component<
               uniqueKey={'templateRes'}
             />
           )}
-
-          <Subheaders
-            header="Resolution source"
-            subheader="Describe what users need to know in order to resolve the market."
-            link
-          />
-          <RadioBarGroup
-            radioButtons={sourceButtons}
-            defaultSelected={expirySourceType}
-            onChange={(value: string) => {
-              if (value === EXPIRY_SOURCE_GENERIC) {
-                onChange(EXPIRY_SOURCE, '');
-                onError(EXPIRY_SOURCE, '');
-              }
-              onChange('expirySourceType', value);
-            }}
-          />
 
           {isTemplate && (
             <ResolutionRules newMarket={newMarket} onChange={onChange} />

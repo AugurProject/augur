@@ -317,12 +317,6 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.Stocks,
     },
     {
-      value: COMMONDITIES,
-      header: COMMONDITIES,
-      description: defaultDescription,
-      icon: icons.Commodities,
-    },
-    {
       value: INDEXES,
       header: INDEXES,
       description: defaultDescription,

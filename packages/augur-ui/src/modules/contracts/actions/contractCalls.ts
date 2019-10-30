@@ -497,7 +497,6 @@ export function createMarketRetry(market: CreateMarketData) {
     scalarDenomination: extraInfo._scalarDenomination,
     marketType: market.marketType,
     endTime: market.endTime.timestamp,
-    expirySource: extraInfo.resolutionSource,
     description: market.description,
     designatedReporterAddress: market.txParams._designatedReporterAddress,
     minPrice: market.txParams._prices && market.txParams._prices[0],
