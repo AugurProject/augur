@@ -14,7 +14,6 @@ export interface MarketFields {
   category3: string;
   description: string;
   longDescription: string;
-  resolutionSource: string;
   _scalarDenomination: string;
   start: Date;
   end: Date;
@@ -41,7 +40,6 @@ export class SyncableFlexSearch {
             "category3",
             "description",
             "longDescription",
-            "resolutionSource",
             "_scalarDenomination",
           ],
         },
@@ -64,7 +62,6 @@ export class SyncableFlexSearch {
       let category3 = "";
       let description = "";
       let longDescription = "";
-      let resolutionSource = "";
       let _scalarDenomination = "";
 
       // Handle extraInfo
@@ -78,7 +75,6 @@ export class SyncableFlexSearch {
         }
         description = info.description ? info.description : "";
         longDescription = info.longDescription ? info.longDescription : "";
-        resolutionSource = info.resolutionSource ? info.resolutionSource : "";
         _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
       }
 
@@ -92,7 +88,6 @@ export class SyncableFlexSearch {
         category3,
         description,
         longDescription,
-        resolutionSource,
         _scalarDenomination,
         start: new Date(),
         end: new Date(),

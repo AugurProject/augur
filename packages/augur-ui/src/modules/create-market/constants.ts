@@ -3,7 +3,6 @@ import {
   SCALAR,
   CATEGORICAL,
   YES_NO_OUTCOMES,
-  EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
   SETTLEMENT_FEE_DEFAULT,
   AFFILIATE_FEE_DEFAULT,
@@ -43,7 +42,6 @@ export const EMPTY_STATE: NewMarket = {
     description: null,
     categories: ['', '', ''],
     designatedReporterAddress: null,
-    expirySourceType: null,
     setEndTime: null,
     hour: null,
     minute: null,
@@ -61,8 +59,6 @@ export const EMPTY_STATE: NewMarket = {
   scalarBigNum: '',
   scalarDenomination: '',
   description: '',
-  expirySourceType: EXPIRY_SOURCE_GENERIC,
-  expirySource: '',
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: '',
   endTime: null,
@@ -317,12 +313,6 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.Stocks,
     },
     {
-      value: COMMONDITIES,
-      header: COMMONDITIES,
-      description: defaultDescription,
-      icon: icons.Commodities,
-    },
-    {
       value: INDEXES,
       header: INDEXES,
       description: defaultDescription,
@@ -421,7 +411,6 @@ export const END_TIME = 'setEndTime';
 export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';
-export const EXPIRY_SOURCE = 'expirySource';
 
 export const OUTCOMES = 'outcomes';
 
@@ -467,12 +456,6 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledString: true,
     checkFilledStringMessage: 'Enter a wallet address',
     checkForAddress: true,
-  },
-  [EXPIRY_SOURCE]: {
-    label: EXPIRY_SOURCE,
-    readableName: 'website',
-    checkFilledString: true,
-    checkFilledStringMessage: 'Enter a website',
   },
   [OUTCOMES]: {
     label: OUTCOMES,
