@@ -12,6 +12,7 @@ import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproj
 import { makeDbMock, makeProvider } from '../../../libs';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { TestEthersProvider } from '../../../libs/TestEthersProvider';
 
 const ZERO_BYTES = stringTo32ByteHex('');
 
@@ -63,17 +64,26 @@ describe('State API :: Users :: ', () => {
   let api: API;
   let john: ContractAPI;
   let mary: ContractAPI;
+  let baseProvider: TestEthersProvider;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
-    const provider = await makeProvider(seed, ACCOUNTS);
+    baseProvider = await makeProvider(seed, ACCOUNTS);
+    const addresses = baseProvider.getContractAddresses();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-    db = mock.makeDB(john.augur, ACCOUNTS);
-    api = new API(john.augur, db);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], baseProvider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], baseProvider, addresses);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
+  });
+
+  beforeEach(async () => {
+    const provider = await baseProvider.fork();
+    const addresses = baseProvider.getContractAddresses();
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    db = makeDbMock().makeDB(john.augur, ACCOUNTS);
+    api = new API(john.augur, db);
   });
 
   test(':getAccountTimeRangedStats', async () => {
@@ -355,6 +365,7 @@ describe('State API :: Users :: ', () => {
 
     // Test non-existent universe address
     const nonexistentAddress = '0x1111111111111111111111111111111111111111';
+
     let errorMessage = '';
     try {
       await api.route('getAccountTimeRangedStats', {
@@ -408,7 +419,6 @@ describe('State API :: Users :: ', () => {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
-    // console.log("stats2", stats);
     expect(stats).toMatchObject({
       marketsCreated: 3,
       marketsTraded: 3,
@@ -544,16 +554,19 @@ describe('State API :: Users :: ', () => {
       numShares.div(10).times(2),
       '42'
     );
+
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome1),
       numShares.div(10).times(3),
       '43'
     );
+
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome2),
       numShares.div(10).times(3),
       '43'
     );
+
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome0),
       numShares.div(10).times(2),
@@ -716,7 +729,7 @@ describe('State API :: Users :: ', () => {
       redeemedPositions: 4,
       successfulDisputes: 2,
     });
-  });
+  }, 400000);
 
   test(':getProfitLoss & getProfitLossSummary ', async () => {
     const market1 = await john.createReasonableYesNoMarket();
@@ -762,7 +775,7 @@ describe('State API :: Users :: ', () => {
         outcome: YES,
         quantity: 5,
         price: 0.4,
-        realizedPL: 0.4697,
+        realizedPL: 0.44,
         market: market2,
         timestamp: startTime.plus(32 * day).toNumber(),
         unrealizedPL: -1.5,
@@ -783,16 +796,12 @@ describe('State API :: Users :: ', () => {
     });
 
     for (const trade of trades) {
-      const plFrame = _.find(profitLoss, pl => {
+      const plFrame = _.find(profitLoss, (pl) => {
         return new BigNumber(pl.timestamp).gte(trade.timestamp);
       });
 
-      await expect(Number.parseFloat(plFrame.realized)).toEqual(
-        trade.realizedPL
-      );
-      await expect(Number.parseFloat(plFrame.unrealized)).toEqual(
-        trade.unrealizedPL
-      );
+      await expect(Number.parseFloat(plFrame.realized)).toEqual(trade.realizedPL);
+      await expect(Number.parseFloat(plFrame.unrealized)).toEqual(trade.unrealizedPL);
     }
 
     const profitLossSummary = await api.route('getProfitLossSummary', {
@@ -803,15 +812,13 @@ describe('State API :: Users :: ', () => {
     const oneDayPLSummary = profitLossSummary['1'];
     const thirtyDayPLSummary = profitLossSummary['30'];
 
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(0.4697);
+    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(0.4697);
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
-      9.5
-    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
 
   });
 
@@ -836,7 +843,7 @@ describe('State API :: Users :: ', () => {
         price: 0.58,
         position: -7,
         avgPrice: 0.65,
-        realizedPL: 0.192426,
+        realizedPL: 0.1752,
         frozenFunds: 2.45,
       },
       {
@@ -846,7 +853,7 @@ describe('State API :: Users :: ', () => {
         price: 0.62,
         position: -20,
         avgPrice: 0.63,
-        realizedPL: 0.192426,
+        realizedPL: 0.1752,
         frozenFunds: 7.39,
       },
       {
@@ -856,7 +863,7 @@ describe('State API :: Users :: ', () => {
         price: 0.5,
         position: -10,
         avgPrice: 0.63,
-        realizedPL: 1.441926,
+        realizedPL: 1.3752,
         frozenFunds: 3.69,
       },
       {
@@ -866,7 +873,7 @@ describe('State API :: Users :: ', () => {
         price: 0.15,
         position: -3,
         avgPrice: 0.63,
-        realizedPL: 4.791321,
+        realizedPL: 4.7142,
         frozenFunds: 1.1,
       },
     ];
@@ -972,7 +979,7 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: -2,
         avgPrice: 0.3,
-        realizedPL: 1.59495,
+        realizedPL: 1.59,
         frozenFunds: -0.6,
       },
     ];
@@ -1025,7 +1032,7 @@ describe('State API :: Users :: ', () => {
         price: 0.6,
         position: 5,
         avgPrice: 0.6,
-        realizedPL: -0.0303,
+        realizedPL: -0.06,
         frozenFunds: -2,
       },
       {
@@ -1035,7 +1042,7 @@ describe('State API :: Users :: ', () => {
         price: 0.2,
         position: 12,
         avgPrice: 0.1,
-        realizedPL: 1.19496,
+        realizedPL: 1.092,
         frozenFunds: 1.2,
       },
       {
@@ -1045,7 +1052,7 @@ describe('State API :: Users :: ', () => {
         price: 0.8,
         position: 2,
         avgPrice: 0.6,
-        realizedPL: 0.5697,
+        realizedPL: 0.54,
         frozenFunds: -0.8,
       },
       {
@@ -1094,7 +1101,7 @@ describe('State API :: Users :: ', () => {
         price: 202,
         position: 1,
         avgPrice: 188,
-        realizedPL: 54.0608,
+        realizedPL: 52.16,
         frozenFunds: 138,
       },
       {
@@ -1104,7 +1111,7 @@ describe('State API :: Users :: ', () => {
         price: 205,
         position: -10,
         avgPrice: 205,
-        realizedPL: 70.6063,
+        realizedPL: 68.26,
         frozenFunds: 450,
       },
       {
@@ -1114,7 +1121,7 @@ describe('State API :: Users :: ', () => {
         price: 150,
         position: -3,
         avgPrice: 205,
-        realizedPL: 448.5363,
+        realizedPL: 439.26,
         frozenFunds: 135,
       },
     ];
