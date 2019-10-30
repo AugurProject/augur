@@ -16,7 +16,6 @@ interface HighChartsWrapperProps {
   marketMax: BigNumber;
   marketMin: BigNumber;
   volumeType: string;
-  containerHeight: number;
   isMobile: boolean;
   currentTimeInSeconds: number;
 }
@@ -46,34 +45,30 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       priceTimeSeries,
       selectedPeriod,
       volumeType,
-      containerHeight,
     } = this.props;
     if (
       JSON.stringify(priceTimeSeries) !==
         JSON.stringify(nextProps.priceTimeSeries) ||
       selectedPeriod !== nextProps.selectedPeriod ||
-      volumeType !== nextProps.volumeType ||
-      containerHeight !== nextProps.containerHeight
+      volumeType !== nextProps.volumeType
     ) {
       this.buildOptions(
         nextProps.priceTimeSeries,
         nextProps.selectedPeriod,
-        nextProps.containerHeight
       );
     }
   }
 
   componentDidMount() {
-    const { priceTimeSeries, selectedPeriod, containerHeight } = this.props;
+    const { priceTimeSeries, selectedPeriod } = this.props;
     if (priceTimeSeries) {
-      this.buildOptions(priceTimeSeries, selectedPeriod, containerHeight);
+      this.buildOptions(priceTimeSeries, selectedPeriod);
     }
   }
 
   buildOptions(
     priceTimeSeries: PriceTimeSeriesData[],
-    selectedPeriod: number,
-    containerHeight: number
+    selectedPeriod: number
   ) {
     const { isMobile, marketMax, marketMin, pricePrecision } = this.props;
     const candlestick = priceTimeSeries.map(price => {
@@ -148,7 +143,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             enabled: true,
             format: crosshair,
             shape: 'square',
-            padding: 4,
+            padding: 2,
           },
         },
       },
@@ -158,10 +153,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           showEmpty: true,
           max: marketMax.toFixed(pricePrecision),
           min: marketMin.toFixed(pricePrecision),
-          tickInterval: marketMax
-            .minus(marketMin)
-            .dividedBy(2)
-            .toNumber(),
           showFirstLabel: false,
           showLastLabel: true,
           offset: 2,

@@ -81,20 +81,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   componentWillUnmount() {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
-/*
-  static getDerivedStateFromProps(nextProps) {
-    if (
-      this.props.defaultValue !== nextProps.defaultValue ||
-      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
-    ) {
-      this.setState({
-        selected: nextProps.options.find(
-          o => o.value === nextProps.defaultValue
-        ),
-      });
-    }
-  }
-*/
+
   componentDidUpdate() {
     this.measure();
   }
