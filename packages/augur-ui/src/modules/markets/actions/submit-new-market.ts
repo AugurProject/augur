@@ -57,7 +57,6 @@ export function submitNewMarket(
           designatedReporterAddress: market.designatedReporterAddress,
           minPrice: market.minPrice,
           maxPrice: market.maxPrice,
-          backupSource: market.backupSource,
           endTime: market.endTime,
           tickSize: market.tickSize,
           marketType: market.marketType,

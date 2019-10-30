@@ -136,7 +136,6 @@ export interface MarketInfo {
   scalarDenomination: string | null;
   details: string | null;
   resolutionSource: string | null;
-  backupSource: string | null;
   numTicks: string;
   tickSize: string;
   consensus: PayoutNumeratorValue;
@@ -860,7 +859,6 @@ const extraInfoType = t.intersection([
   t.partial({
     longDescription: t.string,
     resolutionSource: t.string,
-    backupSource: t.string,
     _scalarDenomination: t.string,
     categories: t.array(t.string),
     tags: t.array(t.string),
@@ -1057,7 +1055,6 @@ async function getMarketsInfo(
     let description = null;
     let details = null;
     let resolutionSource = null;
-    let backupSource = null;
     let scalarDenomination = null;
     if (marketData.extraInfo) {
       const extraInfo = marketData.extraInfo;
@@ -1069,7 +1066,6 @@ async function getMarketsInfo(
       resolutionSource = extraInfo.resolutionSource
         ? extraInfo.resolutionSource
         : null;
-      backupSource = extraInfo.backupSource ? extraInfo.backupSource : null;
       scalarDenomination = extraInfo._scalarDenomination
         ? extraInfo._scalarDenomination
         : null;
@@ -1139,7 +1135,6 @@ async function getMarketsInfo(
       noShowBondAmount,
       details,
       resolutionSource,
-      backupSource,
       numTicks: numTicks.toString(10),
       tickSize: tickSize.toString(10),
       consensus,
