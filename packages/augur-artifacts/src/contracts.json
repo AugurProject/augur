@@ -3742,7 +3742,7 @@
 						"name": "execTransaction",
 						"outputs": [
 							{
-								"name": "success",
+								"name": "",
 								"type": "bool"
 							}
 						],
@@ -3872,44 +3872,6 @@
 						"type": "function"
 					},
 					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_owners",
-								"type": "address[]"
-							},
-							{
-								"name": "_threshold",
-								"type": "uint256"
-							},
-							{
-								"name": "to",
-								"type": "address"
-							},
-							{
-								"name": "data",
-								"type": "bytes"
-							},
-							{
-								"name": "paymentToken",
-								"type": "address"
-							},
-							{
-								"name": "payment",
-								"type": "uint256"
-							},
-							{
-								"name": "paymentReceiver",
-								"type": "address"
-							}
-						],
-						"name": "setup",
-						"outputs": [],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
 						"constant": true,
 						"inputs": [],
 						"name": "nonce",
@@ -3935,6 +3897,48 @@
 						],
 						"payable": false,
 						"stateMutability": "view",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_owners",
+								"type": "address[]"
+							},
+							{
+								"name": "_threshold",
+								"type": "uint256"
+							},
+							{
+								"name": "to",
+								"type": "address"
+							},
+							{
+								"name": "data",
+								"type": "bytes"
+							},
+							{
+								"name": "fallbackHandler",
+								"type": "address"
+							},
+							{
+								"name": "paymentToken",
+								"type": "address"
+							},
+							{
+								"name": "payment",
+								"type": "uint256"
+							},
+							{
+								"name": "paymentReceiver",
+								"type": "address"
+							}
+						],
+						"name": "setup",
+						"outputs": [],
+						"payable": false,
+						"stateMutability": "nonpayable",
 						"type": "function"
 					},
 					{
@@ -4175,6 +4179,20 @@
 						"type": "function"
 					},
 					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "handler",
+								"type": "address"
+							}
+						],
+						"name": "setFallbackHandler",
+						"outputs": [],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
 						"constant": true,
 						"inputs": [],
 						"name": "domainSeparator",
@@ -4233,12 +4251,80 @@
 						"anonymous": false,
 						"inputs": [
 							{
-								"indexed": false,
-								"name": "txHash",
+								"indexed": true,
+								"name": "approvedHash",
+								"type": "bytes32"
+							},
+							{
+								"indexed": true,
+								"name": "owner",
+								"type": "address"
+							}
+						],
+						"name": "ApproveHash",
+						"type": "event"
+					},
+					{
+						"anonymous": false,
+						"inputs": [
+							{
+								"indexed": true,
+								"name": "msgHash",
 								"type": "bytes32"
 							}
 						],
-						"name": "ExecutionFailed",
+						"name": "SignMsg",
+						"type": "event"
+					},
+					{
+						"anonymous": false,
+						"inputs": [
+							{
+								"indexed": false,
+								"name": "txHash",
+								"type": "bytes32"
+							},
+							{
+								"indexed": false,
+								"name": "payment",
+								"type": "uint256"
+							}
+						],
+						"name": "ExecutionFailure",
+						"type": "event"
+					},
+					{
+						"anonymous": false,
+						"inputs": [
+							{
+								"indexed": false,
+								"name": "txHash",
+								"type": "bytes32"
+							},
+							{
+								"indexed": false,
+								"name": "payment",
+								"type": "uint256"
+							}
+						],
+						"name": "ExecutionSuccess",
+						"type": "event"
+					},
+					{
+						"anonymous": false,
+						"inputs": [
+							{
+								"indexed": false,
+								"name": "from",
+								"type": "address"
+							},
+							{
+								"indexed": false,
+								"name": "value",
+								"type": "uint256"
+							}
+						],
+						"name": "IncomingTransaction",
 						"type": "event"
 					},
 					{

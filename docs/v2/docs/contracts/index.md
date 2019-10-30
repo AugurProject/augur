@@ -2848,26 +2848,6 @@ Make a call on a contract without throwing if the function does not exist.
 
 
 
-### `BaseSafe`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BaseSafe.setupSafe(address[],uint256,address,bytes)"><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSafe.setupSafe(address[],uint256,address,bytes)"></a><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code><span class="function-visibility">internal</span></h4>
-
-Setup function sets initial storage of contract.
- @param _owners List of Safe owners.
- @param _threshold Number of required confirmations for a Safe transaction.
- @param to Contract address for optional delegate call.
- @param data Data payload for optional delegate call.
-
-
-
-
-
 ### `Enum`
 
 
@@ -2934,21 +2914,59 @@ Fallback function accepts Ether transactions.
 
 
 
+### `FallbackManager`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#FallbackManager.internalSetFallbackHandler(address)"><code class="function-signature">internalSetFallbackHandler(address handler)</code></a></li><li><a href="#FallbackManager.setFallbackHandler(address)"><code class="function-signature">setFallbackHandler(address handler)</code></a></li><li><a href="#FallbackManager.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#FallbackManager.IncomingTransaction(address,uint256)"><code class="function-signature">IncomingTransaction(address from, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="FallbackManager.internalSetFallbackHandler(address)"></a><code class="function-signature">internalSetFallbackHandler(address handler)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="FallbackManager.setFallbackHandler(address)"></a><code class="function-signature">setFallbackHandler(address handler)</code><span class="function-visibility">public</span></h4>
+
+Allows to add a contract to handle fallback calls.
+      Only fallback calls without value and with data will be forwarded.
+      This can only be done via a Safe transaction.
+ @param handler contract to handle fallbacks calls.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="FallbackManager.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="FallbackManager.IncomingTransaction(address,uint256)"></a><code class="function-signature">IncomingTransaction(address from, uint256 value)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
 ### `GnosisSafe`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafe.setup(address[],uint256,address,bytes,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li><li><a href="#GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures)</code></a></li><li><a href="#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code></a></li><li><a href="#GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#GnosisSafe.approveHash(bytes32)"><code class="function-signature">approveHash(bytes32 hashToApprove)</code></a></li><li><a href="#GnosisSafe.signMessage(bytes)"><code class="function-signature">signMessage(bytes _data)</code></a></li><li><a href="#GnosisSafe.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#GnosisSafe.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes message)</code></a></li><li><a href="#GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li><a href="#GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li class="inherited"><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li><li class="inherited"><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li class="inherited"><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li><li class="inherited"><a href="#BaseSafe.setupSafe(address[],uint256,address,bytes)"><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GnosisSafe.ExecutionFailed(bytes32)"><code class="function-signature">ExecutionFailed(bytes32 txHash)</code></a></li><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li><li><a href="#GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures)</code></a></li><li><a href="#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code></a></li><li><a href="#GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#GnosisSafe.approveHash(bytes32)"><code class="function-signature">approveHash(bytes32 hashToApprove)</code></a></li><li><a href="#GnosisSafe.signMessage(bytes)"><code class="function-signature">signMessage(bytes _data)</code></a></li><li><a href="#GnosisSafe.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#GnosisSafe.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes message)</code></a></li><li><a href="#GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li><a href="#GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li class="inherited"><a href="#FallbackManager.internalSetFallbackHandler(address)"><code class="function-signature">internalSetFallbackHandler(address handler)</code></a></li><li class="inherited"><a href="#FallbackManager.setFallbackHandler(address)"><code class="function-signature">setFallbackHandler(address handler)</code></a></li><li class="inherited"><a href="#FallbackManager.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li><li class="inherited"><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li class="inherited"><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GnosisSafe.ApproveHash(bytes32,address)"><code class="function-signature">ApproveHash(bytes32 approvedHash, address owner)</code></a></li><li><a href="#GnosisSafe.SignMsg(bytes32)"><code class="function-signature">SignMsg(bytes32 msgHash)</code></a></li><li><a href="#GnosisSafe.ExecutionFailure(bytes32,uint256)"><code class="function-signature">ExecutionFailure(bytes32 txHash, uint256 payment)</code></a></li><li><a href="#GnosisSafe.ExecutionSuccess(bytes32,uint256)"><code class="function-signature">ExecutionSuccess(bytes32 txHash, uint256 payment)</code></a></li><li class="inherited"><a href="#FallbackManager.IncomingTransaction(address,uint256)"><code class="function-signature">IncomingTransaction(address from, uint256 value)</code></a></li><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.setup(address[],uint256,address,bytes,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address fallbackHandler, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
 
 Setup function sets initial storage of contract.
  @param _owners List of Safe owners.
  @param _threshold Number of required confirmations for a Safe transaction.
  @param to Contract address for optional delegate call.
  @param data Data payload for optional delegate call.
+ @param fallbackHandler Handler for fallback calls to this contract
  @param paymentToken Token that should be used for the payment (0 is ETH)
  @param payment Value that should be paid
  @param paymentReceiver Address that should receive the payment (or 0 if tx.origin)
@@ -2982,7 +3000,7 @@ Checks whether the signature provided is valid for the provided data, hash. Will
 <h4><a class="anchor" aria-hidden="true" id="GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 Allows to estimate a Safe transaction.
-      This method is only meant for estimation purpose, therfore two different protection mechanism against execution in a transaction have been made:
+      This method is only meant for estimation purpose, therefore two different protection mechanism against execution in a transaction have been made:
       1.) The method can only be called from the safe itself
       2.) The response is returned with a revert
       When estimating set `from` to the address of the safe.
@@ -3011,7 +3029,9 @@ Marks a message as signed
 
 <h4><a class="anchor" aria-hidden="true" id="GnosisSafe.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
 
-Should return whether the signature provided is valid for the provided data
+Should return whether the signature provided is valid for the provided data.
+      The save does not implement the interface since [`checkSignatures`](.#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)) is not a view method.
+      The method will not perform any state changes (see parameters of [`checkSignatures`](.#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)))
 
 
 
@@ -3060,7 +3080,25 @@ Returns hash to be signed by owners.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionFailed(bytes32)"></a><code class="function-signature">ExecutionFailed(bytes32 txHash)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ApproveHash(bytes32,address)"></a><code class="function-signature">ApproveHash(bytes32 approvedHash, address owner)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.SignMsg(bytes32)"></a><code class="function-signature">SignMsg(bytes32 msgHash)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionFailure(bytes32,uint256)"></a><code class="function-signature">ExecutionFailure(bytes32 txHash, uint256 payment)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionSuccess(bytes32,uint256)"></a><code class="function-signature">ExecutionSuccess(bytes32 txHash, uint256 payment)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -3074,10 +3112,20 @@ Returns hash to be signed by owners.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ISignatureValidator.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ISignatureValidator.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">public</span></h4>
 
 Should return whether the signature provided is valid for the provided data
 
+
+
+
+
+
+### `ISignatureValidatorConstants`
+
+
+
+<div class="contract-index"></div>
 
 
 
