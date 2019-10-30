@@ -151,7 +151,7 @@ export class ContractCompiler {
 
     public async generateCompilerInput(): Promise<CompilerInput> {
         const ignoreFile = function(file: string, stats: fs.Stats): boolean {
-            if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(path.parse(file).base.replace(".sol", ""))) return true;
+            if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'IAugurTrading'].includes(path.parse(file).base.replace(".sol", ""))) return true;
             return stats.isFile() && path.extname(file) !== ".sol";
         }
         const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);

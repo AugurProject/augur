@@ -6,17 +6,17 @@ import { CompilerOutput } from 'solc';
 import { DeployerConfiguration } from './DeployerConfiguration';
 import {
     Augur,
+    AugurTrading,
     Universe,
     ReputationToken,
     LegacyReputationToken,
     TimeControlled,
-    CompleteSets,
+    ShareToken,
     Trade,
     CreateOrder,
     CancelOrder,
     FillOrder,
     Orders,
-    ClaimTradingProceeds,
     Cash,
     ProfitLoss,
     SimulateTrade,
@@ -29,6 +29,7 @@ import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
 
+const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
 
 export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
@@ -36,9 +37,10 @@ export class ContractDeployer {
     private readonly dependencies: Dependencies<BigNumber>
     private readonly provider: ethers.providers.JsonRpcProvider;
     private readonly signer: ethers.Signer;
-    augur: Augur|null = null;
-    universe: Universe|null = null;
-    externalContractAddresses = {};
+    public augur: Augur|null = null;
+    public augurTrading: AugurTrading|null = null;
+    public universe: Universe|null = null;
+    public externalContractAddresses = {};
 
     static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
         const compilerOutput = JSON.parse(await readFile(deployerConfiguration.contractInputPath, 'utf8'));
@@ -68,6 +70,7 @@ Deploying to: ${networkConfiguration.networkName}
     async deploy(): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
+        this.augurTrading = await this.uploadAugurTrading();
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.externalAddresses;
@@ -155,6 +158,7 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         await this.initializeAllContracts();
+        await this.doTradingApprovals();
 
         if (!this.configuration.useNormalTime) {
             await this.resetTimeControlled();
@@ -192,6 +196,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Cash'] = this.getContractAddress('Cash');
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
+        mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'TimeControlled') continue;
@@ -230,8 +235,8 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadAugur(): Promise<Augur> {
         console.log('Uploading augur...');
-        const contract = await this.contracts.get('Augur');
-        const address = await this.construct(this.contracts.get('Augur'), []);
+        const contract = await this.contracts.get("Augur");
+        const address = await this.construct(contract, []);
         const augur = new Augur(this.dependencies, address);
         const ownerAddress = await augur.uploader_();
         contract.address = address;
@@ -240,6 +245,20 @@ Deploying to: ${networkConfiguration.networkName}
         }
         console.log(`Augur address: ${augur.address}`);
         return augur;
+    }
+
+    private async uploadAugurTrading(): Promise<AugurTrading> {
+        console.log('Uploading Augur Trading...');
+        const contract = await this.contracts.get("AugurTrading");
+        const address = await this.construct(contract, [this.augur!.address]);
+        const augurTrading = new AugurTrading(this.dependencies, address);
+        const ownerAddress = await augurTrading.uploader_();
+        contract.address = address;
+        if (ownerAddress.toLowerCase() !== (await this.signer.getAddress()).toLowerCase()) {
+            throw new Error("Augur Trading owner does not equal from address");
+        }
+        console.log(`Augur Trading address: ${augurTrading.address}`);
+        return augurTrading;
     }
 
     private async uploadTestDaiContracts(): Promise<void> {
@@ -309,7 +328,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'Delegator') return;
         if (contractName === 'TimeControlled') return;
         if (contractName === 'TestNetReputationTokenFactory') return;
-        if (contractName === 'Augur') return;
+        if (contractName === 'AugurTrading') return;
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
         if (contractName === 'TestNetReputationToken') return;
@@ -334,7 +353,11 @@ Deploying to: ${networkConfiguration.networkName}
 
     private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: any[] = []): Promise<string> {
         const address = await this.construct(contract, constructorArgs);
-        await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
+        if (TRADING_CONTRACTS.includes(registrationContractName)) {
+            await this.augurTrading!.registerContract(stringTo32ByteHex(registrationContractName), address);
+        } else {
+            await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
+        }
         return address;
     }
 
@@ -351,45 +374,41 @@ Deploying to: ${networkConfiguration.networkName}
         console.log('Initializing contracts...');
         const promises: Array<Promise<any>> = [];
 
-        const completeSetsContract = await this.getContractAddress('CompleteSets');
-        const completeSets = new CompleteSets(this.dependencies, completeSetsContract);
-        promises.push(completeSets.initialize(this.augur!.address));
+        const shareTokenContract = await this.getContractAddress("ShareToken");
+        const shareToken = new ShareToken(this.dependencies, shareTokenContract);
+        promises.push(shareToken.initialize(this.augur!.address));
 
         const createOrderContract = await this.getContractAddress('CreateOrder');
         const createOrder = new CreateOrder(this.dependencies, createOrderContract);
-        promises.push(createOrder.initialize(this.augur!.address));
+        promises.push(createOrder.initialize(this.augur!.address, this.augurTrading!.address));
 
         const fillOrderContract = await this.getContractAddress('FillOrder');
         const fillOrder = new FillOrder(this.dependencies, fillOrderContract);
-        promises.push(fillOrder.initialize(this.augur!.address));
+        promises.push(fillOrder.initialize(this.augur!.address, this.augurTrading!.address));
 
         const cancelOrderContract = await this.getContractAddress('CancelOrder');
         const cancelOrder = new CancelOrder(this.dependencies, cancelOrderContract);
-        promises.push(cancelOrder.initialize(this.augur!.address));
+        promises.push(cancelOrder.initialize(this.augur!.address, this.augurTrading!.address));
 
         const tradeContract = await this.getContractAddress('Trade');
         const trade = new Trade(this.dependencies, tradeContract);
-        promises.push(trade.initialize(this.augur!.address));
-
-        const claimTradingProceedsContract = await this.getContractAddress('ClaimTradingProceeds');
-        const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
-        promises.push(claimTradingProceeds.initialize(this.augur!.address));
+        promises.push(trade.initialize(this.augur!.address, this.augurTrading!.address));
 
         const ordersContract = await this.getContractAddress('Orders');
         const orders = new Orders(this.dependencies, ordersContract);
-        promises.push(orders.initialize(this.augur!.address));
+        promises.push(orders.initialize(this.augur!.address, this.augurTrading!.address));
 
         const profitLossContract = await this.getContractAddress('ProfitLoss');
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
-        promises.push(profitLoss.initialize(this.augur!.address));
+        promises.push(profitLoss.initialize(this.augur!.address, this.augurTrading!.address));
 
         const simulateTradeContract = await this.getContractAddress('SimulateTrade');
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
-        promises.push(simulateTrade.initialize(this.augur!.address));
+        promises.push(simulateTrade.initialize(this.augur!.address, this.augurTrading!.address));
 
         const ZeroXTradeContract = await this.getContractAddress('ZeroXTrade');
         const zeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
-        promises.push(zeroXTrade.initialize(this.augur!.address));
+        promises.push(zeroXTrade.initialize(this.augur!.address, this.augurTrading!.address));
 
         const GnosisSafeRegistryContract = await this.getContractAddress('GnosisSafeRegistry');
         const gnosisSafeRegistry = new GnosisSafeRegistry(this.dependencies, GnosisSafeRegistryContract);
@@ -408,7 +427,13 @@ Deploying to: ${networkConfiguration.networkName}
         await resolveAll(promises);
     }
 
-    async initializeLegacyRep(): Promise<void> {
+    private async doTradingApprovals(): Promise<void> {
+        const augurTradingContract = await this.getContractAddress("AugurTrading");
+        const augurTrading = new AugurTrading(this.dependencies, augurTradingContract);
+        await augurTrading.doApprovals();
+    }
+
+    public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
         await legacyReputationToken.initializeERC1820(this.augur!.address);
         await legacyReputationToken.faucet(new BigNumber(1));

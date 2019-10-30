@@ -10,34 +10,28 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     def acquireLongShares(outcome, amount, approvalAddress, sender):
         if amount == 0: return
 
-        shareToken = fixture.applySignature('ShareToken', market.getShareToken(outcome))
-        completeSets = fixture.contracts['CompleteSets']
+        shareToken = fixture.contracts['ShareToken']
         createOrder = fixture.contracts['CreateOrder']
         fillOrder = fixture.contracts['FillOrder']
 
         ethRequired = amount * numTicks
         fixture.contracts['Cash'].faucet(ethRequired, sender=sender)
-        assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
+        assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)
         for otherOutcome in range(0, market.getNumberOfOutcomes()):
             if otherOutcome == outcome: continue
-            otherShareToken = fixture.applySignature('ShareToken', market.getShareToken(otherOutcome))
-            assert otherShareToken.transfer(fixture.accounts[8], amount, sender = sender)
+            shareToken.safeTransferFrom(sender, fixture.accounts[8], shareToken.getTokenId(market.address, otherOutcome), amount, "", sender = sender)
 
     def acquireShortShareSet(outcome, amount, approvalAddress, sender):
         if amount == 0: return
 
-        shareToken = fixture.applySignature('ShareToken', market.getShareToken(outcome))
-        completeSets = fixture.contracts['CompleteSets']
+        shareToken = fixture.contracts['ShareToken']
         createOrder = fixture.contracts['CreateOrder']
         fillOrder = fixture.contracts['FillOrder']
 
         ethRequired = amount * numTicks
         fixture.contracts['Cash'].faucet(ethRequired, sender=sender)
-        assert completeSets.publicBuyCompleteSets(market.address, amount, sender = sender)
-        assert shareToken.transfer(fixture.accounts[8], amount, sender = sender)
-        for otherOutcome in range(0, market.getNumberOfOutcomes()):
-            if otherOutcome == outcome: continue
-            otherShareToken = fixture.applySignature('ShareToken', market.getShareToken(otherOutcome))
+        assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)
+        shareToken.safeTransferFrom(sender, fixture.accounts[8], shareToken.getTokenId(market.address, outcome), amount, "", sender = sender)
 
     fixture.resetToSnapshot(snapshot)
 
@@ -48,7 +42,8 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     orders = fixture.contracts['Orders']
     createOrder = fixture.contracts['CreateOrder']
     fillOrder = fixture.contracts['FillOrder']
-    completeSets = fixture.contracts['CompleteSets']
+    shareToken = fixture.contracts['ShareToken']
+    shareToken = fixture.contracts['ShareToken']
 
     account1 = fixture.accounts[1]
     account2 = fixture.accounts[2]
@@ -98,13 +93,12 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     assert fixture.contracts['Cash'].balanceOf(creatorAddress) == int(expectedMakerTokens)
     assert fixture.contracts['Cash'].balanceOf(fillerAddress) == int(expectedFillerTokens)
     for outcome in range(0, market.getNumberOfOutcomes()):
-        shareToken = fixture.applySignature('ShareToken', market.getShareToken(outcome))
         if outcome == orderOutcome:
-            assert shareToken.balanceOf(creatorAddress) == expectedMakerLongShares
-            assert shareToken.balanceOf(fillerAddress) == expectedFillerLongShares
+            assert shareToken.balanceOfMarketOutcome(market.address, outcome, creatorAddress) == expectedMakerLongShares
+            assert shareToken.balanceOfMarketOutcome(market.address, outcome, fillerAddress) == expectedFillerLongShares
         else:
-            assert shareToken.balanceOf(creatorAddress) == expectedMakerShortShares
-            assert shareToken.balanceOf(fillerAddress) == expectedFillerShortShares
+            assert shareToken.balanceOfMarketOutcome(market.address, outcome, creatorAddress) == expectedMakerShortShares
+            assert shareToken.balanceOfMarketOutcome(market.address, outcome, fillerAddress) == expectedFillerShortShares
 
     # Finalize and claim proceeds
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
@@ -114,9 +108,9 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     fixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()
 
-    claimTradingProceeds = fixture.contracts['ClaimTradingProceeds']
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account1, nullAddress)
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account2, nullAddress)
+    shareToken= fixture.contracts['ShareToken']
+    assert shareToken.claimTradingProceeds(market.address, account1, nullAddress)
+    assert shareToken.claimTradingProceeds(market.address, account2, nullAddress)
 
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):

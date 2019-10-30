@@ -36,6 +36,7 @@ import {
   ProfitLossChangedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
+  ShareTokenBalanceChangedLog,
   TokensMinted,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
@@ -762,6 +763,17 @@ export class DB {
   async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokenBalanceChangedLog[]> {
     const results = await this.findInSyncableDB(this.getDatabaseName('TokenBalanceChanged', user), request);
     return results.docs as unknown as TokenBalanceChangedLog[];
+  }
+
+  /**
+   * Queries the ShareTokenBalanceChanged DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<TokenBalanceChangedLog>>}
+   */
+  async findShareTokenBalanceChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ShareTokenBalanceChangedLog[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName('ShareTokenBalanceChanged'), request);
+    return results.docs as unknown as ShareTokenBalanceChangedLog[];
   }
 
   async findTokensMintedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokensMinted[]> {
