@@ -12,8 +12,8 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/trading/ICash.sol';
-import 'ROOT/trading/IOICash.sol';
+import 'ROOT/ICash.sol';
+import 'ROOT/reporting/IOICash.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
@@ -31,6 +31,7 @@ contract Universe is IUniverse {
     IAugur public augur;
     IUniverse private parentUniverse;
     IFormulas public formulas;
+    IShareToken public shareToken;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
@@ -59,8 +60,6 @@ contract Universe is IUniverse {
     mapping (address => uint256) private shareSettlementFeeDivisor;
     uint256 public previousReportingFeeDivisor;
 
-    address public completeSets;
-
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
     uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
     uint256 constant public DEFAULT_NUM_TICKS = 100;
@@ -84,7 +83,7 @@ contract Universe is IUniverse {
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
-        completeSets = augur.lookup("CompleteSets");
+        shareToken = IShareToken(augur.lookup("ShareToken"));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -368,7 +367,7 @@ contract Universe is IUniverse {
         require(isContainerForMarket(_market));
         markets[msg.sender] = false;
         uint256 _cashBalance = marketBalance[address(msg.sender)];
-        uint256 _marketOI = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
+        uint256 _marketOI = shareToken.totalSupplyForMarketOutcome(_market, 0).mul(_market.getNumTicks());
         withdraw(address(this), _cashBalance, msg.sender);
         openInterestInAttoCash = openInterestInAttoCash.sub(_marketOI);
         cash.approve(address(augur), _cashBalance);
@@ -385,14 +384,6 @@ contract Universe is IUniverse {
         return true;
     }
 
-    function isContainerForShareToken(IShareToken _shadyShareToken) public view returns (bool) {
-        IMarket _shadyMarket = _shadyShareToken.getMarket();
-        if (_shadyMarket == IMarket(0) || !isContainerForMarket(_shadyMarket)) {
-            return false;
-        }
-        return _shadyMarket.isContainerForShareToken(_shadyShareToken);
-    }
-
     function isContainerForReportingParticipant(IReportingParticipant _shadyReportingParticipant) public view returns (bool) {
         IMarket _shadyMarket = _shadyReportingParticipant.getMarket();
         if (_shadyMarket == IMarket(0) || !isContainerForMarket(_shadyMarket)) {
@@ -407,20 +398,20 @@ contract Universe is IUniverse {
     }
 
     function decrementOpenInterest(uint256 _amount) public returns (bool) {
-        require(msg.sender == completeSets);
+        require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
     function decrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
-        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
+        uint256 _amount = shareToken.totalSupplyForMarketOutcome(_market, 0).mul(_market.getNumTicks());
         openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
     function incrementOpenInterest(uint256 _amount) public returns (bool) {
-        require(msg.sender == completeSets);
+        require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
     }
@@ -628,6 +619,7 @@ contract Universe is IUniverse {
         getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
         _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
+        shareToken.initializeMarket(_newMarket, _numOutcomes + 1, _numTicks); // To account for Invalid
         return _newMarket;
     }
 

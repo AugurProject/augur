@@ -133,6 +133,7 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         bytes memory signature
     )
         public
+        payable
         returns (FillResults memory fillResults)
     {
         // ABI encode calldata for `fillOrder`
@@ -141,6 +142,9 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
             takerAssetFillAmount,
             signature
         );
+
+        uint256 requiredFee = tx.gasprice * 150000;
+        require(msg.value >= requiredFee, "PROTOCOL FEE NOT SENT");
 
         // Delegate to `fillOrder` and handle any exceptions gracefully
         assembly {
@@ -363,9 +367,13 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         bytes memory signature
     )
         public
+        payable
         nonReentrant
         returns (FillResults memory fillResults)
     {
+        uint256 requiredFee = tx.gasprice * 150000;
+        require(msg.value >= requiredFee, "PROTOCOL FEE NOT SENT");
+
         fillResults = fillOrderInternal(
             order,
             takerAssetFillAmount,

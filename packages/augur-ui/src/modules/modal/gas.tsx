@@ -1,14 +1,12 @@
 import React from 'react';
 
-import {
-  Title,
-  ButtonsRow,
-  SelectableTable,
-  AlertMessage,
-} from 'modules/modal/common';
+import {AlertMessage, ButtonsRow, Title,} from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
+import {Chevron} from 'modules/common/icons';
+import {SecondaryButton} from 'modules/common/buttons';
 import classNames = require('classnames');
+import ChevronFlip from 'modules/common/chevron-flip';
 
 interface GasProps {
   saveAction: Function;
@@ -23,6 +21,7 @@ interface GasProps {
 interface GasState {
   amount: number;
   showLowAlert: boolean;
+  showAdvanced: boolean;
 }
 
 export class Gas extends React.Component<GasProps, GasState> {
@@ -30,7 +29,8 @@ export class Gas extends React.Component<GasProps, GasState> {
     amount: this.props.userDefinedGasPrice || this.props.average,
     showLowAlert:
       (this.props.userDefinedGasPrice || this.props.average) <
-      this.props.safeLow
+      this.props.safeLow,
+    showAdvanced: false,
   };
 
   updateAmount(amount: number) {
@@ -42,7 +42,7 @@ export class Gas extends React.Component<GasProps, GasState> {
 
   render() {
     const { closeAction, saveAction, safeLow, average, fast } = this.props;
-    const { amount, showLowAlert } = this.state;
+    const { amount, showLowAlert, showAdvanced } = this.state;
     const disabled = !amount || amount <= 0;
 
     const buttons = [
@@ -93,9 +93,10 @@ export class Gas extends React.Component<GasProps, GasState> {
             For more important transactions such as securing a sell order before anyone else takes it,
             we recommend a faster transaction fee.*
           </p>
-          <div className='gas-buttons'>
+          <div>
             {gasButtonsData.map(data => (
-              <div onClick={data.action}
+              <div key={data.speed}
+                   onClick={data.action}
                    className={classNames({
                      [Styles.GasCheckedButton]: amount === data.gwei
                    })}
@@ -105,16 +106,41 @@ export class Gas extends React.Component<GasProps, GasState> {
               </div>
             ))}
           </div>
-          <input
-            id='price'
-            placeholder='price'
-            step={1}
-            type='number'
-            value={this.state.amount}
-            onChange={(e) => {
-              this.updateAmount(parseFloat(e.target.value));
-            }}
-          />
+          <button onClick={() => this.setState({ showAdvanced: !showAdvanced })}>
+            Advanced
+            <ChevronFlip
+              pointDown={showAdvanced}
+              stroke='#fff'
+              filledInIcon
+              quick
+            />
+          </button>
+          {showAdvanced && (
+            <div>
+              <div>
+                <label>Gas Price (GWEI)</label>
+                <input
+                  id='price'
+                  placeholder='price'
+                  step={1}
+                  type='number'
+                  value={this.state.amount}
+                  onChange={(e) => {
+                    this.updateAmount(parseFloat(e.target.value));
+                  }}
+                />
+              </div>
+              <div>
+                <div>
+                  <span>&lt; $0.059</span><span> / Trade</span>
+                </div>
+                <span>0.012441 ETH</span>
+              </div>
+              <div>
+                <span>~ 30 seconds</span>
+              </div>
+            </div>
+          )}
           {showLowAlert && (
             <AlertMessage preText='Transactions are unlikely to be processed at your current gas price.' />
           )}

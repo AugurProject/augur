@@ -5,7 +5,7 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 
 
 contract IUniverse {
@@ -50,7 +50,6 @@ contract IUniverse {
     function isContainerForDisputeWindow(IDisputeWindow _shadyTarget) public view returns (bool);
     function isContainerForMarket(IMarket _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
-    function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function migrateMarketOut(IUniverse _destinationUniverse) public returns (bool);
     function migrateMarketIn(IMarket _market, uint256 _cashBalance, uint256 _marketOI) public returns (bool);
     function decrementOpenInterest(uint256 _amount) public returns (bool);

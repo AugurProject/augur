@@ -5,7 +5,7 @@ import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IReputationToken.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 

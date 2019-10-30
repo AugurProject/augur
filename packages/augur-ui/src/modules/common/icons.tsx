@@ -1278,15 +1278,6 @@ export const Indexes = (
   </svg>
 );
 
-export const Commodities = (
-  <svg viewBox="0 0 48 48" fill="none">
-    <path d="M24 46V38" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M10 22H12C15.1826 22 18.2348 23.2643 20.4853 25.5147C22.7357 27.7652 24 30.8174 24 34V38H22C18.8174 38 15.7652 36.7357 13.5147 34.4853C11.2643 32.2348 10 29.1826 10 26V22Z" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M26 38H24V34C24 30.8174 25.2643 27.7652 27.5147 25.5147C29.7652 23.2643 32.8174 22 36 22H38V26C38 29.1826 36.7357 32.2348 34.4853 34.4853C32.2348 36.7357 29.1826 38 26 38V38Z" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M20 12C20.089 10.4649 20.4895 8.96394 21.1772 7.58858C21.8648 6.21322 22.8253 4.99224 24 4C25.1747 4.99224 26.1352 6.21322 26.8228 7.58858C27.5105 8.96394 27.911 10.4649 28 12C27.911 13.5351 27.5105 15.0361 26.8228 16.4114C26.1352 17.7868 25.1747 19.0078 24 20C22.8253 19.0078 21.8648 17.7868 21.1772 16.4114C20.4895 15.0361 20.089 13.5351 20 12V12Z" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-  </svg>
-);
-
 export const Stocks = (
   <svg viewBox="0 0 48 48" fill="none">
     <path d="M28 28H20V46H28V28Z" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>

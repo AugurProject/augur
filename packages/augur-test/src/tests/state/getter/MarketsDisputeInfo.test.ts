@@ -60,7 +60,7 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
     }));
     markets['yesNoMarket2'] = (await john.createYesNoMarket({
       endTime,

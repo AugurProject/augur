@@ -54,6 +54,14 @@ export class ContractAPI {
   async approveCentralAuthority(): Promise<void> {
     const authority = this.augur.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+
+    const fillOrder = this.augur.addresses.FillOrder;
+    await this.augur.contracts.cash.approve(fillOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
+
+    const createOrder = this.augur.addresses.CreateOrder;
+    await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
@@ -321,7 +329,7 @@ export class ContractAPI {
   }
 
   async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
-    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affiliateAddress);
+    await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, affiliateAddress);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {
@@ -348,11 +356,11 @@ export class ContractAPI {
     const numTicks = await market.getNumTicks_();
     const cashValue = amount.multipliedBy(numTicks);
     await this.faucet(cashValue);
-    await this.augur.contracts.completeSets.publicBuyCompleteSets(market.address, amount);
+    await this.augur.contracts.shareToken.publicBuyCompleteSets(market.address, amount);
   }
 
   async sellCompleteSets(market: ContractInterfaces.Market, amount: BigNumber): Promise<void> {
-    await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount);
+    await this.augur.contracts.shareToken.publicSellCompleteSets(market.address, amount);
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
@@ -416,11 +424,8 @@ export class ContractAPI {
     return reputationToken.migrateOutByPayout(payoutNumerators, attotokens);
   }
 
-
   async getNumSharesInMarket(market: ContractInterfaces.Market, outcome: BigNumber): Promise<BigNumber> {
-    const shareTokenAddress = await market.getShareToken_(outcome);
-    const shareToken = this.augur.contracts.shareTokenFromAddress(shareTokenAddress);
-    return shareToken.balanceOf_(this.account.publicKey);
+    return this.augur.contracts.shareToken.balanceOfMarketOutcome_(market.address, outcome, this.account.publicKey);
   }
 
   async getOrCreateCurrentDisputeWindow(initial = false): Promise<string> {
@@ -532,7 +537,13 @@ export class ContractAPI {
   }
 
   async approve(wei: BigNumber): Promise<void> {
-    await  this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+    await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.FillOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.FillOrder, true);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.CreateOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.CreateOrder, true);
   }
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
@@ -591,11 +602,18 @@ export class ContractAPI {
   }
 
   async approveAugurEternalApprovalValue(owner: string) {
-    const spender = this.augur.addresses.Augur;
-    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender));
+    const augur = this.augur.addresses.Augur;
+    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, augur));
 
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      const fillOrder = this.augur.addresses.FillOrder;
+      const createOrder = this.augur.addresses.CreateOrder;
+      await this.augur.contracts.cash.approve(augur, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      await this.augur.contracts.cash.approve(fillOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      await this.augur.contracts.cash.approve(createOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+
+      await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true, { sender: this.account.publicKey });
+      await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true, { sender: this.account.publicKey });
     }
   }
 

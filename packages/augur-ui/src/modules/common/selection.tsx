@@ -265,7 +265,7 @@ export class StaticLabelDropdown extends Dropdown {
     if (!selected) {
       return null;
     }
-    
+
     return (
       <div
         style={sortByStyles}

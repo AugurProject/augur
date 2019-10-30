@@ -17,12 +17,12 @@ export interface BlockAndLogStreamerInterface<TBlock extends Block, TLog extends
 }
 
 export interface BlockAndLogStreamerListenerDependencies {
-  address: string;
   blockAndLogStreamer: BlockAndLogStreamerInterface<Block, ExtendedLog>;
   getBlockByHash: (hashOrTag: string) => Promise<Block>;
   getEventTopics: (eventName: string) => string[];
   parseLogs: (logs: Log[]) => ParsedLog[];
   listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
+  getEventContractAddress: (eventName: string) => string;
 }
 
 type GenericLogCallbackType<T, P> = (blockIdentifier: T, logs: P[]) => void;
@@ -42,35 +42,34 @@ export interface IBlockAndLogStreamerListener {
 type EventTopics = string | string[];
 
 interface LogCallbackMetaData {
+  contractAddress: string;
   eventNames: EventTopics;
   onLogsAdded: LogCallbackType;
   topics: string[];
 }
 
 export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener {
-  private address: string;
-  private currentFilterUUID: string;
-  private logCallbackMetaData:LogCallbackMetaData[] = [];
-  private allLogsCallbackMetaData:LogCallbackType[] = [];
+  private contractFilterUUIDs: {[address: string] : string } = {};
+  private logCallbackMetaData: LogCallbackMetaData[] = [];
+  private allLogsCallbackMetaData: LogCallbackType[] = [];
 
   constructor(private deps: BlockAndLogStreamerListenerDependencies) {
-    this.address = deps.address;
     deps.blockAndLogStreamer.subscribeToOnLogsAdded(this.onLogsAdded);
   }
 
-  static create(provider: EthersProvider, address: string, getEventTopics: ((eventName: string) => string[]),   parseLogs: (logs: Log[]) => ParsedLog[]) {
+  static create(provider: EthersProvider, getEventTopics: ((eventName: string) => string[]), parseLogs: (logs: Log[]) => ParsedLog[], getEventContractAddress: (eventName: string) => string) {
     const dependencies = new EthersProviderBlockStreamAdapter(provider);
     const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(dependencies.getBlockByHash, dependencies.getLogs, (error: Error) => {
       console.error(error);
     });
 
     return new BlockAndLogStreamerListener({
-      address,
       blockAndLogStreamer,
       getEventTopics,
       getBlockByHash: dependencies.getBlockByHash,
       listenForNewBlocks: dependencies.startPollingForBlocks,
       parseLogs,
+      getEventContractAddress,
     });
   }
 
@@ -87,34 +86,50 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
   listenForEvent(eventNames: string | string[], onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
     if(!Array.isArray(eventNames)) eventNames = [eventNames];
 
-    const topics = eventNames.reduce((acc, eventName) => {
-      const topics = this.deps.getEventTopics(eventName);
-      return [
-        ...acc,
-        ...topics,
-      ];
-    }, []);
+    // Group by contract address
+    const eventNamesByContractAddress = _.groupBy(eventNames, this.deps.getEventContractAddress);
 
-    this.logCallbackMetaData.push({
-      eventNames,
-      topics,
-      // This is where we create the filter on our side.
-      onLogsAdded: this.filterCallbackByTopic(topics, onLogsAdded),
-    });
+    // For each contract address update the logCallbackMetaData and update the respctive filter for that contract
+    _.forEach(eventNamesByContractAddress, (contractEventNames, contractAddress) => {
 
-    const allTopics = this.logCallbackMetaData.map((l) => l.topics);
-    const allTopicsInOneArray = _.concat([], ...allTopics);
+      // get all topics for the provided eventNames
+      const topics = contractEventNames.reduce((acc, eventName) => {
+        const topics = this.deps.getEventTopics(eventName);
+        return [
+          ...acc,
+          ...topics,
+        ];
+      }, []);
 
-    // Remove currently active filter if present.
-    if(this.currentFilterUUID) {
-      this.deps.blockAndLogStreamer.removeLogFilter(this.currentFilterUUID);
-    }
+      // Update the callbacks list with these events and the specified callback
+      this.logCallbackMetaData.push({
+        contractAddress,
+        eventNames: contractEventNames,
+        topics,
+        onLogsAdded: this.filterCallbackByTopic(topics, onLogsAdded)
+      });
 
-    this.currentFilterUUID = this.deps.blockAndLogStreamer.addLogFilter({
-      address: this.address,
-      topics: [
-        allTopicsInOneArray,
-      ],
+      const allContractTopics = this.logCallbackMetaData.reduce((acc, metaData) => {
+        if (metaData.contractAddress == contractAddress) {
+          return [
+            ...acc,
+            ...metaData.topics
+          ]
+        }
+        return acc;
+      }, []);
+
+      // Remove currently active filter if present.
+      if (this.contractFilterUUIDs[contractAddress]) {
+        this.deps.blockAndLogStreamer.removeLogFilter(this.contractFilterUUIDs[contractAddress]);
+      }
+  
+      this.contractFilterUUIDs[contractAddress] = this.deps.blockAndLogStreamer.addLogFilter({
+        address: contractAddress,
+        topics: [
+          allContractTopics,
+        ],
+      });
     });
   }
 
