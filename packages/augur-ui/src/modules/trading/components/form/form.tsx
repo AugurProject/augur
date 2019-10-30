@@ -857,7 +857,7 @@ class Form extends Component<FromProps, FormState> {
                     });
                   }
 
-                  this.setState({ advancedOption: value });
+                  this.setState({ advancedOption: value, fastForwardDays: DEFAULT_EXPIRATION_DAYS, expirationDateOption: '0' });
                 }}
               />
               {s.advancedOption === '1' && (
