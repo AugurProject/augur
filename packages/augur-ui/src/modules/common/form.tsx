@@ -21,6 +21,7 @@ import {
   Clock,
   Arrow,
   LoadingEllipse,
+  CategorySports,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 import {
@@ -2183,6 +2184,7 @@ export interface CategoryRowProps {
   loading?: boolean;
   category: string;
   count: number;
+  icon?: React.ReactNode;
 }
 
 export const CategoryRow = ({
@@ -2192,6 +2194,7 @@ export const CategoryRow = ({
   loading = false,
   category,
   count,
+  icon,
 }: CategoryRowProps) => (
   <div
     onClick={() => handleClick()}
@@ -2202,7 +2205,7 @@ export const CategoryRow = ({
     })}
   >
     <span>
-      {category && category.length <= 3 ? category.toUpperCase() : category}
+     {icon} {category && category.length <= 3 ? category.toUpperCase() : category}
     </span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}

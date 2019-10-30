@@ -6,6 +6,11 @@ import {
   MetaMask,
   Portis,
   Trezor,
+  CategorySports,
+  CategoryPolitics,
+  CategoryEntertainment,
+  CategoryFinance,
+  CategoryCrypto,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
@@ -881,6 +886,15 @@ export const POPULAR_CATEGORIES = [
   'finance',
   'crypto',
 ];
+
+export const POPULAR_CATEGORIES_ICONS = [
+  CategorySports,
+  CategoryPolitics,
+  CategoryEntertainment,
+  CategoryFinance,
+  CategoryCrypto,
+];
+
 export const CATEGORIES_MAX = 5;
 
 export enum PAGINATION_VIEW_OPTIONS {
