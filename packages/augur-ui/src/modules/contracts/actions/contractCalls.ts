@@ -33,7 +33,7 @@ import {
   BUY,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, LiquidityOrder } from 'modules/types';
+import { CreateMarketData, LiquidityOrder, ExtraInfoTemplate } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 
@@ -464,6 +464,7 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
+  template?: ExtraInfoTemplate;
 }
 
 export function createMarket(

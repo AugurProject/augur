@@ -38,6 +38,7 @@ export const TEMPLATES = {
       [GOLF]: {
         templates: [
           {
+            hash: `918ee03a826a8a9c51198f9eb3896fef5f5c8e95d19bb5814c2647c75d48ba91`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2]?`,
             example: `Will Tiger Woods win the 2020 PGA Championship?`,
@@ -69,6 +70,7 @@ export const TEMPLATES = {
             },
           },
           {
+            hash: `9bd2d93e65d6abd495aa03acbec4c894a44f9c0c69f508ee0593377514f7b17d`,
             marketType: YES_NO,
             question: `Will [0] make the cut at the [1] [2]?`,
             example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
@@ -100,6 +102,7 @@ export const TEMPLATES = {
             },
           },
           {
+            hash: `7dff6975e29edafa4a99e5687b7f21f09fc0decb8c542cfda0bccd5e319d72f9`,
             marketType: CATEGORICAL,
             question: `Which golfer will win the [0] [1]?`,
             example: `Which golfer will win the 2020 PGA Championship?`,

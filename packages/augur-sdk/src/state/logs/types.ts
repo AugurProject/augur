@@ -384,11 +384,22 @@ export interface LiquidityData {
   [spread: number]: number;
 }
 
+export interface ExtraInfoTemplateInput {
+  id: number;
+  value: string;
+}
+export interface ExtraInfoTemplate {
+  hash: string;
+  question: string;
+  inputs: ExtraInfoTemplateInput[]
+}
+
 export interface ExtraInfo {
   _scalarDenomination?: string;
   longDescription?: string;
   description?: string;
   categories?: string[];
+  template?: ExtraInfoTemplate;
 }
 
 export interface MarketData extends Log, Doc {
