@@ -25,7 +25,6 @@ import {
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import { formatRep, formatAttoRep } from 'utils/format-number';
-import MarketLink from 'modules/market/components/market-link/market-link';
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -36,6 +35,7 @@ import Styles from 'modules/reporting/common.styles.less';
 import { convertDisplayValuetoAttoValue, convertAttoValueToDisplayValue } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
+import MarketTitle from 'modules/market/containers/market-title';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -776,7 +776,6 @@ export const ReportingCard = (props: ReportingCardProps) => {
 
   const {
     id,
-    description,
     reportingState,
     disputeInfo,
     endTimeFormatted,
@@ -792,7 +791,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
       />
-      <MarketLink id={id}>{description}</MarketLink>
+      <MarketTitle id={id} showIcon/>
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
         <MarketProgress
           reportingState={reportingState}
