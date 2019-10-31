@@ -17,15 +17,10 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   description,
   id,
   isWrapped,
-  isTemplate,
-  showIcon,
 }) => (
-  <span className={Styles.MarketTitle}>
     <MarketLink id={id}>
       {isWrapped ? wrapMarketName(description) : description}
-      {isTemplate && showIcon && TemplateIcon}
     </MarketLink>
-  </span>
 );
 
 export default MarketTitle;
