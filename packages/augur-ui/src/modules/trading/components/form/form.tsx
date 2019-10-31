@@ -841,7 +841,12 @@ class Form extends Component<FromProps, FormState> {
             <TextButtonFlip
               text="Advanced"
               action={() => {
-                this.setState({ showAdvanced: !s.showAdvanced });
+                this.setState({
+                  advancedOption: '0',
+                  fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+                  expirationDateOption: '0',
+                  showAdvanced: !s.showAdvanced
+                });
               }}
               pointDown={s.showAdvanced}
             />
