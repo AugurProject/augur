@@ -21,6 +21,9 @@ interface PerformQueueTask {
 }
 
 export class EthersProvider extends ethers.providers.BaseProvider implements EProvider {
+  gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(7500000);
+  gasEstimateIncreasePercentage: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(10);
+
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
   readonly provider: ethers.providers.JsonRpcProvider;
@@ -37,6 +40,8 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       this._overrideGasPrice = gasPrice;
     }
   }
+
+  private
 
   constructor(provider: ethers.providers.JsonRpcProvider, times: number, interval: number, concurrency: number) {
     super(provider.getNetwork());
@@ -87,6 +92,19 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       return this.overrideGasPrice;
     }
     return super.getGasPrice();
+  }
+
+  public async estimateGas(transaction: ethers.providers.TransactionRequest): Promise<ethers.utils.BigNumber> {
+    let gasEstimate = await super.estimateGas(transaction);
+    if(this.gasEstimateIncreasePercentage) {
+      gasEstimate = gasEstimate.add(gasEstimate.div(this.gasEstimateIncreasePercentage))
+    }
+
+    if (this.gasLimit) {
+      gasEstimate = gasEstimate.gt(this.gasLimit) ? this.gasLimit : gasEstimate;
+    }
+
+    return gasEstimate;
   }
 
   public storeAbiData(abi: Abi, contractName: string): void {
