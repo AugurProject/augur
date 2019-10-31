@@ -280,7 +280,7 @@ export default class MarketCard extends React.Component<
             />
           </div>
 
-          <MarketTitle id={id} showIcon />
+          <MarketTitle id={id} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup
