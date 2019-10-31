@@ -1,7 +1,7 @@
 import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { TemplateIcon } from 'modules/common/icons';
-import Styles from "modules/market/components/common/market-common.styles.less";
+import Styles from 'modules/market/components/common/market-common.styles.less';
 
 interface MarketTitleProps {
   id: string;
@@ -20,11 +20,12 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   isTemplate,
   showIcon,
 }) => (
-  <MarketLink id={id} className={Styles.MarketTitle}>
-    {isWrapped ? wrapMarketName(description) : description}
+  <span className={Styles.MarketTitle}>
+    <MarketLink id={id}>
+      {isWrapped ? wrapMarketName(description) : description}
+    </MarketLink>
     {isTemplate && showIcon && TemplateIcon}
-  </MarketLink>
+  </span>
 );
 
 export default MarketTitle;
-
