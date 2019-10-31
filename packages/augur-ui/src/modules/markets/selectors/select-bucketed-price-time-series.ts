@@ -45,14 +45,16 @@ export const bucketedPriceTimeSeries = createCachedSelector(
         ),
       })) || [];
     const currentTime = currentTimestamp || Date.now();
-    return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes);
+
+    return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes, marketData.minPrice);
   }
 )((state, marketId) => marketId);
 
 const bucketedPriceTimeSeriesInternal = (
   creationTime,
   currentTimestamp,
-  outcomes
+  outcomes,
+  minPrice
 ) => {
   const mmSecondsInHour = createBigNumber(3600 * 1000);
   const mmSecondsInDay = createBigNumber(24).times(mmSecondsInHour);
@@ -78,10 +80,10 @@ const bucketedPriceTimeSeriesInternal = (
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
     )
   );
-  
+
   timeBuckets.push(currentTimestamp);
   const priceTimeSeries = outcomes.reduce((p, o) => {
-    p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets, creationTime);
+    p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets, creationTime, minPrice);
     return p;
   }, {});
   return {
@@ -89,11 +91,11 @@ const bucketedPriceTimeSeriesInternal = (
   };
 };
 
-function splitTradesByTimeBucket(priceTimeSeries, timeBuckets, creationTime) {
+function splitTradesByTimeBucket(priceTimeSeries, timeBuckets, creationTime, minPrice) {
   // make sure we start the series with a 0 at the startTime for chart rendering.
   if (!priceTimeSeries.find(item => item[0] === creationTime) || priceTimeSeries.length === 0) {
      priceTimeSeries.push({
-      price: "0",
+      price: minPrice,
       amount: "0",
       logIndex: 0,
       timestamp: creationTime
