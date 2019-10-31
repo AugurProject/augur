@@ -26,7 +26,7 @@ export const selectPopularCategories = createSelector(
         .filter(category => POPULAR_CATEGORIES.includes(category))
         .map(mapObject);
 
-      return POPULAR_CATEGORIES.map(category => {
+      return POPULAR_CATEGORIES.map((category, idx) => {
         const isCategoryWithResults = popularCategories.find(
           meta => meta.category === category
         );
@@ -37,6 +37,7 @@ export const selectPopularCategories = createSelector(
 
         return {
           category,
+          icon: POPULAR_CATEGORIES_ICONS[idx],
           count: 0,
           children: null,
         };
