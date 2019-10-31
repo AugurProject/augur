@@ -28,6 +28,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import getValue from 'utils/get-value';
 
 const getMarketPath = id => {
   return {
@@ -63,6 +64,7 @@ const mapStateToProps = (state, ownProps) => {
     availableEth: createBigNumber(state.loginAccount.balances.eth),
     availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
+    currentTimestamp: state.blockchain.currentAugurTimestamp,
     orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,

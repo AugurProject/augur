@@ -952,46 +952,6 @@ export const setCategories: SortedGroup[] = [
         ],
       },
       {
-        value: 'Commodities',
-        label: 'Commodities',
-        subGroup: [
-          {
-            value: 'Crude Oil',
-            label: 'Crude Oil',
-          },
-          {
-            value: 'Natural Gas',
-            label: 'Natural Gas',
-          },
-          {
-            value: 'Gold',
-            label: 'Gold',
-          },
-          {
-            value: 'Silver',
-            label: 'Silver',
-          },
-          { value: CUSTOM, label: CUSTOM }
-        ],
-        autoCompleteList: [
-          { value: "Sugar", label: "Sugar" },
-          { value: "Coffee", label: "Coffee" },
-          { value: "Cocoa", label: "Cocoa" },
-          { value: "Cotton", label: "Cotton" },
-          { value: "Soyabeans", label: "Soyabeans" },
-          { value: "Corn", label: "Corn" },
-          { value: "Copper", label: "Copper" },
-          { value: "Aluminium", label: "Aluminium" },
-          { value: "Platinum", label: "Platinum" },
-          { value: "Steel", label: "Steel" },
-          { value: "Heating oil", label: "Heating oil" },
-          { value: "Gasoline", label: "Gasoline" },
-          { value: "Lean Hogs", label: "Lean Hogs" },
-          { value: "Pork Bellies", label: "Pork Bellies" },
-          { value: "Cattle", label: "Cattle" },
-        ]
-      },
-      {
         value: 'Indexes',
         label: 'Indexes',
         subGroup: [

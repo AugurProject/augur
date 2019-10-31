@@ -194,11 +194,13 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              Gas price
+              Transaction Fee
               {renderToolTip('...')}
+              <span>Average ($0.0004)</span>
             </div>
             <div>
-              {userDefinedGasPrice} GWEI ({gasPriceSpeed})
+              <div><span>{gasPriceSpeed}</span><span> &lt; 30 minutes</span></div>
+              <div><span>${userDefinedGasPrice}</span><span> / Transaction</span></div>
             </div>
           </div>
           <SecondaryButton

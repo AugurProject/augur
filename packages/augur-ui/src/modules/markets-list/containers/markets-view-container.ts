@@ -30,6 +30,7 @@ const mapStateToProps = (state: AppState, { location }) => {
   return {
     isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
+    restoredAccount: state.authStatus.restoredAccount,
     universe: (state.universe || {}).id,
     search: searchPhrase,
     isMobile: state.appStatus.isMobile,

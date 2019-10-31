@@ -37,6 +37,7 @@ interface TradingFormProps {
   addFundsModal: Function;
   loginModal: Function;
   signupModal: Function;
+  currentTimestamp: Number;
 }
 
 interface TradingFormState {
@@ -108,6 +109,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       addFundsModal,
       loginModal,
       signupModal,
+      currentTimestamp
     } = this.props;
     const s = this.state;
 
@@ -133,6 +135,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}
+          currentTimestamp={currentTimestamp}
           allowanceBigNumber={allowanceBigNumber}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}

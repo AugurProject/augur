@@ -14,7 +14,6 @@ import {
   FEES_LIQUIDITY,
   DESCRIPTION,
   END_TIME,
-  EXPIRY_SOURCE,
   HOUR,
   DESIGNATED_REPORTER_ADDRESS,
   VALIDATION_ATTRIBUTES,
@@ -37,7 +36,6 @@ import {
 import {
   CATEGORICAL,
   SCALAR,
-  EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
   YES_NO_OUTCOMES,
   SCALAR_OUTCOMES,
@@ -305,7 +303,7 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   findErrors = () => {
     const { newMarket, isTemplate } = this.props;
-    const { expirySourceType, designatedReporterType, marketType } = newMarket;
+    const { designatedReporterType, marketType } = newMarket;
 
     let { currentStep } = newMarket;
     let hasErrors = false;
@@ -316,9 +314,6 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     if (currentStep === 0) {
       fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
-      if (expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
-        fields.push(EXPIRY_SOURCE);
-      }
       if (designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
         fields.push(DESIGNATED_REPORTER_ADDRESS);
       }

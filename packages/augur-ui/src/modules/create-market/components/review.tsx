@@ -18,7 +18,6 @@ import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/
 import {
   SCALAR,
   CATEGORICAL,
-  EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
   ETH,
   DAI,
@@ -224,8 +223,6 @@ export default class Review extends React.Component<
       marketType,
       description,
       detailsText,
-      expirySourceType,
-      expirySource,
       designatedReporterType,
       designatedReporterAddress,
       scalarDenomination,
@@ -279,14 +276,6 @@ export default class Review extends React.Component<
         <div>
           <DateTimeHeaders header="Event expiration date and time" timezone={timezone} subheader={endTimeFormatted && endTimeFormatted.formattedUtc} timezoneDateTime={endTimeFormatted && endTimeFormatted.formattedTimezone} />
           <SmallSubheaders header="resolution details" renderMarkdown subheader={resolutionDetails === "" ? "–" : resolutionDetails} />
-          <SmallSubheaders
-            header="Resolution source"
-            subheader={expirySourceType === EXPIRY_SOURCE_GENERIC
-              ? "General knowledge"
-              : `Outcome will be detailed on public website: ${
-                  expirySource
-                }`}
-          />
           <SmallSubheaders
             header="Designated Reporter"
             subheader={designatedReporterType === DESIGNATED_REPORTER_SELF

@@ -12,6 +12,7 @@ import {
   Categories,
   Template,
   TemplateInput,
+  ResolutionRules,
 } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';

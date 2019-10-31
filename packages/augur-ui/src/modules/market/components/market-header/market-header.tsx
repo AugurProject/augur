@@ -40,7 +40,6 @@ interface MarketHeaderProps {
   currentTime: number;
   marketType: string;
   scalarDenomination: string;
-  resolutionSource: any;
   isLogged: boolean;
   toggleFavorite: Function;
   isFavorite: boolean;
@@ -60,7 +59,6 @@ export default class MarketHeader extends Component<
 > {
   static defaultProps = {
     scalarDenomination: null,
-    resolutionSource: 'General knowledge',
     marketType: null,
     currentTime: 0,
     isFavorite: false,
@@ -129,7 +127,6 @@ export default class MarketHeader extends Component<
     const {
       description,
       marketType,
-      resolutionSource,
       minPrice,
       maxPrice,
       scalarDenomination,
@@ -220,10 +217,6 @@ export default class MarketHeader extends Component<
             <div className={Styles.MainValues}>
               <div>
                 <h1>{description}</h1>
-                <div className={Styles.Details}>
-                  <h4>Resolution Source</h4>
-                  <span>{resolutionSource}</span>
-                </div>
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Additional Details</h4>

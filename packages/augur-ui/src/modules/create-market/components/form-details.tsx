@@ -22,8 +22,6 @@ import {
   YES_NO,
   SCALAR,
   CATEGORICAL,
-  EXPIRY_SOURCE_GENERIC,
-  EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC,
 } from 'modules/common/constants';
@@ -31,7 +29,6 @@ import { NewMarket } from 'modules/types';
 import {
   DESCRIPTION_PLACEHOLDERS,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
@@ -98,9 +95,6 @@ export default class FormDetails extends React.Component<
       maxPrice,
       detailsText,
       categories,
-      expirySource,
-      backupSource,
-      expirySourceType,
       designatedReporterAddress,
       designatedReporterType,
       validations,
@@ -111,28 +105,6 @@ export default class FormDetails extends React.Component<
 
     const tickSize =
       isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
-    let sourceButtons = [
-      {
-        header: 'General knowledge',
-        value: EXPIRY_SOURCE_GENERIC,
-      },
-    ];
-
-    if (!isTemplate) {
-      sourceButtons.push({
-        header: 'Outcome available on a public website',
-        value: EXPIRY_SOURCE_SPECIFIC,
-        expandable: true,
-        placeholder: 'Enter website',
-        textValue: expirySource,
-        onTextChange: (value: string) => onChange('expirySource', value),
-        errorMessage: validations.expirySource,
-        secondPlaceholder: 'Back up website (optional)',
-        secondTextValue: backupSource,
-        secondHeader: 'If the primary resolution source is not available',
-        onSecondTextChange: (value: string) => onChange('backupSource', value),
-      });
-    }
 
     return (
       <div
@@ -376,23 +348,6 @@ export default class FormDetails extends React.Component<
               uniqueKey={'templateRes'}
             />
           )}
-
-          <Subheaders
-            header="Resolution source"
-            subheader="Describe what users need to know in order to resolve the market."
-            link
-          />
-          <RadioBarGroup
-            radioButtons={sourceButtons}
-            defaultSelected={expirySourceType}
-            onChange={(value: string) => {
-              if (value === EXPIRY_SOURCE_GENERIC) {
-                onChange(EXPIRY_SOURCE, '');
-                onError(EXPIRY_SOURCE, '');
-              }
-              onChange('expirySourceType', value);
-            }}
-          />
 
           {isTemplate && (
             <ResolutionRules newMarket={newMarket} onChange={onChange} />

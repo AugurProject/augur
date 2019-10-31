@@ -115,6 +115,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
   outcomesFormatted: OutcomeFormatted[];
+  isTemplate: boolean;
 }
 
 export interface ForkingInfo {
@@ -281,7 +282,6 @@ export interface NewMarketPropertiesValidations {
   type?: string;
   designatedReporterType?: string;
   designatedReporterAddress?: string;
-  expirySourceType?: string;
   setEndTime?: string;
   hour?: string;
   minute?: string;
@@ -304,7 +304,6 @@ export interface NewMarket {
   validations:
     | NewMarketPropertiesValidations
     | NewMarketPropertyValidations;
-  backupSource: string;
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -312,8 +311,6 @@ export interface NewMarket {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -363,8 +360,6 @@ export interface Draft {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -790,6 +785,7 @@ export interface ResolutionRules {
 }
 
 export interface Template {
+  hash: string;
   categories: Categories;
   marketType: string;
   question: string;
@@ -817,3 +813,4 @@ export interface Categories {
   secondary: string;
   tertiary: string;
 }
+

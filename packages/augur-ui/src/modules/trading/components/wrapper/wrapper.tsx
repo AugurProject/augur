@@ -49,6 +49,7 @@ interface WrapperProps {
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
   initialLiquidity?: Boolean;
+  currentTimestamp: Number;
 }
 
 interface WrapperState {
@@ -59,6 +60,7 @@ interface WrapperState {
   gasCostEst: string;
   selectedNav: string;
   doNotCreateOrders: boolean;
+  expirationDate: number;
   trade: any;
 }
 
@@ -97,6 +99,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
         props.selectedOrderProperties.doNotCreateOrders || false,
+      expirationDate:
+        props.selectedOrderProperties.expirationDate || '',
       trade: Wrapper.getDefaultTrade(props),
     };
 
@@ -164,6 +168,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderEscrowdEth: '',
           gasCostEst: '',
           doNotCreateOrders: false,
+          expirationDate: '',
           selectedNav: this.state.selectedNav,
           trade,
         },
@@ -379,7 +384,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
-      orderBook
+      orderBook,
+      currentTimestamp
     } = this.props;
     let { marketType, minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
     if (!minPriceBigNumber) {
@@ -397,6 +403,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderEscrowdEth,
       gasCostEst,
       doNotCreateOrders,
+      expirationDate
     } = s;
 
     return (
@@ -455,6 +462,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              currentTimestamp={currentTimestamp}
               orderBook={orderBook}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
@@ -467,6 +475,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               orderEscrowdEth={orderEscrowdEth}
               gasCostEst={gasCostEst}
               doNotCreateOrders={doNotCreateOrders}
+              expirationDate={expirationDate}
               selectedOutcome={selectedOutcome}
               updateState={this.updateState}
               updateOrderProperty={this.updateOrderProperty}
@@ -477,6 +486,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
               availableDai={availableDai}
+              Ox_ENABLED={true}
             />
           )}
         </div>

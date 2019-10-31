@@ -3,10 +3,18 @@ import noop from 'utils/noop';
 import { sortOrders } from 'modules/orders/helpers/liquidity';
 import { addMarketLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { AppState } from 'store';
-import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
+import {
+  NodeStyleCallback,
+  NewMarket,
+  CreateMarketData,
+  TemplateInput,
+} from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { createMarket, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import {
+  createMarket,
+  approveToTrade,
+} from 'modules/contracts/actions/contractCalls';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { constructMarketParamsReturn } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
@@ -46,6 +54,21 @@ export function submitNewMarket(
         })
       );
     }
+    let extraInfoTemplate = null;
+    if (market.template) {
+      const { template } = market;
+      const inputs = template.inputs.reduce(
+        (p, i: TemplateInput) =>
+          i.userInput ? [...p, { id: i.id, value: i.userInput }] : p,
+        []
+      );
+      extraInfoTemplate = {
+        hash: template.hash,
+        question: market.template.question,
+        inputs,
+      };
+    }
+
     let err = null;
     try {
       createMarket(
@@ -53,19 +76,23 @@ export function submitNewMarket(
           outcomes: market.outcomes,
           scalarDenomination: market.scalarDenomination,
           description: market.description,
-          expirySource: market.expirySource,
           designatedReporterAddress: market.designatedReporterAddress,
           minPrice: market.minPrice,
           maxPrice: market.maxPrice,
-          backupSource: market.backupSource,
           endTime: market.endTime,
           tickSize: market.tickSize,
           marketType: market.marketType,
-          detailsText: market.template ? buildResolutionDetails(market.detailsText, market.template.resolutionRules) : market.detailsText,
+          detailsText: market.template
+            ? buildResolutionDetails(
+                market.detailsText,
+                market.template.resolutionRules
+              )
+            : market.detailsText,
           categories: market.categories,
           settlementFee: market.settlementFee,
           affiliateFee: market.affiliateFee,
           offsetName: market.offsetName,
+          template: extraInfoTemplate,
         },
         false
       );
