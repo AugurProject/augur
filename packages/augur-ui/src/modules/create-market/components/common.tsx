@@ -294,7 +294,6 @@ interface DateTimeSelectorProps {
   setEndTime?: number;
   onChange: Function;
   currentTimestamp: number;
-  dateFocused?: boolean;
   validations: object;
   hour: string;
   minute: string;
@@ -304,6 +303,7 @@ interface DateTimeSelectorProps {
   header?: string;
   subheader?: string;
   uniqueKey?: string;
+  condensedStyle?: boolean;
 }
 
 interface TimeSelectorParams {
@@ -328,6 +328,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
     currentTimestamp,
     errorMessage,
     placeholder,
+    condensedStyle
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -355,6 +356,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
       }}
       focused={dateFocused}
       errorMessage={errorMessage}
+      condensedStyle={condensedStyle}
     />
   );
 };
@@ -373,14 +375,15 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     header,
     subheader,
     uniqueKey,
+    condensedStyle
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
   const [timeFocused, setTimeFocused] = useState(false);
 
   return (
-    <div className={Styles.DateTimeSelector} key={uniqueKey}>
-      <Subheaders
+    <div className={classNames(Styles.DateTimeSelector, {[Styles.Condensed]: condensedStyle})} key={uniqueKey}>
+      {!condensedStyle && <Subheaders
         header={header ? header : 'Event Expiration date and time'}
         subheader={
           subheader
@@ -388,7 +391,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
             : 'Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. '
         }
         link
-      />
+      />}
       <span>
         <DatePicker
           date={setEndTime ? moment(setEndTime * 1000) : null}
@@ -412,6 +415,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           }}
           focused={dateFocused}
           errorMessage={validations && validations.setEndTime}
+          condensedStyle={condensedStyle}
         />
         <TimeSelector
           hour={hour}
@@ -438,6 +442,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           focused={timeFocused}
           errorMessage={validations && validations.hour}
           uniqueKey={uniqueKey}
+          condensedStyle={condensedStyle}
         />
         <TimezoneDropdown
           onChange={(offsetName: string, offset: number, timezone: string) => {
@@ -446,9 +451,10 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           }}
           timestamp={setEndTime}
           timezone={timezone}
+          condensedStyle={condensedStyle}
         />
       </span>
-      {endTimeFormatted && hour && hour !== '' && setEndTime && (
+      {!condensedStyle && endTimeFormatted && hour && hour !== '' && setEndTime && (
         <span>
           <div>
             <span>Converted to UTC-0:</span>
@@ -796,6 +802,84 @@ export const InputFactory = (props: InputFactoryProps) => {
   }
 };
 
+interface SimpleTimeSelectorProps {
+  currentTime: number;
+  onChange: Function;
+}
+
+export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
+  const {
+    currentTime,
+    onChange,
+  } = props;
+
+  const [endTime, setEndTime] = useState(null);
+  const [hour, setHour] = useState(null);
+  const [minute, setMinute] = useState(null);
+  const [meridiem, setMeridiem] = useState('AM');
+  const [timezone, setTimezone] = useState('');
+  const [endTimeFormatted, setEndTimeFormatted] = useState('');
+  const [offset, setOffset] = useState('');
+  const [offsetName, setOffsetName] = useState('');
+  useEffect(() => {
+    const endTimeFormatted = buildformattedDate(
+      Number(endTime),
+      Number(hour),
+      Number(minute),
+      meridiem,
+      offsetName,
+      Number(offset)
+    );
+    setEndTimeFormatted(endTimeFormatted);
+    onChange(endTimeFormatted);
+  }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
+
+  return (
+    <div>
+      <DateTimeSelector
+        setEndTime={endTime}
+        condensedStyle
+        onChange={(label, value) => {
+          switch (label) {
+            case 'timezoneDropdown':
+              const { offset, timezone, offsetName } = value;
+              setOffset(Number(offset));
+              setTimezone(timezone);
+              setOffsetName(offsetName);
+              break;
+            case 'setEndTime':
+              setEndTime(value);
+              break;
+            case 'timeSelector':
+              if (value.hour) setHour(value.hour);
+              if (value.minute) setMinute(value.minute);
+              if (value.meridiem) setMeridiem(value.meridiem);
+              break;
+            case 'minute':
+              setMinute(value);
+              break;
+            case 'hour':
+              setHour(value);
+              break;
+            case 'meridiem':
+              setMeridiem(value);
+              break;
+            default:
+              break;
+          }
+        }}
+        hour={hour ? String(hour) : null}
+        minute={minute ? String(minute) : null}
+        meridiem={meridiem}
+        timezone={timezone}
+        currentTimestamp={currentTime}
+        endTimeFormatted={endTimeFormatted}
+        uniqueKey={'startTime'}
+      />
+    </div>
+  );
+};
+
 interface EstimatedStartSelectorProps {
   newMarket: NewMarket;
   template: Template;
@@ -816,46 +900,46 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   } = props;
 
   const [endTime, setEndTime] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).endTime
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).endTime
       : null
   );
   const [hour, setHour] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).hour
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).hour
       : null
   );
   const [minute, setMinute] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).minute
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).minute
       : null
   );
   const [meridiem, setMeridiem] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).meridiem
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).meridiem
       : 'AM'
   );
   const [timezone, setTimezone] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).timezone
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).timezone
       : ''
   );
   const [endTimeFormatted, setEndTimeFormatted] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).endTimeFormatted
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).endTimeFormatted
       : ''
   );
   const [offset, setOffset] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).offset
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).offset
       : 0
   );
   const [offsetName, setOffsetName] = useState(
-    props.input.userInput
-      ? (props.input.userInputObject as UserInputDateTime).offsetName
+    input.userInput
+      ? (input.userInputObject as UserInputDateTime).offsetName
       : ''
   );
-  let userInput = props.input.placeholder;
+  let userInput = input.placeholder;
   useEffect(() => {
     const endTimeFormatted = buildformattedDate(
       Number(endTime),
