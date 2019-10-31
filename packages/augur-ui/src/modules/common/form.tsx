@@ -1555,7 +1555,9 @@ class IndividualTimeSelector extends React.Component<
   increment = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) + 1;
+      let newValue = parseFloat(value) + 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1565,7 +1567,9 @@ class IndividualTimeSelector extends React.Component<
   decrement = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) - 1;
+      let newValue = parseFloat(value) - 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
