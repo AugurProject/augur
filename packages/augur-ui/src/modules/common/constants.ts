@@ -24,6 +24,8 @@ export const ETH = 'ETH';
 export const REP = 'REP';
 export const DAI = 'DAI';
 
+export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
+
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
 export const UNIVERSE_ID = '0xf69b5';

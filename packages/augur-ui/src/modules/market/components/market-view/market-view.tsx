@@ -305,7 +305,8 @@ export default class MarketView extends Component<
     );
     const selectedOutcomeName: string = outcome ? outcome.description : '';
 
-    const networkId = getNetworkId();
+    const networkId = 0;
+    //getNetworkId();
 
     const cat5 = this.findType();
     const defaultOutcome = outcome ? outcome.id : 2;
@@ -474,7 +475,6 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                <MarketComments marketId={marketId} networkId={networkId} />
               </>
             ) : (
                 <>
@@ -608,7 +608,6 @@ export default class MarketView extends Component<
                     </div>
                   </div>
 
-                  <MarketComments marketId={marketId} networkId={networkId} />
                 </>
               )
           }

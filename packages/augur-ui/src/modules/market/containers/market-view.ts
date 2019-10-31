@@ -9,17 +9,30 @@ import {
   MODAL_MARKET_REVIEW,
   MARKET_REVIEW_SEEN,
   MODAL_MARKET_LOADING,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import { NewMarket } from 'modules/types';
+import deepClone from 'utils/deep-clone';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
-  const market = ownProps.market || selectMarket(marketId);
+  let market = {};
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
+  if (tradingTutorial) {
+    market = {
+      ...deepClone<NewMarket>(EMPTY_STATE),
+      description: 'Which NFL team will win?'
+    };
+  } else {
+    market = ownProps.market || selectMarket(marketId)
+  }
 
   const marketReviewSeen =
     windowRef &&
@@ -37,6 +50,8 @@ const mapStateToProps = (state, ownProps) => {
 
 
   return {
+    preview: tradingTutorial,
+    tradingTutorial,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     outcomes: market.outcomes || [],
     isConnected: connection.isConnected && universe.id != null,
