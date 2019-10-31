@@ -11,7 +11,6 @@ import {
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import MarketLink from 'modules/market/components/market-link/market-link';
 import {
   COPY_MARKET_ID,
   COPY_AUTHOR,
@@ -37,6 +36,7 @@ import { formatAttoRep } from 'utils/format-number';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
 
 import Styles from 'modules/market-cards/market-card.styles.less';
+import MarketTitle from 'modules/market/containers/market-title';
 
 interface MarketCardProps {
   market: MarketData;
@@ -280,7 +280,7 @@ export default class MarketCard extends React.Component<
             />
           </div>
 
-          <MarketLink id={id}>{description}</MarketLink>
+          <MarketTitle id={id} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup
