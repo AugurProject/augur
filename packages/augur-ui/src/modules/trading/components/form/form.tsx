@@ -20,8 +20,8 @@ import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
 import moment from 'moment';
-import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
-import { DateTimeSelector } from 'modules/create-market/components/common';
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { SimpleTimeSelector } from 'modules/create-market/components/common';
 
 const DEFAULT_EXPIRATION_DAYS = 30;
 
@@ -630,7 +630,7 @@ class Form extends Component<FromProps, FormState> {
       sortedOutcomes,
       initialLiquidity,
       currentTimestamp,
-      Ox_ENABLED
+      Ox_ENABLED,
     } = this.props;
     const s = this.state;
 
@@ -919,6 +919,19 @@ class Form extends Component<FromProps, FormState> {
                         ).formattedLocalShortTime
                       }
                     </span>
+                  )}
+                  {s.expirationDateOption ===
+                    EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                    <section>               
+                      <SimpleTimeSelector
+                        onChange={(value) => {
+                          updateState({
+                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment(value).unix(),
+                          });
+                        }}
+                        currentTime={currentTimestamp}
+                      />              
+                    </section>
                   )}
                 </div>
               )}

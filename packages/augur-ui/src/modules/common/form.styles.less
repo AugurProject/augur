@@ -1377,6 +1377,29 @@ div.FormDropdownActive {
       display: none;
     }
   }
+
+  &.Condensed {
+    :global {
+      .SingleDatePickerInput_calendarIcon {
+        display: none;
+      }
+
+      .DateInput_input_1 {
+        width: unset;
+      }
+
+      .DateInput_input.DateInput_input_1 {
+        .mono-9;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+        min-width: unset;
+        padding: @size-2 @size-4;
+        min-height: unset;
+        width: 80px;
+      }
+    }
+  }
 }
 
 .InputDropdown {
@@ -1560,6 +1583,31 @@ div.FormDropdownActive {
       fill: transparent;
     }
   }
+
+  &.Condensed {
+    min-width: unset;
+
+    > div {
+      margin-top: @size-8;
+    }
+
+    > button {
+      padding: @size-2 @size-4;
+      height: unset;
+      width: 55px;
+
+      > span {
+        .mono-9;
+
+        text-transform: uppercase;
+        color: @color-primary-text;
+      }
+
+      > svg {
+        display: none;
+      }
+    }
+  }
 }
 
 .IndividualTimeSelector {
@@ -1714,6 +1762,26 @@ div.error > div > div > div > div > input {
   display: flex;
   flex-flow: column;
   position: relative;
+
+  &.Condensed {
+    > div > div {
+      > input {
+        .mono-9;
+  
+        color: @color-primary-text;
+        text-transform: uppercase;
+        padding: @size-2 @size-4;
+        min-width: unset;
+        width: @size-34;
+        height: unset;
+      }
+
+      > div {
+        width: 120px;
+        left: 0;
+      }
+    }
+  }
 }
 
 .CategoryRow {

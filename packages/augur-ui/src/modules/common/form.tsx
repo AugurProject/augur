@@ -69,6 +69,7 @@ interface DatePickerProps {
   navPrev?: any;
   navNext?: any;
   errorMessage?: string;
+  condensedStyle?: boolean;
 }
 
 interface TextInputProps {
@@ -148,6 +149,7 @@ interface TimezoneDropdownProps {
   disabled?: boolean;
   timestamp?: number;
   timezone: string;
+  condensedStyle?: boolean;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
@@ -161,7 +163,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
   }, [props.timezone, props.timestamp]);
 
   return (
-    <section className={Styles.Timezones}>
+    <section className={classNames(Styles.Timezones, {[Styles.Condensed]: props.condensedStyle})}>
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
@@ -1395,6 +1397,7 @@ interface TimeSelectorProps {
   focused?: boolean;
   errorMessage?: string;
   uniqueKey?: string;
+  condensedStyle?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1441,6 +1444,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       focused,
       errorMessage,
       uniqueKey,
+      condensedStyle
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1448,7 +1452,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={Styles.TimeSelector}
+        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle})}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
@@ -1648,6 +1652,7 @@ Checkbox.defaultProps = {
 export const DatePicker = (props: DatePickerProps) => (
   <div
     className={classNames(Styles.DatePicker, {
+      [Styles.Condensed]: props.condensedStyle,
       [Styles.error]:
         props.errorMessage &&
         props.errorMessage !== '' &&
