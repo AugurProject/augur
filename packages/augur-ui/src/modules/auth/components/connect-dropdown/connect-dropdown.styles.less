@@ -101,7 +101,6 @@
         width: @size-12;
       }
     }
-
   }
 
   > div > div:last-of-type {
@@ -123,6 +122,63 @@
     > svg {
       height: @size-9;
       margin-left: @size-5;
+    }
+  }
+}
+
+.GasEdit {
+  height: 84px;
+  align-items: flex-end;
+  padding: @size-12 @size-16;
+
+  > div > div:first-of-type > span:last-of-type {
+    .text-10;
+
+    color: @color-primary-text;
+    margin-left: @size-10;
+    text-transform: none;
+  }
+
+  > div > div:last-of-type {
+    display: block;
+    background-color: @color-secondary-action;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: @color-primary-text;
+    border-radius: @size-3;
+    border: @size-1 solid @color-secondary-action-outline;
+    width: 100%;
+
+    > div:first-of-type {
+      font-weight: @weight-bold;
+
+      > span:first-of-type {
+        color: @color-secondary-text;
+        font-family: @roboto-mono;
+        font-size: @size-11;
+        text-transform: uppercase;
+      }
+
+      > span:nth-of-type(2) {
+        color: @color-dark-text;
+        font-family: @roboto;
+        font-size: @size-10;
+        font-weight: @weight-normal;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      font-size: @size-10;
+
+      > span:first-of-type {
+        color: @color-secondary-text;
+        font-family: @roboto-mono;
+      }
+
+      > span:nth-of-type(2) {
+        color: @color-dark-text;
+        font-family: @roboto;
+      }
     }
   }
 }

@@ -132,7 +132,7 @@ export class Gas extends React.Component<GasProps, GasState> {
               </div>
               <div>
                 <div>
-                  <span>&lt; $0.059</span><span> / Trade</span>
+                  <span>&lt; ${amount}</span><span> / Trade</span>
                 </div>
                 <span>0.012441 ETH</span>
               </div>
