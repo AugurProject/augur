@@ -19,7 +19,6 @@ interface MarketOutcomeChartsHighchartsProps {
   selectedOutcomeId: number;
   pricePrecision: number;
   daysPassed: number;
-  currentAugurTimestamp: number;
 }
 
 interface MarketOutcomeChartsHighchartsState {
@@ -135,13 +134,11 @@ export default class MarketOutcomesChartHighchart extends Component<
       bucketedPriceTimeSeries,
       selectedOutcomeId,
       daysPassed,
-      currentAugurTimestamp,
     } = this.props;
     this.buidOptions(
       daysPassed,
       bucketedPriceTimeSeries,
-      selectedOutcomeId,
-      currentAugurTimestamp
+      selectedOutcomeId
     );
   }
 
@@ -160,8 +157,7 @@ export default class MarketOutcomesChartHighchart extends Component<
       this.buidOptions(
         nextProps.daysPassed,
         nextProps.bucketedPriceTimeSeries,
-        nextProps.selectedOutcomeId,
-        nextProps.currentAugurTimestamp
+        nextProps.selectedOutcomeId
       );
     }
   }
@@ -201,7 +197,6 @@ export default class MarketOutcomesChartHighchart extends Component<
     daysPassed,
     bucketedPriceTimeSeries,
     selectedOutcomeId,
-    currentAugurTimestamp
   ) {
     const { options } = this.state;
     const { isScalar, scalarDenomination } = this.props;
