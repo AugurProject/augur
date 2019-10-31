@@ -78,19 +78,27 @@ const bucketedPriceTimeSeriesInternal = (
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
     )
   );
-
+  
   timeBuckets.push(currentTimestamp);
   const priceTimeSeries = outcomes.reduce((p, o) => {
-    p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets);
+    p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets, creationTime);
     return p;
   }, {});
-
   return {
     priceTimeSeries,
   };
 };
 
-function splitTradesByTimeBucket(priceTimeSeries, timeBuckets) {
+function splitTradesByTimeBucket(priceTimeSeries, timeBuckets, creationTime) {
+  // make sure we start the series with a 0 at the startTime for chart rendering.
+  if (!priceTimeSeries.find(item => item[0] === creationTime) || priceTimeSeries.length === 0) {
+     priceTimeSeries.push({
+      price: "0",
+      amount: "0",
+      logIndex: 0,
+      timestamp: creationTime
+    });
+  }
   if (!priceTimeSeries || priceTimeSeries.length === 0) return [];
   if (!timeBuckets || timeBuckets.length === 0) return [];
   let timeSeries = priceTimeSeries

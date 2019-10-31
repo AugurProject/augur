@@ -28,6 +28,7 @@ const mapStateToProps = (state, ownProps) => {
     bucketedPriceTimeSeries,
     isScalar,
     scalarDenomination,
+    currentAugurTimestamp: state.blockchain.currentAugurTimestamp;
   };
 };
 

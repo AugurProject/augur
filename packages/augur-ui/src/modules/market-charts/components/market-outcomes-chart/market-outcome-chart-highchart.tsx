@@ -19,6 +19,7 @@ interface MarketOutcomeChartsHighchartsProps {
   selectedOutcomeId: number;
   pricePrecision: number;
   daysPassed: number;
+  currentAugurTimestamp: number;
 }
 
 interface MarketOutcomeChartsHighchartsState {
@@ -134,8 +135,14 @@ export default class MarketOutcomesChartHighchart extends Component<
       bucketedPriceTimeSeries,
       selectedOutcomeId,
       daysPassed,
+      currentAugurTimestamp,
     } = this.props;
-    this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
+    this.buidOptions(
+      daysPassed,
+      bucketedPriceTimeSeries,
+      selectedOutcomeId,
+      currentAugurTimestamp
+    );
   }
 
   UNSAFE_componentWillUpdate(nextProps) {
@@ -153,7 +160,8 @@ export default class MarketOutcomesChartHighchart extends Component<
       this.buidOptions(
         nextProps.daysPassed,
         nextProps.bucketedPriceTimeSeries,
-        nextProps.selectedOutcomeId
+        nextProps.selectedOutcomeId,
+        nextProps.currentAugurTimestamp
       );
     }
   }
@@ -189,7 +197,12 @@ export default class MarketOutcomesChartHighchart extends Component<
     };
   };
 
-  buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId) {
+  buidOptions(
+    daysPassed,
+    bucketedPriceTimeSeries,
+    selectedOutcomeId,
+    currentAugurTimestamp
+  ) {
     const { options } = this.state;
     const { isScalar, scalarDenomination } = this.props;
     const { priceTimeSeries } = bucketedPriceTimeSeries;
@@ -213,7 +226,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     }
 
     options.chart = {
-      ...options.chart
+      ...options.chart,
     };
 
     const hasData =
@@ -224,27 +237,43 @@ export default class MarketOutcomesChartHighchart extends Component<
       ).length;
 
     const series = [];
+
+    let mostRecentTradetime = 0;
     Object.keys(priceTimeSeries).forEach(id => {
-      const isSelected = selectedOutcomeId && selectedOutcomeId == id
+      const isSelected = selectedOutcomeId && selectedOutcomeId == id;
+      const length = priceTimeSeries[id].length;
+      if (length > 0 && priceTimeSeries[id][length -1].timestamp > mostRecentTradetime) {
+        mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
+      }
+      const data = priceTimeSeries[id].map(pts => [
+        pts.timestamp,
+        createBigNumber(pts.price).toNumber(),
+      ]);
       const baseSeriesOptions = {
         type: isSelected ? 'area' : 'line',
-        lineWidth:
-          isSelected
-            ? HIGHLIGHTED_LINE_WIDTH
-            : NORMAL_LINE_WIDTH,
+        lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
         marker: {
           symbol: 'cicle',
         },
         // @ts-ignore
-        data: priceTimeSeries[id].map(pts => [
-          pts.timestamp,
-          createBigNumber(pts.price).toNumber(),
-        ]),
+        data,
       };
 
       series.push({
         ...baseSeriesOptions,
       });
+    });
+    series.forEach(seriesObject => {
+      const seriesData = seriesObject.data;
+      // make sure we have a trade to fill chart
+      if (
+        seriesData.length > 0 &&
+        seriesData[seriesData.length - 1][0] != mostRecentTradetime
+      ) {
+        const mostRecentTrade = seriesData[seriesData.length - 1];
+        seriesObject.data.push([mostRecentTradetime, mostRecentTrade[1]]);
+      }
+      seriesObject.data.sort((a,b) => a[0] - b[0]);
     });
 
     if (isScalar && hasData) {
