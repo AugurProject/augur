@@ -4,7 +4,7 @@ import {AlertMessage, ButtonsRow, Title,} from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
 import ChevronFlip from 'modules/common/chevron-flip';
-import {formatGasCostToEther} from 'utils/format-number';
+import {formatGasCostToEther, formatEtherEstimate} from 'utils/format-number';
 import {NEW_ORDER_GAS_ESTIMATE} from 'modules/common/constants';
 import {createBigNumber} from 'utils/create-big-number';
 import classNames = require('classnames');
@@ -41,33 +41,23 @@ export class Gas extends React.Component<GasProps, GasState> {
     this.setState({ amount: amt, showLowAlert: amt < this.props.safeLow });
   };
 
-  getGasPrice = (amount) => {
-    const GWEI_CONVERSION = 1000000000;
-
-    return createBigNumber(amount)
-      .times(createBigNumber(GWEI_CONVERSION))
-      .toNumber();
-  };
-
   render() {
     const { closeAction, saveAction, safeLow, average, fast } = this.props;
     const { amount, showLowAlert, showAdvanced } = this.state;
     const disabled = !amount || amount <= 0;
 
-    const EXCHANGE_RATE = 0.00001; // (ETH / DAI)
+    const EXCHANGE_RATE = 1000; // FAKE price of ETH in DAI
+    const GWEI_CONVERSION = 1000000000;
 
-    // const ETH_TRADE_COST = formatGasCostToEther(
-    //   NEW_ORDER_GAS_ESTIMATE,
-    //   { decimalsRounded: 4 },
-    //   this.getGasPrice(amount)
-    // );
-    //
-    // const gasCostInEth = createBigNumber(ETH_TRADE_COST).times(EXCHANGE_RATE);
+    const ETH_TRADE_COST = formatEtherEstimate(
+      formatGasCostToEther(
+        NEW_ORDER_GAS_ESTIMATE,
+        { decimalsRounded: 4 },
+        createBigNumber(amount).times(GWEI_CONVERSION)
+      )
+    );
 
-    const ETH_TRADE_COST = NEW_ORDER_GAS_ESTIMATE.times(amount);
-    const gasCostInEth = createBigNumber(ETH_TRADE_COST).times(EXCHANGE_RATE).toNumber();
-
-    // AMOUNT = ETH_TRADE_COST * EXCHANGE_RATE
+    const gasCostInDai = createBigNumber(ETH_TRADE_COST.value).times(EXCHANGE_RATE).toNumber();
 
     const buttons = [
       {
@@ -158,7 +148,7 @@ export class Gas extends React.Component<GasProps, GasState> {
                 <div>
                   <span>&lt; ${amount}</span><span> / Trade</span>
                 </div>
-                <span>{gasCostInEth} ETH</span>
+                <span>${gasCostInDai}</span>
               </div>
               <div>
                 <span>~ 30 seconds</span>
