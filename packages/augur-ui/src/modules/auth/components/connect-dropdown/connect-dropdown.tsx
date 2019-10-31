@@ -200,7 +200,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             </div>
             <div>
               <div><span>{gasPriceSpeed}</span><span> &lt; 30 minutes</span></div>
-              <div><span>${userDefinedGasPrice}</span><span> / Transaction</span></div>
+              <div><span>${userDefinedGasPrice}</span><span> / Trade</span></div>
             </div>
           </div>
           <SecondaryButton

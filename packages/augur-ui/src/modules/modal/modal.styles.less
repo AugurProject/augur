@@ -1624,7 +1624,7 @@ div.ButtonsRow:last-of-type {
 .Gas {
   .Container;
 
-  max-width: 27.8125rem; // 445px
+  max-width: 30rem; // 480px
   @media @breakpoint-mobile-mid {
     max-width: 21.5rem; // 340px
   }
@@ -1814,6 +1814,12 @@ div.ButtonsRow:last-of-type {
           border: @size-1 solid @color-secondary-action-outline;
           color: @color-primary-text;
           padding: @size-6 @size-16;
+          -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
         }
       }
 

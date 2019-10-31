@@ -3,10 +3,11 @@ import React from 'react';
 import {AlertMessage, ButtonsRow, Title,} from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
-import {Chevron} from 'modules/common/icons';
-import {SecondaryButton} from 'modules/common/buttons';
-import classNames = require('classnames');
 import ChevronFlip from 'modules/common/chevron-flip';
+import {formatGasCostToEther} from 'utils/format-number';
+import {NEW_ORDER_GAS_ESTIMATE} from 'modules/common/constants';
+import {createBigNumber} from 'utils/create-big-number';
+import classNames = require('classnames');
 
 interface GasProps {
   saveAction: Function;
@@ -38,12 +39,35 @@ export class Gas extends React.Component<GasProps, GasState> {
     if (amount) amt = amount;
     if (isNaN(amount)) amt = 0;
     this.setState({ amount: amt, showLowAlert: amt < this.props.safeLow });
-  }
+  };
+
+  getGasPrice = (amount) => {
+    const GWEI_CONVERSION = 1000000000;
+
+    return createBigNumber(amount)
+      .times(createBigNumber(GWEI_CONVERSION))
+      .toNumber();
+  };
 
   render() {
     const { closeAction, saveAction, safeLow, average, fast } = this.props;
     const { amount, showLowAlert, showAdvanced } = this.state;
     const disabled = !amount || amount <= 0;
+
+    const EXCHANGE_RATE = 0.00001; // (ETH / DAI)
+
+    // const ETH_TRADE_COST = formatGasCostToEther(
+    //   NEW_ORDER_GAS_ESTIMATE,
+    //   { decimalsRounded: 4 },
+    //   this.getGasPrice(amount)
+    // );
+    //
+    // const gasCostInEth = createBigNumber(ETH_TRADE_COST).times(EXCHANGE_RATE);
+
+    const ETH_TRADE_COST = NEW_ORDER_GAS_ESTIMATE.times(amount);
+    const gasCostInEth = createBigNumber(ETH_TRADE_COST).times(EXCHANGE_RATE).toNumber();
+
+    // AMOUNT = ETH_TRADE_COST * EXCHANGE_RATE
 
     const buttons = [
       {
@@ -134,7 +158,7 @@ export class Gas extends React.Component<GasProps, GasState> {
                 <div>
                   <span>&lt; ${amount}</span><span> / Trade</span>
                 </div>
-                <span>0.012441 ETH</span>
+                <span>{gasCostInEth} ETH</span>
               </div>
               <div>
                 <span>~ 30 seconds</span>
