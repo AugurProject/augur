@@ -10,7 +10,8 @@ import {
   MarketData,
   OrderEventType,
   OrderType,
-  ParsedOrderEventLog
+  ParsedOrderEventLog,
+  ExtraInfoTemplate
 } from "../logs/types";
 import { sortOptions } from "./types";
 import { MarketReportingState } from "../../constants";
@@ -147,6 +148,7 @@ export interface MarketInfo {
   categories: string[];
   noShowBondAmount: string;
   disavowed: boolean;
+  template: ExtraInfoTemplate;
 }
 
 export interface DisputeInfo {
@@ -1053,6 +1055,7 @@ async function getMarketsInfo(
     let description = null;
     let details = null;
     let scalarDenomination = null;
+    let template = null;
     if (marketData.extraInfo) {
       const extraInfo = marketData.extraInfo;
       categories = extraInfo.categories ? extraInfo.categories : [];
@@ -1063,6 +1066,7 @@ async function getMarketsInfo(
       scalarDenomination = extraInfo._scalarDenomination
         ? extraInfo._scalarDenomination
         : null;
+      template = extraInfo.template;
     }
     const marketCreatorFeeRate = new BigNumber(
       marketData.feePerCashInAttoCash
@@ -1134,7 +1138,8 @@ async function getMarketsInfo(
       transactionHash: marketData.transactionHash,
       outcomes,
       disputeInfo,
-      disavowed: marketData.disavowed
+      disavowed: marketData.disavowed,
+      template,
     };
   });
 }

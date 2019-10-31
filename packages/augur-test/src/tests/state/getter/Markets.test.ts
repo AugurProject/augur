@@ -110,9 +110,6 @@ describe('State API :: Markets :: ', () => {
     bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
     db = makeDbMock().makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
-    // await john.approveCentralAuthority();
-    // await mary.approveCentralAuthority();
-    // await bob.approveCentralAuthority();
   });
 
   // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts

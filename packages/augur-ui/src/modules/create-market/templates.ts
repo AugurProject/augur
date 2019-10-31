@@ -27,6 +27,8 @@ import {
   AMERICAN_FOOTBALL,
   NFL,
   REQUIRED,
+  STOCKS,
+  INDEXES,
 } from 'modules/create-market/constants';
 import { YES_NO, CATEGORICAL, SCALAR } from 'modules/common/constants';
 
@@ -36,6 +38,7 @@ export const TEMPLATES = {
       [GOLF]: {
         templates: [
           {
+            hash: `918ee03a826a8a9c51198f9eb3896fef5f5c8e95d19bb5814c2647c75d48ba91`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2]?`,
             example: `Will Tiger Woods win the 2020 PGA Championship?`,
@@ -67,6 +70,7 @@ export const TEMPLATES = {
             },
           },
           {
+            hash: `9bd2d93e65d6abd495aa03acbec4c894a44f9c0c69f508ee0593377514f7b17d`,
             marketType: YES_NO,
             question: `Will [0] make the cut at the [1] [2]?`,
             example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
@@ -98,6 +102,7 @@ export const TEMPLATES = {
             },
           },
           {
+            hash: `7dff6975e29edafa4a99e5687b7f21f09fc0decb8c542cfda0bccd5e319d72f9`,
             marketType: CATEGORICAL,
             question: `Which golfer will win the [0] [1]?`,
             example: `Which golfer will win the 2020 PGA Championship?`,
@@ -576,11 +581,11 @@ export const TEMPLATES = {
                   text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                 },
                 {
-                  text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`
+                  text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
                 },
                 {
-                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`
-                }
+                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                },
               ],
             },
           },
@@ -1277,7 +1282,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Conference`,
-                    values: LIST_VALUES.NCAA_BASKETBALL_CONF
+                    values: LIST_VALUES.NCAA_BASKETBALL_CONF,
                   },
                   {
                     id: 3,
@@ -2435,168 +2440,176 @@ export const TEMPLATES = {
     },
   },
   [FINANCE]: {
-    templates: [
-      {
-        marketType: YES_NO,
-        question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]?`,
-        example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020?`,
-        inputs: [
+    children: {
+      [STOCKS]: {
+        templates: [
           {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: `Stock`,
+            marketType: YES_NO,
+            question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]?`,
+            example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Stock`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {},
           },
           {
-            id: 1,
-            type: TemplateInputType.TEXT,
-            placeholder: `Value #`,
-            validationType: ValidationType.NUMBER,
+            marketType: YES_NO,
+            question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]?`,
+            example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Stock`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Start Day of Year`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `End Day of Year`,
+              },
+            ],
+            resolutionRules: {},
           },
           {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Currency`,
-            values: LIST_VALUES.CURRENCY,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.TEXT,
-            placeholder: `Exchange`,
-          },
-          {
-            id: 4,
-            type: TemplateInputType.DATEYEAR,
-            placeholder: `Day of Year`,
-          },
-        ],
-        resolutionRules: {},
-      },
-      {
-        marketType: YES_NO,
-        question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]?`,
-        example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: `Stock`,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.TEXT,
-            placeholder: `Value #`,
-            validationType: ValidationType.NUMBER,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Currency`,
-            values: LIST_VALUES.CURRENCY,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.TEXT,
-            placeholder: `Exchange`,
-          },
-          {
-            id: 4,
-            type: TemplateInputType.DATEYEAR,
-            placeholder: `Start Day of Year`,
-          },
-          {
-            id: 5,
-            type: TemplateInputType.DATEYEAR,
-            placeholder: `End Day of Year`,
-          },
-        ],
-        resolutionRules: {},
-      },
-      {
-        marketType: YES_NO,
-        question: `Will the [0] close on or above [1] [2] on [3]?`,
-        example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: `Index`,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.TEXT,
-            placeholder: `Value #`,
-            validationType: ValidationType.NUMBER,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Currency`,
-            values: LIST_VALUES.CURRENCY,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.DATEYEAR,
-            placeholder: `Day of Year`,
-          },
-        ],
-        resolutionRules: {},
-      },
-      {
-        marketType: SCALAR,
-        question: `What price will [0] close at in [1] on the [2] on [3]?`,
-        example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019?`,
-        denomination: '[Denomination]',
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: `Stock`,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.DENOMINATION_DROPDOWN,
-            placeholder: `Currency`,
-            values: LIST_VALUES.CURRENCY,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.TEXT,
-            placeholder: `Exchange`,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.DATEYEAR,
-            placeholder: `Day of Year`,
+            marketType: SCALAR,
+            question: `What price will [0] close at in [1] on the [2] on [3]?`,
+            example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019?`,
+            denomination: '[Denomination]',
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Stock`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DENOMINATION_DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Exchange`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {},
           },
         ],
-        resolutionRules: {},
       },
-      {
-        marketType: SCALAR,
-        question: `What price will the [0] close at in [1] on [2]?`,
-        example: `What Price will the S&P 500 close at in USD on December 31, 2019?`,
-        denomination: '[Denomination]',
-        inputs: [
+      [INDEXES]: {
+        templates: [
           {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: `Index`,
+            marketType: YES_NO,
+            question: `Will the [0] close on or above [1] [2] on [3]?`,
+            example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Index`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {},
           },
           {
-            id: 1,
-            type: TemplateInputType.DENOMINATION_DROPDOWN,
-            placeholder: `Currency`,
-            values: LIST_VALUES.CURRENCY,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DATEYEAR,
-            placeholder: `Day of Year`,
+            marketType: SCALAR,
+            question: `What price will the [0] close at in [1] on [2]?`,
+            example: `What Price will the S&P 500 close at in USD on December 31, 2019?`,
+            denomination: '[Denomination]',
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Index`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DENOMINATION_DROPDOWN,
+                placeholder: `Currency`,
+                values: LIST_VALUES.CURRENCY,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {},
           },
         ],
-        resolutionRules: {},
       },
-    ],
+    },
   },
   [ENTERTAINMENT]: {
     templates: [

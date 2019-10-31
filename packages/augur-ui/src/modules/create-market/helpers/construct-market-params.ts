@@ -35,6 +35,7 @@ export function constructMarketParams(
     longDescription: newMarket.detailsText,
     _scalarDenomination: newMarket.scalarDenomination,
     offsetName: newMarket.offsetName,
+    template: newMarket.template,
   });
 
   const baseParams: CreateYesNoMarketParams = {
