@@ -23,6 +23,7 @@ const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   markets: MarketData[];
   location: object;
   history: History;
@@ -214,7 +215,8 @@ export default class MarketsView extends Component<
       isSearching,
       showInvalidMarketsBannerFeesOrLiquiditySpread,
       showInvalidMarketsBannerHideOrShow,
-      isLogged
+      isLogged,
+      restoredAccount,
     } = this.props;
     const {
       filterSortedMarkets,
@@ -244,7 +246,7 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {!isLogged && <LandingHero/>}
+        {(!isLogged && !restoredAccount) && <LandingHero/>}
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearching}

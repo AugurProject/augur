@@ -131,6 +131,7 @@ export default class CategoryFilters extends React.Component<
         <div key={idx}>
           <CategoryRow
             category={item.category}
+            icon={item.icon}
             count={item.count}
             hasChildren={item.count > 0}
             handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
