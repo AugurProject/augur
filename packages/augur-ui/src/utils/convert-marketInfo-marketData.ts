@@ -22,6 +22,7 @@ import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { ExtraInfoTemplate, ExtraInfoTemplateInput } from '@augurproject/sdk/src/state/logs/types';
+import { isValidTemplateMarket } from 'modules/create-market/get-template';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
@@ -242,5 +243,5 @@ const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
 
   if (checkMarketTitle !== title) return false;
 
-  return true;
+  return isValidTemplateMarket(template.hash, checkMarketTitle);
 }

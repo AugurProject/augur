@@ -336,3 +336,7 @@ export const hasNoTemplateCategoryTertiaryChildren = (
   if (TEMPLATES[category].children[subcategory].children) return false;
   return true;
 };
+
+export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
+  const validation =
+}

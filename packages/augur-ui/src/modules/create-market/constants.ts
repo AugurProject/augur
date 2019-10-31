@@ -13,7 +13,6 @@ import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
 
-
 export const INVALID_OUTCOME = 'Market is Invalid';
 
 // Button Types
@@ -33,7 +32,6 @@ export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
-
 export const DEFAULT_TICK_SIZE = 0.01;
 
 export const EMPTY_STATE: NewMarket = {
@@ -532,3 +530,10 @@ export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
 }
+
+export const ValidationTemplateInputType = {
+  [TemplateInputType.TEXT]: `(\w)`,
+  [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(\w)`,
+  [TemplateInputType.DATETIME]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) [0-12]:[00-59] (AM|PM) \(UTC 0\)`,
+  [TemplateInputType.DATEYEAR]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2})`
+};
