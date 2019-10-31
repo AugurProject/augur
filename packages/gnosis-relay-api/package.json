@@ -17,7 +17,7 @@
     "prepare": "tsc",
     "prepush": "yarn lint",
     "test": "jest",
-    "run-relay": "ts-node src/runRelay.ts ",
+    "run-relay": "docker-compose -f support/gnosis/docker-compose.yml up",
     "kill-relay": "docker-compose -f support/gnosis/docker-compose.yml down"
   },
   "repository": {
