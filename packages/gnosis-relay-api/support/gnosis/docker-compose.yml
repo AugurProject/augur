@@ -21,11 +21,10 @@ services:
   web:
     image: augurproject/safe-relay-service_web:latest
     env_file:
-      - env
+      - .env
     depends_on:
       - db
       - redis
-      - ganache
     working_dir: /app
     ports:
       - "8888:8888"
@@ -41,19 +40,12 @@ services:
   worker: &worker
     image: augurproject/safe-relay-service_worker:latest
     env_file:
-      - env
+      - .env
     depends_on:
       - db
       - redis
-      - ganache
     command: docker/web/celery/worker/run.sh
 
   scheduler:
     <<: *worker
     command: docker/web/celery/scheduler/run.sh
-
-  ganache:
-    image: augurproject/safe-relay-service_ganache:latest
-    ports:
-      - "8545:8545"
-

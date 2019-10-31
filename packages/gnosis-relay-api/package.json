@@ -16,7 +16,9 @@
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "prepare": "tsc",
     "prepush": "yarn lint",
-    "test": "jest"
+    "test": "jest",
+    "run-relay": "ts-node src/runRelay.ts ",
+    "kill-relay": "docker-compose -f support/gnosis/docker-compose.yml down"
   },
   "repository": {
     "type": "git",
