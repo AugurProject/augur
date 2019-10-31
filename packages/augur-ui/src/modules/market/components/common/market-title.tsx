@@ -23,8 +23,8 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   <span className={Styles.MarketTitle}>
     <MarketLink id={id}>
       {isWrapped ? wrapMarketName(description) : description}
+      {isTemplate && showIcon && TemplateIcon}
     </MarketLink>
-    {isTemplate && showIcon && TemplateIcon}
   </span>
 );
 
