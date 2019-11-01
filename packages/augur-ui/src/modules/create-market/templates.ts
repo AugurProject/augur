@@ -653,7 +653,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-                example: `Will the Las Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                example: `Will the Los Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -688,7 +688,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
-                example: `Will the Las Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                example: `Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -729,7 +729,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
-                example: `Will the Las Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                example: `Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,

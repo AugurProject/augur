@@ -518,7 +518,11 @@ export async function approveToTrade() {
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
-  return contracts.cash.approve(augurContract, allowance);
+  contracts.cash.approve(augurContract, allowance);
+  contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
+  contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true);
+  contracts.cash.approve(contracts.fillOrder.address, allowance);
+  contracts.cash.approve(contracts.createOrder.address, allowance);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {
