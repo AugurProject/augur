@@ -356,6 +356,7 @@ div.ButtonsRow:last-of-type {
 
     @media @breakpoint-mobile-new {
       display: flex;
+      margin: @size-48 0;
     }
   }
 
@@ -722,11 +723,17 @@ div.ButtonsRow:last-of-type {
 
 .SignIn {
   @media @breakpoint-mobile-new {
+    margin: @size-48 0;
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
   > div:first-of-type {
     .CloseButton;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -828,6 +835,7 @@ div.ButtonsRow:last-of-type {
 
 .Connect {
   @media @breakpoint-mobile {
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
@@ -849,6 +857,10 @@ div.ButtonsRow:last-of-type {
     .CloseButton;
 
     display: block;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -2306,7 +2318,6 @@ div.ButtonsRow:last-of-type {
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
-  height: @size-40;
   justify-content: space-between;
   line-height: @size-14;
   margin: @size-8 0 @size-18 0;
@@ -2328,7 +2339,7 @@ div.ButtonsRow:last-of-type {
     display: flex;
     margin-left: @size-8;
     margin-right: @size-12;
-    padding: @size-5;
+    padding: @size-6;
     text-transform: uppercase;
     color: @color-primary-text;
     background: @color-secondary-action;

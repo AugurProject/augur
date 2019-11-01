@@ -109,17 +109,17 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     },
   ];
 
-  const renderToolTip = (text: string) => (
+  const renderToolTip = (id: string, text: string) => (
     <span>
       <label
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
-        data-for="tooltip--walleProvider"
+        data-for={id}
       >
         {helpIcon}
       </label>
       <ReactTooltip
-        id="tooltip--walleProvider"
+        id={id}
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="top"
@@ -170,7 +170,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 <div>
                   <div>
                     Wallet provider
-                    {renderToolTip('...')}
+                    {renderToolTip('tooltip--walleProvider', 'Your wallet provider allows you to create a private and secure account for accessing and using Augur.')}
                   </div>
                   <div>
                     {wallet.accountType}{' '}
@@ -191,7 +191,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           <div>
             <div>
               Transaction Fee
-              {renderToolTip('...')}
+              {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
               <span>Average (${getGasCostInDai(createBigNumber(averageGasPrice).toNumber())})</span>
             </div>
             <div>
