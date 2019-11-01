@@ -320,6 +320,47 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketCreationData",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "extraInfo",
+							"type": "string"
+						},
+						{
+							"name": "marketCreator",
+							"type": "address"
+						},
+						{
+							"name": "outcomes",
+							"type": "bytes32[]"
+						},
+						{
+							"name": "displayPrices",
+							"type": "int256[]"
+						},
+						{
+							"name": "marketType",
+							"type": "uint8"
+						}
+					],
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -12469,6 +12510,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "getAffiliateFeeDivisor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "isForkingMarket",
 			"outputs": [
 				{
@@ -17923,6 +17978,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketOutcomeValues",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "",
 					"type": "address"
 				},
@@ -17932,6 +18006,25 @@
 				}
 			],
 			"name": "marketOutcomeVolumes",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketVolume",
 			"outputs": [
 				{
 					"name": "",
@@ -20934,6 +21027,179 @@
 				{
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"HotLoading": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_numOutcomes",
+					"type": "uint256"
+				},
+				{
+					"name": "_orders",
+					"type": "address"
+				}
+			],
+			"name": "getLastTradedPrices",
+			"outputs": [
+				{
+					"name": "_lastTradedPrices",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getReportingState",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_fillOrder",
+					"type": "address"
+				},
+				{
+					"name": "_orders",
+					"type": "address"
+				}
+			],
+			"name": "getMarketData",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "extraInfo",
+							"type": "string"
+						},
+						{
+							"name": "marketCreator",
+							"type": "address"
+						},
+						{
+							"name": "owner",
+							"type": "address"
+						},
+						{
+							"name": "outcomes",
+							"type": "bytes32[]"
+						},
+						{
+							"name": "marketType",
+							"type": "uint8"
+						},
+						{
+							"name": "displayPrices",
+							"type": "int256[]"
+						},
+						{
+							"name": "designatedReporter",
+							"type": "address"
+						},
+						{
+							"name": "reportingState",
+							"type": "uint8"
+						},
+						{
+							"name": "disputeRound",
+							"type": "uint256"
+						},
+						{
+							"name": "winningPayout",
+							"type": "uint256[]"
+						},
+						{
+							"name": "volume",
+							"type": "uint256"
+						},
+						{
+							"name": "openInterest",
+							"type": "uint256"
+						},
+						{
+							"name": "lastTradedPrices",
+							"type": "uint256[]"
+						},
+						{
+							"name": "universe",
+							"type": "address"
+						},
+						{
+							"name": "numTicks",
+							"type": "uint256"
+						},
+						{
+							"name": "feeDivisor",
+							"type": "uint256"
+						},
+						{
+							"name": "affiliateFeeDivisor",
+							"type": "uint256"
+						},
+						{
+							"name": "endTime",
+							"type": "uint256"
+						},
+						{
+							"name": "numOutcomes",
+							"type": "uint256"
+						},
+						{
+							"name": "validityBond",
+							"type": "uint256"
+						},
+						{
+							"name": "reportingFeeDivisor",
+							"type": "uint256"
+						},
+						{
+							"name": "outcomeVolumes",
+							"type": "uint256[]"
+						}
+					],
+					"name": "_marketData",
+					"type": "tuple"
 				}
 			],
 			"payable": false,

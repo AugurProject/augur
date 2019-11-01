@@ -10,6 +10,7 @@ import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Gnosis } from "./api/Gnosis";
+import { HotLoading } from "./api/HotLoading";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
@@ -50,6 +51,7 @@ export class Augur<TProvider extends Provider = Provider> {
   static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
   readonly liquidity: Liquidity;
+  readonly hotLoading: HotLoading;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -104,6 +106,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.universe = new Universe();
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
+    this.hotLoading = new HotLoading(this);
     this.zeroX = meshClient && browserMesh ? new ZeroX(this, meshClient, browserMesh) : undefined;
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();

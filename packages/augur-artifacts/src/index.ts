@@ -63,6 +63,7 @@ export interface ContractAddresses {
     RedeemStake?: string;
     CashFaucet?: string;
     GnosisSafeRegistry?: string;
+    HotLoading?: string;
 }
 
 export interface AllContractAddresses {[networkId: string]: ContractAddresses}
