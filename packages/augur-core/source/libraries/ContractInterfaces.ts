@@ -97,5 +97,7 @@ export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> 
 }
 export class Formulas extends c.Formulas<BigNumber> {
 }
+export class HotLoading extends c.HotLoading<BigNumber> {
+}
 export class RedeemStake extends c.RedeemStake<BigNumber> {
 }

@@ -70,6 +70,7 @@ interface DatePickerProps {
   navPrev?: any;
   navNext?: any;
   errorMessage?: string;
+  condensedStyle?: boolean;
 }
 
 interface TextInputProps {
@@ -149,6 +150,7 @@ interface TimezoneDropdownProps {
   disabled?: boolean;
   timestamp?: number;
   timezone: string;
+  condensedStyle?: boolean;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
@@ -162,7 +164,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
   }, [props.timezone, props.timestamp]);
 
   return (
-    <section className={Styles.Timezones}>
+    <section className={classNames(Styles.Timezones, {[Styles.Condensed]: props.condensedStyle})}>
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
@@ -1396,6 +1398,7 @@ interface TimeSelectorProps {
   focused?: boolean;
   errorMessage?: string;
   uniqueKey?: string;
+  condensedStyle?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1442,6 +1445,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       focused,
       errorMessage,
       uniqueKey,
+      condensedStyle
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1449,7 +1453,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={Styles.TimeSelector}
+        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle})}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
@@ -1555,7 +1559,9 @@ class IndividualTimeSelector extends React.Component<
   increment = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) + 1;
+      let newValue = parseFloat(value) + 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1565,7 +1571,9 @@ class IndividualTimeSelector extends React.Component<
   decrement = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) - 1;
+      let newValue = parseFloat(value) - 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1649,6 +1657,7 @@ Checkbox.defaultProps = {
 export const DatePicker = (props: DatePickerProps) => (
   <div
     className={classNames(Styles.DatePicker, {
+      [Styles.Condensed]: props.condensedStyle,
       [Styles.error]:
         props.errorMessage &&
         props.errorMessage !== '' &&

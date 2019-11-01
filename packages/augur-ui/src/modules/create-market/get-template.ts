@@ -20,6 +20,7 @@ import { formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { NameValuePair } from 'modules/portfolio/types';
 import { TEMPLATES } from 'modules/create-market/templates';
+import { TEMPLATE_VALIDATIONS } from './template-validations';
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
@@ -336,3 +337,9 @@ export const hasNoTemplateCategoryTertiaryChildren = (
   if (TEMPLATES[category].children[subcategory].children) return false;
   return true;
 };
+
+export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
+  const validation = TEMPLATE_VALIDATIONS[hash];
+  if (!validation || !validation.templateValidation) return false;
+  return !!marketTitle.match(validation.templateValidation);
+}

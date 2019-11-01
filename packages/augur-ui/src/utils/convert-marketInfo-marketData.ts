@@ -21,7 +21,11 @@ import {
 import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
-import { ExtraInfoTemplate, ExtraInfoTemplateInput } from '@augurproject/sdk/src/state/logs/types';
+import {
+  ExtraInfoTemplate,
+  ExtraInfoTemplateInput,
+} from '@augurproject/sdk/src/state/logs/types';
+import { isValidTemplateMarket } from 'modules/create-market/get-template';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo
@@ -233,14 +237,25 @@ export const keyMarketInfoCollectionByMarketId = (
 };
 
 const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
-  if (!template || !template.hash || !template.question || template.inputs.length === 0) return false;
+  let result = false;
+  if (
+    !template ||
+    !template.hash ||
+    !template.question ||
+    template.inputs.length === 0
+  )
+    return result;
 
   let checkMarketTitle = template.question;
   template.inputs.map((i: ExtraInfoTemplateInput) => {
-    checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value)
-  })
+    checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
+  });
 
-  if (checkMarketTitle !== title) return false;
-
-  return true;
-}
+  if (checkMarketTitle !== title) return result;
+  try {
+    result = isValidTemplateMarket(template.hash, checkMarketTitle);
+  } catch (e) {
+    console.error(e);
+  }
+  return result;
+};
