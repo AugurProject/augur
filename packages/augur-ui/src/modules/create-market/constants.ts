@@ -532,8 +532,8 @@ export enum ValidationType {
 }
 
 export const ValidationTemplateInputType = {
-  [TemplateInputType.TEXT]: `(\w)`,
-  [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(\w)`,
-  [TemplateInputType.DATETIME]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) [0-12]:[00-59] (AM|PM) \(UTC 0\)`,
+  [TemplateInputType.TEXT]: `(\\w)`,
+  [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(\\w)`,
+  [TemplateInputType.DATETIME]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) [0-12]:[00-59] (AM|PM) \\(UTC 0\\)`,
   [TemplateInputType.DATEYEAR]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2})`
 };
