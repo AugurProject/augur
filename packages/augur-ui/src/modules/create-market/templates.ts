@@ -132,7 +132,7 @@ export const TEMPLATES = {
       [HOCKEY]: {
         templates: [
           {
-            hash: `0xea0b6b5eb2e16392fd2b17bb7f0c761b13e7b40a35d87e7702109dc7a0a6bbbd`;
+            hash: `0xea0b6b5eb2e16392fd2b17bb7f0c761b13e7b40a35d87e7702109dc7a0a6bbbd`,
             marketType: YES_NO,
             question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
             example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
@@ -156,7 +156,7 @@ export const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            hash: `0x6e8b9ded9bc2706356452eba9682ae7c0eae61f067a6311e015bcdc739b674a7`;
+            hash: `0x6e8b9ded9bc2706356452eba9682ae7c0eae61f067a6311e015bcdc739b674a7`,
             marketType: YES_NO,
             question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
             example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
