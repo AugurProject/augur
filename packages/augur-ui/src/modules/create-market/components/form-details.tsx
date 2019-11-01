@@ -353,18 +353,22 @@ export default class FormDetails extends React.Component<
             <ResolutionRules newMarket={newMarket} onChange={onChange} />
           )}
 
-          <Subheaders
-            header="Resolution details"
-            subheader="Describe what users need to know to determine the outcome of the event."
-            link
-          />
-          <TextInput
-            type="textarea"
-            placeholder="Describe how the event should be resolved under different scenarios."
-            rows="3"
-            value={detailsText}
-            onChange={(value: string) => onChange('detailsText', value)}
-          />
+          {!isTemplate && (
+            <>
+              <Subheaders
+                header="Resolution details"
+                subheader="Describe what users need to know to determine the outcome of the event."
+                link
+              />
+              <TextInput
+                type="textarea"
+                placeholder="Describe how the event should be resolved under different scenarios."
+                rows="3"
+                value={detailsText}
+                onChange={(value: string) => onChange('detailsText', value)}
+              />
+            </>
+          )}
 
           <Subheaders
             header="Designated reporter"
