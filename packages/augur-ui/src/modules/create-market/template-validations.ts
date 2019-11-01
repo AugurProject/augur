@@ -13,11 +13,11 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0xea0b6b5eb2e16392fd2b17bb7f0c761b13e7b40a35d87e7702109dc7a0a6bbbd': {
     templateValidation:
-      'Will the (.*) win vs the (.*), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (.*) win vs the (.*), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x6e8b9ded9bc2706356452eba9682ae7c0eae61f067a6311e015bcdc739b674a7': {
     templateValidation:
-      'Will the (.*) & (.*) score (.*) or more combined goals, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (.*) & (.*) score (.*) or more combined goals, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x2240793e8bc7080ec1f2489b82fe33cb3c3e5d06defd9752681996498a7a2620': {
     templateValidation:
@@ -25,11 +25,11 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0xc828397abfe32a946d82e4a605f465a979dcb698f8846ba4d759b8aad1427ed5': {
     templateValidation:
-      'Which team will win: (.*) vs (.*), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Which team will win: (.*) vs (.*), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x8046e1128dc30571a3c8680c40927b4cde8e3d0af9ae05e678d1b722f2099fbe': {
     templateValidation:
-      '(.*) vs (.*): Total goals scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      '(.*) vs (.*): Total goals scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0xf0cae533cd96f75ef69a4a184faa958d043e3c992eb7538bca7649cf6911ecb0': {
     templateValidation:
@@ -61,23 +61,23 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0x51a17bd92fdf4aaf4035b9df4e9e9daf7ad500dfcb1eeac8c75367e9b2cd2f2d': {
     templateValidation:
-      'Which team will win: (.*) vs (.*), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Which team will win: (.*) vs (.*), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0xa4abe419a906aca7784b996baeca43cbcb3042d7f8ae13a2f40f883842e06e42': {
     templateValidation:
-      '(.*) vs (.*): Total goals scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      '(.*) vs (.*): Total goals scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x7732e4cff79bc21ed270bd720c914c0aa12d683258541200b634babf1e38d4cf': {
     templateValidation:
-      'Will the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) win vs the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) win vs the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x3fce5e6f6f8aa4cf99aef2dab47e76e3b58e71f4ec4a60011342f54ec1c405de': {
     templateValidation:
-      'Will the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) win vs the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) by (.*) or more points, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) win vs the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) by (.*) or more points, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x1d07150af31e64a68aade0c85cc351f754154383d38fb74d9f9473478b77adb8': {
     templateValidation:
-      'Will the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) & (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) score (.*) or more combined points, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) & (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) score (.*) or more combined points, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x761d3707d55b48235d0296198c1158ed21cd69dcf39430afb9a0aa55bf004d1b': {
     templateValidation:
@@ -89,11 +89,11 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0x9db7819dfeabbeccd25962cc2c85865c64dd0bff75aa7e8c2b5a25f3ef1f7a0b': {
     templateValidation:
-      'Which team will win: [0] vs [1], Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Which team will win: [0] vs [1], Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x0d92f11622849ead67f48a71714cf329c99cf639418fbda14aa200b85c70c2bb': {
     templateValidation:
-      '(Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) vs (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards): Total Points scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      '(Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards) vs (Atlanta Hawks|Boston Celtics|Brooklyn Nets|Charlotte Hornets|Chicago Bulls|Cleveland Cavaliers|Dallas Mavericks|Denver Nuggets|Detroit Pistons|Golden State Warriors|Houston Rockets|Indiana Pacers|LA Clippers|LA Lakers|Memphis Grizzlies|Miami Heat|Milwaukee Bucks|Minnesota Timberwolves|New Orleans Pelicans|New York Knicks|Oklahoma City Thunder|Orlando Magic|Philadelphia 76ers|Phoenix Suns|Portland Trail Blazers|Sacramento Kings|San Antonio Spurs|Toronto Raptors|Utah Jazz|Washington Wizards): Total Points scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0xc1a1b03edab906931d6bc54cdbb12d5d0b39b13ad2d1ed673ab9bece4a059fc2': {
     templateValidation:
@@ -113,15 +113,15 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0x1d85cf567b88ecd10432c9e3475281a7c6103b6461a9b3957d97272fe260ab68': {
     templateValidation:
-      "Will (.*) win vs (.*); (Men's|Women's) basketball, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
+      "Will (.*) win vs (.*); (Men's|Women's) basketball, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
   },
   '0xb780cc879bbb1096fd1a3e8fb679f8a397306cd3575a4a3304c9b0e7a81ae643': {
     templateValidation:
-      "Will (.*) win vs (.*) by (.*) or more points, (Men's|Women's) basketball, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
+      "Will (.*) win vs (.*) by (.*) or more points, (Men's|Women's) basketball, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
   },
   '0x3258d36deb4c932ef1bc8670d9b5e249d624752be59f723784d851017eabfaf7': {
     templateValidation:
-      "Will (.*) & (.*) score (.*) or more combined points; (Men's|Women's) basketball, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
+      "Will (.*) & (.*) score (.*) or more combined points; (Men's|Women's) basketball, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
   },
   '0xa6394443c2eea97ca78e877e2b020f521ed40edecc9bf3aa53eda8944b920b18': {
     templateValidation:
@@ -133,11 +133,11 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0xc4c90502bd7e77b8810381e781ba1a76a306bd5c3d075281764da2d812443f3f': {
     templateValidation:
-      "Which team will win: (.*) vs (.*), (Men's|Women's) basketball, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
+      "Which team will win: (.*) vs (.*), (Men's|Women's) basketball, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
   },
   '0x760dd0987edaaf13d9aa81a39ae1182a756bf427c4e8d3da668c60ab9b56c1ec': {
     templateValidation:
-      "(Men's|Women's) basketball; (.*) vs (.*): Total Points scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
+      "(Men's|Women's) basketball; (.*) vs (.*): Total Points scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?",
   },
   '0x16c586f8848bf4d4e3c0802d45313db649ebee293f3b660f916af92ab193044e': {
     templateValidation:
@@ -149,7 +149,7 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0xda3c949f84da9f47840bca587e8097b75bf6a9b370e8bb6c2b1889ca9bf68509': {
     templateValidation:
-      'Which team will win: (.*) vs (.*), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Which team will win: (.*) vs (.*), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x3aa9d1c31aad6b7f700fd72aa31571ced7453ed8491bdbb5c1105b07634ba518': {
     templateValidation:
@@ -157,7 +157,7 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0x5a9e16ed367462965c09f7f897e14fc7f26fa997094f924539b4a4faac8bfe8d': {
     templateValidation:
-      '(.*) vs (.*): Total Runs scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      '(.*) vs (.*): Total Runs scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x0c7bc8c8af0908e86dfd6cc9da40a1c7f21f05611d550ab6147590d980a45879': {
     templateValidation:
@@ -169,15 +169,15 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0x72e6654de12c0d25496c4699f21b8071a1718ae5142faccbdf1202ba2cb6d69e': {
     templateValidation:
-      'Will the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) win vs the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) win vs the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x431bb08039e6ce1acb72c56f80be886836ca253fbdf6ecfff384c0483c2e1e9d': {
     templateValidation:
-      'Will the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) win vs the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) by (.*) or more points, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) win vs the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) by (.*) or more points, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x1359b0cf7cd2cb0e949726de1725ff88b2b09987d67f7581d784ab7ab56d34f3': {
     templateValidation:
-      'Will the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) & (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) score (.*) or more combined points, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) & (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) score (.*) or more combined points, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0xc55df05a57f25aff625202bd2658c866ae7043c741a258e061130736b326bbdd': {
     templateValidation:
@@ -197,7 +197,7 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0x0f79872f367831cc1dd6cae6f3f8147e5be9c6dccc6dfe863e5ab902e93cbabd': {
     templateValidation:
-      '(Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) vs (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins): Total goals scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      '(Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins) vs (Arizona Cardinals|Atlanta Falcons|Baltimore Ravens|Buffalo Bills|Carolina Panthers|Chicago Bears|Cincinnati Bengals|Cleveland Browns|Dallas Cowboys|Denver Broncos|Detroit Lions|Green Bay Packers|Houston Texans|Indianapolis Colts|Jacksonville Jaguars|Kansas City Chiefs|Las Angeles Chargers|Las Angeles Rams|Miami Dolphins|Minnesota Vikings|New England Patriots|New Orleans Saints|New York Giants|New York Jets|Oakland Raiders|Philadelphia Eagles|Pittsburgh Steelers|San Francisco 49ers|Seattle Seahawks|Tampa Bay Buccaneers|Tennessee Titans|Washington Redskins): Total goals scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x7663b4ac659216534e2423a4ec309dd125a30dad4d6ed5a304498681e121f88f': {
     templateValidation:
@@ -213,15 +213,15 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0xeab1052b4013c7193e8850b8ed9d0b3259d10ee9d627725c3e2f972720e36c65': {
     templateValidation:
-      'Will the (.*) win vs the (.*), Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (.*) win vs the (.*), Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x01f46e7baf9c70519e1b7371d43fc9ce7585ceac40a8ef10f3449a48e0f4384b': {
     templateValidation:
-      'Will the (.*) win vs the (.*) by (.*) or more points, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will the (.*) win vs the (.*) by (.*) or more points, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x65e36028adccb829dcfcfacf85d8e1d75038551120da45b5e435e825faf909e4': {
     templateValidation:
-      'Will (.*) & (.*) score (.*) or more combined points, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      'Will (.*) & (.*) score (.*) or more combined points, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x96cbb6f026a6c6d66c246cde1f32b291673fccf9d300599f5b6094b16152ab6e': {
     templateValidation:
@@ -229,7 +229,7 @@ export const TEMPLATE_VALIDATIONS = {
   },
   '0xd00bafc7a5965847d5efbb9ac9edf17c32e920d1f0fbd1b904606358e9979081': {
     templateValidation:
-      '(.*) vs (.*): Total points scored; Over/Under (.*).5, Estimated schedule start time: ([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
+      '(.*) vs (.*): Total points scored; Over/Under (.*).5, Estimated schedule start time: (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \(UTC 0\)?',
   },
   '0x0bb5284bfebe6d84781cd622ec5cd269b2b72be1952ddd4aea872c79ecbe5d0f': {
     templateValidation:

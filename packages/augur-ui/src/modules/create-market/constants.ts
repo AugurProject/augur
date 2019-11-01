@@ -534,6 +534,6 @@ export enum ValidationType {
 export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
-  [TemplateInputType.DATETIME]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
-  [TemplateInputType.DATEYEAR]: `([a-zA-Z]) ([0-9]){2}, 20|([0-9]{2})`
+  [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
+  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`
 };
