@@ -266,11 +266,11 @@ export default class MarketView extends Component<
     this.setState({ [show]: !this.state[show] });
   }
 
-  back() {
+  back = () =>  {
     this.setState({tutorialStep: this.state.tutorialStep - 1});
   }
 
-  next() {
+  next = () => {
     this.setState({tutorialStep: this.state.tutorialStep + 1});
   }
 
@@ -502,10 +502,9 @@ export default class MarketView extends Component<
                         market={preview && market}
                         preview={preview}
                         showTutorial={tradingTutorial && tutorialStep === 1}
+                        next={this.next}
+                        back={this.back}
                       />
-                      {tradingTutorial && tutorialStep === 1 &&
-                        <TutorialPopUp next={this.next} back={this.back}/>
-                      }
                       <div className={Styles.MarketView__firstColumn}>
                         <div className={Styles.MarketView__firstRow}>
                           <div className={Styles.MarketView__component}>
@@ -521,7 +520,7 @@ export default class MarketView extends Component<
                             />
                           </div>
                           <div className={Styles.MarketView__innerSecondColumn}>
-                            <div className={Styles.MarketView__component}>
+                            <div className={classNames(Styles.MarketView__component, {[Styles.OutcomesTutorial]: tradingTutorial && tutorialStep === 2})}>
                               <MarketOutcomesList
                                 marketId={marketId}
                                 market={market}
