@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SCALAR } from 'modules/common/constants';
+import { EVENT_EXPIRATION_TOOLTIP, SCALAR } from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
 import getValue from 'utils/get-value';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
@@ -48,8 +48,8 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               showLocal
               hint={
                 <>
-                  <h4>Event expiration</h4>
-                  <p>This date time indicates when the settlement process begins.</p>
+                  <h4>{EVENT_EXPIRATION_TOOLTIP.header}</h4>
+                  <p>{EVENT_EXPIRATION_TOOLTIP.content}</p>
                 </>
               }
             />
@@ -125,8 +125,8 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               time={market.endTimeFormatted}
               hint={
                 <>
-                  <h4>Event expiration</h4>
-                  <p>This date time indicates when the settlement process begins.</p>
+                  <h4>{EVENT_EXPIRATION_TOOLTIP.header}</h4>
+                  <p>{EVENT_EXPIRATION_TOOLTIP.content}</p>
                 </>
               }
             />
