@@ -324,6 +324,47 @@
 						"type": "function"
 					},
 					{
+						"constant": true,
+						"inputs": [
+							{
+								"name": "_market",
+								"type": "address"
+							}
+						],
+						"name": "getMarketCreationData",
+						"outputs": [
+							{
+								"components": [
+									{
+										"name": "extraInfo",
+										"type": "string"
+									},
+									{
+										"name": "marketCreator",
+										"type": "address"
+									},
+									{
+										"name": "outcomes",
+										"type": "bytes32[]"
+									},
+									{
+										"name": "displayPrices",
+										"type": "int256[]"
+									},
+									{
+										"name": "marketType",
+										"type": "uint8"
+									}
+								],
+								"name": "",
+								"type": "tuple"
+							}
+						],
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
+					},
+					{
 						"constant": false,
 						"inputs": [
 							{
@@ -12752,6 +12793,20 @@
 					{
 						"constant": true,
 						"inputs": [],
+						"name": "getAffiliateFeeDivisor",
+						"outputs": [
+							{
+								"name": "",
+								"type": "uint256"
+							}
+						],
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
+					},
+					{
+						"constant": true,
+						"inputs": [],
 						"name": "isForkingMarket",
 						"outputs": [
 							{
@@ -18296,6 +18351,25 @@
 							}
 						],
 						"name": "marketOutcomeVolumes",
+						"outputs": [
+							{
+								"name": "",
+								"type": "uint256"
+							}
+						],
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
+					},
+					{
+						"constant": true,
+						"inputs": [
+							{
+								"name": "_market",
+								"type": "address"
+							}
+						],
+						"name": "getMarketVolume",
 						"outputs": [
 							{
 								"name": "",

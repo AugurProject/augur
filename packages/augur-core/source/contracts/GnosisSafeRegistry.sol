@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import 'ROOT/Augur.sol';
+import 'ROOT/IAugur.sol';
 import 'ROOT/external/IGnosisSafe.sol';
 import 'ROOT/external/IProxyFactory.sol';
 import 'ROOT/libraries/Initializable.sol';

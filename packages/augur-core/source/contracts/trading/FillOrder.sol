@@ -607,4 +607,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         _tradeData.contracts.profitLoss.recordTrade(_tradeData.contracts.universe, _tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, int256(_amountFilled), int256(_tradeData.order.sharePriceLong), _numLongTokens, _numShortTokens, _numLongShares, _numShortShares);
         return true;
     }
+
+    function getMarketVolume(IMarket _market) public view returns (uint256) {
+        uint256[] memory tmpMarketOutcomeVolumes = marketOutcomeVolumes[address(_market)];
+        uint256 _volume;
+        for (uint256 i = 0; i < tmpMarketOutcomeVolumes.length; i++) {
+            _volume += tmpMarketOutcomeVolumes[i];
+        }
+        return _volume;
+    }
 }

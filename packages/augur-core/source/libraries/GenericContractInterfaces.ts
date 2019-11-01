@@ -475,6 +475,13 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public getMarketCreationData_ = async (market: string, options?: { sender?: string }): Promise<{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"}],"name":"getMarketCreationData","outputs":[{"components":[{"name":"extraInfo","type":"string"},{"name":"marketCreator","type":"address"},{"name":"outcomes","type":"bytes32[]"},{"name":"displayPrices","type":"int256[]"},{"name":"marketType","type":"uint8"}],"name":"","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [market], options.sender)
+		return <{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber }>result[0]
+	}
+
 	public createChildUniverse = async (parentPayoutDistributionHash: string, parentPayoutNumerators: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_parentPayoutDistributionHash","type":"bytes32"},{"name":"_parentPayoutNumerators","type":"uint256[]"}],"name":"createChildUniverse","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -6543,6 +6550,13 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public getAffiliateFeeDivisor_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getAffiliateFeeDivisor","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public isForkingMarket_ = async (options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"isForkingMarket","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -9483,6 +9497,13 @@ export class FillOrder<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public getMarketVolume_ = async (market: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"}],"name":"getMarketVolume","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [market], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -10535,6 +10556,34 @@ export class Formulas<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_previousDisputeWindow","type":"address"},{"name":"_previousDesignatedReportNoShowBondInAttoRep","type":"uint256"},{"name":"_initialReportMinValue","type":"uint256"}],"name":"calculateDesignatedReportNoShowBond","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [previousDisputeWindow, previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue], options.sender)
 		return <TBigNumber>result[0]
+	}
+}
+
+
+export class HotLoading<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public getLastTradedPrices_ = async (market: string, numOutcomes: TBigNumber, orders: string, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"},{"name":"_numOutcomes","type":"uint256"},{"name":"_orders","type":"address"}],"name":"getLastTradedPrices","outputs":[{"name":"_lastTradedPrices","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [market, numOutcomes, orders], options.sender)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public getReportingState_ = async (augur: string, market: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_augur","type":"address"},{"name":"_market","type":"address"}],"name":"getReportingState","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [augur, market], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getMarketData_ = async (augur: string, market: string, fillOrder: string, orders: string, options?: { sender?: string }): Promise<{ extraInfo: string, marketCreator: string, owner: string, outcomes: Array<string>, marketType: TBigNumber, displayPrices: Array<TBigNumber>, designatedReporter: string, reportingState: TBigNumber, disputeRound: TBigNumber, winningPayout: Array<TBigNumber>, volume: TBigNumber, openInterest: TBigNumber, lastTradedPrices: Array<TBigNumber>, universe: string, numTicks: TBigNumber, feeDivisor: TBigNumber, affiliateFeeDivisor: TBigNumber, endTime: TBigNumber, numOutcomes: TBigNumber, validityBond: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_augur","type":"address"},{"name":"_market","type":"address"},{"name":"_fillOrder","type":"address"},{"name":"_orders","type":"address"}],"name":"getMarketData","outputs":[{"components":[{"name":"extraInfo","type":"string"},{"name":"marketCreator","type":"address"},{"name":"owner","type":"address"},{"name":"outcomes","type":"bytes32[]"},{"name":"marketType","type":"uint8"},{"name":"displayPrices","type":"int256[]"},{"name":"designatedReporter","type":"address"},{"name":"reportingState","type":"uint8"},{"name":"disputeRound","type":"uint256"},{"name":"winningPayout","type":"uint256[]"},{"name":"volume","type":"uint256"},{"name":"openInterest","type":"uint256"},{"name":"lastTradedPrices","type":"uint256[]"},{"name":"universe","type":"address"},{"name":"numTicks","type":"uint256"},{"name":"feeDivisor","type":"uint256"},{"name":"affiliateFeeDivisor","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"numOutcomes","type":"uint256"},{"name":"validityBond","type":"uint256"}],"name":"_marketData","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [augur, market, fillOrder, orders], options.sender)
+		return <{ extraInfo: string, marketCreator: string, owner: string, outcomes: Array<string>, marketType: TBigNumber, displayPrices: Array<TBigNumber>, designatedReporter: string, reportingState: TBigNumber, disputeRound: TBigNumber, winningPayout: Array<TBigNumber>, volume: TBigNumber, openInterest: TBigNumber, lastTradedPrices: Array<TBigNumber>, universe: string, numTicks: TBigNumber, feeDivisor: TBigNumber, affiliateFeeDivisor: TBigNumber, endTime: TBigNumber, numOutcomes: TBigNumber, validityBond: TBigNumber }>result[0]
 	}
 }
 

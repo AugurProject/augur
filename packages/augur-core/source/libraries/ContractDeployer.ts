@@ -504,6 +504,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
+        mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {

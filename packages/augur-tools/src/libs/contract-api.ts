@@ -638,4 +638,8 @@ export class ContractAPI {
   async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
     return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
   }
+
+  async getHotLoadingMarketData(market: string): Promise<void> {
+    await this.augur.hotLoading.getMarketDataParams({market});
+  }
 }
