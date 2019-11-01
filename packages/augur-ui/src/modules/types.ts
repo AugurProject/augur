@@ -485,6 +485,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isReconnectionPaused: boolean;
+  canHotload: boolean;
 }
 
 export interface Category {

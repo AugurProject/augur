@@ -2,12 +2,14 @@ import { Connection, BaseAction } from "modules/types";
 import {
   UPDATE_CONNECTION_STATUS,
   UPDATE_IS_RECONNECTION_PAUSED,
+  UPDATE_HOTLOADING_STATUS,
 } from "modules/app/actions/update-connection";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE: Connection = {
   isConnected: false,
-  isReconnectionPaused: false
+  isReconnectionPaused: false,
+  canHotload: false,
 };
 
 export default function(
@@ -15,6 +17,13 @@ export default function(
   { type, data }: BaseAction,
 ): Connection {
   switch (type) {
+    case UPDATE_HOTLOADING_STATUS: {
+      const { canHotload } = data;
+      return {
+        ...connection,
+        canHotload
+      };
+    }
     case UPDATE_CONNECTION_STATUS: {
       const { isConnected } = data;
       return {

@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
 import { augurEmitter } from '../events';
 import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
-import { Address, MarketTypeName } from "../state/logs/types";
+import { Address, MarketTypeName, ExtraInfoTemplate } from "../state/logs/types";
 import { MarketInfoOutcome } from "../state/getter/Markets";
 import {
     convertOnChainAmountToDisplayAmount,
@@ -44,6 +44,7 @@ export interface HotLoadMarketInfo {
     settlementFee: string;
     reportingFeeRate: string;
     categories: string[];
+    template: ExtraInfoTemplate;
   }
 
 export class HotLoading {
@@ -108,6 +109,7 @@ export class HotLoading {
     let description = null;
     let details = null;
     let scalarDenomination = null;
+    let template = null;
     if (extraInfoString) {
       try {
         let extraInfo = JSON.parse(extraInfoString);
@@ -119,7 +121,10 @@ export class HotLoading {
         scalarDenomination = extraInfo._scalarDenomination
           ? extraInfo._scalarDenomination
           : null;
-      } catch (err) {
+        template = extraInfo.template
+          ? extraInfo.template
+          : null;
+        } catch (err) {
           console.log(`Bad extraInfo string on market ${params.market}: ${extraInfoString}`);
       }
     }
@@ -172,7 +177,8 @@ export class HotLoading {
         marketCreatorFeeRate: marketCreatorFeeRate.toFixed(),
         reportingFeeRate: reportingFeeRate.toFixed(),
         settlementFee: settlementFee.toFixed(),
-        outcomes: outcomeInfo
+        outcomes: outcomeInfo,
+        template,
     }
 
     augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
