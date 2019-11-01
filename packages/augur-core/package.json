@@ -65,6 +65,7 @@
     "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
   },
   "dependencies": {
+    "@0x/migrations": "4.3.2",
     "@augurproject/artifacts": "2.0.0-alpha.1",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "@types/get-port": "4.0.1",

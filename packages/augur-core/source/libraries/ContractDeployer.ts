@@ -28,6 +28,10 @@ import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
+import { runMigrationsOnceAsync } from '@0x/migrations';
+import Web3ProviderEngine = require('web3-provider-engine');
+import { ProviderSubprovider } from './zeroX/ProviderSubprovider';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
 
@@ -289,9 +293,22 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async upload0xContracts(): Promise<string> {
-        const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
-        zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
-        return zeroXExchangeContract.address;
+      const txDefaults = {
+        gas: 75000000,
+        from: await this.signer.getAddress(),
+      };
+
+      // XXX WIP
+      const web3Engine = new Web3ProviderEngine();
+      web3Engine.addProvider(new ProviderSubprovider(new EthersProvider(this.provider, 5, 40, 1)));
+      // This next line fails without saying why.
+      const zeroXAddresses = await runMigrationsOnceAsync(web3Engine, txDefaults);
+      console.log(zeroXAddresses);
+      // XXX END
+
+      const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
+      zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
+      return zeroXExchangeContract.address;
     }
 
     async uploadLegacyRep(): Promise<string> {
