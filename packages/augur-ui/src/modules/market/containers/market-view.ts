@@ -15,6 +15,7 @@ import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -30,6 +31,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
       isMarketLoading: true,
       isConnected: connection.isConnected && universe.id != null,
+      canHotload: connection.canHotload,
       marketId,
       marketReviewSeen,
     };
@@ -54,6 +56,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  hotloadMarket: marketId => dispatch(hotloadMarket(marketId)),
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>

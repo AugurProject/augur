@@ -18,6 +18,8 @@ import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
 import { Action } from 'redux';
+import { RewriteUrlParams } from 'modules/app/hocs/rewrite-url-params';
+import { connect } from 'services/initialize';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -272,3 +274,8 @@ const loadReportingMarkets = (
   }
   if (cb) cb(null, marketList);
 };
+
+export const hotloadMarket = (marketId) => {
+  const augur = augurSdk.get();
+  augur.hotloadMarket(marketId);
+}

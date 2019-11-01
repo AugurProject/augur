@@ -50,6 +50,8 @@ interface MarketViewProps {
   showMarketLoadingModal: Function;
   preview?: boolean;
   sortedOutcomes: OutcomeFormatted[];
+  hotloadMarket: Function;
+  canHotload: boolean;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -272,7 +274,9 @@ export default class MarketView extends Component<
       market,
       history,
       preview,
-      sortedOutcomes
+      sortedOutcomes,
+      hotloadMarket,
+      canHotload,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -283,6 +287,7 @@ export default class MarketView extends Component<
       extendOrders,
     } = this.state;
     if (isMarketLoading) {
+      if (canHotload) hotloadMarket(marketId);
       return (
         <div
           ref={node => {

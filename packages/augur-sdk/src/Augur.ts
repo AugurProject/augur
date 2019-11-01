@@ -299,6 +299,10 @@ export class Augur<TProvider extends Provider = Provider> {
   getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
   getCategoryStats = this.bindTo(Markets.getCategoryStats);
 
+  async hotloadMarket(marketId: string) {
+    return this.hotLoading.getMarketDataParams({ market: marketId });
+  }
+
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }
