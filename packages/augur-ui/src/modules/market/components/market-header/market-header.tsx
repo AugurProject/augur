@@ -28,6 +28,7 @@ import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints } from 'modules/types';
 import Clipboard from 'clipboard';
+import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
@@ -46,6 +47,9 @@ interface MarketHeaderProps {
   history: History;
   preview?: boolean;
   reportingBarShowing: boolean;
+  next: Function;
+  back: Function;
+  showTutorial?: boolean;
 }
 
 interface MarketHeaderState {
@@ -138,6 +142,9 @@ export default class MarketHeader extends Component<
       preview,
       reportingBarShowing,
       toggleFavorite,
+      showTutorial,
+      next,
+      back
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -296,6 +303,8 @@ export default class MarketHeader extends Component<
             {TwoArrowsOutline}
           </button>
         </div>
+
+        {showTutorial && <TutorialPopUp next={next} back={back} />}
       </section>
     );
   }
