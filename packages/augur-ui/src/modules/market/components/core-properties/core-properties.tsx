@@ -46,6 +46,12 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
               label="Event Expiration"
               time={market.endTimeFormatted}
               showLocal
+              hint={
+                <>
+                  <h4>Event expiration</h4>
+                  <p>This date time indicates when the settlement process begins.</p>
+                </>
+              }
             />
           )}
           {reportingBarShowing && showExtraDetails && (
@@ -117,6 +123,12 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
             <TimeLabel
               label="Event Expiration"
               time={market.endTimeFormatted}
+              hint={
+                <>
+                  <h4>Event expiration</h4>
+                  <p>This date time indicates when the settlement process begins.</p>
+                </>
+              }
             />
           </div>
         )}
