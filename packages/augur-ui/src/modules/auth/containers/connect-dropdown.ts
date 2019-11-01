@@ -21,6 +21,7 @@ const mapStateToProps = state => {
     parentUniverseId: state.universe.parentUniverseId !== NULL_ADDRESS ? state.universe.parentUniverseId : null,
     universeHasChildren: !!state.universe.forkingInfo,
     loginAccountAddress: state.loginAccount.address,
+    averageGasPrice: average,
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     isLogged: state.authStatus.isLogged,

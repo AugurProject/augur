@@ -903,3 +903,5 @@ export enum PAGINATION_VIEW_OPTIONS {
   FIFTY = '50',
   HUNDRED = '100',
 }
+
+export const GWEI_CONVERSION = 1000000000;
