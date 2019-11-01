@@ -30,6 +30,7 @@ import { MarketData, OutcomeFormatted, DefaultOrderProperties } from 'modules/ty
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { SquareDropdown } from 'modules/common/selection';
+import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -50,6 +51,7 @@ interface MarketViewProps {
   showMarketLoadingModal: Function;
   preview?: boolean;
   sortedOutcomes: OutcomeFormatted[];
+  tradingTutorial?: boolean;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -64,6 +66,7 @@ interface MarketViewState {
   selectedOutcomeId?: number;
   fixedPrecision: number;
   selectedOutcomeProperties: DefaultOrderPropertiesMap;
+  tutorialStep: number;
 }
 export default class MarketView extends Component<
   MarketViewProps,
@@ -88,6 +91,7 @@ export default class MarketView extends Component<
     const cat5 = this.findType();
 
     this.state = {
+      tutorialStep: 1,
       extendOrderBook: false,
       extendTradeHistory: false,
       extendOutcomesList: cat5 ? true : false,
@@ -262,6 +266,14 @@ export default class MarketView extends Component<
     this.setState({ [show]: !this.state[show] });
   }
 
+  back() {
+    this.setState({tutorialStep: this.state.tutorialStep - 1});
+  }
+
+  next() {
+    this.setState({tutorialStep: this.state.tutorialStep + 1});
+  }
+
   render() {
     const {
       isMarketLoading,
@@ -272,7 +284,8 @@ export default class MarketView extends Component<
       market,
       history,
       preview,
-      sortedOutcomes
+      sortedOutcomes,
+      tradingTutorial
     } = this.props;
     const {
       selectedOutcomeId,
@@ -281,6 +294,7 @@ export default class MarketView extends Component<
       selectedOrderProperties,
       extendOutcomesList,
       extendOrders,
+      tutorialStep
     } = this.state;
     if (isMarketLoading) {
       return (
@@ -305,8 +319,7 @@ export default class MarketView extends Component<
     );
     const selectedOutcomeName: string = outcome ? outcome.description : '';
 
-    const networkId = 0;
-    //getNetworkId();
+    const networkId = getNetworkId();
 
     const cat5 = this.findType();
     const defaultOutcome = outcome ? outcome.id : 2;
@@ -320,6 +333,9 @@ export default class MarketView extends Component<
           [Styles.Inactive]: preview,
         })}
       >
+        {tradingTutorial &&
+          <div/>
+        }
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>
@@ -446,7 +462,7 @@ export default class MarketView extends Component<
                       />
 
                       <MarketChartsPane
-                        marketId={marketId}
+                        marketId={!tradingTutorial && marketId}
                         market={preview && market}
                         selectedOutcomeId={outcomeId}
                         currentTimestamp={currentTimestamp}
@@ -468,23 +484,28 @@ export default class MarketView extends Component<
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
-                        marketId={marketId}
+                        marketId={tradingTutorial && marketId}
                         market={preview && market}
                         preview={preview}
                       />
                     </div>
                   </ModulePane>
                 </ModuleTabs>
+                <MarketComments marketId={marketId} networkId={networkId} />
               </>
             ) : (
                 <>
                   <div className={Styles.MarketView__parent}>
-                    <section className={Styles.MarketView__body}>
+                    <section className={classNames(Styles.MarketView__body, {[Styles.HeaderTutorial]: tradingTutorial && tutorialStep === 1})}>
                       <MarketHeader
                         marketId={marketId}
                         market={preview && market}
                         preview={preview}
+                        showTutorial={tradingTutorial && tutorialStep === 1}
                       />
+                      {tradingTutorial && tutorialStep === 1 &&
+                        <TutorialPopUp next={this.next} back={this.back}/>
+                      }
                       <div className={Styles.MarketView__firstColumn}>
                         <div className={Styles.MarketView__firstRow}>
                           <div className={Styles.MarketView__component}>
@@ -521,7 +542,7 @@ export default class MarketView extends Component<
                               )}
                             >
                               <MarketChartsPane
-                                marketId={marketId}
+                                marketId={!tradingTutorial && marketId}
                                 selectedOutcomeId={outcomeId}
                                 updateSelectedOrderProperties={
                                   this.updateSelectedOrderProperties
@@ -607,7 +628,7 @@ export default class MarketView extends Component<
                       </div>
                     </div>
                   </div>
-
+                  <MarketComments marketId={marketId} networkId={networkId} />
                 </>
               )
           }

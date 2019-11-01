@@ -9,6 +9,17 @@
     pointer-events: none;
     min-width: 100%;
   }
+
+  > div:first-of-type {
+    background: #0E0E0F;
+    opacity: .7;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 100;
+  }
 }
 
 .MarketView__button {
@@ -86,6 +97,16 @@
 
     @media @breakpoint-mobile {
       padding: 0;
+    }
+  }
+
+  &.HeaderTutorial {
+    > section:first-of-type {
+      z-index: 101;
+    }
+
+    > div {
+      top: 130px;
     }
   }
 }
