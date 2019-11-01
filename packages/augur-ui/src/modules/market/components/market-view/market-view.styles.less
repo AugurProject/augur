@@ -10,8 +10,8 @@
     min-width: 100%;
   }
 
-  > div:first-of-type {
-    background: #0E0E0F;
+  > span:first-of-type {
+    background: @color-dark-grey;
     opacity: .7;
     top: 0;
     bottom: 0;
@@ -90,7 +90,7 @@
   flex-grow: 1;
   margin: 0 @size-4;
 
-  > section:first-of-type {
+  > div:first-of-type > section:first-of-type {
     flex: unset;
     margin: 0 0 @size-4;
     min-height: fit-content;
@@ -102,9 +102,47 @@
 }
 
 .HeaderTutorial,
-.OutcomesTutorial {
+.OrderBookTutorial,
+.TradingFormTutorial {
+  position: relative;
+
   > section:first-of-type {
     z-index: 101;
+  }
+}
+
+.HeaderTutorial {
+  z-index: 101;
+
+  > section:last-of-type {
+    top: calc(100% - 32px);
+  }
+}
+
+.TradingFormTutorial {
+  > section:last-of-type {
+    left: unset;
+    right: -100%;
+    top: 0;
+  }
+}
+
+.OrderBookTutorial {
+  > section:last-of-type {
+    left: -100%;
+    top: 0;
+  }
+}
+
+.PositionsTutorial {
+  position: relative;
+  
+  > div:first-of-type {
+    z-index: 101;
+  }
+
+  > section:last-of-type {
+    top: -80%;
   }
 }
 
