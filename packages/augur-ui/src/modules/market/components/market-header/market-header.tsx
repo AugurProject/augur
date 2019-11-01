@@ -303,8 +303,6 @@ export default class MarketHeader extends Component<
             {TwoArrowsOutline}
           </button>
         </div>
-
-        {showTutorial && <TutorialPopUp next={next} back={back} />}
       </section>
     );
   }
