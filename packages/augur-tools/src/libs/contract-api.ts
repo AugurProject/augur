@@ -10,7 +10,8 @@ import {
   ZeroXPlaceTradeDisplayParams,
   ZeroXSimulateTradeData,
   BrowserMesh,
-  EmptyConnector
+  EmptyConnector,
+  HotLoadMarketInfo
 } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -639,7 +640,7 @@ export class ContractAPI {
     return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
   }
 
-  async getHotLoadingMarketData(market: string): Promise<void> {
-    await this.augur.hotLoading.getMarketDataParams({market});
+  async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
+    return await this.augur.hotLoading.getMarketDataParams({market});
   }
 }

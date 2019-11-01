@@ -608,6 +608,10 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         return true;
     }
 
+    function getMarketOutcomeValues(IMarket _market) public view returns (uint256[] memory) {
+        return marketOutcomeVolumes[address(_market)];
+    }
+
     function getMarketVolume(IMarket _market) public view returns (uint256) {
         uint256[] memory tmpMarketOutcomeVolumes = marketOutcomeVolumes[address(_market)];
         uint256 _volume;

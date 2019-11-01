@@ -50,6 +50,8 @@ contract HotLoading {
         uint256 endTime;
         uint256 numOutcomes;
         uint256 validityBond;
+        uint256 reportingFeeDivisor;
+        uint256[] outcomeVolumes;
     }
 
     function getMarketData(IAugur _augur, IMarket _market, IFillOrder _fillOrder, IOrders _orders) public view returns (MarketData memory _marketData) {
@@ -73,6 +75,8 @@ contract HotLoading {
         _marketData.volume = _fillOrder.getMarketVolume(_market);
         _marketData.lastTradedPrices = getLastTradedPrices(_market, _marketData.numOutcomes, _orders);
         _marketData.reportingState = getReportingState(_augur, _market);
+        _marketData.reportingFeeDivisor = _market.getUniverse().getReportingFeeDivisor();
+        _marketData.outcomeVolumes = _fillOrder.getMarketOutcomeValues(_market);
         if (_marketData.reportingState == ReportingState.Finalized) {
             IReportingParticipant _winningReportingParticipant = _market.getWinningReportingParticipant();
             _marketData.winningPayout = _winningReportingParticipant.getPayoutNumerators();

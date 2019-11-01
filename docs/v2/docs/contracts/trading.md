@@ -2066,7 +2066,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#FillOrder.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#FillOrder.publicFillOrder(bytes32,uint256,bytes32,address)"><code class="function-signature">publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#FillOrder.fillOrder(address,bytes32,uint256,bytes32,address)"><code class="function-signature">fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#FillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler)</code></a></li><li><a href="#FillOrder.fillOrderInternal(address,struct Trade.Data,uint256,bytes32)"><code class="function-signature">fillOrderInternal(address _filler, struct Trade.Data _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId)</code></a></li><li><a href="#FillOrder.sellCompleteSets(struct Trade.Data)"><code class="function-signature">sellCompleteSets(struct Trade.Data _tradeData)</code></a></li><li><a href="#FillOrder.getMarketVolume(contract IMarket)"><code class="function-signature">getMarketVolume(contract IMarket _market)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#FillOrder.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#FillOrder.publicFillOrder(bytes32,uint256,bytes32,address)"><code class="function-signature">publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#FillOrder.fillOrder(address,bytes32,uint256,bytes32,address)"><code class="function-signature">fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#FillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler)</code></a></li><li><a href="#FillOrder.fillOrderInternal(address,struct Trade.Data,uint256,bytes32)"><code class="function-signature">fillOrderInternal(address _filler, struct Trade.Data _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId)</code></a></li><li><a href="#FillOrder.sellCompleteSets(struct Trade.Data)"><code class="function-signature">sellCompleteSets(struct Trade.Data _tradeData)</code></a></li><li><a href="#FillOrder.getMarketOutcomeValues(contract IMarket)"><code class="function-signature">getMarketOutcomeValues(contract IMarket _market)</code></a></li><li><a href="#FillOrder.getMarketVolume(contract IMarket)"><code class="function-signature">getMarketVolume(contract IMarket _market)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -2106,6 +2106,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="FillOrder.getMarketOutcomeValues(contract IMarket)"></a><code class="function-signature">getMarketOutcomeValues(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="FillOrder.getMarketVolume(contract IMarket)"></a><code class="function-signature">getMarketVolume(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -2118,7 +2124,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IFillOrder.publicFillOrder(bytes32,uint256,bytes32,address)"><code class="function-signature">publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillOrder(address,bytes32,uint256,bytes32,address)"><code class="function-signature">fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler)</code></a></li><li><a href="#IFillOrder.getMarketVolume(contract IMarket)"><code class="function-signature">getMarketVolume(contract IMarket _market)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IFillOrder.publicFillOrder(bytes32,uint256,bytes32,address)"><code class="function-signature">publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillOrder(address,bytes32,uint256,bytes32,address)"><code class="function-signature">fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler)</code></a></li><li><a href="#IFillOrder.getMarketOutcomeValues(contract IMarket)"><code class="function-signature">getMarketOutcomeValues(contract IMarket _market)</code></a></li><li><a href="#IFillOrder.getMarketVolume(contract IMarket)"><code class="function-signature">getMarketVolume(contract IMarket _market)</code></a></li></ul></div>
 
 
 
@@ -2135,6 +2141,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IFillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"></a><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IFillOrder.getMarketOutcomeValues(contract IMarket)"></a><code class="function-signature">getMarketOutcomeValues(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
 
 
 

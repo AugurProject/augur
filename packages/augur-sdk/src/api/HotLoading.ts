@@ -1,8 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
 import { augurEmitter } from '../events';
-import { SubscriptionEventName, MarketReportingState } from '../constants';
-import { Address } from "../logs/types";
+import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
+import { Address, MarketTypeName } from "../state/logs/types";
 import { MarketInfoOutcome } from "../state/getter/Markets";
 import {
     convertOnChainAmountToDisplayAmount,
@@ -53,7 +53,7 @@ export class HotLoading {
     this.augur = augur;
   }
 
-  async getMarketDataParams(params: GetMarketDataParams): Promise<void> {
+  async getMarketDataParams(params: GetMarketDataParams): Promise<HotLoadMarketInfo> {
     const augur = this.augur.addresses.Augur;
     const fillorder = this.augur.addresses.FillOrder;
     const orders = this.augur.addresses.Orders;
@@ -68,8 +68,10 @@ export class HotLoading {
     let displayPrices = marketData[5];
     if (displayPrices.length == 0) {
         displayPrices = [0, QUINTILLION];
+    } else {
+        displayPrices = displayPrices.map((price) => { return new BigNumber(price._hex); });
     }
-    const designatedReporter = marketData[6];s
+    const designatedReporter = marketData[6];
     const reportingStateNumber: number = marketData[7];
     const winningPayout = marketData[9];
     const volume = new BigNumber(marketData[10]._hex).dividedBy(QUINTILLION).toFixed();
@@ -80,11 +82,13 @@ export class HotLoading {
     const feeDivisor = marketData[15];
     const endTime = new BigNumber(marketData[17]._hex).toNumber();
     const numOutcomes = new BigNumber(marketData[18]._hex).toNumber();
+    const reportingFeeDivisor = marketData[20];
+    const outcomeVolumes = marketData[21];
 
-    const reportingState = MarketReportingState[reportingStateNumber];
+    const reportingState: string = MarketReportingStateByNum[reportingStateNumber];
 
-    const minPrice = new BigNumber(displayPrices[0]._hex);
-    const maxPrice = new BigNumber(displayPrices[1]._hex);
+    const minPrice = new BigNumber(displayPrices[0]);
+    const maxPrice = new BigNumber(displayPrices[1]);
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const displayMinPrice = minPrice.dividedBy(QUINTILLION);
     const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
@@ -92,7 +96,7 @@ export class HotLoading {
 
     let consensus = null;
 
-    if (winningPayout) {
+    if (reportingState === 'Finalized') {
         let payouts = [];
         for (let i = 0; i < winningPayout.length; i++) {
             payouts[i] = new BigNumber(winningPayout[i]).toString(10);
@@ -120,9 +124,29 @@ export class HotLoading {
       }
     }
 
-    const marketCreatorFeeRate = new BigNumber(feeDivisor._hex).dividedBy(QUINTILLION);
-    const reportingFeeRate = new BigNumber(reportingFeeDivisor._hex).dividedBy(QUINTILLION);
+    const marketCreatorFeeRate = new BigNumber(1).dividedBy(feeDivisor._hex);
+    const reportingFeeRate = new BigNumber(1).dividedBy(reportingFeeDivisor._hex);
     const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
+
+    const outcomeInfo = [];
+    for (let i = 0; i < numOutcomes; i++) {
+      let description = "Invalid";
+      if (i > 0) {
+        if (marketType === MarketTypeName.YesNo) {
+          description = i == 1 ? "No" : "Yes";
+        } else if (marketType === MarketTypeName.Categorical) {
+          description = Buffer.from(outcomes[i], 'hex').toString();
+        } else {
+          description = scalarDenomination;
+        }
+      }
+      outcomeInfo[i] = {
+        id: i,
+        price: lastTradedPrices.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(lastTradedPrices[i]._hex), minPrice, tickSize).toFixed() : 0,
+        description,
+        volume: outcomeVolumes.length > 0 ? new BigNumber(outcomeVolumes[i]._hex).dividedBy(QUINTILLION).toFixed() : 0,
+      }
+    }
 
     const marketsInfo: HotLoadMarketInfo = {
         id: params.market,
@@ -148,8 +172,10 @@ export class HotLoading {
         marketCreatorFeeRate: marketCreatorFeeRate.toFixed(),
         reportingFeeRate: reportingFeeRate.toFixed(),
         settlementFee: settlementFee.toFixed(),
+        outcomes: outcomeInfo
     }
 
     augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
+    return marketsInfo;
   }
 }

@@ -34,6 +34,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, market, categ
     assert marketData.numOutcomes == 3
     universeContract = kitchenSinkFixture.applySignature("Universe", marketData.universe)
     assert marketData.validityBond == universeContract.getOrCacheValidityBond()
+    assert marketData.reportingFeeDivisor == universeContract.getReportingFeeDivisor()
 
     # Try the other markets
     marketData = getMarketData(hotLoading, augur, categoricalMarket, fillOrder, orders)
@@ -75,6 +76,7 @@ def test_trading(kitchenSinkFixture, augur, cash, market):
     assert marketData.volume == fix(2, 100)
     assert marketData.openInterest == fix(2, 100)
     assert marketData.lastTradedPrices == [0, 0, 60]
+    assert marketData.outcomeVolumes == [0, 0, fix(2, 100)]
     
 
 def test_reporting(kitchenSinkFixture, augur, cash, market):
@@ -147,6 +149,8 @@ class MarketData:
         self.endTime = marketData[17]
         self.numOutcomes = marketData[18]
         self.validityBond = marketData[19]
+        self.reportingFeeDivisor = marketData[20]
+        self.outcomeVolumes = marketData[21]
 
 
 def getMarketData(hotLoading, augur, market, fillOrder, orders):

@@ -2002,7 +2002,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IFillOrder.publicFillOrder(bytes32,uint256,bytes32,address)"><code class="function-signature">publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillOrder(address,bytes32,uint256,bytes32,address)"><code class="function-signature">fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler)</code></a></li><li><a href="#IFillOrder.getMarketVolume(contract IMarket)"><code class="function-signature">getMarketVolume(contract IMarket _market)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IFillOrder.publicFillOrder(bytes32,uint256,bytes32,address)"><code class="function-signature">publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillOrder(address,bytes32,uint256,bytes32,address)"><code class="function-signature">fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 tradeGroupId, address _affiliateAddress)</code></a></li><li><a href="#IFillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler)</code></a></li><li><a href="#IFillOrder.getMarketOutcomeValues(contract IMarket)"><code class="function-signature">getMarketOutcomeValues(contract IMarket _market)</code></a></li><li><a href="#IFillOrder.getMarketVolume(contract IMarket)"><code class="function-signature">getMarketVolume(contract IMarket _market)</code></a></li></ul></div>
 
 
 
@@ -2019,6 +2019,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IFillOrder.fillZeroXOrder(contract IMarket,uint256,contract IERC20,uint256,enum Order.Types,uint256,address,bytes32,address,address)"></a><code class="function-signature">fillZeroXOrder(contract IMarket _market, uint256 _outcome, contract IERC20 _kycToken, uint256 _price, enum Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IFillOrder.getMarketOutcomeValues(contract IMarket)"></a><code class="function-signature">getMarketOutcomeValues(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
 
 
 

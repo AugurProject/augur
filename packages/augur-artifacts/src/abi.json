@@ -17978,6 +17978,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketOutcomeValues",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "",
 					"type": "address"
 				},
@@ -21169,6 +21188,14 @@
 						{
 							"name": "validityBond",
 							"type": "uint256"
+						},
+						{
+							"name": "reportingFeeDivisor",
+							"type": "uint256"
+						},
+						{
+							"name": "outcomeVolumes",
+							"type": "uint256[]"
 						}
 					],
 					"name": "_marketData",
