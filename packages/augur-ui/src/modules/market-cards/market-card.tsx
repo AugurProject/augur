@@ -28,6 +28,7 @@ import {
   PositionIcon,
   DesignatedReporter,
   DisputeStake,
+  TemplateIcon,
 } from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -100,7 +101,6 @@ export default class MarketCard extends React.Component<
     const s = this.state;
 
     const {
-      description,
       outcomesFormatted,
       marketType,
       scalarDenomination,
@@ -116,6 +116,7 @@ export default class MarketCard extends React.Component<
       disputeInfo,
       endTimeFormatted,
       designatedReporter,
+      isTemplate
     } = market;
 
     if (loading) {
@@ -221,7 +222,7 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
               />
             )}
-            <CategoryTagTrail categories={categoriesWithClick} />
+            {isTemplate && TemplateIcon}<CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
               reportingState={reportingState}
               currentTime={currentAugurTimestamp}
