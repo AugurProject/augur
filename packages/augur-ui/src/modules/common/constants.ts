@@ -905,3 +905,8 @@ export enum PAGINATION_VIEW_OPTIONS {
 }
 
 export const GWEI_CONVERSION = 1000000000;
+
+export const EVENT_EXPIRATION_TOOLTIP = {
+  header: 'Event expiration',
+  content: 'This date time indicates when the settlement process begins.'
+};

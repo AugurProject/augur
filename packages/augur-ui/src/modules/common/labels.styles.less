@@ -13,6 +13,34 @@
     line-height: 160%;
   }
 
+  > span:first-of-type {
+    display: flex;
+    align-items: center;
+
+    > label {
+      display: inline-block;
+      height: @size-12;
+      margin: 0 0 0 @size-4;
+      width: @size-12;
+
+      > svg {
+        fill: none;
+        height: @size-12;
+        width: @size-12;
+
+        > circle {
+          fill: @color-primary-text;
+          stroke: @color-primary-text;
+          stroke-width: 1.5;
+        }
+
+        > path {
+          fill: @color-inactive-text;
+        }
+      }
+    }
+  }
+
   > span:nth-of-type(2) {
     .mono-11;
 
