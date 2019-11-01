@@ -68,7 +68,7 @@ export class SDK {
   async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string) {
     if (this.sdk) {
       this.sdk.syncUserData(address);
-      if (signer) this.sdk.setSigner(signer);
+      if (signer) this.sdk.signer = signer;
       this.signerNetworkId = signerNetworkId;
     }
   }
