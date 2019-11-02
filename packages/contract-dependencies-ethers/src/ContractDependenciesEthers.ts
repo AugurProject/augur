@@ -50,7 +50,6 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     public readonly provider: EthersProvider,
     public signer?: EthersSigner,
     public readonly address?: string) {
-    if (this.signer && this.address) throw new Error("Must provide only one of signer or address")
   }
 
 
