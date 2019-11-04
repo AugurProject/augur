@@ -189,11 +189,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const greaterLess = side === BUY ? 'greater' : 'less';
     const higherLower = side === BUY ? 'higher' : 'lower';
 
-    const marketRange = maxPrice.minus(minPrice).abs();
+    const marketRange = createBigNumber(maxPrice).minus(createBigNumber(minPrice)).abs();
 
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)
-      : maxPrice.minus(createBigNumber(limitPrice))
+      : createBigNumber(maxPrice).minus(createBigNumber(limitPrice))
     )
       .dividedBy(marketRange)
       .times(100)

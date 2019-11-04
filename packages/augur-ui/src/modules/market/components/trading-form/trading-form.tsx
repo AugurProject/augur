@@ -38,6 +38,8 @@ interface TradingFormProps {
   loginModal: Function;
   signupModal: Function;
   currentTimestamp: Number;
+  tradingTutorial?: boolean;
+  addPendingOrder: Function;
 }
 
 interface TradingFormState {
@@ -109,7 +111,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       addFundsModal,
       loginModal,
       signupModal,
-      currentTimestamp
+      currentTimestamp,
+      tradingTutorial,
+      addPendingOrder
     } = this.props;
     const s = this.state;
 
@@ -156,6 +160,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
           orderBook={orderBook}
+          tradingTutorial={tradingTutorial}
+          addPendingOrder={addPendingOrder}
         />
         {initialMessage && (
           <div>

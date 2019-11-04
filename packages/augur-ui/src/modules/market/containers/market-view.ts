@@ -30,7 +30,9 @@ const mapStateToProps = (state, ownProps) => {
   if (tradingTutorial) {
     market = {
       ...deepClone<NewMarket>(EMPTY_STATE),
+      id: TRADING_TUTORIAL,
       description: 'Which NFL team will win?',
+      numOutcomes: 3,
       orderBook: {
         2: [
           {
