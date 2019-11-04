@@ -120,9 +120,10 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       },
       chart: {
         type: 'candlestick',
-        followTouchMove: false,
-        panning: isMobile,
-        styledMode: false,
+        followTouchMove: true,
+        panning: true,
+        zoomType: 'xy',
+        panKey: 'shift',
         animation: false,
         spacing: [10, 8, 10, 0],
       },
