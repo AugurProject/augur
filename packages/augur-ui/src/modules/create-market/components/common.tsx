@@ -30,7 +30,7 @@ import {
   CATEGORICAL,
   CATEGORICAL_OUTCOMES_MIN_NUM,
 } from 'modules/common/constants';
-import { buildformattedDate } from 'utils/format-date';
+import { buildformattedDate, convertUnixToFormattedDate } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
   buildMarketDescription,
@@ -765,11 +765,14 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <DatePickerSelector
         onChange={value => {
-          updateData(value);
+          input.setEndTime = value;
+          const stringValue = convertUnixToFormattedDate(Number(value))
+            .formattedSimpleData
+          updateData(stringValue);
         }}
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
-        setEndTime={input.userInput}
+        setEndTime={input.setEndTime}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );

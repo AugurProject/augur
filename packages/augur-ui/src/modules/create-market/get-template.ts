@@ -239,14 +239,9 @@ export const buildMarketDescription = (
   inputs: TemplateInput[]
 ) => {
   inputs.forEach((input: TemplateInput) => {
-    const userInputFormatted =
-      input.type === TemplateInputType.DATEYEAR
-        ? convertUnixToFormattedDate(Number(input.userInput))
-            .formattedSimpleData
-        : input.userInput;
     question = question.replace(
       `[${input.id}]`,
-      `${input.userInput ? userInputFormatted : `[${input.placeholder}]`}`
+      `${input.userInput || `[${input.placeholder}]`}`
     );
   });
 

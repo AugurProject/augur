@@ -42,7 +42,10 @@ export interface UserInputText {
   value: string;
 }
 
-export interface UserInputDateYear extends UserInputText {}
+export interface UserInputDateYear extends UserInputText {
+  setEndTime: number;
+}
+
 export interface UserInputDateTime {
   endTime: number;
   hour?: number;
