@@ -20,8 +20,7 @@
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
     "@augurproject/ethersjs-provider": "2.0.0-alpha.1",
-    "ethers": "4.0.37",
-    "ethrpc": "6.1.5"
+    "ethers": "4.0.37"
   },
   "devDependencies": {
     "ts-node": "7.0.1"

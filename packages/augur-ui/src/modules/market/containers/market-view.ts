@@ -96,6 +96,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  hotloadMarket: marketId => hotloadMarket(marketId),
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
