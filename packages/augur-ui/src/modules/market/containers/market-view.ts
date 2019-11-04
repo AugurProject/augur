@@ -19,6 +19,8 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
+import { formatDai, formatShares } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -28,7 +30,27 @@ const mapStateToProps = (state, ownProps) => {
   if (tradingTutorial) {
     market = {
       ...deepClone<NewMarket>(EMPTY_STATE),
-      description: 'Which NFL team will win?'
+      description: 'Which NFL team will win?',
+      orderBook: {
+        2: [
+          {
+            avgPrice: formatDai(.3),
+            cumulativeShares: "1"
+            id: 1
+            mySize: "1"
+            orderEstimate: createBigNumber(.3),
+            outcomeId: 2
+            outcomeName: "Yes"
+            price: "0.3"
+            quantity: "1"
+            shares: "1"
+            sharesEscrowed: formatShares(.3),
+            tokensEscrowed: formatDai(.3),
+            type: "buy"
+            unmatchedShares: formatShares(.3)
+          }
+        ]
+      }
     };
   } else {
     market = ownProps.market || selectMarket(marketId)

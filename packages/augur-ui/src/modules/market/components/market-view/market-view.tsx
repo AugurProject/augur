@@ -636,7 +636,7 @@ export default class MarketView extends Component<
                         extend={extendOrderBook}
                         hide={extendTradeHistory}
                         market={market}
-                        initialLiquidity={preview}
+                        initialLiquidity={preview && !tradingTutorial}
                       />
                       {tradingTutorial && tutorialStep === 3 && (
                         <TutorialPopUp right next={this.next} back={this.back} />
