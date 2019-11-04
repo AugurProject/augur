@@ -10,7 +10,6 @@ import {
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
-import { convertUnixToFormattedDate } from 'utils/format-date';
 import { NameValuePair } from 'modules/portfolio/types';
 import {
   TEMPLATES,
