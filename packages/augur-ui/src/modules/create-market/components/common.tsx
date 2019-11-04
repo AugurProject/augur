@@ -266,7 +266,7 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
   <div className={Styles.ExplainerBlock}>
     <h2>{props.title}</h2>
     {props.subtexts.map((subtext, index) => (
-      <p key={index}>{subtext}</p>
+      <li key={index}>{subtext}</li>
     ))}
   </div>
 );
