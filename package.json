@@ -89,7 +89,8 @@
     ]
   },
   "resolutions": {
-    "**/sha3": "2.0.1"
+    "**/sha3": "2.0.1",
+    "**/leveldown": "5.4.1"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"
