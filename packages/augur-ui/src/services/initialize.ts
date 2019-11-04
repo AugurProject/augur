@@ -9,7 +9,4 @@ export const connect = async (env: EnvObject, callback: NodeStyleCallback = logE
   const account = undefined;
   const sdk = await augurSdk.makeApi(new JsonRpcProvider(env["ethereum-node"].http), account, signer, env, signerNetworkId, false);
   callback(null, sdk);
-
-  // temporarily used to generate template validations
-  //window.genTemplate = generateTemplateValidations
 };

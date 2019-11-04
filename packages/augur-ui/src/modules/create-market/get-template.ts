@@ -19,8 +19,7 @@ import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { NameValuePair } from 'modules/portfolio/types';
-import { TEMPLATES } from 'modules/create-market/templates';
-import { TEMPLATE_VALIDATIONS } from './template-validations';
+import { TEMPLATES, TEMPLATE_VALIDATIONS } from '@augurproject/artifacts';
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;

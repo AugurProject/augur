@@ -50,8 +50,8 @@ const addTemplates = (category, validations) => {
   }
   if (category.templates) {
     category.templates.map(t => {
-      const hash = generateTemplateHash(t);
-      t[hash] = hash;
+      const hashValue = generateTemplateHash(t);
+      t.hash = hashValue;
       const question = t.question;
       let regexMarketTitle = t.question;
       t.inputs.map((i: TemplateInput) => {
@@ -65,7 +65,7 @@ const addTemplates = (category, validations) => {
           }
         }
       });
-      validations[hash] = {
+      validations[hashValue] = {
         templateValidation: regexMarketTitle,
       };
     });
