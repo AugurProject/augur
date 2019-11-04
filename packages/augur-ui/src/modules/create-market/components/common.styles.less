@@ -223,7 +223,7 @@
 
     color: @color-primary-text;
   }
-  
+
   > span:nth-of-type(2) {
     .text-14-medium;
 
@@ -293,7 +293,8 @@
     margin-bottom: @size-8;
   }
 
-  > p {
+  > p,
+  > li {
     .text-14;
 
     color: @color-secondary-text;
@@ -305,7 +306,8 @@
     }
   }
 
-  > p:not(:last-of-type) {
+  > p:not(:last-of-type),
+  > li:not(:last-of-type) {
     margin-bottom: @size-8;
   }
 }
@@ -383,7 +385,7 @@
       flex-direction: column;
       min-width: 280px;
 	  margin-right: @size-22;
-	  
+
       > span:first-of-type {
         .text-14-medium;
 
@@ -411,12 +413,12 @@
       justify-content: center;
       align-items: center;
       margin-top: @size-6;
-  
+
       > div {
         margin-right: @size-4;
       }
     }
-  } 
+  }
 }
 
 .QuestionBuilder {
