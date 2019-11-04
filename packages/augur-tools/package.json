@@ -48,7 +48,6 @@
     "ethjs-provider-http": "0.1.6",
     "ethjs-query": "0.3.8",
     "ethjs-signer": "0.1.1",
-    "ethrpc": "6.1.5",
     "lodash": "4.17.15",
     "options-parser": "0.4.0",
     "tsyringe": "^3.2.0"
