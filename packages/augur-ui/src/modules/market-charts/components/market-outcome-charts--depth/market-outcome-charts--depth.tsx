@@ -72,7 +72,7 @@ export default class MarketOutcomeDepth extends Component<
   MarketOutcomeDepthState
 > {
   static defaultProps = {
-    hoveredPrice: null
+    hoveredPrice: null,
   };
 
   depthChart: any;
@@ -93,6 +93,7 @@ export default class MarketOutcomeDepth extends Component<
     this.drawDepth = this.drawDepth.bind(this);
     this.drawCrosshairs = this.drawCrosshairs.bind(this);
     this.handleZoom = this.handleZoom.bind(this);
+    this.handleResize = this.handleResize.bind(this);
     this.determineDrawParams = this.determineDrawParams.bind(this);
   }
 
@@ -118,42 +119,47 @@ export default class MarketOutcomeDepth extends Component<
       hasOrders,
       zoom: this.state.zoom,
     });
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   }
 
   UNSAFE_componentWillUpdate(nextProps, nextState) {
-    const {
-      hoveredPrice,
-      marketDepth,
-      orderBookKeys,
-    } = this.props;
+    const { hoveredPrice, marketDepth, orderBookKeys } = this.props;
     const oldZoom = this.state.zoom;
     const { zoom } = nextState;
     const { containerHeight, containerWidth } = this;
     const curMarketDepth = JSON.stringify(marketDepth);
     const nextMarketDepth = JSON.stringify(nextProps.marketDepth);
+    const handleChartDraw = () => this.drawDepth({
+      marketDepth: nextProps.marketDepth,
+      orderBookKeys: nextProps.orderBookKeys,
+      pricePrecision: nextProps.pricePrecision,
+      marketMin: nextProps.marketMin,
+      marketMax: nextProps.marketMax,
+      updateHoveredPrice: nextProps.updateHoveredPrice,
+      updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
+      hasOrders: nextProps.hasOrders,
+      zoom,
+    });
     if (
       curMarketDepth !== nextMarketDepth ||
       JSON.stringify(orderBookKeys) !==
         JSON.stringify(nextProps.orderBookKeys) ||
-      oldZoom !== zoom ||
+      oldZoom !== zoom
+    ) {
+      handleChartDraw();
+    } else if (
       checkResize(
         this.depthChart.clientWidth,
         this.depthChart.clientHeight,
-        containerWidth,
-        containerHeight
+        this.containerWidth,
+        this.containerHeight
       )
     ) {
-      this.drawDepth({
-        marketDepth: nextProps.marketDepth,
-        orderBookKeys: nextProps.orderBookKeys,
-        pricePrecision: nextProps.pricePrecision,
-        marketMin: nextProps.marketMin,
-        marketMax: nextProps.marketMax,
-        updateHoveredPrice: nextProps.updateHoveredPrice,
-        updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
-        hasOrders: nextProps.hasOrders,
-        zoom,
-      });
+      handleChartDraw();
     }
 
     if (
@@ -181,8 +187,10 @@ export default class MarketOutcomeDepth extends Component<
       zoom,
     } = options;
 
-    const containerWidth = this.containerWidth ? this.containerWidth : this.depthChart.clientWidth;
-    const containerHeight = this.containerHeight ? this.containerHeight : this.depthChart.clientHeight;
+    const containerHeight = this.containerHeight
+      ? this.containerHeight
+      : this.depthChart.clientHeight;
+    const containerWidth = this.depthChart.clientWidth;
     this.containerWidth = containerWidth;
     this.containerHeight = containerHeight;
     const drawHeight = containerHeight - CHART_DIM.bottom;
@@ -199,7 +207,7 @@ export default class MarketOutcomeDepth extends Component<
     const xDomainMax = maxDistanceGreater
       ? midPrice.plus(scaledMaxDistance)
       : midPrice.plus(scaledMinDistance);
-  
+
     const yDomainMax = Object.keys(marketDepth)
       .reduce((p, side) => {
         const book = marketDepth[side];
@@ -228,25 +236,25 @@ export default class MarketOutcomeDepth extends Component<
       }, ZERO)
       // .times(1.05)
       .toNumber();
-  
+
     const xDomain = [xDomainMin.toNumber(), xDomainMax.toNumber()];
     const yDomain = [0, yDomainMax];
     const xScale = d3
       .scaleLinear()
       .domain(d3.extent(xDomain))
       .range([CHART_DIM.left, containerWidth - CHART_DIM.right]);
-  
+
     const yScale = d3
       .scaleLinear()
       .clamp(true)
       .domain(d3.extent(yDomain))
       .range([drawHeight, CHART_DIM.top]);
-  
+
     const newMarketDepth = {
       asks: [...marketDepth.asks],
       bids: [...marketDepth.bids],
     };
-  
+
     if (newMarketDepth.asks.length > 0 && marketMax) {
       const askToCopy = newMarketDepth.asks[newMarketDepth.asks.length - 1];
       if (askToCopy[1] !== marketMax.toNumber()) {
@@ -258,7 +266,7 @@ export default class MarketOutcomeDepth extends Component<
         ]);
       }
     }
-  
+
     if (newMarketDepth.bids.length > 0 && marketMin) {
       const bidToCopy = newMarketDepth.bids[newMarketDepth.bids.length - 1];
       if (bidToCopy[1] !== marketMin.toNumber()) {
@@ -308,7 +316,7 @@ export default class MarketOutcomeDepth extends Component<
       this.xScale = drawParams.xScale;
       this.yScale = drawParams.yScale;
       this.drawParams = drawParams;
-      
+
       const depthContainer = new ReactFauxDOM.Element('div');
 
       const depthChart = d3
@@ -373,14 +381,15 @@ export default class MarketOutcomeDepth extends Component<
   drawCrosshairs(options) {
     const { updateHoveredDepth } = this.props;
     if (this.depthChart) {
-      const { hoveredPrice, marketDepth, marketMin, marketMax, drawParams } = options;
-
       const {
-        xScale,
-        yScale,
-        containerHeight,
-        containerWidth,
-      } = this;
+        hoveredPrice,
+        marketDepth,
+        marketMin,
+        marketMax,
+        drawParams,
+      } = options;
+
+      const { xScale, yScale, containerHeight, containerWidth } = this;
 
       if (hoveredPrice == null) {
         d3.select('#crosshairs').style('display', 'none');
@@ -391,8 +400,7 @@ export default class MarketOutcomeDepth extends Component<
           hoveredPrice,
           marketDepth,
           marketMin,
-          marketMax,
-          
+          marketMax
         );
         if (nearestFillingOrder === null) return;
 
@@ -450,6 +458,30 @@ export default class MarketOutcomeDepth extends Component<
         zoom: zoom + direction,
       });
     }
+  }
+
+  handleResize() {
+    const {
+      pricePrecision,
+      marketDepth,
+      marketMax,
+      marketMin,
+      orderBookKeys,
+      updateHoveredPrice,
+      updateSelectedOrderProperties,
+      hasOrders,
+    } = this.props;
+    this.drawDepth({
+      marketDepth,
+      orderBookKeys,
+      pricePrecision,
+      marketMin,
+      marketMax,
+      updateHoveredPrice,
+      updateSelectedOrderProperties,
+      hasOrders,
+      zoom: this.state.zoom,
+    });
   }
 
   render() {
@@ -524,7 +556,7 @@ function nearestCompletelyFillingOrder(
     const price = Number(items[closestIndex][1]);
     if (items[closestIndex][4] === BIDS && price < xDomain[0]) {
       return null;
-    } else if(items[closestIndex][4] === ASKS && price > xDomain[1]) {
+    } else if (items[closestIndex][4] === ASKS && price > xDomain[1]) {
       return null;
     }
   }
@@ -553,14 +585,8 @@ function drawTicks(options) {
     .attr('class', 'bounding-line')
     .attr('x1', 0)
     .attr('x2', drawParams.containerWidth)
-    .attr(
-      'y1',
-      (d, i) => (drawParams.containerHeight - CHART_DIM.bottom) * i
-    )
-    .attr(
-      'y2',
-      (d, i) => (drawParams.containerHeight - CHART_DIM.bottom) * i
-    );
+    .attr('y1', (d, i) => (drawParams.containerHeight - CHART_DIM.bottom) * i)
+    .attr('y2', (d, i) => (drawParams.containerHeight - CHART_DIM.bottom) * i);
 
   //  Midpoint line
   if (hasOrders && marketDepth.bids.length > 0 && marketDepth.asks.length > 0) {
@@ -623,8 +649,7 @@ function drawTicks(options) {
     .attr('id', 'depth-x-axis')
     .attr(
       'transform',
-      `translate( 0, ${drawParams.containerHeight -
-        CHART_DIM.bottom})`
+      `translate( 0, ${drawParams.containerHeight - CHART_DIM.bottom})`
     )
     .call(
       d3
@@ -654,9 +679,7 @@ function drawTicks(options) {
 
   // Draw yAxis Lines
   drawParams.yScale.ticks(tickCount).forEach((tick: number) => {
-    if (
-      tick === drawParams.yScale.ticks(tickCount)[0]
-    ) {
+    if (tick === drawParams.yScale.ticks(tickCount)[0]) {
       return;
     }
     depthChart
