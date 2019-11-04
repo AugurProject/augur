@@ -453,7 +453,8 @@ export default class MarketView extends Component<
 
                       <TradingForm
                         market={market}
-                        initialLiquidity={preview}
+                        initialLiquidity={preview && !initialLiquidity}
+                        tradingTutorial={tradingTutorial}
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcome}
@@ -488,6 +489,7 @@ export default class MarketView extends Component<
                         marketId={tradingTutorial && marketId}
                         market={preview && market}
                         preview={preview}
+                        tradingTutorial={tradingTutorial}
                       />
                     </div>
                   </ModulePane>
@@ -525,7 +527,8 @@ export default class MarketView extends Component<
                         >
                           <TradingForm
                             market={market}
-                            initialLiquidity={preview}
+                            initialLiquidity={preview && !tradingTutorial}
+                            tradingTutorial={tradingTutorial}
                             selectedOrderProperties={selectedOrderProperties}
                             selectedOutcomeId={outcomeId}
                             updateSelectedOutcome={this.updateSelectedOutcome}
@@ -599,6 +602,7 @@ export default class MarketView extends Component<
                               }
                               market={preview && market}
                               preview={preview}
+                              tradingTutorial={tradingTutorial}
                             />
                             {tradingTutorial && tutorialStep === 4 && (
                               <TutorialPopUp
@@ -636,7 +640,7 @@ export default class MarketView extends Component<
                         extend={extendOrderBook}
                         hide={extendTradeHistory}
                         market={market}
-                        initialLiquidity={preview && !tradingTutorial}
+                        initialLiquidity={preview}
                       />
                       {tradingTutorial && tutorialStep === 3 && (
                         <TutorialPopUp right next={this.next} back={this.back} />
