@@ -1,12 +1,14 @@
 import { TEMPLATES } from "modules/create-market/templates";
 import { generateTemplateHash } from "utils/generate-template-hash";
 import { ValidationTemplateInputType, TemplateInputType } from "modules/create-market/constants";
-import { TemplateInput } from "modules/types";
+import { TemplateInput, Template } from "modules/types";
+import deepClone from "utils/deep-clone";
 
 export const generateTemplateValidations = () => {
   let validations = {};
-  const topCategories = Object.keys(TEMPLATES);
-  topCategories.map(c => addTemplates(TEMPLATES[c], validations));
+  let newTemplates = deepClone<Template>(TEMPLATES);
+  const topCategories = Object.keys(newTemplates);
+  topCategories.map(c => addTemplates(newTemplates[c], validations));
   console.log(`export const TEMPLATE_VALIDATIONS=`, JSON.stringify(validations));
 }
 
@@ -17,6 +19,7 @@ const addTemplates = (category, validations) => {
   if(category.templates) {
     category.templates.map(t => {
       const hash = generateTemplateHash(t)
+      t[hash] = hash;
       const question = t.question;
       let regexMarketTitle = t.question;
       t.inputs.map((i: TemplateInput) => {
