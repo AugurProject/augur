@@ -54,5 +54,6 @@ Will dispute a market that has a tentive winning outcome
 
 ## generate templates
 
-If templates or picklists need to change update `templates-template.ts` in augur-tools then run
-`yarn flash run generate-templates` the templates.ts file will get updated in augur-artifacts.
+If templates or picklists need to change, update `templates-template.ts` in augur-tools then run
+`yarn flash run generate-templates`. The templates.ts file will get updated in augur-artifacts.
+

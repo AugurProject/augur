@@ -5,6 +5,8 @@ import {
   TemplateInput,
   ValidationTemplateInputType,
   TemplateInputType,
+  CategoryTemplate,
+  TemplateValidation,
 } from '../templates-template';
 import { TEMPLATES } from '../templates-source';
 
@@ -42,7 +44,7 @@ export const generateTemplateValidations = async () => {
   fs.writeFileSync(templateArtifactsFile, setNewTemplateValidations, 'utf8');
 };
 
-const addTemplates = (category, validations) => {
+const addTemplates = (category: CategoryTemplate, validations: TemplateValidation) => {
   if (category.children) {
     return Object.keys(category.children).map(c =>
       addTemplates(category.children[c], validations)
@@ -72,13 +74,11 @@ const addTemplates = (category, validations) => {
   }
 };
 
+/**
+ * generates a hash based on the template object
+ */
 function generateTemplateHash(template: Template): string {
-  if (!template) return null;
-  const copyOf = JSON.parse(JSON.stringify(template));
-  delete copyOf.example;
-  delete copyOf.hash;
-  copyOf.inputs.map(i => delete i.values);
-  const params = JSON.stringify(copyOf);
+  const params = JSON.stringify(template);
   const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
   return ethers.utils.sha256(value);
 }

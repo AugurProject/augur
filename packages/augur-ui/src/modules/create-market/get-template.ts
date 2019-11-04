@@ -3,9 +3,6 @@ import {
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
   MarketCardTemplate,
-  TemplateInputType,
-  CHOICE,
-  REQUIRED,
 } from 'modules/create-market/constants';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
@@ -19,6 +16,9 @@ import {
   TemplateInput,
   ResolutionRules,
   CategoryTemplate,
+  TemplateInputType,
+  REQUIRED,
+  CHOICE,
 } from '@augurproject/artifacts';
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {

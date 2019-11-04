@@ -14,7 +14,6 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { TemplateInputType, REQUIRED, CHOICE } from 'modules/create-market/constants';
 
 export enum SizeTypes {
   SMALL = 'small',

@@ -22,15 +22,16 @@ import {
   DateFormattedObject,
   NewMarket,
   TimezoneDateObject,
-  Template,
-  UserInputDateTime,
 } from 'modules/types';
 import moment, { Moment } from 'moment';
 import {
   CATEGORICAL,
   CATEGORICAL_OUTCOMES_MIN_NUM,
 } from 'modules/common/constants';
-import { buildformattedDate, convertUnixToFormattedDate } from 'utils/format-date';
+import {
+  buildformattedDate,
+  convertUnixToFormattedDate,
+} from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
   buildMarketDescription,
@@ -39,11 +40,13 @@ import {
   substituteUserOutcome,
 } from 'modules/create-market/get-template';
 import {
+  TemplateInput,
   TemplateInputType,
+  Template,
+  UserInputDateTime,
   CHOICE,
   REQUIRED,
-} from 'modules/create-market/constants';
-import { TemplateInput } from '@augurproject/artifacts';
+} from '@augurproject/artifacts';
 
 export interface HeaderProps {
   text: string;
@@ -333,7 +336,7 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
     currentTimestamp,
     errorMessage,
     placeholder,
-    condensedStyle
+    condensedStyle,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -380,23 +383,30 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     header,
     subheader,
     uniqueKey,
-    condensedStyle
+    condensedStyle,
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
   const [timeFocused, setTimeFocused] = useState(false);
 
   return (
-    <div className={classNames(Styles.DateTimeSelector, {[Styles.Condensed]: condensedStyle})} key={uniqueKey}>
-      {!condensedStyle && <Subheaders
-        header={header ? header : 'Event Expiration date and time'}
-        subheader={
-          subheader
-            ? subheader
-            : 'Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. '
-        }
-        link
-      />}
+    <div
+      className={classNames(Styles.DateTimeSelector, {
+        [Styles.Condensed]: condensedStyle,
+      })}
+      key={uniqueKey}
+    >
+      {!condensedStyle && (
+        <Subheaders
+          header={header ? header : 'Event Expiration date and time'}
+          subheader={
+            subheader
+              ? subheader
+              : 'Choose a date and time that is sufficiently after the end of the event. If event expiration before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. '
+          }
+          link
+        />
+      )}
       <span>
         <DatePicker
           date={setEndTime ? moment(setEndTime * 1000) : null}
@@ -459,19 +469,23 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           condensedStyle={condensedStyle}
         />
       </span>
-      {!condensedStyle && endTimeFormatted && hour && hour !== '' && setEndTime && (
-        <span>
-          <div>
-            <span>Converted to UTC-0:</span>
-            <span>{endTimeFormatted.formattedUtc}</span>
-          </div>
+      {!condensedStyle &&
+        endTimeFormatted &&
+        hour &&
+        hour !== '' &&
+        setEndTime && (
           <span>
-            Augur uses the UTC-0 timezone to standarise times. Ensure the UTC-0
-            time is accurate and does not conflict with the resolution start
-            time.
+            <div>
+              <span>Converted to UTC-0:</span>
+              <span>{endTimeFormatted.formattedUtc}</span>
+            </div>
+            <span>
+              Augur uses the UTC-0 timezone to standarise times. Ensure the
+              UTC-0 time is accurate and does not conflict with the resolution
+              start time.
+            </span>
           </span>
-        </span>
-      )}
+        )}
     </div>
   );
 };
@@ -767,7 +781,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         onChange={value => {
           input.setEndTime = value;
           const stringValue = convertUnixToFormattedDate(Number(value))
-            .formattedSimpleData
+            .formattedSimpleData;
           updateData(stringValue);
         }}
         currentTimestamp={currentTimestamp}
@@ -796,7 +810,9 @@ export const InputFactory = (props: InputFactoryProps) => {
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
             onChange('scalarDenomination', value);
-          } else if (input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME) {
+          } else if (
+            input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+          ) {
             let newOutcomes = outcomes;
             newOutcomes[inputIndex] = value;
             onChange('outcomes', newOutcomes);
@@ -816,10 +832,7 @@ interface SimpleTimeSelectorProps {
 }
 
 export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
-  const {
-    currentTime,
-    onChange,
-  } = props;
+  const { currentTime, onChange } = props;
 
   const [endTime, setEndTime] = useState(null);
   const [hour, setHour] = useState(null);
@@ -913,14 +926,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       : null
   );
   const [hour, setHour] = useState(
-    input.userInput
-      ? (input.userInputObject as UserInputDateTime).hour
-      : null
+    input.userInput ? (input.userInputObject as UserInputDateTime).hour : null
   );
   const [minute, setMinute] = useState(
-    input.userInput
-      ? (input.userInputObject as UserInputDateTime).minute
-      : null
+    input.userInput ? (input.userInputObject as UserInputDateTime).minute : null
   );
   const [meridiem, setMeridiem] = useState(
     input.userInput
@@ -928,9 +937,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       : 'AM'
   );
   const [timezone, setTimezone] = useState(
-    input.userInput
-      ? (input.userInputObject as UserInputDateTime).timezone
-      : ''
+    input.userInput ? (input.userInputObject as UserInputDateTime).timezone : ''
   );
   const [endTimeFormatted, setEndTimeFormatted] = useState(
     input.userInput
@@ -938,9 +945,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       : ''
   );
   const [offset, setOffset] = useState(
-    input.userInput
-      ? (input.userInputObject as UserInputDateTime).offset
-      : 0
+    input.userInput ? (input.userInputObject as UserInputDateTime).offset : 0
   );
   const [offsetName, setOffsetName] = useState(
     input.userInput
@@ -1139,7 +1144,10 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
           value: input.placeholder,
           editable: false,
         };
-      } else if (input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME || input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME) {
+      } else if (
+        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+      ) {
         return {
           value: input.userInput || input.placeholder,
           editable: false,

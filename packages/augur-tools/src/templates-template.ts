@@ -1,4 +1,5 @@
 export const REQUIRED = 'REQUIRED';
+export const CHOICE = 'CHOICE';
 // Market templates
 export const SPORTS = 'Sports';
 export const POLITICS = 'Politics';
@@ -95,6 +96,11 @@ export interface Categories {
   tertiary: string;
 }
 
+export interface TemplateValidation {
+  [hash: string]: {
+    templateValidation: string;
+  }
+}
 export interface Template {
   hash: string;
   categories: Categories;
