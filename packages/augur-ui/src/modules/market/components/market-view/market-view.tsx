@@ -19,6 +19,7 @@ import {
   CATEGORICAL,
   BUY,
   MODAL_TRADING_OVERLAY,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -56,6 +57,7 @@ interface MarketViewProps {
   preview?: boolean;
   sortedOutcomes: OutcomeFormatted[];
   tradingTutorial?: boolean;
+  removePendingOrder: Function;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -275,6 +277,11 @@ export default class MarketView extends Component<
 
   next = () => {
     this.setState({ tutorialStep: this.state.tutorialStep + 1 });
+
+    if (this.state.tutorialStep === 4) {// open orders step 
+      // need to remove pending order and add filled order and position
+      this.props.removePendingOrder("trading-tutorial-pending-order", TRADING_TUTORIAL);
+    }
   };
 
   render() {
@@ -584,8 +591,10 @@ export default class MarketView extends Component<
                             className={classNames(
                               Styles.MarketView__component,
                               {
-                                [Styles.PositionsTutorial]:
+                                [Styles.OpenOrdersTutorial]:
                                   tradingTutorial && tutorialStep === 4,
+                                [Styles.FillsTutorial]:
+                                  tradingTutorial && tutorialStep === 5,
                               }
                             )}
                           >
@@ -604,7 +613,7 @@ export default class MarketView extends Component<
                               preview={preview}
                               tradingTutorial={tradingTutorial}
                             />
-                            {tradingTutorial && tutorialStep === 4 && (
+                            {tradingTutorial && (tutorialStep === 4 || tutorialStep === 5) && (
                               <TutorialPopUp
                                 bottom
                                 next={this.next}

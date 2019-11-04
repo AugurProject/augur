@@ -332,13 +332,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       { 
         ...s.trade, 
         pending: true, 
-        id: s.trade.limitPrice,
+        id: "trading-tutorial-pending-order",
         type: s.trade.selectedNav,
-        avgPrice: formatNumber(s.trade.limitPrice),
+        avgPrice: formatDai(s.trade.limitPrice),
         outcomeName: "Yes",
-        unmatchedShares: formatNumber(s.trade.numShares),
-        tokensEscrowed: formatNumber(0),
-        sharesEscrowed: formatNumber(0),
+        unmatchedShares: formatShares(s.trade.numShares),
+        tokensEscrowed: formatShares(0),
+        sharesEscrowed: formatShares(0),
         creationTime: 0
       },
       market.id
