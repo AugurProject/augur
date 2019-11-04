@@ -4,10 +4,10 @@ import {
   NEXT,
   MARKET_TYPE,
   TEMPLATE_PICKER,
-  TEMPLATE_FORM_DETAILS,
   LiquidityContent,
   ReviewContent,
   EventDetailsContent,
+  EventDetailsContentTemplate,
 } from 'modules/create-market/constants';
 
 function checkValid(data) {
@@ -37,7 +37,7 @@ export const TEMPLATE_CONTENT_PAGES = [
     secondButton: NEXT,
     disabledFunction: newMarket => checkValid(newMarket.template),
   },
-  EventDetailsContent(`template`),
+  EventDetailsContent(EventDetailsContentTemplate),
   LiquidityContent,
   ReviewContent,
 ];

@@ -82,6 +82,7 @@ export const EMPTY_STATE: NewMarket = {
   initialLiquidityGas: ZERO,
 };
 
+export const EventDetailsContentTemplate = `template`;
 export const EventDetailsContent = (type = `custom`) => ({
   title: 'Event details',
   largeHeader: `Create a ${type} market`,
@@ -98,7 +99,7 @@ export const EventDetailsContent = (type = `custom`) => ({
     'If it’s an index and the indexes full name is not in the market question.',
     'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
   ],
-  mainContent: FORM_DETAILS,
+  mainContent: type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
   firstButton: BACK,
   secondButton: NEXT,
   useBullets: true
