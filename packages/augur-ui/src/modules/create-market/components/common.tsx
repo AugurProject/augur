@@ -259,15 +259,20 @@ export const OutcomesList = (props: OutcomesListProps) => (
 
 export interface ExplainerBlockProps {
   title: string;
-  subtexts: Array<string>;
+  subtexts: string[];
+  useBullets: boolean;
 }
 
 export const ExplainerBlock = (props: ExplainerBlockProps) => (
   <div className={Styles.ExplainerBlock}>
     <h2>{props.title}</h2>
-    {props.subtexts.map((subtext, index) => (
-      <li key={index}>{subtext}</li>
-    ))}
+    {props.subtexts.map((subtext, index) => {
+      return props.useBullets ? (
+        <li key={index}>{subtext}</li>
+      ) : (
+        <p key={index}>{subtext}</p>
+      );
+    })}
   </div>
 );
 

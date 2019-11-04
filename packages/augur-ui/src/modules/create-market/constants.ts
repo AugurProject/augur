@@ -82,9 +82,9 @@ export const EMPTY_STATE: NewMarket = {
   initialLiquidityGas: ZERO,
 };
 
-export const EventDetailsContent = {
+export const EventDetailsContent = (type = `custom`) => ({
   title: 'Event details',
-  largeHeader: 'Create a custom market',
+  largeHeader: `Create a ${type} market`,
   explainerBlockTitle: 'A market is invalid if:',
   explainerBlockSubtexts: [
     'The market question is subjective in nature.',
@@ -101,7 +101,8 @@ export const EventDetailsContent = {
   mainContent: FORM_DETAILS,
   firstButton: BACK,
   secondButton: NEXT,
-};
+  useBullets: true
+});
 
 export const LiquidityContent = {
   title: 'Fees & liquidity',
@@ -126,7 +127,7 @@ export const ReviewContent = {
 };
 
 export const CUSTOM_CONTENT_PAGES = [
-  EventDetailsContent,
+  EventDetailsContent(),
   LiquidityContent,
   ReviewContent,
 ];

@@ -656,6 +656,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       noDarkBackground,
       previewButton,
       disabledFunction,
+      useBullets
     } = contentPages[currentStep];
 
     let savedDraft = drafts[uniqueId];
@@ -728,6 +729,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               <ExplainerBlock
                 title={explainerBlockTitle}
                 subtexts={explainerBlockSubtexts}
+                useBullets={useBullets}
               />
             )}
             <ContentBlock noDarkBackground={noDarkBackground}>

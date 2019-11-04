@@ -37,7 +37,7 @@ export const TEMPLATE_CONTENT_PAGES = [
     secondButton: NEXT,
     disabledFunction: newMarket => checkValid(newMarket.template),
   },
-  EventDetailsContent,
+  EventDetailsContent(`template`),
   LiquidityContent,
   ReviewContent,
 ];
