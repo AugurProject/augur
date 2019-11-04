@@ -7,19 +7,20 @@ import {
   CHOICE,
   REQUIRED,
 } from 'modules/create-market/constants';
-import {
-  CategoryTemplate,
-  Categories,
-  Template,
-  TemplateInput,
-  ResolutionRules,
-} from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { NameValuePair } from 'modules/portfolio/types';
-import { TEMPLATES, TEMPLATE_VALIDATIONS } from '@augurproject/artifacts';
+import {
+  TEMPLATES,
+  TEMPLATE_VALIDATIONS,
+  Categories,
+  Template,
+  TemplateInput,
+  ResolutionRules,
+  CategoryTemplate,
+} from '@augurproject/artifacts';
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
@@ -341,4 +342,4 @@ export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
   const validation = TEMPLATE_VALIDATIONS[hash];
   if (!validation || !validation.templateValidation) return false;
   return !!marketTitle.match(validation.templateValidation);
-}
+};

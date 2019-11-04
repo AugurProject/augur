@@ -22,7 +22,6 @@ import {
   DateFormattedObject,
   NewMarket,
   TimezoneDateObject,
-  TemplateInput,
   Template,
   UserInputDateTime,
 } from 'modules/types';
@@ -44,6 +43,7 @@ import {
   CHOICE,
   REQUIRED,
 } from 'modules/create-market/constants';
+import { TemplateInput } from '@augurproject/artifacts';
 
 export interface HeaderProps {
   text: string;

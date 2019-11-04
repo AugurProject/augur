@@ -56,6 +56,14 @@ export interface UserInputDateTime {
 export interface UserInputDropdown extends UserInputText {}
 export interface UserInputUserOutcome extends UserInputText {}
 
+export interface TemplateChildren {
+  [category: string]: CategoryTemplate;
+}
+
+export interface CategoryTemplate {
+  templates: Template[];
+  children: TemplateChildren;
+}
 
 export type UserInputtedType =
   | UserInputText
