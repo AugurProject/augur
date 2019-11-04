@@ -24,12 +24,8 @@ const mapStateToProps = (state, ownProps) => {
     });
   }
 
-  if (ownProps.tradingTutorial) {
-    const { pendingOrders } = state;
-    openOrders = [];
-    Object.values(pendingOrders[TRADING_TUTORIAL] || {}).map(outcome => {
-      openOrders = openOrders.concat(outcome);
-    });
+  if (ownProps.tradingTutorial && ownProps.orders) {
+    openOrders = ownProps.orders;
   }
 
   return {

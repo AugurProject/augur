@@ -28,8 +28,7 @@ import {
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
-  MOBILE_MENU_STATES,
-  MODAL_TRADING_TUTORIAL
+  MOBILE_MENU_STATES
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
@@ -145,34 +144,28 @@ export default class AppView extends Component<AppProps> {
         useWeb3Transport,
       },
       (err: any, res: any) => {
-        // if (err || (res && !res.ethereumNode) || res) {
-        //   updateModal({
-        //     type: MODAL_NETWORK_CONNECT,
-        //     isInitialConnection: true,
-        //   });
-        // }
+        if (err || (res && !res.ethereumNode) || res) {
+          updateModal({
+            type: MODAL_NETWORK_CONNECT,
+            isInitialConnection: true,
+          });
+        }
       }
     );
+    const currentPath = parsePath(location.pathname)[0];
+    updateCurrentBasePath(currentPath);
 
-    updateModal({
-      type: MODAL_TRADING_TUTORIAL,
-      isInitialConnection: true,
-    });
-
-    // const currentPath = parsePath(location.pathname)[0];
-    // updateCurrentBasePath(currentPath);
-
-    // this.changeMenu(currentPath);
+    this.changeMenu(currentPath);
   }
 
   componentDidMount() {
-    // window.addEventListener('resize', this.handleWindowResize);
+    window.addEventListener('resize', this.handleWindowResize);
 
-    // // Restyle all scrollbars on windows
-    // if (isWindows()) {
-    //   document.body.classList.add('App--windowsScrollBars');
-    // }
-    // this.checkIsMobile();
+    // Restyle all scrollbars on windows
+    if (isWindows()) {
+      document.body.classList.add('App--windowsScrollBars');
+    }
+    this.checkIsMobile();
   }
 
   UNSAFE_componentWillReceiveProps(nextProps: AppProps) {

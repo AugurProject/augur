@@ -36,6 +36,7 @@ import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { SquareDropdown } from 'modules/common/selection';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
+import { formatShares, formatDai } from 'utils/format-number';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -278,9 +279,8 @@ export default class MarketView extends Component<
   next = () => {
     this.setState({ tutorialStep: this.state.tutorialStep + 1 });
 
-    if (this.state.tutorialStep === 4) {// open orders step 
-      // need to remove pending order and add filled order and position
-      this.props.removePendingOrder("trading-tutorial-pending-order", TRADING_TUTORIAL);
+    if (this.state.tutorialStep === 4) {
+      // open orders step - need to send an alert
     }
   };
 
@@ -333,6 +333,21 @@ export default class MarketView extends Component<
 
     const cat5 = this.findType();
     const defaultOutcome = outcome ? outcome.id : 2;
+
+    let orders = null;
+    if (tradingTutorial && tutorialStep === 4) {
+      orders = [{
+        pending: true, 
+        id: "trading-tutorial-pending-order",
+        type: 'buy',
+        avgPrice: formatDai(.4),
+        outcomeName: "Yes",
+        unmatchedShares: formatShares(100),
+        tokensEscrowed: formatShares(0),
+        sharesEscrowed: formatShares(0),
+        creationTime: 0
+      }];
+    }
 
     return (
       <div
@@ -497,6 +512,7 @@ export default class MarketView extends Component<
                         market={preview && market}
                         preview={preview}
                         tradingTutorial={tradingTutorial}
+                        orders={orders}
                       />
                     </div>
                   </ModulePane>
@@ -612,6 +628,7 @@ export default class MarketView extends Component<
                               market={preview && market}
                               preview={preview}
                               tradingTutorial={tradingTutorial}
+                              orders={orders}
                             />
                             {tradingTutorial && (tutorialStep === 4 || tutorialStep === 5) && (
                               <TutorialPopUp

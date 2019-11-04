@@ -327,24 +327,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     );
   }
 
-  fakeTrade = (market, selectedOutcome, s) => {
-    this.props.addPendingOrder(
-      { 
-        ...s.trade, 
-        pending: true, 
-        id: "trading-tutorial-pending-order",
-        type: s.trade.selectedNav,
-        avgPrice: formatDai(s.trade.limitPrice),
-        outcomeName: "Yes",
-        unmatchedShares: formatShares(s.trade.numShares),
-        tokensEscrowed: formatShares(0),
-        sharesEscrowed: formatShares(0),
-        creationTime: 0
-      },
-      market.id
-    );
-  };
-
   placeMarketTrade(market, selectedOutcome, s) {
     this.props.onSubmitPlaceTrade(
       market.id,
@@ -581,7 +563,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else if (tradingTutorial) {
-                this.fakeTrade(market, selectedOutcome, s);
                 this.clearOrderForm();
               } else {
                 if (disclaimerSeen) {
