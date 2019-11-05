@@ -1,22 +1,11 @@
-import { LIST_VALUES } from './template-list-values';
 import {
-  POLITICS,
-  US_POLITICS,
-  TemplateInputType,
-  WORLD,
-  FINANCE,
-  ValidationType,
-  ENTERTAINMENT,
-  CRYPTO,
-  BITCOIN,
-  USD,
-  USDT,
-  EUR,
-  ETHEREUM,
-  LITECOIN,
   SPORTS,
   GOLF,
+  TemplateInputType,
+  LIST_VALUES,
+  REQUIRED,
   HOCKEY,
+  ValidationType,
   HORSE_RACING,
   TENNIS,
   SOCCER,
@@ -26,11 +15,25 @@ import {
   BASEBALL,
   AMERICAN_FOOTBALL,
   NFL,
-  REQUIRED,
+  POLITICS,
+  US_POLITICS,
+  WORLD,
+  FINANCE,
   STOCKS,
   INDEXES,
-} from 'modules/create-market/constants';
-import { YES_NO, CATEGORICAL, SCALAR } from 'modules/common/constants';
+  ENTERTAINMENT,
+  CRYPTO,
+  BITCOIN,
+  USD,
+  USDT,
+  EUR,
+  ETHEREUM,
+  LITECOIN,
+} from './templates-template';
+
+const YES_NO = 'YesNo';
+const CATEGORICAL = 'Categorical'
+const SCALAR = 'Scalar'
 
 export const TEMPLATES = {
   [SPORTS]: {
@@ -38,7 +41,6 @@ export const TEMPLATES = {
       [GOLF]: {
         templates: [
           {
-            hash: `0xb11764bcd6054968fa75a3b0fd55aa7031101315321edcbfb200f869cf66b6ee`,
             marketType: YES_NO,
             question: `Will [0] win the [1] [2]?`,
             example: `Will Tiger Woods win the 2020 PGA Championship?`,
@@ -70,7 +72,6 @@ export const TEMPLATES = {
             },
           },
           {
-            hash: `0xc9d0483f3d82cf535c9e58fc9e190bc4c507950dc28609df31c27ee58b42694f`,
             marketType: YES_NO,
             question: `Will [0] make the cut at the [1] [2]?`,
             example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
@@ -102,7 +103,6 @@ export const TEMPLATES = {
             },
           },
           {
-            hash: `0x084b594dc549099e066b9733e9bb1c4ef5067851b8bb08d7733614e484e09369`,
             marketType: CATEGORICAL,
             question: `Which golfer will win the [0] [1]?`,
             example: `Which golfer will win the 2020 PGA Championship?`,
@@ -132,7 +132,6 @@ export const TEMPLATES = {
       [HOCKEY]: {
         templates: [
           {
-            hash: `0xea0b6b5eb2e16392fd2b17bb7f0c761b13e7b40a35d87e7702109dc7a0a6bbbd`,
             marketType: YES_NO,
             question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
             example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
@@ -156,7 +155,6 @@ export const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            hash: `0x6e8b9ded9bc2706356452eba9682ae7c0eae61f067a6311e015bcdc739b674a7`,
             marketType: YES_NO,
             question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
             example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
@@ -193,7 +191,6 @@ export const TEMPLATES = {
             },
           },
           {
-            hash: `0x2240793e8bc7080ec1f2489b82fe33cb3c3e5d06defd9752681996498a7a2620`,
             marketType: YES_NO,
             question: `Will the [0] win the [1] Stanley Cup?`,
             example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup?`,
@@ -213,7 +210,6 @@ export const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            hash: `0xc828397abfe32a946d82e4a605f465a979dcb698f8846ba4d759b8aad1427ed5`,
             marketType: CATEGORICAL,
             question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
             example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
@@ -251,7 +247,6 @@ export const TEMPLATES = {
             },
           },
           {
-            hash: `0x8046e1128dc30571a3c8680c40927b4cde8e3d0af9ae05e678d1b722f2099fbe`,
             marketType: CATEGORICAL,
             question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
             example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
@@ -302,7 +297,6 @@ export const TEMPLATES = {
             },
           },
           {
-            hash: `0xf0cae533cd96f75ef69a4a184faa958d043e3c992eb7538bca7649cf6911ecb0`,
             marketType: CATEGORICAL,
             question: `Which NHL team will win the [0] Stanley Cup?`,
             example: `Which NHL team will win the 2019-2020 Stanley Cup?`,
@@ -322,7 +316,6 @@ export const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            hash: `0x5725d708831ed60c02f8444e17dc9ef3942ee173e0f8b2ac6b5b6897eb33aaf7`,
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1]?`,
             example: `Which NHL player will win the 2019-2020 Calder Trophy?`,
@@ -348,7 +341,6 @@ export const TEMPLATES = {
             resolutionRules: {},
           },
           {
-            hash: `0xa1dfe1a7dcc8af56aed57c3dc0be4520854c4d6c94946f0a6d5a4a512b293536`,
             marketType: SCALAR,
             question: `Total number of wins the [0] will finish [1] regular season with?`,
             example: `Total number of wins the LA Kings will finish 2019-2020 regular season with?`,

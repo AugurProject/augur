@@ -1,8 +1,9 @@
-import { INVALID_OUTCOME, ValidationType, TemplateInputType } from 'modules/create-market/constants';
+import { INVALID_OUTCOME } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
+import { ValidationType, TemplateInputType } from '@augurproject/artifacts';
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== '') return '';

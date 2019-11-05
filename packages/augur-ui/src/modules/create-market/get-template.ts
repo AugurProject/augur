@@ -3,24 +3,23 @@ import {
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
   MarketCardTemplate,
-  TemplateInputType,
-  CHOICE,
-  REQUIRED,
 } from 'modules/create-market/constants';
+import deepClone from 'utils/deep-clone';
+import { Getters } from '@augurproject/sdk';
+import { formatDai } from 'utils/format-number';
+import { NameValuePair } from 'modules/portfolio/types';
 import {
-  CategoryTemplate,
+  TEMPLATES,
+  TEMPLATE_VALIDATIONS,
   Categories,
   Template,
   TemplateInput,
   ResolutionRules,
-} from 'modules/types';
-import deepClone from 'utils/deep-clone';
-import { Getters } from '@augurproject/sdk';
-import { formatDai } from 'utils/format-number';
-import { convertUnixToFormattedDate } from 'utils/format-date';
-import { NameValuePair } from 'modules/portfolio/types';
-import { TEMPLATES } from 'modules/create-market/templates';
-import { TEMPLATE_VALIDATIONS } from './template-validations';
+  CategoryTemplate,
+  TemplateInputType,
+  REQUIRED,
+  CHOICE,
+} from '@augurproject/artifacts';
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
@@ -239,14 +238,9 @@ export const buildMarketDescription = (
   inputs: TemplateInput[]
 ) => {
   inputs.forEach((input: TemplateInput) => {
-    const userInputFormatted =
-      input.type === TemplateInputType.DATEYEAR
-        ? convertUnixToFormattedDate(Number(input.userInput))
-            .formattedSimpleData
-        : input.userInput;
     question = question.replace(
       `[${input.id}]`,
-      `${input.userInput ? userInputFormatted : `[${input.placeholder}]`}`
+      `${input.userInput || `[${input.placeholder}]`}`
     );
   });
 
@@ -342,4 +336,4 @@ export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
   const validation = TEMPLATE_VALIDATIONS[hash];
   if (!validation || !validation.templateValidation) return false;
   return !!marketTitle.match(validation.templateValidation);
-}
+};

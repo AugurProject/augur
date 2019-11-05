@@ -14,7 +14,6 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { TemplateInputType, REQUIRED, CHOICE } from 'modules/create-market/constants';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -729,32 +728,6 @@ export interface SortedGroup {
   autoCompleteList?: Array<SortedGroup>;
 }
 
-
-export interface UserInputText {
-  value: string;
-}
-
-export interface UserInputDateYear extends UserInputText {}
-export interface UserInputDateTime {
-  endTime: number;
-  hour?: number;
-  minute?: number;
-  meridiem: string;
-  timezone: string;
-  offset: number;
-  offsetName: string;
-  endTimeFormatted: TimezoneDateObject;
-}
-export interface UserInputDropdown extends UserInputText {}
-export interface UserInputUserOutcome extends UserInputText {}
-
-export type UserInputtedType =
-  | UserInputText
-  | UserInputDateYear
-  | UserInputDateTime
-  | UserInputDropdown
-  | UserInputUserOutcome;
-
 export interface CategoryList {
   [category: string]: [
     {
@@ -765,52 +738,4 @@ export interface CategoryList {
       ];
     }
   ];
-}
-export interface TemplateChildren {
-  [category: string]: CategoryTemplate;
-}
-
-export interface CategoryTemplate {
-  templates: Template[];
-  children: TemplateChildren;
-}
-
-export interface ResolutionRule {
-  text: string;
-  isSelected?: boolean;
-}
-
-export interface ResolutionRules {
-  [REQUIRED]?: ResolutionRule[];
-  [CHOICE]?: ResolutionRule[];
-}
-
-export interface Template {
-  hash: string;
-  categories: Categories;
-  marketType: string;
-  question: string;
-  example: string;
-  inputs: TemplateInput[];
-  resolutionRules: ResolutionRules;
-  denomination?: string;
-  tickSize?: number;
-}
-
-export interface TemplateInput {
-  id: number;
-  type: TemplateInputType;
-  placeholder: string;
-  label?: string;
-  tooltip?: string;
-  userInput?: string;
-  userInputObject?: UserInputtedType;
-  values?: ValueLabelPair[];
-  sublabel?: string;
-}
-
-export interface Categories {
-  primary: string;
-  secondary: string;
-  tertiary: string;
 }
