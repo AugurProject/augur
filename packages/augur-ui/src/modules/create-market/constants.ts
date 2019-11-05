@@ -12,6 +12,30 @@ import {
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
+import {
+  SPORTS,
+  POLITICS,
+  FINANCE,
+  ENTERTAINMENT,
+  CRYPTO,
+  SOCCER,
+  AMERICAN_FOOTBALL,
+  BASEBALL,
+  GOLF,
+  BASKETBALL,
+  TENNIS,
+  HOCKEY,
+  HORSE_RACING,
+  NFL,
+  NCAA,
+  US_POLITICS,
+  WORLD,
+  STOCKS,
+  INDEXES,
+  BITCOIN,
+  ETHEREUM,
+  LITECOIN,
+} from '@augurproject/artifacts';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -145,47 +169,12 @@ export const MARKET_TYPE_NAME = {
   [CATEGORICAL]: 'Categorical',
 };
 
-export const REQUIRED = 'REQUIRED';
-export const CHOICE = 'CHOICE';
-// Market templates
-export const SPORTS = 'Sports';
-export const POLITICS = 'Politics';
-export const FINANCE = 'Finance';
-export const ENTERTAINMENT = 'Entertainment';
-export const CRYPTO = 'Crypto';
-export const USD = 'USD';
-export const USDT = 'USDT';
-export const EUR = 'EUR';
-
 // Market Subtemplates
-export const SOCCER = 'Soccer';
-export const AMERICAN_FOOTBALL = 'American Football';
-export const BASEBALL = 'Baseball';
-export const GOLF = 'Golf';
-export const BASKETBALL = 'Basketball';
-export const TENNIS = 'Tennis';
-export const HOCKEY = 'Hockey';
-export const HORSE_RACING = 'Horse Racing';
-export const US_ELECTIONS = 'US Elections';
-export const US_POLITICS = 'US Politics';
-export const WORLD = 'World';
-export const STOCKS = 'Stocks';
-export const COMMONDITIES = 'Commondities';
-export const INDEXES = 'Indexes';
 export const AWARDS = 'Awards';
 export const MOVIES = 'Movies';
 export const MUSIC = 'Music';
 export const TV = 'TV';
-export const BITCOIN = 'Bitcoin';
-export const ETHEREUM = 'Ethereum';
-export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
-export const BTC = 'BTC';
-export const ETH = 'ETH';
-export const LTC = 'LTC';
-export const NBA = 'NBA';
-export const NCAA = 'NCAA';
-export const NFL = 'NFL';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -294,12 +283,6 @@ export const MARKET_SUB_TEMPLATES = {
     },
   ],
   [POLITICS]: [
-    {
-      value: US_ELECTIONS,
-      header: US_ELECTIONS,
-      description: defaultDescription,
-      icon: icons.USElections,
-    },
     {
       value: US_POLITICS,
       header: US_POLITICS,
@@ -522,28 +505,4 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Template inputs',
     checkUserInputFilled: true,
   },
-};
-
-export enum TemplateInputType {
-  TEXT = 'TEXT',
-  DATEYEAR = 'DATEYEAR',
-  DATETIME = 'DATETIME',
-  DROPDOWN = 'DROPDOWN',
-  DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN',
-  ADDED_OUTCOME = 'ADDED_OUTCOME',
-  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
-  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
-  USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME',
-}
-
-export enum ValidationType {
-  WHOLE_NUMBER = 'WHOLE_NUMBER',
-  NUMBER = 'NUMBER',
-}
-
-export const ValidationTemplateInputType = {
-  [TemplateInputType.TEXT]: `(.*)`,
-  [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
-  [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
-  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`
 };

@@ -4,6 +4,7 @@ export const Addresses: AllContractAddresses = require('./addresses.json');
 export const Contracts = require('./contracts.json');
 export const UploadBlockNumbers: UploadBlockNumbers = require('./upload-block-numbers.json');
 export const Networks = require('./networks.json');
+export * from './templates';
 export { ContractEvents } from './events';
 
 import { exists, readFile, writeFile } from 'async-file';
