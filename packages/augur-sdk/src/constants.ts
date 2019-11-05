@@ -150,6 +150,18 @@ export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(36
 
 export const GENESIS = 'Genesis';
 
+export enum MarketReportingStateByNum {
+  'PreReporting',
+  'DesignatedReporting',
+  'OpenReporting',
+  'CrowdsourcingDispute',
+  'AwaitingNextWindow',
+  'AwaitingFinalization',
+  'Finalized',
+  'Forking',
+  'AwaitingForkMigration'
+}
+
 export enum MarketReportingState {
   PreReporting = 'PreReporting',
   DesignatedReporting = 'DesignatedReporting',

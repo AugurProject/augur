@@ -548,7 +548,7 @@ class ContractsFixture:
         log = logs[0]
         return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\"]}", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\"]}", validityBond=0):
         sender = sender or self.accounts[0]
         marketCreationFee = validityBond or universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
@@ -557,7 +557,7 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\"]}"):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\"]}"):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
         outcomes = [" "] * numOutcomes
@@ -567,7 +567,7 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}"):
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}"):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
@@ -576,7 +576,7 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
+    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
         sender = sender or self.accounts[0]
         designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
