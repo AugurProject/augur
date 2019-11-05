@@ -19,21 +19,27 @@
         display: flex;
         flex-direction: column;
 
-        > span:first-of-type {
+        > h1 {
             .text-14-medium;
     
             color: @color-primary-text;
             margin-bottom: @size-8;
         }
     
-        > span:nth-of-type(2) {
+        > span {
             .text-12;
     
             color: @color-secondary-text;
             line-height: 140%;
             margin-bottom: @size-12;
+
+            > a {
+                margin-left: @size-3;
+                color: @color-primary-action;
+            }
         }
-    
+
+        
     
         > div {
             display: flex;
