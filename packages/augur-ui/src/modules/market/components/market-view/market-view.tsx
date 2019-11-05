@@ -37,6 +37,7 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { SquareDropdown } from 'modules/common/selection';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
 import { formatShares, formatDai } from 'utils/format-number';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -349,6 +350,43 @@ export default class MarketView extends Component<
       }];
     }
 
+    let fills = null;
+    if (tradingTutorial && tutorialStep === 5) {
+      fills = [{
+        amount: formatShares(100),
+        logIndex: 1,
+        marketDescription: market.description,
+        marketId: market.id,
+        originalQuantity: formatShares(100),
+        id: "trading-tutorial-pending-order",
+        type: 'buy',
+        price: formatDai(.4),
+        outcome: "Yes",
+        timestamp: convertUnixToFormattedDate(currentTimestamp),
+        trades: [
+          { 
+            amount: formatShares(100),
+            logIndex: 1,
+            marketDescription: market.description,
+            marketId: market.id,
+            type: 'buy',
+            price: formatDai(.4),
+            outcome: "Yes",
+            timestamp: convertUnixToFormattedDate(currentTimestamp),
+            transactionHash: '0xerjejfsdk'
+          }
+        ]
+      }];
+    }
+
+    let selected = 0;
+    if (tradingTutorial && tutorialStep === 5) {
+      selected = 1;
+    }
+    if (tradingTutorial && tutorialStep === 6) {
+      selected = 2;
+    }
+
     return (
       <div
         ref={node => {
@@ -513,6 +551,7 @@ export default class MarketView extends Component<
                         preview={preview}
                         tradingTutorial={tradingTutorial}
                         orders={orders}
+                        fills={fillls}
                       />
                     </div>
                   </ModulePane>
@@ -629,6 +668,8 @@ export default class MarketView extends Component<
                               preview={preview}
                               tradingTutorial={tradingTutorial}
                               orders={orders}
+                              fills={fills}
+                              selected={selected}
                             />
                             {tradingTutorial && (tutorialStep === 4 || tutorialStep === 5) && (
                               <TutorialPopUp

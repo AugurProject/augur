@@ -9,6 +9,7 @@ import { CancelTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles';
 import { MarketData, NodeStyleCallback, UIOrder, DefaultOrderProperties } from 'modules/types';
+import { NumberedList } from 'modules/create-market/components/common';
 
 interface MarketOrdersPositionsTableProps {
   hasPending?: boolean,
@@ -21,6 +22,7 @@ interface MarketOrdersPositionsTableProps {
   preview: boolean,
   toggle?: () => void,
   updateSelectedOrderProperties: (selectedOrderProperties: DefaultOrderProperties) => void
+  selected?: number;
 }
 
 const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
@@ -32,10 +34,11 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
   cancelAllOpenOrders,
   updateSelectedOrderProperties,
   toggle,
+  selected
 }) => (
     <ModuleTabs
       className={Styles.Tabs}
-      selected={0}
+      selected={selected ? selected : 0}
       fillForMobile
       showToggle
       toggle={toggle}

@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   let openOrders = getUserOpenOrders(market.id) || [];
 
-  const filledOrders = market.id
+  let filledOrders = market.id
     ? selectUserFilledOrders(state, market.id)
     : [];
   const hasPending = Boolean(openOrders.find(order => order.pending));
@@ -26,6 +26,10 @@ const mapStateToProps = (state, ownProps) => {
 
   if (ownProps.tradingTutorial && ownProps.orders) {
     openOrders = ownProps.orders;
+  }
+
+  if (ownProps.tradingTutorial && ownProps.fills) {
+    filledOrders = ownProps.fills;
   }
 
   return {
