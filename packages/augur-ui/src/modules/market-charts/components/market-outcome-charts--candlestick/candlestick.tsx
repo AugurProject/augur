@@ -70,7 +70,7 @@ export class Candlestick extends React.Component<
   getData() {
     const { currentTimeInSeconds, marketId, selectedOutcomeId } = this.props;
     const { selectedPeriod } = this.state;
-
+    
     loadCandleStickData(
       {
         marketId,

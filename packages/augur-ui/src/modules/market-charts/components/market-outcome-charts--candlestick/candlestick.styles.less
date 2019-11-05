@@ -4,6 +4,16 @@
   svg {
     :global {
 
+      g.highcharts-button {
+        > rect.highcharts-button-box {
+          fill: transparent;
+          stroke: @color-primary-text;
+        }
+        > text > tspan,
+        > text {
+          fill: @color-primary-text;
+        }
+      }
 
       .highcharts-background {
         fill: @color-module-background;
