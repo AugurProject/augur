@@ -367,7 +367,7 @@ div.ErrorField:focus {
 
 .ModalDisclaimer {
   background: @color-module-background;
-  border: @size-1 solid @color-dark-grey;
+  border: @size-3 solid @color-secondary-action-outline;
   border-radius: @size-8;
   flex-flow: row nowrap;
   max-width: 35rem;
@@ -376,6 +376,10 @@ div.ErrorField:focus {
   position: relative;
   text-align: center;
   width: 100%;
+
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+  }
 
   > h1 {
     .text-24-bold;
