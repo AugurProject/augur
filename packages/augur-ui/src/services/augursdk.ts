@@ -1,20 +1,15 @@
 import { Augur, Provider } from '@augurproject/sdk';
-import {
-  SEOConnector,
-  SingleThreadConnector,
-} from '@augurproject/sdk/build/connector';
-import {
-  ContractDependenciesEthers,
-  EthersSigner,
-} from 'contract-dependencies-ethers';
+import { SEOConnector, WebsocketConnector } from '@augurproject/sdk/build/connector';
+import { ContractDependenciesEthers, EthersSigner, } from 'contract-dependencies-ethers';
 import { WebWorkerConnector } from './ww-connector';
 
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
-import { EnvObject } from 'modules/types';
+import { EnvObject, History } from 'modules/types';
 import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
 import { isMobileSafari } from 'utils/is-safari';
+import parseQuery from 'modules/routes/helpers/parse-query';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -31,7 +26,8 @@ export class SDK {
     signer: EthersSigner,
     env: EnvObject,
     signerNetworkId?: string,
-    isWeb3 = false
+    isWeb3 = false,
+    history?: History
   ):Promise<Augur<Provider>> {
     this.isWeb3Transport = isWeb3;
     this.env = env;
@@ -45,7 +41,10 @@ export class SDK {
       account
     );
 
-    const connector = (isMobileSafari() ? new SEOConnector(): new WebWorkerConnector());
+    const searchValues = history ? parseQuery(history.location.search) : {};
+    const { sdk_endpoint } = searchValues;
+
+    const connector = (isMobileSafari() ? new SEOConnector() : sdk_endpoint ? new WebsocketConnector(sdk_endpoint) : new WebWorkerConnector());
     connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http

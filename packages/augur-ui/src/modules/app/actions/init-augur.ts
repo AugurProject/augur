@@ -243,7 +243,8 @@ export function connectAugur(
         // wire up start up events for sdk
         dispatch(listenForStartUpEvents(sdk));
         dispatch(updateCanHotload(true));
-      }
+      },
+      history
     );
   };
 }

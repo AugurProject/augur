@@ -815,3 +815,23 @@ export interface Categories {
   tertiary: string;
 }
 
+export interface Location {
+  pathname: string;
+  search: string;
+  hash: string;
+  state: object;
+}
+
+export interface History {
+  action: string;
+  block: Function;
+  createHref: Function;
+  go: Function;
+  goBack: Function;
+  goForward: Function;
+  length: number;
+  listen: Function;
+  location: Location;
+  push: Function;
+  replace: Function;
+}
