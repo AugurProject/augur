@@ -130,10 +130,10 @@ export default class AppView extends Component<AppProps> {
       updateHelpMenuState,
     } = this.props;
 
-    // window.addEventListener('click', e => {
-    //   updateConnectionTray(false);
-    //   updateHelpMenuState(false);
-    // });
+    window.addEventListener('click', e => {
+      updateConnectionTray(false);
+      updateHelpMenuState(false);
+    });
 
     initAugur(
       history,
