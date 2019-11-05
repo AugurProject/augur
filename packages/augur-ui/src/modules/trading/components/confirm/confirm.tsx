@@ -252,7 +252,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        {totalCost && totalCost.value !== 0 && (
+        {newOrderAmount !== "0" && (
           <div className={Styles.TradingConfirm__details}>
             <div
               className={classNames(

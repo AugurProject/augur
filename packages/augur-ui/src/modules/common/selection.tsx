@@ -82,8 +82,13 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(nextProps) {
     this.measure();
+    if (nextProps.defaultValue !== this.props.defaultValue) {
+      this.setState({
+        selected: this.props.options.find(o => o.value === this.props.defaultValue)
+      })
+    }
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
@@ -91,7 +96,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       nextState.selected !== this.state.selected ||
       nextState.showList !== this.state.showList ||
       this.props.disabled !== nextProps.disabled ||
-      this.props.staticLabel !== nextProps.staticLabel
+      this.props.staticLabel !== nextProps.staticLabel ||
+      this.props.defaultValue !== nextProps.defaultValue
     ) {
       return true;
     }

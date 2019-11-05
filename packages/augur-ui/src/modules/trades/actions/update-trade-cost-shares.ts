@@ -5,7 +5,7 @@ import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
+import { NodeStyleCallback, AccountPositionAction, AccountPosition } from 'modules/types';
 import {
   simulateTrade,
   simulateTradeGasLimit,
@@ -132,17 +132,19 @@ async function runSimulateTrade(
   market: Getters.Markets.MarketInfo,
   marketId: string,
   outcomeId: number,
-  accountPositions: any,
+  accountPositions: AccountPosition,
   callback: NodeStyleCallback
 ) {
   let sharesFilledAvgPrice = '';
   let reversal = null;
-  let outcomeRawPosition = ZERO;
   const positions = (accountPositions[marketId] || {}).tradingPositions;
+  const marketOutcomeShares = positions
+    ? (accountPositions[marketId].tradingPositionsPerMarket || {})
+        .userSharesBalances
+    : {};
   if (positions && positions[outcomeId]) {
     const position = positions[outcomeId];
     sharesFilledAvgPrice = position.averagePrice;
-    outcomeRawPosition = createBigNumber(position.rawPosition || 0);
     const isReversal =
       newTradeDetails.side === BUY
         ? createBigNumber(position.netPosition).lt(ZERO)
@@ -164,7 +166,7 @@ async function runSimulateTrade(
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  const userShares = createBigNumber(outcomeRawPosition);
+  const userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
@@ -202,6 +204,7 @@ async function runSimulateTrade(
   newTradeDetails.totalFee = totalFee.toFixed();
   // note: tokensDepleted, dai needed for trade
   newTradeDetails.totalCost = simulateTradeValue.sharesFilled.minus(simulateTradeValue.tokensDepleted);
+  newTradeDetails.costInDai = simulateTradeValue.tokensDepleted;
   // note: shareCost, shares you spent on the trade
   newTradeDetails.shareCost = simulateTradeValue.sharesDepleted;
   // note: sharesFilled, the amount of the order that was filled
@@ -216,7 +219,7 @@ async function runSimulateTrade(
   if (
     reversal === null &&
     !newTradeDetails.shareCost.eq(ZERO) &&
-    userShares.eq(ZERO)
+    userShares.gt(ZERO)
   ) {
     newTradeDetails.shareCost = '0';
   }
