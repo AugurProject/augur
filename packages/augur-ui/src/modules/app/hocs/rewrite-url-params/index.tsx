@@ -12,14 +12,15 @@ export const RewriteUrlParams = (windowRef: Window) => (BaseCmp: React.Component
     const {
       ethereum_node_http,
       ethereum_node_ws,
+      sdk_endpoint,
       ...remainingSearchValues
     } = searchValues;
-    if (ethereum_node_http || ethereum_node_ws) {
+    if (ethereum_node_http || ethereum_node_ws || sdk_endpoint) {
       const path = createPath({
         ...location,
         search: makeQuery(remainingSearchValues)
       });
-      const paramsToMove = { ethereum_node_http, ethereum_node_ws };
+      const paramsToMove = { ethereum_node_http, ethereum_node_ws, sdk_endpoint };
       // filter out the undefined paramsToMove key/values
       Object.keys(paramsToMove).forEach(
         key => !paramsToMove[key] && delete paramsToMove[key]
@@ -36,7 +37,8 @@ export const RewriteUrlParams = (windowRef: Window) => (BaseCmp: React.Component
     const parsedParams = parseQuery(windowRef.location.search);
     const windowParams = {
       ethereumNodeHttp: parsedParams.ethereum_node_http,
-      ethereumNodeWs: parsedParams.ethereum_node_ws
+      ethereumNodeWs: parsedParams.ethereum_node_ws,
+      sdkEndpoint: parsedParams.sdk_endpoint
     };
     // filter out the undefined paramsToMove key/values
     Object.keys(windowParams).forEach(
