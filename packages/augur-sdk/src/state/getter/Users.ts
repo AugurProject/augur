@@ -102,6 +102,9 @@ export interface MarketTradingPosition {
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
   unclaimedProceeds?: string; // Unclaimed trading proceeds after market creator fee & reporting fee have been subtracted
   unclaimedProfit?: string; // unclaimedProceeds - unrealizedCost
+  userSharesBalances: { // outcomes that have a share balance
+    [outcome: string]: string;
+  }
 }
 
 export interface TradingPosition {
@@ -640,6 +643,26 @@ try {
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = new BigNumber(marketTradingPositions[marketData.market].unclaimedProceeds).dividedBy(QUINTILLION).toFixed(2);
       marketTradingPositions[marketData.market].unclaimedProfit = new BigNumber(marketTradingPositions[marketData.market].unclaimedProfit).dividedBy(QUINTILLION).toFixed(2);
+      marketTradingPositions[
+        marketData.market
+      ].userSharesBalances = marketOutcomeBalances[marketData.market]
+        ? Object.keys(marketOutcomeBalances[marketData.market]).reduce(
+            (p, outcome) => {
+              p[outcome] = convertOnChainAmountToDisplayAmount(
+                new BigNumber(
+                  marketOutcomeBalances[marketData.market][outcome]
+                ),
+                numTicksToTickSize(
+                  new BigNumber(marketData.numTicks),
+                  new BigNumber(marketData.prices[0]),
+                  new BigNumber(marketData.prices[1])
+                )
+              );
+              return p;
+            },
+            {}
+          )
+        : {};
     }
 
     // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
@@ -865,6 +888,7 @@ try {
         unrealizedPercent: '0',
         totalPercent: '0',
         currentValue: '0',
+        userSharesBalances: {}
       };
 
       result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
@@ -914,6 +938,7 @@ export function sumTradingPositions(
         unrealizedPercent: '0',
         totalPercent: '0',
         currentValue: currentValue.toFixed(),
+        userSharesBalances: {}
       };
     },
     {
@@ -930,6 +955,7 @@ export function sumTradingPositions(
       unrealizedPercent: '0',
       totalPercent: '0',
       currentValue: '0',
+      userSharesBalances: {}
     } as MarketTradingPosition
   );
 
@@ -941,7 +967,6 @@ export function sumTradingPositions(
 
   const total = realized.plus(unrealized);
   const totalCost = realizedCost.plus(unrealizedCost);
-
   summedTrade.frozenFunds = frozenFunds.toFixed();
   summedTrade.total = total.toFixed();
   summedTrade.totalCost = totalCost.toFixed();
