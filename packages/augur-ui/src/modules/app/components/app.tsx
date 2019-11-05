@@ -54,6 +54,7 @@ interface AppProps {
   finalizeMarket: Function;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
+  sdkEndpoint: string;
   useWeb3Transport: boolean;
   logout: Function;
   sidebarStatus: {
@@ -77,6 +78,7 @@ export default class AppView extends Component<AppProps> {
   static defaultProps = {
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
+    sdkEndpoint: null,
     useWeb3Transport: false,
   };
 
@@ -120,6 +122,7 @@ export default class AppView extends Component<AppProps> {
       env,
       ethereumNodeHttp,
       ethereumNodeWs,
+      sdkEndpoint,
       history,
       initAugur,
       location,
@@ -141,6 +144,7 @@ export default class AppView extends Component<AppProps> {
         ...env,
         ethereumNodeHttp,
         ethereumNodeWs,
+        sdkEndpoint,
         useWeb3Transport,
       },
       (err: any, res: any) => {
@@ -391,6 +395,7 @@ export default class AppView extends Component<AppProps> {
             <section
               className={classNames(Styles.Main__wrap, {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
+                [Styles['TopBarOpen']]: sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN,
               })}
             >
               {currentPath === MARKETS ? (

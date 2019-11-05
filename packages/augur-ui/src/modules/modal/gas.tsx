@@ -3,10 +3,11 @@ import React from 'react';
 import {AlertMessage, ButtonsRow, Title,} from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
-import {Chevron} from 'modules/common/icons';
-import {SecondaryButton} from 'modules/common/buttons';
-import classNames = require('classnames');
 import ChevronFlip from 'modules/common/chevron-flip';
+import {formatGasCostToEther, formatEtherEstimate} from 'utils/format-number';
+import {GWEI_CONVERSION, NEW_ORDER_GAS_ESTIMATE} from 'modules/common/constants';
+import {createBigNumber} from 'utils/create-big-number';
+import classNames = require('classnames');
 
 interface GasProps {
   saveAction: Function;
@@ -24,6 +25,23 @@ interface GasState {
   showAdvanced: boolean;
 }
 
+export const getEthTradeCost = (amount: number) => {
+  return formatEtherEstimate(
+    formatGasCostToEther(
+      NEW_ORDER_GAS_ESTIMATE,
+      { decimalsRounded: 4 },
+      createBigNumber(amount).times(GWEI_CONVERSION)
+    )
+  );
+};
+
+export const getGasCostInDai = (amount: number) => {
+  const EXCHANGE_RATE = 1000; // FAKE price of ETH in DAI
+  const ETH_TRADE_COST = getEthTradeCost(amount);
+
+  return createBigNumber(ETH_TRADE_COST.value).times(EXCHANGE_RATE).toNumber();
+};
+
 export class Gas extends React.Component<GasProps, GasState> {
   state: GasState = {
     amount: this.props.userDefinedGasPrice || this.props.average,
@@ -38,7 +56,7 @@ export class Gas extends React.Component<GasProps, GasState> {
     if (amount) amt = amount;
     if (isNaN(amount)) amt = 0;
     this.setState({ amount: amt, showLowAlert: amt < this.props.safeLow });
-  }
+  };
 
   render() {
     const { closeAction, saveAction, safeLow, average, fast } = this.props;
@@ -102,7 +120,7 @@ export class Gas extends React.Component<GasProps, GasState> {
                    })}
               >
                 <div><span>{data.speed}</span><span>{data.avgTime}</span></div>
-                <div><span>${data.gwei}</span><span> / Trade</span></div>
+                <div><span>${getGasCostInDai(data.gwei)}</span><span> / Trade</span></div>
               </div>
             ))}
           </div>
@@ -132,9 +150,9 @@ export class Gas extends React.Component<GasProps, GasState> {
               </div>
               <div>
                 <div>
-                  <span>&lt; ${amount}</span><span> / Trade</span>
+                  <span>&lt; ${getGasCostInDai(amount)}</span><span> / Trade</span>
                 </div>
-                <span>0.012441 ETH</span>
+                <span>{getEthTradeCost(amount).formatted} ETH</span>
               </div>
               <div>
                 <span>~ 30 seconds</span>

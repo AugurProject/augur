@@ -59,7 +59,7 @@ interface FromProps {
   orderQuantity: string;
   orderPrice: string;
   orderDaiEstimate: string;
-  orderEscrowdEth: string;
+  orderEscrowdDai: string;
   selectedNav: string;
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateState: Function;
@@ -625,7 +625,7 @@ class Form extends Component<FromProps, FormState> {
       maxPrice,
       minPrice,
       updateState,
-      orderEscrowdEth,
+      orderEscrowdDai,
       updateSelectedOutcome,
       sortedOutcomes,
       initialLiquidity,
@@ -652,7 +652,6 @@ class Form extends Component<FromProps, FormState> {
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
-
     let advancedOptions = advancedDropdownOptions;
     if (!Ox_ENABLED) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];
@@ -832,7 +831,7 @@ class Form extends Component<FromProps, FormState> {
               {ExclamationCircle}
               <span>
                 Max cost of{' '}
-                <span>{orderEscrowdEth === '' ? '-' : orderEscrowdEth} $ </span>{' '}
+                <span>{orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ </span>{' '}
                 will be escrowed
               </span>
             </label>
@@ -925,7 +924,7 @@ class Form extends Component<FromProps, FormState> {
                   )}
                   {s.expirationDateOption ===
                     EXPIRATION_DATE_OPTIONS.CUSTOM && (
-                    <section>               
+                    <section>
                       <SimpleTimeSelector
                         onChange={(value) => {
                           updateState({
@@ -933,7 +932,7 @@ class Form extends Component<FromProps, FormState> {
                           });
                         }}
                         currentTime={currentTimestamp}
-                      />              
+                      />
                     </section>
                   )}
                 </div>

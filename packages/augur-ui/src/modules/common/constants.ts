@@ -496,6 +496,7 @@ export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
 export const MODAL_TEST_BET = 'MODAL_TEST_BET';
 export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
+export const MODAL_AUGUR_USES_DAI = 'MODAL_AUGUR_USES_DAI';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
@@ -998,6 +999,9 @@ export const TRADING_TUTORIAL_COPY = {
 };
 
 
+export const GWEI_CONVERSION = 1000000000;
 
-
-
+export const EVENT_EXPIRATION_TOOLTIP = {
+  header: 'Event expiration',
+  content: 'This date time indicates when the settlement process begins.'
+};

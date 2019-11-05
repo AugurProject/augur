@@ -23,6 +23,7 @@ import { formatDai, formatShares } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -71,6 +72,7 @@ const mapStateToProps = (state, ownProps) => {
       tradingTutorial,
       isMarketLoading: true,
       isConnected: connection.isConnected && universe.id != null,
+      canHotload: connection.canHotload,
       marketId,
       marketReviewSeen,
     };
@@ -97,6 +99,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  hotloadMarket: marketId => hotloadMarket(marketId),
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>

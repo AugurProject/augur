@@ -54,11 +54,15 @@
 }
 
 .LargeSubheader {
-  .text-24-bold;
+  .text-22-bold;
 
   color: @color-primary-text;
   justify-content: center;
   display: flex;
+
+  @media @breakpoint-mobile-new {
+    .text-16-bold;
+  }
 }
 
 .SmallSubheader {
@@ -66,6 +70,7 @@
 
   color: @color-secondary-text;
   justify-content: center;
+  line-height: 150%;
   margin-top: @size-4;
   display: flex;
 }
@@ -124,20 +129,8 @@
   }
 }
 
-.TestBet {
-  margin: @size-42 0 @size-36;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 230px;
-    height: 129px;
-  }
-}
-
 .LinkContentSection {
-  .text-12;
+  .text-14;
 
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
@@ -157,35 +150,36 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  min-height: 454px;
+  min-height: 487px;
   justify-content: center;
-  padding: @size-32 @size-40;
+  padding: 5rem @size-40 @size-32;
   width: 454px;
 
   @media @breakpoint-mobile-new {
     align-items: center;
     height: 100%;
     justify-content: center;
+    margin: @size-32 @size-8;
     max-height: 100%;
     max-width: 100%;
-    width: 100%;
   }
 
   > main {
+    align-items: center;
     display: flex;
     flex: 2;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0;
 
-    > div:first-of-type {
-      .text-24-bold;
-
+    > div:nth-of-type(2) {
       text-align: center;
+      margin-top: 56px;
+    }
 
-      @media @breakpoint-mobile-new {
-        .text-18-bold;
-      }
+    > div:nth-of-type(3) {
+      text-align: center;
+      margin-top: @size-12;
     }
 
     @media @breakpoint-mobile-new {
@@ -356,6 +350,7 @@ div.ButtonsRow:last-of-type {
 
     @media @breakpoint-mobile-new {
       display: flex;
+      margin: @size-48 0;
     }
   }
 
@@ -722,11 +717,17 @@ div.ButtonsRow:last-of-type {
 
 .SignIn {
   @media @breakpoint-mobile-new {
+    margin: @size-48 0;
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
   > div:first-of-type {
     .CloseButton;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -828,6 +829,7 @@ div.ButtonsRow:last-of-type {
 
 .Connect {
   @media @breakpoint-mobile {
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
@@ -849,6 +851,10 @@ div.ButtonsRow:last-of-type {
     .CloseButton;
 
     display: block;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -1624,7 +1630,7 @@ div.ButtonsRow:last-of-type {
 .Gas {
   .Container;
 
-  max-width: 27.8125rem; // 445px
+  max-width: 30rem; // 480px
   @media @breakpoint-mobile-mid {
     max-width: 21.5rem; // 340px
   }
@@ -1814,6 +1820,12 @@ div.ButtonsRow:last-of-type {
           border: @size-1 solid @color-secondary-action-outline;
           color: @color-primary-text;
           padding: @size-6 @size-16;
+          -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
         }
       }
 
@@ -2300,7 +2312,6 @@ div.ButtonsRow:last-of-type {
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
-  height: @size-40;
   justify-content: space-between;
   line-height: @size-14;
   margin: @size-8 0 @size-18 0;
@@ -2322,7 +2333,7 @@ div.ButtonsRow:last-of-type {
     display: flex;
     margin-left: @size-8;
     margin-right: @size-12;
-    padding: @size-5;
+    padding: @size-6;
     text-transform: uppercase;
     color: @color-primary-text;
     background: @color-secondary-action;

@@ -192,17 +192,40 @@ interface TimeLabelProps {
   label: string;
   time: DateFormattedObject;
   showLocal: boolean;
+  hint?: React.ReactNode;
 }
 
-export const TimeLabel = ({ label, time, showLocal }: TimeLabelProps) => {
+export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => {
   return (
     <div className={Styles.TimeLabel}>
-      <span>{label}</span>
+      <span>
+        {label}
+        {hint && (
+          <>
+            <label
+              className={TooltipStyles.TooltipHint}
+              data-tip
+              data-for={`tooltip-${label.replace(' ', '-')}`}
+            >
+              {InfoIcon}
+            </label>
+            <ReactTooltip
+              id={`tooltip-${label.replace(' ', '-')}`}
+              className={TooltipStyles.Tooltip}
+              effect='solid'
+              place='right'
+              type='light'
+            >
+              {hint}
+            </ReactTooltip>
+          </>
+        )}
+      </span>
       <span>{time && time.formattedShortUtc}</span>
       {showLocal && <span>{time && time.formattedShortTimezone}</span>}
     </div>
   )
-}
+};
 
 
 export const DashlineNormal = () => (

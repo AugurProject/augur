@@ -14,6 +14,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { TestBet } from 'modules/modal/common';
 
 const mapStateToProps = (state: AppState) => ({
   isMobile: state.appStatus.isMobile,
@@ -29,19 +30,15 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: sP.isMobile
-    ? '2. Learn how to bet on Augur'
-    : '2. Run a test bet',
-  smallHeader: sP.isMobile
-    ? 'Watch a 30 second video'
-    : 'Learn how to place a bet using Augur Trade',
-  testBet: true,
-  currentStep: 3,
+  icon: TestBet,
+  largeHeader: sP.isMobile ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
+  currentStep: 4,
   linkContent: [
     {
-      content: sP.isMobile
-        ? 'Watch our quick start video to learn how to place a bet using our trading app.'
-        : 'See how betting works on Augur. You’ll get guidance and tips to help you get started.',
+      content:
+        sP.isMobile
+          ? 'Watch our quick start video to learn how to place a bet using our trading app.'
+          : 'Learn how betting works on Augur by placing a quick test bet. Get guidance and tips and start betting for real today.',
     },
   ],
   buttons: [

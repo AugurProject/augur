@@ -62,7 +62,7 @@ interface WrapperState {
   orderPrice: string;
   orderQuantity: string;
   orderDaiEstimate: string;
-  orderEscrowdEth: string;
+  orderEscrowdDai: string;
   gasCostEst: string;
   selectedNav: string;
   doNotCreateOrders: boolean;
@@ -100,7 +100,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderPrice: props.selectedOrderProperties.price || '',
       orderQuantity: props.selectedOrderProperties.quantity || '',
       orderDaiEstimate: '',
-      orderEscrowdEth: '',
+      orderEscrowdDai: '',
       gasCostEst: '',
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
@@ -170,7 +170,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderPrice: '',
           orderQuantity: '',
           orderDaiEstimate: '',
-          orderEscrowdEth: '',
+          orderEscrowdDai: '',
           gasCostEst: '',
           doNotCreateOrders: false,
           expirationDate: '',
@@ -265,7 +265,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               ...this.state,
               ...order,
               orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-              orderEscrowdEth: '',
+              orderEscrowdDai: '',
               gasCostEst: '',
               trade: trade,
             },
@@ -290,7 +290,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                     ...this.state,
                     ...order,
                     orderDaiEstimate: '',
-                    orderEscrowdEth: '',
+                    orderEscrowdDai: '',
                     gasCostEst: '',
                   },
                   () => {}
@@ -314,7 +314,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   ...this.state,
                   ...order,
                   orderDaiEstimate: neworderDaiEstimate,
-                  orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
+                  orderEscrowdDai: newOrder.costInDai.formatted,
                   trade: newOrder,
                   gasCostEst: formattedGasCost,
                 },
@@ -354,7 +354,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       {
         ...order,
         orderQuantity: '',
-        orderEscrowdEth: '',
+        orderEscrowdDai: '',
         gasCostEst: '',
       },
       () =>
@@ -387,7 +387,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 ...this.state,
                 ...order,
                 orderQuantity: numShares,
-                orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
+                orderEscrowdDai: newOrder.costInDai.formatted,
                 trade: newOrder,
                 gasCostEst: formattedGasCost,
               },
@@ -437,7 +437,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderPrice,
       orderQuantity,
       orderDaiEstimate,
-      orderEscrowdEth,
+      orderEscrowdDai,
       gasCostEst,
       doNotCreateOrders,
       expirationDate,
@@ -509,7 +509,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               orderPrice={orderPrice}
               orderQuantity={orderQuantity}
               orderDaiEstimate={orderDaiEstimate}
-              orderEscrowdEth={orderEscrowdEth}
+              orderEscrowdDai={orderEscrowdDai}
               gasCostEst={gasCostEst}
               doNotCreateOrders={doNotCreateOrders}
               expirationDate={expirationDate}
