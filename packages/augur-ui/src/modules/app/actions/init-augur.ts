@@ -249,12 +249,13 @@ export function connectAugur(
 interface initAugurParams {
   ethereumNodeHttp: string | null;
   ethereumNodeWs: string | null;
+  sdkEndpoint: string | null;
   useWeb3Transport: boolean;
 }
 
 export function initAugur(
   history: History,
-  { ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
+  { ethereumNodeHttp, ethereumNodeWs, sdkEndpoint, useWeb3Transport }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) {
   return (
@@ -270,6 +271,7 @@ export function initAugur(
     const defaultWS = isEmpty(ethereumNodeHttp) ? env['ethereum-node'].ws : '';
     // If only the http param is provided we need to prevent this "default from taking precedence.
     env['ethereum-node'].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
+    env['sdkEndpoint'] = sdkEndpoint;
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

@@ -4,6 +4,8 @@ import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { EnvObject, NodeStyleCallback } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
 import getInjectedWeb3Accounts from 'utils/get-injected-web3-accounts';
+import { JsonRpcProvider } from 'ethers/providers';
+import { EnvObject, NodeStyleCallback, History } from 'modules/types';
 
 export const connect = async (env: EnvObject, callback: NodeStyleCallback = logError) => {
   const signer = undefined;

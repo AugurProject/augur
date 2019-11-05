@@ -813,4 +813,3 @@ export interface Categories {
   secondary: string;
   tertiary: string;
 }
-

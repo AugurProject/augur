@@ -54,11 +54,15 @@
 }
 
 .LargeSubheader {
-  .text-24-bold;
+  .text-22-bold;
 
   color: @color-primary-text;
   justify-content: center;
   display: flex;
+
+  @media @breakpoint-mobile-new {
+    .text-16-bold;
+  }
 }
 
 .SmallSubheader {
@@ -66,6 +70,7 @@
 
   color: @color-secondary-text;
   justify-content: center;
+  line-height: 150%;
   margin-top: @size-4;
   display: flex;
 }
@@ -124,20 +129,8 @@
   }
 }
 
-.TestBet {
-  margin: @size-42 0 @size-36;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 230px;
-    height: 129px;
-  }
-}
-
 .LinkContentSection {
-  .text-12;
+  .text-14;
 
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
@@ -157,35 +150,36 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  min-height: 454px;
+  min-height: 487px;
   justify-content: center;
-  padding: @size-32 @size-40;
+  padding: 5rem @size-40 @size-32;
   width: 454px;
 
   @media @breakpoint-mobile-new {
     align-items: center;
     height: 100%;
     justify-content: center;
+    margin: @size-32 @size-8;
     max-height: 100%;
     max-width: 100%;
-    width: 100%;
   }
 
   > main {
+    align-items: center;
     display: flex;
     flex: 2;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0;
 
-    > div:first-of-type {
-      .text-24-bold;
-
+    > div:nth-of-type(2) {
       text-align: center;
+      margin-top: 56px;
+    }
 
-      @media @breakpoint-mobile-new {
-        .text-18-bold;
-      }
+    > div:nth-of-type(3) {
+      text-align: center;
+      margin-top: @size-12;
     }
 
     @media @breakpoint-mobile-new {

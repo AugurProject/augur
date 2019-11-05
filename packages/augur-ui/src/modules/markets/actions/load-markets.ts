@@ -1,19 +1,16 @@
 import { augurSdk } from 'services/augursdk';
 import {
-  MARKET_SORT_PARAMS,
-  MARKET_REPORTING,
   MARKET_CLOSED,
-  REPORTING_STATE,
-  MAX_SPREAD_ALL_SPREADS,
+  MARKET_REPORTING,
+  MARKET_SORT_PARAMS,
   MAX_FEE_100_PERCENT,
+  MAX_SPREAD_ALL_SPREADS,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
-import {
-  UpdateMarketsAction,
-  addUpdateMarketInfos,
-} from 'modules/markets/actions//update-markets-data';
+import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions//update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
