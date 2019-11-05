@@ -22,6 +22,9 @@ import {
   TRADING_TUTORIAL,
   YES_NO_YES_OUTCOME_NAME,
   PUBLICFILLORDER,
+  LONG,
+  YES_NO_YES_ID,
+  TRADING_TUTORIAL
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -414,6 +417,24 @@ export default class MarketView extends Component<
       ];
     }
 
+    let positions = null;
+    if (tradingTutorial && tutorialStep === 6) {
+      positions = [
+        {
+          type: LONG,
+          outcomeName: YES_NO_YES_OUTCOME_NAME,
+          quantity: formatShares(TUTORIAL_QUANTITY),
+          id: TRADING_TUTORIAL,
+          outcomeId: YES_NO_YES_ID,
+          totalValue: formatDai(TUTORIAL_QUANTITY),
+          totalReturns: formatDai(TUTORIAL_QUANTITY),
+          unrealizedNet: formatDai(TUTORIAL_QUANTITY),
+          realizedNet: formatDai(TUTORIAL_QUANTITY),
+          purchasePrice: formatDai(TUTORIAL_PRICE),
+        }
+      ]
+    }
+
     let selected = 0;
     if (tradingTutorial && tutorialStep === 5) {
       selected = 1;
@@ -711,6 +732,7 @@ export default class MarketView extends Component<
                               tradingTutorial={tradingTutorial}
                               orders={orders}
                               fills={fills}
+                              positions={positions}
                               selected={selected}
                             />
                             {tradingTutorial &&
