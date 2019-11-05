@@ -22,6 +22,7 @@ import deepClone from 'utils/deep-clone';
 import { formatDai, formatShares } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { addAlert } from 'modules/alerts/actions/alerts';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -100,7 +101,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
     dispatch(loadMarketTradingHistory(marketId)),
-  removePendingOrder: (orderId, marketId) => dispatch(removePendingOrder(orderId, marketId)),
   marketReviewModal: modal =>
     dispatch(
       updateModal({
@@ -115,6 +115,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
     closeMarketLoadingModal: () => dispatch(closeModal()),
+    addAlert: (alert) => dispatch(addAlert(alert));
 });
 
 const Market = withRouter(
