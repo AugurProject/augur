@@ -392,10 +392,8 @@ export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps)
   </div>
 );
 
-export const TestBet = () => (
-  <div className={Styles.TestBet}>
-    <img src='images/test-bet-placeholder.png' />
-  </div>
+export const TestBet = (
+  <img width='225px' src='images/test-bet-placeholder.png' />
 );
 
 export const AlertMessage = (props: AlertMessageProps) => (
