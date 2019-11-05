@@ -739,4 +739,3 @@ export interface CategoryList {
     }
   ];
 }
-
