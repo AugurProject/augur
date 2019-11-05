@@ -79,12 +79,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       return [price.period, price.volume];
     });
 
-    // Add space Buffer to edge of chart for yAxis
-    if (priceTimeSeries.length > 0) {
-      const now = Number(new Date());
-      volume.push([Math.round(now), 0]);
-    }
-
     const groupingUnits = [
       ['minute', [1]],
       ['hour', [1]],
@@ -136,7 +130,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           format,
           align: 'center',
         },
-        range,
+        // range,
         crosshair: {
           width: 0,
           className: Styles.Candlestick_display_none,
