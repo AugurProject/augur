@@ -40,18 +40,18 @@ const mapStateToProps = (state, ownProps) => {
         2: [
           {
             avgPrice: formatDai(.3),
-            cumulativeShares: "1"
-            id: 1
-            mySize: "1"
+            cumulativeShares: "1",
+            id: 1,
+            mySize: "1",
             orderEstimate: createBigNumber(.3),
-            outcomeId: 2
-            outcomeName: "Yes"
-            price: "0.3"
-            quantity: "1"
-            shares: "1"
+            outcomeId: 2,
+            outcomeName: "Yes",
+            price: "0.3",
+            quantity: "1",
+            shares: "1",
             sharesEscrowed: formatShares(.3),
             tokensEscrowed: formatDai(.3),
-            type: "buy"
+            type: "buy",
             unmatchedShares: formatShares(.3)
           }
         ]
@@ -118,7 +118,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
     closeMarketLoadingModal: () => dispatch(closeModal()),
-    addAlert: (alert) => dispatch(addAlert(alert));
+    addAlert: (alert) => dispatch(addAlert(alert)),
 });
 
 const Market = withRouter(
