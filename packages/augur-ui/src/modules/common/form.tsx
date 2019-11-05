@@ -1261,7 +1261,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: this.props.value === null ? '' : this.props.value,
+    value: !this.props.value ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;
