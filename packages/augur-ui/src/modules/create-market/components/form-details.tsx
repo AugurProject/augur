@@ -17,6 +17,7 @@ import {
   QuestionBuilder,
   DateTimeSelector,
   ResolutionRules,
+  TemplateBanners,
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
@@ -210,6 +211,7 @@ export default class FormDetails extends React.Component<
                     validations.description.slice(1).toLowerCase()
                 }
               />
+              <TemplateBanners categories={newMarket.categories} />
             </>
           )}
 

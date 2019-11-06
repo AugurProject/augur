@@ -1132,6 +1132,7 @@ export const TemplateBanners = (props: TemplateBannersProps) => {
   return (
     <DismissableNotice
       title={text}
+      className={Styles.TopBannerMargin}
       description={''}
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       show
