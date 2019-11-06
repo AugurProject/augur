@@ -28,6 +28,7 @@ import {
   TRADING_TUTORIAL_STEPS,
   TRADING_TUTORIAL_COPY,
   MODAL_TUTORIAL_OUTRO,
+  MODAL_TUTORIAL_INTRO,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -72,6 +73,7 @@ interface MarketViewProps {
   addAlert: Function;
   hotloadMarket: Function;
   canHotload: boolean;
+  removeAlert: Function;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -87,6 +89,7 @@ interface MarketViewState {
   fixedPrecision: number;
   selectedOutcomeProperties: DefaultOrderPropertiesMap;
   tutorialStep: number;
+  introShowing: boolean;
 }
 
 const TUTORIAL_QUANTITY = 100;
@@ -115,7 +118,8 @@ export default class MarketView extends Component<
     const cat5 = this.findType();
 
     this.state = {
-      tutorialStep: TRADING_TUTORIAL_STEPS.MARKET_DETAILS,
+      introShowing: false,
+      tutorialStep: TRADING_TUTORIAL_STEPS.INTRO_MODAL,
       extendOrderBook: false,
       extendTradeHistory: false,
       extendOutcomesList: cat5 ? true : false,
@@ -136,7 +140,6 @@ export default class MarketView extends Component<
     this.updateSelectedOrderProperties = this.updateSelectedOrderProperties.bind(
       this
     );
-    this.showModal = this.showModal.bind(this);
     this.toggleOrderBook = this.toggleOrderBook.bind(this);
     this.toggleTradeHistory = this.toggleTradeHistory.bind(this);
     this.updateSelectedOutcomeSwitch = this.updateSelectedOutcomeSwitch.bind(
@@ -165,6 +168,7 @@ export default class MarketView extends Component<
     window.scrollTo(0, 1);
 
     const { isMarketLoading, showMarketLoadingModal } = this.props;
+
     if (isMarketLoading) {
       showMarketLoadingModal();
     } else {
@@ -179,9 +183,20 @@ export default class MarketView extends Component<
       isMarketLoading,
       closeMarketLoadingModal,
       tradingTutorial,
+      updateModal,
     } = this.props;
 
     if (tradingTutorial) {
+      if (
+        !nextProps.isMarketLoading && !this.state.introShowing &&
+        this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
+      ) {
+        updateModal({
+          type: MODAL_TUTORIAL_INTRO,
+          next: this.next,
+        });
+        this.setState({introShowing: true});
+      }
       return;
     }
 
@@ -276,22 +291,6 @@ export default class MarketView extends Component<
     });
   }
 
-  showModal() {
-    const { marketId, outcomes, market, updateModal } = this.props;
-    const { selectedOrderProperties, selectedOutcomeId } = this.state;
-
-    updateModal({
-      type: MODAL_TRADING_OVERLAY,
-      market,
-      selectedOrderProperties,
-      selectedOutcomeId,
-      updateSelectedOutcome: this.updateSelectedOutcomeSwitch,
-      updateSelectedOrderProperties: this.updateSelectedOrderProperties,
-      outcomes,
-      marketId,
-    });
-  }
-
   toggleMiddleColumn(show: string) {
     this.setState({ [show]: !this.state[show] });
   }
@@ -334,7 +333,9 @@ export default class MarketView extends Component<
       updateModal({
         type: MODAL_TUTORIAL_OUTRO,
         back: () => {
-          this.setState({tutorialStep: TRADING_TUTORIAL_STEPS.MARKET_DETAILS});
+          this.setState({
+            tutorialStep: TRADING_TUTORIAL_STEPS.MARKET_DETAILS,
+          });
         },
       });
     }
