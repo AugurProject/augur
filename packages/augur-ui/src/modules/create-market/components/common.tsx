@@ -269,7 +269,11 @@ export interface ExplainerBlockProps {
 export const ExplainerBlock = (props: ExplainerBlockProps) => (
   <div className={Styles.ExplainerBlock}>
     <h2>{props.title}</h2>
-    <ul>
+    <ul
+      className={classNames({
+        [Styles.NotBulleted]: !props.useBullets,
+      })}
+    >
       {props.subtexts.map((subtext, index) => {
         return props.useBullets ? (
           <li key={index}>{subtext}</li>
