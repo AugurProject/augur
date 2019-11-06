@@ -623,7 +623,7 @@ export default class MarketView extends Component<
                         preview={preview}
                         tradingTutorial={tradingTutorial}
                         orders={orders}
-                        fills={fillls}
+                        fills={fills}
                       />
                     </div>
                   </ModulePane>
