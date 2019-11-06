@@ -1,5 +1,6 @@
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { makeProvider } from "../../libs";
+import { stringTo32ByteHex } from '../../libs/Utils';
 
 let john: ContractAPI;
 
@@ -14,7 +15,7 @@ beforeAll(async () => {
 test('Hot Loading :: Get Market Data', async () => {
   const market = await john.createReasonableYesNoMarket();
 
-  const eventData = await john.getHotLoadingMarketData(market.address);
+  let eventData = await john.getHotLoadingMarketData(market.address);
 
   await expect(eventData).toBeDefined();
 
@@ -37,6 +38,19 @@ test('Hot Loading :: Get Market Data', async () => {
     "id": 0,
     "price": "0",
     "description": "Invalid",
+    "volume": 0
+  });
+
+  const categoricalMarket = await john.createReasonableMarket([stringTo32ByteHex("Trump"), stringTo32ByteHex("Warren"), stringTo32ByteHex("Yang")]);
+
+  eventData = await john.getHotLoadingMarketData(categoricalMarket.address);
+
+  await expect(eventData).toBeDefined();
+
+  await expect(eventData.outcomes[1]).toEqual({
+    "id": 1,
+    "price": "0",
+    "description": "Trump",
     "volume": 0
   });
 });
