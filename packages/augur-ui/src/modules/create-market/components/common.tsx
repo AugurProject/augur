@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import {
   TextInput,
   DatePicker,
@@ -1263,3 +1263,24 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
     </div>
   );
 };
+
+export interface InputHeadingProps {
+  heading: string;
+  subHeading: string;
+  listItems: string[];
+}
+
+export const InputHeading = (props: InputHeadingProps) => (
+  <div className={Styles.MarketQuestionText}>
+    <h1>{props.heading}</h1>
+    <span>
+      {props.subHeading}
+      <ExternalLinkButton URL={'http://www.augur.net'} label={'Learn more'} />
+    </span>
+    <ul>
+      {props.listItems.map(i => (
+        <li>{i}</li>
+      ))}
+    </ul>
+  </div>
+);
