@@ -364,7 +364,6 @@ export default class MarketView extends Component<
         />
       );
     }
-
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
@@ -513,6 +512,7 @@ export default class MarketView extends Component<
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}
+                          daysPassed={daysPassed}
                         />
                       </div>
                     </div>

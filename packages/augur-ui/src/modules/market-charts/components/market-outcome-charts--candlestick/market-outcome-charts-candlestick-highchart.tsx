@@ -89,7 +89,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     ];
 
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
-
     const options = {
       lang: {
         noData: 'No Completed Trades',
@@ -120,6 +119,13 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         panKey: 'shift',
         animation: false,
         spacing: [10, 8, 10, 0],
+        events: {
+          selection: function(event) {
+            if (event.resetSelection) {
+              event.target.axes[0].range = range;
+            }
+          }
+        }
       },
       xAxis: {
         ordinal: false,
@@ -130,7 +136,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           format,
           align: 'center',
         },
-        // range,
+        range,
         crosshair: {
           width: 0,
           className: Styles.Candlestick_display_none,
@@ -223,7 +229,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
   displayCandleInfoAndPlotViz(evt) {
     const { updateHoveredPeriod, priceTimeSeries, volumeType } = this.props;
     const { x: timestamp } = evt.target;
-    const xRangeTo = this.chart.xAxis[0].toValue(20, true);
+    const xRangeTo = this.chart.xAxis[0].toValue(16, true);
     const xRangeFrom = this.chart.xAxis[0].toValue(0, true);
     const range = Math.abs((xRangeFrom - xRangeTo) * 0.6);
     const pts = priceTimeSeries.find(p => p.period === timestamp);
