@@ -21,7 +21,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
     string constant public name = "Reputation";
-    string constant public symbol = "REP";
+    string constant public symbol = "REPv2";
     IUniverse internal universe;
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
