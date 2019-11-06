@@ -55,7 +55,7 @@ function pollForAccount(
   let intervalId = null;
 
   async function attemptLogin() {
-    const { connection } = getState();
+    const { connection, modal } = getState();
     if (attemptedLogin) {
       clearInterval(intervalId);
     }
@@ -69,14 +69,25 @@ function pollForAccount(
       );
 
       const showModal = accountType => {
-        dispatch(
-          updateModal({
-            type: MODAL_LOADING,
-            callback: () => setTimeout(() => dispatch(closeModal())),
-            message: `Syncing 📡 ${accountType} account...`,
-            showCloseAfterDelay: true,
-          })
-        );
+        const onboardingShown = [
+          'MODAL_ACCOUNT_CREATED',
+          'MODAL_AUGUR_USES_DAI',
+          'MODAL_BUY_DAI',
+          'MODAL_TEST_BET',
+        ].includes(modal.type);
+        if (!onboardingShown) {
+          dispatch(
+            updateModal({
+              type: MODAL_LOADING,
+              callback: () =>
+                setTimeout(() => {
+                  dispatch(closeModal());
+                }),
+              message: `Syncing 📡 ${accountType} account...`,
+              showCloseAfterDelay: true,
+            })
+          );
+        }
       };
 
       const errorModal = () => {
@@ -257,7 +268,12 @@ interface initAugurParams {
 
 export function initAugur(
   history: History,
-  { ethereumNodeHttp, ethereumNodeWs, sdkEndpoint, useWeb3Transport }: initAugurParams,
+  {
+    ethereumNodeHttp,
+    ethereumNodeWs,
+    sdkEndpoint,
+    useWeb3Transport,
+  }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) {
   return (
