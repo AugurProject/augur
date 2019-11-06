@@ -618,12 +618,12 @@ export default class MarketView extends Component<
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
-                        marketId={tradingTutorial && marketId}
+                        marketId={marketId}
                         market={preview && market}
                         preview={preview}
                         tradingTutorial={tradingTutorial}
                         orders={orders}
-                        fills={fillls}
+                        fills={fills}
                       />
                     </div>
                   </ModulePane>
