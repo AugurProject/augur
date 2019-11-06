@@ -1278,7 +1278,7 @@ export interface InputHeadingProps {
 }
 
 export const InputHeading = (props: InputHeadingProps) => (
-  <div className={Styles.MarketQuestionText}>
+  <div className={Styles.InputHeading}>
     <h1>{props.heading}</h1>
     <span>
       {props.subHeading}
