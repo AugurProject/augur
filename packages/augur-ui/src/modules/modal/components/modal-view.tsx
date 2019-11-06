@@ -47,6 +47,7 @@ import ModalAccountCreated from 'modules/modal/containers/modal-account-created'
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
 import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
 import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
+import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -153,6 +154,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTestBet />;
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
+    case TYPES.MODAL_TUTORIAL_INTRO:
+      return <ModalTutorialIntro {...modal} />;
     case TYPES.MODAL_GLOBAL_CHAT:
       return <ModalGlobalChat />;
     case TYPES.MODAL_ACCOUNT_CREATED:
