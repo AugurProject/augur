@@ -140,7 +140,7 @@ export class HotLoading {
         if (marketType === MarketTypeName.YesNo) {
           description = i == 1 ? "No" : "Yes";
         } else if (marketType === MarketTypeName.Categorical) {
-          description = Buffer.from(outcomes[i], 'hex').toString();
+          description = Buffer.from(outcomes[i - 1].substr(2), 'hex').toString().replace(/\0/g, '');
         } else {
           description = scalarDenomination;
         }

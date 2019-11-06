@@ -271,6 +271,7 @@ const loadReportingMarkets = (
 };
 
 export const hotloadMarket = (marketId) => {
+  console.log('Hot Loading Market', marketId);
   const augur = augurSdk.get();
   augur.hotloadMarket(marketId);
 }
