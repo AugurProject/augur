@@ -18,7 +18,7 @@
     left: 0;
     right: 0;
     position: absolute;
-    z-index: 100;
+    z-index: @mask-obscure;
   }
 }
 
@@ -107,12 +107,12 @@
   position: relative;
 
   > section:first-of-type {
-    z-index: 101;
+    z-index: @mask-illuminate;
   }
 }
 
 .HeaderTutorial {
-  z-index: 101;
+  z-index: @mask-illuminate;
 
   > section:last-of-type {
     top: calc(100% - 32px);
@@ -142,7 +142,7 @@
   position: relative;
   
   > div:first-of-type {
-    z-index: 101;
+    z-index: @mask-illuminate;
   }
 
   > section:last-of-type {

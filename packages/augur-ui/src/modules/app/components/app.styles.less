@@ -51,6 +51,39 @@ h6 {
     /* topbar mobile height */
     grid-template-rows: @top-bar-height-mobile auto;
   }
+
+  &.TradingTutorial {
+    grid-template-rows: @size-32 @top-bar-height auto;
+  }
+}
+
+.TutorialBanner {
+  z-index: @mask-illuminate;
+  background: @color-secondary-action;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid @color-secondary-action-outline;
+
+  > span {
+    .text-12-bold;
+
+    color: @color-primary-text;
+    flex: 1;
+    text-align: center;
+  }
+
+  > button {
+    > svg {
+      width: @size-10;
+      height: @size-10;
+      margin-right: @size-16;
+
+      > path {
+        stroke: @color-primary-text;
+      }
+    }
+  }
 }
 
 .Main__wrap {
