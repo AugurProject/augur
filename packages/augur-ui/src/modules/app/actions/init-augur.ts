@@ -83,7 +83,7 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: `Syncing 📡 ${accountType} account...`,
+              message: `Syncing ${accountType} account...`,
               showCloseAfterDelay: true,
             })
           );
