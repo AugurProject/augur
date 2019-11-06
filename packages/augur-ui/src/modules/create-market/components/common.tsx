@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import {
   TextInput,
   DatePicker,
@@ -271,13 +271,19 @@ export interface ExplainerBlockProps {
 export const ExplainerBlock = (props: ExplainerBlockProps) => (
   <div className={Styles.ExplainerBlock}>
     <h2>{props.title}</h2>
-    {props.subtexts.map((subtext, index) => {
-      return props.useBullets ? (
-        <li key={index}>{subtext}</li>
-      ) : (
-        <p key={index}>{subtext}</p>
-      );
-    })}
+    <ul
+      className={classNames({
+        [Styles.NotBulleted]: !props.useBullets,
+      })}
+    >
+      {props.subtexts.map((subtext, index) => {
+        return props.useBullets ? (
+          <li key={index}>{subtext}</li>
+        ) : (
+          <p key={index}>{subtext}</p>
+        );
+      })}
+    </ul>
   </div>
 );
 
@@ -1288,3 +1294,25 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
     </div>
   );
 };
+
+export interface InputHeadingProps {
+  name: string;
+  heading: string;
+  subHeading: string;
+  listItems: string[];
+}
+
+export const InputHeading = (props: InputHeadingProps) => (
+  <div className={Styles.InputHeading}>
+    <h1>{props.heading}</h1>
+    <span>
+      {props.subHeading}
+      <ExternalLinkButton URL={'http://www.augur.net'} label={'Learn more'} />
+    </span>
+    <ul key={props.name}>
+      {props.listItems.map((i, ndx) => (
+        <li key={ndx}>{i}</li>
+      ))}
+    </ul>
+  </div>
+);
