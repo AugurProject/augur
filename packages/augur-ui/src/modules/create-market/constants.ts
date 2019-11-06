@@ -506,3 +506,8 @@ export const VALIDATION_ATTRIBUTES = {
     checkUserInputFilled: true,
   },
 };
+
+export const TemplateBannerText = {
+  [INDEXES] : 'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
+  [STOCKS] : 'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL'
+}

@@ -49,6 +49,7 @@ export interface DismissableNoticeProps {
   buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES;
   buttonText?: string;
   buttonAction?: Function;
+  className?: string;
   show: boolean;
 }
 
@@ -58,7 +59,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
   return (
     <>
       {show ? (
-        <div className={Styles.DismissableNotice}>
+        <div className={classNames(Styles.DismissableNotice, props.className)}>
           <span>
             {ExclamationCircle}
           </span>
