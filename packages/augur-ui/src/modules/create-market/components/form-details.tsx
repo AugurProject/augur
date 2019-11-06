@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import {
@@ -12,11 +12,11 @@ import {
   Subheaders,
   LineBreak,
   NumberedList,
-  DateTimeHeaders,
   SmallSubheaders,
   QuestionBuilder,
   DateTimeSelector,
   ResolutionRules,
+  InputHeading,
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
@@ -193,11 +193,16 @@ export default class FormDetails extends React.Component<
                 uniqueKey={'nonTemplateRes'}
               />
 
-              <Subheaders
-                header="Market question"
-                link
-                subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
+              <InputHeading
+                name={'question'}
+                heading={'Market question'}
+                subHeading={'What do you want people to predict?'}
+                listItems={[
+                  'If entering a date and time in the Market Question, enter a date and time in the UTC-0 timezone.',
+                  'If the winning outcome will be determined using a specific source, you must enter the source URL or its full name in the Market Question.'
+                ]}
               />
+
               <TextInput
                 type="textarea"
                 placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
@@ -359,10 +364,14 @@ export default class FormDetails extends React.Component<
 
           {!isTemplate && (
             <>
-              <Subheaders
-                header="Resolution details"
-                subheader="Describe what users need to know to determine the outcome of the event."
-                link
+              <InputHeading
+                name={'resolution'}
+                heading={'Resolution details'}
+                subHeading={'Describe what users need to know to determine the outcome of the event.'}
+                listItems={[
+                  'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
+                  'Do not enter a resolution source in Resolution Details, it must be entered in the Market Question.'
+                ]}
               />
               <TextInput
                 type="textarea"
