@@ -14,7 +14,7 @@ def test_rep_oracle(contractsFixture, market, universe):
     uniswap = contractsFixture.applySignature('UniswapV2', uniswapExchangeAddress)
 
     # Initially the price will just be the initialization value
-    initialPrice = repOracle.gensisInitialRepPriceinAttoCash()
+    initialPrice = repOracle.genesisInitialRepPriceinAttoCash()
     assert repOracle.pokeRepPriceInAttoCash(reputationToken.address) == initialPrice
 
     # Add liquidity to suggest the price is 1 REP = 20 Cash

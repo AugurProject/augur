@@ -7080,13 +7080,6 @@ export class RepPriceOracle<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public gensisInitialRepPriceinAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"gensisInitialRepPriceinAttoCash","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public initialize = async (augur: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_augur","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -7110,6 +7103,13 @@ export class RepPriceOracle<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"}],"name":"exchangeData","outputs":[{"name":"exchange","type":"address"},{"name":"cashAmount","type":"uint256"},{"name":"repAmount","type":"uint256"},{"name":"blockNumber","type":"uint256"},{"name":"price","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [arg0], options.sender)
 		return <{exchange: string, cashAmount: TBigNumber, repAmount: TBigNumber, blockNumber: TBigNumber, price: TBigNumber}>result
+	}
+
+	public genesisInitialRepPriceinAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"genesisInitialRepPriceinAttoCash","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public tau_ = async (options?: { sender?: string }): Promise<TBigNumber> => {

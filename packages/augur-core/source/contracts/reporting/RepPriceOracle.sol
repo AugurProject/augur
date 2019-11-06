@@ -24,7 +24,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     mapping(address => ExchangeData) public exchangeData;
 
-    uint256 public gensisInitialRepPriceinAttoCash = 9 * 10**18;
+    uint256 public genesisInitialRepPriceinAttoCash = 9 * 10**18;
 
     function initialize(IAugur _augur) public beforeInitialized {
         augur = _augur;
@@ -103,7 +103,7 @@ contract RepPriceOracle is IRepPriceOracle, Initializable {
 
     function getInitialPrice(IV2ReputationToken _reputationToken) private view returns (uint256) {
         IUniverse _parentUniverse = _reputationToken.getUniverse().getParentUniverse();
-        uint256 _initialPrice = gensisInitialRepPriceinAttoCash;
+        uint256 _initialPrice = genesisInitialRepPriceinAttoCash;
         if (_parentUniverse != IUniverse(0)) {
             IV2ReputationToken _parentReputationToken = _parentUniverse.getReputationToken();
             _initialPrice = exchangeData[address(_parentReputationToken)].price;

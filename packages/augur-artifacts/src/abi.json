@@ -13516,20 +13516,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "gensisInitialRepPriceinAttoCash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -13571,6 +13557,20 @@
 				},
 				{
 					"name": "price",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "genesisInitialRepPriceinAttoCash",
+			"outputs": [
+				{
+					"name": "",
 					"type": "uint256"
 				}
 			],
