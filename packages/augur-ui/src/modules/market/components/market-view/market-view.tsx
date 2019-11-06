@@ -27,6 +27,7 @@ import {
   TRADING_TUTORIAL,
   TRADING_TUTORIAL_STEPS,
   TRADING_TUTORIAL_COPY,
+  MODAL_TUTORIAL_OUTRO,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -301,13 +302,14 @@ export default class MarketView extends Component<
 
   next = () => {
     this.setState({ tutorialStep: this.state.tutorialStep + 1 });
+    const { market, updateModal, removeAlert } = this.props;
 
     if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
-      const { market, currentTimestamp } = this.props;
       this.props.addAlert({
         name: PUBLICFILLORDER,
         toast: true,
-        id: 'trading_alert' + currentTimestamp,
+        id: TRADING_TUTORIAL,
+        uniqueId: TRADING_TUTORIAL,
         status: TXEventName.Success,
         params: {
           market: TRADING_TUTORIAL,
@@ -324,6 +326,15 @@ export default class MarketView extends Component<
             maxPrice: market.maxPrice,
             marketType: market.marketType,
           },
+        },
+      });
+    } else if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) {
+      removeAlert(TRADING_TUTORIAL, PUBLICFILLORDER);
+    } else if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) {
+      updateModal({
+        type: MODAL_TUTORIAL_OUTRO,
+        back: () => {
+          this.setState({tutorialStep: TRADING_TUTORIAL_STEPS.MARKET_DETAILS});
         },
       });
     }

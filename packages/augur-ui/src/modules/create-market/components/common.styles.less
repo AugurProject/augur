@@ -292,23 +292,32 @@
     color: @color-primary-text;
     margin-bottom: @size-8;
   }
+  > ul {
+    list-style-position: outside;
+    list-style-type: disc;
+    margin: 0 @size-16;
 
-  > p,
-  > li {
-    .text-14;
-
-    color: @color-secondary-text;
-    line-height: 140%;
-    margin: 0;
-
-    > span {
-      color: @color-primary-text;
+    &.NotBulleted {
+      margin: 0;
     }
-  }
 
-  > p:not(:last-of-type),
-  > li:not(:last-of-type) {
-    margin-bottom: @size-8;
+    > p,
+    > li {
+      .text-14;
+
+      color: @color-secondary-text;
+      line-height: 140%;
+      margin: 0;
+
+      > span {
+        color: @color-primary-text;
+      }
+    }
+
+    > p:not(:last-of-type),
+    > li:not(:last-of-type) {
+      margin-bottom: @size-8;
+    }
   }
 }
 
@@ -466,6 +475,46 @@
 
     > span:nth-of-type(2) {
       margin-top: @size-24;
+    }
+  }
+}
+
+.InputHeading {
+  display: flex;
+  flex-direction: column;
+
+  > h1 {
+    .text-16-medium;
+
+    color: @color-primary-text;
+    margin: @size-32 0 @size-8;
+  }
+
+  > span {
+    .text-12;
+
+    color: @color-secondary-text;
+    padding-right: @size-8;
+
+    > button {
+      padding-left: @size-8;
+    }
+  }
+
+  > ul {
+    list-style-position: outside;
+    list-style-type: disc;
+    margin: 0 @size-16;
+
+    > li {
+      .text-12;
+
+      color: @color-secondary-text;
+      margin-top: @size-4;
+
+      &:last-of-type {
+        margin-bottom: @size-12;
+      }
     }
   }
 }
