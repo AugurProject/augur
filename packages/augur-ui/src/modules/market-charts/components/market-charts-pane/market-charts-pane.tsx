@@ -115,6 +115,7 @@ export default class MarketChartsPane extends Component<
                 {!preview && (
                   <MarketOutcomesChart
                     {...shared}
+                    daysPassed={daysPassed}
                   />
                 )}
               </ModulePane>

@@ -177,6 +177,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay);
     let interval = daysPassed <= 7 ? mmSecondsInHour : mmSecondsInDay;
     interval = daysPassed >= 60 ? mmSecondsInWeek : interval;
+
     return {
       labels: {
         format: interval.isEqualTo(mmSecondsInHour) ? hours : days,
@@ -283,7 +284,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     const newOptions = Object.assign(options, { series });
 
     this.setState({ options: newOptions });
-
+    
     // initial load
     if (!this.chart || !hasData) {
       this.chart = Highcharts.stockChart(this.container, newOptions);
