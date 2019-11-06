@@ -28,7 +28,7 @@ import {
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
-  MOBILE_MENU_STATES,
+  MOBILE_MENU_STATES
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
@@ -156,7 +156,6 @@ export default class AppView extends Component<AppProps> {
         }
       }
     );
-
     const currentPath = parsePath(location.pathname)[0];
     updateCurrentBasePath(currentPath);
 

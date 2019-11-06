@@ -29,6 +29,7 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import getValue from 'utils/get-value';
+import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 
 const getMarketPath = id => {
   return {
@@ -92,6 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
   addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  addPendingOrder: (order, marketId) => dispatch(addPendingOrder(order, marketId)),
   loginModal: () =>
     dispatch(
       updateModal({

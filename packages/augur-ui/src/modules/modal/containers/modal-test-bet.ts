@@ -5,8 +5,15 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { ONBOARDING_SEEN_KEY } from 'modules/common/constants';
+import {
+  ONBOARDING_SEEN_KEY,
+  TRADING_TUTORIAL,
+} from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKET } from 'modules/routes/constants/views';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { TestBet } from 'modules/modal/common';
 
 const mapStateToProps = (state: AppState) => ({
@@ -37,8 +44,13 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   buttons: [
     {
       text: sP.isMobile ? 'Watch video' : 'Place test bet',
-      disabled: true,
       action: () => {
+        oP.history.push({
+          pathname: makePath(MARKET),
+          search: makeQuery({
+            [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
+          }),
+        });
         dP.setOnboardingSeen();
         dP.closeModal();
       },

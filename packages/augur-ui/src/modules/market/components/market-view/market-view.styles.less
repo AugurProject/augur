@@ -9,6 +9,17 @@
     pointer-events: none;
     min-width: 100%;
   }
+
+  > span:first-of-type {
+    background: @color-dark-grey;
+    opacity: .7;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 100;
+  }
 }
 
 .MarketView__button {
@@ -79,7 +90,7 @@
   flex-grow: 1;
   margin: 0 @size-4;
 
-  > section:first-of-type {
+  > div:first-of-type > section:first-of-type {
     flex: unset;
     margin: 0 0 @size-4;
     min-height: fit-content;
@@ -87,6 +98,73 @@
     @media @breakpoint-mobile {
       padding: 0;
     }
+  }
+}
+
+.HeaderTutorial,
+.OrderBookTutorial,
+.TradingFormTutorial {
+  position: relative;
+
+  > section:first-of-type {
+    z-index: 101;
+  }
+}
+
+.HeaderTutorial {
+  z-index: 101;
+
+  > section:last-of-type {
+    top: calc(100% - 32px);
+  }
+}
+
+.TradingFormTutorial {
+  pointer-events: all;
+  
+  > section:last-of-type {
+    left: unset;
+    right: -100%;
+    top: 0;
+  }
+}
+
+.OrderBookTutorial {
+  > section:last-of-type {
+    left: -100%;
+    top: 0;
+  }
+}
+
+.OpenOrdersTutorial,
+.FillsTutorial,
+.PositionsTutorial {
+  position: relative;
+  
+  > div:first-of-type {
+    z-index: 101;
+  }
+
+  > section:last-of-type {
+    top: -80%;
+  }
+}
+
+.OpenOrdersTutorial {
+  > section:last-of-type {
+    top: -130%;
+  }
+}
+
+.FillsTutorial {
+  > section:last-of-type {
+    left: 100px;
+  }
+}
+
+.PositionsTutorial {
+  > section:last-of-type {
+    left: 200px;
   }
 }
 

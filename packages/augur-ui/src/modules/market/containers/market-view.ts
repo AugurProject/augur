@@ -9,26 +9,67 @@ import {
   MODAL_MARKET_REVIEW,
   MARKET_REVIEW_SEEN,
   MODAL_MARKET_LOADING,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import { NewMarket } from 'modules/types';
+import deepClone from 'utils/deep-clone';
+import { formatDai, formatShares } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
+import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { addAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
-  const market = ownProps.market || selectMarket(marketId);
+  let market = {};
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
+  if (tradingTutorial) {
+    market = {
+      ...deepClone<NewMarket>(EMPTY_STATE),
+      id: TRADING_TUTORIAL,
+      description: 'Which NFL team will win?',
+      numOutcomes: 3,
+      orderBook: {
+        2: [
+          {
+            avgPrice: formatDai(.3),
+            cumulativeShares: "1",
+            id: 1,
+            mySize: "1",
+            orderEstimate: createBigNumber(.3),
+            outcomeId: 2,
+            outcomeName: "Yes",
+            price: "0.3",
+            quantity: "1",
+            shares: "1",
+            sharesEscrowed: formatShares(.3),
+            tokensEscrowed: formatDai(.3),
+            type: "buy",
+            unmatchedShares: formatShares(.3)
+          }
+        ]
+      }
+    };
+  } else {
+    market = ownProps.market || selectMarket(marketId)
+  }
 
   const marketReviewSeen =
-    windowRef &&
+   tradingTutorial ||
+    (windowRef &&
     windowRef.localStorage &&
-    Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
+    Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN)));
 
-  if (market === null) {
+  if (market === null || !connection.isConnected) {
     return {
+      tradingTutorial,
       isMarketLoading: true,
       isConnected: connection.isConnected && universe.id != null,
       canHotload: connection.canHotload,
@@ -39,6 +80,8 @@ const mapStateToProps = (state, ownProps) => {
 
 
   return {
+    preview: tradingTutorial,
+    tradingTutorial,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     outcomes: market.outcomes || [],
     isConnected: connection.isConnected && universe.id != null,
@@ -75,6 +118,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
     closeMarketLoadingModal: () => dispatch(closeModal()),
+    addAlert: (alert) => dispatch(addAlert(alert)),
 });
 
 const Market = withRouter(
