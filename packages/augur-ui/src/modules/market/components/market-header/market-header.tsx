@@ -7,6 +7,7 @@ import {
   TwoArrowsOutline,
   LeftChevron,
   CopyAlternateIcon,
+  TemplateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
@@ -194,6 +195,7 @@ export default class MarketHeader extends Component<
                     {LeftChevron} Back
                   </button>
                   <MarketTypeLabel marketType={marketType} />
+                  {market.isTemplate && <>{TemplateIcon}</>}
                 </WordTrail>
                 <SocialMediaButtons marketAddress={market.id} marketDescription={description} />
                 <div id="copy_marketId" data-clipboard-text={market.id}>

@@ -677,10 +677,17 @@ div.LinearPropertyViewTransaction {
 
 .WordTrail {
   display: inline-flex;
+  align-items: center;
   // Required to make ellipsis work.
   min-width: 0;
 
+  > svg {
+    display: flex;
+    margin-right: @size-8;
+  }
+
   > button {
+    align-self: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
