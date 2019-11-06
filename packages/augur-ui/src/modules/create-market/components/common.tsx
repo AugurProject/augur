@@ -47,7 +47,7 @@ import {
   CHOICE,
   REQUIRED,
 } from '@augurproject/artifacts';
-import { TemplateBannerText } from '../constants';
+import { TemplateBannerText } from 'modules/create-market/constants';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 
 export interface HeaderProps {
