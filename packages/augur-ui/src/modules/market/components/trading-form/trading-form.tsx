@@ -125,7 +125,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       case !isLogged:
         initialMessage = 'Login or Signup to place an order.';
         break;
-      case isLogged && !hasFunds:
+      case isLogged && !hasFunds && !tradingTutorial:
         initialMessage = 'Add funds to begin trading.';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:

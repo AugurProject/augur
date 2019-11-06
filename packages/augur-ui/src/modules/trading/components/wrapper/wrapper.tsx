@@ -544,6 +544,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               availableDai={availableDai}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
+              tradingTutorial={tradingTutorial}
             />
           )}
         <div

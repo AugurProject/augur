@@ -40,6 +40,7 @@ interface ConfirmProps {
   minPrice: BigNumber;
   scalarDenomination: string | null;
   numOutcomes: number;
+  tradingTutorial?: boolean;
 }
 
 interface ConfirmState {
@@ -82,6 +83,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasLimit,
       availableEth,
       availableDai,
+      tradingTutorial
     } = props || this.props;
 
     const {
@@ -103,7 +105,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       allowanceBigNumber &&
-      createBigNumber(totalCost.value).gt(allowanceBigNumber)
+      createBigNumber(totalCost.value).gt(allowanceBigNumber) &&
+      !tradingTutorial
     ) {
       needsApproval = true;
       messages = {
@@ -113,7 +116,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (!isNaN(numTrades) && numTrades > 1) {
+    if (!isNaN(numTrades) && numTrades > 1 && !tradingTutorial) {
       messages = {
         header: 'MULTIPLE TRANSACTIONS',
         type: WARNING,
