@@ -18,8 +18,6 @@ import MarketComments from 'modules/market/containers/market-comments';
 import {
   CATEGORICAL,
   BUY,
-  MODAL_TRADING_OVERLAY,
-  TRADING_TUTORIAL,
   YES_NO_YES_OUTCOME_NAME,
   PUBLICFILLORDER,
   LONG,
@@ -74,6 +72,7 @@ interface MarketViewProps {
   hotloadMarket: Function;
   canHotload: boolean;
   removeAlert: Function;
+  daysPassed?: number;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -355,6 +354,7 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
+      daysPassed,
     } = this.props;
     const {
       selectedOutcomeId,
