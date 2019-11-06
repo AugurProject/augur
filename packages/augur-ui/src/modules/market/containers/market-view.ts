@@ -22,7 +22,7 @@ import deepClone from 'utils/deep-clone';
 import { formatDai, formatShares } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
-import { addAlert } from 'modules/alerts/actions/alerts';
+import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 
 const mapStateToProps = (state, ownProps) => {
@@ -119,6 +119,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     ),
     closeMarketLoadingModal: () => dispatch(closeModal()),
     addAlert: (alert) => dispatch(addAlert(alert)),
+    removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
 });
 
 const Market = withRouter(
