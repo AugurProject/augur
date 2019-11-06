@@ -24,6 +24,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
+import { getMarketAgeInDays } from 'utils/format-date';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -78,8 +79,13 @@ const mapStateToProps = (state, ownProps) => {
     };
   }
 
+  const daysPassed =
+    market &&
+    market.creationTime &&
+    getMarketAgeInDays(market.creationTime, selectCurrentTimestampInSeconds(state));
 
   return {
+    daysPassed,
     preview: tradingTutorial,
     tradingTutorial,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
