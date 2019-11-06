@@ -13,6 +13,7 @@ import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IShareToken.sol';
+import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/Reporting.sol';
