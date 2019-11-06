@@ -47,6 +47,8 @@ import {
   CHOICE,
   REQUIRED,
 } from '@augurproject/artifacts';
+import { TemplateBannerText } from '../constants';
+import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 
 export interface HeaderProps {
   text: string;
@@ -1098,6 +1100,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           }
         })}
       </div>
+      <TemplateBanners categories={newMarket.categories} />
       {dateTimeIndex > -1 && (
         <EstimatedStartSelector
           newMarket={newMarket}
@@ -1113,6 +1116,27 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
       )}
     </div>
   );
+};
+
+export interface TemplateBannersProps {
+  categories: string[]
+}
+
+export const TemplateBanners = (props: TemplateBannersProps) => {
+  const text = props.categories.reduce(
+    (p, c) =>
+      Object.keys(TemplateBannerText).includes(c) ? TemplateBannerText[c] : p,
+    null
+  );
+  if (!text) return null;
+  return (
+    <DismissableNotice
+      title={text}
+      description={''}
+      buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+      show
+    />
+  )
 };
 
 export interface CategoricalTemplateProps {
