@@ -67,7 +67,7 @@ const mapStateToProps = (state, ownProps) => {
     windowRef.localStorage &&
     Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN)));
 
-  if (market === null || !connection.isConnected) {
+  if (market === null) {
     return {
       tradingTutorial,
       isMarketLoading: true,
