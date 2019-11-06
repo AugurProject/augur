@@ -44,6 +44,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   buttons: [
     {
       text: sP.isMobile ? 'Watch video' : 'Place test bet',
+      disabled: sP.isMobile,
       action: () => {
         oP.history.push({
           pathname: makePath(MARKET),
