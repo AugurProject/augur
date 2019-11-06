@@ -41,6 +41,7 @@ import {
   hasNoTemplateCategoryChildren,
   hasNoTemplateCategoryTertiaryChildren,
 } from 'modules/create-market/get-template';
+import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 
 interface FormDetailsProps {
   updateNewMarket: Function;
@@ -148,18 +149,21 @@ export default class FormDetails extends React.Component<
                   {
                     value: YES_NO,
                     header: 'Yes / No',
+                    icon: YesNoMarketIcon,
                     description:
                       'There are two possible outcomes: “Yes” or “No”',
                   },
                   {
                     value: CATEGORICAL,
                     header: 'Multiple Choice',
+                    icon: CategoricalMarketIcon
                     description:
                       'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
                   },
                   {
                     value: SCALAR,
                     header: 'Scalar',
+                    icon: ScalarMarketIcon
                     description:
                       'A range of numeric outcomes: “USD range” between “1” and “100”.',
                   },
