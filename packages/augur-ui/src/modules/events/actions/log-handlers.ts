@@ -169,14 +169,14 @@ export const handleMarketsUpdatedLog = (
   console.log('handleMarketsUpdatedChangedLog');
 
   let marketsDataById = {}
-  if (typeof marketsInfo === "object") {
-    const market = marketsInfo as Getters.Markets.MarketInfo;
-    marketsDataById[market.id] = market;
-  } else {
+  if (Array.isArray(marketsInfo)) {
     marketsDataById = marketsInfo.reduce((acc, marketData) => ({
       [marketData.id]: marketData,
       ...acc,
     }), {} as MarketInfos);
+  } else {
+    const market = marketsInfo as Getters.Markets.MarketInfo;
+    marketsDataById[market.id] = market;
   }
 
   dispatch(updateMarketsData(marketsDataById));
