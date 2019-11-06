@@ -444,7 +444,18 @@ div.ErrorField:focus {
           margin-right: @size-24;
 
           > span {
-            border: 2px solid @color-secondary-text;
+            background: @color-secondary-action;
+            border: @size-2 solid @color-secondary-action-outline;
+
+            > svg  {
+              height: @size-6;
+              left: @size-1;
+              top: @size-3;
+
+              > path {
+                stroke-width: @size-2;
+              }
+            }
           }
         }
       }
