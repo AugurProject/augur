@@ -19,7 +19,7 @@
 pragma solidity 0.5.10;
 
 import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
-import "../interfaces/IStructs.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
 
 
 library LibStakingRichErrors {

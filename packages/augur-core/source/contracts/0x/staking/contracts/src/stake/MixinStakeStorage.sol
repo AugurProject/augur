@@ -18,10 +18,10 @@
 
 pragma solidity 0.5.10;
 
-import "../libs/LibSafeDowncast.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibSafeDowncast.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "../interfaces/IStructs.sol";
-import "../sys/MixinScheduler.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
+import "ROOT/0x/staking/contracts/src/sys/MixinScheduler.sol";
 
 
 /// @dev This mixin contains logic for managing stake storage.

@@ -19,9 +19,9 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import "./libs/LibConstants.sol";
-import "ROOT/0x/utils/contracts/src/LibOrder.sol";
-import "ROOT/0x/utils/contracts/src/LibFillResults.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/libs/LibConstants.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibOrder.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibFillResults.sol";
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
 
 

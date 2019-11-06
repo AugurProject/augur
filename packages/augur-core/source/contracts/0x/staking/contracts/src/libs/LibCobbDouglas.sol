@@ -19,7 +19,7 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import "./LibFixedMath.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibFixedMath.sol";
 
 
 library LibCobbDouglas {

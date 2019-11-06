@@ -21,10 +21,10 @@ pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "../libs/LibStakingRichErrors.sol";
-import "../interfaces/IStructs.sol";
-import "../sys/MixinAbstract.sol";
-import "./MixinStakingPoolRewards.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
+import "ROOT/0x/staking/contracts/src/sys/MixinAbstract.sol";
+import "ROOT/0x/staking/contracts/src/staking_pools/MixinStakingPoolRewards.sol";
 
 
 contract MixinStakingPool is

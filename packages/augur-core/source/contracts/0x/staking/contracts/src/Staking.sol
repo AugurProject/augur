@@ -19,10 +19,10 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import "./interfaces/IStaking.sol";
-import "./sys/MixinParams.sol";
-import "./stake/MixinStake.sol";
-import "./fees/MixinExchangeFees.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStaking.sol";
+import "ROOT/0x/staking/contracts/src/sys/MixinParams.sol";
+import "ROOT/0x/staking/contracts/src/stake/MixinStake.sol";
+import "ROOT/0x/staking/contracts/src/fees/MixinExchangeFees.sol";
 
 
 contract Staking is

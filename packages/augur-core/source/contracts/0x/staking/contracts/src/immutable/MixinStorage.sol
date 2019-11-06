@@ -21,10 +21,10 @@ pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/utils/contracts/src/Authorizable.sol";
-import "./MixinConstants.sol";
-import "../interfaces/IZrxVault.sol";
-import "../interfaces/IStructs.sol";
-import "../libs/LibStakingRichErrors.sol";
+import "ROOT/0x/staking/contracts/src/immutable/MixinConstants.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IZrxVault.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
 
 
 // solhint-disable max-states-count, no-empty-blocks

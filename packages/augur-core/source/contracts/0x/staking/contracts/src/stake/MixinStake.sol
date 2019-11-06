@@ -20,8 +20,8 @@ pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "../staking_pools/MixinStakingPool.sol";
-import "../libs/LibStakingRichErrors.sol";
+import "ROOT/0x/staking/contracts/src/staking_pools/MixinStakingPool.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
 
 
 contract MixinStake is

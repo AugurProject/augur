@@ -17,10 +17,11 @@
 */
 
 pragma solidity 0.5.10;
+pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/interfaces/IOwnable.sol";
-import "./IMatchOrders.sol";
-import "./IAssets.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/interfaces/IMatchOrders.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/interfaces/IAssets.sol";
 
 
 // solhint-disable no-empty-blocks

@@ -22,10 +22,10 @@ pragma experimental ABIEncoderV2;
 import "ROOT/0x/erc20/contracts/src/interfaces/IERC20Token.sol";
 import "ROOT/0x/erc20/contracts/src/interfaces/IEtherToken.sol";
 import "ROOT/0x/erc20/contracts/src/LibERC20Token.sol";
-import "ROOT/0x/utils/contracts/src/IWallet.sol";
-import "../interfaces/IUniswapExchangeFactory.sol";
-import "../interfaces/IUniswapExchange.sol";
-import "../interfaces/IERC20Bridge.sol";
+import "ROOT/0x/exchange-libs/contracts/src/IWallet.sol";
+import "ROOT/0x/asset-proxy/contracts/src/interfaces/IUniswapExchangeFactory.sol";
+import "ROOT/0x/asset-proxy/contracts/src/interfaces/IUniswapExchange.sol";
+import "ROOT/0x/asset-proxy/contracts/src/interfaces/IERC20Bridge.sol";
 
 
 // solhint-disable space-after-comma

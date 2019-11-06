@@ -19,14 +19,14 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/0x/utils/contracts/src/LibMath.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibMath.sol";
 import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "../libs/LibStakingRichErrors.sol";
-import "../interfaces/IStructs.sol";
-import "../sys/MixinFinalizer.sol";
-import "../staking_pools/MixinStakingPool.sol";
-import "./MixinExchangeManager.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
+import "ROOT/0x/staking/contracts/src/sys/MixinFinalizer.sol";
+import "ROOT/0x/staking/contracts/src/staking_pools/MixinStakingPool.sol";
+import "ROOT/0x/staking/contracts/src/fees/MixinExchangeManager.sol";
 
 
 contract MixinExchangeFees is

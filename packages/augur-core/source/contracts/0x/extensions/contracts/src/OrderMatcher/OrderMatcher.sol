@@ -20,9 +20,9 @@ pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
-import "./libs/LibConstants.sol";
-import "./MixinMatchOrders.sol";
-import "./MixinAssets.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/libs/LibConstants.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/MixinMatchOrders.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/MixinAssets.sol";
 
 
 // solhint-disable no-empty-blocks

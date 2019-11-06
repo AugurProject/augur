@@ -19,11 +19,11 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import "./libs/LibSafeDowncast.sol";
-import "./immutable/MixinStorage.sol";
-import "./immutable/MixinConstants.sol";
-import "./interfaces/IStorageInit.sol";
-import "./interfaces/IStakingProxy.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibSafeDowncast.sol";
+import "ROOT/0x/staking/contracts/src/immutable/MixinStorage.sol";
+import "ROOT/0x/staking/contracts/src/immutable/MixinConstants.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStorageInit.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStakingProxy.sol";
 
 
 contract StakingProxy is

@@ -20,7 +20,7 @@ pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/0x/exchange/contracts/src/interfaces/IExchange.sol";
-import "ROOT/0x/utils/contracts/src/LibOrder.sol";
+import "ROOT/0x/exchange-libs/contracts/src/LibOrder.sol";
 import "ROOT/0x/erc20/contracts/src/interfaces/IERC20Token.sol";
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";

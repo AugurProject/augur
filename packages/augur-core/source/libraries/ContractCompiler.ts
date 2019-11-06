@@ -51,8 +51,6 @@ export class ContractCompiler {
         return JSON.parse(compilerOutputJson);
     }
 
-
-
     private async getCompilerVersion() {
       const childProcess = spawn("solc", ["--version"]);
       /*
@@ -151,7 +149,25 @@ export class ContractCompiler {
 
     public async generateCompilerInput(): Promise<CompilerInput> {
         const ignoreFile = function(file: string, stats: fs.Stats): boolean {
-            if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'IAugurTrading'].includes(path.parse(file).base.replace(".sol", ""))) return true;
+            const ignoredFilenames = [
+              'IAugur',
+              'IDisputeCrowdsourcer',
+              'IDisputeWindow',
+              'IUniverse',
+              'IMarket',
+              'IReportingParticipant',
+              'IReputationToken',
+              'IOrders',
+              'IShareToken',
+              'Order',
+              'IV2ReputationToken',
+              'IInitialReporter',
+              'IAugurTrading',
+              // 0x stuff
+              'MixinMatchOrders',
+              'DutchAuction',
+            ];
+            if (ignoredFilenames.includes(path.parse(file).base.replace(".sol", ""))) return true;
             return stats.isFile() && path.extname(file) !== ".sol";
         }
         const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);

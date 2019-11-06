@@ -19,7 +19,7 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/0x/erc20/contracts/src/interfaces/IStructs.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStructs.sol";
 
 
 contract IStakingProxy {

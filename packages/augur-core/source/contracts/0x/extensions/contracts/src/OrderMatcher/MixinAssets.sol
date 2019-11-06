@@ -21,9 +21,9 @@ pragma solidity 0.5.10;
 import "ROOT/0x/utils/contracts/src/LibBytes.sol";
 import "ROOT/0x/utils/contracts/src/Ownable.sol";
 import "ROOT/0x/erc20/contracts/src/interfaces/IERC20Token.sol";
-import "ROOT/0x/contracts-erc721/contracts/src/interfaces/IERC721Token.sol";
-import "./libs/LibConstants.sol";
-import "./interfaces/IAssets.sol";
+import "ROOT/0x/erc721/contracts/src/interfaces/IERC721Token.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/libs/LibConstants.sol";
+import "ROOT/0x/extensions/contracts/src/OrderMatcher/interfaces/IAssets.sol";
 
 
 contract MixinAssets is

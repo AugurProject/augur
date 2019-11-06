@@ -19,11 +19,11 @@
 pragma solidity 0.5.10;
 
 import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
-import "../immutable/MixinStorage.sol";
-import "../immutable/MixinConstants.sol";
-import "../interfaces/IStakingEvents.sol";
-import "../interfaces/IStakingProxy.sol";
-import "../libs/LibStakingRichErrors.sol";
+import "ROOT/0x/staking/contracts/src/immutable/MixinStorage.sol";
+import "ROOT/0x/staking/contracts/src/immutable/MixinConstants.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStakingEvents.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStakingProxy.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
 
 
 contract MixinParams is

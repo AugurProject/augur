@@ -18,8 +18,8 @@
 
 pragma solidity 0.5.10;
 
-import "../archive/MixinAssetProxyDispatcher.sol";
-import "../archive/MixinAuthorizable.sol";
+import "ROOT/0x/asset-proxy/contracts/src/archive/MixinAssetProxyDispatcher.sol";
+import "ROOT/0x/asset-proxy/contracts/src/archive/MixinAuthorizable.sol";
 
 
 contract MultiAssetProxy is

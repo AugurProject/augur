@@ -20,9 +20,9 @@ pragma solidity 0.5.10;
 
 import "ROOT/0x/utils/contracts/src/LibRichErrors.sol";
 import "ROOT/0x/utils/contracts/src/LibSafeMath.sol";
-import "../libs/LibStakingRichErrors.sol";
-import "../immutable/MixinStorage.sol";
-import "../interfaces/IStakingEvents.sol";
+import "ROOT/0x/staking/contracts/src/libs/LibStakingRichErrors.sol";
+import "ROOT/0x/staking/contracts/src/immutable/MixinStorage.sol";
+import "ROOT/0x/staking/contracts/src/interfaces/IStakingEvents.sol";
 
 
 contract MixinScheduler is
