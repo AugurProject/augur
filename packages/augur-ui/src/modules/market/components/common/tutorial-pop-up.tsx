@@ -37,8 +37,8 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
   >
     <div>
       <h1>{props.text.title}</h1>
-      {props.text.subheader.map(subheader =>
-        <span>
+      {props.text.subheader.map((subheader, idx) =>
+        <span key={idx}>
           {subheader.text}
           {subheader.linkText && <a href={subheader.link} target="blank">{subheader.linkText}</a>}
         </span>

@@ -151,8 +151,9 @@ export default class MarketView extends Component<
       loadFullMarket,
       marketId,
       loadMarketTradingHistory,
+      tradingTutorial,
     } = this.props;
-    if (isConnected && !!marketId) {
+    if (isConnected && !!marketId && !tradingTutorial) {
       loadFullMarket(marketId);
       loadMarketTradingHistory(marketId);
     }
@@ -176,7 +177,13 @@ export default class MarketView extends Component<
       marketId,
       isMarketLoading,
       closeMarketLoadingModal,
+      tradingTutorial,
     } = this.props;
+
+    if (tradingTutorial) {
+      return;
+    }
+
     if (
       isConnected !== nextProps.isConnected &&
       (nextProps.isConnected &&
@@ -347,7 +354,7 @@ export default class MarketView extends Component<
       tutorialStep,
     } = this.state;
     if (isMarketLoading) {
-      if (canHotload) hotloadMarket(marketId);
+      if (canHotload && !tradingTutorial) hotloadMarket(marketId);
       return (
         <div
           ref={node => {
