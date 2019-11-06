@@ -194,6 +194,7 @@ export default class FormDetails extends React.Component<
               />
 
               <InputHeading
+                name={'question'}
                 heading={'Market question'}
                 subHeading={'What do you want people to predict?'}
                 listItems={[
@@ -364,6 +365,7 @@ export default class FormDetails extends React.Component<
           {!isTemplate && (
             <>
               <InputHeading
+                name={'resolution'}
                 heading={'Resolution details'}
                 subHeading={'Describe what users need to know to determine the outcome of the event.'}
                 listItems={[

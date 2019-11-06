@@ -269,13 +269,15 @@ export interface ExplainerBlockProps {
 export const ExplainerBlock = (props: ExplainerBlockProps) => (
   <div className={Styles.ExplainerBlock}>
     <h2>{props.title}</h2>
-    {props.subtexts.map((subtext, index) => {
-      return props.useBullets ? (
-        <li key={index}>{subtext}</li>
-      ) : (
-        <p key={index}>{subtext}</p>
-      );
-    })}
+    <ul>
+      {props.subtexts.map((subtext, index) => {
+        return props.useBullets ? (
+          <li key={index}>{subtext}</li>
+        ) : (
+          <p key={index}>{subtext}</p>
+        );
+      })}
+    </ul>
   </div>
 );
 
@@ -1265,6 +1267,7 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
 };
 
 export interface InputHeadingProps {
+  name: string;
   heading: string;
   subHeading: string;
   listItems: string[];
@@ -1277,9 +1280,9 @@ export const InputHeading = (props: InputHeadingProps) => (
       {props.subHeading}
       <ExternalLinkButton URL={'http://www.augur.net'} label={'Learn more'} />
     </span>
-    <ul>
-      {props.listItems.map(i => (
-        <li>{i}</li>
+    <ul key={props.name}>
+      {props.listItems.map((i, ndx) => (
+        <li key={ndx}>{i}</li>
       ))}
     </ul>
   </div>

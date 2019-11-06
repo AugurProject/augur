@@ -292,23 +292,28 @@
     color: @color-primary-text;
     margin-bottom: @size-8;
   }
+  > ul {
+    list-style-position: outside;
+    list-style-type: disc;
+    margin: 0 @size-16;
 
-  > p,
-  > li {
-    .text-14;
+    > p,
+    > li {
+      .text-14;
 
-    color: @color-secondary-text;
-    line-height: 140%;
-    margin: 0;
+      color: @color-secondary-text;
+      line-height: 140%;
+      margin: 0;
 
-    > span {
-      color: @color-primary-text;
+      > span {
+        color: @color-primary-text;
+      }
     }
-  }
 
-  > p:not(:last-of-type),
-  > li:not(:last-of-type) {
-    margin-bottom: @size-8;
+    > p:not(:last-of-type),
+    > li:not(:last-of-type) {
+      margin-bottom: @size-8;
+    }
   }
 }
 
