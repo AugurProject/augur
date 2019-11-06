@@ -440,11 +440,19 @@ class ContractsFixture:
             contract = snapshot['contracts'][contractName]
             self.contracts[contractName] = self.applySignature(None, contract['address'], contract['signature'])
 
+    def getBlockNumber(self):
+        return self.eth_tester.backend.chain.header.block_number
+
+    def mineBlocks(self, numBlocks):
+        for i in range(int(numBlocks)):
+            self.eth_tester.backend.chain.mine_block()
+
     def uploadAllContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.relativeContractsPath)):
             # skip the legacy reputation directory since it is unnecessary and we don't support uploads of contracts with constructors yet
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
+            if 'uniswap' in directory: continue
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -481,8 +489,13 @@ class ContractsFixture:
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
+    def uploadUniswapContracts(self):
+        resolvedUniswapPath = resolveRelativePath("../source/contracts/uniswap/UniswapV2.sol")
+        self.signatures["UniswapV2"] = self.generateSignature(resolvedUniswapPath)
+        self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=["", 1])
+
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync']
+        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync','RepPriceOracle']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
@@ -632,6 +645,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAugurTrading()
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
+    fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()

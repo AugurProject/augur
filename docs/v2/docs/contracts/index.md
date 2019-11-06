@@ -1646,6 +1646,28 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IRepPriceOracle`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRepPriceOracle.pokeRepPriceInAttoCash(contract IV2ReputationToken)"><code class="function-signature">pokeRepPriceInAttoCash(contract IV2ReputationToken _reputationToken)</code></a></li><li><a href="#IRepPriceOracle.getRepPriceInAttoCash(contract IV2ReputationToken)"><code class="function-signature">getRepPriceInAttoCash(contract IV2ReputationToken _reputationToken)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRepPriceOracle.pokeRepPriceInAttoCash(contract IV2ReputationToken)"></a><code class="function-signature">pokeRepPriceInAttoCash(contract IV2ReputationToken _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRepPriceOracle.getRepPriceInAttoCash(contract IV2ReputationToken)"></a><code class="function-signature">getRepPriceInAttoCash(contract IV2ReputationToken _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `IReportingParticipant`
 
 
@@ -4437,44 +4459,6 @@ Allows to get the address for a new proxy contact created via [`createProxyWithN
 
 
 <h4><a class="anchor" aria-hidden="true" id="ProxyFactory.ProxyCreation(contract Proxy)"></a><code class="function-signature">ProxyCreation(contract Proxy proxy)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `IRepPriceOracle`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRepPriceOracle.getRepPriceInAttoCash()"><code class="function-signature">getRepPriceInAttoCash()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IRepPriceOracle.getRepPriceInAttoCash()"></a><code class="function-signature">getRepPriceInAttoCash() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `RepPriceOracle`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RepPriceOracle.setRepPriceInAttoCash(uint256)"><code class="function-signature">setRepPriceInAttoCash(uint256 _repPriceinAttoCash)</code></a></li><li><a href="#RepPriceOracle.getRepPriceInAttoCash()"><code class="function-signature">getRepPriceInAttoCash()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepPriceOracle.setRepPriceInAttoCash(uint256)"></a><code class="function-signature">setRepPriceInAttoCash(uint256 _repPriceinAttoCash) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepPriceOracle.getRepPriceInAttoCash()"></a><code class="function-signature">getRepPriceInAttoCash() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
 
 
 
