@@ -798,36 +798,34 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </div>
           </li>
-          <li>
-            {!initialLiquidity && (
-              <>
-                <div>
-                  <CancelTextButton
-                    text="25%"
-                    action={() => this.updateTotalValue(0.25)}
-                  />
-                  <CancelTextButton
-                    text="50%"
-                    action={() => this.updateTotalValue(0.5)}
-                  />
-                  <CancelTextButton
-                    text="75%"
-                    action={() => this.updateTotalValue(0.75)}
-                  />
-                  <CancelTextButton
-                    text="100%"
-                    action={() => this.updateTotalValue(1)}
-                  />
-                </div>
+          {!initialLiquidity && (
+            <li>
+              <div>
                 <CancelTextButton
-                  text="clear"
-                  action={() => this.clearOrderFormProperties()}
+                  text="25%"
+                  action={() => this.updateTotalValue(0.25)}
                 />
-              </>
-            )}
-          </li>
+                <CancelTextButton
+                  text="50%"
+                  action={() => this.updateTotalValue(0.5)}
+                />
+                <CancelTextButton
+                  text="75%"
+                  action={() => this.updateTotalValue(0.75)}
+                />
+                <CancelTextButton
+                  text="100%"
+                  action={() => this.updateTotalValue(1)}
+                />
+              </div>
+              <CancelTextButton
+                text="clear"
+                action={() => this.clearOrderFormProperties()}
+              />
+            </li>
+          )}
           <li>
-            <label className={Styles.smallLabel}>
+            <label className={initialLiquidity ? Styles.Liquidity : Styles.smallLabel}>
               {ExclamationCircle}
               <span>
                 Max cost of{' '}
@@ -836,8 +834,8 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </label>
           </li>
-          <li>
-            {!initialLiquidity && (
+          {!initialLiquidity && (
+            <li>
               <TextButtonFlip
                 text="Advanced"
                 action={() => {
@@ -850,8 +848,8 @@ class Form extends Component<FromProps, FormState> {
                 }}
                 pointDown={s.showAdvanced}
               />
-            )}
-          </li>
+            </li>
+          )}
           {s.showAdvanced && (
             <li>
               <SquareDropdown
