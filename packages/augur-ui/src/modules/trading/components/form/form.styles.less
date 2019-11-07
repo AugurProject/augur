@@ -162,6 +162,24 @@
 
         &.Liquidity {
           margin-left: 0;
+
+          > svg {
+            height: @size-12;
+            width: @size-12;
+
+            > circle {
+              opacity: 1;
+              stroke: @color-primary-text;
+            }
+
+            > rect {
+              fill: @color-primary-text;
+            }
+
+            > path {
+              fill: @color-primary-text;
+            }
+          }
         }
       }
     }
