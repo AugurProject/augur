@@ -553,6 +553,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               s.trade &&
               ((s.trade.shareCost && s.trade.shareCost.value !== 0) ||
                 (s.trade.totalCost && s.trade.totalCost.value !== 0)),
+            [Styles.Liquidity]: !!initialLiquidity,
           })}
         >
           <OrderButton
