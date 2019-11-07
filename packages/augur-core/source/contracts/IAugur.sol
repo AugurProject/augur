@@ -55,4 +55,5 @@ contract IAugur {
     function logDesignatedReportStakeChanged(uint256 _designatedReportStake) public returns (bool);
     function logNoShowBondChanged(uint256 _noShowBond) public returns (bool);
     function logReportingFeeChanged(uint256 _reportingFee) public returns (bool);
+    function getUniverseForkIndex(IUniverse _universe) public view returns (uint256);
 }
