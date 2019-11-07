@@ -76,10 +76,10 @@ export class SDK {
   }
 
   pickConnector(sdkEndpoint: string) {
-    if (sdkEndpoint) {
+    if (isMobileSafari()) {
+      return new SEOConnector()
+    } else if (sdkEndpoint) {
       return new WebsocketConnector(sdkEndpoint);
-    } else if (isMobileSafari()) {
-      return new SEOConnector();
     } else {
       return new WebWorkerConnector();
     }
