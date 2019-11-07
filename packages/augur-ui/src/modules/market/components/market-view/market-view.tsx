@@ -47,6 +47,8 @@ import { formatShares, formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKETS } from 'modules/routes/constants/views';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -156,6 +158,8 @@ export default class MarketView extends Component<
       loadMarketTradingHistory,
       tradingTutorial,
     } = this.props;
+    this.tradingTutorialWidthCheck();
+
     if (isConnected && !!marketId && !tradingTutorial) {
       loadFullMarket(marketId);
       loadMarketTradingHistory(marketId);
@@ -184,6 +188,7 @@ export default class MarketView extends Component<
       tradingTutorial,
       updateModal,
     } = this.props;
+    this.tradingTutorialWidthCheck();
 
     if (tradingTutorial) {
       if (
@@ -211,6 +216,14 @@ export default class MarketView extends Component<
     if (isMarketLoading !== nextProps.isMarketLoading) {
       closeMarketLoadingModal();
       this.showMarketDisclaimer();
+    }
+  }
+
+  tradingTutorialWidthCheck() {
+    if (this.props.tradingTutorial && window.innerWidth <= 1280) { // TEMP_TABLET
+      // Don't show tradingTutorial on mobile,
+      // redirect to markets when we enter tablet breakpoints
+      this.props.history.push({ pathname: makePath(MARKETS) });
     }
   }
 
@@ -376,6 +389,7 @@ export default class MarketView extends Component<
         />
       );
     }
+
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
@@ -597,7 +611,7 @@ export default class MarketView extends Component<
 
                       <TradingForm
                         market={market}
-                        initialLiquidity={preview && !initialLiquidity}
+                        initialLiquidity={preview && !tradingTutorial}
                         tradingTutorial={tradingTutorial}
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeId}
