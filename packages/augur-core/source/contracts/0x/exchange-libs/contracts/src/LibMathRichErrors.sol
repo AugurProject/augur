@@ -5,7 +5,7 @@ library LibMathRichErrors {
 
     // bytes4(keccak256("DivisionByZeroError()"))
     bytes internal constant DIVISION_BY_ZERO_ERROR =
-        hex"a791837c";
+        "DivisionByZeroError";
 
     // bytes4(keccak256("RoundingError(uint256,uint256,uint256)"))
     bytes4 internal constant ROUNDING_ERROR_SELECTOR =

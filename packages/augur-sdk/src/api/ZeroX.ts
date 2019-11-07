@@ -90,6 +90,8 @@ export interface ZeroXTradeOrder {
   salt: BigNumber;
   makerAssetData: string;
   takerAssetData: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
 }
 
 export interface MatchingOrders {
@@ -220,6 +222,8 @@ export class ZeroX {
       salt: new BigNumber(signedOrder[9]._hex),
       makerAssetData: signedOrder[10],
       takerAssetData: signedOrder[11],
+      makerFeeAssetData: signedOrder[12],
+      takerFeeAssetData: signedOrder[13],
       signature,
       exchangeAddress: NULL_ADDRESS,
       orderHash
@@ -323,6 +327,8 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
+        makerFeeAssetData: "",
+        takerFeeAssetData: "",
       };
     })
 

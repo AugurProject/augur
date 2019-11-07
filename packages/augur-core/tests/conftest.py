@@ -504,6 +504,10 @@ class ContractsFixture:
             contract = self.upload("../source/contracts/0x/{}.sol".format(filename), constructorArgs=constructorArgs)
             zeroXContracts[alias] = contract.address
             self.contracts[alias] = contract
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC1155Proxy"])
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC20Proxy"])
+        self.contracts["ERC1155Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
         return zeroXContracts
 
     def initializeAllContracts(self):

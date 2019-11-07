@@ -89,7 +89,7 @@
     "solidity-coverage": "0.6.7"
   },
   "devDependencies": {
-    "@augurproject/solidity-typescript-generator": "1.1.6",
+    "@augurproject/solidity-typescript-generator": "1.1.8",
     "@types/chai": "4.2.3",
     "@types/jest": "24.0.18",
     "@types/node": "10.14.18",

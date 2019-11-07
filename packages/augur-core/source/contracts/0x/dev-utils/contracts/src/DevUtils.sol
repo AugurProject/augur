@@ -16,20 +16,20 @@
 
 */
 
-pragma solidity ^0.5.5;
+pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
+import "ROOT/0x/dev-utils/contracts/src/EthBalanceChecker.sol";
+import "ROOT/0x/dev-utils/contracts/src/LibTransactionDecoder.sol";
 import "ROOT/0x/dev-utils/contracts/src/OrderValidationUtils.sol";
 import "ROOT/0x/dev-utils/contracts/src/OrderTransferSimulationUtils.sol";
-import "ROOT/0x/dev-utils/contracts/src/LibTransactionDecoder.sol";
-import "ROOT/0x/dev-utils/contracts/src/EthBalanceChecker.sol";
 
 
 // solhint-disable no-empty-blocks
 contract DevUtils is
-    OrderValidationUtils,
-    LibTransactionDecoder,
     EthBalanceChecker,
+    LibTransactionDecoder,
+    OrderValidationUtils,
     OrderTransferSimulationUtils
 {
     constructor (address _exchange)

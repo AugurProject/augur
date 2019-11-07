@@ -41,4 +41,9 @@ contract Exchange is
         public
         LibEIP712ExchangeDomain(chainId, address(0))
     {}
+
+    // For testing purposes
+    function isValidSignature(LibOrder.Order memory order, bytes32 orderHash, bytes memory signature) public returns (bool) {
+        return _isValidOrderWithHashSignature(order, orderHash, signature);
+    }
 }

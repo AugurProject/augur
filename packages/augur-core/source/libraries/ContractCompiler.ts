@@ -141,7 +141,8 @@ export class ContractCompiler {
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, "");
-        if (['IExchange', 'FillOrder', 'ZeroXTrade', 'ZeroXExchange', 'SimulateTrade', 'IZeroXTrade', 'ZeroXTradeToken'].includes(path.parse(filePath).base.replace(".sol", ""))) {
+        const originalFileData = (await fs.readFile(filePath)).toString('utf8');
+        if (originalFileData.includes("pragma experimental ABIEncoderV2")) {
             result = "pragma experimental ABIEncoderV2;\n" + result;
         }
         return result;
@@ -149,27 +150,58 @@ export class ContractCompiler {
 
     public async generateCompilerInput(): Promise<CompilerInput> {
         const ignoreFile = function(file: string, stats: fs.Stats): boolean {
-            const ignoredFilenames = [
-              'IAugur',
-              'IDisputeCrowdsourcer',
-              'IDisputeWindow',
-              'IUniverse',
-              'IMarket',
-              'IReportingParticipant',
-              'IReputationToken',
-              'IOrders',
-              'IShareToken',
-              'Order',
-              'IV2ReputationToken',
-              'IInitialReporter',
-              'IAugurTrading',
-              // 0x stuff
-              'MixinMatchOrders',
-              'DutchAuction',
+            const allowedFilenames = [
+                "OldLegacyReputationToken",
+                "Universe",
+                "Augur",
+                "AugurTrading",
+                "LegacyReputationToken",
+                "CancelOrder",
+                "Cash",
+                "ShareToken",
+                "InitialReporter",
+                "DisputeCrowdsourcer",
+                "DisputeWindow",
+                "Market",
+                "ReputationToken",
+                "CreateOrder",
+                "FillOrder",
+                "Orders",
+                "Trade",
+                "SimulateTrade",
+                "Controller",
+                "OrdersFinder",
+                "OrdersFetcher",
+                "ProfitLoss",
+                "TestNetReputationToken",
+                "Time",
+                "TimeControlled",
+                "GnosisSafe",
+                "ProxyFactory",
+                "ZeroXTrade",
+                "ZeroXExchange",
+                "BuyParticipationTokens",
+                "RedeemStake",
+                "CashFaucet",
+                "GnosisSafeRegistry",
+                "HotLoading",
+                "WarpSync",
+                // 0x contracts
+                "ERC20Proxy",
+                "ERC721Proxy",
+                "ERC1155Proxy",
+                "ZeroXExchange",
+                "ZeroXCoordinator",
+                "CoordinatorRegistry",
+                "DevUtils",
+                "WETH9",
+                "ZRXToken",
             ];
-            if (ignoredFilenames.includes(path.parse(file).base.replace(".sol", ""))) return true;
+            const name = path.parse(file).base.replace(".sol", "");
+            if (!allowedFilenames.includes(name)) return true;
             return stats.isFile() && path.extname(file) !== ".sol";
         }
+        const ignoreDirs = ["interfaces", "libs", "staking", "bridges", "dev-utils"];
         const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
         let filesPromises: Array<Promise<string>>;
         if (this.configuration.useFlattener) {

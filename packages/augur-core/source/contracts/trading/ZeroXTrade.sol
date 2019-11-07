@@ -57,6 +57,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         "uint256 salt,",
         "bytes makerAssetData,",
         "bytes takerAssetData",
+        "bytes makerFeeAssetData,",
+        "bytes takerFeeAssetData",
         ")"
     ));
 
@@ -210,7 +212,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             IExchange _exchange = getExchangeFromAssetData(_order.makerAssetData);
 
             // Update 0x and pay protocol fee. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow.value(_protocolFee)(
+            IExchange.FillResults memory totalFillResults = _exchange.fillOrder.value(_protocolFee)(
                 _order,
                 _fillAmountRemaining,
                 _signatures[i]
@@ -397,17 +399,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, IExchange _exchange, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken), _exchange);
         _zeroXOrder.makerAddress = msg.sender;
-        _zeroXOrder.takerAddress = address(0);
-        _zeroXOrder.feeRecipientAddress = address(0);
-        _zeroXOrder.senderAddress = address(0);
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;
-        _zeroXOrder.makerFee = 0;
-        _zeroXOrder.takerFee = 0;
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
         _zeroXOrder.salt = _salt;
         _zeroXOrder.makerAssetData = _assetData;
         _zeroXOrder.takerAssetData = _assetData;
         _orderHash = _exchange.getOrderInfo(_zeroXOrder).orderHash;
     }
+
+    function () external payable {}
 }
