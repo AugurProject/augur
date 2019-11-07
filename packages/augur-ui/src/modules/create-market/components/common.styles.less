@@ -389,11 +389,17 @@
     padding: @size-20;
     margin-top: @size-24;
 
+    @media @breakpoint-mobile-mid {
+      flex-direction: column;
+      min-width: unset;
+      padding: 0;
+    }
+
     > div {
       display: flex;
       flex-direction: column;
       min-width: 280px;
-	  margin-right: @size-22;
+	    margin-right: @size-22;
 
       > span:first-of-type {
         .text-14-medium;
@@ -406,6 +412,7 @@
 
         color: @color-positive;
         margin-top: @size-4;
+
       }
     }
 
