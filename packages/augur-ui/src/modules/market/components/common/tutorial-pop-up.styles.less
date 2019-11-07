@@ -56,6 +56,10 @@
                     margin-right: @size-4;
                 }
             }
+
+            &:nth-last-child(2) {
+                margin-bottom: @size-12;
+            }
         }
 
         &::before {
@@ -123,6 +127,25 @@
                 border-width: @size-6;
                 right: 100%;
                 margin-top: 1px;
+            }
+        }
+    }
+
+    &.LeftBottom {
+        > div {
+            &::before {
+                border-color: transparent @color-outline transparent transparent;
+                border-width: @size-7;
+                right: 100%;
+                bottom: @size-10;
+            }
+    
+            &::after {
+                border-color: transparent @color-page-background transparent transparent;
+                border-width: @size-6;
+                right: 100%;
+                margin-bottom: 1px;
+                bottom: @size-10;
             }
         }
     }

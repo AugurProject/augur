@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .MarketView {
   display: flex;
@@ -12,7 +12,7 @@
 
   > span:first-of-type {
     background: @color-dark-grey;
-    opacity: .7;
+    opacity: 0.7;
     top: 0;
     bottom: 0;
     left: 0;
@@ -45,9 +45,9 @@
   background-color: @color-module-background;
   bottom: 0;
   color: @color-primary-text;
-  height: calc(~"100vh - @{multi-top-bar-height}");
+  height: calc(~'100vh - @{multi-top-bar-height}');
   left: 0;
-  min-height: 800px;
+  min-height: 700px;
   position: absolute;
   right: 0;
   top: 0;
@@ -79,8 +79,8 @@
 .MarketView__parent {
   display: flex;
   margin: @size-4 0;
-  height: calc(~"100vh - @{multi-top-bar-height}");
-  min-height: 800px;
+  height: calc(~'100vh - @{multi-top-bar-height}');
+  min-height: 700px;
 }
 
 .MarketView__body {
@@ -120,12 +120,55 @@
 }
 
 .TradingFormTutorial {
-  pointer-events: all;
-  
   > section:last-of-type {
     left: unset;
     right: -100%;
     top: 0;
+    margin-right: @size-16;
+  }
+
+  &.PlaceOrderTutorial {
+    > section:last-of-type {
+      top: unset;
+    }
+  }
+
+  &.SelectOutcomeTutorial {
+    > section:last-of-type {
+      margin-top: @size-32;
+    }
+  }
+
+  &.BuyingSharesTutorial {
+    > section:last-of-type {
+      margin-top: -@size-12;
+    }
+  }
+
+  &.QuantityTutorial {
+    > section:first-of-type > section > div:first-of-type > div > ul > li:first-of-type {
+      pointer-events: all;
+    }
+
+    > section:last-of-type {
+      margin-top: 85px;
+    }
+  }
+
+  &.LimitPriceTutorial {
+    > section:first-of-type > section > div:first-of-type > div > ul > li:nth-of-type(2) {
+      pointer-events: all;
+    }
+
+    > section:last-of-type {
+      margin-top: 155px;
+    }
+  }
+
+  &.OrderValueTutorial {
+    > section:last-of-type {
+      margin-top: 220px;
+    }
   }
 }
 
@@ -140,7 +183,7 @@
 .FillsTutorial,
 .PositionsTutorial {
   position: relative;
-  
+
   > div:first-of-type {
     z-index: @mask-illuminate;
   }
