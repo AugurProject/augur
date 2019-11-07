@@ -41,7 +41,7 @@ export class SDK {
 
     const connector = this.pickConnector(env['sdkEndpoint']);
 
-    await connector.connect(
+    connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http
         : 'http://localhost:8545',
