@@ -12,15 +12,18 @@ import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 
 import Styles from 'modules/reporting/disputing.styles.less';
+import { ButtonActionType } from 'modules/types';
 
 interface DisputingProps {
   isConnected: boolean;
   loadDisputeWindow: () => void;
+  openDisputingModal: ButtonActionType;
 }
 
 const Disputing: React.FC<DisputingProps> = ({
   isConnected,
   loadDisputeWindow,
+  openDisputingModal,
 }) => {
   React.useEffect(() => {
     if (isConnected) {
@@ -43,7 +46,7 @@ const Disputing: React.FC<DisputingProps> = ({
                 <DisputeWindowProgress />
                 <ReportingModalButton
                   text="Need Help? Disputing Quick Guide"
-                  action={() => console.log('TODO add popup')}
+                  action={openDisputingModal}
                 />
               </ModulePane>
               <ModulePane label="markets in dispute">
@@ -56,7 +59,7 @@ const Disputing: React.FC<DisputingProps> = ({
               <div>
                 <ReportingModalButton
                   text="Need Help? Disputing Quick Guide"
-                  action={() => console.log('TODO add popup')}
+                  action={openDisputingModal}
                 />
                 <UserRepDisplay />
               </div>

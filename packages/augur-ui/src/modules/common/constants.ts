@@ -1000,10 +1000,43 @@ export const TRADING_TUTORIAL_COPY = {
   },
 };
 
-
 export const GWEI_CONVERSION = 1000000000;
 
 export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.'
+};
+
+export const DISPUTING_GUIDE = {
+  title: 'DISPUTING QUICK GUIDE',
+  content: [{
+    header: 'Disputing',
+    paragraphs: [
+      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
+    ]
+  }, {
+    header: 'How to dispute an outcome',
+    paragraphs: [
+      'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.'
+    ]
+  }, {
+    header: 'How a market resolves',
+    paragraphs: [
+      'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.'
+    ]
+  }, {
+    header: 'The benefits of reporting',
+    paragraphs: [
+      'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
+    ]
+  }],
+  learnMoreButtonText: 'Learn more about disputing',
+  closeButtonText: 'Close'
+};
+
+export const REPORTING_GUIDE = {
+  title: 'REPORTING QUICK GUIDE',
+  content: [],
+  learnMoreButtonText: 'Learn more about reporting',
+  closeButtonText: 'Close'
 };
