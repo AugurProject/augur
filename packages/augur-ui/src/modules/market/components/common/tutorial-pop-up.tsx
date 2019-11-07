@@ -2,6 +2,7 @@ import React from 'react';
 import Styles from 'modules/market/components/common/tutorial-pop-up.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import classNames from 'classnames';
+import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
 
 interface TextLink {
   text: string;
@@ -25,6 +26,7 @@ export interface TutorialPopUpProps {
   totalSteps: number;
   text: TextObject;
   leftBottom?: boolean;
+  error?: string;
 }
 
 export const TutorialPopUp = (props: TutorialPopUpProps) => (
@@ -39,12 +41,25 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
   >
     <div>
       <h1>{props.text.title}</h1>
-      {props.text.subheader.map((subheader, idx) =>
+      {props.text.subheader.map((subheader, idx) => (
         <span key={idx}>
           {subheader.text}
-          {subheader.linkText && <a href={subheader.link} target="blank">{subheader.linkText}</a>}
+          {subheader.linkText && (
+            <a href={subheader.link} target="blank">
+              {subheader.linkText}
+            </a>
+          )}
         </span>
+      ))}
+
+      {props.error && (
+        <DismissableNotice
+          show
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+          title={props.error}
+        />
       )}
+      
       <div>
         <SecondaryButton text="Back" action={() => props.back()} />
         <span>
@@ -52,6 +67,7 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
         </span>
         <SecondaryButton text="Next" action={() => props.next()} />
       </div>
+
     </div>
   </section>
 );

@@ -65,7 +65,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
           </span>
           <div>
             <div>{props.title}</div>
-            <div>{props.description}</div>
+            {props.description && <div>{props.description}</div>}
           </div>
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON &&
             <button

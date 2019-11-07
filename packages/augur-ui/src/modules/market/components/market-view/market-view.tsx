@@ -91,6 +91,7 @@ interface MarketViewState {
   selectedOutcomeProperties: DefaultOrderPropertiesMap;
   tutorialStep: number;
   introShowing: boolean;
+  tutorialError: string;
 }
 
 const TUTORIAL_QUANTITY = 100;
@@ -130,6 +131,7 @@ export default class MarketView extends Component<
         ? props.market.defaultSelectedOutcomeId
         : undefined,
       fixedPrecision: 4,
+      tutorialError: '',
       selectedOutcomeProperties: {
         1: {
           ...this.DEFAULT_ORDER_PROPERTIES,
@@ -192,14 +194,15 @@ export default class MarketView extends Component<
 
     if (tradingTutorial) {
       if (
-        !nextProps.isMarketLoading && !this.state.introShowing &&
+        !nextProps.isMarketLoading &&
+        !this.state.introShowing &&
         this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
         updateModal({
           type: MODAL_TUTORIAL_INTRO,
           next: this.next,
         });
-        this.setState({introShowing: true});
+        this.setState({ introShowing: true });
       }
       return;
     }
@@ -220,7 +223,8 @@ export default class MarketView extends Component<
   }
 
   tradingTutorialWidthCheck() {
-    if (this.props.tradingTutorial && window.innerWidth <= 1280) { // TEMP_TABLET
+    if (this.props.tradingTutorial && window.innerWidth <= 1280) {
+      // TEMP_TABLET
       // Don't show tradingTutorial on mobile,
       // redirect to markets when we enter tablet breakpoints
       this.props.history.push({ pathname: makePath(MARKETS) });
@@ -298,6 +302,25 @@ export default class MarketView extends Component<
   }
 
   updateSelectedOrderProperties(selectedOrderProperties) {
+    if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY) {
+      this.setState({
+        tutorialError:
+          parseFloat(selectedOrderProperties.orderQuantity) !==
+          TUTORIAL_QUANTITY
+            ? 'Please enter a quantity of 100 for this order to be filled on the test market'
+            : '',
+      });
+    }
+
+    if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE) {
+      this.setState({
+        tutorialError:
+          parseFloat(selectedOrderProperties.orderPrice) !== TUTORIAL_PRICE
+            ? 'Enter a limit price of $.40 for this order to be filled on the test market'
+            : '',
+      });
+    }
+
     this.setState({
       selectedOrderProperties,
     });
@@ -312,7 +335,9 @@ export default class MarketView extends Component<
   };
 
   next = () => {
-    this.setState({ tutorialStep: this.state.tutorialStep + 1 });
+    if (this.state.tutorialError === '') {
+      this.setState({ tutorialStep: this.state.tutorialStep + 1 });
+    }
     const { market, updateModal, removeAlert } = this.props;
 
     if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
@@ -377,6 +402,7 @@ export default class MarketView extends Component<
       extendOutcomesList,
       extendOrders,
       tutorialStep,
+      tutorialError,
     } = this.state;
     if (isMarketLoading) {
       if (canHotload && !tradingTutorial) hotloadMarket(marketId);
@@ -698,13 +724,34 @@ export default class MarketView extends Component<
                             [Styles.TradingFormTutorial]:
                               tradingTutorial &&
                               ((tutorialStep >=
-                                TRADING_TUTORIAL_STEPS.BUYING_SHARES && tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) || tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER),
-                            [Styles.PlaceOrderTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER,
-                            [Styles.SelectOutcomeTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
-                            [Styles.BuyingSharesTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.BUYING_SHARES,
-                            [Styles.QuantityTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
-                            [Styles.LimitPriceTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
-                            [Styles.OrderValueTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_VALUE,
+                                TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                                tutorialStep <=
+                                  TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                                tutorialStep ===
+                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER),
+                            [Styles.PlaceOrderTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.PLACE_ORDER,
+                            [Styles.SelectOutcomeTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
+                            [Styles.BuyingSharesTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.BUYING_SHARES,
+                            [Styles.QuantityTutorial]:
+                              tradingTutorial &&
+                              tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
+                            [Styles.LimitPriceTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
+                            [Styles.OrderValueTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.ORDER_VALUE,
                           })}
                         >
                           <TradingForm
@@ -720,18 +767,30 @@ export default class MarketView extends Component<
                           />
                           {tradingTutorial &&
                             ((tutorialStep >=
-                              TRADING_TUTORIAL_STEPS.BUYING_SHARES && tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) || tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER) &&
+                              TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                              tutorialStep <=
+                                TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.PLACE_ORDER) && (
                               <TutorialPopUp
-                                left={tutorialStep !== TRADING_TUTORIAL_STEPS.PLACE_ORDER}
-                                leftBottom={tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER}
+                                left={
+                                  tutorialStep !==
+                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                                }
+                                leftBottom={
+                                  tutorialStep ===
+                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                                }
                                 next={this.next}
                                 back={this.back}
                                 step={tutorialStep}
                                 totalSteps={totalSteps}
                                 text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                                error
+                                error={
+                                  tutorialError !== '' ? tutorialError : null
+                                }
                               />
-                          }
+                            )}
                         </div>
                         <div className={Styles.MarketView__innerSecondColumn}>
                           <div className={Styles.MarketView__component}>
