@@ -19,6 +19,7 @@ interface MarketOutcomeChartsHighchartsProps {
   selectedOutcomeId: number;
   pricePrecision: number;
   daysPassed: number;
+  isTradingTutorial?: boolean;
 }
 
 interface MarketOutcomeChartsHighchartsState {
@@ -134,12 +135,16 @@ export default class MarketOutcomesChartHighchart extends Component<
       bucketedPriceTimeSeries,
       selectedOutcomeId,
       daysPassed,
+      isTradingTutorial,
     } = this.props;
-    this.buidOptions(
-      daysPassed,
-      bucketedPriceTimeSeries,
-      selectedOutcomeId
-    );
+
+    if (!isTradingTutorial) {
+      this.buidOptions(
+        daysPassed,
+        bucketedPriceTimeSeries,
+        selectedOutcomeId
+      );
+    }
   }
 
   UNSAFE_componentWillUpdate(nextProps) {
