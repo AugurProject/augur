@@ -1036,22 +1036,7 @@ export const DISPUTING_GUIDE = {
 
 export const REPORTING_GUIDE = {
   title: 'REPORTING QUICK GUIDE',
-  content: [{
-    header: 'Designated Reporting',
-    paragraphs: [
-      'Lorem ipsum dolor sit amet, varius magnis, vehicula amet phasellus rhoncus eleifend at vitae, dictumst integer semper eu nibh ante perferendis, vitae sapien imperdiet nunc. Eget eros. Augue mollis vehicula ultrices sed, vel sit, amet ipsum fermentum libero, amet morbi fusce sed dui. Proin congue reprehenderit viverra, elementum in eget vestibulum lobortis, adipiscing lobortis est.'
-    ]
-  }, {
-    header: 'Upcoming Designated Reporting',
-    paragraphs: [
-      'Lorem ipsum dolor sit amet, varius magnis, vehicula amet phasellus rhoncus eleifend at vitae, dictumst integer semper eu nibh ante perferendis, vitae sapien imperdiet nunc. Eget eros. Augue mollis vehicula ultrices sed, vel sit, amet ipsum fermentum libero, amet morbi fusce sed dui. Proin congue reprehenderit viverra, elementum in eget vestibulum lobortis, adipiscing lobortis est.'
-    ]
-  }, {
-    header: 'Open Reporting',
-    paragraphs: [
-      'Lorem ipsum dolor sit amet, varius magnis, vehicula amet phasellus rhoncus eleifend at vitae, dictumst integer semper eu nibh ante perferendis, vitae sapien imperdiet nunc. Eget eros. Augue mollis vehicula ultrices sed, vel sit, amet ipsum fermentum libero, amet morbi fusce sed dui. Proin congue reprehenderit viverra, elementum in eget vestibulum lobortis, adipiscing lobortis est.'
-    ]
-  }],
-  learnMoreButtonText: 'Learn more about disputing',
+  content: [],
+  learnMoreButtonText: 'Learn more about reporting',
   closeButtonText: 'Close'
 };
