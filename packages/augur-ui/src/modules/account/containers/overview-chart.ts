@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => {
 
   return {
     universe: state.universe.id,
-    currentAugurTimestamp,
+    currentAugurTimestamp
   };
 };
 
