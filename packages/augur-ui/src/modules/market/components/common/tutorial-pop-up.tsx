@@ -2,7 +2,10 @@ import React from 'react';
 import Styles from 'modules/market/components/common/tutorial-pop-up.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import classNames from 'classnames';
-import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
+import {
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+  DismissableNotice,
+} from 'modules/reporting/common';
 
 interface TextLink {
   text: string;
@@ -27,6 +30,8 @@ export interface TutorialPopUpProps {
   text: TextObject;
   leftBottom?: boolean;
   error?: string;
+  hideNext?: boolean;
+  hideBack?: boolean;
 }
 
 export const TutorialPopUp = (props: TutorialPopUpProps) => (
@@ -59,15 +64,22 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
           title={props.error}
         />
       )}
-      
+
       <div>
-        <SecondaryButton text="Back" action={() => props.back()} />
+        {!props.hideBack ? (
+          <SecondaryButton text="Back" action={() => props.back()} />
+        ) : (
+          <div />
+        )}
         <span>
           <span>{props.step}</span>/ {props.totalSteps}
         </span>
-        <SecondaryButton text="Next" action={() => props.next()} />
+        {!props.hideNext ? (
+          <SecondaryButton text="Next" action={() => props.next()} />
+        ) : (
+          <div />
+        )}
       </div>
-
     </div>
   </section>
 );

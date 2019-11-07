@@ -725,6 +725,7 @@ export default class MarketView extends Component<
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                             next={this.next}
                             back={this.back}
+                            hideBack
                           />
                         )}
                     </div>
@@ -776,6 +777,7 @@ export default class MarketView extends Component<
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
+                            tutorialNext={this.next}
                           />
                           {tradingTutorial &&
                             ((tutorialStep >=
@@ -794,6 +796,7 @@ export default class MarketView extends Component<
                                   TRADING_TUTORIAL_STEPS.PLACE_ORDER
                                 }
                                 next={this.next}
+                                hideNext={tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER}
                                 back={this.back}
                                 step={tutorialStep}
                                 totalSteps={totalSteps}

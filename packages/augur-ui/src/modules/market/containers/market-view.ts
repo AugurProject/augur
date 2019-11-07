@@ -40,20 +40,20 @@ const mapStateToProps = (state, ownProps) => {
       orderBook: {
         2: [
           {
-            avgPrice: formatDai(.3),
-            cumulativeShares: "1",
+            avgPrice: formatDai(.4),
+            cumulativeShares: "100",
             id: 1,
-            mySize: "1",
-            orderEstimate: createBigNumber(.3),
+            mySize: "0",
+            orderEstimate: createBigNumber(.4),
             outcomeId: 2,
             outcomeName: "Yes",
-            price: "0.3",
-            quantity: "1",
-            shares: "1",
-            sharesEscrowed: formatShares(.3),
-            tokensEscrowed: formatDai(.3),
+            price: "0.4",
+            quantity: "100",
+            shares: "100",
+            sharesEscrowed: formatShares(100),
+            tokensEscrowed: formatDai(.4),
             type: "buy",
-            unmatchedShares: formatShares(.3)
+            unmatchedShares: formatShares(100)
           }
         ]
       }

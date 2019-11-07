@@ -16,7 +16,6 @@ interface TradingFormProps {
   hasFunds: boolean;
   isLogged: boolean;
   allowanceBigNumber: BigNumber;
-  isConnectionTrayOpen: boolean;
   market: MarketData;
   disclaimerSeen: boolean;
   disclaimerModal: Function;
@@ -29,7 +28,6 @@ interface TradingFormProps {
   updateSelectedOutcome: Function;
   updateTradeCost: Function;
   updateTradeShares: Function;
-  toggleConnectionTray: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
   initialLiquidity?: boolean;
@@ -40,6 +38,7 @@ interface TradingFormProps {
   currentTimestamp: Number;
   tradingTutorial?: boolean;
   addPendingOrder: Function;
+  tutorialNext?: Function;
 }
 
 interface TradingFormState {
@@ -92,7 +91,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       availableEth,
       availableDai,
       isLogged,
-      isConnectionTrayOpen,
       market,
       selectedOrderProperties,
       gasPrice,
@@ -100,7 +98,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       updateSelectedOutcome,
       updateTradeCost,
       updateTradeShares,
-      toggleConnectionTray,
       onSubmitPlaceTrade,
       disclaimerSeen,
       disclaimerModal,
@@ -113,7 +110,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       signupModal,
       currentTimestamp,
       tradingTutorial,
-      addPendingOrder
+      addPendingOrder,
+      tutorialNext
     } = this.props;
     const s = this.state;
 
@@ -162,6 +160,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           orderBook={orderBook}
           tradingTutorial={tradingTutorial}
           addPendingOrder={addPendingOrder}
+          tutorialNext={tutorialNext}
         />
         {initialMessage && (
           <div>

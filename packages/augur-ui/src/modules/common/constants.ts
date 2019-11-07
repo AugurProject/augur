@@ -961,7 +961,7 @@ export const TRADING_TUTORIAL_COPY = {
         text: "Select the outcome you believe will be correct or appreciate in price.",
       },
       {
-        text: "To learn why invlaid is an outcome, see our",
+        text: "To learn why invalid is an outcome, see our",
         linkText: "guide.",
         link: 'https://www.docs.augur.net'
       },
