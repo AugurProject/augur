@@ -798,36 +798,34 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </div>
           </li>
-          <li>
-            {!initialLiquidity && (
-              <>
-                <div>
-                  <CancelTextButton
-                    text="25%"
-                    action={() => this.updateTotalValue(0.25)}
-                  />
-                  <CancelTextButton
-                    text="50%"
-                    action={() => this.updateTotalValue(0.5)}
-                  />
-                  <CancelTextButton
-                    text="75%"
-                    action={() => this.updateTotalValue(0.75)}
-                  />
-                  <CancelTextButton
-                    text="100%"
-                    action={() => this.updateTotalValue(1)}
-                  />
-                </div>
+          {!initialLiquidity && (
+            <li>
+              <div>
                 <CancelTextButton
-                  text="clear"
-                  action={() => this.clearOrderFormProperties()}
+                  text="25%"
+                  action={() => this.updateTotalValue(0.25)}
                 />
-              </>
-            )}
-          </li>
+                <CancelTextButton
+                  text="50%"
+                  action={() => this.updateTotalValue(0.5)}
+                />
+                <CancelTextButton
+                  text="75%"
+                  action={() => this.updateTotalValue(0.75)}
+                />
+                <CancelTextButton
+                  text="100%"
+                  action={() => this.updateTotalValue(1)}
+                />
+              </div>
+              <CancelTextButton
+                text="clear"
+                action={() => this.clearOrderFormProperties()}
+              />
+            </li>
+          )}
           <li>
-            <label className={Styles.smallLabel}>
+            <label className={initialLiquidity ? Styles.Liquidity : Styles.smallLabel}>
               {ExclamationCircle}
               <span>
                 Max cost of{' '}
@@ -836,20 +834,22 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </label>
           </li>
-          <li>
-            <TextButtonFlip
-              text="Advanced"
-              action={() => {
-                this.setState({
-                  advancedOption: '0',
-                  fastForwardDays: DEFAULT_EXPIRATION_DAYS,
-                  expirationDateOption: '0',
-                  showAdvanced: !s.showAdvanced
-                });
-              }}
-              pointDown={s.showAdvanced}
-            />
-          </li>
+          {!initialLiquidity && (
+            <li>
+              <TextButtonFlip
+                text="Advanced"
+                action={() => {
+                  this.setState({
+                    advancedOption: '0',
+                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: '0',
+                    showAdvanced: !s.showAdvanced,
+                  });
+                }}
+                pointDown={s.showAdvanced}
+              />
+            </li>
+          )}
           {s.showAdvanced && (
             <li>
               <SquareDropdown
@@ -858,7 +858,8 @@ class Form extends Component<FromProps, FormState> {
                 onChange={value => {
                   const date =
                     value === ADVANCED_OPTIONS.EXPIRATION
-                      ? moment.unix(currentTimestamp)
+                      ? moment
+                          .unix(currentTimestamp)
                           .add(DEFAULT_EXPIRATION_DAYS, 'days')
                       : '';
 
@@ -887,9 +888,8 @@ class Form extends Component<FromProps, FormState> {
                           const days =
                             value === '' || isNaN(value) ? 0 : parseInt(value);
                           updateState({
-                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment.unix(
-                              currentTimestamp
-                            )
+                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment
+                              .unix(currentTimestamp)
                               .add(days, 'days'),
                           });
                           this.setState({ fastForwardDays: days });
@@ -926,9 +926,11 @@ class Form extends Component<FromProps, FormState> {
                     EXPIRATION_DATE_OPTIONS.CUSTOM && (
                     <section>
                       <SimpleTimeSelector
-                        onChange={(value) => {
+                        onChange={value => {
                           updateState({
-                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment(value).unix(),
+                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
+                              value
+                            ).unix(),
                           });
                         }}
                         currentTime={currentTimestamp}
