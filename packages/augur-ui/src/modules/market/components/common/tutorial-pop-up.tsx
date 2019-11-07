@@ -24,6 +24,7 @@ export interface TutorialPopUpProps {
   step: number;
   totalSteps: number;
   text: TextObject;
+  leftBottom?: boolean;
 }
 
 export const TutorialPopUp = (props: TutorialPopUpProps) => (
@@ -33,6 +34,7 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
       [Styles.Top]: props.top,
       [Styles.Bottom]: props.bottom,
       [Styles.Right]: props.right,
+      [Styles.LeftBottom]: props.leftBottom,
     })}
   >
     <div>

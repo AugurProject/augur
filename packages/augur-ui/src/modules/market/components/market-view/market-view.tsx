@@ -484,6 +484,8 @@ export default class MarketView extends Component<
       selected = 2;
     }
 
+    const totalSteps = Object.keys(TRADING_TUTORIAL_STEPS).length / 2 - 2;
+
     return (
       <div
         ref={node => {
@@ -681,9 +683,7 @@ export default class MarketView extends Component<
                           <TutorialPopUp
                             top
                             step={tutorialStep}
-                            totalSteps={
-                              Object.keys(TRADING_TUTORIAL_STEPS).length / 2
-                            }
+                            totalSteps={totalSteps}
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                             next={this.next}
                             back={this.back}
@@ -697,8 +697,14 @@ export default class MarketView extends Component<
                           className={classNames(Styles.MarketView__component, {
                             [Styles.TradingFormTutorial]:
                               tradingTutorial &&
-                              tutorialStep ===
-                                TRADING_TUTORIAL_STEPS.BUYING_SHARES,
+                              ((tutorialStep >=
+                                TRADING_TUTORIAL_STEPS.BUYING_SHARES && tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) || tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER),
+                            [Styles.PlaceOrderTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER,
+                            [Styles.SelectOutcomeTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
+                            [Styles.BuyingSharesTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.BUYING_SHARES,
+                            [Styles.QuantityTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
+                            [Styles.LimitPriceTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
+                            [Styles.OrderValueTutorial]: tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_VALUE,
                           })}
                         >
                           <TradingForm
@@ -713,19 +719,19 @@ export default class MarketView extends Component<
                             }
                           />
                           {tradingTutorial &&
-                            tutorialStep ===
-                              TRADING_TUTORIAL_STEPS.BUYING_SHARES && (
+                            ((tutorialStep >=
+                              TRADING_TUTORIAL_STEPS.BUYING_SHARES && tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) || tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER) &&
                               <TutorialPopUp
-                                left
+                                left={tutorialStep !== TRADING_TUTORIAL_STEPS.PLACE_ORDER}
+                                leftBottom={tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER}
                                 next={this.next}
                                 back={this.back}
                                 step={tutorialStep}
-                                totalSteps={
-                                  Object.keys(TRADING_TUTORIAL_STEPS).length / 2
-                                }
+                                totalSteps={totalSteps}
                                 text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                                error
                               />
-                            )}
+                          }
                         </div>
                         <div className={Styles.MarketView__innerSecondColumn}>
                           <div className={Styles.MarketView__component}>
@@ -817,10 +823,7 @@ export default class MarketView extends Component<
                                   next={this.next}
                                   back={this.back}
                                   step={tutorialStep}
-                                  totalSteps={
-                                    Object.keys(TRADING_TUTORIAL_STEPS).length /
-                                    2
-                                  }
+                                  totalSteps={totalSteps}
                                   text={TRADING_TUTORIAL_COPY[tutorialStep]}
                                 />
                               )}
@@ -863,9 +866,7 @@ export default class MarketView extends Component<
                             next={this.next}
                             back={this.back}
                             step={tutorialStep}
-                            totalSteps={
-                              Object.keys(TRADING_TUTORIAL_STEPS).length / 2
-                            }
+                            totalSteps={totalSteps}
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                           />
                         )}

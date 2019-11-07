@@ -918,16 +918,16 @@ export enum TRADING_TUTORIAL_STEPS {
   MARKET_DETAILS = 1,
   //MARKET_DATA = 2,
   BUYING_SHARES = 2,
-  // SELECT_OUTCOME = 4,
-  // QUANTITY = 5,
-  // LIMIT_PRICE = 6,
-  // ORDER_VALUE = 7,
-  ORDER_BOOK = 3,
-  // PLACE_ORDER = 9,
-  OPEN_ORDERS = 4,
-  MY_FILLS = 5,
-  POSITIONS = 6,
-  OUTRO_MODAL = 7,
+  SELECT_OUTCOME = 3,
+  QUANTITY = 4,
+  LIMIT_PRICE = 5,
+  ORDER_VALUE = 6,
+  ORDER_BOOK = 7,
+  PLACE_ORDER = 8,
+  OPEN_ORDERS = 9,
+  MY_FILLS = 10,
+  POSITIONS = 11,
+  OUTRO_MODAL = 12,
 }
 
 export const TRADING_TUTORIAL_COPY = {
@@ -951,6 +951,62 @@ export const TRADING_TUTORIAL_COPY = {
         text: "To learn more about selling shares, or going 'short,' see our",
         linkText: "guide.",
         link: 'https://www.docs.augur.net'
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.SELECT_OUTCOME]: {
+    title: 'Select Outcome',
+    subheader: [
+      {
+        text: "Select the outcome you believe will be correct or appreciate in price.",
+      },
+      {
+        text: "To learn why invlaid is an outcome, see our",
+        linkText: "guide.",
+        link: 'https://www.docs.augur.net'
+      },
+    ],
+  },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
+    title: 'Quantity',
+    subheader: [
+      {
+        text: 'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99'
+      },
+      {
+        text: 'Please enter a quantity of 100.',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.LIMIT_PRICE]: {
+    title: 'Limit Price',
+    subheader: [
+      {
+        text: 'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.'
+      },
+      {
+        text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
+      },
+      {
+        text: 'Enter a limit price of $.40.'
+      }
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.ORDER_VALUE]: {
+    title: 'Total Order Value',
+    subheader: [
+      {
+        text: "This shows the amount of money required to make this trade.",
+      },
+      {
+        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.PLACE_ORDER]: {
+    title: 'Place your order',
+    subheader: [
+      {
+        text: "Review your order and if everything looks correct then go ahead and click the 'Place Buy Order' button.",
       },
     ],
   },

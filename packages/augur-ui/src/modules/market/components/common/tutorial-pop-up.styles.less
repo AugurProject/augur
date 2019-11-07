@@ -127,6 +127,25 @@
         }
     }
 
+    &.LeftBottom {
+        > div {
+            &::before {
+                border-color: transparent @color-outline transparent transparent;
+                border-width: @size-7;
+                right: 100%;
+                bottom: 10px;
+            }
+    
+            &::after {
+                border-color: transparent @color-page-background transparent transparent;
+                border-width: @size-6;
+                right: 100%;
+                margin-bottom: 1px;
+                bottom: 10px;
+            }
+        }
+    }
+
     &.Right {
         > div {
             &::before {
