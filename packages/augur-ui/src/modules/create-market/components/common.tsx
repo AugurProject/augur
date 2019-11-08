@@ -1277,8 +1277,8 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
         <>
           <span>Added Resolution details:</span>
           <div className={Styles.AddResolutionRules}>
-            {resolutionRules[REQUIRED].map(rule =>
-              <div>{rule.text}</div>
+            {resolutionRules[REQUIRED].map((rule, index) =>
+              <div key={index}>{rule.text}</div>
             )}
           </div>
         </>
