@@ -51,6 +51,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
+import orderBook from 'modules/market-charts/containers/order-book';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -352,6 +353,11 @@ export default class MarketView extends Component<
     const { market, updateModal, removeAlert } = this.props;
 
     if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
+      const { selectedOutcomeId } = this.state;
+      let outcomeId =
+      selectedOutcomeId === null || selectedOutcomeId === undefined
+        ? market.defaultSelectedOutcomeId
+        : selectedOutcomeId;
       this.props.addAlert({
         name: PUBLICFILLORDER,
         toast: true,
@@ -361,7 +367,7 @@ export default class MarketView extends Component<
         params: {
           market: TRADING_TUTORIAL,
           amountFilled: TUTORIAL_QUANTITY,
-          outcome: TRADING_TUTORIAL_OUTCOMES[1].description,
+          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           orderCreator: '0x1',
           price: TUTORIAL_PRICE,
           amount: TUTORIAL_QUANTITY,
@@ -431,13 +437,12 @@ export default class MarketView extends Component<
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
         : selectedOutcomeId;
-    if (preview) {
+    if (preview && !tradingTutorial) {
       outcomeId = getDefaultOutcomeSelected(market.marketType);
     }
     const outcome = outcomes.find(
       outcomeValue => outcomeValue.id === outcomeId
     );
-    const selectedOutcomeName: string = outcome ? outcome.description : '';
 
     const networkId = getNetworkId();
 
@@ -455,7 +460,7 @@ export default class MarketView extends Component<
           id: 'trading-tutorial-pending-order',
           type: BUY,
           avgPrice: formatDai(TUTORIAL_PRICE),
-          outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
+          outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
           tokensEscrowed: formatShares(0),
           sharesEscrowed: formatShares(0),
@@ -476,7 +481,7 @@ export default class MarketView extends Component<
           id: 'trading-tutorial-pending-order',
           type: BUY,
           price: createBigNumber(TUTORIAL_PRICE),
-          outcome: TRADING_TUTORIAL_OUTCOMES[1].description,
+          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           timestamp: convertUnixToFormattedDate(currentTimestamp),
           trades: [
             {
@@ -486,7 +491,7 @@ export default class MarketView extends Component<
               marketId: market.id,
               type: BUY,
               price: createBigNumber(TUTORIAL_PRICE),
-              outcome: TRADING_TUTORIAL_OUTCOMES[1].description,
+              outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
               timestamp: convertUnixToFormattedDate(currentTimestamp),
               transactionHash: '0xerjejfsdk',
             },
@@ -500,10 +505,10 @@ export default class MarketView extends Component<
       positions = [
         {
           type: LONG,
-          outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
+          outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           quantity: formatShares(TUTORIAL_QUANTITY),
           id: TRADING_TUTORIAL,
-          outcomeId: YES_NO_YES_ID,
+          outcomeId: outcomeId,
           totalValue: formatDai(TUTORIAL_QUANTITY),
           totalReturns: formatDai(TUTORIAL_QUANTITY),
           unrealizedNet: formatDai(TUTORIAL_QUANTITY),
@@ -522,6 +527,17 @@ export default class MarketView extends Component<
     }
 
     const totalSteps = Object.keys(TRADING_TUTORIAL_STEPS).length / 2 - 2;
+
+    let orderBookMarket = market;
+
+    if (tradingTutorial && (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS || tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS)) {
+      let orderBook = market.orderBook;
+      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => order.disappear);
+      orderBookMarket = {
+        ...market,
+        orderBook
+      }
+    }
 
     return (
       <div
@@ -929,7 +945,7 @@ export default class MarketView extends Component<
                         toggle={this.toggleOrderBook}
                         extend={extendOrderBook}
                         hide={extendTradeHistory}
-                        market={market}
+                        market={orderBookMarket}
                         initialLiquidity={preview}
                       />
                       {tradingTutorial &&

@@ -15,6 +15,7 @@ import {
   CATEGORICAL,
   TRADING_TUTORIAL_OUTCOMES,
   BUY,
+  SELL,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -43,17 +44,55 @@ const mapStateToProps = (state, ownProps) => {
       id: TRADING_TUTORIAL,
       description: 'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
       numOutcomes:  4,
+      defaultSelectedOutcomeId: 1,
       marketType: CATEGORICAL,
       outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
       orderBook: {
-        1: [
+        0: [
           {
+            disappear: true,
             avgPrice: formatDai(TUTORIAL_PRICE),
             cumulativeShares: TUTORIAL_QUANTITY.toString(),
             id: 1,
             mySize: '0',
-            orderEstimate: createBigNumber(.4),
-            outcomeId: 2,
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 0,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[0].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.7),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.7),
+            outcomeId: 0,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[0].description,
+            price: '.7',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.7),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ],
+        1: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 1,
             outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
             price: TUTORIAL_PRICE.toString(),
             quantity: TUTORIAL_QUANTITY.toString(),
@@ -61,6 +100,95 @@ const mapStateToProps = (state, ownProps) => {
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
             type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.5),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.5),
+            outcomeId: 1,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
+            price: '.5',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.5),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ],
+        2: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 2,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[2].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.5),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.5),
+            outcomeId: 2,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[2].description,
+            price: '.5',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.5),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ],
+        3: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 3,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[3].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.6),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.6),
+            outcomeId: 3,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[3].description,
+            price: '.6',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.6),
+            type: SELL,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ]

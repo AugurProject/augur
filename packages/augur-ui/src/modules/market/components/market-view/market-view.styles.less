@@ -138,6 +138,10 @@
   }
 
   &.SelectOutcomeTutorial {
+    > section:first-of-type > section > div:first-of-type > div > div {
+      pointer-events: all;
+    }
+
     > section:last-of-type {
       margin-top: @size-32;
     }
@@ -193,25 +197,27 @@
   }
 
   > section:last-of-type {
-    top: -80%;
+    top: 0;
   }
 }
 
 .OpenOrdersTutorial {
   > section:last-of-type {
-    top: -130%;
+    margin-top: -320px;
   }
 }
 
 .FillsTutorial {
   > section:last-of-type {
     left: 100px;
+    margin-top: -180px;
   }
 }
 
 .PositionsTutorial {
   > section:last-of-type {
     left: 200px;
+    margin-top: -190px;
   }
 }
 
