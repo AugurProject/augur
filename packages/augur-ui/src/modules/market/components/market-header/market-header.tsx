@@ -145,7 +145,7 @@ export default class MarketHeader extends Component<
       toggleFavorite,
       showTutorial,
       next,
-      back
+      back,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -184,7 +184,7 @@ export default class MarketHeader extends Component<
         )}
       >
         {!headerCollapsed && (
-          <>
+          <div>
             <div>
               <div>
                 <WordTrail items={[...categoriesWithClick]}>
@@ -197,7 +197,10 @@ export default class MarketHeader extends Component<
                   <MarketTypeLabel marketType={marketType} />
                   {market.isTemplate && <>{TemplateIcon}</>}
                 </WordTrail>
-                <SocialMediaButtons marketAddress={market.id} marketDescription={description} />
+                <SocialMediaButtons
+                  marketAddress={market.id}
+                  marketDescription={description}
+                />
                 <div id="copy_marketId" data-clipboard-text={market.id}>
                   {CopyAlternateIcon}
                 </div>
@@ -212,18 +215,6 @@ export default class MarketHeader extends Component<
                   </div>
                 )}
               </div>
-              <div className={Styles.Properties}>
-                {(market.id || preview) && (
-                  <MarketHeaderBar
-                    marketStatus={market.marketStatus}
-                    reportingState={market.reportingState}
-                    disputeInfo={market.disputeInfo}
-                    endTimeFormatted={market.endTimeFormatted}
-                  />
-                )}
-              </div>
-            </div>
-            <div className={Styles.MainValues}>
               <div>
                 <h1>{description}</h1>
                 {details.length > 0 && (
@@ -258,6 +249,8 @@ export default class MarketHeader extends Component<
                   </div>
                 )}
               </div>
+            </div>
+            <div>
               <div className={Styles.Properties}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
@@ -281,7 +274,7 @@ export default class MarketHeader extends Component<
                 )}
               </div>
             </div>
-          </>
+          </div>
         )}
         <div
           className={classNames(Styles.Toggle, {

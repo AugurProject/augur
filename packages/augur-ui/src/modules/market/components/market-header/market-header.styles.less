@@ -38,73 +38,90 @@
       flex-wrap: wrap;
       margin-right: @size-8;
       padding-top: @size-8;
-      align-items: center;
+      flex-direction: column;
 
-      > button:first-of-type {
-        justify-content: flex-end;
-        margin-left: auto;
+      > div:first-of-type {
+        flex: 1;
 
-        > svg {
-          > path:first-of-type {
-            fill: @color-facebook;
-          }
-
-          > path:last-of-type {
-            fill: @color-white
-          }
+        > div > span {
+          margin: 0 @size-8 0 0;
         }
       }
 
-      > button:last-of-type {
-        > svg {
-          > path:first-of-type {
-            fill: @color-twitter;
-          }
+      > div {
+        > h1 {
+          .text-18-bold;
 
-          > path:last-of-type {
-            fill: @color-white
-          }
+          color: @color-primary-text;
+          flex-grow: 1;
+          margin-bottom: @size-8;
         }
-      }
-
-      > button {
-        height: @size-20;
-        margin-left: @size-8;
-        width: @size-20;
       }
 
       > div:first-of-type {
         display: flex;
         height: fit-content;
+
         > span {
           margin: 0 @size-8 0 0;
         }
-      }
 
-      > div:nth-of-type(2) {
-        display: flex;
-        margin-left: @size-8;
+        > button {
+          height: @size-20;
+          margin-left: @size-8;
+          width: @size-20;
+        }
 
-        > svg {
-          cursor: pointer;
+        > button:first-of-type {
+          justify-content: flex-end;
+          margin-left: auto;
+
+          > svg {
+            > path:first-of-type {
+              fill: @color-facebook;
+            }
+
+            > path:last-of-type {
+              fill: @color-white;
+            }
+          }
+        }
+
+        > button:last-of-type {
+          > svg {
+            > path:first-of-type {
+              fill: @color-twitter;
+            }
+
+            > path:last-of-type {
+              fill: @color-white;
+            }
+          }
+        }
+
+        > div:nth-of-type(2),
+        > div:last-of-type {
+          display: flex;
+          margin-left: @size-8;
+
+          > svg {
+            cursor: pointer;
+          }
         }
       }
 
       > div:last-of-type {
         display: flex;
-        margin-left: @size-8;
+        margin-left: 0;
+        flex-direction: column;
+        margin-top: @size-10;
       }
     }
 
     > div:last-of-type {
       display: flex;
-      flex: 1;
       border-bottom: 0;
       border-top: 0;
-    }
-
-    > span {
-      margin: 0 @size-8 0 0;
     }
   }
 }
@@ -334,7 +351,11 @@ div.Toggle {
   display: flex;
   flex: 1;
   flex-direction: column;
-  max-width: 630px;
+  min-width: 630px;
+
+  > section {
+    border-bottom: 1px solid @color-dark-grey;
+  }
 }
 
 @media @breakpoint-mobile {
