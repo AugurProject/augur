@@ -308,6 +308,14 @@ Deploying to: ${networkConfiguration.networkName}
 
       const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
       zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
+
+      const devUtilsContract = await this.contracts.get('DevUtils');
+      devUtilsContract.address = await this.uploadAndAddToAugur(
+        devUtilsContract,
+        'DevUtils',
+        [zeroXExchangeContract.address]
+      );
+
       return zeroXExchangeContract.address;
     }
 
@@ -361,6 +369,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'GnosisSafe') return;
         if (contractName === 'ZeroXExchange') return;
+        if (contractName === 'DevUtils') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
         if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'ICashFaucet'].includes(contract.contractName)) return;

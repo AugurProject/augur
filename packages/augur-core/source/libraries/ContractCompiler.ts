@@ -1,10 +1,10 @@
-import * as fs from "async-file";
-import * as path from "path";
-import { recursiveReadDir } from "./HelperFunctions";
-import { CompilerInput, CompilerOutput, CompilerOutputEvmBytecode } from "solc";
-import { Abi } from "ethereum";
-import { ChildProcess, exec, spawn } from "child_process";
-import { format } from "util";
+import * as fs from 'async-file';
+import * as path from 'path';
+import { recursiveReadDir } from './HelperFunctions';
+import { CompilerInput, CompilerOutput, CompilerOutputEvmBytecode } from 'solc';
+import { Abi } from 'ethereum';
+import { ChildProcess, exec, spawn } from 'child_process';
+import { format } from 'util';
 import { CompilerConfiguration } from './CompilerConfiguration';
 
 interface AbiOutput {
@@ -13,10 +13,10 @@ interface AbiOutput {
 
 export class ContractCompiler {
     private readonly configuration: CompilerConfiguration;
-    private readonly flattenerBin = "solidity_flattener";
+    private readonly flattenerBin = 'solidity_flattener';
     private readonly flattenerCommand: string;
 
-    public constructor(configuration: CompilerConfiguration) {
+    constructor(configuration: CompilerConfiguration) {
         this.configuration = configuration;
         this.flattenerCommand = `${this.flattenerBin} --solc-paths="ROOT=%s/" --allow-path . %s`;
     }
@@ -24,20 +24,20 @@ export class ContractCompiler {
     private async getCommandOutputFromInput(childProcess: ChildProcess, stdin: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             if (childProcess.stdout === null || childProcess.stdin === null || childProcess.stderr == null) {
-                throw Error("ChildProcess fields stdin, stdout, and stderr must not be null.");
+                throw Error('ChildProcess fields stdin, stdout, and stderr must not be null.');
             }
 
-            const buffers: Array<Buffer> = [];
-            childProcess.stdout.on('data', function (data: Buffer) {
+            const buffers: Buffer[] = [];
+            childProcess.stdout.on('data', (data: Buffer) => {
                 buffers.push(data);
             });
-            const errorBuffers: Array<Buffer> = [];
-            childProcess.stderr.on('data', function (data: Buffer) {
+            const errorBuffers: Buffer[] = [];
+            childProcess.stderr.on('data', (data: Buffer) => {
                 errorBuffers.push(data);
             });
-            childProcess.on('close', function (code) {
+            childProcess.on('close', code => {
                 const errorMessage = Buffer.concat(errorBuffers).toString();
-                if (code > 0) return reject(new Error(`Process Exit Code ${code}\n${errorMessage}`))
+                if (code > 0) return reject(new Error(`Process Exit Code ${code}\n${errorMessage}`));
                 return resolve(Buffer.concat(buffers).toString());
             });
             childProcess.stdin.write(stdin);
@@ -46,38 +46,36 @@ export class ContractCompiler {
     }
 
     private async compileCustomWrapper(compilerInputJson: CompilerInput): Promise<CompilerOutput> {
-        const childProcess = spawn("solc", ["--standard-json"]);
+        const childProcess = spawn('solc', ['--standard-json']);
         const compilerOutputJson = await this.getCommandOutputFromInput(childProcess, JSON.stringify(compilerInputJson));
         return JSON.parse(compilerOutputJson);
     }
 
     private async getCompilerVersion() {
-      const childProcess = spawn("solc", ["--version"]);
+      const childProcess = spawn('solc', ['--version']);
       /*
         Example output:
           solc, the solidity compiler commandline interface
           Version: 0.5.10+commit.5a6ea5b1.Darwin.appleclang
      */
-      const output = await this.getCommandOutputFromInput(childProcess, "");
+      const output = await this.getCommandOutputFromInput(childProcess, '');
       try {
-        return output.split("\n")[1].replace("Version: ", "").split(".").slice(0,4).join(".");
+        return output.split('\n')[1].replace('Version: ', '').split('.').slice(0,4).join('.');
       } catch {
-        return "Unable to retrieve solc version. Please ensure version format has not changed.";
+        return 'Unable to retrieve solc version. Please ensure version format has not changed.';
       }
     }
 
-    public async compileContracts(): Promise<CompilerOutput> {
+    async compileContracts(): Promise<CompilerOutput> {
         // Check if all contracts are cached (and thus do not need to be compiled)
         try {
             if (!this.configuration.enableSdb) {
                 const stats = await fs.stat(this.configuration.contractOutputPath);
                 const lastCompiledTimestamp = stats.mtime;
-                const ignoreCachedFile = function (file: string, stats: fs.Stats): boolean {
-                    return (stats.isFile() && path.extname(file) !== ".sol") || (stats.isFile() && path.extname(file) === ".sol" && stats.mtime < lastCompiledTimestamp);
-                }
+                const ignoreCachedFile = (file: string, stats: fs.Stats): boolean => (stats.isFile() && path.extname(file) !== '.sol') || (stats.isFile() && path.extname(file) === ".sol" && stats.mtime < lastCompiledTimestamp);
                 const uncachedFiles = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreCachedFile);
                 if (uncachedFiles.length === 0) {
-                    return JSON.parse(await fs.readFile(this.configuration.contractOutputPath, "utf8"));
+                    return JSON.parse(await fs.readFile(this.configuration.contractOutputPath, 'utf8'));
                 }
             }
         } catch {
@@ -92,20 +90,20 @@ export class ContractCompiler {
         const compilerOutput = await this.compileCustomWrapper(compilerInputJson);
 
         if (compilerOutput.errors) {
-            let errors = "";
+            let errors = '';
 
-            for (let error of compilerOutput.errors) {
+            for (const error of compilerOutput.errors) {
                 // FIXME: https://github.com/ethereum/solidity/issues/3273
-                if (error.message.includes("instruction is only available after the Metropolis hard fork")) continue;
-                if (error.message.includes("Experimental features are turned on. Do not use experimental features on live deployments")) continue;
-                if (error.message.includes("This declaration shadows an existing declaration")) continue;
-                if (error.message.includes("Unused local variable")) continue;
-                if (error.message.includes("Unused function parameter")) continue;
-                errors += error.formattedMessage + "\n";
+                if (error.message.includes('instruction is only available after the Metropolis hard fork')) continue;
+                if (error.message.includes('Experimental features are turned on. Do not use experimental features on live deployments')) continue;
+                if (error.message.includes('This declaration shadows an existing declaration')) continue;
+                if (error.message.includes('Unused local variable')) continue;
+                if (error.message.includes('Unused function parameter')) continue;
+                errors += error.formattedMessage + '\n';
             }
 
             if (errors.length > 0) {
-                throw new Error("The following errors/warnings were returned by solc:\n\n" + errors);
+                throw new Error('The following errors/warnings were returned by solc:\n\n' + errors);
             }
         }
 
@@ -132,87 +130,86 @@ export class ContractCompiler {
         return filteredCompilerOutput;
     }
 
-    public async generateFlattenedSolidity(filePath: string): Promise<string> {
-        const relativeFilePath = filePath.replace(this.configuration.contractSourceRoot, "").replace(/\\/g, "/");
+    async generateFlattenedSolidity(filePath: string): Promise<string> {
+        const relativeFilePath = filePath.replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/');
 
         const childProcess = exec(format(this.flattenerCommand, this.configuration.contractSourceRoot, relativeFilePath), {
-            encoding: "buffer",
+            encoding: 'buffer',
             cwd: this.configuration.contractSourceRoot
         });
         // The flattener removes the pragma experimental line from output so we add it back here
-        let result = await this.getCommandOutputFromInput(childProcess, "");
+        let result = await this.getCommandOutputFromInput(childProcess, '');
         const originalFileData = (await fs.readFile(filePath)).toString('utf8');
-        if (originalFileData.includes("pragma experimental ABIEncoderV2")) {
-            result = "pragma experimental ABIEncoderV2;\n" + result;
+        if (originalFileData.includes('pragma experimental ABIEncoderV2')) {
+            result = 'pragma experimental ABIEncoderV2;\n' + result;
         }
         return result;
     }
 
-    public async generateCompilerInput(): Promise<CompilerInput> {
-        const ignoreFile = function(file: string, stats: fs.Stats): boolean {
+    async generateCompilerInput(): Promise<CompilerInput> {
+        const ignoreFile = (file: string, stats: fs.Stats): boolean => {
             const allowedFilenames = [
-                "OldLegacyReputationToken",
-                "Universe",
-                "Augur",
-                "AugurTrading",
-                "LegacyReputationToken",
-                "CancelOrder",
-                "Cash",
-                "ShareToken",
-                "InitialReporter",
-                "DisputeCrowdsourcer",
-                "DisputeWindow",
-                "Market",
-                "ReputationToken",
-                "CreateOrder",
-                "FillOrder",
-                "Orders",
-                "Trade",
-                "SimulateTrade",
-                "Controller",
-                "OrdersFinder",
-                "OrdersFetcher",
-                "ProfitLoss",
-                "TestNetReputationToken",
-                "Time",
-                "TimeControlled",
-                "GnosisSafe",
-                "ProxyFactory",
-                "ZeroXTrade",
-                "ZeroXExchange",
-                "BuyParticipationTokens",
-                "RedeemStake",
-                "CashFaucet",
-                "GnosisSafeRegistry",
-                "HotLoading",
-                "WarpSync",
+                'OldLegacyReputationToken',
+                'Universe',
+                'Augur',
+                'AugurTrading',
+                'LegacyReputationToken',
+                'CancelOrder',
+                'Cash',
+                'ShareToken',
+                'InitialReporter',
+                'DisputeCrowdsourcer',
+                'DisputeWindow',
+                'Market',
+                'ReputationToken',
+                'CreateOrder',
+                'FillOrder',
+                'Orders',
+                'Trade',
+                'SimulateTrade',
+                'Controller',
+                'OrdersFinder',
+                'OrdersFetcher',
+                'ProfitLoss',
+                'TestNetReputationToken',
+                'Time',
+                'TimeControlled',
+                'GnosisSafe',
+                'ProxyFactory',
+                'ZeroXTrade',
+                'ZeroXExchange',
+                'BuyParticipationTokens',
+                'RedeemStake',
+                'CashFaucet',
+                'GnosisSafeRegistry',
+                'HotLoading',
+                'WarpSync',
                 // 0x contracts
-                "ERC20Proxy",
-                "ERC721Proxy",
-                "ERC1155Proxy",
-                "ZeroXExchange",
-                "ZeroXCoordinator",
-                "CoordinatorRegistry",
-                "DevUtils",
-                "WETH9",
-                "ZRXToken",
+                'ERC20Proxy',
+                'ERC721Proxy',
+                'ERC1155Proxy',
+                'ZeroXExchange',
+                'ZeroXCoordinator',
+                'CoordinatorRegistry',
+                'DevUtils',
+                'WETH9',
+                'ZRXToken',
             ];
-            const name = path.parse(file).base.replace(".sol", "");
+            const name = path.parse(file).base.replace('.sol', '');
             if (!allowedFilenames.includes(name)) return true;
-            return stats.isFile() && path.extname(file) !== ".sol";
-        }
-        const ignoreDirs = ["interfaces", "libs", "staking", "bridges", "dev-utils"];
-        const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
+            return stats.isFile() && path.extname(file) !== '.sol';
+        };
+        const filePaths = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
         let filesPromises: Array<Promise<string>>;
         if (this.configuration.useFlattener) {
-            filesPromises = filePaths.map(async filePath => (await this.generateFlattenedSolidity(filePath)));
+            filesPromises = filePaths.map(async filePath => (this.generateFlattenedSolidity(filePath)));
         } else {
             filesPromises = filePaths.map(async filePath => (await fs.readFile(filePath)).toString('utf8'));
         }
         const files = await Promise.all(filesPromises);
 
-        let inputJson: CompilerInput = {
-            language: "Solidity",
+        const inputJson: CompilerInput = {
+            language: 'Solidity',
             settings: {
                 remappings: [ `ROOT=${this.configuration.contractSourceRoot}/`],
                 optimizer: {
@@ -220,9 +217,9 @@ export class ContractCompiler {
                     runs: 500
                 },
                 outputSelection: {
-                    "*": {
-                        "": [ "ast" ],
-                        "*": [ "abi", "devdoc", "userdoc", "evm.bytecode.object", "evm.methodIdentifiers" ]
+                    '*': {
+                        '': [ 'ast' ],
+                        '*': [ 'abi', 'devdoc', 'userdoc', 'evm.bytecode.object', 'evm.methodIdentifiers' ]
                     }
                 }
             },
@@ -231,15 +228,15 @@ export class ContractCompiler {
         if (this.configuration.enableSdb) {
             inputJson.settings.optimizer = {
                 enabled: false
-            }
-            inputJson.settings.outputSelection["*"][""] = [ "legacyAST" ];
-            inputJson.settings.outputSelection["*"]["*"].push("evm.bytecode.sourceMap");
-            inputJson.settings.outputSelection["*"]["*"].push("evm.deployedBytecode.object");
-            inputJson.settings.outputSelection["*"]["*"].push("evm.deployedBytecode.sourceMap");
-            inputJson.settings.outputSelection["*"]["*"].push("evm.methodIdentifiers");
+            };
+            inputJson.settings.outputSelection['*'][''] = [ 'legacyAST' ];
+            inputJson.settings.outputSelection['*']['*'].push('evm.bytecode.sourceMap');
+            inputJson.settings.outputSelection['*']['*'].push('evm.deployedBytecode.object');
+            inputJson.settings.outputSelection['*']['*'].push('evm.deployedBytecode.sourceMap');
+            inputJson.settings.outputSelection['*']['*'].push('evm.methodIdentifiers');
         }
-        for (var file in files) {
-            const filePath = filePaths[file].replace(this.configuration.contractSourceRoot, "").replace(/\\/g, "/").replace(/^\//, "");;
+        for (const file in files) {
+            const filePath = filePaths[file].replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/').replace(/^\//, '');;
             inputJson.sources[filePath] = { content : files[file] };
         }
 
@@ -248,8 +245,8 @@ export class ContractCompiler {
 
     private filterCompilerOutput(compilerOutput: CompilerOutput): CompilerOutput {
         const result: CompilerOutput = { contracts: {} };
-        for (let relativeFilePath in compilerOutput.contracts) {
-            for (let contractName in compilerOutput.contracts[relativeFilePath]) {
+        for (const relativeFilePath in compilerOutput.contracts) {
+            for (const contractName in compilerOutput.contracts[relativeFilePath]) {
                 // don't include libraries
                 if (relativeFilePath.startsWith('libraries/') && contractName !== 'Delegator' && contractName !== 'Map') continue;
                 // don't include embedded libraries
@@ -261,14 +258,14 @@ export class ContractCompiler {
                 if (bytecode.object === undefined) continue;
                 // don't include interfaces or Abstract contracts
                 if (/^(?:I|Base|DS)[A-Z].*/.test(contractName)) continue;
-                if (bytecode.object.length === 0) throw new Error("Contract: " + contractName + " has no bytecode, but this is not expected. It probably doesn't implement all its abstract methods");
+                if (bytecode.object.length === 0) throw new Error('Contract: ' + contractName + " has no bytecode, but this is not expected. It probably doesn't implement all its abstract methods");
 
                 result.contracts[relativeFilePath] = {
                     [contractName]: {
-                        abi: abi,
+                        abi,
                         evm: { bytecode: { object: bytecode.object } }
                     }
-                }
+                };
 
                 if (this.configuration.enableSdb) {
                     const deployedBytecode = contract.evm.deployedBytecode;
@@ -277,10 +274,10 @@ export class ContractCompiler {
                     const methodIdentifiers = contract.evm.methodIdentifiers;
                     if (methodIdentifiers === undefined) continue;
                     result.contracts[relativeFilePath][contractName].evm.bytecode.sourceMap = bytecode.sourceMap;
-                    result.contracts[relativeFilePath][contractName].evm.deployedBytecode = <CompilerOutputEvmBytecode> {
+                    result.contracts[relativeFilePath][contractName].evm.deployedBytecode = ({
                         object: deployedBytecode.object,
                         sourceMap: deployedBytecode.sourceMap
-                    };
+                    } as CompilerOutputEvmBytecode);
                     result.contracts[relativeFilePath][contractName].evm.methodIdentifiers = JSON.parse(JSON.stringify(methodIdentifiers));
                 }
             }
@@ -288,7 +285,7 @@ export class ContractCompiler {
 
         if (this.configuration.enableSdb && compilerOutput.sources !== undefined) {
             result.sources = {};
-            for (let relativeFilePath in compilerOutput.sources) {
+            for (const relativeFilePath in compilerOutput.sources) {
                 if (relativeFilePath in result.contracts) {
                     // only legacyAST is used, but including ast to be compliant with interface
                     result.sources[relativeFilePath] = {
@@ -305,8 +302,8 @@ export class ContractCompiler {
 
     private generateAbiOutput(compilerOutput: CompilerOutput): AbiOutput {
         const result: AbiOutput = {};
-        for (let relativeFilePath in compilerOutput.contracts) {
-            for (let contractName in compilerOutput.contracts[relativeFilePath]) {
+        for (const relativeFilePath in compilerOutput.contracts) {
+            for (const contractName in compilerOutput.contracts[relativeFilePath]) {
                 result[contractName] = compilerOutput.contracts[relativeFilePath][contractName].abi;
             }
         }
