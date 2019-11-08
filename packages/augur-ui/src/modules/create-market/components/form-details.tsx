@@ -45,7 +45,6 @@ import {
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 
 interface FormDetailsProps {
-  updateNewMarket: Function;
   newMarket: NewMarket;
   currentTimestamp: number;
   onChange: Function;
@@ -56,12 +55,6 @@ interface FormDetailsProps {
 interface FormDetailsState {
   dateFocused: Boolean;
   timeFocused: Boolean;
-}
-
-interface TimeSelectorParams {
-  hour?: string;
-  minute?: string;
-  meridiem?: string;
 }
 
 export default class FormDetails extends React.Component<
