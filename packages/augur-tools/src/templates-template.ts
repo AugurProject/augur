@@ -35,8 +35,10 @@ export const NFL = 'NFL';
 export const PGA = 'PGA';
 export const LPGA = 'LPGA';
 export const EURO_TOUR = 'Euro Tour';
-export const MENS = 'Mens'
-export const WOMENS = 'Womens'
+export const MENS = 'Mens';
+export const WOMENS = 'Womens';
+export const SINGLES = 'Singles';
+export const DOUBLES = 'Doubles';
 
 interface TimezoneDateObject {
   formattedUtc: string;

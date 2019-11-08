@@ -33,6 +33,8 @@ import {
   LPGA,
   MENS,
   WOMENS,
+  SINGLES,
+  DOUBLES,
 } from './templates-template';
 import { LIST_VALUES } from './templates-lists';
 
@@ -730,117 +732,270 @@ export const TEMPLATES = {
         ],
       },
       [TENNIS]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Will [0] win the [1] [2]?`,
-            example: `Will Roger Federer win the 2020 Wimbledon?`,
-            inputs: [
+        children: {
+          [SINGLES]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Player`,
+                marketType: YES_NO,
+                question: `[0] Singles Tennis: Will [1] win the [2] [3]?`,
+                example: `Men's Singles Tennis: Will Roger Federer win the 2020 Wimbledon?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                marketType: CATEGORICAL,
+                question: `[0] Singles Tennis: Which player will win the [2] [3]?`,
+                example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
               },
               {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.TENNIS_EVENT,
+                marketType: CATEGORICAL,
+                question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs [4]?`,
+                example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player A`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player B`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                    },
+                    {
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                    },
+                    {
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
-                },
-              ],
-            },
           },
-          {
-            marketType: CATEGORICAL,
-            question: `Which tennis player will win the [0] [1]?`,
-            example: `Which tennis player will win the 2020 Australian Open?`,
-            inputs: [
+          [DOUBLES]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                marketType: YES_NO,
+                question: `[0] Doubles Tennis: Will [0] win the [1] [2]?`,
+                example: `Men's Double Tennis: Will Juan Sebastin/Robert Farah win the 2020 Wimbledon?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player/Player`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.TENNIS_EVENT,
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis: Which player/player will win the [0] [1]?`,
+                example: `Men's Doubles Tennis: Which player/player will win the 2020 Australian Open?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
               },
               {
-                id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other (Field)`,
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis: [0] [1] Match play winner: [2] vs [3]?`,
+                example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs Bob Bryan/Mike Bryan?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                  },
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player/Player A`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player/Player B`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                    },
+                    {
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                    },
+                    {
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: CATEGORICAL,
-            question: `[0] [1] Match play winner: [2] vs [3]?`,
-            example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.TENNIS_EVENT,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Player A`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Player B`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
-                },
-                {
-                  text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
-                },
-                {
-                  text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
-                },
-              ],
-            },
-          },
-        ],
+          }
+        }
       },
       [SOCCER]: {
         children: {

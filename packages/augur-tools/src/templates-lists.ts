@@ -642,6 +642,20 @@ export const LIST_VALUES = {
       label: "Women's",
     },
   ],
+  TENNIS_MENS_WOMENS: [
+    {
+      value: "Men's",
+      label: "Men's",
+    },
+    {
+      value: "Women's",
+      label: "Women's",
+    },
+    {
+      value: "Mixed",
+      label: "Mixed",
+    },
+  ],
   BASKETBALL_ACTION: [
     {
       value: 'Points Scored',
