@@ -133,8 +133,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-            example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+            example: `NHL: Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -152,12 +152,18 @@ export const TEMPLATES = {
                 placeholder: `Date time`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Includes any Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.`
+                }
+              ]
+            },
           },
           {
             marketType: YES_NO,
-            question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
-            example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
+            example: `NHL: Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -192,8 +198,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will the [0] win the [1] Stanley Cup?`,
-            example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup?`,
+            question: `NHL: Will the [0] win the [1] Stanley Cup?`,
+            example: `NHL: Will the Montreal Canadiens win the 2019-20 Stanley Cup?`,
             inputs: [
               {
                 id: 0,
@@ -211,8 +217,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `NHL: Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -248,8 +254,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-            example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+            question: `NHL: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            example: `NHL: St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -298,8 +304,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which NHL team will win the [0] Stanley Cup?`,
-            example: `Which NHL team will win the 2019-2020 Stanley Cup?`,
+            question: `Which NHL team will win the [0] [1]?`,
+            example: `Which NHL team will win the 2019-20 Stanley Cup?`,
             inputs: [
               {
                 id: 0,
@@ -309,6 +315,11 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HOCKEY_EVENT,
+              },              {
+                id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
@@ -318,7 +329,7 @@ export const TEMPLATES = {
           {
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1]?`,
-            example: `Which NHL player will win the 2019-2020 Calder Trophy?`,
+            example: `Which NHL player will win the 2019-20 Calder Trophy?`,
             inputs: [
               {
                 id: 0,
@@ -342,8 +353,8 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `Total number of wins the [0] will finish [1] regular season with?`,
-            example: `Total number of wins the LA Kings will finish 2019-2020 regular season with?`,
+            question: `NHL: Total number of wins the [0] will finish [1] regular season with?`,
+            example: `NHL: Total number of wins the LA Kings will finish 2019-20 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
             inputs: [
@@ -790,7 +801,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NBA: Will [0] win the [1] [2] award?`,
-                example: `NBA: Will Steph Curry win the 2019-2020 NBA Most Valuable Player award?`,
+                example: `NBA: Will Steph Curry win the 2019-20 NBA Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -889,7 +900,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]?`,
-                example: `Which NBA team will win the 2019-2020 Western Conference Finals?`,
+                example: `Which NBA team will win the 2019-20 Western Conference Finals?`,
                 inputs: [
                   {
                     id: 0,
@@ -916,7 +927,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NBA player will win the [0] [1] award?`,
-                example: `Which NBA player will win the 2019-2020 Most Valuable Player award?`,
+                example: `Which NBA player will win the 2019-20 Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -943,7 +954,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which Player will have the most [0] at the end of the the [1] regular season?`,
-                example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season?`,
+                example: `Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
                 inputs: [
                   {
                     id: 0,

@@ -660,6 +660,20 @@ export const LIST_VALUES = {
       label: 'made 3-pointers',
     },
   ],
+  HOCKEY_EVENT: [
+    {
+      value: 'Stanley Cup',
+      label: 'Stanley Cup',
+    },
+    {
+      value: 'Eastern Conference Finals',
+      label: 'Eastern Conference Finals',
+    },
+    {
+      value: 'Western Conference Finals',
+      label: 'Western Conference Finals',
+    },
+  ],
   HOCKEY_AWARD: [
     {
       value: 'Hart Trophy',
