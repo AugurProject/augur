@@ -868,13 +868,13 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `[0] Doubles Tennis: Will [0] win the [1] [2]?`,
+                question: `[0] Doubles Tennis: Will [1] win the [2] [3]?`,
                 example: `Men's Double Tennis: Will Juan Sebastin/Robert Farah win the 2020 Wimbledon?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's/Women's`,
+                    placeholder: `Men's/Women's/Mixed`,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                   },
                   {
@@ -905,13 +905,13 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Doubles Tennis: Which player/player will win the [0] [1]?`,
+                question: `[0] Doubles Tennis: Which player/player will win the [1] [2]?`,
                 example: `Men's Doubles Tennis: Which player/player will win the 2020 Australian Open?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's/Women's`,
+                    placeholder: `Men's/Women's/Mixed`,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                   },
                   {
@@ -942,39 +942,39 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Doubles Tennis: [0] [1] Match play winner: [2] vs [3]?`,
+                question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs [4]?`,
                 example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs Bob Bryan/Mike Bryan?`,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's/Women's`,
+                    placeholder: `Men's/Women's/Mixed`,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                   },
                   {
-                    id: 0,
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.TENNIS_EVENT,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
                     placeholder: `Player/Player A`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
                     placeholder: `Player/Player B`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
