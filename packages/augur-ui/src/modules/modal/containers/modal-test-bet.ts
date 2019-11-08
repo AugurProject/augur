@@ -17,7 +17,7 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { TestBet } from 'modules/modal/common';
 
 const mapStateToProps = (state: AppState) => ({
-  isMobile: state.appStatus.isMobile,
+  isTablet: window.innerWidth <= 1280
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -31,20 +31,20 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: TestBet,
-  largeHeader: sP.isMobile ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
+  largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
   currentStep: 4,
   linkContent: [
     {
       content:
-        sP.isMobile
+        sP.isTablet
           ? 'Watch our quick start video to learn how to place a bet using our trading app.'
           : 'Learn how betting works on Augur by placing a quick test bet. Get guidance and tips and start betting for real today.',
     },
   ],
   buttons: [
     {
-      text: sP.isMobile ? 'Watch video' : 'Place test bet',
-      disabled: sP.isMobile,
+      text: sP.isTablet ? 'Watch video' : 'Place test bet',
+      disabled: sP.isTablet,
       action: () => {
         oP.history.push({
           pathname: makePath(MARKET),
