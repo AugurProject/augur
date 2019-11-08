@@ -158,4 +158,20 @@ title: Math
 
 
 
+### `UintToString`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#UintToString.uint2str(uint256)"><code class="function-signature">uint2str(uint256 _i)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UintToString.uint2str(uint256)"></a><code class="function-signature">uint2str(uint256 _i) <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
 </div>

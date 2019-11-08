@@ -1,6 +1,5 @@
 pragma solidity 0.5.10;
 
-
 import 'ROOT/IAugur.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';

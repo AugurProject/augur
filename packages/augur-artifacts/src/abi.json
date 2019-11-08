@@ -844,6 +844,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketOutcomes",
+			"outputs": [
+				{
+					"name": "_outcomes",
+					"type": "bytes32[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_universe",
 					"type": "address"
 				}
@@ -961,6 +980,25 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketType",
+			"outputs": [
+				{
+					"name": "_marketType",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -989,6 +1027,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				}
+			],
+			"name": "getUniverseForkIndex",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -1154,6 +1211,20 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "forkCounter",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -21604,6 +21675,31 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"RepSymbol": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_augurAddress",
+					"type": "address"
+				},
+				{
+					"name": "_universeAddress",
+					"type": "address"
+				}
+			],
+			"name": "getRepSymbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		}
 	]

@@ -83,6 +83,9 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     ITime public time;
     IUniverse public genesisUniverse;
 
+    uint256 public forkCounter;
+    mapping (address => uint256) universeForkIndex;
+
     uint256 public upgradeTimestamp;
 
     int256 private constant DEFAULT_MIN_PRICE = 0;
@@ -155,6 +158,10 @@ contract Augur is IAugur, IAugurCreationDataGetter {
 
     function isKnownUniverse(IUniverse _universe) public view returns (bool) {
         return universes[address(_universe)];
+    }
+
+    function getUniverseForkIndex(IUniverse _universe) public view returns (uint256) {
+        return universeForkIndex[address(_universe)];
     }
 
     //
@@ -234,6 +241,14 @@ contract Augur is IAugur, IAugurCreationDataGetter {
 
     function getMarketCreationData(IMarket _market) public view returns (MarketCreationData memory) {
         return marketCreationData[address(_market)];
+    }
+
+    function getMarketType(IMarket _market) public view returns (IMarket.MarketType _marketType) {
+        return marketCreationData[address(_market)].marketType;
+    }
+
+    function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes) {
+        return marketCreationData[address(_market)].outcomes;
     }
 
     //
@@ -371,6 +386,8 @@ contract Augur is IAugur, IAugurCreationDataGetter {
 
     function logUniverseForked(IMarket _forkingMarket) public returns (bool) {
         require(isKnownUniverse(IUniverse(msg.sender)));
+        forkCounter += 1;
+        universeForkIndex[msg.sender] = forkCounter;
         emit UniverseForked(msg.sender, _forkingMarket);
         return true;
     }

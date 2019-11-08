@@ -105,3 +105,5 @@ export class HotLoading extends c.HotLoading<BigNumber> {
 }
 export class RedeemStake extends c.RedeemStake<BigNumber> {
 }
+export class RepSymbol extends c.RepSymbol<BigNumber> {
+}
