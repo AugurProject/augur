@@ -28,6 +28,13 @@ import {
   EUR,
   ETHEREUM,
   LITECOIN,
+  PGA,
+  EURO_TOUR,
+  LPGA,
+  MENS,
+  WOMENS,
+  SINGLES,
+  DOUBLES,
 } from './templates-template';
 import { LIST_VALUES } from './templates-lists';
 
@@ -39,102 +46,366 @@ export const TEMPLATES = {
   [SPORTS]: {
     children: {
       [GOLF]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Will [0] win the [1] [2]?`,
-            example: `Will Tiger Woods win the 2020 PGA Championship?`,
-            inputs: [
+        children: {
+          [PGA]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Player`,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.GOLF_EVENT,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                marketType: YES_NO,
+                question: `Will [0] win the [1] [2]?`,
+                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_PGA_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
+                    }
+                  ],
                 },
-              ],
-            },
-          },
-          {
-            marketType: YES_NO,
-            question: `Will [0] make the cut at the [1] [2]?`,
-            example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Player`,
               },
               {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.GOLF_EVENT,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                marketType: YES_NO,
+                question: `Will [0] make the cut at the [1] [2]?`,
+                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_PGA_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as No. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
+                    }
+                  ],
                 },
-              ],
-            },
-          },
-          {
-            marketType: CATEGORICAL,
-            question: `Which golfer will win the [0] [1]?`,
-            example: `Which golfer will win the 2020 PGA Championship?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
               },
               {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.GOLF_EVENT,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other (Field)`,
+                marketType: CATEGORICAL,
+                question: `Which golfer will win the [0] [1]?`,
+                example: `Which golfer will win the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_PGA_EVENT,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No winner/Event Cancelled.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
+                    }
+                  ]
+                },
               },
             ],
-            resolutionRules: {},
           },
-        ],
+          [EURO_TOUR]: {
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will [0] win the [1] [2]?`,
+                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_EURO_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `Will [0] make the cut at the [1] [2]?`,
+                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_EURO_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as No. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Which golfer will win the [0] [1]?`,
+                example: `Which golfer will win the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_EURO_EVENT,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No winner/Event Cancelled.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
+                    }
+                  ]
+                },
+              },
+            ],
+          },
+          [LPGA]: {
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Will [0] win the [1] [2]?`,
+                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_LPGA_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `Will [0] make the cut at the [1] [2]?`,
+                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_LPGA_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If a tournament or match is cancelled the market should resolve as No. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Which golfer will win the [0] [1]?`,
+                example: `Which golfer will win the 2020 PGA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.GOLF_LPGA_EVENT,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No winner/Event Cancelled.`,
+                    },
+                    {
+                      text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
+                    }
+                  ]
+                },
+              },
+            ],
+          }
+        }
       },
       [HOCKEY]: {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-            example: `Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+            example: `NHL: Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -152,12 +423,18 @@ export const TEMPLATES = {
                 placeholder: `Date time`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Includes any Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.`
+                }
+              ]
+            },
           },
           {
             marketType: YES_NO,
-            question: `Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
-            example: `Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
+            example: `NHL: Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -192,8 +469,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will the [0] win the [1] Stanley Cup?`,
-            example: `Will the Montreal Canadiens win the 2019-2020 Stanley Cup?`,
+            question: `NHL: Will the [0] win the [1] Stanley Cup?`,
+            example: `NHL: Will the Montreal Canadiens win the 2019-20 Stanley Cup?`,
             inputs: [
               {
                 id: 0,
@@ -211,8 +488,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `NHL: Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -248,8 +525,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-            example: `St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+            question: `NHL: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            example: `NHL: St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -298,8 +575,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which NHL team will win the [0] Stanley Cup?`,
-            example: `Which NHL team will win the 2019-2020 Stanley Cup?`,
+            question: `Which NHL team will win the [0] [1]?`,
+            example: `Which NHL team will win the 2019-20 Stanley Cup?`,
             inputs: [
               {
                 id: 0,
@@ -309,6 +586,11 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.HOCKEY_EVENT,
+              },              {
+                id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
@@ -318,7 +600,7 @@ export const TEMPLATES = {
           {
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1]?`,
-            example: `Which NHL player will win the 2019-2020 Calder Trophy?`,
+            example: `Which NHL player will win the 2019-20 Calder Trophy?`,
             inputs: [
               {
                 id: 0,
@@ -342,8 +624,8 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `Total number of wins the [0] will finish [1] regular season with?`,
-            example: `Total number of wins the LA Kings will finish 2019-2020 regular season with?`,
+            question: `NHL: Total number of wins the [0] will finish [1] regular season with?`,
+            example: `NHL: Total number of wins the LA Kings will finish 2019-20 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
             inputs: [
@@ -397,7 +679,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the horse named in the market is scratched and does NOT run or is disqualified for any reason, the market should resolve as "No"`,
+                  text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as "No".`,
                 },
               ],
             },
@@ -424,227 +706,508 @@ export const TEMPLATES = {
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Winner`,
+              },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the winning horse is not one of the possible outcomes listed, Other (Field) should resolve the winner.`
+                },
+                {
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event Resolution time for this market starts, "No Winner" should be the winning outcome.`
+                },
+                {
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's Event Expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`
+                },
+                {
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs after the market's Event Expiration, the disqualified horse will still be named the winner of the market.`
+                }
+              ]
+            },
           },
         ],
       },
       [TENNIS]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Will [0] win the [1] [2]?`,
-            example: `Will Roger Federer win the 2020 Wimbledon?`,
-            inputs: [
+        children: {
+          [SINGLES]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Player`,
+                marketType: YES_NO,
+                question: `[0] Singles Tennis: Will [1] win the [2] [3]?`,
+                example: `Men's Singles Tennis: Will Roger Federer win the 2020 Wimbledon?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                marketType: CATEGORICAL,
+                question: `[0] Singles Tennis: Which player will win the [2] [3]?`,
+                example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
               },
               {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.TENNIS_EVENT,
+                marketType: CATEGORICAL,
+                question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs [4]?`,
+                example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player A`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player B`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                    },
+                    {
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                    },
+                    {
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
-                },
-              ],
-            },
           },
-          {
-            marketType: CATEGORICAL,
-            question: `Which tennis player will win the [0] [1]?`,
-            example: `Which tennis player will win the 2020 Australian Open?`,
-            inputs: [
+          [DOUBLES]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                marketType: YES_NO,
+                question: `[0] Doubles Tennis: Will [1] win the [2] [3]?`,
+                example: `Men's Double Tennis: Will Juan Sebastin/Robert Farah win the 2020 Wimbledon?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's/Mixed`,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player/Player`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.TENNIS_EVENT,
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis: Which player/player will win the [1] [2]?`,
+                example: `Men's Doubles Tennis: Which player/player will win the 2020 Australian Open?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's/Mixed`,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                    },
+                  ],
+                },
               },
               {
-                id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other (Field)`,
+                marketType: CATEGORICAL,
+                question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs [4]?`,
+                example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs Bob Bryan/Mike Bryan?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's/Women's/Mixed`,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.TENNIS_EVENT,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player/Player A`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player/Player B`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                    },
+                    {
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                    },
+                    {
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: CATEGORICAL,
-            question: `[0] [1] Match play winner: [2] vs [3]?`,
-            example: `2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.TENNIS_EVENT,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Player A`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Player B`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
-                },
-                {
-                  text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
-                },
-                {
-                  text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
-                },
-              ],
-            },
-          },
-        ],
+          }
+        }
       },
       [SOCCER]: {
-        templates: [
-          {
-            marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
-            inputs: [
+        children: {
+          [MENS]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Team A`,
+                marketType: CATEGORICAL,
+                question: `Men's Soccer: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `Men's Soccer: Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Draw`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Team B`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DATETIME,
-                placeholder: `Date time`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Winner`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Unofficial game/Cancelled`,
+                marketType: CATEGORICAL,
+                question: `Men's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `Men's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
-                },
-                {
-                  text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
-                },
-                {
-                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                },
-              ],
-            },
           },
-          {
-            marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-            example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
-            inputs: [
+          [WOMENS]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Team A`,
+                marketType: CATEGORICAL,
+                question: `Women's Soccer: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `Women's Soccer: Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Draw`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Team B`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.WHOLE_NUMBER,
-                placeholder: `Whole #`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATETIME,
-                placeholder: `Date time`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Over [2].5`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Under [2].5`,
-              },
-              {
-                id: 7,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Unofficial game/Cancelled`,
+                marketType: CATEGORICAL,
+                question: `Women's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `Women's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                },
-              ],
-            },
-          },
-        ],
+          }
+        }
       },
       [BASKETBALL]: {
         children: {
@@ -790,7 +1353,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NBA: Will [0] win the [1] [2] award?`,
-                example: `NBA: Will Steph Curry win the 2019-2020 NBA Most Valuable Player award?`,
+                example: `NBA: Will Steph Curry win the 2019-20 NBA Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -889,7 +1452,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]?`,
-                example: `Which NBA team will win the 2019-2020 Western Conference Finals?`,
+                example: `Which NBA team will win the 2019-20 Western Conference Finals?`,
                 inputs: [
                   {
                     id: 0,
@@ -916,7 +1479,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NBA player will win the [0] [1] award?`,
-                example: `Which NBA player will win the 2019-2020 Most Valuable Player award?`,
+                example: `Which NBA player will win the 2019-20 Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -943,7 +1506,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which Player will have the most [0] at the end of the the [1] regular season?`,
-                example: `Which Player will have the most Points scored at the end of the the 2019-2020 regular season?`,
+                example: `Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
                 inputs: [
                   {
                     id: 0,
@@ -1308,8 +1871,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] win the [1] [2]?`,
-            example: `Will the NY Yankees win the 2020 World Series?`,
+            question: `MLB: Will the [0] win the [1] [2]?`,
+            example: `MLB: Will the NY Yankees win the 2020 World Series?`,
             inputs: [
               {
                 id: 0,
@@ -1333,8 +1896,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `MLB: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `MLB: Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -1393,7 +1956,7 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            question: `MLB: [0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
             example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
@@ -1444,8 +2007,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which player will win the [0] [1]?`,
-            example: `Which Player will win the 2019 American League Cy Young award?`,
+            question: `MLB: Which player will win the [0] [1]?`,
+            example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
             inputs: [
               {
                 id: 0,
@@ -1469,10 +2032,12 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `Total number of wins the [0] will finish the [1] regular season with?`,
-            example: `Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
+            question: `MLB: Total number of wins the [0] will finish the [1] regular season with?`,
+            example: `MLB: Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
+            minPrice: 0,
+            maxPrice: 162,
             inputs: [
               {
                 id: 0,
@@ -1486,7 +2051,13 @@ export const TEMPLATES = {
                 values: LIST_VALUES.YEARS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  test: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`
+                }
+              ]
+            },
           },
         ],
       },
@@ -2333,8 +2904,19 @@ export const TEMPLATES = {
                 placeholder: `Year`,
                 values: LIST_VALUES.YEARS,
               },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If any party, other than ones listed in the outcomes, wins the state, the market should resolve as "Other".`
+                }
+              ]
+            },
           },
           {
             marketType: CATEGORICAL,

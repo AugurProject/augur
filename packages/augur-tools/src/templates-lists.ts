@@ -204,14 +204,6 @@ export const LIST_VALUES = {
   ],
   BASEBALL_EVENT: [
     {
-      value: 'American League Division Series',
-      label: 'American League Division Series',
-    },
-    {
-      value: 'National League Division Series',
-      label: 'National League Division Series',
-    },
-    {
       value: 'American League Championship Series',
       label: 'American League Championship Series',
     },
@@ -650,6 +642,20 @@ export const LIST_VALUES = {
       label: "Women's",
     },
   ],
+  TENNIS_MENS_WOMENS: [
+    {
+      value: "Men's",
+      label: "Men's",
+    },
+    {
+      value: "Women's",
+      label: "Women's",
+    },
+    {
+      value: "Mixed",
+      label: "Mixed",
+    },
+  ],
   BASKETBALL_ACTION: [
     {
       value: 'Points Scored',
@@ -666,6 +672,20 @@ export const LIST_VALUES = {
     {
       value: 'made 3-pointers',
       label: 'made 3-pointers',
+    },
+  ],
+  HOCKEY_EVENT: [
+    {
+      value: 'Stanley Cup',
+      label: 'Stanley Cup',
+    },
+    {
+      value: 'Eastern Conference Finals',
+      label: 'Eastern Conference Finals',
+    },
+    {
+      value: 'Western Conference Finals',
+      label: 'Western Conference Finals',
     },
   ],
   HOCKEY_AWARD: [
@@ -703,6 +723,42 @@ export const LIST_VALUES = {
       value: 'Triple Crown',
       label: 'Triple Crown',
     },
+    {
+      value: 'Breeder\'s cup',
+      label: 'Breeder\'s cup',
+    },
+    {
+      value: 'Travers Stakes',
+      label: 'Travers Stakes',
+    },
+    {
+      value: 'Arlington Million',
+      label: 'Arlington Million',
+    },
+    {
+      value: 'Santa Anita Handicap',
+      label: 'Santa Anita Handicap',
+    },
+    {
+      value: 'Arkansas Derby',
+      label: 'Arkansas Derby',
+    },
+    {
+      value: 'Pacific Classic Stakes',
+      label: 'Pacific Classic Stakes',
+    },
+    {
+      value: 'Haskell Invitational Stakes',
+      label: 'Haskell Invitational Stakes',
+    },
+    {
+      value: 'Pegasus World Cup',
+      label: 'Pegasus World Cup',
+    },
+    {
+      value: 'Dubai World Cup',
+      label: 'Dubai World Cup',
+    },
   ],
   TENNIS_EVENT: [
     {
@@ -722,26 +778,558 @@ export const LIST_VALUES = {
       label: 'US Open',
     },
   ],
-  GOLF_EVENT: [
+  GOLF_LPGA_EVENT: [
     {
-      value: 'PGA Championship',
-      label: 'PGA Championship',
+      value: 'TOTO Japan Classic',
+      label: 'TOTO Japan Classic',
     },
     {
-      value: 'Open Championship',
-      label: 'Open Championship',
+      value: 'CME Group Tour Championship',
+      label: 'CME Group Tour Championship',
+    },
+    {
+      value: 'Diamond Resorts Tournament of Champions',
+      label: 'Diamond Resorts Tournament of Champions',
+    },
+    {
+      value: 'ISPS Handa Vic Open',
+      label: 'ISPS Handa Vic Open',
+    },
+    {
+      value: 'ISPS Handa Women\'s Australian Open',
+      label: 'ISPS Handa Women\'s Australian Open',
+    },
+    {
+      value: 'Honda LPGA Thailand',
+      label: 'Honda LPGA Thailand',
+    },
+    {
+      value: 'HSBC Women\'s World Championship',
+      label: 'HSBC Women\'s World Championship',
+    },
+    {
+      value: 'Bank Of Hope Founders Cup',
+      label: 'Bank Of Hope Founders Cup',
+    },
+    {
+      value: 'Kia Classic',
+      label: 'Kia Classic',
+    },
+    {
+      value: 'ANA Inspiration',
+      label: 'ANA Inspiration',
+    },
+    {
+      value: 'LOTTE Championship',
+      label: 'LOTTE Championship',
+    },
+    {
+      value: 'Hugel-Air Premia LA Open',
+      label: 'Hugel-Air Premia LA Open',
+    },
+    {
+      value: 'LPGA MEDIHEAL Championship',
+      label: 'LPGA MEDIHEAL Championship',
+    },
+    {
+      value: 'Pure Silk Championship',
+      label: 'Pure Silk Championship',
+    },
+    {
+      value: 'U.S. Women\'s Open',
+      label: 'U.S. Women\'s Open',
+    },
+    {
+      value: 'ShopRite LPGA Classic Presented by Acer',
+      label: 'ShopRite LPGA Classic Presented by Acer',
+    },
+    {
+      value: 'Meijer LPGA Classic For Simply Give',
+      label: 'Meijer LPGA Classic For Simply Give',
+    },
+    {
+      value: 'KPMG Women\'s PGA Championship',
+      label: 'KPMG Women\'s PGA Championship',
+    },
+    {
+      value: 'Walmart NW Arkansas Championship Presented by P&G',
+      label: 'Walmart NW Arkansas Championship Presented by P&G',
+    },
+    {
+      value: 'Thornberry Creek LPGA Classic',
+      label: 'Thornberry Creek LPGA Classic',
+    },
+    {
+      value: 'Marathon Classic Presented by Dana',
+      label: 'Marathon Classic Presented by Dana',
+    },
+    {
+      value: 'Dow Great Lakes Bay Invitational',
+      label: 'Dow Great Lakes Bay Invitational',
+    },
+    {
+      value: 'The Evian Championship',
+      label: 'The Evian Championship',
+    },
+    {
+      value: 'AIG Women\'s British Open',
+      label: 'AIG Women\'s British Open',
+    },
+    {
+      value: 'Aberdeen Standard Investments Ladies Scottish Open',
+      label: 'Aberdeen Standard Investments Ladies Scottish Open',
+    },
+    {
+      value: 'CP Women\'s Open',
+      label: 'CP Women\'s Open',
+    },
+    {
+      value: 'Cambia Portland Classic',
+      label: 'Cambia Portland Classic',
+    },
+    {
+      value: 'Solheim Cup',
+      label: 'Solheim Cup',
+    },
+    {
+      value: 'Indy Women In Tech Championship',
+      label: 'Indy Women In Tech Championship',
+    },
+    {
+      value: 'Volunteers of America Classic',
+      label: 'Volunteers of America Classic',
+    },
+    {
+      value: 'Buick LPGA Shanghai',
+      label: 'Buick LPGA Shanghai',
+    },
+    {
+      value: 'BMW Ladies Championship',
+      label: 'BMW Ladies Championship',
+    },
+    {
+      value: 'Swinging Skirts LPGA Taiwan Championship',
+      label: 'Swinging Skirts LPGA Taiwan Championship',
+    },
+  ],
+  GOLF_EURO_EVENT: [
+    {
+      value: 'Hong Kong Open',
+      label: 'Hong Kong Open',
+    },
+    {
+      value: 'Alfred Dunhill Championship',
+      label: 'Alfred Dunhill Championship',
+    },
+    {
+      value: 'Afrasia Bank Mauritius Open',
+      label: 'Afrasia Bank Mauritius Open',
+    },
+    {
+      value: 'Australian PGA Championship',
+      label: 'Australian PGA Championship',
+    },
+    {
+      value: 'South African Open hosted by the City of Johannesburg',
+      label: 'South African Open hosted by the City of Johannesburg',
+    },
+    {
+      value: 'ABU DHABI HSBC CHAMPIONSHIP PRESENTED BY EGA',
+      label: 'ABU DHABI HSBC CHAMPIONSHIP PRESENTED BY EGA',
+    },
+    {
+      value: 'Omega Dubai Desert Classic',
+      label: 'Omega Dubai Desert Classic',
+    },
+    {
+      value: 'Saudi International Powered by SBIA',
+      label: 'Saudi International Powered by SBIA',
+    },
+    {
+      value: 'ISPS Handa Vic Open',
+      label: 'ISPS Handa Vic Open',
+    },
+    {
+      value: 'WGC - Mexico Championship	',
+      label: 'WGC - Mexico Championship	',
+    },
+    {
+      value: 'Oman Open',
+      label: 'Oman Open',
+    },
+    {
+      value: 'Commercial Bank Qatar Masters	',
+      label: 'Commercial Bank Qatar Masters	',
+    },
+    {
+      value: 'Magical Kenya presented by Absa',
+      label: 'Magical Kenya presented by Absa',
+    },
+    {
+      value: 'Hero Indian Open',
+      label: 'Hero Indian Open',
+    },
+    {
+      value: 'WGC-Dell Technologies Match Play	',
+      label: 'WGC-Dell Technologies Match Play	',
+    },
+    {
+      value: 'The Masters Tournament',
+      label: 'The Masters Tournament',
+    },
+    {
+      value: 'Maybank Championship',
+      label: 'Maybank Championship',
+    },
+    {
+      value: 'Volvo China Open',
+      label: 'Volvo China Open',
+    },
+    {
+      value: 'Estrella Damn N.A. Andalucia Masters',
+      label: 'Estrella Damn N.A. Andalucia Masters',
+    },
+    {
+      value: 'GolfSixes Cascais',
+      label: 'GolfSixes Cascais',
+    },
+    {
+      value: 'US PGA Championship',
+      label: 'US PGA Championship',
+    },
+    {
+      value: 'Made in Denmark presented by FREJA	',
+      label: 'Made in Denmark presented by FREJA	',
+    },
+    {
+      value: 'DUBAI DUTY FREE IRISH OPEN	',
+      label: 'DUBAI DUTY FREE IRISH OPEN	',
+    },
+    {
+      value: 'Trophee Hassan II	',
+      label: 'Trophee Hassan II	',
+    },
+    {
+      value: 'Scandinavian Invitation',
+      label: 'Scandinavian Invitation',
     },
     {
       value: 'US Open',
       label: 'US Open',
     },
     {
+      value: 'BMW International Open	',
+      label: 'BMW International Open	',
+    },
+    {
+      value: 'Open de France',
+      label: 'Open de France',
+    },
+    {
+      value: 'WGC - FedEx St. Jude Invitational',
+      label: 'WGC - FedEx St. Jude Invitational',
+    },
+    {
+      value: 'ABERDEEN STANDARD INVESTMENTS SCOTTISH OPEN',
+      label: 'ABERDEEN STANDARD INVESTMENTS SCOTTISH OPEN',
+    },
+    {
+      value: 'The 149th Open',
+      label: 'The 149th Open',
+    },
+    {
+      value: 'Betfred British Masters hosted by Lee Westwood	',
+      label: 'Betfred British Masters hosted by Lee Westwood	',
+    },
+    {
+      value: 'Olympic Men\'s Golf Competition',
+      label: 'Olympic Men\'s Golf Competition',
+    },
+    {
+      value: 'UK Event Confirmed	',
+      label: 'UK Event Confirmed	',
+    },
+    {
+      value: 'TBC',
+      label: 'TBC',
+    },
+    {
+      value: 'D+D Real Czech Masters',
+      label: 'D+D Real Czech Masters',
+    },
+    {
+      value: 'Omega European Masters',
+      label: 'Omega European Masters',
+    },
+    {
+      value: 'Porsche European Open	',
+      label: 'Porsche European Open	',
+    },
+    {
+      value: 'BMW PGA CHAMPIONSHIP',
+      label: 'BMW PGA CHAMPIONSHIP',
+    },
+    {
+      value: 'KLM Open',
+      label: 'KLM Open',
+    },
+    {
+      value: 'The 2020 Ryder Cup',
+      label: 'The 2020 Ryder Cup',
+    },
+    {
+      value: 'Alfred Dunhill Links Championsip',
+      label: 'Alfred Dunhill Links Championsip',
+    },
+    {
+      value: 'ITALIAN OPEN',
+      label: 'ITALIAN OPEN',
+    },
+    {
+      value: 'Mutuactivos Open de España	',
+      label: 'Mutuactivos Open de España	',
+    },
+    {
+      value: 'Portugal Masters',
+      label: 'Portugal Masters',
+    },
+    {
+      value: 'WGC - HSBC Champions',
+      label: 'WGC - HSBC Champions',
+    },
+    {
+      value: 'TURKISH AIRLINES OPEN',
+      label: 'TURKISH AIRLINES OPEN',
+    },
+    {
+      value: 'NEDBANK GOLF CHALLENGE',
+      label: 'NEDBANK GOLF CHALLENGE',
+    },
+    {
+      value: 'DP WORLD TOUR CHAMPIONSHIP',
+      label: 'DP WORLD TOUR CHAMPIONSHIP',
+    },
+  ],
+  GOLF_PGA_EVENT: [
+    {
+      value: 'A Military Tribute at The Greenbrier',
+      label: 'A Military Tribute at The Greenbrier',
+    },
+    {
+      value: 'Sanderson Farms Championship',
+      label: 'Sanderson Farms Championship',
+    },
+    {
+      value: 'Safeway Open',
+      label: 'Safeway Open',
+    },
+    {
+      value: 'Shriners Hospitals for Children Open',
+      label: 'Shriners Hospitals for Children Open',
+    },
+    {
+      value: 'Houston Open',
+      label: 'Houston Open',
+    },
+    {
+      value: 'THE CJ CUP',
+      label: 'THE CJ CUP',
+    },
+    {
+      value: 'MGM Resorts The Challenge',
+      label: 'MGM Resorts The Challenge',
+    },
+    {
+      value: 'ZOZO CHAMPIONSHIP',
+      label: 'ZOZO CHAMPIONSHIP',
+    },
+    {
+      value: 'Bermuda Championship',
+      label: 'Bermuda Championship',
+    },
+    {
+      value: 'World Golf Championships',
+      label: 'World Golf Championships',
+    },
+    {
+      value: 'Mayakoba Golf Classic',
+      label: 'Mayakoba Golf Classic',
+    },
+    {
+      value: 'The RSM Classic',
+      label: 'The RSM Classic',
+    },
+    {
+      value: 'Hero World Challenge',
+      label: 'Hero World Challenge',
+    },
+    {
+      value: 'Presidents Cup',
+      label: 'Presidents Cup',
+    },
+    {
+      value: 'QBE Shootout',
+      label: 'QBE Shootout',
+    },
+    {
+      value: 'Sentry Tournament of Champions',
+      label: 'Sentry Tournament of Champions',
+    },
+    {
+      value: 'Sony Open in Hawaii',
+      label: 'Sony Open in Hawaii',
+    },
+    {
+      value: 'The American Express',
+      label: 'The American Express',
+    },
+    {
+      value: 'Farmers Insurance Open',
+      label: 'Farmers Insurance Open',
+    },
+    {
+      value: 'Waste Management Phoenix Open',
+      label: 'Waste Management Phoenix Open',
+    },
+    {
+      value: 'AT&T Pebble Beach Pro-Am',
+      label: 'AT&T Pebble Beach Pro-Am',
+    },
+    {
+      value: 'The Genesis Invitational',
+      label: 'The Genesis Invitational',
+    },
+    {
+      value: 'Puerto Rico Open',
+      label: 'Puerto Rico Open',
+    },
+    {
+      value: 'The Honda Classic',
+      label: 'The Honda Classic',
+    },
+    {
+      value: 'Arnold Palmer Invitational presented by Mastercard',
+      label: 'Arnold Palmer Invitational presented by Mastercard',
+    },
+    {
+      value: 'THE PLAYERS Championship',
+      label: 'THE PLAYERS Championship',
+    },
+    {
+      value: 'Valspar Championship',
+      label: 'Valspar Championship',
+    },
+    {
+      value: 'Corales Puntacana Resort & Club Championship',
+      label: 'Corales Puntacana Resort & Club Championship',
+    },
+    {
+      value: 'World Golf Championships-Dell Technologies Match Play',
+      label: 'World Golf Championships-Dell Technologies Match Play',
+    },
+    {
+      value: 'World Golf Championships-Mexico Championship',
+      label: 'World Golf Championships-Mexico Championship',
+    },
+    {
+      value: 'World Golf Championships-HSBC Champions',
+      label: 'World Golf Championships-HSBC Champions',
+    },
+    {
+      value: 'Valero Texas Open',
+      label: 'Valero Texas Open',
+    },
+    {
       value: 'Masters Tournament',
       label: 'Masters Tournament',
     },
     {
-      value: 'British Open',
-      label: 'British Open',
+      value: 'RBC Heritage',
+      label: 'RBC Heritage',
+    },
+    {
+      value: 'Zurich Classic of New Orleans',
+      label: 'Zurich Classic of New Orleans',
+    },
+    {
+      value: 'Wells Fargo Championship',
+      label: 'Wells Fargo Championship',
+    },
+    {
+      value: 'AT&T Byron Nelson',
+      label: 'AT&T Byron Nelson',
+    },
+    {
+      value: 'PGA Championship',
+      label: 'PGA Championship',
+    },
+    {
+      value: 'Charles Schwab Challenge',
+      label: 'Charles Schwab Challenge',
+    },
+    {
+      value: 'Rocket Mortgage Classic',
+      label: 'Rocket Mortgage Classic',
+    },
+    {
+      value: 'the Memorial Tournament presented by Nationwide',
+      label: 'the Memorial Tournament presented by Nationwide',
+    },
+    {
+      value: 'RBC Canadian Open',
+      label: 'RBC Canadian Open',
+    },
+    {
+      value: 'US Open',
+      label: 'US Open',
+    },
+    {
+      value: 'Travelers Championship',
+      label: 'Travelers Championship',
+    },
+    {
+      value: 'Barracuda Championship',
+      label: 'Barracuda Championship',
+    },
+    {
+      value: 'World Golf Championships-FedEx St. Jude Invitational',
+      label: 'World Golf Championships-FedEx St. Jude Invitational',
+    },
+    {
+      value: 'John Deere Classic',
+      label: 'John Deere Classic',
+    },
+    {
+      value: 'Barbasol Championship',
+      label: 'Barbasol Championship',
+    },
+    {
+      value: 'The Open Championship',
+      label: 'The Open Championship',
+    },
+    {
+      value: '3M Open',
+      label: '3M Open',
+    },
+    {
+      value: 'Olympic Men\'s Golf Competition',
+      label: 'Olympic Men\'s Golf Competition',
+    },
+    {
+      value: 'Wyndham Championship',
+      label: 'Wyndham Championship',
+    },
+    {
+      value: 'THE NORTHERN TRUST',
+      label: 'THE NORTHERN TRUST',
+    },
+    {
+      value: 'BMW Championship',
+      label: 'BMW Championship',
+    },
+    {
+      value: 'TOUR Championship',
+      label: 'TOUR Championship',
     },
   ],
   MLB_TEAMS: [
