@@ -50,7 +50,7 @@ const mapStateToProps = (state, ownProps) => {
     ownProps.selectedOutcomeId !== undefined &&
     ownProps.selectedOutcomeId !== null
       ? ownProps.selectedOutcomeId
-      : market.defaultSelectedOutcomeId;
+      : ownProps.market.defaultSelectedOutcomeId;
   let outcomeOrderBook = {};
   if (ownProps.initialLiquidity) {
     outcomeOrderBook = formatOrderBook(
