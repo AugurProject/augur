@@ -31,6 +31,8 @@ import {
   PGA,
   EURO_TOUR,
   LPGA,
+  MENS,
+  WOMENS,
 } from './templates-template';
 import { LIST_VALUES } from './templates-lists';
 
@@ -841,108 +843,216 @@ export const TEMPLATES = {
         ],
       },
       [SOCCER]: {
-        templates: [
-          {
-            marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
-            inputs: [
+        children: {
+          [MENS]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Team A`,
+                marketType: CATEGORICAL,
+                question: `Men's Soccer: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `Men's Soccer: Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Draw/No Winner`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                placeholder: `Team B`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DATETIME,
-                placeholder: `Date time`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Winner`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Unofficial game/Cancelled`,
+                marketType: CATEGORICAL,
+                question: `Men's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `Men's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
-                },
-                {
-                  text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
-                },
-                {
-                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                },
-              ],
-            },
           },
-          {
-            marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-            example: `Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
-            inputs: [
+          [WOMENS]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Team A`,
+                marketType: CATEGORICAL,
+                question: `Women's Soccer: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `Women's Soccer: Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Draw/No Winner`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Team B`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.WHOLE_NUMBER,
-                placeholder: `Whole #`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATETIME,
-                placeholder: `Date time`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Over [2].5`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Under [2].5`,
-              },
-              {
-                id: 7,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Unofficial game/Cancelled`,
+                marketType: CATEGORICAL,
+                question: `Women's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `Women's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                },
-              ],
-            },
-          },
-        ],
+          }
+        }
       },
       [BASKETBALL]: {
         children: {
