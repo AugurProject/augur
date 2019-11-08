@@ -32,6 +32,9 @@ export const LTC = 'LTC';
 export const NBA = 'NBA';
 export const NCAA = 'NCAA';
 export const NFL = 'NFL';
+export const PGA = 'PGA';
+export const LPGA = 'LPGA';
+export const EURO_TOUR = 'Euro Tour';
 
 interface TimezoneDateObject {
   formattedUtc: string;
