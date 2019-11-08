@@ -41,12 +41,11 @@ contract RepSymbol is IRepSymbol {
                 uint256 _numOutcomes = _forkingMarket.getNumberOfOutcomes();
                 bytes32[] memory _outcomes = IAugurMarketDataGetter(_augurAddress).getMarketOutcomes(_forkingMarket);
                 for (uint256 _i = 1; _i < _numOutcomes; _i++) {
-                    if (_payoutNumerators[_i] != _numTicks) {
-                        _outcome = "MALFORMED";
-                    } else if (_payoutNumerators[_i] != 0) {
-                        _outcome = _outcomes[_i].bytes32ToString();
-                        break;
+                    if (_payoutNumerators[_i] == 0) {
+                        continue;
                     }
+                    _outcome = _payoutNumerators[_i] != _numTicks ? "MALFORMED" : _outcomes[_i - 1].bytes32ToString();
+                    break;
                 }
             } else {
                 _outcome = _payoutNumerators[2].uint2str();

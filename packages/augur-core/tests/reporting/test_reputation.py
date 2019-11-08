@@ -49,7 +49,7 @@ def test_forked_symbol(contractsFixture, universe, market, scalarMarket):
     newUniverse = contractsFixture.applySignature("Universe", newUniverse.createChildUniverse([0, 100, 0, 0]))
     fork3ReputationToken = contractsFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
 
-    assert fork3ReputationToken.symbol() == "REPv2_Warren_3"
+    assert fork3ReputationToken.symbol() == "REPv2_Trump_3"
 
 
 def test_reputation_token_logging(contractsFixture, universe):
