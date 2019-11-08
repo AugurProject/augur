@@ -393,7 +393,7 @@ export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps)
 );
 
 export const TestBet = (
-  <img width='225px' src='images/test-bet-placeholder.png' />
+  <img height='132px' width='225px' src='images/test-bet-placeholder.png' />
 );
 
 export const AlertMessage = (props: AlertMessageProps) => (

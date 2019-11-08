@@ -18,7 +18,6 @@ import MarketComments from 'modules/market/containers/market-comments';
 import {
   CATEGORICAL,
   BUY,
-  YES_NO_YES_OUTCOME_NAME,
   PUBLICFILLORDER,
   LONG,
   YES_NO_YES_ID,
@@ -29,6 +28,7 @@ import {
   MODAL_TUTORIAL_INTRO,
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
+  TRADING_TUTORIAL_OUTCOMES,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -361,7 +361,7 @@ export default class MarketView extends Component<
         params: {
           market: TRADING_TUTORIAL,
           amountFilled: TUTORIAL_QUANTITY,
-          outcome: YES_NO_YES_OUTCOME_NAME,
+          outcome: TRADING_TUTORIAL_OUTCOMES[1].description,
           orderCreator: '0x1',
           price: TUTORIAL_PRICE,
           amount: TUTORIAL_QUANTITY,
@@ -455,7 +455,7 @@ export default class MarketView extends Component<
           id: 'trading-tutorial-pending-order',
           type: BUY,
           avgPrice: formatDai(TUTORIAL_PRICE),
-          outcomeName: YES_NO_YES_OUTCOME_NAME,
+          outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
           tokensEscrowed: formatShares(0),
           sharesEscrowed: formatShares(0),
@@ -476,7 +476,7 @@ export default class MarketView extends Component<
           id: 'trading-tutorial-pending-order',
           type: BUY,
           price: createBigNumber(TUTORIAL_PRICE),
-          outcome: YES_NO_YES_OUTCOME_NAME,
+          outcome: TRADING_TUTORIAL_OUTCOMES[1].description,
           timestamp: convertUnixToFormattedDate(currentTimestamp),
           trades: [
             {
@@ -486,7 +486,7 @@ export default class MarketView extends Component<
               marketId: market.id,
               type: BUY,
               price: createBigNumber(TUTORIAL_PRICE),
-              outcome: YES_NO_YES_OUTCOME_NAME,
+              outcome: TRADING_TUTORIAL_OUTCOMES[1].description,
               timestamp: convertUnixToFormattedDate(currentTimestamp),
               transactionHash: '0xerjejfsdk',
             },
@@ -500,7 +500,7 @@ export default class MarketView extends Component<
       positions = [
         {
           type: LONG,
-          outcomeName: YES_NO_YES_OUTCOME_NAME,
+          outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
           quantity: formatShares(TUTORIAL_QUANTITY),
           id: TRADING_TUTORIAL,
           outcomeId: YES_NO_YES_ID,

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
-import { QuestionIcon, ViewIcon } from 'modules/common/icons';
+import { QuestionIcon } from 'modules/common/icons';
 import { ExternalLinkButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/help-resources.styles.less';
@@ -35,6 +35,7 @@ const HELP_LINKS = [
   },
   {
     label: 'MAKE A TEST TRADE',
+    className: Styles.hideOnTablet,
     customLink: {
       pathname: MARKET,
       search: makeQuery({
@@ -69,7 +70,7 @@ export const HelpResources = ({
         <div>
           <span>popular help resources</span>
           {HELP_LINKS.map((helpLink, index) => (
-            <span key={'helpLink_' + index}>
+            <span key={'helpLink_' + index} className={helpLink.className}>
               <ExternalLinkButton
                 light
                 URL={helpLink.link}

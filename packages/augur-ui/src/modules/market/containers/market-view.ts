@@ -12,6 +12,8 @@ import {
   TRADING_TUTORIAL,
   TUTORIAL_QUANTITY,
   TUTORIAL_PRICE,
+  CATEGORICAL,
+  TRADING_TUTORIAL_OUTCOMES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -34,27 +36,30 @@ const mapStateToProps = (state, ownProps) => {
   let market = {};
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   if (tradingTutorial) {
+    // TODO move trading tutorial market state to constants
     market = {
       ...deepClone<NewMarket>(EMPTY_STATE),
       id: TRADING_TUTORIAL,
-      description: 'Which NFL team will win?',
-      numOutcomes: 3,
+      description: 'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
+      numOutcomes:  4,
+      marketType: CATEGORICAL,
+      outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
       orderBook: {
-        2: [
+        1: [
           {
             avgPrice: formatDai(TUTORIAL_PRICE),
             cumulativeShares: TUTORIAL_QUANTITY.toString(),
             id: 1,
-            mySize: "0",
+            mySize: '0',
             orderEstimate: createBigNumber(.4),
             outcomeId: 2,
-            outcomeName: "Yes",
+            outcomeName: 'Los Angeles Rams',
             price: TUTORIAL_PRICE.toString(),
             quantity: TUTORIAL_QUANTITY.toString(),
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: "buy",
+            type: 'buy',
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ]

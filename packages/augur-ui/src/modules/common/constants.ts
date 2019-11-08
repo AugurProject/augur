@@ -1074,6 +1074,28 @@ export const EVENT_EXPIRATION_TOOLTIP = {
 
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;
+export const TRADING_TUTORIAL_OUTCOMES = [
+  {
+    id: 0,
+    description: 'Invalid',
+    isTradeable: true,
+  },
+  {
+    id: 1,
+    description: 'Los Angeles Rams',
+    isTradeable: true,
+  },
+  {
+    id: 2,
+    description: 'New England Patriots',
+    isTradeable: true,
+  },
+  {
+    id: 3,
+    description: 'Tie/No Winner',
+    isTradeable: true,
+  },
+];
 
 export const DISPUTING_GUIDE = {
   title: 'DISPUTING QUICK GUIDE',
