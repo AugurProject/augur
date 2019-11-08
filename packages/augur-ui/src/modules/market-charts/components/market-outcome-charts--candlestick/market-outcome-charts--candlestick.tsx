@@ -17,8 +17,6 @@ interface MarketOutcomeCandlestickProps {
 }
 
 interface MarketOutcomeCandlestickState {
-  containerWidth: number;
-  containerHeight: number;
   hoveredPeriod: any;
   volumeType: string;
   defaultCandlePeriod: any;
@@ -36,42 +34,19 @@ class MarketOutcomeCandlestick extends React.PureComponent<
     super(props);
 
     this.state = {
-      containerWidth: 0,
-      containerHeight: 0,
       hoveredPeriod: {},
       volumeType: DAI,
       defaultCandlePeriod: props.selectedPeriod,
     };
 
-    this.getContainerWidths = this.getContainerWidths.bind(this);
-    this.updateContainerWidths = this.updateContainerWidths.bind(this);
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this);
     this.updateVolumeType = this.updateVolumeType.bind(this);
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const containerWidths = this.getContainerWidths();
-
-    this.setState({
-      ...containerWidths,
-    });
-  }
-
-  getContainerWidths() {
-    return {
-      containerWidth: this.drawContainer.clientWidth,
-      containerHeight: this.drawContainer.clientHeight,
-    };
   }
 
   updateVolumeType(value) {
     this.setState({
       volumeType: value,
     });
-  }
-
-  updateContainerWidths() {
-    this.setState(this.getContainerWidths());
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -95,14 +70,14 @@ class MarketOutcomeCandlestick extends React.PureComponent<
     const {
       hoveredPeriod,
       volumeType,
-      containerHeight,
       defaultCandlePeriod,
     } = this.state;
+    const staticMenuLabel = 'Show Volume in';
     const staticLabel = hoveredPeriod.volume
     ? `V: ${hoveredPeriod.volume
         .toFixed(fixedPrecision)
         .toString()}`
-    : 'Show Volume in';
+    : staticMenuLabel;
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
@@ -120,6 +95,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             defaultValue={DAI}
             options={VOLUME_DAI_SHARES}
             staticLabel={staticLabel}
+            staticMenuLabel={staticMenuLabel}
             onChange={this.updateVolumeType}
             highlight={!!hoveredPeriod.volume}
           />
@@ -138,7 +114,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             marketMin={marketMin}
             marketMax={marketMax}
             volumeType={volumeType}
-            containerHeight={containerHeight}
             isMobile={isMobile}
           />
         </div>

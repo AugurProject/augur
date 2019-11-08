@@ -8,6 +8,7 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_ADD_FUNDS, MODAL_TEST_BET } from 'modules/common/constants';
+import { OnboardingPaymentIcon } from 'modules/common/icons';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -19,23 +20,22 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  largeHeader: '1. Buy DAI to start betting',
-  smallHeader: 'Augur uses a currency called DAI',
-  daiGraphic: true,
-  currentStep: 2,
+  icon: OnboardingPaymentIcon,
+  largeHeader: 'Add DAI to your account',
+  currentStep: 3,
   linkContent: [
     {
       content:
-        'DAI is a pegged currency that mirrors the value of the US dollar. This means that 1 DAI is equivalent to 1 USD. For ease of use we refer to DAI using the $ symbol.',
+        'Buy DAI ($) directly or transfer DAI ($) to your Augur account address to start placing bets.',
     },
     {
-      content: 'Learn more about DAI',
+      content: 'Learn more about adding funds',
       link: 'https://docs.augur.net',
     },
   ],
   buttons: [
     {
-      text: 'Buy DAI',
+      text: 'Add DAI',
       action: () => {
         dP.addFunds(() => setTimeout(() => dP.testBet()));
       },

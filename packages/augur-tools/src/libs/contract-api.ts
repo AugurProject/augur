@@ -10,7 +10,8 @@ import {
   ZeroXPlaceTradeDisplayParams,
   ZeroXSimulateTradeData,
   BrowserMesh,
-  EmptyConnector
+  EmptyConnector,
+  HotLoadMarketInfo
 } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -537,7 +538,13 @@ export class ContractAPI {
   }
 
   async approve(wei: BigNumber): Promise<void> {
-    await  this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+    await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.FillOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.FillOrder, true);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.CreateOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.CreateOrder, true);
   }
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
@@ -596,11 +603,18 @@ export class ContractAPI {
   }
 
   async approveAugurEternalApprovalValue(owner: string) {
-    const spender = this.augur.addresses.Augur;
-    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender));
+    const augur = this.augur.addresses.Augur;
+    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, augur));
 
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      const fillOrder = this.augur.addresses.FillOrder;
+      const createOrder = this.augur.addresses.CreateOrder;
+      await this.augur.contracts.cash.approve(augur, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      await this.augur.contracts.cash.approve(fillOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      await this.augur.contracts.cash.approve(createOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+
+      await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true, { sender: this.account.publicKey });
+      await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true, { sender: this.account.publicKey });
     }
   }
 
@@ -624,5 +638,9 @@ export class ContractAPI {
 
   async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
     return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
+  }
+
+  async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
+    return await this.augur.hotLoading.getMarketDataParams({market});
   }
 }

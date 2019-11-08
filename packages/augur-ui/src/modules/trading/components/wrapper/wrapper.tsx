@@ -13,11 +13,15 @@ import {
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper/wrapper.styles.less';
 import { OrderButton } from 'modules/common/buttons';
-import { formatShares, formatGasCostToEther } from 'utils/format-number';
+import {
+  formatShares,
+  formatGasCostToEther,
+  formatNumber,
+} from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
-import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
-import { formatDai } from "utils/format-number";
+import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import { formatDai } from 'utils/format-number';
 
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
@@ -48,17 +52,22 @@ interface WrapperProps {
   updateTradeShares: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
+  currentTimestamp: Number;
+  tradingTutorial?: boolean;
+  addPendingOrder: Function;
+  tutorialNext?: Function;
 }
 
 interface WrapperState {
   orderPrice: string;
   orderQuantity: string;
   orderDaiEstimate: string;
-  orderEscrowdEth: string;
+  orderEscrowdDai: string;
   gasCostEst: string;
   selectedNav: string;
   doNotCreateOrders: boolean;
+  expirationDate: number;
   trade: any;
 }
 
@@ -92,11 +101,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderPrice: props.selectedOrderProperties.price || '',
       orderQuantity: props.selectedOrderProperties.quantity || '',
       orderDaiEstimate: '',
-      orderEscrowdEth: '',
+      orderEscrowdDai: '',
       gasCostEst: '',
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
         props.selectedOrderProperties.doNotCreateOrders || false,
+      expirationDate: props.selectedOrderProperties.expirationDate || '',
       trade: Wrapper.getDefaultTrade(props),
     };
 
@@ -161,9 +171,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderPrice: '',
           orderQuantity: '',
           orderDaiEstimate: '',
-          orderEscrowdEth: '',
+          orderEscrowdDai: '',
           gasCostEst: '',
           doNotCreateOrders: false,
+          expirationDate: '',
           selectedNav: this.state.selectedNav,
           trade,
         },
@@ -204,7 +215,14 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   updateTradeTotalCost(order, fromOrderBook = false) {
-    const { updateTradeCost, selectedOutcome, market, gasPrice, initialLiquidity } = this.props;
+    const {
+      updateTradeCost,
+      selectedOutcome,
+      market,
+      gasPrice,
+      initialLiquidity,
+      tradingTutorial,
+    } = this.props;
     let useValues = {
       ...order,
       orderDaiEstimate: '',
@@ -221,21 +239,38 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         ...useValues,
       },
       () => {
-        if (initialLiquidity) {
-          let trade = order;
-          const totalCost = calculateTotalOrderValue(order.orderQuantity, order.orderPrice, order.selectedNav, createBigNumber(market.minPrice), createBigNumber(market.maxPrice), market.marketType);
+        if (initialLiquidity || tradingTutorial) {
+          const totalCost = calculateTotalOrderValue(
+            order.orderQuantity,
+            order.orderPrice,
+            order.selectedNav,
+            createBigNumber(market.minPrice),
+            createBigNumber(market.maxPrice),
+            market.marketType
+          );
           const formattedValue = formatDai(totalCost);
-          trade.limitPrice = order.orderPrice;
-          trade.selectedOutcome =
+          let trade = {
+            ...order,
+            limitPrice: order.orderPrice,
+            selectedOutcome: selectedOutcome.id,
+            totalCost: formatNumber(totalCost),
+            numShares: order.orderQuantity,
+            shareCost: formatNumber(0),
+            potentialDaiLoss: formatNumber(0),
+            potentialDaiProfit: formatNumber(0),
+            side: order.selectedNav,
+          };
+
           this.updateState(
             {
               ...this.state,
               ...order,
               orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-              orderEscrowdEth: '',
+              orderEscrowdDai: '',
               gasCostEst: '',
               trade: trade,
-            }, () => {}
+            },
+            () => {}
           );
         } else {
           updateTradeCost(
@@ -250,12 +285,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             (err, newOrder) => {
               if (err) {
                 // just update properties for form
+                console.log(order);
                 return this.updateState(
                   {
                     ...this.state,
                     ...order,
                     orderDaiEstimate: '',
-                    orderEscrowdEth: '',
+                    orderEscrowdDai: '',
                     gasCostEst: '',
                   },
                   () => {}
@@ -279,7 +315,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   ...this.state,
                   ...order,
                   orderDaiEstimate: neworderDaiEstimate,
-                  orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
+                  orderEscrowdDai: newOrder.costInDai.formatted,
                   trade: newOrder,
                   gasCostEst: formattedGasCost,
                 },
@@ -319,7 +355,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       {
         ...order,
         orderQuantity: '',
-        orderEscrowdEth: '',
+        orderEscrowdDai: '',
         gasCostEst: '',
       },
       () =>
@@ -352,7 +388,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 ...this.state,
                 ...order,
                 orderQuantity: numShares,
-                orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
+                orderEscrowdDai: newOrder.costInDai.formatted,
                 trade: newOrder,
                 gasCostEst: formattedGasCost,
               },
@@ -379,9 +415,18 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
-      orderBook
+      orderBook,
+      currentTimestamp,
+      tradingTutorial,
+      tutorialNext,
     } = this.props;
-    let { marketType, minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
+    let {
+      marketType,
+      minPriceBigNumber,
+      maxPriceBigNumber,
+      minPrice,
+      maxPrice,
+    } = market;
     if (!minPriceBigNumber) {
       minPriceBigNumber = createBigNumber(minPrice);
     }
@@ -394,9 +439,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderPrice,
       orderQuantity,
       orderDaiEstimate,
-      orderEscrowdEth,
+      orderEscrowdDai,
       gasCostEst,
       doNotCreateOrders,
+      expirationDate,
     } = s;
 
     return (
@@ -455,6 +501,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              currentTimestamp={currentTimestamp}
               orderBook={orderBook}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
@@ -464,9 +511,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               orderPrice={orderPrice}
               orderQuantity={orderQuantity}
               orderDaiEstimate={orderDaiEstimate}
-              orderEscrowdEth={orderEscrowdEth}
+              orderEscrowdDai={orderEscrowdDai}
               gasCostEst={gasCostEst}
               doNotCreateOrders={doNotCreateOrders}
+              expirationDate={expirationDate}
               selectedOutcome={selectedOutcome}
               updateState={this.updateState}
               updateOrderProperty={this.updateOrderProperty}
@@ -477,12 +525,14 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
               availableDai={availableDai}
+              Ox_ENABLED={true}
             />
           )}
         </div>
-        {!initialLiquidity && s.trade &&
-          (s.trade.shareCost.value !== 0 ||
-            s.trade.totalCost.value !== 0) && (
+        {(!initialLiquidity || tradingTutorial) &&
+          s.trade &&
+          ((s.trade.shareCost && s.trade.shareCost.value !== 0) ||
+            (s.trade.totalCost && s.trade.totalCost.value !== 0)) && (
             <Confirm
               allowanceBigNumber={allowanceBigNumber}
               numOutcomes={market.numOutcomes}
@@ -496,13 +546,15 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               availableDai={availableDai}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
+              tradingTutorial={tradingTutorial}
             />
           )}
         <div
           className={classNames({
             [Styles.Full]:
               s.trade &&
-              ((s.trade.shareCost && s.trade.shareCost.value !== 0) || (s.trade.totalCost && s.trade.totalCost.value !== 0)),
+              ((s.trade.shareCost && s.trade.shareCost.value !== 0) ||
+                (s.trade.totalCost && s.trade.totalCost.value !== 0)),
           })}
         >
           <OrderButton
@@ -513,6 +565,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               if (initialLiquidity) {
                 updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
+              } else if (tradingTutorial) {
+                tutorialNext();
+                this.clearOrderForm();
               } else {
                 if (disclaimerSeen) {
                   this.placeMarketTrade(market, selectedOutcome, s);
@@ -520,7 +575,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 // Show Disclaimer
                 else {
                   disclaimerModal({
-                    onApprove: () => this.placeMarketTrade(market, selectedOutcome, s),
+                    onApprove: () =>
+                      this.placeMarketTrade(market, selectedOutcome, s),
                   });
                 }
               }

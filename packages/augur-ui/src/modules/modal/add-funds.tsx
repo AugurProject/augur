@@ -222,17 +222,30 @@ export const AddFunds = ({
               </h2>
               <ol>
                 <li>
-                  Buy {fundType === DAI ? <>{fundType} {generateDaiTooltip()}</> : fundType} using any external service
+                  Buy{' '}
+                  {fundType === DAI ? (
+                    <>
+                      {fundType} {generateDaiTooltip()}
+                    </>
+                  ) : (
+                    fundType
+                  )}{' '}
+                  using any external service
                 </li>
                 <li>Transfer the {fundType} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
               <AccountAddressDisplay copyable address={address} />
-              <ExternalLinkButton label={`popular services for buying ${fundType}`} />
+              <ExternalLinkButton
+                label={`popular services for buying ${fundType}`}
+              />
             </>
           )}
         </div>
         <FundsHelp fundType={fundType} />
+        <div>
+          <button onClick={() => closeAction()}>Done</button>
+        </div>
       </div>
     </div>
   );

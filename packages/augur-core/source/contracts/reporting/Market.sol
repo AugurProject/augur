@@ -662,6 +662,13 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     /**
+     * @return The affiliate fee divisor which will be used to split fees from the market creator to an affiliate for trades specifying one
+     */
+    function getAffiliateFeeDivisor() public view returns (uint256) {
+        return affiliateFeeDivisor;
+    }
+
+    /**
      * @return The uint256 timestamp for when the designated reporting period is over and anyone may report
      */
     function getDesignatedReportingEndTime() public view returns (uint256) {

@@ -37,6 +37,7 @@ type ExternalAddresses = {
   GnosisSafe?: string;
   ProxyFactory?: string;
   ZeroXExchange?: string;
+  UniswapV2Factory?: string;
 }
 
 type NetworksToExternalAddresses = {

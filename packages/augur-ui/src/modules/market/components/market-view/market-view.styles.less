@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .MarketView {
   display: flex;
@@ -8,6 +8,17 @@
   &.Inactive {
     pointer-events: none;
     min-width: 100%;
+  }
+
+  > span:first-of-type {
+    background: @color-dark-grey;
+    opacity: 0.7;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: @mask-obscure;
   }
 }
 
@@ -34,9 +45,9 @@
   background-color: @color-module-background;
   bottom: 0;
   color: @color-primary-text;
-  height: calc(~"100vh - @{multi-top-bar-height}");
+  height: calc(~'100vh - @{multi-top-bar-height}');
   left: 0;
-  min-height: 800px;
+  min-height: 700px;
   position: absolute;
   right: 0;
   top: 0;
@@ -68,8 +79,8 @@
 .MarketView__parent {
   display: flex;
   margin: @size-4 0;
-  height: calc(~"100vh - @{multi-top-bar-height}");
-  min-height: 800px;
+  height: calc(~'100vh - @{multi-top-bar-height}');
+  min-height: 700px;
 }
 
 .MarketView__body {
@@ -79,7 +90,7 @@
   flex-grow: 1;
   margin: 0 @size-4;
 
-  > section:first-of-type {
+  > div:first-of-type > section:first-of-type {
     flex: unset;
     margin: 0 0 @size-4;
     min-height: fit-content;
@@ -87,6 +98,126 @@
     @media @breakpoint-mobile {
       padding: 0;
     }
+  }
+}
+
+.HeaderTutorial,
+.OrderBookTutorial,
+.TradingFormTutorial {
+  position: relative;
+
+  > section:first-of-type {
+    z-index: @mask-illuminate;
+  }
+}
+
+.HeaderTutorial {
+  z-index: @mask-illuminate;
+
+  > section:last-of-type {
+    top: calc(100% - 32px);
+  }
+}
+
+.TradingFormTutorial {
+  > section:last-of-type {
+    left: unset;
+    right: -100%;
+    top: 0;
+    margin-right: @size-16;
+  }
+
+  &.PlaceOrderTutorial {
+    > section:last-of-type {
+      top: unset;
+    }
+
+    > section:first-of-type > section > div:nth-of-type(2) {
+      pointer-events: all;
+    }
+  }
+
+  &.SelectOutcomeTutorial {
+    > section:first-of-type > section > div:first-of-type > div > div {
+      pointer-events: all;
+    }
+
+    > section:last-of-type {
+      margin-top: @size-32;
+    }
+  }
+
+  &.BuyingSharesTutorial {
+    > section:last-of-type {
+      margin-top: -@size-12;
+    }
+  }
+
+  &.QuantityTutorial {
+    > section:first-of-type > section > div:first-of-type > div > ul > li:first-of-type {
+      pointer-events: all;
+    }
+
+    > section:last-of-type {
+      margin-top: 85px;
+    }
+  }
+
+  &.LimitPriceTutorial {
+    > section:first-of-type > section > div:first-of-type > div > ul > li:nth-of-type(2) {
+      pointer-events: all;
+    }
+
+    > section:last-of-type {
+      margin-top: 155px;
+    }
+  }
+
+  &.OrderValueTutorial {
+    > section:last-of-type {
+      margin-top: 220px;
+    }
+  }
+}
+
+.OrderBookTutorial {
+  > section:last-of-type {
+    left: -100%;
+    top: 0;
+  }
+}
+
+.OpenOrdersTutorial,
+.FillsTutorial,
+.PositionsTutorial {
+  position: relative;
+
+  > div:first-of-type {
+    z-index: @mask-illuminate;
+  }
+
+  > section:last-of-type {
+    top: 0;
+  }
+}
+
+.OpenOrdersTutorial {
+  > section:last-of-type {
+    margin-top: -320px;
+  }
+}
+
+.FillsTutorial {
+  > section:last-of-type {
+    left: 100px;
+    margin-top: -180px;
+  }
+}
+
+.PositionsTutorial {
+  > section:last-of-type {
+    left: 200px;
+    margin-top: -190px;
   }
 }
 

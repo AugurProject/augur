@@ -20,7 +20,7 @@ import {
   convertPayoutNumeratorsToStrings,
   MALFORMED_OUTCOME,
   convertDisplayValuetoAttoValue,
-  numTicksToTickSize
+  numTicksToTickSize,
 } from '@augurproject/sdk';
 import {
   BUY,
@@ -43,7 +43,7 @@ import {
   APPROVE,
   BUY_INDEX,
   SELL_INDEX,
-  ZERO
+  ZERO,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
@@ -65,12 +65,27 @@ function getInfo(params: any, status: string, marketInfo: MarketData) {
       new BigNumber(params._direction).toNumber() === BUY_INDEX ? BUY : SELL;
   }
 
-  const onChainMinPrice = convertDisplayValuetoAttoValue(createBigNumber(marketInfo.minPrice));
-  const onChainMaxPrice = convertDisplayValuetoAttoValue(createBigNumber(marketInfo.maxPrice));
+  const onChainMinPrice = convertDisplayValuetoAttoValue(
+    createBigNumber(marketInfo.minPrice)
+  );
+  const onChainMaxPrice = convertDisplayValuetoAttoValue(
+    createBigNumber(marketInfo.maxPrice)
+  );
   const numTicks = createBigNumber(marketInfo.numTicks);
-  const tickSize = numTicksToTickSize(numTicks, onChainMinPrice, onChainMaxPrice);
-  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params._price || params.price), onChainMinPrice, tickSize).toString(10);
-  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount || params._amount), tickSize).toString();
+  const tickSize = numTicksToTickSize(
+    numTicks,
+    onChainMinPrice,
+    onChainMaxPrice
+  );
+  const price = convertOnChainPriceToDisplayPrice(
+    createBigNumber(params._price || params.price),
+    onChainMinPrice,
+    tickSize
+  ).toString(10);
+  const amount = convertOnChainAmountToDisplayAmount(
+    createBigNumber(params.amount || params._amount),
+    tickSize
+  ).toString();
 
   return {
     price,
@@ -173,56 +188,117 @@ export default function setAlertText(alert: any, callback: Function) {
       case PUBLICFILLBESTORDERWITHLIMIT:
       case PUBLICFILLORDER:
         alert.title = 'Filled';
-        dispatch(
-          loadMarketsInfoIfNotLoaded([marketId], () => {
-            const marketInfo = selectMarket(marketId);
-            if (marketInfo === null) return;
-            const { loginAccount, userOpenOrders } = getState() as AppState;
-            let originalQuantity = convertOnChainAmountToDisplayAmount(
-              createBigNumber(alert.params.amountFilled),
-              createBigNumber(marketInfo.tickSize)
-            );
-            let updatedOrderType = alert.params.orderType;
-            if (
-              alert.params.orderCreator.toUpperCase() ===
-              loginAccount.address.toUpperCase()
-            ) {
-              // creator
-              const orders = userOpenOrders[alert.params.market];
-              const outcome = new BigNumber(alert.params.outcome).toString();
-              const foundOrder =
-                orders &&
-                orders[outcome] &&
-                orders[outcome][alert.params.orderType] &&
-                orders[outcome][alert.params.orderType][alert.params.orderId];
-              if (foundOrder) {
-                originalQuantity = createBigNumber(
-                  foundOrder.originalFullPrecisionAmount
-                );
+        if (alert.params.marketInfo) {
+          alert.description = alert.params.marketInfo.description;
+          alert.details = `${
+            toCapitalizeCase(alert.params.orderType)
+          } ${formatShares(alert.params.amount).formatted} of ${
+            formatShares(alert.params.amount).formatted
+          } of ${alert.params.outcome} @ ${
+            formatDai(alert.params.price).formatted
+          }`;
+        } else {
+          dispatch(
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
+              if (marketInfo === null) return;
+              const { loginAccount, userOpenOrders } = getState() as AppState;
+              let originalQuantity = convertOnChainAmountToDisplayAmount(
+                createBigNumber(alert.params.amountFilled),
+                createBigNumber(marketInfo.tickSize)
+              );
+              let updatedOrderType = alert.params.orderType;
+              if (
+                alert.params.orderCreator.toUpperCase() ===
+                loginAccount.address.toUpperCase()
+              ) {
+                // creator
+                const orders = userOpenOrders[alert.params.market];
+                const outcome = new BigNumber(alert.params.outcome).toString();
+                const foundOrder =
+                  orders &&
+                  orders[outcome] &&
+                  orders[outcome][alert.params.orderType] &&
+                  orders[outcome][alert.params.orderType][alert.params.orderId];
+                if (foundOrder) {
+                  originalQuantity = createBigNumber(
+                    foundOrder.originalFullPrecisionAmount
+                  );
+                }
+              } else {
+                // filler
+                updatedOrderType =
+                  alert.params.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
               }
-            } else {
-              // filler
-              updatedOrderType =
-                alert.params.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
-            }
-            alert.description = marketInfo.description;
-            const params = {
-              ...alert.params,
-              orderType: updatedOrderType,
-              amount: alert.params.amountFilled,
-            };
-            const { orderType, amount, price, outcomeDescription } = getInfo(
-              params,
-              alert.status,
-              marketInfo
-            );
-            alert.details = `${orderType}  ${
-              formatShares(amount).formatted
-            } of ${
-              formatShares(originalQuantity).formatted
-            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-          })
-        );
+              alert.description = marketInfo.description;
+              const params = {
+                ...alert.params,
+                orderType: updatedOrderType,
+                amount: alert.params.amountFilled,
+              };
+              const { orderType, amount, price, outcomeDescription } = getInfo(
+                params,
+                alert.status,
+                marketInfo
+              );
+              alert.details = `${orderType}  ${
+                formatShares(amount).formatted
+              } of ${
+                formatShares(originalQuantity).formatted
+              } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            })
+          );
+          dispatch(
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
+              if (marketInfo === null) return;
+              const { loginAccount, userOpenOrders } = getState() as AppState;
+              let originalQuantity = convertOnChainAmountToDisplayAmount(
+                createBigNumber(alert.params.amountFilled),
+                createBigNumber(marketInfo.tickSize)
+              );
+              let updatedOrderType = alert.params.orderType;
+              if (
+                alert.params.orderCreator.toUpperCase() ===
+                loginAccount.address.toUpperCase()
+              ) {
+                // creator
+                const orders = userOpenOrders[alert.params.market];
+                const outcome = new BigNumber(alert.params.outcome).toString();
+                const foundOrder =
+                  orders &&
+                  orders[outcome] &&
+                  orders[outcome][alert.params.orderType] &&
+                  orders[outcome][alert.params.orderType][alert.params.orderId];
+                if (foundOrder) {
+                  originalQuantity = createBigNumber(
+                    foundOrder.originalFullPrecisionAmount
+                  );
+                }
+              } else {
+                // filler
+                updatedOrderType =
+                  alert.params.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
+              }
+              alert.description = marketInfo.description;
+              const params = {
+                ...alert.params,
+                orderType: updatedOrderType,
+                amount: alert.params.amountFilled,
+              };
+              const { orderType, amount, price, outcomeDescription } = getInfo(
+                params,
+                alert.status,
+                marketInfo
+              );
+              alert.details = `${orderType}  ${
+                formatShares(amount).formatted
+              } of ${
+                formatShares(originalQuantity).formatted
+              } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            })
+          );
+        }
         break;
 
       // Market
@@ -230,7 +306,12 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = alert.params.preFilled
           ? 'Prefilled Stake'
           : 'Market Disputed';
-        if (alert.params.preFilled && (!alert.params._additionalStake || (alert.params._additionalStake && createBigNumber(alert.params._additionalStake).eq(ZERO)))) {
+        if (
+          alert.params.preFilled &&
+          (!alert.params._additionalStake ||
+            (alert.params._additionalStake &&
+              createBigNumber(alert.params._additionalStake).eq(ZERO)))
+        ) {
           break;
         }
         const payoutNums = convertPayoutNumeratorsToStrings(
@@ -242,12 +323,10 @@ export default function setAlertText(alert: any, callback: Function) {
               ? alert.params._additionalStake
               : alert.params._amount
           ).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
-        ).formatted
+        ).formatted;
 
         if (!marketId) {
-          alert.details = `${
-            repAmount
-          } REP contributed"`;
+          alert.details = `${repAmount} REP contributed"`;
           break;
         }
         dispatch(
@@ -285,7 +364,7 @@ export default function setAlertText(alert: any, callback: Function) {
       case DOINITIALREPORT:
         alert.title = 'Market Reported';
         if (!marketId) {
-          alert.description = 'Initial Report'
+          alert.description = 'Initial Report';
           break;
         }
         dispatch(
@@ -328,7 +407,7 @@ export default function setAlertText(alert: any, callback: Function) {
               alert.status,
               marketInfo
             );
-            
+
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
             } of ${outcomeDescription} @ ${formatDai(price).formatted}`;

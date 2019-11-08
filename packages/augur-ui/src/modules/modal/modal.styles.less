@@ -3,7 +3,7 @@
 .Container {
   background: @color-module-background;
   border: 1px solid fade(@color-dark-grey, 50%);
-  border-radius: @border-radius-default;
+  border-radius: @border-radius-extra-rounded;
   display: flex;
   flex-flow: column nowrap;
   max-height: 90vh;
@@ -54,11 +54,15 @@
 }
 
 .LargeSubheader {
-  .text-24-bold;
+  .text-22-bold;
 
   color: @color-primary-text;
   justify-content: center;
   display: flex;
+
+  @media @breakpoint-mobile-new {
+    .text-16-bold;
+  }
 }
 
 .SmallSubheader {
@@ -66,6 +70,7 @@
 
   color: @color-secondary-text;
   justify-content: center;
+  line-height: 150%;
   margin-top: @size-4;
   display: flex;
 }
@@ -124,20 +129,8 @@
   }
 }
 
-.TestBet {
-  margin: @size-42 0 @size-36;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 230px;
-    height: 129px;
-  }
-}
-
 .LinkContentSection {
-  .text-12;
+  .text-14;
 
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
@@ -157,35 +150,43 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  min-height: 454px;
+  border: 3px solid @color-secondary-action-outline;
+  min-height: 487px;
   justify-content: center;
-  padding: @size-32 @size-40;
+  padding: 5rem @size-40 @size-32;
   width: 454px;
 
   @media @breakpoint-mobile-new {
     align-items: center;
+    border: 2px solid @color-secondary-action-outline;
     height: 100%;
     justify-content: center;
+    margin: @size-32 @size-8;
     max-height: 100%;
     max-width: 100%;
-    width: 100%;
   }
 
   > main {
+    align-items: center;
     display: flex;
     flex: 2;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    min-height: fit-content;
     padding: 0;
 
-    > div:first-of-type {
-      .text-24-bold;
-
+    > div:nth-of-type(1) {
       text-align: center;
+    }
 
-      @media @breakpoint-mobile-new {
-        .text-18-bold;
-      }
+    > div:nth-of-type(2) {
+      text-align: center;
+      margin-top: 56px;
+    }
+
+    > div:nth-of-type(3) {
+      text-align: center;
+      margin-top: @size-12;
     }
 
     @media @breakpoint-mobile-new {
@@ -356,6 +357,7 @@ div.ButtonsRow:last-of-type {
 
     @media @breakpoint-mobile-new {
       display: flex;
+      margin: @size-48 0;
     }
   }
 
@@ -399,6 +401,11 @@ div.ButtonsRow:last-of-type {
     background: @color-page-background;
     padding: @size-16 @size-16 @size-32 @size-32;
     flex-direction: column;
+    justify-content: space-between;
+
+    @media @breakpoint-mobile-new {
+      justify-content: flex-start;
+    }
 
     > div:first-of-type {
       display: flex;
@@ -409,7 +416,20 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      display: none;
+      align-items: flex-end;
+      display: flex;
+      justify-content: flex-end;
+
+      > button {
+        .text-12-bold;
+
+        align-items: center;
+        border: 1px solid @color-secondary-action-outline;
+        border-radius: @border-radius-default;
+        color: @color-secondary-text;
+        display: flex;
+        padding: @size-9 @size-12;
+      }
     }
 
     > div:nth-of-type(2) {
@@ -480,6 +500,18 @@ div.ButtonsRow:last-of-type {
             color: @color-primary-text;
             content: counter(custom-counter) '. ';
           }
+        }
+      }
+    }
+
+    > div:nth-of-type(3) {
+      visibility: hidden;
+
+      @media @breakpoint-mobile-new {
+        visibility: visible;
+
+        > span:first-of-type {
+          margin: @size-24 0 @size-8;
         }
       }
     }
@@ -692,11 +724,17 @@ div.ButtonsRow:last-of-type {
 
 .SignIn {
   @media @breakpoint-mobile-new {
+    margin: @size-48 0;
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
   > div:first-of-type {
     .CloseButton;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -798,6 +836,7 @@ div.ButtonsRow:last-of-type {
 
 .Connect {
   @media @breakpoint-mobile {
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
@@ -819,6 +858,10 @@ div.ButtonsRow:last-of-type {
     .CloseButton;
 
     display: block;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -1594,8 +1637,8 @@ div.ButtonsRow:last-of-type {
 .Gas {
   .Container;
 
-  max-width: 27.8125rem; // 445px
-  @media @breakpoint-max-tablet {
+  max-width: 30rem; // 480px
+  @media @breakpoint-mobile-mid {
     max-width: 21.5rem; // 340px
   }
 
@@ -1613,7 +1656,7 @@ div.ButtonsRow:last-of-type {
       color: @color-primary-text;
       margin: 0 0 @size-24;
 
-      @media @breakpoint-max-tablet {
+      @media @breakpoint-mobile-mid {
         margin: 0 0 @size-16;
       }
     }
@@ -1622,7 +1665,59 @@ div.ButtonsRow:last-of-type {
       .text-10;
 
       color: @color-dark-text;
-      margin-top: @size-24;
+      margin-top: @size-12;
+
+      @media @breakpoint-mobile-mid {
+        margin-top: @size-20;
+      }
+    }
+
+    > button {
+      .button;
+
+      background: transparent;
+      border: 1px solid @color-secondary-action-outline;
+      color: @color-primary-text;
+      max-height: @button-height-default;
+      padding: @size-8 @size-12;
+
+      &:disabled {
+        background: @color-inactive-text;
+      }
+
+      &:hover:enabled {
+        background: fade(@color-primary-action, 5%);
+      }
+
+      &:focus:enabled {
+        background: fade(@color-primary-action, 10%);
+      }
+
+      &:active:enabled {
+        background: fade(@color-primary-action, 15%);
+      }
+
+      .mono-10-bold;
+
+      align-items: center;
+      background: @color-secondary-action;
+      color: @color-primary-text;
+      display: flex;
+      text-transform: uppercase;
+      margin-left: auto;
+      min-height: unset;
+      min-width: unset;
+      padding: @size-4;
+
+      > span {
+        > svg {
+          margin-left: @size-4;
+
+          path {
+            stroke: @color-secondary-text;
+          }
+        }
+      }
     }
 
     > div:first-of-type {
@@ -1631,7 +1726,7 @@ div.ButtonsRow:last-of-type {
       justify-content: space-between;
       margin-bottom: @size-12;
 
-      @media @breakpoint-max-tablet {
+      @media @breakpoint-mobile-mid {
         flex-direction: column;
         margin-bottom: @size-16;
       }
@@ -1681,7 +1776,7 @@ div.ButtonsRow:last-of-type {
       > div:nth-of-type(2) {
         margin: 0 @size-5;
 
-        @media @breakpoint-max-tablet {
+        @media @breakpoint-mobile-mid {
           margin: @size-8 0;
         }
       }
@@ -1704,7 +1799,7 @@ div.ButtonsRow:last-of-type {
 
     > div:nth-of-type(2) {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 4fr 3fr 3fr;
       grid-template-rows: auto;
       grid-gap: @size-16;
       align-items: flex-end;
@@ -1712,6 +1807,7 @@ div.ButtonsRow:last-of-type {
       background-color: @color-table-header;
       border-radius: @size-3;
       padding: @size-12;
+      margin-top: @size-12;
 
       > div {
         width: 100%;
@@ -1722,6 +1818,7 @@ div.ButtonsRow:last-of-type {
           .mono-9-bold;
 
           color: @color-secondary-text;
+          text-transform: uppercase;
         }
 
         input[type='number'] {
@@ -1730,12 +1827,19 @@ div.ButtonsRow:last-of-type {
           border: @size-1 solid @color-secondary-action-outline;
           color: @color-primary-text;
           padding: @size-6 @size-16;
+          -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
         }
       }
 
       > div:nth-of-type(2) {
         margin: 0 @size-5;
         border-right: @size-1 solid @color-secondary-action-outline;
+        padding-left: @size-12;
 
         > div {
           > span:first-of-type {
@@ -1764,6 +1868,39 @@ div.ButtonsRow:last-of-type {
         color: @color-primary-text;
         padding: 0 0 @size-10 @size-5;
       }
+
+      @media @breakpoint-mobile-mid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        background-color: transparent;
+        padding: 0;
+
+        > div:first-of-type {
+          grid-row: 1;
+          grid-column: 1 / span 2;
+
+          input[type='number'] {
+            .mono-14;
+
+            padding: @size-13 @size-16;
+          }
+        }
+
+        > div:nth-of-type(2) {
+          grid-row: 2;
+          grid-column: 1;
+          padding-left: @size-30;
+        }
+
+        > div:nth-of-type(3) {
+          grid-row: 2;
+          grid-column: 2;
+        }
+      }
+    }
+
+    > div:nth-of-type(3) {
+      margin-top: @size-12;
     }
   }
 }
@@ -2182,7 +2319,6 @@ div.ButtonsRow:last-of-type {
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
-  height: @size-40;
   justify-content: space-between;
   line-height: @size-14;
   margin: @size-8 0 @size-18 0;
@@ -2204,7 +2340,7 @@ div.ButtonsRow:last-of-type {
     display: flex;
     margin-left: @size-8;
     margin-right: @size-12;
-    padding: @size-5;
+    padding: @size-6;
     text-transform: uppercase;
     color: @color-primary-text;
     background: @color-secondary-action;
@@ -2602,7 +2738,14 @@ div.ButtonsRow:last-of-type {
     }
   }
 
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
   @media @breakpoint-mobile-mid {
+
     > main {
       > div:first-of-type {
         padding: 0 @size-16;

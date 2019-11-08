@@ -1,12 +1,6 @@
 import { Augur, Provider } from '@augurproject/sdk';
-import {
-  SEOConnector,
-  SingleThreadConnector,
-} from '@augurproject/sdk/build/connector';
-import {
-  ContractDependenciesEthers,
-  EthersSigner,
-} from 'contract-dependencies-ethers';
+import { SEOConnector, WebsocketConnector } from '@augurproject/sdk/build/connector';
+import { ContractDependenciesEthers, EthersSigner, } from 'contract-dependencies-ethers';
 import { WebWorkerConnector } from './ww-connector';
 
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -45,7 +39,8 @@ export class SDK {
       account
     );
 
-    const connector = (isMobileSafari() ? new SEOConnector(): new WebWorkerConnector());
+    const connector = this.pickConnector(env['sdkEndpoint']);
+
     connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http
@@ -78,6 +73,16 @@ export class SDK {
     this.isSubscribed = false;
     if (this.sdk) this.sdk.disconnect();
     this.sdk = null;
+  }
+
+  pickConnector(sdkEndpoint: string) {
+    if (sdkEndpoint) {
+      return new WebsocketConnector(sdkEndpoint);
+    } else if (isMobileSafari()) {
+      return new SEOConnector()
+    } else {
+      return new WebWorkerConnector();
+    }
   }
 
   get(): Augur<Provider> {

@@ -164,14 +164,20 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
 };
 
 export const handleMarketsUpdatedLog = (
-    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[]}
+    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[] | Getters.Markets.MarketInfo}
   ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
-  const marketsDataById = marketsInfo.reduce((acc, marketData) => ({
+  let marketsDataById = {}
+  if (Array.isArray(marketsInfo)) {
+    marketsDataById = marketsInfo.reduce((acc, marketData) => ({
       [marketData.id]: marketData,
       ...acc,
     }), {} as MarketInfos);
+  } else {
+    const market = marketsInfo as Getters.Markets.MarketInfo;
+    marketsDataById[market.id] = market;
+  }
 
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());

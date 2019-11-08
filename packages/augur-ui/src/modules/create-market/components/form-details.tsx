@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import {
@@ -12,18 +12,17 @@ import {
   Subheaders,
   LineBreak,
   NumberedList,
-  DateTimeHeaders,
   SmallSubheaders,
   QuestionBuilder,
   DateTimeSelector,
   ResolutionRules,
+  TemplateBanners,
+  InputHeading,
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
   SCALAR,
   CATEGORICAL,
-  EXPIRY_SOURCE_GENERIC,
-  EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC,
 } from 'modules/common/constants';
@@ -31,7 +30,6 @@ import { NewMarket } from 'modules/types';
 import {
   DESCRIPTION_PLACEHOLDERS,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
@@ -44,9 +42,9 @@ import {
   hasNoTemplateCategoryChildren,
   hasNoTemplateCategoryTertiaryChildren,
 } from 'modules/create-market/get-template';
+import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 
 interface FormDetailsProps {
-  updateNewMarket: Function;
   newMarket: NewMarket;
   currentTimestamp: number;
   onChange: Function;
@@ -57,12 +55,6 @@ interface FormDetailsProps {
 interface FormDetailsState {
   dateFocused: Boolean;
   timeFocused: Boolean;
-}
-
-interface TimeSelectorParams {
-  hour?: string;
-  minute?: string;
-  meridiem?: string;
 }
 
 export default class FormDetails extends React.Component<
@@ -81,9 +73,7 @@ export default class FormDetails extends React.Component<
       onChange,
       onError,
       isTemplate,
-      updateNewMarket,
     } = this.props;
-    const s = this.state;
 
     const {
       outcomes,
@@ -98,9 +88,6 @@ export default class FormDetails extends React.Component<
       maxPrice,
       detailsText,
       categories,
-      expirySource,
-      backupSource,
-      expirySourceType,
       designatedReporterAddress,
       designatedReporterType,
       validations,
@@ -111,28 +98,6 @@ export default class FormDetails extends React.Component<
 
     const tickSize =
       isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
-    let sourceButtons = [
-      {
-        header: 'General knowledge',
-        value: EXPIRY_SOURCE_GENERIC,
-      },
-    ];
-
-    if (!isTemplate) {
-      sourceButtons.push({
-        header: 'Outcome available on a public website',
-        value: EXPIRY_SOURCE_SPECIFIC,
-        expandable: true,
-        placeholder: 'Enter website',
-        textValue: expirySource,
-        onTextChange: (value: string) => onChange('expirySource', value),
-        errorMessage: validations.expirySource,
-        secondPlaceholder: 'Back up website (optional)',
-        secondTextValue: backupSource,
-        secondHeader: 'If the primary resolution source is not available',
-        onSecondTextChange: (value: string) => onChange('backupSource', value),
-      });
-    }
 
     return (
       <div
@@ -176,18 +141,21 @@ export default class FormDetails extends React.Component<
                   {
                     value: YES_NO,
                     header: 'Yes / No',
+                    icon: YesNoMarketIcon,
                     description:
                       'There are two possible outcomes: “Yes” or “No”',
                   },
                   {
                     value: CATEGORICAL,
                     header: 'Multiple Choice',
+                    icon: CategoricalMarketIcon,
                     description:
                       'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
                   },
                   {
                     value: SCALAR,
                     header: 'Scalar',
+                    icon: ScalarMarketIcon,
                     description:
                       'A range of numeric outcomes: “USD range” between “1” and “100”.',
                   },
@@ -217,11 +185,16 @@ export default class FormDetails extends React.Component<
                 uniqueKey={'nonTemplateRes'}
               />
 
-              <Subheaders
-                header="Market question"
-                link
-                subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
+              <InputHeading
+                name={'question'}
+                heading={'Market question'}
+                subHeading={'What do you want people to predict?'}
+                listItems={[
+                  'If entering a date and time in the Market Question, enter a date and time in the UTC-0 timezone.',
+                  'If the winning outcome will be determined using a specific source, you must enter the source URL or its full name in the Market Question.'
+                ]}
               />
+
               <TextInput
                 type="textarea"
                 placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
@@ -234,6 +207,7 @@ export default class FormDetails extends React.Component<
                     validations.description.slice(1).toLowerCase()
                 }
               />
+              <TemplateBanners categories={newMarket.categories} />
             </>
           )}
 
@@ -377,39 +351,30 @@ export default class FormDetails extends React.Component<
             />
           )}
 
-          <Subheaders
-            header="Resolution source"
-            subheader="Describe what users need to know in order to resolve the market."
-            link
-          />
-          <RadioBarGroup
-            radioButtons={sourceButtons}
-            defaultSelected={expirySourceType}
-            onChange={(value: string) => {
-              if (value === EXPIRY_SOURCE_GENERIC) {
-                onChange(EXPIRY_SOURCE, '');
-                onError(EXPIRY_SOURCE, '');
-              }
-              onChange('expirySourceType', value);
-            }}
-          />
-
           {isTemplate && (
             <ResolutionRules newMarket={newMarket} onChange={onChange} />
           )}
 
-          <Subheaders
-            header="Resolution details"
-            subheader="Describe what users need to know to determine the outcome of the event."
-            link
-          />
-          <TextInput
-            type="textarea"
-            placeholder="Describe how the event should be resolved under different scenarios."
-            rows="3"
-            value={detailsText}
-            onChange={(value: string) => onChange('detailsText', value)}
-          />
+          {!isTemplate && (
+            <>
+              <InputHeading
+                name={'resolution'}
+                heading={'Resolution details'}
+                subHeading={'Describe what users need to know to determine the outcome of the event.'}
+                listItems={[
+                  'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
+                  'Do not enter a resolution source in Resolution Details, it must be entered in the Market Question.'
+                ]}
+              />
+              <TextInput
+                type="textarea"
+                placeholder="Describe how the event should be resolved under different scenarios."
+                rows="3"
+                value={detailsText}
+                onChange={(value: string) => onChange('detailsText', value)}
+              />
+            </>
+          )}
 
           <Subheaders
             header="Designated reporter"

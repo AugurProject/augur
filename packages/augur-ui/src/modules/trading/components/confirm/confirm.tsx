@@ -40,6 +40,7 @@ interface ConfirmProps {
   minPrice: BigNumber;
   scalarDenomination: string | null;
   numOutcomes: number;
+  tradingTutorial?: boolean;
 }
 
 interface ConfirmState {
@@ -82,6 +83,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasLimit,
       availableEth,
       availableDai,
+      tradingTutorial
     } = props || this.props;
 
     const {
@@ -103,7 +105,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       allowanceBigNumber &&
-      createBigNumber(totalCost.value).gt(allowanceBigNumber)
+      createBigNumber(totalCost.value).gt(allowanceBigNumber) &&
+      !tradingTutorial
     ) {
       needsApproval = true;
       messages = {
@@ -113,7 +116,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (!isNaN(numTrades) && numTrades > 1) {
+    if (!isNaN(numTrades) && numTrades > 1 && !tradingTutorial) {
       messages = {
         header: 'MULTIPLE TRANSACTIONS',
         type: WARNING,
@@ -189,11 +192,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const greaterLess = side === BUY ? 'greater' : 'less';
     const higherLower = side === BUY ? 'higher' : 'lower';
 
-    const marketRange = maxPrice.minus(minPrice).abs();
+    const marketRange = createBigNumber(maxPrice).minus(createBigNumber(minPrice)).abs();
 
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)
-      : maxPrice.minus(createBigNumber(limitPrice))
+      : createBigNumber(maxPrice).minus(createBigNumber(limitPrice))
     )
       .dividedBy(marketRange)
       .times(100)
@@ -252,7 +255,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        {totalCost && totalCost.value !== 0 && (
+        {newOrderAmount !== "0" && (
           <div className={Styles.TradingConfirm__details}>
             <div
               className={classNames(

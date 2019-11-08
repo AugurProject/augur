@@ -26,6 +26,7 @@ import {
 import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList } from "@augurproject/sdk/build/state/getter/Markets";
+import { generateTemplateValidations } from './generate-templates';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -470,6 +471,14 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.log(`You are ${user.account.publicKey}\n`);
+    },
+  });
+
+  flash.addScript({
+    name: 'generate-templates',
+    async call(this: FlashSession) {
+      generateTemplateValidations();
+      this.log(`Generated Templates to augur-artifacts\n`);
     },
   });
 

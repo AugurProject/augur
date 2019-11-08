@@ -72,7 +72,7 @@ export class ContractCompiler {
             if (!this.configuration.enableSdb) {
                 const stats = await fs.stat(this.configuration.contractOutputPath);
                 const lastCompiledTimestamp = stats.mtime;
-                const ignoreCachedFile = (file: string, stats: fs.Stats): boolean => (stats.isFile() && path.extname(file) !== '.sol') || (stats.isFile() && path.extname(file) === ".sol" && stats.mtime < lastCompiledTimestamp);
+                const ignoreCachedFile = (file: string, stats: fs.Stats): boolean => (stats.isFile() && path.extname(file) !== '.sol') || (stats.isFile() && path.extname(file) === '.sol' && stats.mtime < lastCompiledTimestamp);
                 const uncachedFiles = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreCachedFile);
                 if (uncachedFiles.length === 0) {
                     return JSON.parse(await fs.readFile(this.configuration.contractOutputPath, 'utf8'));
@@ -139,9 +139,23 @@ export class ContractCompiler {
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, '');
-        const originalFileData = (await fs.readFile(filePath)).toString('utf8');
-        if (originalFileData.includes('pragma experimental ABIEncoderV2')) {
-            result = 'pragma experimental ABIEncoderV2;\n' + result;
+        const experimentals = [
+          'IExchange',
+          'FillOrder',
+          'ZeroXTrade',
+          'ZeroXExchange',
+          'SimulateTrade',
+          'IZeroXTrade',
+          'ZeroXTradeToken',
+          'IAugurCreationDataGetter',
+          'Augur',
+          'HotLoading',
+          'RepPriceOracle',
+          // 0x
+          'DevUtils',
+        ];
+        if (experimentals.includes(path.parse(filePath).base.replace(".sol", ""))) {
+          result = 'pragma experimental ABIEncoderV2;\n' + result;
         }
         return result;
     }
@@ -184,6 +198,7 @@ export class ContractCompiler {
                 'GnosisSafeRegistry',
                 'HotLoading',
                 'WarpSync',
+                'RepPriceOracle',
                 // 0x contracts
                 'ERC20Proxy',
                 'ERC721Proxy',

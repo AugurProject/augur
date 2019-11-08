@@ -442,12 +442,20 @@ class ContractsFixture:
             contract = snapshot['contracts'][contractName]
             self.contracts[contractName] = self.applySignature(None, contract['address'], contract['signature'])
 
+    def getBlockNumber(self):
+        return self.eth_tester.backend.chain.header.block_number
+
+    def mineBlocks(self, numBlocks):
+        for i in range(int(numBlocks)):
+            self.eth_tester.backend.chain.mine_block()
+
     def uploadAllContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.relativeContractsPath)):
             # skip the legacy reputation directory since it is unnecessary and we don't support uploads of contracts with constructors yet
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
+            if 'uniswap' in directory: continue
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -510,8 +518,13 @@ class ContractsFixture:
         self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
         return zeroXContracts
 
+    def uploadUniswapContracts(self):
+        resolvedUniswapPath = resolveRelativePath("../source/contracts/uniswap/UniswapV2.sol")
+        self.signatures["UniswapV2"] = self.generateSignature(resolvedUniswapPath)
+        self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=["", 1])
+
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync']
+        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync','RepPriceOracle']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
@@ -577,7 +590,7 @@ class ContractsFixture:
         log = logs[0]
         return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\"]}", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\"]}", validityBond=0):
         sender = sender or self.accounts[0]
         marketCreationFee = validityBond or universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
@@ -586,17 +599,18 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\"]}"):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes = None, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\"]}"):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
-        outcomes = [" "] * numOutcomes
+        if outcomes is None:
+            outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
             assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}"):
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}"):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
@@ -605,7 +619,7 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
+    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
         sender = sender or self.accounts[0]
         designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
@@ -662,6 +676,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()
+    fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()

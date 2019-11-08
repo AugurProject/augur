@@ -48,7 +48,7 @@
     width: @size-16;
 
     > path {
-      stroke: @color-primary-text;
+      stroke: @color-secondary-text;
     }
   }
 }
@@ -383,6 +383,10 @@
     }
   }
 
+  > span {
+    margin-left: @size-4;
+  }
+
   &:hover {
     color: @color-primary-text;
 
@@ -658,8 +662,16 @@
   color: @color-primary-action;
   display: inline-flex;
 
+  > a {
+    color: @color-primary-action;
+  }
+
   &:hover {
     color: @color-primary-text;
+
+    > a {
+      color: @color-primary-text;
+    }
   }
 
   > svg {
@@ -678,6 +690,10 @@
 
   &.LightAlternate {
     color: @color-outcome-seven;
+
+    > a {
+      color: @color-outcome-seven;
+    }
 
     > svg > path {
       &:nth-child(odd) {

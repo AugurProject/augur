@@ -49,6 +49,8 @@ export class InitialReporter extends c.InitialReporter<BigNumber> {
 }
 export class Market extends c.Market<BigNumber> {
 }
+export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
+}
 export class ReputationToken extends c.ReputationToken<BigNumber> {
 }
 export class ShareToken extends c.ShareToken<BigNumber> {
@@ -74,6 +76,8 @@ export class Trade extends c.Trade<BigNumber> {
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
 }
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
+}
+export class HotLoading extends c.HotLoading<BigNumber> {
 }
 export class RedeemStake extends c.RedeemStake<BigNumber> {
 }

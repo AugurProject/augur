@@ -1,6 +1,8 @@
 pragma solidity 0.5.10;
+pragma experimental ABIEncoderV2;
 
 import 'ROOT/IAugur.sol';
+import 'ROOT/IAugurCreationDataGetter.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/factories/IUniverseFactory.sol';
@@ -11,6 +13,7 @@ import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IShareToken.sol';
+import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/Reporting.sol';
@@ -24,7 +27,7 @@ import 'ROOT/ITime.sol';
  * @title Augur
  * @notice The core global contract of the Augur platform. Provides a contract registry and and authority on which contracts should be trusted.
  */
-contract Augur is IAugur {
+contract Augur is IAugur, IAugurCreationDataGetter {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -72,11 +75,16 @@ contract Augur is IAugur {
     mapping(address => bool) private shareTokens;
     mapping(address => bool) private trustedSender;
 
+    mapping(address => MarketCreationData) private marketCreationData;
+
     address public uploader;
     mapping(bytes32 => address) private registry;
 
     ITime public time;
     IUniverse public genesisUniverse;
+
+    uint256 public forkCounter;
+    mapping (address => uint256) universeForkIndex;
 
     uint256 public upgradeTimestamp;
 
@@ -150,6 +158,10 @@ contract Augur is IAugur {
 
     function isKnownUniverse(IUniverse _universe) public view returns (bool) {
         return universes[address(_universe)];
+    }
+
+    function getUniverseForkIndex(IUniverse _universe) public view returns (uint256) {
+        return universeForkIndex[address(_universe)];
     }
 
     //
@@ -227,6 +239,18 @@ contract Augur is IAugur {
         return keccak256(abi.encodePacked(_payoutNumerators));
     }
 
+    function getMarketCreationData(IMarket _market) public view returns (MarketCreationData memory) {
+        return marketCreationData[address(_market)];
+    }
+
+    function getMarketType(IMarket _market) public view returns (IMarket.MarketType _marketType) {
+        return marketCreationData[address(_market)].marketType;
+    }
+
+    function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes) {
+        return marketCreationData[address(_market)].outcomes;
+    }
+
     //
     // Logging
     //
@@ -237,7 +261,11 @@ contract Augur is IAugur {
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
         _prices[1] = DEFAULT_MAX_PRICE;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market,_marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
+        marketCreationData[address(_market)].extraInfo = _extraInfo;
+        marketCreationData[address(_market)].marketCreator = _marketCreator;
+        marketCreationData[address(_market)].outcomes = _outcomes;
+        marketCreationData[address(_market)].marketType = IMarket.MarketType.CATEGORICAL;
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
 
@@ -247,6 +275,9 @@ contract Augur is IAugur {
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
         _prices[1] = DEFAULT_MAX_PRICE;
+        marketCreationData[address(_market)].extraInfo = _extraInfo;
+        marketCreationData[address(_market)].marketCreator = _marketCreator;
+        marketCreationData[address(_market)].marketType = IMarket.MarketType.YES_NO;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
@@ -256,6 +287,10 @@ contract Augur is IAugur {
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
         markets[address(_market)] = true;
+        marketCreationData[address(_market)].extraInfo = _extraInfo;
+        marketCreationData[address(_market)].marketCreator = _marketCreator;
+        marketCreationData[address(_market)].displayPrices = _prices;
+        marketCreationData[address(_market)].marketType = IMarket.MarketType.SCALAR;
         emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
@@ -351,6 +386,8 @@ contract Augur is IAugur {
 
     function logUniverseForked(IMarket _forkingMarket) public returns (bool) {
         require(isKnownUniverse(IUniverse(msg.sender)));
+        forkCounter += 1;
+        universeForkIndex[msg.sender] = forkCounter;
         emit UniverseForked(msg.sender, _forkingMarket);
         return true;
     }

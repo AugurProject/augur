@@ -125,8 +125,6 @@ export interface InitialReportSubmittedLog extends Log, Doc, Timestamped {
 export interface MarketCreatedLogExtraInfo {
   description: string;
   longDescription?: string;
-  resolutionSource?: string;
-  backupSource?: string;
   _scalarDenomination?: string;
   categories?: string[];
   tags?: string[];
@@ -386,13 +384,22 @@ export interface LiquidityData {
   [spread: number]: number;
 }
 
+export interface ExtraInfoTemplateInput {
+  id: number;
+  value: string;
+}
+export interface ExtraInfoTemplate {
+  hash: string;
+  question: string;
+  inputs: ExtraInfoTemplateInput[]
+}
+
 export interface ExtraInfo {
   _scalarDenomination?: string;
-  resolutionSource?: string;
-  backupSource?: string;
   longDescription?: string;
   description?: string;
   categories?: string[];
+  template?: ExtraInfoTemplate;
 }
 
 export interface MarketData extends Log, Doc {

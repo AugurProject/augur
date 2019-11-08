@@ -46,11 +46,11 @@
 
         > svg {
           > path:first-of-type {
-            fill: #3B5998;
+            fill: @color-facebook;
           }
 
           > path:last-of-type {
-            fill: #FFFFFF;
+            fill: @color-white
           }
         }
       }
@@ -58,11 +58,11 @@
       > button:last-of-type {
         > svg {
           > path:first-of-type {
-            fill: #55ACEE;
+            fill: @color-twitter;
           }
 
           > path:last-of-type {
-            fill: #FFFFFF;
+            fill: @color-white
           }
         }
       }
@@ -170,7 +170,7 @@ div.Toggle {
   background: none;
   border: 0;
   margin: 0;
-  max-height: @size-16;
+  max-height: @size-52;
   overflow: hidden;
   resize: none;
   text-transform: none;
@@ -364,10 +364,16 @@ div.Toggle {
         align-items: flex-start;
 
         > div:first-of-type {
-          flex-direction: column;
+          align-items: flex-end;
+          flex-direction: row;
 
           > span {
-            margin: 0 0 @size-8;
+            align-self: center;
+          }
+
+          > svg {
+            display: flex;
+            margin-right: @size-8;
           }
         }
       }

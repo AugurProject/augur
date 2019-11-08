@@ -32,6 +32,7 @@ contract Universe is IUniverse {
     IUniverse private parentUniverse;
     IFormulas public formulas;
     IShareToken public shareToken;
+    IRepPriceOracle public repPriceOracle;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
@@ -84,6 +85,7 @@ contract Universe is IUniverse {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
         shareToken = IShareToken(augur.lookup("ShareToken"));
+        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -434,10 +436,17 @@ contract Universe is IUniverse {
      * @return The Market Cap of this Universe's REP
      */
     function getRepMarketCapInAttoCash() public view returns (uint256) {
-        // TODO: Must pass this Universe's REP token to the oracle. Not just one REP!
-        uint256 _attoCashPerRep = IRepPriceOracle(augur.lookup("RepPriceOracle")).getRepPriceInAttoCash();
-        uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
-        return _repMarketCapInAttoCash;
+        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash(reputationToken);
+        return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
+    }
+
+    function pokeRepMarketCapInAttoCash() public returns (uint256) {
+        uint256 _attoCashPerRep = repPriceOracle.pokeRepPriceInAttoCash(reputationToken);
+        return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
+    }
+
+    function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep ) private view returns (uint256) {
+        return reputationToken.totalSupply().mul(_attoCashPerRep).div(10 ** 18);
     }
 
     /**
@@ -528,7 +537,7 @@ contract Universe is IUniverse {
             return _currentFeeDivisor;
         }
 
-        _currentFeeDivisor = calculateReportingFeeDivisor();
+        _currentFeeDivisor = pokeReportingFeeDivisor();
 
         shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
         previousReportingFeeDivisor = _currentFeeDivisor;
@@ -550,7 +559,17 @@ contract Universe is IUniverse {
         return calculateReportingFeeDivisor();
     }
 
+    function pokeReportingFeeDivisor() public returns (uint256) {
+        uint256 _repMarketCapInAttoCash = pokeRepMarketCapInAttoCash();
+        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
+    }
+
     function calculateReportingFeeDivisor() public view returns (uint256) {
+        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
+        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
+    }
+
+    function calculateReportingFeeDivisorInternal(uint256 _repMarketCapInAttoCash) private view returns (uint256) {
         uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _reportingFeeDivisor = 0;
