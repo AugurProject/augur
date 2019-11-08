@@ -80,9 +80,7 @@ export default class FormDetails extends React.Component<
       onChange,
       onError,
       isTemplate,
-      updateNewMarket,
     } = this.props;
-    const s = this.state;
 
     const {
       outcomes,
