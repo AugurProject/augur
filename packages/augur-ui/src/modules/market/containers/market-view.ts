@@ -14,6 +14,7 @@ import {
   TUTORIAL_PRICE,
   CATEGORICAL,
   TRADING_TUTORIAL_OUTCOMES,
+  BUY,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -53,13 +54,13 @@ const mapStateToProps = (state, ownProps) => {
             mySize: '0',
             orderEstimate: createBigNumber(.4),
             outcomeId: 2,
-            outcomeName: 'Los Angeles Rams',
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
             price: TUTORIAL_PRICE.toString(),
             quantity: TUTORIAL_QUANTITY.toString(),
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: 'buy',
+            type: BUY,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ]
