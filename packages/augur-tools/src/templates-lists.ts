@@ -204,14 +204,6 @@ export const LIST_VALUES = {
   ],
   BASEBALL_EVENT: [
     {
-      value: 'American League Division Series',
-      label: 'American League Division Series',
-    },
-    {
-      value: 'National League Division Series',
-      label: 'National League Division Series',
-    },
-    {
       value: 'American League Championship Series',
       label: 'American League Championship Series',
     },

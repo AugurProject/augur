@@ -111,6 +111,8 @@ export interface Template {
   resolutionRules: ResolutionRules;
   denomination?: string;
   tickSize?: number;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export interface TemplateInput {

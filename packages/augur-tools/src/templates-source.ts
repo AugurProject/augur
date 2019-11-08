@@ -1308,8 +1308,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] win the [1] [2]?`,
-            example: `Will the NY Yankees win the 2020 World Series?`,
+            question: `MLB: Will the [0] win the [1] [2]?`,
+            example: `MLB: Will the NY Yankees win the 2020 World Series?`,
             inputs: [
               {
                 id: 0,
@@ -1333,8 +1333,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `MLB: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+            example: `MLB: Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -1393,7 +1393,7 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `[0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+            question: `MLB: [0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
             example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
@@ -1444,8 +1444,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Which player will win the [0] [1]?`,
-            example: `Which Player will win the 2019 American League Cy Young award?`,
+            question: `MLB: Which player will win the [0] [1]?`,
+            example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
             inputs: [
               {
                 id: 0,
@@ -1469,10 +1469,12 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `Total number of wins the [0] will finish the [1] regular season with?`,
-            example: `Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
+            question: `MLB: Total number of wins the [0] will finish the [1] regular season with?`,
+            example: `MLB: Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
+            minPrice: 0,
+            maxPrice: 162,
             inputs: [
               {
                 id: 0,
@@ -1486,7 +1488,13 @@ export const TEMPLATES = {
                 values: LIST_VALUES.YEARS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  test: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`
+                }
+              ]
+            },
           },
         ],
       },
