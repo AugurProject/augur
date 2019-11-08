@@ -1,20 +1,25 @@
 @import (reference) '~assets/styles/shared';
 
-.Container {
-  background: @color-module-background;
+.DefaultModalBorder {
   border: @size-3 solid @color-secondary-action-outline;
   border-radius: @border-radius-extra-rounded;
+
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+  }
+}
+
+.Container {
+  .DefaultModalBorder;
+
+  background: @color-module-background;
   display: flex;
   flex-flow: column nowrap;
   max-height: 90vh;
   max-width: 35rem;
   position: relative;
   width: 100%;
-
-  @media @breakpoint-mobile-new {
-    border: @size-2 solid @color-secondary-action-outline;
-    border-radius: @border-radius-default;
-  }
 
   > main {
     overflow: auto;
