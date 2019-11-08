@@ -652,8 +652,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-                example: `Will the Los Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NBA: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -687,49 +687,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
-                example: `Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Team A`,
-                    values: LIST_VALUES.NBA_TEAMS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Team B`,
-                    values: LIST_VALUES.NBA_TEAMS,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DATETIME,
-                    placeholder: `Date time`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    { text: `Includes Regulation and Overtime` },
-                    {
-                      text: `If the game is not played, the market should resolve as "NO"'`,
-                    },
-                    {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: YES_NO,
-                question: `Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
-                example: `Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NBA: Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
+                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -769,8 +728,49 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will the [0] win the [1] NBA Championship?`,
-                example: `Will the Golden State Warriors win the 2019-20 NBA Championship?`,
+                question: `NBA: Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
+                example: `NBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `NBA: Will the [0] win the [1] NBA Championship?`,
+                example: `NBA: Will the Golden State Warriors win the 2019-20 NBA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -789,8 +789,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2] award?`,
-                example: `Will Steph Curry win the 2019-2020 NBA Most Valuable Player award?`,
+                question: `NBA: Will [0] win the [1] [2] award?`,
+                example: `NBA: Will Steph Curry win the 2019-2020 NBA Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -814,8 +814,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-                example: `Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `NBA: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `NBA: Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -845,8 +845,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NBA: [0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `NBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -969,8 +969,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `Total number of wins [0] will finish [1] regular season with?`,
-                example: `Total number of wins NY Knicks will finish 2019-20 regular season with?`,
+                question: `NBA: Total number of wins [0] will finish [1] regular season with?`,
+                example: `NBA: Total number of wins NY Knicks will finish 2019-20 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [
@@ -987,7 +987,9 @@ export const TEMPLATES = {
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [{ text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`}]
+                },
               },
             ],
           },
@@ -995,8 +997,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win vs [1]; [2] basketball, Estimated schedule start time: [3]?`,
-                example: `Will Duke win vs Kentucky; Men's baskeball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NCAA BB: Will [0] win vs [1]; [2] basketball, Estimated schedule start time: [3]?`,
+                example: `NCAA BB: Will Duke win vs Kentucky; Men's baskeball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1034,8 +1036,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win vs [1] by [2] or more points, [3] basketball, Estimated schedule start time: [4]?`,
-                example: `Will Duke Blue Devils win vs Kentucky Wildcats by 3 or more points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NCAA BB: Will [0] win vs [1] by [2] or more points, [3] basketball, Estimated schedule start time: [4]?`,
+                example: `NCAA BB: Will Duke Blue Devils win vs Kentucky Wildcats by 3 or more points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1079,8 +1081,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] & [1] score [2] or more combined points; [3] basketball, Estimated schedule start time: [4]?`,
-                example: `Will UNC & Arizona score 142 or more combined points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NCAA BB: Will [0] & [1] score [2] or more combined points; [3] basketball, Estimated schedule start time: [4]?`,
+                example: `NCAA BB: Will UNC & Arizona score 142 or more combined points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1121,8 +1123,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] NCAA [2] National Championship?`,
-                example: `Will Villanova win the 2020 NCAA Men's National Championship?`,
+                question: `NCAA BB: Will [0] win the [1] NCAA [2] National Championship?`,
+                example: `NCAA BB: Will Villanova win the 2020 NCAA Men's National Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -1146,8 +1148,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the [1] [2] [3]?`,
-                example: `Will USC make the 2020 Men's Final Four?`,
+                question: `NCAA BB: Will [0] make the [1] [2] [3]?`,
+                example: `NCAA BB: Will USC make the 2020 Men's Final Four?`,
                 inputs: [
                   {
                     id: 0,
@@ -1177,8 +1179,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which team will win: [0] vs [1], [2] basketball, Estimated schedule start time: [3]?`,
-                example: `Which Team will win: Duke vs Kentucky, Men's basketball, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `NCAA BB: Which team will win: [0] vs [1], [2] basketball, Estimated schedule start time: [3]?`,
+                example: `NCAA BB: Which Team will win: Duke vs Kentucky, Men's basketball, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1212,8 +1214,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] basketball; [1] vs [2]: Total Points scored; Over/Under [3].5, Estimated schedule start time: [4]?`,
-                example: `Men's basketball; Duke Blue Devils vs Arizona Wildcats: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NCAA BB: [0] basketball; [1] vs [2]: Total Points scored; Over/Under [3].5, Estimated schedule start time: [4]?`,
+                example: `NCAA BB: Men's basketball; Duke Blue Devils vs Arizona Wildcats: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1263,8 +1265,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college basketball team will win the [0] [1] [2] tournament?`,
-                example: `Which college basketball team will win the men's 2020 ACC tournament?`,
+                question: `NCAA BB: Which college basketball team will win the [0] [1] [2] tournament?`,
+                example: `NCAA BB: Which college basketball team will win the men's 2020 ACC tournament?`,
                 inputs: [
                   {
                     id: 0,

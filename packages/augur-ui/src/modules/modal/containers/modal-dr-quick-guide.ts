@@ -1,16 +1,17 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import { Message } from "modules/modal/message";
-import { closeModal } from "modules/modal/actions/close-modal";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import { Message } from 'modules/modal/message';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { DISPUTING_GUIDE, REPORTING_GUIDE } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => {
-
   return {
     modal: state.modal,
+    guide: state.modal.whichGuide === 'reporting' ? REPORTING_GUIDE : DISPUTING_GUIDE
   };
 };
 
@@ -19,21 +20,20 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: "Reporting Quick guide",
-  callToAction: "",
-  content: "",
+  title: sP.guide.title,
+  content: sP.guide.content,
   closeAction: () => {
     dP.closeModal();
   },
   buttons: [
     {
-      text: "Learn More about Reporting",
+      text: sP.guide.learnMoreButtonText,
       action: () => {
         dP.closeModal();
       },
     },
     {
-      text: "Cancel",
+      text: sP.guide.closeButtonText,
       action: () => {
         dP.closeModal();
       }

@@ -52,9 +52,9 @@ interface WrapperProps {
   updateTradeShares: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
   currentTimestamp: Number;
-  tradingTutorial?: Boolean;
+  tradingTutorial?: boolean;
   addPendingOrder: Function;
   tutorialNext?: Function;
 }
