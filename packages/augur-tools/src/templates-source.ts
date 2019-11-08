@@ -36,7 +36,7 @@ import {
   SINGLES,
   DOUBLES,
 } from './templates-template';
-import { LIST_VALUES } from './templates-lists';
+import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS } from './templates-lists';
 
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical'
@@ -1477,6 +1477,13 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: BASKETBALL_EVENT_DEP_TEAMS,
+                  }
                 ],
                 resolutionRules: {
                   [REQUIRED]: [{ text: `Include Regulation and Overtime` }],

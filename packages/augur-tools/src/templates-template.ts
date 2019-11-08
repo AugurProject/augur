@@ -132,6 +132,7 @@ export interface TemplateInput {
   userInputObject?: UserInputtedType;
   values?: ValueLabelPair[];
   sublabel?: string;
+  inputSourceId?: number;
 }
 
 export enum ValidationType {
@@ -149,6 +150,7 @@ export enum TemplateInputType {
   USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
   USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME',
+  USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP = 'USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP',
 }
 
 export const ValidationTemplateInputType = {

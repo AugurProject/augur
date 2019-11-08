@@ -228,7 +228,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={'Enter outcome'}
-                updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
+                updateList={(value: string[]) => onChange(OUTCOMES, value)}
                 errorMessage={validations.outcomes}
               />
             </>

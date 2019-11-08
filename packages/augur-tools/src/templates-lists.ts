@@ -1706,6 +1706,130 @@ export const LIST_VALUES = {
       label: 'Washington Wizards',
     },
   ],
+  NBA_EAST_TEAMS: [
+    {
+      value: 'Boston Celtics',
+      label: 'Boston Celtics',
+    },
+    {
+      value: 'Brooklyn Nets',
+      label: 'Brooklyn Nets',
+    },
+    {
+      value: 'Charlotte Hornets',
+      label: 'Charlotte Hornets',
+    },
+    {
+      value: 'Chicago Bulls',
+      label: 'Chicago Bulls',
+    },
+    {
+      value: 'Cleveland Cavaliers',
+      label: 'Cleveland Cavaliers',
+    },
+    {
+      value: 'Detroit Pistons',
+      label: 'Detroit Pistons',
+    },
+    {
+      value: 'Indiana Pacers',
+      label: 'Indiana Pacers',
+    },
+    {
+      value: 'Atlanta Hawks',
+      label: 'Atlanta Hawks',
+    },
+    {
+      value: 'Miami Heat',
+      label: 'Miami Heat',
+    },
+    {
+      value: 'Milwaukee Bucks',
+      label: 'Milwaukee Bucks',
+    },
+    {
+      value: 'New York Knicks',
+      label: 'New York Knicks',
+    },
+    {
+      value: 'Orlando Magic',
+      label: 'Orlando Magic',
+    },
+    {
+      value: 'Philadelphia 76ers',
+      label: 'Philadelphia 76ers',
+    },
+    {
+      value: 'Toronto Raptors',
+      label: 'Toronto Raptors',
+    },
+    {
+      value: 'Washington Wizards',
+      label: 'Washington Wizards',
+    },
+  ],
+  NBA_WEST_TEAMS: [
+    {
+      value: 'Dallas Mavericks',
+      label: 'Dallas Mavericks',
+    },
+    {
+      value: 'Denver Nuggets',
+      label: 'Denver Nuggets',
+    },
+    {
+      value: 'Golden State Warriors',
+      label: 'Golden State Warriors',
+    },
+    {
+      value: 'Houston Rockets',
+      label: 'Houston Rockets',
+    },
+    {
+      value: 'LA Clippers',
+      label: 'LA Clippers',
+    },
+    {
+      value: 'LA Lakers',
+      label: 'LA Lakers',
+    },
+    {
+      value: 'Memphis Grizzlies',
+      label: 'Memphis Grizzlies',
+    },
+    {
+      value: 'Minnesota Timberwolves',
+      label: 'Minnesota Timberwolves',
+    },
+    {
+      value: 'New Orleans Pelicans',
+      label: 'New Orleans Pelicans',
+    },
+    {
+      value: 'Oklahoma City Thunder',
+      label: 'Oklahoma City Thunder',
+    },
+    {
+      value: 'Phoenix Suns',
+      label: 'Phoenix Suns',
+    },
+    {
+      value: 'Portland Trail Blazers',
+      label: 'Portland Trail Blazers',
+    },
+    {
+      value: 'Sacramento Kings',
+      label: 'Sacramento Kings',
+    },
+    {
+      value: 'San Antonio Spurs',
+      label: 'San Antonio Spurs',
+    },
+    {
+      value: 'Utah Jazz',
+      label: 'Utah Jazz',
+    },
+  ],
   BTC_USD_EXCHANGES: [
     {
       value: 'Coinbase Pro (pro.coinbase.com)',
@@ -1766,4 +1890,11 @@ export const LIST_VALUES = {
       label: 'Kraken (kraken.com)',
     },
   ],
+};
+
+
+export const BASKETBALL_EVENT_DEP_TEAMS = {
+  'Eastern Conference Finals': LIST_VALUES.NBA_EAST_TEAMS,
+  'Western Conference Finals': LIST_VALUES.NBA_WEST_TEAMS,
+  'NBA Championship': LIST_VALUES.NBA_TEAMS,
 };
