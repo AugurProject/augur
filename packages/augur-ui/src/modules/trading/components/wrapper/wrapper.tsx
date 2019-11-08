@@ -56,6 +56,7 @@ interface WrapperProps {
   currentTimestamp: Number;
   tradingTutorial?: boolean;
   addPendingOrder: Function;
+  tutorialNext?: Function;
 }
 
 interface WrapperState {
@@ -417,6 +418,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderBook,
       currentTimestamp,
       tradingTutorial,
+      tutorialNext,
     } = this.props;
     let {
       marketType,
@@ -564,6 +566,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else if (tradingTutorial) {
+                tutorialNext();
                 this.clearOrderForm();
               } else {
                 if (disclaimerSeen) {

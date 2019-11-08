@@ -27,6 +27,8 @@ import {
   TRADING_TUTORIAL_COPY,
   MODAL_TUTORIAL_OUTRO,
   MODAL_TUTORIAL_INTRO,
+  TUTORIAL_QUANTITY,
+  TUTORIAL_PRICE,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -93,9 +95,6 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
 }
-
-const TUTORIAL_QUANTITY = 100;
-const TUTORIAL_PRICE = 0.4;
 
 export default class MarketView extends Component<
   MarketViewProps,
@@ -302,7 +301,16 @@ export default class MarketView extends Component<
   }
 
   updateSelectedOrderProperties(selectedOrderProperties) {
+    this.checkTutorialErrors(selectedOrderProperties);
+
+    this.setState({
+      selectedOrderProperties,
+    });
+  }
+
+  checkTutorialErrors(selectedOrderProperties) {
     if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY) {
+      const invalidQuantity = parseFloat(selectedOrderProperties.orderQuantity) !== TUTORIAL_QUANTITY;
       this.setState({
         tutorialError:
           parseFloat(selectedOrderProperties.orderQuantity) !==
@@ -310,20 +318,23 @@ export default class MarketView extends Component<
             ? 'Please enter a quantity of 100 for this order to be filled on the test market'
             : '',
       });
+
+      return invalidQuantity;
     }
 
     if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE) {
+      const invalidPrice = parseFloat(selectedOrderProperties.orderPrice) !== TUTORIAL_PRICE;
       this.setState({
         tutorialError:
-          parseFloat(selectedOrderProperties.orderPrice) !== TUTORIAL_PRICE
+         invalidPrice
             ? 'Enter a limit price of $.40 for this order to be filled on the test market'
             : '',
       });
+
+      return invalidPrice;
     }
 
-    this.setState({
-      selectedOrderProperties,
-    });
+    return false;
   }
 
   toggleMiddleColumn(show: string) {
@@ -335,7 +346,7 @@ export default class MarketView extends Component<
   };
 
   next = () => {
-    if (this.state.tutorialError === '') {
+    if (!this.checkTutorialErrors(this.state.selectedOrderProperties)) {
       this.setState({ tutorialStep: this.state.tutorialStep + 1 });
     }
     const { market, updateModal, removeAlert } = this.props;
@@ -713,6 +724,7 @@ export default class MarketView extends Component<
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                             next={this.next}
                             back={this.back}
+                            hideBack
                           />
                         )}
                     </div>
@@ -764,6 +776,7 @@ export default class MarketView extends Component<
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
+                            tutorialNext={this.next}
                           />
                           {tradingTutorial &&
                             ((tutorialStep >=
@@ -782,6 +795,7 @@ export default class MarketView extends Component<
                                   TRADING_TUTORIAL_STEPS.PLACE_ORDER
                                 }
                                 next={this.next}
+                                hideNext={tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER}
                                 back={this.back}
                                 step={tutorialStep}
                                 totalSteps={totalSteps}
