@@ -1706,6 +1706,56 @@ export const LIST_VALUES = {
       label: 'Washington Wizards',
     },
   ],
+  WNBA_TEAMS: [
+    {
+      value: 'Atlanta Dream',
+      label: 'Atlanta Dream',
+    },
+    {
+      value: 'Chicago Sky',
+      label: 'Chicago Sky',
+    },
+    {
+      value: 'Connecticut Sun',
+      label: 'Connecticut Sun',
+    },
+    {
+      value: 'Indiana Fever',
+      label: 'Indiana Fever',
+    },
+    {
+      value: 'New York Liberty',
+      label: 'New York Liberty',
+    },
+    {
+      value: 'Washington Mystics',
+      label: 'Washington Mystics',
+    },
+    {
+      value: 'Dallas Wings',
+      label: 'Dallas Wings',
+    },
+    {
+      value: 'Las Vegas Aces',
+      label: 'Las Vegas Aces',
+    },
+    {
+      value: 'Los Angeles Sparks',
+      label: 'Los Angeles Sparks',
+    },
+    {
+      value: 'Minnesota Lynx',
+      label: 'Minnesota Lynx',
+    },
+    {
+      value: 'Phoenix Mercury',
+      label: 'Phoenix Mercury',
+    },
+    {
+      value: 'Seattle Storm',
+      label: 'Seattle Storm',
+    },
+  ],
   BTC_USD_EXCHANGES: [
     {
       value: 'Coinbase Pro (pro.coinbase.com)',
