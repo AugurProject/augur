@@ -4,7 +4,7 @@ pragma solidity 0.5.10;
 
 /**
  * @title BytesToString
- * @dev Bytes operations to convert to string and remove whitespace
+ * @dev Bytes operations to convert to string and remove null characters
  */
 library BytesToString {
 

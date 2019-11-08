@@ -45,7 +45,7 @@ contract RepSymbol is IRepSymbol {
                         _outcome = "MALFORMED";
                     } else if (_payoutNumerators[_i] != 0) {
                         _outcome = _outcomes[_i].bytes32ToString();
-                        _i = _numOutcomes;
+                        break;
                     }
                 }
             } else {
