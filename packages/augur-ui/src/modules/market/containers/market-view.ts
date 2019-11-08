@@ -10,6 +10,8 @@ import {
   MARKET_REVIEW_SEEN,
   MODAL_MARKET_LOADING,
   TRADING_TUTORIAL,
+  TUTORIAL_QUANTITY,
+  TUTORIAL_PRICE,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -40,20 +42,20 @@ const mapStateToProps = (state, ownProps) => {
       orderBook: {
         2: [
           {
-            avgPrice: formatDai(.4),
-            cumulativeShares: "100",
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
             id: 1,
             mySize: "0",
             orderEstimate: createBigNumber(.4),
             outcomeId: 2,
             outcomeName: "Yes",
-            price: "0.4",
-            quantity: "100",
-            shares: "100",
-            sharesEscrowed: formatShares(100),
-            tokensEscrowed: formatDai(.4),
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
             type: "buy",
-            unmatchedShares: formatShares(100)
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ]
       }

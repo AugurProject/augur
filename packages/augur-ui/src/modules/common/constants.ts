@@ -935,9 +935,10 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Market Details',
     subheader: [
       {
-        text: "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
+        text:
+          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
-        link: 'https://www.docs.augur.net'
+        link: 'https://www.docs.augur.net',
       },
     ],
   },
@@ -945,12 +946,13 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Buying Shares',
     subheader: [
       {
-        text: "Let's practice buying shares, or going 'long' on an outcome. First, make sure the 'buy shares' tab is selected.",
+        text:
+          "Let's practice buying shares, or going 'long' on an outcome. First, make sure the 'buy shares' tab is selected.",
       },
       {
         text: "To learn more about selling shares, or going 'short,' see our",
-        linkText: "guide.",
-        link: 'https://www.docs.augur.net'
+        linkText: 'guide.',
+        link: 'https://www.docs.augur.net',
       },
     ],
   },
@@ -1014,10 +1016,12 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Order Book',
     subheader: [
       {
-        text: "In edition you can select an available order from the order book to automatically fill into your order ticket.",
+        text:
+          'In edition you can select an available order from the order book to automatically fill into your order ticket.',
       },
       {
-        text: "The orders in red are sell orders (offers); the quantities shown are available to buy at the listed prices. The orders in green (bids) are orders from users who wish to buy shares. The quantities show how much you can sell to them at the listed prices.",
+        text:
+          'The orders in red are sell orders (offers); the quantities shown are available to buy at the listed prices. The orders in green (bids) are orders from users who wish to buy shares. The quantities show how much you can sell to them at the listed prices.',
       },
     ],
   },
@@ -1025,24 +1029,28 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Open Orders',
     subheader: [
       {
-        text: "Once you order is confirmed, you'll get a notification in the top right and you'll see your funds update in the top bar.",
+        text:
+          "Once you order is confirmed, you'll get a notification in the top right and you'll see your funds update in the top bar.",
       },
       {
-        text: "If you place an order and it doesn’t fill immediately, your order will remain on the order book as an open order until it’s traded with or cancelled.",
+        text:
+          'If you place an order and it doesn’t fill immediately, your order will remain on the order book as an open order until it’s traded with or cancelled.',
       },
       {
-        text: "You can view your open orders for the market in this tab.",
+        text: 'You can view your open orders for the market in this tab.',
       },
       {
-        text: "As you can see our order just disappeared from open orders because it was filled. Click next to see it in my fills.",
-      }
+        text:
+          'As you can see our order just disappeared from open orders because it was filled. Click next to see it in my fills.',
+      },
     ],
   },
   [TRADING_TUTORIAL_STEPS.MY_FILLS]: {
     title: 'My Fills',
     subheader: [
       {
-        text: "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
+        text:
+          "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
       },
     ],
   },
@@ -1050,16 +1058,20 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Positions',
     subheader: [
       {
-        text: "Tracks your overall exposure in the current market. This includes your overall position, the average price you put on that position, potential profit and loss (unrealized P/L) and any realized gains or losses (realized P/L).",
+        text:
+          'Tracks your overall exposure in the current market. This includes your overall position, the average price you put on that position, potential profit and loss (unrealized P/L) and any realized gains or losses (realized P/L).',
       },
     ],
   },
 };
 
-
 export const GWEI_CONVERSION = 1000000000;
 
 export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
-  content: 'This date time indicates when the settlement process begins.'
+  content: 'This date time indicates when the settlement process begins.',
 };
+
+export const TUTORIAL_QUANTITY = 100;
+export const TUTORIAL_PRICE = 0.4;
+

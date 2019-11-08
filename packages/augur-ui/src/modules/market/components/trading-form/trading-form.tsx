@@ -120,7 +120,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     let initialMessage: string | boolean = '';
 
     switch (true) {
-      case !isLogged:
+      case !isLogged && !tradingTutorial:
         initialMessage = 'Login or Signup to place an order.';
         break;
       case isLogged && !hasFunds && !tradingTutorial:

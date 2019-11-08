@@ -27,6 +27,8 @@ import {
   TRADING_TUTORIAL_COPY,
   MODAL_TUTORIAL_OUTRO,
   MODAL_TUTORIAL_INTRO,
+  TUTORIAL_QUANTITY,
+  TUTORIAL_PRICE,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -93,9 +95,6 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
 }
-
-const TUTORIAL_QUANTITY = 100;
-const TUTORIAL_PRICE = 0.4;
 
 export default class MarketView extends Component<
   MarketViewProps,
