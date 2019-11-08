@@ -408,7 +408,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the horse named in the market is scratched and does NOT run or is disqualified for any reason, the market should resolve as "No"`,
+                  text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as "No".`,
                 },
               ],
             },
@@ -435,8 +435,28 @@ export const TEMPLATES = {
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Winner`,
+              },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the winning horse is not one of the possible outcomes listed, Other (Field) should resolve the winner.`
+                },
+                {
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event Resolution time for this market starts, "No Winner" should be the winning outcome.`
+                },
+                {
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's Event Expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`
+                },
+                {
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs after the market's Event Expiration, the disqualified horse will still be named the winner of the market.`
+                }
+              ]
+            },
           },
         ],
       },

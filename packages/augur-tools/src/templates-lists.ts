@@ -709,6 +709,42 @@ export const LIST_VALUES = {
       value: 'Triple Crown',
       label: 'Triple Crown',
     },
+    {
+      value: 'Breeder\'s cup',
+      label: 'Breeder\'s cup',
+    },
+    {
+      value: 'Travers Stakes',
+      label: 'Travers Stakes',
+    },
+    {
+      value: 'Arlington Million',
+      label: 'Arlington Million',
+    },
+    {
+      value: 'Santa Anita Handicap',
+      label: 'Santa Anita Handicap',
+    },
+    {
+      value: 'Arkansas Derby',
+      label: 'Arkansas Derby',
+    },
+    {
+      value: 'Pacific Classic Stakes',
+      label: 'Pacific Classic Stakes',
+    },
+    {
+      value: 'Haskell Invitational Stakes',
+      label: 'Haskell Invitational Stakes',
+    },
+    {
+      value: 'Pegasus World Cup',
+      label: 'Pegasus World Cup',
+    },
+    {
+      value: 'Dubai World Cup',
+      label: 'Dubai World Cup',
+    },
   ],
   TENNIS_EVENT: [
     {
