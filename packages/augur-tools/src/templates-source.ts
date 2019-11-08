@@ -2749,8 +2749,19 @@ export const TEMPLATES = {
                 placeholder: `Year`,
                 values: LIST_VALUES.YEARS,
               },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other`,
+              },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If any party, other than ones listed in the outcomes, wins the state, the market should resolve as "Other".`
+                }
+              ]
+            },
           },
           {
             marketType: CATEGORICAL,
