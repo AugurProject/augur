@@ -65,6 +65,8 @@ export interface ContractAddresses {
     CashFaucet?: string;
     GnosisSafeRegistry?: string;
     HotLoading?: string;
+    // 0x
+    DevUtils?: string;
 }
 
 export interface AllContractAddresses {[networkId: string]: ContractAddresses}

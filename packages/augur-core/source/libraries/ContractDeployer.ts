@@ -24,14 +24,17 @@ import {
     GnosisSafeRegistry,
     WarpSync,
     RepPriceOracle,
+    // 0x
+    DevUtils,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
-import { runMigrationsOnceAsync } from '@0x/migrations';
+// import { runMigrationsOnceAsync } from '@0x/migrations';
 import Web3ProviderEngine = require('web3-provider-engine');
 import { ProviderSubprovider } from './zeroX/ProviderSubprovider';
+import { SignerSubprovider } from './zeroX/SignerSubprovider';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
@@ -303,33 +306,6 @@ Deploying to: ${networkConfiguration.networkName}
         gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, 'GnosisSafe', []);
     }
 
-    private async upload0xContracts(): Promise<string> {
-      const txDefaults = {
-        gas: 75000000,
-        from: await this.signer.getAddress(),
-      };
-
-      // XXX WIP
-      const web3Engine = new Web3ProviderEngine();
-      web3Engine.addProvider(new ProviderSubprovider(new EthersProvider(this.provider, 5, 40, 1)));
-      // This next line fails without saying why.
-      const zeroXAddresses = await runMigrationsOnceAsync(web3Engine, txDefaults);
-      console.log(zeroXAddresses);
-      // XXX END
-
-      const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
-      zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
-
-      const devUtilsContract = await this.contracts.get('DevUtils');
-      devUtilsContract.address = await this.uploadAndAddToAugur(
-        devUtilsContract,
-        'DevUtils',
-        [zeroXExchangeContract.address]
-      );
-
-      return zeroXExchangeContract.address;
-    }
-
     private async uploadUniswapContracts(): Promise<string> {
         const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
         uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0", 0]);
@@ -346,6 +322,37 @@ Deploying to: ${networkConfiguration.networkName}
         const contract = await this.contracts.get('RepPriceOracle');
         contract.address = await this.uploadAndAddToAugur(contract, 'RepPriceOracle');
         return contract.address;
+    }
+
+    private async upload0xContracts(): Promise<string> {
+        const txDefaults = {
+            gas: 75000000,
+            from: await this.signer.getAddress(),
+        };
+
+      const web3Engine = new Web3ProviderEngine();
+      web3Engine.addProvider(new ProviderSubprovider(new EthersProvider(this.provider, 5, 40, 1)));
+      web3Engine.addProvider(new SignerSubprovider(this.signer));
+      console.log('Starting provider engine');
+      web3Engine.start();
+
+      // const zeroXAddresses = await runMigrationsOnceAsync(web3Engine, txDefaults);
+      // console.log(zeroXAddresses);
+
+      const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
+      zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
+
+      // @ts-ignore
+      console.log(this.contracts.contracts.keys());
+
+      const devUtilsContract = this.contracts.get('DevUtils');
+      devUtilsContract.address = await this.uploadAndAddToAugur(
+          devUtilsContract,
+          'DevUtils',
+          [zeroXExchangeContract.address]
+      );
+
+      return zeroXExchangeContract.address;
     }
 
     private async uploadAllContracts(serial=true): Promise<void> {
@@ -377,7 +384,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'UniswapV2Factory') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
-        if (contractName === 'GnosisSafe') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
