@@ -869,7 +869,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `Draw`,
                   },
                   {
                     id: 4,
@@ -973,7 +973,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `Draw`,
                   },
                   {
                     id: 4,
