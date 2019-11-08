@@ -1373,7 +1373,13 @@ export const TEMPLATES = {
                     values: LIST_VALUES.NBA_BASKETBALL_AWARD,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`
+                    }
+                  ]
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -1500,7 +1506,11 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    {
+                      text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`
+                    }
+                  ],
                 },
               },
               {
@@ -1527,7 +1537,23 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    {
+                      text: `Results are determined to the first decimal place, meaning a player averaging 10.6 rebounds per game is higher than a player averaging 10.0.`
+                    },
+                    {
+                      text: `In the event of a tie between two players these rules will be used to determine the winner: For points scored, field goal % should be used as the tie breaker.`
+                    },
+                    {
+                      text: `For the most rebounds, the player with the total most offensive rebounds, should be used as a tie breaker.`
+                    },
+                    {
+                      text: `For most total Assists, The player with the "Least" amount of turnovers should be used as the tie breaker.`
+                    },
+                    {
+                      text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`
+                    }
+                  ],
                 },
               },
               {
