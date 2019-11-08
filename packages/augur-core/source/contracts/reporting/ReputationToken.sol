@@ -11,8 +11,7 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/libraries/math/UintToString.sol';
-import 'ROOT/IAugurCreationDataGetter.sol';
+import 'ROOT/utility/IRepSymbol.sol';
 
 
 /**
@@ -21,7 +20,6 @@ import 'ROOT/IAugurCreationDataGetter.sol';
  */
 contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
-    using UintToString for uint;
 
     string constant public name = "Reputation";
     IUniverse internal universe;
@@ -42,44 +40,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     }
 
     function symbol() public view returns (string memory) {
-        if (parentUniverse != IUniverse(0)) {
-            uint256 _forkIndex = augur.getUniverseForkIndex(parentUniverse);
-            IMarket _forkingMarket = parentUniverse.getForkingMarket();
-            uint256 _numTicks = _forkingMarket.getNumTicks();
-            uint256[] memory _payoutNumerators = universe.getPayoutNumerators();
-            if (_payoutNumerators[0] != 0) {
-                return string(abi.encodePacked("REPv2", "_", _payoutNumerators[0] == _numTicks ? "INVALID" : "MALFORMED", "_", _forkIndex.uint2str()));
-            }
-            IMarket.MarketType _marketType = IAugurCreationDataGetter(address(augur)).getMarketType(_forkingMarket);
-            string memory _outcome = "YES";
-            if (_marketType == IMarket.MarketType.YES_NO) {
-                if (_payoutNumerators[1] == _numTicks) {
-                    _outcome = "NO";
-                } else if (_payoutNumerators[1] != _numTicks) {
-                    _outcome = "MALFORMED";
-                }
-            } else if (_marketType == IMarket.MarketType.CATEGORICAL) {
-                uint256 _numOutcomes = _forkingMarket.getNumberOfOutcomes();
-                bytes32[] memory _outcomes = IAugurCreationDataGetter(address(augur)).getMarketOutcomes(_forkingMarket);
-                for (uint256 _i = 1; _i < _numOutcomes; _i++) {
-                    if (_payoutNumerators[_i] != _numTicks) {
-                        _outcome = "MALFORMED";
-                    } else if (_payoutNumerators[_i] != 0) {
-                        bytes memory _bytesArray = new bytes(32);
-                        for (uint256 _j = 0; _j < 32; _j++) {
-                            _bytesArray[_j] = _outcomes[_i][_j];
-                        }
-                        _outcome = string(_bytesArray);
-                        _i = _numOutcomes;
-                    }
-                }
-            } else {
-                _outcome = _payoutNumerators[2].uint2str();
-            }
-
-            return string(abi.encodePacked("REPv2", "_", _outcome, "_", _forkIndex.uint2str()));
-        }
-        return "REPv2";
+        return IRepSymbol(augur.lookup("RepSymbol")).getRepSymbol(address(augur), address(universe));
     }
 
     /**

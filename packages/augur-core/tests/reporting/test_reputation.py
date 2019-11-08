@@ -4,10 +4,7 @@ from utils import AssertLog
 from reporting_utils import proceedToFork, finalize
 
 def test_init(contractsFixture, universe):
-    reputationTokenFactory = contractsFixture.contracts['ReputationTokenFactory']
-    assert reputationTokenFactory
-    reputationTokenAddress = reputationTokenFactory.createReputationToken(contractsFixture.contracts['Augur'].address, universe.address, "0x0000000000000000000000000000000000000000")
-    reputationToken = contractsFixture.applySignature('ReputationToken', reputationTokenAddress)
+    reputationToken = contractsFixture.applySignature('ReputationToken', universe.getReputationToken())
 
     assert reputationToken.name() == "Reputation"
     assert reputationToken.decimals() == 18
