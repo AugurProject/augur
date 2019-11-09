@@ -405,8 +405,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `NHL: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-            example: `NHL: Will the St Louis Blues win vs the Dallas Stars, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Will the [0] win vs the [1]?`,
+            example: `NHL: Will the St Louis Blues win vs the Dallas Stars?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -434,8 +434,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `NHL: Will the [0] & [1] score [2] or more combined goals, Estimated schedule start time: [3]?`,
-            example: `NHL: Will the NY Rangers & Dallas Stars score 5 or more combined goals, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Will the [0] & [1] score [2] or more combined goals?\nEstimated schedule start time: [3]?`,
+            example: `NHL: Will the NY Rangers & Dallas Stars score 5 or more combined goals?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -493,8 +493,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `NHL: Which Team will win: NY Rangers vs NJ Devils, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `NHL: Which team will win: [0] vs [1]?`,
+            example: `NHL: Which Team will win: NY Rangers vs NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -530,8 +530,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-            example: `NHL: St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+            question: `NHL: [0] vs [1]: Total goals scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+            example: `NHL: St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -1015,8 +1015,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-                example: `Men's Soccer: Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `Men's Soccer: Which team will win: [0] vs [1]?`,
+                example: `Men's Soccer: Which team will win: Real Madrid vs Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1060,8 +1060,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `Men's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `Men's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+                example: `Men's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1119,8 +1119,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-                example: `Women's Soccer: Which team will win: Real Madrid vs Manchester United, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `Women's Soccer: Which team will win: [0] vs [1]?`,
+                example: `Women's Soccer: Which team will win: Real Madrid vs Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1164,8 +1164,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `Women's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `Women's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+                example: `Women's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1227,8 +1227,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NBA: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NBA: Will the [0] win vs the [1]?`,
+                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1262,8 +1262,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NBA: Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
-                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NBA: Will the [0] win vs the [1] by [2] or more points?\nEstimated schedule start time: [3]?`,
+                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1303,8 +1303,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NBA: Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
-                example: `NBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NBA: Will the [0] & [1] score [2] or more combined points?\nEstimated schedule start time: [3]?`,
+                example: `NBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1395,8 +1395,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-                example: `NBA: Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `NBA: Which team will win: [0] vs [1]?`,
+                example: `NBA: Which Team will win: Brooklyn Nets vs NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1426,8 +1426,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: [0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `NBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NBA: [0] vs [1]: Total Points scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+                example: `NBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1598,8 +1598,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `WNBA: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `WNBA: Will the [0] win vs the [1]?`,
+                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1633,8 +1633,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `WNBA: Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
-                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `WNBA: Will the [0] win vs the [1] by [2] or more points?\nEstimated schedule start time: [3]?`,
+                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1674,8 +1674,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `WNBA: Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
-                example: `WNBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `WNBA: Will the [0] & [1] score [2] or more combined points?\nEstimated schedule start time: [3]?`,
+                example: `WNBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1766,8 +1766,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-                example: `WNBA: Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `WNBA: Which team will win: [0] vs [1]?`,
+                example: `WNBA: Which Team will win: Brooklyn Nets vs NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1797,8 +1797,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: [0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `WNBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `WNBA: [0] vs [1]: Total Points scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+                example: `WNBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -1963,8 +1963,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] win vs [1]; [2] basketball, Estimated schedule start time: [3]?`,
-                example: `NCAA BB: Will Duke win vs Kentucky; Men's baskeball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NCAA BB: Will [0] win vs [1]; [2] basketball?\nEstimated schedule start time: [3]?`,
+                example: `NCAA BB: Will Duke win vs Kentucky; Men's baskeball?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2002,8 +2002,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] win vs [1] by [2] or more points, [3] basketball, Estimated schedule start time: [4]?`,
-                example: `NCAA BB: Will Duke Blue Devils win vs Kentucky Wildcats by 3 or more points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NCAA BB: Will [0] win vs [1] by [2] or more points, [3] basketball?\nEstimated schedule start time: [4]?`,
+                example: `NCAA BB: Will Duke Blue Devils win vs Kentucky Wildcats by 3 or more points; Men's basketball?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2047,8 +2047,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] & [1] score [2] or more combined points; [3] basketball, Estimated schedule start time: [4]?`,
-                example: `NCAA BB: Will UNC & Arizona score 142 or more combined points; Men's basketball, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                question: `NCAA BB: Will [0] & [1] score [2] or more combined points; [3] basketball?\nEstimated schedule start time: [4]?`,
+                example: `NCAA BB: Will UNC & Arizona score 142 or more combined points; Men's basketball?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2145,8 +2145,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA BB: Which team will win: [0] vs [1], [2] basketball, Estimated schedule start time: [3]?`,
-                example: `NCAA BB: Which Team will win: Duke vs Kentucky, Men's basketball, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                question: `NCAA BB: Which team will win: [0] vs [1], [2] basketball?\nEstimated schedule start time: [3]?`,
+                example: `NCAA BB: Which Team will win: Duke vs Kentucky, Men's basketball?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2180,8 +2180,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA BB: [0] basketball; [1] vs [2]: Total Points scored; Over/Under [3].5, Estimated schedule start time: [4]?`,
-                example: `NCAA BB: Men's basketball; Duke Blue Devils vs Arizona Wildcats: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NCAA BB: [0] basketball; [1] vs [2]: Total Points scored; Over/Under [3].5?\nEstimated schedule start time: [4]?`,
+                example: `NCAA BB: Men's basketball; Duke Blue Devils vs Arizona Wildcats: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2299,8 +2299,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
-            example: `MLB: Which Team will win: Yankees vs Red Sox, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+            question: `MLB: Which team will win: [0] vs [1]?`,
+            example: `MLB: Which Team will win: Yankees vs Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -2359,8 +2359,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: [0] vs [1]: Total Runs scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+            question: `MLB: [0] vs [1]: Total Runs scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
             inputs: [
               {
                 id: 0,
@@ -2470,8 +2470,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-                example: `NFL:Will the NY Giants win vs. the New England Patriots, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NFL: Will the [0] win vs the [1]?`,
+                example: `NFL:Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2505,8 +2505,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
-                example: `NFL: Will the NY Giants win vs. the New England Patriots by 3 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NFL: Will the [0] win vs the [1] by [2] or more points?\nEstimated schedule start time: [3]?`,
+                example: `NFL: Will the NY Giants win vs. the New England Patriots by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2546,8 +2546,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
-                example: `NFL: Will the NY Giants & the New England Patriots score 44 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NFL: Will the [0] & [1] score [2] or more combined points?\nEstimated schedule start time: [3]?`,
+                example: `NFL: Will the NY Giants & the New England Patriots score 44 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2663,7 +2663,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]?`,
+                question: `Which NFL Team will win: [0] vs [1]?`,
                 example: `Which NFL Team will win: NY GIants vs New England Patriots Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
@@ -2703,7 +2703,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1], Estimated schedule start time [2]?`,
+                question: `Which NFL Team will win: [0] vs [1]?`,
                 example: `Which NFL Team will win: Seattle Seahawks vs Dallas Cowboys Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
@@ -2743,8 +2743,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: [0] vs [1]: Total goals scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `NFL: NY Giants vs Dallas Cowboys: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NFL: [0] vs [1]: Total goals scored; Over/Under [2].5?\nEstimated schedule start time: [3]?`,
+                example: `NFL: NY Giants vs Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2873,8 +2873,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
-                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NCAA FB: Will the [0] win vs the [1]?`,
+                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2906,8 +2906,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
-                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NCAA FB: Will the [0] win vs the [1] by [2] or more points?`,
+                example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2945,8 +2945,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
-                example: `NCAA FB: Will USC & UCLA score 51 or more combined points, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NCAA FB: Will [0] & [1] score [2] or more combined points?`,
+                example: `NCAA FB: Will USC & UCLA score 51 or more combined points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -2984,8 +2984,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs [1], Estimated schedule start time [2]?`,
-                example: `Which College Football Team will win:  Alabama vs Michigan, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `Which College Football Team will win: [0] vs [1]?`,
+                example: `Which College Football Team will win:  Alabama vs Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,
@@ -3022,8 +3022,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB: [0] vs [1]: Total points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
-                example: `NCAA FB: Alabama vs Michigan: Total points scored: Over/Under 56.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                question: `NCAA FB: [0] vs [1]: Total points scored; Over/Under [2].5?`,
+                example: `NCAA FB: Alabama vs Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
                 inputs: [
                   {
                     id: 0,

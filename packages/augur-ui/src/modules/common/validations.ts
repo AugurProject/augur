@@ -173,9 +173,9 @@ export function checkForUserInputFilled(inputs) {
   const errors = inputs.map(input => {
     if (
       input.validationType === ValidationType.WHOLE_NUMBER &&
-      moreThanDecimals(input.userInput, 0)
+      moreThanDecimals(input.userInput, 0) || isPositive(input.userInput)
     ) {
-      return 'Must be a whole number';
+      return 'Must be a whole positive number';
     } else if (
       input.validationType === ValidationType.NUMBER &&
       checkValidNumber(input.userInput)

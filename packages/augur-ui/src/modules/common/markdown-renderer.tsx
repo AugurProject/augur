@@ -28,12 +28,15 @@ interface MarkdownRendererProps {
   text: string;
   className?: string;
   hideLabel?: boolean;
+  noPrewrap?: boolean;
 }
 
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text, className, hideLabel }) => {
+const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text, className, hideLabel, noPrewrap = false }) => {
   if (hideLabel) {
     return (
-      <span className={Styles.MarkdownRenderer}>
+      <span className={classNames(Styles.MarkdownRenderer, {
+        [Styles.NoPrewrap]: !!noPrewrap,
+      })}>
         {ReactHtmlParser(md.render(text))}
       </span>
     );
