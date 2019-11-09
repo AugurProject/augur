@@ -61,7 +61,7 @@ export function submitNewMarket(
       // TODO: need to add all inputs in order to check during validation
       const inputs = template.inputs.reduce(
         (p, i: TemplateInput) =>
-          i.userInput ? [...p, { id: i.id, value: i.userInput }] : p,
+          i.userInput ? [...p, { id: i.id, value: i.userInput, type: i.type }] : p,
         []
       );
       extraInfoTemplate = {

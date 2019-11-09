@@ -717,7 +717,7 @@ interface InputFactoryProps {
   inputIndex: number;
   onChange: Function;
   newMarket: NewMarket;
-  currentTimestamp: string;
+  currentTimestamp: number;
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
@@ -787,9 +787,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       <DatePickerSelector
         onChange={value => {
           input.setEndTime = value;
-          const stringValue = convertUnixToFormattedDate(Number(value))
-            .formattedSimpleData;
-          updateData(stringValue);
+          updateData(value);
         }}
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
@@ -797,7 +795,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
-  } else if (input.type === TemplateInputType.DATETIME) {
+  } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
     return (
       <span>
         {input.userInput ? input.userInput : `[${input.placeholder}]`}
@@ -971,7 +969,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      userInput = endTimeFormatted.formattedUtc;
+      userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1058,7 +1056,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   onChange: Function;
-  currentTime: number;
+  currentTimestamp: number;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
@@ -1068,7 +1066,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const inputs = template.inputs;
 
   const dateTimeIndex = inputs.findIndex(
-    input => input.type === TemplateInputType.DATETIME
+    input => (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME)
   );
 
   return (

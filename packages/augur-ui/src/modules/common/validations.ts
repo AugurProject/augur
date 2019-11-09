@@ -186,12 +186,13 @@ export function checkForUserInputFilled(inputs) {
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
+        input.type === TemplateInputType.ESTDATETIME ||
         input.type === TemplateInputType.DROPDOWN ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
       (!input.userInput || input.userInput === '')
     ) {
       return 'Input is required';
-    } else if (input.type === TemplateInputType.DATETIME) {
+    } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
       if (input.userInputObject) {
         let validations: NewMarketPropertiesValidations = {};
         if (input.userInputObject.hour === null) {
