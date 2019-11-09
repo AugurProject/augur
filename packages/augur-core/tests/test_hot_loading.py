@@ -166,6 +166,28 @@ def test_dispute_window_hot_loading(kitchenSinkFixture, augur, cash, universe, r
     assert disputeWindowData.purchased == 0
     assert disputeWindowData.fees == 0
 
+def test_validity_bonds(kitchenSinkFixture, augur, cash, market, categoricalMarket, scalarMarket):
+    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    account = kitchenSinkFixture.accounts[0]
+
+    totalValidityBonds = hotLoading.getTotalValidityBonds([market.address, categoricalMarket.address, scalarMarket.address])
+
+    expectedTotal = sum(m.getValidityBondAttoCash() for m in [market, categoricalMarket, scalarMarket])
+
+    assert totalValidityBonds == expectedTotal
+
+    # Add to a markets total and see it reflected
+    additionalAmount = 100
+    cash.faucet(additionalAmount)
+    cash.approve(market.address, additionalAmount)
+    assert market.increaseValidityBond(additionalAmount)
+    
+    expectedTotal += additionalAmount
+
+    totalValidityBonds = hotLoading.getTotalValidityBonds([market.address, categoricalMarket.address, scalarMarket.address])
+    assert totalValidityBonds == expectedTotal
+
+
 class MarketData:
 
     def __init__(self, marketData):

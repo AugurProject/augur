@@ -10855,6 +10855,13 @@ export class HotLoading<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
+	public getTotalValidityBonds_ = async (markets: Array<string>, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_markets","type":"address[]"}],"name":"getTotalValidityBonds","outputs":[{"name":"_totalValidityBonds","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [markets], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public getCurrentDisputeWindowData_ = async (augur: string, universe: string, options?: { sender?: string }): Promise<{ disputeWindow: string, startTime: TBigNumber, endTime: TBigNumber, purchased: TBigNumber, fees: TBigNumber }> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"}],"name":"getCurrentDisputeWindowData","outputs":[{"components":[{"name":"disputeWindow","type":"address"},{"name":"startTime","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"purchased","type":"uint256"},{"name":"fees","type":"uint256"}],"name":"_disputeWindowData","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}

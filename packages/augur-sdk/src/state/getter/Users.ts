@@ -585,8 +585,6 @@ try {
       }
     );
 
-    // TODO add raw token balances that have no PL data for third party client integration to work ok.
-
     tradingPositions = _.flatten(
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
@@ -676,7 +674,14 @@ try {
       },
       new BigNumber(0)
     );
-    // TODO add market validity bond to total. Need to send a log for this since it is variable over time.
+
+    const ownedMarketsResponse = await db.findMarkets({ selector: {
+      marketCreator: params.account,
+      reportingState: { $not: MarketReportingState.Finalized }
+    }});
+    const ownedMarkets = _.map(ownedMarketsResponse, "market");
+    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(ownedMarkets);
+    frozenFundsTotal = frozenFundsTotal.plus(totalValidityBonds);
 
     const universe = params.universe
       ? params.universe

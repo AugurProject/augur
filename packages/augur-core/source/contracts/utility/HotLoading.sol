@@ -152,4 +152,11 @@ contract HotLoading {
         _disputeWindowData.purchased = _disputeWindow.totalSupply();
         _disputeWindowData.fees = IERC20(_augur.lookup('Cash')).balanceOf(address(_disputeWindow));
     }
+
+    function getTotalValidityBonds(IMarket[] calldata _markets) external view returns (uint256 _totalValidityBonds) {
+        for (uint256 _i = 0; _i < _markets.length; _i++) {
+            IMarket _market = _markets[_i];
+            _totalValidityBonds += _market.getValidityBondAttoCash();
+        }
+    }
 }

@@ -1970,7 +1970,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#HotLoading.getMarketData(contract IAugur,contract IMarket,contract IFillOrder,contract IOrders)"><code class="function-signature">getMarketData(contract IAugur _augur, contract IMarket _market, contract IFillOrder _fillOrder, contract IOrders _orders)</code></a></li><li><a href="#HotLoading.getLastTradedPrices(contract IMarket,uint256,contract IOrders)"><code class="function-signature">getLastTradedPrices(contract IMarket _market, uint256 _numOutcomes, contract IOrders _orders)</code></a></li><li><a href="#HotLoading.getReportingState(contract IAugur,contract IMarket)"><code class="function-signature">getReportingState(contract IAugur _augur, contract IMarket _market)</code></a></li><li><a href="#HotLoading.getCurrentDisputeWindowData(contract IAugur,contract IUniverse)"><code class="function-signature">getCurrentDisputeWindowData(contract IAugur _augur, contract IUniverse _universe)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#HotLoading.getMarketData(contract IAugur,contract IMarket,contract IFillOrder,contract IOrders)"><code class="function-signature">getMarketData(contract IAugur _augur, contract IMarket _market, contract IFillOrder _fillOrder, contract IOrders _orders)</code></a></li><li><a href="#HotLoading.getLastTradedPrices(contract IMarket,uint256,contract IOrders)"><code class="function-signature">getLastTradedPrices(contract IMarket _market, uint256 _numOutcomes, contract IOrders _orders)</code></a></li><li><a href="#HotLoading.getReportingState(contract IAugur,contract IMarket)"><code class="function-signature">getReportingState(contract IAugur _augur, contract IMarket _market)</code></a></li><li><a href="#HotLoading.getCurrentDisputeWindowData(contract IAugur,contract IUniverse)"><code class="function-signature">getCurrentDisputeWindowData(contract IAugur _augur, contract IUniverse _universe)</code></a></li><li><a href="#HotLoading.getTotalValidityBonds(contract IMarket[])"><code class="function-signature">getTotalValidityBonds(contract IMarket[] _markets)</code></a></li></ul></div>
 
 
 
@@ -1993,6 +1993,12 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="HotLoading.getCurrentDisputeWindowData(contract IAugur,contract IUniverse)"></a><code class="function-signature">getCurrentDisputeWindowData(contract IAugur _augur, contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">struct HotLoading.DisputeWindowData</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="HotLoading.getTotalValidityBonds(contract IMarket[])"></a><code class="function-signature">getTotalValidityBonds(contract IMarket[] _markets) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 

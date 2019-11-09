@@ -21512,6 +21512,25 @@
 			"constant": true,
 			"inputs": [
 				{
+					"name": "_markets",
+					"type": "address[]"
+				}
+			],
+			"name": "getTotalValidityBonds",
+			"outputs": [
+				{
+					"name": "_totalValidityBonds",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"name": "_augur",
 					"type": "address"
 				},
