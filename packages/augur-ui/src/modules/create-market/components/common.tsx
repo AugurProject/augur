@@ -9,7 +9,6 @@ import {
   TimezoneDropdown,
   FormDropdown,
   RadioBarGroup,
-  MultiSelectRadioBarGroup,
 } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
@@ -1277,17 +1276,11 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
       {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
         <>
           <span>Added Resolution details:</span>
-          <MultiSelectRadioBarGroup
-            radioButtons={resolutionRules[REQUIRED].map((rule, index) => {
-              return {
-                header: rule.text,
-                value: index.toString(),
-                isSelected: true,
-                disabled: true,
-              };
-            })}
-            onChange={(value: string) => {}}
-          />
+          <div className={Styles.AddResolutionRules}>
+            {resolutionRules[REQUIRED].map((rule, index) =>
+              <div key={index}>{rule.text}</div>
+            )}
+          </div>
         </>
       )}
     </div>

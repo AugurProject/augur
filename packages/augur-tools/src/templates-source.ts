@@ -775,7 +775,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Singles Tennis: Which player will win the [2] [3]?`,
+                question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
                 inputs: [
                   {

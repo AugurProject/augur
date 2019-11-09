@@ -922,25 +922,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 }
 
-export const MultiSelectRadioBarGroup = ({
-  radioButtons,
-  onChange,
-}: RadioGroupProps) => (
-  <div className={Styles.RadioBarGroup}>
-    {radioButtons.map(radio => (
-      <RadioBar
-        key={radio.value}
-        {...radio}
-        checked={radio.isSelected}
-        multiSelect
-        onChange={selected => {
-          onChange(selected);
-        }}
-      />
-    ))}
-  </div>
-);
-
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
