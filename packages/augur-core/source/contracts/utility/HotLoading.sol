@@ -4,8 +4,10 @@ pragma experimental ABIEncoderV2;
 import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurCreationDataGetter.sol';
 import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/trading/IOrders.sol';
 
@@ -27,6 +29,14 @@ contract HotLoading {
         Finalized,
         Forking,
         AwaitingForkMigration
+    }
+
+    struct DisputeWindowData {
+        address disputeWindow;
+        uint256 startTime;
+        uint256 endTime;
+        uint256 purchased;
+        uint256 fees;
     }
 
     struct MarketData {
@@ -54,7 +64,7 @@ contract HotLoading {
         uint256[] outcomeVolumes;
     }
 
-    function getMarketData(IAugur _augur, IMarket _market, IFillOrder _fillOrder, IOrders _orders) public view returns (MarketData memory _marketData) {
+    function getMarketData(IAugur _augur, IMarket _market, IFillOrder _fillOrder, IOrders _orders) external view returns (MarketData memory _marketData) {
         IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(_augur)).getMarketCreationData(_market);
         _marketData.extraInfo = _marketCreationData.extraInfo;
         _marketData.marketCreator = _marketCreationData.marketCreator;
@@ -126,5 +136,20 @@ contract HotLoading {
         }
 
         return ReportingState.PreReporting;
+    }
+
+    function getCurrentDisputeWindowData(IAugur _augur, IUniverse _universe) external view returns (DisputeWindowData memory _disputeWindowData) {
+        IDisputeWindow _disputeWindow = _universe.getCurrentDisputeWindow(false);
+        if (_disputeWindow == IDisputeWindow(0)) {
+            (uint256 _startTime, uint256 _duration) = _universe.getDisputeWindowStartTimeAndDuration(_augur.getTimestamp(), false);
+            _disputeWindowData.startTime = _startTime;
+            _disputeWindowData.endTime = _startTime + _duration;
+            return _disputeWindowData;
+        }
+        _disputeWindowData.disputeWindow = address(_disputeWindow);
+        _disputeWindowData.startTime = _disputeWindow.getStartTime();
+        _disputeWindowData.endTime = _disputeWindow.getEndTime();
+        _disputeWindowData.purchased = _disputeWindow.totalSupply();
+        _disputeWindowData.fees = IERC20(_augur.lookup('Cash')).balanceOf(address(_disputeWindow));
     }
 }
