@@ -253,7 +253,7 @@ export default class Review extends React.Component<
           <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[marketType]} />
           <SmallSubheaders header="Primary Category" subheader={categories[0]} />
           <SmallSubheaders header="Secondary category" subheader={categories[1]} />
-          <SmallSubheaders header="Tertiary category" subheader={categories[2] === "" ? "–" : categories[2]} />
+          <SmallSubheaders header="Sub category" subheader={categories[2] === "" ? "–" : categories[2]} />
           <SmallSubheaders header="Market Question" subheader={description} />
           {marketType === SCALAR &&
             <>

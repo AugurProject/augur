@@ -696,12 +696,12 @@ export class CategoryMultiSelect extends Component<
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel="Tertiary Category"
+            staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
             errorMessage={errorMessage && errorMessage[2]}
             value={values[2]}
-            placeholder="Custom Tertiary Category"
+            placeholder="Custom Sub Category"
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }

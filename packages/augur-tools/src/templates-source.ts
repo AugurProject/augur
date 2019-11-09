@@ -485,7 +485,11 @@ export const TEMPLATES = {
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: {
+                text: `Includes all regulation, overtime and shootouts.`
+              }
+            },
           },
           {
             marketType: CATEGORICAL,
@@ -571,6 +575,9 @@ export const TEMPLATES = {
                 {
                   text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
                 },
+                {
+                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`
+                }
               ],
             },
           },
@@ -621,7 +628,11 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: {
+                text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`
+              }
+            },
           },
           {
             marketType: SCALAR,
@@ -2620,7 +2631,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    placeholder: `numeral`,
+                    placeholder: `Numeral`,
                   },
                 ],
                 resolutionRules: {},
@@ -2777,9 +2788,6 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
