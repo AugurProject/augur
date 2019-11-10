@@ -13324,6 +13324,258 @@
 			"type": "function"
 		}
 	],
+	"DisputeCrowdsourcerFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_size",
+					"type": "uint256"
+				},
+				{
+					"name": "_payoutDistributionHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_crowdsourcerGeneration",
+					"type": "uint256"
+				}
+			],
+			"name": "createDisputeCrowdsourcer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"DisputeWindowFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_disputeWindowId",
+					"type": "uint256"
+				},
+				{
+					"name": "_windowDuration",
+					"type": "uint256"
+				},
+				{
+					"name": "_startTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_participationTokensEnabled",
+					"type": "bool"
+				}
+			],
+			"name": "createDisputeWindow",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"InitialReporterFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_designatedReporter",
+					"type": "address"
+				}
+			],
+			"name": "createInitialReporter",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"MarketFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"name": "_feePerCashInAttoCash",
+					"type": "uint256"
+				},
+				{
+					"name": "_affiliateFeeDivisor",
+					"type": "uint256"
+				},
+				{
+					"name": "_designatedReporterAddress",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"name": "_numOutcomes",
+					"type": "uint256"
+				},
+				{
+					"name": "_numTicks",
+					"type": "uint256"
+				}
+			],
+			"name": "createMarket",
+			"outputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"OICashFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				}
+			],
+			"name": "createOICash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ReputationTokenFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				}
+			],
+			"name": "createReputationToken",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"TestNetReputationTokenFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				}
+			],
+			"name": "createReputationToken",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"UniverseFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_parentUniverse",
+					"type": "address"
+				},
+				{
+					"name": "_parentPayoutDistributionHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				}
+			],
+			"name": "createUniverse",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
 	"DisputeCrowdsourcer": [
 		{
 			"constant": true,
@@ -24371,6 +24623,120 @@
 			"type": "function"
 		}
 	],
+	"Formulas": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_totalBad",
+					"type": "uint256"
+				},
+				{
+					"name": "_total",
+					"type": "uint256"
+				},
+				{
+					"name": "_targetDivisor",
+					"type": "uint256"
+				},
+				{
+					"name": "_previousValue",
+					"type": "uint256"
+				},
+				{
+					"name": "_floor",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateFloatingValue",
+			"outputs": [
+				{
+					"name": "_newValue",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_previousDisputeWindow",
+					"type": "address"
+				},
+				{
+					"name": "_previousValidityBondInAttoCash",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateValidityBond",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_previousDisputeWindow",
+					"type": "address"
+				},
+				{
+					"name": "_previousDesignatedReportStakeInAttoRep",
+					"type": "uint256"
+				},
+				{
+					"name": "_initialReportMinValue",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateDesignatedReportStake",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_previousDisputeWindow",
+					"type": "address"
+				},
+				{
+					"name": "_previousDesignatedReportNoShowBondInAttoRep",
+					"type": "uint256"
+				},
+				{
+					"name": "_initialReportMinValue",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateDesignatedReportNoShowBond",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
 	"HotLoading": [
 		{
 			"constant": true,
@@ -24566,6 +24932,31 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"RepSymbol": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_augurAddress",
+					"type": "address"
+				},
+				{
+					"name": "_universeAddress",
+					"type": "address"
+				}
+			],
+			"name": "getRepSymbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		}
 	]

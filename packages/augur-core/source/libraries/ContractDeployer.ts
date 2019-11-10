@@ -532,9 +532,7 @@ Deploying to: ${networkConfiguration.networkName}
     private async createGenesisUniverse(): Promise<Universe> {
         console.log('Creating genesis universe...');
         const augur = new Augur(this.dependencies, this.getContractAddress('Augur'));
-        // TODO this next line is failing
         const universeAddress = await augur.createGenesisUniverse_();
-        console.log("Genesis universe creation worked! Delete this now.")
         if (!universeAddress || universeAddress === '0x') {
             throw new Error('Unable to create genesis universe. eth_call failed');
         }
@@ -582,7 +580,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
-        mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
+        mapping['Exchange'] = this.contracts.get('Exchange').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;

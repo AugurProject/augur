@@ -177,15 +177,30 @@ export class ContractCompiler {
                 "GnosisSafe",
                 "ProxyFactory",
                 "ZeroXTrade",
-                "BuyParticipationTokens",
-                "RedeemStake",
                 "CashFaucet",
                 "GnosisSafeRegistry",
-                "HotLoading",
                 "WarpSync",
                 "RepPriceOracle",
                 "UniswapV2Factory",
                 "ERC1820Registry",
+
+                // utility
+                "BuyParticipationTokens",
+                "Formulas",
+                "HotLoading",
+                "RedeemStake",
+                "RepSymbol",
+
+                // factories
+                "DisputeCrowdsourcerFactory",
+                "DisputeWindowFactory",
+                "InitialReporterFactory",
+                "MarketFactory",
+                "OICashFactory",
+                "ReputationTokenFactory",
+                "TestNetReputationTokenFactory",
+                "UniverseFactory",
+
                 // 0x contracts
                 "ERC20Proxy",
                 "ERC721Proxy",

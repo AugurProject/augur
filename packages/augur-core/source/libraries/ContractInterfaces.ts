@@ -51,6 +51,22 @@ export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
 export class WarpSync extends c.WarpSync<BigNumber> {
 }
+export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
+}
+export class DisputeWindowFactory extends c.DisputeWindowFactory<BigNumber> {
+}
+export class InitialReporterFactory extends c.InitialReporterFactory<BigNumber> {
+}
+export class MarketFactory extends c.MarketFactory<BigNumber> {
+}
+export class OICashFactory extends c.OICashFactory<BigNumber> {
+}
+export class ReputationTokenFactory extends c.ReputationTokenFactory<BigNumber> {
+}
+export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFactory<BigNumber> {
+}
+export class UniverseFactory extends c.UniverseFactory<BigNumber> {
+}
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }
 export class DisputeWindow extends c.DisputeWindow<BigNumber> {
@@ -89,7 +105,11 @@ export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
 }
+export class Formulas extends c.Formulas<BigNumber> {
+}
 export class HotLoading extends c.HotLoading<BigNumber> {
 }
 export class RedeemStake extends c.RedeemStake<BigNumber> {
+}
+export class RepSymbol extends c.RepSymbol<BigNumber> {
 }
