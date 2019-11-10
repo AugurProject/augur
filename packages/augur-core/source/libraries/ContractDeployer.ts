@@ -5,37 +5,35 @@ import { stringTo32ByteHex, resolveAll } from './HelperFunctions';
 import { CompilerOutput } from 'solc';
 import { DeployerConfiguration } from './DeployerConfiguration';
 import {
-    Augur,
-    AugurTrading,
-    Universe,
-    ReputationToken,
-    LegacyReputationToken,
-    TimeControlled,
-    ShareToken,
-    Trade,
-    CreateOrder,
-    CancelOrder,
-    FillOrder,
-    Orders,
-    Cash,
-    ProfitLoss,
-    SimulateTrade,
-    ZeroXTrade,
-    GnosisSafeRegistry,
-    WarpSync,
-    RepPriceOracle,
-    // 0x
-    DevUtils,
+  Augur,
+  AugurTrading,
+  Universe,
+  ReputationToken,
+  LegacyReputationToken,
+  TimeControlled,
+  ShareToken,
+  Trade,
+  CreateOrder,
+  CancelOrder,
+  FillOrder,
+  Orders,
+  Cash,
+  ProfitLoss,
+  SimulateTrade,
+  ZeroXTrade,
+  GnosisSafeRegistry,
+  WarpSync,
+  RepPriceOracle,
+  // 0x
+  DevUtils,
+  Exchange,
+  ERC1155Proxy,
+  ERC20Proxy,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { ContractAddresses, NetworkId, setAddresses, setUploadBlockNumber } from '@augurproject/artifacts';
-// import { runMigrationsOnceAsync } from '@0x/migrations';
-import Web3ProviderEngine = require('web3-provider-engine');
-import { ProviderSubprovider } from './zeroX/ProviderSubprovider';
-import { SignerSubprovider } from './zeroX/SignerSubprovider';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 
 const TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
 
@@ -325,32 +323,47 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async upload0xContracts(): Promise<string> {
-        const txDefaults = {
-            gas: 75000000,
-            from: await this.signer.getAddress(),
-        };
-
-      const web3Engine = new Web3ProviderEngine();
-      web3Engine.addProvider(new ProviderSubprovider(new EthersProvider(this.provider, 5, 40, 1)));
-      web3Engine.addProvider(new SignerSubprovider(this.signer));
-      console.log('Starting provider engine');
-      web3Engine.start();
-
-      // const zeroXAddresses = await runMigrationsOnceAsync(web3Engine, txDefaults);
-      // console.log(zeroXAddresses);
-
-      const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
-      zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
-
       // @ts-ignore
-      console.log(this.contracts.contracts.keys());
+      console.log(this.contracts.contracts.keys()); // TODO remove when done debugging
+
+      const networkId = (await this.provider.getNetwork()).chainId;
+
+      const erc20ProxyContract = this.contracts.get('ERC20Proxy');
+      erc20ProxyContract.address = await this.uploadAndAddToAugur(erc20ProxyContract, 'ERC20Proxy');
+
+      const erc721ProxyContract = this.contracts.get('ERC721Proxy');
+      erc721ProxyContract.address = await this.uploadAndAddToAugur(erc721ProxyContract, 'ERC721Proxy');
+
+      const erc1155ProxyContract = this.contracts.get('ERC1155Proxy');
+      erc1155ProxyContract.address = await this.uploadAndAddToAugur(erc1155ProxyContract, 'ERC1155Proxy');
+
+      const zeroXExchangeContract = await this.contracts.get('Exchange');
+      zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange', [networkId]);
+
+      const zeroXCoordinatorContract = await this.contracts.get('Coordinator');
+      zeroXCoordinatorContract.address = await this.uploadAndAddToAugur(zeroXCoordinatorContract, 'ZeroXCoordinator', [zeroXExchangeContract.address, networkId]);
+
+      const coordinatorRegistryContract = await this.contracts.get('CoordinatorRegistry');
+      coordinatorRegistryContract.address = await this.uploadAndAddToAugur(coordinatorRegistryContract, 'CoordinatorRegistry');
 
       const devUtilsContract = this.contracts.get('DevUtils');
-      devUtilsContract.address = await this.uploadAndAddToAugur(
-          devUtilsContract,
-          'DevUtils',
-          [zeroXExchangeContract.address]
-      );
+      devUtilsContract.address = await this.uploadAndAddToAugur(devUtilsContract, 'DevUtils', [zeroXExchangeContract.address]);
+
+      const weth9Contract = this.contracts.get('WETH9');
+      weth9Contract.address = await this.uploadAndAddToAugur(weth9Contract, 'WETH9');
+
+      const zrxTokenContract = this.contracts.get('ZRXToken');
+      zrxTokenContract.address = await this.uploadAndAddToAugur(zrxTokenContract, 'ZRXToken');
+
+      const actualZeroXExchangeContract = new Exchange(this.dependencies, zeroXExchangeContract.address);
+      await actualZeroXExchangeContract.registerAssetProxy(erc1155ProxyContract.address);
+      await actualZeroXExchangeContract.registerAssetProxy(erc20ProxyContract.address);
+
+      const actualERC1155ProxyContract = new ERC1155Proxy(this.dependencies, erc1155ProxyContract.address);
+      await actualERC1155ProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
+
+      const actualERC20ProxyContract = new ERC20Proxy(this.dependencies, erc20ProxyContract.address);
+      await actualERC20ProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
 
       return zeroXExchangeContract.address;
     }
@@ -393,8 +406,18 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'GnosisSafe') return;
-        if (contractName === 'ZeroXExchange') return;
-        if (contractName === 'DevUtils') return;
+        // 0x
+        if ([
+          'ERC20Proxy',
+          'ERC721Proxy',
+          'ERC1155Proxy',
+          'Exchange',
+          'Coordinator',
+          'CoordinatorRegistry',
+          'DevUtils',
+          'WETH9',
+          'ZRXToken',
+        ].includes(contractName)) return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
         if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'ICashFaucet'].includes(contract.contractName)) return;
@@ -509,7 +532,9 @@ Deploying to: ${networkConfiguration.networkName}
     private async createGenesisUniverse(): Promise<Universe> {
         console.log('Creating genesis universe...');
         const augur = new Augur(this.dependencies, this.getContractAddress('Augur'));
+        // TODO this next line is failing
         const universeAddress = await augur.createGenesisUniverse_();
+        console.log("Genesis universe creation worked! Delete this now.")
         if (!universeAddress || universeAddress === '0x') {
             throw new Error('Unable to create genesis universe. eth_call failed');
         }

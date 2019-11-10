@@ -60,6 +60,14 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef': {"name":"Transfer","signature":"Transfer(address,address,uint256)","signatureHash":"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef","parameters":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c': {"name":"Deposit","signature":"Deposit(address,uint256)","signatureHash":"0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c","parameters":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}]},
 	'0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65': {"name":"Withdrawal","signature":"Withdrawal(address,uint256)","signatureHash":"0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65","parameters":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}]},
+	'0xa4a7329f1dd821363067e07d359e347b4af9b1efe4b6cccf13240228af3c800d': {"name":"TransactionExecution","signature":"TransactionExecution(bytes32)","signatureHash":"0xa4a7329f1dd821363067e07d359e347b4af9b1efe4b6cccf13240228af3c800d","parameters":[{"indexed":true,"name":"transactionHash","type":"bytes32"}]},
+	'0xa8656e308026eeabce8f0bc18048433252318ab80ac79da0b3d3d8697dfba891': {"name":"SignatureValidatorApproval","signature":"SignatureValidatorApproval(address,address,bool)","signatureHash":"0xa8656e308026eeabce8f0bc18048433252318ab80ac79da0b3d3d8697dfba891","parameters":[{"indexed":true,"name":"signerAddress","type":"address"},{"indexed":true,"name":"validatorAddress","type":"address"},{"indexed":false,"name":"isApproved","type":"bool"}]},
+	'0xd2c6b762299c609bdb96520b58a49bfb80186934d4f71a86a367571a15c03194': {"name":"AssetProxyRegistered","signature":"AssetProxyRegistered(bytes4,address)","signatureHash":"0xd2c6b762299c609bdb96520b58a49bfb80186934d4f71a86a367571a15c03194","parameters":[{"indexed":false,"name":"id","type":"bytes4"},{"indexed":false,"name":"assetProxy","type":"address"}]},
+	'0x3a3e76d7a75e198aef1f53137e4f2a8a2ec74e2e9526db8404d08ccc9f1e621d': {"name":"ProtocolFeeMultiplier","signature":"ProtocolFeeMultiplier(uint256,uint256)","signatureHash":"0x3a3e76d7a75e198aef1f53137e4f2a8a2ec74e2e9526db8404d08ccc9f1e621d","parameters":[{"indexed":false,"name":"oldProtocolFeeMultiplier","type":"uint256"},{"indexed":false,"name":"updatedProtocolFeeMultiplier","type":"uint256"}]},
+	'0xe1a5430ebec577336427f40f15822f1f36c5e3509ff209d6db9e6c9e6941cb0b': {"name":"ProtocolFeeCollectorAddress","signature":"ProtocolFeeCollectorAddress(address,address)","signatureHash":"0xe1a5430ebec577336427f40f15822f1f36c5e3509ff209d6db9e6c9e6941cb0b","parameters":[{"indexed":false,"name":"oldProtocolFeeCollector","type":"address"},{"indexed":false,"name":"updatedProtocolFeeCollector","type":"address"}]},
+	'0x6869791f0a34781b29882982cc39e882768cf2c96995c2a110c577c53bc932d5': {"name":"Fill","signature":"Fill(address,address,bytes,bytes,bytes,bytes,bytes32,address,address,uint256,uint256,uint256,uint256,uint256)","signatureHash":"0x6869791f0a34781b29882982cc39e882768cf2c96995c2a110c577c53bc932d5","parameters":[{"indexed":true,"name":"makerAddress","type":"address"},{"indexed":true,"name":"feeRecipientAddress","type":"address"},{"indexed":false,"name":"makerAssetData","type":"bytes"},{"indexed":false,"name":"takerAssetData","type":"bytes"},{"indexed":false,"name":"makerFeeAssetData","type":"bytes"},{"indexed":false,"name":"takerFeeAssetData","type":"bytes"},{"indexed":true,"name":"orderHash","type":"bytes32"},{"indexed":false,"name":"takerAddress","type":"address"},{"indexed":false,"name":"senderAddress","type":"address"},{"indexed":false,"name":"makerAssetFilledAmount","type":"uint256"},{"indexed":false,"name":"takerAssetFilledAmount","type":"uint256"},{"indexed":false,"name":"makerFeePaid","type":"uint256"},{"indexed":false,"name":"takerFeePaid","type":"uint256"},{"indexed":false,"name":"protocolFeePaid","type":"uint256"}]},
+	'0x02c310a9a43963ff31a754a4099cc435ed498049687539d72d7818d9b093415c': {"name":"Cancel","signature":"Cancel(address,address,bytes,bytes,address,bytes32)","signatureHash":"0x02c310a9a43963ff31a754a4099cc435ed498049687539d72d7818d9b093415c","parameters":[{"indexed":true,"name":"makerAddress","type":"address"},{"indexed":true,"name":"feeRecipientAddress","type":"address"},{"indexed":false,"name":"makerAssetData","type":"bytes"},{"indexed":false,"name":"takerAssetData","type":"bytes"},{"indexed":false,"name":"senderAddress","type":"address"},{"indexed":true,"name":"orderHash","type":"bytes32"}]},
+	'0x82af639571738f4ebd4268fb0363d8957ebe1bbb9e78dba5ebd69eed39b154f0': {"name":"CancelUpTo","signature":"CancelUpTo(address,address,uint256)","signatureHash":"0x82af639571738f4ebd4268fb0363d8957ebe1bbb9e78dba5ebd69eed39b154f0","parameters":[{"indexed":true,"name":"makerAddress","type":"address"},{"indexed":true,"name":"orderSenderAddress","type":"address"},{"indexed":false,"name":"orderEpoch","type":"uint256"}]},
 	'0xea17ae24b0d40ea7962a6d832db46d1f81eaec1562946d0830d1c21d4c000ec1': {"name":"MarketCreated","signature":"MarketCreated(address,uint256,string,address,address,address,uint256,int256[],uint8,uint256,bytes32[],uint256,uint256)","signatureHash":"0xea17ae24b0d40ea7962a6d832db46d1f81eaec1562946d0830d1c21d4c000ec1","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":false,"name":"endTime","type":"uint256"},{"indexed":false,"name":"extraInfo","type":"string"},{"indexed":false,"name":"market","type":"address"},{"indexed":true,"name":"marketCreator","type":"address"},{"indexed":false,"name":"designatedReporter","type":"address"},{"indexed":false,"name":"feePerCashInAttoCash","type":"uint256"},{"indexed":false,"name":"prices","type":"int256[]"},{"indexed":false,"name":"marketType","type":"uint8"},{"indexed":false,"name":"numTicks","type":"uint256"},{"indexed":false,"name":"outcomes","type":"bytes32[]"},{"indexed":false,"name":"noShowBond","type":"uint256"},{"indexed":false,"name":"timestamp","type":"uint256"}]},
 	'0xc3ebb227c22e7644e9bef8822009f746a72c86f239760124d67fdc2c302b3115': {"name":"InitialReportSubmitted","signature":"InitialReportSubmitted(address,address,address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)","signatureHash":"0xc3ebb227c22e7644e9bef8822009f746a72c86f239760124d67fdc2c302b3115","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"reporter","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"initialReporter","type":"address"},{"indexed":false,"name":"amountStaked","type":"uint256"},{"indexed":false,"name":"isDesignatedReporter","type":"bool"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"description","type":"string"},{"indexed":false,"name":"nextWindowStartTime","type":"uint256"},{"indexed":false,"name":"nextWindowEndTime","type":"uint256"},{"indexed":false,"name":"timestamp","type":"uint256"}]},
 	'0xf9a0b30bcf861874bf36630742f0d56b22648898d7cdd0cd785d74acd17e0d44': {"name":"DisputeCrowdsourcerCreated","signature":"DisputeCrowdsourcerCreated(address,address,address,uint256[],uint256,uint256)","signatureHash":"0xf9a0b30bcf861874bf36630742f0d56b22648898d7cdd0cd785d74acd17e0d44","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"disputeCrowdsourcer","type":"address"},{"indexed":false,"name":"payoutNumerators","type":"uint256[]"},{"indexed":false,"name":"size","type":"uint256"},{"indexed":false,"name":"disputeRound","type":"uint256"}]},
@@ -93,6 +101,8 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x350ea32dc29530b9557420816d743c436f8397086f98c96292138edd69e01cb3': {"name":"ShareTokenBalanceChanged","signature":"ShareTokenBalanceChanged(address,address,address,uint256,uint256)","signatureHash":"0x350ea32dc29530b9557420816d743c436f8397086f98c96292138edd69e01cb3","parameters":[{"indexed":true,"name":"universe","type":"address"},{"indexed":true,"name":"account","type":"address"},{"indexed":true,"name":"market","type":"address"},{"indexed":false,"name":"outcome","type":"uint256"},{"indexed":false,"name":"balance","type":"uint256"}]},
 	'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885': {"name":"Mint","signature":"Mint(address,uint256)","signatureHash":"0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885","parameters":[{"indexed":true,"name":"target","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
 	'0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5': {"name":"Burn","signature":"Burn(address,uint256)","signatureHash":"0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5","parameters":[{"indexed":true,"name":"target","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]},
+	'0x93baa6efbd2244243bfee6ce4cfdd1d04fc4c0e9a786abd3a41313bd352db153': {"name":"InterfaceImplementerSet","signature":"InterfaceImplementerSet(address,bytes32,address)","signatureHash":"0x93baa6efbd2244243bfee6ce4cfdd1d04fc4c0e9a786abd3a41313bd352db153","parameters":[{"indexed":true,"name":"addr","type":"address"},{"indexed":true,"name":"interfaceHash","type":"bytes32"},{"indexed":true,"name":"implementer","type":"address"}]},
+	'0x605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350': {"name":"ManagerChanged","signature":"ManagerChanged(address,address)","signatureHash":"0x605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350","parameters":[{"indexed":true,"name":"addr","type":"address"},{"indexed":true,"name":"newManager","type":"address"}]},
 	'0xf2a0eb156472d1440255b0d7c1e19cc07115d1051fe605b0dce69acfec884d9c': {"name":"ApproveHash","signature":"ApproveHash(bytes32,address)","signatureHash":"0xf2a0eb156472d1440255b0d7c1e19cc07115d1051fe605b0dce69acfec884d9c","parameters":[{"indexed":true,"name":"approvedHash","type":"bytes32"},{"indexed":true,"name":"owner","type":"address"}]},
 	'0xe7f4675038f4f6034dfcbbb24c4dc08e4ebf10eb9d257d3d02c0f38d122ac6e4': {"name":"SignMsg","signature":"SignMsg(bytes32)","signatureHash":"0xe7f4675038f4f6034dfcbbb24c4dc08e4ebf10eb9d257d3d02c0f38d122ac6e4","parameters":[{"indexed":true,"name":"msgHash","type":"bytes32"}]},
 	'0x23428b18acfb3ea64b08dc0c1d296ea9c09702c09083ca5272e64d115b687d23': {"name":"ExecutionFailure","signature":"ExecutionFailure(bytes32,uint256)","signatureHash":"0x23428b18acfb3ea64b08dc0c1d296ea9c09702c09083ca5272e64d115b687d23","parameters":[{"indexed":false,"name":"txHash","type":"bytes32"},{"indexed":false,"name":"payment","type":"uint256"}]},
@@ -619,6 +629,93 @@ export class ERC721Proxy<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [newOwner], options.sender)
+	}
+}
+
+
+export class Coordinator<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public getSignerAddress_ = async (hash: string, signature: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"hash","type":"bytes32"},{"name":"signature","type":"bytes"}],"name":"getSignerAddress","outputs":[{"name":"signerAddress","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [hash, signature], options.sender)
+		return <string>result[0]
+	}
+
+	public assertValidCoordinatorApprovals_ = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, txOrigin: string, transactionSignature: string, approvalSignatures: Array<string>, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"txOrigin","type":"address"},{"name":"transactionSignature","type":"bytes"},{"name":"approvalSignatures","type":"bytes[]"}],"name":"assertValidCoordinatorApprovals","outputs":[],"payable":false,"stateMutability":"view","type":"function"}
+		await this.localCall(abi, [transaction, txOrigin, transactionSignature, approvalSignatures], options.sender)
+	}
+
+	public EIP712_COORDINATOR_DOMAIN_NAME_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_COORDINATOR_DOMAIN_NAME","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public EIP712_COORDINATOR_DOMAIN_VERSION_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_COORDINATOR_DOMAIN_VERSION","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public EIP712_EXCHANGE_DOMAIN_HASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_EXCHANGE_DOMAIN_HASH","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public executeTransaction = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, txOrigin: string, transactionSignature: string, approvalSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"txOrigin","type":"address"},{"name":"transactionSignature","type":"bytes"},{"name":"approvalSignatures","type":"bytes[]"}],"name":"executeTransaction","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [transaction, txOrigin, transactionSignature, approvalSignatures], 'executeTransaction', options.sender, options.attachedEth)
+	}
+	
+	public executeTransaction_estimateGas = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, txOrigin: string, transactionSignature: string, approvalSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"txOrigin","type":"address"},{"name":"transactionSignature","type":"bytes"},{"name":"approvalSignatures","type":"bytes[]"}],"name":"executeTransaction","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [transaction, txOrigin, transactionSignature, approvalSignatures], 'executeTransaction', options.sender, options.attachedEth)
+	}
+
+	public executeTransaction_ = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, txOrigin: string, transactionSignature: string, approvalSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"txOrigin","type":"address"},{"name":"transactionSignature","type":"bytes"},{"name":"approvalSignatures","type":"bytes[]"}],"name":"executeTransaction","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [transaction, txOrigin, transactionSignature, approvalSignatures], options.sender, options.attachedEth)
+	}
+
+	public EIP712_COORDINATOR_APPROVAL_SCHEMA_HASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_COORDINATOR_APPROVAL_SCHEMA_HASH","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public decodeOrdersFromFillData_ = async (data: string, options?: { sender?: string }): Promise<Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"data","type":"bytes"}],"name":"decodeOrdersFromFillData","outputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [data], options.sender)
+		return <Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>>result[0]
+	}
+
+	public EIP712_COORDINATOR_DOMAIN_HASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_COORDINATOR_DOMAIN_HASH","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getCoordinatorApprovalHash_ = async (approval: { txOrigin: string, transactionHash: string, transactionSignature: string }, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"txOrigin","type":"address"},{"name":"transactionHash","type":"bytes32"},{"name":"transactionSignature","type":"bytes"}],"name":"approval","type":"tuple"}],"name":"getCoordinatorApprovalHash","outputs":[{"name":"approvalHash","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [approval], options.sender)
+		return <string>result[0]
 	}
 }
 
@@ -1189,6 +1286,622 @@ export class ZRXToken<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [owner, spender], options.sender)
 		return <TBigNumber>result[0]
+	}
+}
+
+
+export class Exchange<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public transactionsExecuted_ = async (arg0: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"transactionsExecuted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <boolean>result[0]
+	}
+
+	public detachProtocolFeeCollector = async (options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"detachProtocolFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [], 'detachProtocolFeeCollector', options.sender)
+	}
+	
+	public detachProtocolFeeCollector_estimateGas = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"detachProtocolFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [], 'detachProtocolFeeCollector', options.sender)
+	}
+
+	public detachProtocolFeeCollector_ = async (options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"detachProtocolFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [], options.sender)
+	}
+
+	public protocolFeeMultiplier_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"protocolFeeMultiplier","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public executeTransaction = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"signature","type":"bytes"}],"name":"executeTransaction","outputs":[{"name":"","type":"bytes"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [transaction, signature], 'executeTransaction', options.sender, options.attachedEth)
+	}
+	
+	public executeTransaction_estimateGas = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"signature","type":"bytes"}],"name":"executeTransaction","outputs":[{"name":"","type":"bytes"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [transaction, signature], 'executeTransaction', options.sender, options.attachedEth)
+	}
+
+	public executeTransaction_ = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"signature","type":"bytes"}],"name":"executeTransaction","outputs":[{"name":"","type":"bytes"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [transaction, signature], options.sender, options.attachedEth)
+		return <string>result[0]
+	}
+
+	public filled_ = async (arg0: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"filled","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public cancelled_ = async (arg0: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"cancelled","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <boolean>result[0]
+	}
+
+	public cancelOrder = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"cancelOrder","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [order], 'cancelOrder', options.sender, options.attachedEth)
+	}
+	
+	public cancelOrder_estimateGas = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"cancelOrder","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [order], 'cancelOrder', options.sender, options.attachedEth)
+	}
+
+	public cancelOrder_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"cancelOrder","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [order], options.sender, options.attachedEth)
+	}
+
+	public marketSellOrdersNoThrow = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketSellOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, takerAssetFillAmount, signatures], 'marketSellOrdersNoThrow', options.sender, options.attachedEth)
+	}
+	
+	public marketSellOrdersNoThrow_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketSellOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, takerAssetFillAmount, signatures], 'marketSellOrdersNoThrow', options.sender, options.attachedEth)
+	}
+
+	public marketSellOrdersNoThrow_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketSellOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, takerAssetFillAmount, signatures], options.sender, options.attachedEth)
+		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
+	}
+
+	public preSign = async (hash: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"hash","type":"bytes32"}],"name":"preSign","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [hash], 'preSign', options.sender, options.attachedEth)
+	}
+	
+	public preSign_estimateGas = async (hash: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"hash","type":"bytes32"}],"name":"preSign","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [hash], 'preSign', options.sender, options.attachedEth)
+	}
+
+	public preSign_ = async (hash: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"hash","type":"bytes32"}],"name":"preSign","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [hash], options.sender, options.attachedEth)
+	}
+
+	public cancelOrdersUpTo = async (targetOrderEpoch: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"targetOrderEpoch","type":"uint256"}],"name":"cancelOrdersUpTo","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [targetOrderEpoch], 'cancelOrdersUpTo', options.sender, options.attachedEth)
+	}
+	
+	public cancelOrdersUpTo_estimateGas = async (targetOrderEpoch: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"targetOrderEpoch","type":"uint256"}],"name":"cancelOrdersUpTo","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [targetOrderEpoch], 'cancelOrdersUpTo', options.sender, options.attachedEth)
+	}
+
+	public cancelOrdersUpTo_ = async (targetOrderEpoch: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"targetOrderEpoch","type":"uint256"}],"name":"cancelOrdersUpTo","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [targetOrderEpoch], options.sender, options.attachedEth)
+	}
+
+	public getAssetProxy_ = async (assetProxyId: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"assetProxyId","type":"bytes4"}],"name":"getAssetProxy","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [assetProxyId], options.sender)
+		return <string>result[0]
+	}
+
+	public batchMatchOrdersWithMaximalFill = async (leftOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, rightOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, leftSignatures: Array<string>, rightSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrders","type":"tuple[]"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrders","type":"tuple[]"},{"name":"leftSignatures","type":"bytes[]"},{"name":"rightSignatures","type":"bytes[]"}],"name":"batchMatchOrdersWithMaximalFill","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple[]"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple[]"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"batchMatchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [leftOrders, rightOrders, leftSignatures, rightSignatures], 'batchMatchOrdersWithMaximalFill', options.sender, options.attachedEth)
+	}
+	
+	public batchMatchOrdersWithMaximalFill_estimateGas = async (leftOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, rightOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, leftSignatures: Array<string>, rightSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrders","type":"tuple[]"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrders","type":"tuple[]"},{"name":"leftSignatures","type":"bytes[]"},{"name":"rightSignatures","type":"bytes[]"}],"name":"batchMatchOrdersWithMaximalFill","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple[]"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple[]"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"batchMatchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [leftOrders, rightOrders, leftSignatures, rightSignatures], 'batchMatchOrdersWithMaximalFill', options.sender, options.attachedEth)
+	}
+
+	public batchMatchOrdersWithMaximalFill_ = async (leftOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, rightOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, leftSignatures: Array<string>, rightSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ left: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, right: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrders","type":"tuple[]"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrders","type":"tuple[]"},{"name":"leftSignatures","type":"bytes[]"},{"name":"rightSignatures","type":"bytes[]"}],"name":"batchMatchOrdersWithMaximalFill","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple[]"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple[]"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"batchMatchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [leftOrders, rightOrders, leftSignatures, rightSignatures], options.sender, options.attachedEth)
+		return <{ left: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, right: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }>result[0]
+	}
+
+	public batchMatchOrders = async (leftOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, rightOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, leftSignatures: Array<string>, rightSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrders","type":"tuple[]"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrders","type":"tuple[]"},{"name":"leftSignatures","type":"bytes[]"},{"name":"rightSignatures","type":"bytes[]"}],"name":"batchMatchOrders","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple[]"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple[]"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"batchMatchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [leftOrders, rightOrders, leftSignatures, rightSignatures], 'batchMatchOrders', options.sender, options.attachedEth)
+	}
+	
+	public batchMatchOrders_estimateGas = async (leftOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, rightOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, leftSignatures: Array<string>, rightSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrders","type":"tuple[]"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrders","type":"tuple[]"},{"name":"leftSignatures","type":"bytes[]"},{"name":"rightSignatures","type":"bytes[]"}],"name":"batchMatchOrders","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple[]"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple[]"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"batchMatchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [leftOrders, rightOrders, leftSignatures, rightSignatures], 'batchMatchOrders', options.sender, options.attachedEth)
+	}
+
+	public batchMatchOrders_ = async (leftOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, rightOrders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, leftSignatures: Array<string>, rightSignatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ left: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, right: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrders","type":"tuple[]"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrders","type":"tuple[]"},{"name":"leftSignatures","type":"bytes[]"},{"name":"rightSignatures","type":"bytes[]"}],"name":"batchMatchOrders","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple[]"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple[]"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"batchMatchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [leftOrders, rightOrders, leftSignatures, rightSignatures], options.sender, options.attachedEth)
+		return <{ left: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, right: Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }>result[0]
+	}
+
+	public setSignatureValidatorApproval = async (validatorAddress: string, approval: boolean, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"validatorAddress","type":"address"},{"name":"approval","type":"bool"}],"name":"setSignatureValidatorApproval","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [validatorAddress, approval], 'setSignatureValidatorApproval', options.sender, options.attachedEth)
+	}
+	
+	public setSignatureValidatorApproval_estimateGas = async (validatorAddress: string, approval: boolean, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"validatorAddress","type":"address"},{"name":"approval","type":"bool"}],"name":"setSignatureValidatorApproval","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [validatorAddress, approval], 'setSignatureValidatorApproval', options.sender, options.attachedEth)
+	}
+
+	public setSignatureValidatorApproval_ = async (validatorAddress: string, approval: boolean, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"validatorAddress","type":"address"},{"name":"approval","type":"bool"}],"name":"setSignatureValidatorApproval","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [validatorAddress, approval], options.sender, options.attachedEth)
+	}
+
+	public marketBuyOrdersNoThrow = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, makerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"makerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketBuyOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, makerAssetFillAmount, signatures], 'marketBuyOrdersNoThrow', options.sender, options.attachedEth)
+	}
+	
+	public marketBuyOrdersNoThrow_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, makerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"makerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketBuyOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, makerAssetFillAmount, signatures], 'marketBuyOrdersNoThrow', options.sender, options.attachedEth)
+	}
+
+	public marketBuyOrdersNoThrow_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, makerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"makerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketBuyOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, makerAssetFillAmount, signatures], options.sender, options.attachedEth)
+		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
+	}
+
+	public allowedValidators_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowedValidators","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0, arg1], options.sender)
+		return <boolean>result[0]
+	}
+
+	public isValidHashSignature_ = async (hash: string, signerAddress: string, signature: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"hash","type":"bytes32"},{"name":"signerAddress","type":"address"},{"name":"signature","type":"bytes"}],"name":"isValidHashSignature","outputs":[{"name":"isValid","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [hash, signerAddress, signature], options.sender)
+		return <boolean>result[0]
+	}
+
+	public isValidSignature_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, orderHash: string, signature: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"orderHash","type":"bytes32"},{"name":"signature","type":"bytes"}],"name":"isValidSignature","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [order, orderHash, signature], options.sender)
+		return <boolean>result[0]
+	}
+
+	public preSigned_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"},{"name":"","type":"address"}],"name":"preSigned","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0, arg1], options.sender)
+		return <boolean>result[0]
+	}
+
+	public protocolFeeCollector_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"protocolFeeCollector","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public matchOrders = async (leftOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, rightOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, leftSignature: string, rightSignature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrder","type":"tuple"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrder","type":"tuple"},{"name":"leftSignature","type":"bytes"},{"name":"rightSignature","type":"bytes"}],"name":"matchOrders","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"matchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [leftOrder, rightOrder, leftSignature, rightSignature], 'matchOrders', options.sender, options.attachedEth)
+	}
+	
+	public matchOrders_estimateGas = async (leftOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, rightOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, leftSignature: string, rightSignature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrder","type":"tuple"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrder","type":"tuple"},{"name":"leftSignature","type":"bytes"},{"name":"rightSignature","type":"bytes"}],"name":"matchOrders","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"matchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [leftOrder, rightOrder, leftSignature, rightSignature], 'matchOrders', options.sender, options.attachedEth)
+	}
+
+	public matchOrders_ = async (leftOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, rightOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, leftSignature: string, rightSignature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ left: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, right: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrder","type":"tuple"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrder","type":"tuple"},{"name":"leftSignature","type":"bytes"},{"name":"rightSignature","type":"bytes"}],"name":"matchOrders","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"matchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [leftOrder, rightOrder, leftSignature, rightSignature], options.sender, options.attachedEth)
+		return <{ left: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, right: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }>result[0]
+	}
+
+	public marketBuyOrdersFillOrKill = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, makerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"makerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketBuyOrdersFillOrKill","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, makerAssetFillAmount, signatures], 'marketBuyOrdersFillOrKill', options.sender, options.attachedEth)
+	}
+	
+	public marketBuyOrdersFillOrKill_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, makerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"makerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketBuyOrdersFillOrKill","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, makerAssetFillAmount, signatures], 'marketBuyOrdersFillOrKill', options.sender, options.attachedEth)
+	}
+
+	public marketBuyOrdersFillOrKill_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, makerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"makerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketBuyOrdersFillOrKill","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, makerAssetFillAmount, signatures], options.sender, options.attachedEth)
+		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
+	}
+
+	public isValidTransactionSignature_ = async (transaction: { salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }, signature: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transaction","type":"tuple"},{"name":"signature","type":"bytes"}],"name":"isValidTransactionSignature","outputs":[{"name":"isValid","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [transaction, signature], options.sender)
+		return <boolean>result[0]
+	}
+
+	public owner_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public batchFillOrdersNoThrow = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, takerAssetFillAmounts, signatures], 'batchFillOrdersNoThrow', options.sender, options.attachedEth)
+	}
+	
+	public batchFillOrdersNoThrow_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, takerAssetFillAmounts, signatures], 'batchFillOrdersNoThrow', options.sender, options.attachedEth)
+	}
+
+	public batchFillOrdersNoThrow_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrdersNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, takerAssetFillAmounts, signatures], options.sender, options.attachedEth)
+		return <Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>>result[0]
+	}
+
+	public setProtocolFeeMultiplier = async (updatedProtocolFeeMultiplier: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"updatedProtocolFeeMultiplier","type":"uint256"}],"name":"setProtocolFeeMultiplier","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [updatedProtocolFeeMultiplier], 'setProtocolFeeMultiplier', options.sender)
+	}
+	
+	public setProtocolFeeMultiplier_estimateGas = async (updatedProtocolFeeMultiplier: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"updatedProtocolFeeMultiplier","type":"uint256"}],"name":"setProtocolFeeMultiplier","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [updatedProtocolFeeMultiplier], 'setProtocolFeeMultiplier', options.sender)
+	}
+
+	public setProtocolFeeMultiplier_ = async (updatedProtocolFeeMultiplier: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"updatedProtocolFeeMultiplier","type":"uint256"}],"name":"setProtocolFeeMultiplier","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [updatedProtocolFeeMultiplier], options.sender)
+	}
+
+	public batchFillOrders = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrders","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, takerAssetFillAmounts, signatures], 'batchFillOrders', options.sender, options.attachedEth)
+	}
+	
+	public batchFillOrders_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrders","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, takerAssetFillAmounts, signatures], 'batchFillOrders', options.sender, options.attachedEth)
+	}
+
+	public batchFillOrders_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrders","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, takerAssetFillAmounts, signatures], options.sender, options.attachedEth)
+		return <Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>>result[0]
+	}
+
+	public fillOrder = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [order, takerAssetFillAmount, signature], 'fillOrder', options.sender, options.attachedEth)
+	}
+	
+	public fillOrder_estimateGas = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [order, takerAssetFillAmount, signature], 'fillOrder', options.sender, options.attachedEth)
+	}
+
+	public fillOrder_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [order, takerAssetFillAmount, signature], options.sender, options.attachedEth)
+		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
+	}
+
+	public getOrderInfo_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string }): Promise<{ orderStatus: TBigNumber, orderHash: string, orderTakerAssetFilledAmount: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"getOrderInfo","outputs":[{"components":[{"name":"orderStatus","type":"uint8"},{"name":"orderHash","type":"bytes32"},{"name":"orderTakerAssetFilledAmount","type":"uint256"}],"name":"orderInfo","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [order], options.sender)
+		return <{ orderStatus: TBigNumber, orderHash: string, orderTakerAssetFilledAmount: TBigNumber }>result[0]
+	}
+
+	public isValidOrderSignature_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, signature: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"signature","type":"bytes"}],"name":"isValidOrderSignature","outputs":[{"name":"isValid","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [order, signature], options.sender)
+		return <boolean>result[0]
+	}
+
+	public marketSellOrdersFillOrKill = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketSellOrdersFillOrKill","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, takerAssetFillAmount, signatures], 'marketSellOrdersFillOrKill', options.sender, options.attachedEth)
+	}
+	
+	public marketSellOrdersFillOrKill_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketSellOrdersFillOrKill","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, takerAssetFillAmount, signatures], 'marketSellOrdersFillOrKill', options.sender, options.attachedEth)
+	}
+
+	public marketSellOrdersFillOrKill_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmount: TBigNumber, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signatures","type":"bytes[]"}],"name":"marketSellOrdersFillOrKill","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, takerAssetFillAmount, signatures], options.sender, options.attachedEth)
+		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
+	}
+
+	public simulateDispatchTransferFromCalls = async (assetData: Array<string>, fromAddresses: Array<string>, toAddresses: Array<string>, amounts: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetData","type":"bytes[]"},{"name":"fromAddresses","type":"address[]"},{"name":"toAddresses","type":"address[]"},{"name":"amounts","type":"uint256[]"}],"name":"simulateDispatchTransferFromCalls","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [assetData, fromAddresses, toAddresses, amounts], 'simulateDispatchTransferFromCalls', options.sender)
+	}
+	
+	public simulateDispatchTransferFromCalls_estimateGas = async (assetData: Array<string>, fromAddresses: Array<string>, toAddresses: Array<string>, amounts: Array<TBigNumber>, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetData","type":"bytes[]"},{"name":"fromAddresses","type":"address[]"},{"name":"toAddresses","type":"address[]"},{"name":"amounts","type":"uint256[]"}],"name":"simulateDispatchTransferFromCalls","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [assetData, fromAddresses, toAddresses, amounts], 'simulateDispatchTransferFromCalls', options.sender)
+	}
+
+	public simulateDispatchTransferFromCalls_ = async (assetData: Array<string>, fromAddresses: Array<string>, toAddresses: Array<string>, amounts: Array<TBigNumber>, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetData","type":"bytes[]"},{"name":"fromAddresses","type":"address[]"},{"name":"toAddresses","type":"address[]"},{"name":"amounts","type":"uint256[]"}],"name":"simulateDispatchTransferFromCalls","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [assetData, fromAddresses, toAddresses, amounts], options.sender)
+	}
+
+	public matchOrdersWithMaximalFill = async (leftOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, rightOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, leftSignature: string, rightSignature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrder","type":"tuple"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrder","type":"tuple"},{"name":"leftSignature","type":"bytes"},{"name":"rightSignature","type":"bytes"}],"name":"matchOrdersWithMaximalFill","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"matchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [leftOrder, rightOrder, leftSignature, rightSignature], 'matchOrdersWithMaximalFill', options.sender, options.attachedEth)
+	}
+	
+	public matchOrdersWithMaximalFill_estimateGas = async (leftOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, rightOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, leftSignature: string, rightSignature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrder","type":"tuple"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrder","type":"tuple"},{"name":"leftSignature","type":"bytes"},{"name":"rightSignature","type":"bytes"}],"name":"matchOrdersWithMaximalFill","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"matchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [leftOrder, rightOrder, leftSignature, rightSignature], 'matchOrdersWithMaximalFill', options.sender, options.attachedEth)
+	}
+
+	public matchOrdersWithMaximalFill_ = async (leftOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, rightOrder: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, leftSignature: string, rightSignature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ left: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, right: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"leftOrder","type":"tuple"},{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"rightOrder","type":"tuple"},{"name":"leftSignature","type":"bytes"},{"name":"rightSignature","type":"bytes"}],"name":"matchOrdersWithMaximalFill","outputs":[{"components":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"left","type":"tuple"},{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"right","type":"tuple"},{"name":"profitInLeftMakerAsset","type":"uint256"},{"name":"profitInRightMakerAsset","type":"uint256"}],"name":"matchedFillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [leftOrder, rightOrder, leftSignature, rightSignature], options.sender, options.attachedEth)
+		return <{ left: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, right: { makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }, profitInLeftMakerAsset: TBigNumber, profitInRightMakerAsset: TBigNumber }>result[0]
+	}
+
+	public batchFillOrKillOrders = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrKillOrders","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders, takerAssetFillAmounts, signatures], 'batchFillOrKillOrders', options.sender, options.attachedEth)
+	}
+	
+	public batchFillOrKillOrders_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrKillOrders","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders, takerAssetFillAmounts, signatures], 'batchFillOrKillOrders', options.sender, options.attachedEth)
+	}
+
+	public batchFillOrKillOrders_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, takerAssetFillAmounts: Array<TBigNumber>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"},{"name":"takerAssetFillAmounts","type":"uint256[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchFillOrKillOrders","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [orders, takerAssetFillAmounts, signatures], options.sender, options.attachedEth)
+		return <Array<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>>result[0]
+	}
+
+	public setProtocolFeeCollectorAddress = async (updatedProtocolFeeCollector: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"updatedProtocolFeeCollector","type":"address"}],"name":"setProtocolFeeCollectorAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [updatedProtocolFeeCollector], 'setProtocolFeeCollectorAddress', options.sender)
+	}
+	
+	public setProtocolFeeCollectorAddress_estimateGas = async (updatedProtocolFeeCollector: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"updatedProtocolFeeCollector","type":"address"}],"name":"setProtocolFeeCollectorAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [updatedProtocolFeeCollector], 'setProtocolFeeCollectorAddress', options.sender)
+	}
+
+	public setProtocolFeeCollectorAddress_ = async (updatedProtocolFeeCollector: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"updatedProtocolFeeCollector","type":"address"}],"name":"setProtocolFeeCollectorAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [updatedProtocolFeeCollector], options.sender)
+	}
+
+	public EIP712_EXCHANGE_DOMAIN_HASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_EXCHANGE_DOMAIN_HASH","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public registerAssetProxy = async (assetProxy: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetProxy","type":"address"}],"name":"registerAssetProxy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [assetProxy], 'registerAssetProxy', options.sender)
+	}
+	
+	public registerAssetProxy_estimateGas = async (assetProxy: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetProxy","type":"address"}],"name":"registerAssetProxy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [assetProxy], 'registerAssetProxy', options.sender)
+	}
+
+	public registerAssetProxy_ = async (assetProxy: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetProxy","type":"address"}],"name":"registerAssetProxy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [assetProxy], options.sender)
+	}
+
+	public orderEpoch_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"orderEpoch","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0, arg1], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public EIP1271_MAGIC_VALUE_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP1271_MAGIC_VALUE","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public batchCancelOrders = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"batchCancelOrders","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [orders], 'batchCancelOrders', options.sender, options.attachedEth)
+	}
+	
+	public batchCancelOrders_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"batchCancelOrders","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [orders], 'batchCancelOrders', options.sender, options.attachedEth)
+	}
+
+	public batchCancelOrders_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"batchCancelOrders","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [orders], options.sender, options.attachedEth)
+	}
+
+	public fillOrKillOrder = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrKillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [order, takerAssetFillAmount, signature], 'fillOrKillOrder', options.sender, options.attachedEth)
+	}
+	
+	public fillOrKillOrder_estimateGas = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrKillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [order, takerAssetFillAmount, signature], 'fillOrKillOrder', options.sender, options.attachedEth)
+	}
+
+	public fillOrKillOrder_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrKillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [order, takerAssetFillAmount, signature], options.sender, options.attachedEth)
+		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
+	}
+
+	public currentContextAddress_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"currentContextAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public transferOwnership = async (newOwner: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [newOwner], 'transferOwnership', options.sender)
+	}
+	
+	public transferOwnership_estimateGas = async (newOwner: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [newOwner], 'transferOwnership', options.sender)
+	}
+
+	public transferOwnership_ = async (newOwner: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [newOwner], options.sender)
+	}
+
+	public batchExecuteTransactions = async (transactions: Array<{ salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transactions","type":"tuple[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchExecuteTransactions","outputs":[{"name":"","type":"bytes[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [transactions, signatures], 'batchExecuteTransactions', options.sender, options.attachedEth)
+	}
+	
+	public batchExecuteTransactions_estimateGas = async (transactions: Array<{ salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transactions","type":"tuple[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchExecuteTransactions","outputs":[{"name":"","type":"bytes[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [transactions, signatures], 'batchExecuteTransactions', options.sender, options.attachedEth)
+	}
+
+	public batchExecuteTransactions_ = async (transactions: Array<{ salt: TBigNumber, expirationTimeSeconds: TBigNumber, gasPrice: TBigNumber, signerAddress: string, data: string }>, signatures: Array<string>, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<string>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"salt","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"gasPrice","type":"uint256"},{"name":"signerAddress","type":"address"},{"name":"data","type":"bytes"}],"name":"transactions","type":"tuple[]"},{"name":"signatures","type":"bytes[]"}],"name":"batchExecuteTransactions","outputs":[{"name":"","type":"bytes[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [transactions, signatures], options.sender, options.attachedEth)
+		return <Array<string>>result[0]
 	}
 }
 
@@ -2492,6 +3205,109 @@ export class CashFaucet<TBigNumber> extends Contract<TBigNumber> {
 }
 
 
+export class ERC1820Registry<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public setInterfaceImplementer = async (addr: string, interfaceHash: string, implementer: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_interfaceHash","type":"bytes32"},{"name":"_implementer","type":"address"}],"name":"setInterfaceImplementer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [addr, interfaceHash, implementer], 'setInterfaceImplementer', options.sender)
+	}
+	
+	public setInterfaceImplementer_estimateGas = async (addr: string, interfaceHash: string, implementer: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_interfaceHash","type":"bytes32"},{"name":"_implementer","type":"address"}],"name":"setInterfaceImplementer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [addr, interfaceHash, implementer], 'setInterfaceImplementer', options.sender)
+	}
+
+	public setInterfaceImplementer_ = async (addr: string, interfaceHash: string, implementer: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_interfaceHash","type":"bytes32"},{"name":"_implementer","type":"address"}],"name":"setInterfaceImplementer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [addr, interfaceHash, implementer], options.sender)
+	}
+
+	public getManager_ = async (addr: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"getManager","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [addr], options.sender)
+		return <string>result[0]
+	}
+
+	public setManager = async (addr: string, newManager: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_newManager","type":"address"}],"name":"setManager","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [addr, newManager], 'setManager', options.sender)
+	}
+	
+	public setManager_estimateGas = async (addr: string, newManager: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_newManager","type":"address"}],"name":"setManager","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [addr, newManager], 'setManager', options.sender)
+	}
+
+	public setManager_ = async (addr: string, newManager: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_newManager","type":"address"}],"name":"setManager","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [addr, newManager], options.sender)
+	}
+
+	public interfaceHash_ = async (interfaceName: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_interfaceName","type":"string"}],"name":"interfaceHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [interfaceName], options.sender)
+		return <string>result[0]
+	}
+
+	public isERC165Interface_ = async (interfaceHash: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_interfaceHash","type":"bytes32"}],"name":"isERC165Interface","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [interfaceHash], options.sender)
+		return <boolean>result[0]
+	}
+
+	public updateERC165Cache = async (contract: string, interfaceId: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_contract","type":"address"},{"name":"_interfaceId","type":"bytes4"}],"name":"updateERC165Cache","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [contract, interfaceId], 'updateERC165Cache', options.sender)
+	}
+	
+	public updateERC165Cache_estimateGas = async (contract: string, interfaceId: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_contract","type":"address"},{"name":"_interfaceId","type":"bytes4"}],"name":"updateERC165Cache","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [contract, interfaceId], 'updateERC165Cache', options.sender)
+	}
+
+	public updateERC165Cache_ = async (contract: string, interfaceId: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_contract","type":"address"},{"name":"_interfaceId","type":"bytes4"}],"name":"updateERC165Cache","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [contract, interfaceId], options.sender)
+	}
+
+	public getInterfaceImplementer_ = async (addr: string, interfaceHash: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_addr","type":"address"},{"name":"_interfaceHash","type":"bytes32"}],"name":"getInterfaceImplementer","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [addr, interfaceHash], options.sender)
+		return <string>result[0]
+	}
+
+	public implementsERC165InterfaceNoCache_ = async (contract: string, interfaceId: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_contract","type":"address"},{"name":"_interfaceId","type":"bytes4"}],"name":"implementsERC165InterfaceNoCache","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [contract, interfaceId], options.sender)
+		return <boolean>result[0]
+	}
+
+	public implementsERC165Interface_ = async (contract: string, interfaceId: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_contract","type":"address"},{"name":"_interfaceId","type":"bytes4"}],"name":"implementsERC165Interface","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [contract, interfaceId], options.sender)
+		return <boolean>result[0]
+	}
+}
+
+
 export class GnosisSafe<TBigNumber> extends Contract<TBigNumber> {
 	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
 		super(dependencies, address)
@@ -3737,6 +4553,328 @@ export class ProxyFactory<TBigNumber> extends Contract<TBigNumber> {
 }
 
 
+export class TestNetDaiJoin<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public vat_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public join = async (urn: string, wad: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"urn","type":"address"},{"name":"wad","type":"uint256"}],"name":"join","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [urn, wad], 'join', options.sender)
+	}
+	
+	public join_estimateGas = async (urn: string, wad: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"urn","type":"address"},{"name":"wad","type":"uint256"}],"name":"join","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [urn, wad], 'join', options.sender)
+	}
+
+	public join_ = async (urn: string, wad: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"urn","type":"address"},{"name":"wad","type":"uint256"}],"name":"join","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [urn, wad], options.sender)
+	}
+
+	public exit = async (usr: string, wad: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"},{"name":"wad","type":"uint256"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [usr, wad], 'exit', options.sender)
+	}
+	
+	public exit_estimateGas = async (usr: string, wad: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"},{"name":"wad","type":"uint256"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [usr, wad], 'exit', options.sender)
+	}
+
+	public exit_ = async (usr: string, wad: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"},{"name":"wad","type":"uint256"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [usr, wad], options.sender)
+	}
+
+	public dai_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"dai","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+}
+
+
+export class TestNetDaiPot<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public join = async (wad: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"join","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [wad], 'join', options.sender)
+	}
+	
+	public join_estimateGas = async (wad: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"join","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [wad], 'join', options.sender)
+	}
+
+	public join_ = async (wad: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"join","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [wad], options.sender)
+	}
+
+	public pie_ = async (arg0: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"}],"name":"pie","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public time_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"time","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public rho_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"rho","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public Pie_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"Pie","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public vat_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public dsr_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"dsr","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public setDSR = async (dsr: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_dsr","type":"uint256"}],"name":"setDSR","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [dsr], 'setDSR', options.sender)
+	}
+	
+	public setDSR_estimateGas = async (dsr: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_dsr","type":"uint256"}],"name":"setDSR","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [dsr], 'setDSR', options.sender)
+	}
+
+	public setDSR_ = async (dsr: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_dsr","type":"uint256"}],"name":"setDSR","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [dsr], options.sender)
+		return <boolean>result[0]
+	}
+
+	public exit = async (wad: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [wad], 'exit', options.sender)
+	}
+	
+	public exit_estimateGas = async (wad: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [wad], 'exit', options.sender)
+	}
+
+	public exit_ = async (wad: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [wad], options.sender)
+	}
+
+	public drip = async (options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"drip","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [], 'drip', options.sender)
+	}
+	
+	public drip_estimateGas = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"drip","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [], 'drip', options.sender)
+	}
+
+	public drip_ = async (options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"drip","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [], options.sender)
+	}
+
+	public chi_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"chi","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+}
+
+
+export class TestNetDaiVat<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public can_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"can","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0, arg1], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public dai_ = async (arg0: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"}],"name":"dai","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public frob = async (i: string, u: string, v: string, w: string, dink: TBigNumber, dart: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"i","type":"bytes32"},{"name":"u","type":"address"},{"name":"v","type":"address"},{"name":"w","type":"address"},{"name":"dink","type":"int256"},{"name":"dart","type":"int256"}],"name":"frob","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [i, u, v, w, dink, dart], 'frob', options.sender)
+	}
+	
+	public frob_estimateGas = async (i: string, u: string, v: string, w: string, dink: TBigNumber, dart: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"i","type":"bytes32"},{"name":"u","type":"address"},{"name":"v","type":"address"},{"name":"w","type":"address"},{"name":"dink","type":"int256"},{"name":"dart","type":"int256"}],"name":"frob","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [i, u, v, w, dink, dart], 'frob', options.sender)
+	}
+
+	public frob_ = async (i: string, u: string, v: string, w: string, dink: TBigNumber, dart: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"i","type":"bytes32"},{"name":"u","type":"address"},{"name":"v","type":"address"},{"name":"w","type":"address"},{"name":"dink","type":"int256"},{"name":"dart","type":"int256"}],"name":"frob","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [i, u, v, w, dink, dart], options.sender)
+	}
+
+	public faucet = async (target: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_target","type":"address"},{"name":"_amount","type":"uint256"}],"name":"faucet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [target, amount], 'faucet', options.sender)
+	}
+	
+	public faucet_estimateGas = async (target: string, amount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_target","type":"address"},{"name":"_amount","type":"uint256"}],"name":"faucet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [target, amount], 'faucet', options.sender)
+	}
+
+	public faucet_ = async (target: string, amount: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_target","type":"address"},{"name":"_amount","type":"uint256"}],"name":"faucet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [target, amount], options.sender)
+	}
+
+	public hope = async (usr: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"}],"name":"hope","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [usr], 'hope', options.sender)
+	}
+	
+	public hope_estimateGas = async (usr: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"}],"name":"hope","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [usr], 'hope', options.sender)
+	}
+
+	public hope_ = async (usr: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"}],"name":"hope","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [usr], options.sender)
+	}
+
+	public move = async (src: string, dst: string, rad: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"rad","type":"uint256"}],"name":"move","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [src, dst, rad], 'move', options.sender)
+	}
+	
+	public move_estimateGas = async (src: string, dst: string, rad: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"rad","type":"uint256"}],"name":"move","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [src, dst, rad], 'move', options.sender)
+	}
+
+	public move_ = async (src: string, dst: string, rad: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"rad","type":"uint256"}],"name":"move","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [src, dst, rad], options.sender)
+	}
+
+	public ilks_ = async (arg0: string, options?: { sender?: string }): Promise<{Art: TBigNumber, rate: TBigNumber, spot: TBigNumber, line: TBigNumber, dust: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"ilks","outputs":[{"name":"Art","type":"uint256"},{"name":"rate","type":"uint256"},{"name":"spot","type":"uint256"},{"name":"line","type":"uint256"},{"name":"dust","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <{Art: TBigNumber, rate: TBigNumber, spot: TBigNumber, line: TBigNumber, dust: TBigNumber}>result
+	}
+
+	public nope = async (usr: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"}],"name":"nope","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [usr], 'nope', options.sender)
+	}
+	
+	public nope_estimateGas = async (usr: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"}],"name":"nope","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [usr], 'nope', options.sender)
+	}
+
+	public nope_ = async (usr: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"usr","type":"address"}],"name":"nope","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [usr], options.sender)
+	}
+
+	public suck = async (arg0: string, v: string, rad: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"","type":"address"},{"name":"v","type":"address"},{"name":"rad","type":"uint256"}],"name":"suck","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [arg0, v, rad], 'suck', options.sender)
+	}
+	
+	public suck_estimateGas = async (arg0: string, v: string, rad: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"","type":"address"},{"name":"v","type":"address"},{"name":"rad","type":"uint256"}],"name":"suck","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [arg0, v, rad], 'suck', options.sender)
+	}
+
+	public suck_ = async (arg0: string, v: string, rad: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"","type":"address"},{"name":"v","type":"address"},{"name":"rad","type":"uint256"}],"name":"suck","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [arg0, v, rad], options.sender)
+	}
+}
+
+
 export class TestNetReputationToken<TBigNumber> extends Contract<TBigNumber> {
 	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
 		super(dependencies, address)
@@ -4490,189 +5628,6 @@ export class WarpSync<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <boolean>result[0]
-	}
-}
-
-
-export class ZeroXExchange<TBigNumber> extends Contract<TBigNumber> {
-	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
-		super(dependencies, address)
-	}
-
-	public fillOrderNoThrow = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrderNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
-		return await this.remoteCall(abi, [order, takerAssetFillAmount, signature], 'fillOrderNoThrow', options.sender, options.attachedEth)
-	}
-	
-	public fillOrderNoThrow_estimateGas = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrderNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
-		return await this.estimateGas(abi, [order, takerAssetFillAmount, signature], 'fillOrderNoThrow', options.sender, options.attachedEth)
-	}
-
-	public fillOrderNoThrow_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrderNoThrow","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
-		const result = await this.localCall(abi, [order, takerAssetFillAmount, signature], options.sender, options.attachedEth)
-		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
-	}
-
-	public ERC1155_PROXY_ID_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"ERC1155_PROXY_ID","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public filled_ = async (arg0: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"filled","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cancelled_ = async (arg0: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"cancelled","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0], options.sender)
-		return <boolean>result[0]
-	}
-
-	public cancelOrder = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"cancelOrder","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [order], 'cancelOrder', options.sender)
-	}
-	
-	public cancelOrder_estimateGas = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"cancelOrder","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [order], 'cancelOrder', options.sender)
-	}
-
-	public cancelOrder_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string }): Promise<void> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"cancelOrder","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [order], options.sender)
-	}
-
-	public transactions_ = async (arg0: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"transactions","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0], options.sender)
-		return <boolean>result[0]
-	}
-
-	public preSigned_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"bytes32"},{"name":"","type":"address"}],"name":"preSigned","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0, arg1], options.sender)
-		return <boolean>result[0]
-	}
-
-	public sliceDestructive_ = async (b: string, from: TBigNumber, to: TBigNumber, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"b","type":"bytes"},{"name":"from","type":"uint256"},{"name":"to","type":"uint256"}],"name":"sliceDestructive","outputs":[{"name":"result","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [b, from, to], options.sender)
-		return <string>result[0]
-	}
-
-	public isValidSignature_ = async (hash: string, signerAddress: string, signature: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"hash","type":"bytes32"},{"name":"signerAddress","type":"address"},{"name":"signature","type":"bytes"}],"name":"isValidSignature","outputs":[{"name":"isValid","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [hash, signerAddress, signature], options.sender)
-		return <boolean>result[0]
-	}
-
-	public fillOrder = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
-		return await this.remoteCall(abi, [order, takerAssetFillAmount, signature], 'fillOrder', options.sender, options.attachedEth)
-	}
-	
-	public fillOrder_estimateGas = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
-		return await this.estimateGas(abi, [order, takerAssetFillAmount, signature], 'fillOrder', options.sender, options.attachedEth)
-	}
-
-	public fillOrder_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, takerAssetFillAmount: TBigNumber, signature: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"},{"name":"takerAssetFillAmount","type":"uint256"},{"name":"signature","type":"bytes"}],"name":"fillOrder","outputs":[{"components":[{"name":"makerAssetFilledAmount","type":"uint256"},{"name":"takerAssetFilledAmount","type":"uint256"},{"name":"makerFeePaid","type":"uint256"},{"name":"takerFeePaid","type":"uint256"},{"name":"protocolFeePaid","type":"uint256"}],"name":"fillResults","type":"tuple"}],"payable":true,"stateMutability":"payable","type":"function"}
-		const result = await this.localCall(abi, [order, takerAssetFillAmount, signature], options.sender, options.attachedEth)
-		return <{ makerAssetFilledAmount: TBigNumber, takerAssetFilledAmount: TBigNumber, makerFeePaid: TBigNumber, takerFeePaid: TBigNumber, protocolFeePaid: TBigNumber }>result[0]
-	}
-
-	public getOrderInfo_ = async (order: { makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }, options?: { sender?: string }): Promise<{ orderStatus: TBigNumber, orderHash: string, orderTakerAssetFilledAmount: TBigNumber }> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"order","type":"tuple"}],"name":"getOrderInfo","outputs":[{"components":[{"name":"orderStatus","type":"uint8"},{"name":"orderHash","type":"bytes32"},{"name":"orderTakerAssetFilledAmount","type":"uint256"}],"name":"orderInfo","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [order], options.sender)
-		return <{ orderStatus: TBigNumber, orderHash: string, orderTakerAssetFilledAmount: TBigNumber }>result[0]
-	}
-
-	public decodeERC1155AssetData_ = async (assetData: string, options?: { sender?: string }): Promise<{assetProxyId: string, tokenAddress: string, tokenIds: Array<TBigNumber>, tokenValues: Array<TBigNumber>, callbackData: string}> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"assetData","type":"bytes"}],"name":"decodeERC1155AssetData","outputs":[{"name":"assetProxyId","type":"bytes4"},{"name":"tokenAddress","type":"address"},{"name":"tokenIds","type":"uint256[]"},{"name":"tokenValues","type":"uint256[]"},{"name":"callbackData","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [assetData], options.sender)
-		return <{assetProxyId: string, tokenAddress: string, tokenIds: Array<TBigNumber>, tokenValues: Array<TBigNumber>, callbackData: string}>result
-	}
-
-	public transferFrom = async (assetData: string, from: string, to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetData","type":"bytes"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [assetData, from, to, amount], 'transferFrom', options.sender)
-	}
-	
-	public transferFrom_estimateGas = async (assetData: string, from: string, to: string, amount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetData","type":"bytes"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [assetData, from, to, amount], 'transferFrom', options.sender)
-	}
-
-	public transferFrom_ = async (assetData: string, from: string, to: string, amount: TBigNumber, options?: { sender?: string }): Promise<void> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"assetData","type":"bytes"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [assetData, from, to, amount], options.sender)
-	}
-
-	public orderEpoch_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"orderEpoch","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0, arg1], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public batchCancelOrders = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"batchCancelOrders","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [orders], 'batchCancelOrders', options.sender)
-	}
-	
-	public batchCancelOrders_estimateGas = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"batchCancelOrders","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [orders], 'batchCancelOrders', options.sender)
-	}
-
-	public batchCancelOrders_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string, makerFeeAssetData: string, takerFeeAssetData: string }>, options?: { sender?: string }): Promise<void> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"},{"name":"makerFeeAssetData","type":"bytes"},{"name":"takerFeeAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"batchCancelOrders","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [orders], options.sender)
-	}
-
-	public EIP712_DOMAIN_HASH_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"EIP712_DOMAIN_HASH","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public currentContextAddress_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"currentContextAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
 	}
 }
 
@@ -10134,6 +11089,39 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"id","type":"uint256"},{"name":"value","type":"uint256"},{"name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [from, to, id, value, data], options.sender)
+	}
+}
+
+
+export class UniswapV2Factory<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public getExchange_ = async (tokenA: string, tokenB: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_tokenA","type":"address"},{"name":"_tokenB","type":"address"}],"name":"getExchange","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB], options.sender)
+		return <string>result[0]
+	}
+
+	public createExchange = async (tokenA: string, tokenB: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_tokenA","type":"address"},{"name":"_tokenB","type":"address"}],"name":"createExchange","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [tokenA, tokenB], 'createExchange', options.sender)
+	}
+	
+	public createExchange_estimateGas = async (tokenA: string, tokenB: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_tokenA","type":"address"},{"name":"_tokenB","type":"address"}],"name":"createExchange","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [tokenA, tokenB], 'createExchange', options.sender)
+	}
+
+	public createExchange_ = async (tokenA: string, tokenB: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_tokenA","type":"address"},{"name":"_tokenB","type":"address"}],"name":"createExchange","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB], options.sender)
+		return <string>result[0]
 	}
 }
 

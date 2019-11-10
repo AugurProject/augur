@@ -9,6 +9,8 @@ export class ERC20Proxy extends c.ERC20Proxy<BigNumber> {
 }
 export class ERC721Proxy extends c.ERC721Proxy<BigNumber> {
 }
+export class Coordinator extends c.Coordinator<BigNumber> {
+}
 export class CoordinatorRegistry extends c.CoordinatorRegistry<BigNumber> {
 }
 export class DevUtils extends c.DevUtils<BigNumber> {
@@ -17,11 +19,15 @@ export class WETH9 extends c.WETH9<BigNumber> {
 }
 export class ZRXToken extends c.ZRXToken<BigNumber> {
 }
+export class Exchange extends c.Exchange<BigNumber> {
+}
 export class Augur extends c.Augur<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
+}
+export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
 export class GnosisSafe extends c.GnosisSafe<BigNumber> {
 }
@@ -31,6 +37,12 @@ export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }
 export class ProxyFactory extends c.ProxyFactory<BigNumber> {
 }
+export class TestNetDaiJoin extends c.TestNetDaiJoin<BigNumber> {
+}
+export class TestNetDaiPot extends c.TestNetDaiPot<BigNumber> {
+}
+export class TestNetDaiVat extends c.TestNetDaiVat<BigNumber> {
+}
 export class TestNetReputationToken extends c.TestNetReputationToken<BigNumber> {
 }
 export class Time extends c.Time<BigNumber> {
@@ -38,8 +50,6 @@ export class Time extends c.Time<BigNumber> {
 export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
 export class WarpSync extends c.WarpSync<BigNumber> {
-}
-export class ZeroXExchange extends c.ZeroXExchange<BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }
@@ -74,6 +84,8 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
+}
+export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
 }

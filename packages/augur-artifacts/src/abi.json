@@ -1,4 +1,5756 @@
 {
+	"ERC1155Proxy": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				}
+			],
+			"name": "addAuthorizedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "authorities",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				}
+			],
+			"name": "removeAuthorizedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "owner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"name": "index",
+					"type": "uint256"
+				}
+			],
+			"name": "removeAuthorizedAddressAtIndex",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				},
+				{
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"name": "amount",
+					"type": "uint256"
+				}
+			],
+			"name": "transferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getProxyId",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "authorized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getAuthorizedAddresses",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "caller",
+					"type": "address"
+				}
+			],
+			"name": "AuthorizedAddressAdded",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "caller",
+					"type": "address"
+				}
+			],
+			"name": "AuthorizedAddressRemoved",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "previousOwner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "OwnershipTransferred",
+			"type": "event"
+		}
+	],
+	"ERC20Proxy": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				}
+			],
+			"name": "addAuthorizedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "authorities",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				}
+			],
+			"name": "removeAuthorizedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "owner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"name": "index",
+					"type": "uint256"
+				}
+			],
+			"name": "removeAuthorizedAddressAtIndex",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getProxyId",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "authorized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getAuthorizedAddresses",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "fallback"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "caller",
+					"type": "address"
+				}
+			],
+			"name": "AuthorizedAddressAdded",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "caller",
+					"type": "address"
+				}
+			],
+			"name": "AuthorizedAddressRemoved",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "previousOwner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "OwnershipTransferred",
+			"type": "event"
+		}
+	],
+	"ERC721Proxy": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				}
+			],
+			"name": "addAuthorizedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "authorities",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				}
+			],
+			"name": "removeAuthorizedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "owner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"name": "index",
+					"type": "uint256"
+				}
+			],
+			"name": "removeAuthorizedAddressAtIndex",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getProxyId",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "authorized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getAuthorizedAddresses",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "fallback"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "caller",
+					"type": "address"
+				}
+			],
+			"name": "AuthorizedAddressAdded",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "caller",
+					"type": "address"
+				}
+			],
+			"name": "AuthorizedAddressRemoved",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "previousOwner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "OwnershipTransferred",
+			"type": "event"
+		}
+	],
+	"Coordinator": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "hash",
+					"type": "bytes32"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "getSignerAddress",
+			"outputs": [
+				{
+					"name": "signerAddress",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "gasPrice",
+							"type": "uint256"
+						},
+						{
+							"name": "signerAddress",
+							"type": "address"
+						},
+						{
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"name": "transaction",
+					"type": "tuple"
+				},
+				{
+					"name": "txOrigin",
+					"type": "address"
+				},
+				{
+					"name": "transactionSignature",
+					"type": "bytes"
+				},
+				{
+					"name": "approvalSignatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "assertValidCoordinatorApprovals",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_COORDINATOR_DOMAIN_NAME",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_COORDINATOR_DOMAIN_VERSION",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_EXCHANGE_DOMAIN_HASH",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "gasPrice",
+							"type": "uint256"
+						},
+						{
+							"name": "signerAddress",
+							"type": "address"
+						},
+						{
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"name": "transaction",
+					"type": "tuple"
+				},
+				{
+					"name": "txOrigin",
+					"type": "address"
+				},
+				{
+					"name": "transactionSignature",
+					"type": "bytes"
+				},
+				{
+					"name": "approvalSignatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "executeTransaction",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_COORDINATOR_APPROVAL_SCHEMA_HASH",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeOrdersFromFillData",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_COORDINATOR_DOMAIN_HASH",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "txOrigin",
+							"type": "address"
+						},
+						{
+							"name": "transactionHash",
+							"type": "bytes32"
+						},
+						{
+							"name": "transactionSignature",
+							"type": "bytes"
+						}
+					],
+					"name": "approval",
+					"type": "tuple"
+				}
+			],
+			"name": "getCoordinatorApprovalHash",
+			"outputs": [
+				{
+					"name": "approvalHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "exchange",
+					"type": "address"
+				},
+				{
+					"name": "chainId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
+		}
+	],
+	"CoordinatorRegistry": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "coordinatorEndpoint",
+					"type": "string"
+				}
+			],
+			"name": "setCoordinatorEndpoint",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "coordinatorOperator",
+					"type": "address"
+				}
+			],
+			"name": "getCoordinatorEndpoint",
+			"outputs": [
+				{
+					"name": "coordinatorEndpoint",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "coordinatorOperator",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "coordinatorEndpoint",
+					"type": "string"
+				}
+			],
+			"name": "CoordinatorEndpointSet",
+			"type": "event"
+		}
+	],
+	"DevUtils": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeOrderStatusError",
+			"outputs": [
+				{
+					"name": "orderHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "orderStatus",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeERC721AssetData",
+			"outputs": [
+				{
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"name": "tokenAddress",
+					"type": "address"
+				},
+				{
+					"name": "tokenId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "getBalanceAndAssetProxyAllowance",
+			"outputs": [
+				{
+					"name": "balance",
+					"type": "uint256"
+				},
+				{
+					"name": "allowance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeIncompleteFillError",
+			"outputs": [
+				{
+					"name": "errorCode",
+					"type": "uint8"
+				},
+				{
+					"name": "expectedAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "actualAssetFillAmount",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "getTransferableAssetAmount",
+			"outputs": [
+				{
+					"name": "transferableAssetAmount",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeAssetProxyTransferError",
+			"outputs": [
+				{
+					"name": "orderHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes"
+				},
+				{
+					"name": "errorData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeNegativeSpreadError",
+			"outputs": [
+				{
+					"name": "leftOrderHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "rightOrderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeAssetProxyDispatchError",
+			"outputs": [
+				{
+					"name": "errorCode",
+					"type": "uint8"
+				},
+				{
+					"name": "orderHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeSignatureWalletError",
+			"outputs": [
+				{
+					"name": "hash",
+					"type": "bytes32"
+				},
+				{
+					"name": "signerAddress",
+					"type": "address"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				},
+				{
+					"name": "errorData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeFillError",
+			"outputs": [
+				{
+					"name": "errorCode",
+					"type": "uint8"
+				},
+				{
+					"name": "orderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes[]"
+				}
+			],
+			"name": "getBatchAssetProxyAllowances",
+			"outputs": [
+				{
+					"name": "allowances",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "tokenAddress",
+					"type": "address"
+				}
+			],
+			"name": "encodeERC20AssetData",
+			"outputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeOrderEpochError",
+			"outputs": [
+				{
+					"name": "makerAddress",
+					"type": "address"
+				},
+				{
+					"name": "orderSenderAddress",
+					"type": "address"
+				},
+				{
+					"name": "currentEpoch",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "transactionData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeZeroExTransactionData",
+			"outputs": [
+				{
+					"name": "functionName",
+					"type": "string"
+				},
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAssetFillAmounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeAssetProxyExistsError",
+			"outputs": [
+				{
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"name": "assetProxyAddress",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeSignatureValidatorNotApprovedError",
+			"outputs": [
+				{
+					"name": "signerAddress",
+					"type": "address"
+				},
+				{
+					"name": "validatorAddress",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "getBalance",
+			"outputs": [
+				{
+					"name": "balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeERC20AssetData",
+			"outputs": [
+				{
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"name": "tokenAddress",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeSignatureError",
+			"outputs": [
+				{
+					"name": "errorCode",
+					"type": "uint8"
+				},
+				{
+					"name": "hash",
+					"type": "bytes32"
+				},
+				{
+					"name": "signerAddress",
+					"type": "address"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeERC1155AssetData",
+			"outputs": [
+				{
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"name": "tokenAddress",
+					"type": "address"
+				},
+				{
+					"name": "tokenIds",
+					"type": "uint256[]"
+				},
+				{
+					"name": "tokenValues",
+					"type": "uint256[]"
+				},
+				{
+					"name": "callbackData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "addresses",
+					"type": "address[]"
+				}
+			],
+			"name": "getEthBalances",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAddresses",
+					"type": "address[]"
+				},
+				{
+					"name": "takerAssetFillAmounts",
+					"type": "uint256[]"
+				}
+			],
+			"name": "getSimulatedOrdersTransferResults",
+			"outputs": [
+				{
+					"name": "orderTransferResults",
+					"type": "uint8[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "tokenAddress",
+					"type": "address"
+				},
+				{
+					"name": "tokenId",
+					"type": "uint256"
+				}
+			],
+			"name": "encodeERC721AssetData",
+			"outputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeEIP1271SignatureError",
+			"outputs": [
+				{
+					"name": "verifyingContractAddress",
+					"type": "address"
+				},
+				{
+					"name": "data",
+					"type": "bytes"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				},
+				{
+					"name": "errorData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "tokenAddress",
+					"type": "address"
+				},
+				{
+					"name": "tokenIds",
+					"type": "uint256[]"
+				},
+				{
+					"name": "tokenValues",
+					"type": "uint256[]"
+				},
+				{
+					"name": "callbackData",
+					"type": "bytes"
+				}
+			],
+			"name": "encodeERC1155AssetData",
+			"outputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeMultiAssetData",
+			"outputs": [
+				{
+					"name": "assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"name": "amounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "nestedAssetData",
+					"type": "bytes[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeTransactionExecutionError",
+			"outputs": [
+				{
+					"name": "transactionHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "errorData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeTransactionError",
+			"outputs": [
+				{
+					"name": "errorCode",
+					"type": "uint8"
+				},
+				{
+					"name": "transactionHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes[]"
+				}
+			],
+			"name": "getBatchBalances",
+			"outputs": [
+				{
+					"name": "balances",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "getAssetProxyAllowance",
+			"outputs": [
+				{
+					"name": "allowance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"name": "takerAddress",
+					"type": "address"
+				},
+				{
+					"name": "takerAssetFillAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "getSimulatedOrderTransferResults",
+			"outputs": [
+				{
+					"name": "orderTransferResults",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "amounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "nestedAssetData",
+					"type": "bytes[]"
+				}
+			],
+			"name": "encodeMultiAssetData",
+			"outputs": [
+				{
+					"name": "assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "getOrderRelevantStates",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "orderStatus",
+							"type": "uint8"
+						},
+						{
+							"name": "orderHash",
+							"type": "bytes32"
+						},
+						{
+							"name": "orderTakerAssetFilledAmount",
+							"type": "uint256"
+						}
+					],
+					"name": "ordersInfo",
+					"type": "tuple[]"
+				},
+				{
+					"name": "fillableTakerAssetAmounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "isValidSignature",
+					"type": "bool[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ownerAddress",
+					"type": "address"
+				},
+				{
+					"name": "assetData",
+					"type": "bytes[]"
+				}
+			],
+			"name": "getBatchBalancesAndAssetProxyAllowances",
+			"outputs": [
+				{
+					"name": "balances",
+					"type": "uint256[]"
+				},
+				{
+					"name": "allowances",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "getOrderRelevantState",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "orderStatus",
+							"type": "uint8"
+						},
+						{
+							"name": "orderHash",
+							"type": "bytes32"
+						},
+						{
+							"name": "orderTakerAssetFilledAmount",
+							"type": "uint256"
+						}
+					],
+					"name": "orderInfo",
+					"type": "tuple"
+				},
+				{
+					"name": "fillableTakerAssetAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "isValidSignature",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeExchangeInvalidContextError",
+			"outputs": [
+				{
+					"name": "errorCode",
+					"type": "uint8"
+				},
+				{
+					"name": "orderHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "contextAddress",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "_exchange",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		}
+	],
+	"WETH9": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "guy",
+					"type": "address"
+				},
+				{
+					"name": "wad",
+					"type": "uint256"
+				}
+			],
+			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "totalSupply",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "src",
+					"type": "address"
+				},
+				{
+					"name": "dst",
+					"type": "address"
+				},
+				{
+					"name": "wad",
+					"type": "uint256"
+				}
+			],
+			"name": "transferFrom",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "wad",
+					"type": "uint256"
+				}
+			],
+			"name": "withdraw",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "decimals",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balanceOf",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "dst",
+					"type": "address"
+				},
+				{
+					"name": "wad",
+					"type": "uint256"
+				}
+			],
+			"name": "transfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "deposit",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "Approval",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "Transfer",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "Deposit",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "Withdrawal",
+			"type": "event"
+		}
+	],
+	"ZRXToken": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "supply",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "totalSupply",
+			"outputs": [
+				{
+					"name": "supply",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "transferFrom",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "decimals",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "balanceOf",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "transfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_spender",
+					"type": "address"
+				}
+			],
+			"name": "allowance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "Transfer",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "Approval",
+			"type": "event"
+		}
+	],
+	"Exchange": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"name": "transactionsExecuted",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "detachProtocolFeeCollector",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "protocolFeeMultiplier",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "gasPrice",
+							"type": "uint256"
+						},
+						{
+							"name": "signerAddress",
+							"type": "address"
+						},
+						{
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"name": "transaction",
+					"type": "tuple"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "executeTransaction",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"name": "filled",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"name": "cancelled",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				}
+			],
+			"name": "cancelOrder",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "marketSellOrdersNoThrow",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "hash",
+					"type": "bytes32"
+				}
+			],
+			"name": "preSign",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "targetOrderEpoch",
+					"type": "uint256"
+				}
+			],
+			"name": "cancelOrdersUpTo",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "assetProxyId",
+					"type": "bytes4"
+				}
+			],
+			"name": "getAssetProxy",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "leftOrders",
+					"type": "tuple[]"
+				},
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "rightOrders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "leftSignatures",
+					"type": "bytes[]"
+				},
+				{
+					"name": "rightSignatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "batchMatchOrdersWithMaximalFill",
+			"outputs": [
+				{
+					"components": [
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "left",
+							"type": "tuple[]"
+						},
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "right",
+							"type": "tuple[]"
+						},
+						{
+							"name": "profitInLeftMakerAsset",
+							"type": "uint256"
+						},
+						{
+							"name": "profitInRightMakerAsset",
+							"type": "uint256"
+						}
+					],
+					"name": "batchMatchedFillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "leftOrders",
+					"type": "tuple[]"
+				},
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "rightOrders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "leftSignatures",
+					"type": "bytes[]"
+				},
+				{
+					"name": "rightSignatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "batchMatchOrders",
+			"outputs": [
+				{
+					"components": [
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "left",
+							"type": "tuple[]"
+						},
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "right",
+							"type": "tuple[]"
+						},
+						{
+							"name": "profitInLeftMakerAsset",
+							"type": "uint256"
+						},
+						{
+							"name": "profitInRightMakerAsset",
+							"type": "uint256"
+						}
+					],
+					"name": "batchMatchedFillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "validatorAddress",
+					"type": "address"
+				},
+				{
+					"name": "approval",
+					"type": "bool"
+				}
+			],
+			"name": "setSignatureValidatorApproval",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "makerAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "marketBuyOrdersNoThrow",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "allowedValidators",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "hash",
+					"type": "bytes32"
+				},
+				{
+					"name": "signerAddress",
+					"type": "address"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "isValidHashSignature",
+			"outputs": [
+				{
+					"name": "isValid",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"name": "orderHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "isValidSignature",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "preSigned",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "protocolFeeCollector",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "leftOrder",
+					"type": "tuple"
+				},
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "rightOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "leftSignature",
+					"type": "bytes"
+				},
+				{
+					"name": "rightSignature",
+					"type": "bytes"
+				}
+			],
+			"name": "matchOrders",
+			"outputs": [
+				{
+					"components": [
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "left",
+							"type": "tuple"
+						},
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "right",
+							"type": "tuple"
+						},
+						{
+							"name": "profitInLeftMakerAsset",
+							"type": "uint256"
+						},
+						{
+							"name": "profitInRightMakerAsset",
+							"type": "uint256"
+						}
+					],
+					"name": "matchedFillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "makerAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "marketBuyOrdersFillOrKill",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "gasPrice",
+							"type": "uint256"
+						},
+						{
+							"name": "signerAddress",
+							"type": "address"
+						},
+						{
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"name": "transaction",
+					"type": "tuple"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "isValidTransactionSignature",
+			"outputs": [
+				{
+					"name": "isValid",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "owner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAssetFillAmounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "batchFillOrdersNoThrow",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple[]"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "updatedProtocolFeeMultiplier",
+					"type": "uint256"
+				}
+			],
+			"name": "setProtocolFeeMultiplier",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAssetFillAmounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "batchFillOrders",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple[]"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"name": "takerAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "fillOrder",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				}
+			],
+			"name": "getOrderInfo",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "orderStatus",
+							"type": "uint8"
+						},
+						{
+							"name": "orderHash",
+							"type": "bytes32"
+						},
+						{
+							"name": "orderTakerAssetFilledAmount",
+							"type": "uint256"
+						}
+					],
+					"name": "orderInfo",
+					"type": "tuple"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "isValidOrderSignature",
+			"outputs": [
+				{
+					"name": "isValid",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "marketSellOrdersFillOrKill",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "assetData",
+					"type": "bytes[]"
+				},
+				{
+					"name": "fromAddresses",
+					"type": "address[]"
+				},
+				{
+					"name": "toAddresses",
+					"type": "address[]"
+				},
+				{
+					"name": "amounts",
+					"type": "uint256[]"
+				}
+			],
+			"name": "simulateDispatchTransferFromCalls",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "leftOrder",
+					"type": "tuple"
+				},
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "rightOrder",
+					"type": "tuple"
+				},
+				{
+					"name": "leftSignature",
+					"type": "bytes"
+				},
+				{
+					"name": "rightSignature",
+					"type": "bytes"
+				}
+			],
+			"name": "matchOrdersWithMaximalFill",
+			"outputs": [
+				{
+					"components": [
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "left",
+							"type": "tuple"
+						},
+						{
+							"components": [
+								{
+									"name": "makerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "takerAssetFilledAmount",
+									"type": "uint256"
+								},
+								{
+									"name": "makerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "takerFeePaid",
+									"type": "uint256"
+								},
+								{
+									"name": "protocolFeePaid",
+									"type": "uint256"
+								}
+							],
+							"name": "right",
+							"type": "tuple"
+						},
+						{
+							"name": "profitInLeftMakerAsset",
+							"type": "uint256"
+						},
+						{
+							"name": "profitInRightMakerAsset",
+							"type": "uint256"
+						}
+					],
+					"name": "matchedFillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "takerAssetFillAmounts",
+					"type": "uint256[]"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "batchFillOrKillOrders",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple[]"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "updatedProtocolFeeCollector",
+					"type": "address"
+				}
+			],
+			"name": "setProtocolFeeCollectorAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_EXCHANGE_DOMAIN_HASH",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "assetProxy",
+					"type": "address"
+				}
+			],
+			"name": "registerAssetProxy",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "orderEpoch",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP1271_MAGIC_VALUE",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "orders",
+					"type": "tuple[]"
+				}
+			],
+			"name": "batchCancelOrders",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "order",
+					"type": "tuple"
+				},
+				{
+					"name": "takerAssetFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "signature",
+					"type": "bytes"
+				}
+			],
+			"name": "fillOrKillOrder",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "makerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetFilledAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFeePaid",
+							"type": "uint256"
+						},
+						{
+							"name": "protocolFeePaid",
+							"type": "uint256"
+						}
+					],
+					"name": "fillResults",
+					"type": "tuple"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "currentContextAddress",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "gasPrice",
+							"type": "uint256"
+						},
+						{
+							"name": "signerAddress",
+							"type": "address"
+						},
+						{
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"name": "transactions",
+					"type": "tuple[]"
+				},
+				{
+					"name": "signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "batchExecuteTransactions",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes[]"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "chainId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "transactionHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "TransactionExecution",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "signerAddress",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "validatorAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "isApproved",
+					"type": "bool"
+				}
+			],
+			"name": "SignatureValidatorApproval",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "id",
+					"type": "bytes4"
+				},
+				{
+					"indexed": false,
+					"name": "assetProxy",
+					"type": "address"
+				}
+			],
+			"name": "AssetProxyRegistered",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "previousOwner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "newOwner",
+					"type": "address"
+				}
+			],
+			"name": "OwnershipTransferred",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "oldProtocolFeeMultiplier",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "updatedProtocolFeeMultiplier",
+					"type": "uint256"
+				}
+			],
+			"name": "ProtocolFeeMultiplier",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "oldProtocolFeeCollector",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "updatedProtocolFeeCollector",
+					"type": "address"
+				}
+			],
+			"name": "ProtocolFeeCollectorAddress",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "makerAddress",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "feeRecipientAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "makerAssetData",
+					"type": "bytes"
+				},
+				{
+					"indexed": false,
+					"name": "takerAssetData",
+					"type": "bytes"
+				},
+				{
+					"indexed": false,
+					"name": "makerFeeAssetData",
+					"type": "bytes"
+				},
+				{
+					"indexed": false,
+					"name": "takerFeeAssetData",
+					"type": "bytes"
+				},
+				{
+					"indexed": true,
+					"name": "orderHash",
+					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"name": "takerAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "senderAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "makerAssetFilledAmount",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "takerAssetFilledAmount",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "makerFeePaid",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "takerFeePaid",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "protocolFeePaid",
+					"type": "uint256"
+				}
+			],
+			"name": "Fill",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "makerAddress",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "feeRecipientAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "makerAssetData",
+					"type": "bytes"
+				},
+				{
+					"indexed": false,
+					"name": "takerAssetData",
+					"type": "bytes"
+				},
+				{
+					"indexed": false,
+					"name": "senderAddress",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "orderHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "Cancel",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "makerAddress",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "orderSenderAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "orderEpoch",
+					"type": "uint256"
+				}
+			],
+			"name": "CancelUpTo",
+			"type": "event"
+		}
+	],
 	"Augur": [
 		{
 			"constant": true,
@@ -3336,23 +9088,6 @@
 			"inputs": [
 				{
 					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		}
-	],
-	"CashFaucetProxy": [
-		{
-			"inputs": [
-				{
-					"name": "faucet",
-					"type": "address"
-				},
-				{
-					"name": "gem",
 					"type": "address"
 				}
 			],
@@ -7269,996 +13004,6 @@
 			"type": "event"
 		}
 	],
-	"TestOrders": [
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getAmount",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_highestOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "descendOrderList",
-			"outputs": [
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_sharesFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_tokensFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_fill",
-					"type": "uint256"
-				}
-			],
-			"name": "testRecordFillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "assertIsNotBetterPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "trade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				}
-			],
-			"name": "setPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "getTotalEscrowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_bestOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worstOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "findBoundingOrders",
-			"outputs": [
-				{
-					"name": "betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_uints",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_bytes32s",
-					"type": "bytes32[]"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "testSaveOrder",
-			"outputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "assertIsNotWorsePrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "getWorstOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_augurTrading",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_sharesFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_tokensFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_fill",
-					"type": "uint256"
-				}
-			],
-			"name": "recordFillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderMoneyEscrowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "isBetterPrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOutcome",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderDataForLogs",
-			"outputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_addressData",
-					"type": "address[]"
-				},
-				{
-					"name": "_uint256Data",
-					"type": "uint256[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "getBestOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cancelOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "testRemoveOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getKYCToken",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				}
-			],
-			"name": "getLastOutcomePrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getWorseOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "profitLoss",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augurTrading",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_blockNumber",
-					"type": "uint256"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "getOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getBetterOrderId",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderDataForCancel",
-			"outputs": [
-				{
-					"name": "_moneyEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesEscrowed",
-					"type": "uint256"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_outcome",
-					"type": "uint256"
-				},
-				{
-					"name": "_creator",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getMarket",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_uints",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_bytes32s",
-					"type": "bytes32[]"
-				},
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_kycToken",
-					"type": "address"
-				}
-			],
-			"name": "saveOrder",
-			"outputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderType",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint8"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "isWorsePrice",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderCreator",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "getOrderSharesEscrowed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_type",
-					"type": "uint8"
-				},
-				{
-					"name": "_price",
-					"type": "uint256"
-				},
-				{
-					"name": "_lowestOrderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "ascendOrderList",
-			"outputs": [
-				{
-					"name": "_betterOrderId",
-					"type": "bytes32"
-				},
-				{
-					"name": "_worseOrderId",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_orderId",
-					"type": "bytes32"
-				}
-			],
-			"name": "removeOrder",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		}
-	],
 	"Time": [
 		{
 			"constant": true,
@@ -8572,943 +13317,6 @@
 				{
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}
-	],
-	"ZeroXExchange": [
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "ERC1155_PROXY_ID",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes4"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"name": "filled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"name": "cancelled",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "order",
-					"type": "tuple"
-				},
-				{
-					"name": "takerAssetFillAmount",
-					"type": "uint256"
-				},
-				{
-					"name": "signature",
-					"type": "bytes"
-				}
-			],
-			"name": "fillOrderNoThrow",
-			"outputs": [
-				{
-					"components": [
-						{
-							"name": "makerAssetFilledAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetFilledAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFeePaid",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFeePaid",
-							"type": "uint256"
-						}
-					],
-					"name": "fillResults",
-					"type": "tuple"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "orders",
-					"type": "tuple[]"
-				}
-			],
-			"name": "batchCancelOrders",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"name": "transactions",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "preSigned",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "b",
-					"type": "bytes"
-				},
-				{
-					"name": "from",
-					"type": "uint256"
-				},
-				{
-					"name": "to",
-					"type": "uint256"
-				}
-			],
-			"name": "sliceDestructive",
-			"outputs": [
-				{
-					"name": "result",
-					"type": "bytes"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "hash",
-					"type": "bytes32"
-				},
-				{
-					"name": "signerAddress",
-					"type": "address"
-				},
-				{
-					"name": "signature",
-					"type": "bytes"
-				}
-			],
-			"name": "isValidSignature",
-			"outputs": [
-				{
-					"name": "isValid",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "assetData",
-					"type": "bytes"
-				}
-			],
-			"name": "decodeERC1155AssetData",
-			"outputs": [
-				{
-					"name": "assetProxyId",
-					"type": "bytes4"
-				},
-				{
-					"name": "tokenAddress",
-					"type": "address"
-				},
-				{
-					"name": "tokenIds",
-					"type": "uint256[]"
-				},
-				{
-					"name": "tokenValues",
-					"type": "uint256[]"
-				},
-				{
-					"name": "callbackData",
-					"type": "bytes"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "assetData",
-					"type": "bytes"
-				},
-				{
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				}
-			],
-			"name": "transferFrom",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "order",
-					"type": "tuple"
-				},
-				{
-					"name": "takerAssetFillAmount",
-					"type": "uint256"
-				},
-				{
-					"name": "signature",
-					"type": "bytes"
-				}
-			],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"components": [
-						{
-							"name": "makerAssetFilledAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetFilledAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFeePaid",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFeePaid",
-							"type": "uint256"
-						}
-					],
-					"name": "fillResults",
-					"type": "tuple"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "order",
-					"type": "tuple"
-				}
-			],
-			"name": "getOrderInfo",
-			"outputs": [
-				{
-					"components": [
-						{
-							"name": "orderStatus",
-							"type": "uint8"
-						},
-						{
-							"name": "orderHash",
-							"type": "bytes32"
-						},
-						{
-							"name": "orderTakerAssetFilledAmount",
-							"type": "uint256"
-						}
-					],
-					"name": "orderInfo",
-					"type": "tuple"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "order",
-					"type": "tuple"
-				}
-			],
-			"name": "cancelOrder",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "orderEpoch",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "EIP712_DOMAIN_HASH",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "currentContextAddress",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		}
-	],
-	"DisputeCrowdsourcerFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_size",
-					"type": "uint256"
-				},
-				{
-					"name": "_payoutDistributionHash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_payoutNumerators",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_crowdsourcerGeneration",
-					"type": "uint256"
-				}
-			],
-			"name": "createDisputeCrowdsourcer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"DisputeWindowFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_disputeWindowId",
-					"type": "uint256"
-				},
-				{
-					"name": "_windowDuration",
-					"type": "uint256"
-				},
-				{
-					"name": "_startTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_participationTokensEnabled",
-					"type": "bool"
-				}
-			],
-			"name": "createDisputeWindow",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"InitialReporterFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_designatedReporter",
-					"type": "address"
-				}
-			],
-			"name": "createInitialReporter",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"MarketFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"name": "_feePerCashInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"name": "_affiliateFeeDivisor",
-					"type": "uint256"
-				},
-				{
-					"name": "_designatedReporterAddress",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_numOutcomes",
-					"type": "uint256"
-				},
-				{
-					"name": "_numTicks",
-					"type": "uint256"
-				}
-			],
-			"name": "createMarket",
-			"outputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"OICashFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "createOICash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"ReputationTokenFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_parentUniverse",
-					"type": "address"
-				}
-			],
-			"name": "createReputationToken",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"TestNetReputationTokenFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_parentUniverse",
-					"type": "address"
-				}
-			],
-			"name": "createReputationToken",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"UniverseFactory": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_parentUniverse",
-					"type": "address"
-				},
-				{
-					"name": "_parentPayoutDistributionHash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_payoutNumerators",
-					"type": "uint256[]"
-				}
-			],
-			"name": "createUniverse",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"DelegationTarget": [
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "controllerLookupName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -12758,753 +16566,6 @@
 			"type": "function"
 		}
 	],
-	"OICash": [
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "_allowances",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "defaultOperators",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "spender",
-					"type": "address"
-				},
-				{
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "approve",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "totalSupply",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "holder",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				}
-			],
-			"name": "transferFrom",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "withdraw",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_feeAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "payFees",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "decimals",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint8"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "buyCompleteSets",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "universe",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "granularity",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "erc1820Registry",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "sender",
-					"type": "address"
-				},
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "operatorSend",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_subtractedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "decreaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "shareToken",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "balanceOf",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "authorizeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cash",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "noHooksTransfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"name": "data",
-					"type": "bytes"
-				}
-			],
-			"name": "send",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "feesPaid",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "recipient",
-					"type": "address"
-				},
-				{
-					"name": "amount",
-					"type": "uint256"
-				}
-			],
-			"name": "transfer",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "deposit",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_erc1820RegistryAddress",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_spender",
-					"type": "address"
-				},
-				{
-					"name": "_addedValue",
-					"type": "uint256"
-				}
-			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "isOperatorFor",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "holder",
-					"type": "address"
-				},
-				{
-					"name": "spender",
-					"type": "address"
-				}
-			],
-			"name": "allowance",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "operator",
-					"type": "address"
-				}
-			],
-			"name": "revokeOperator",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Transfer",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "owner",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "spender",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Approval",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Sent",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "to",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Minted",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "amount",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"name": "data",
-					"type": "bytes"
-				},
-				{
-					"indexed": false,
-					"name": "operatorData",
-					"type": "bytes"
-				}
-			],
-			"name": "Burned",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "AuthorizedOperator",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "operator",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "tokenHolder",
-					"type": "address"
-				}
-			],
-			"name": "RevokedOperator",
-			"type": "event"
-		}
-	],
 	"RepPriceOracle": [
 		{
 			"constant": true,
@@ -13716,7 +16777,6 @@
 			"type": "function"
 		}
 	],
-	"Reporting": [],
 	"ReputationToken": [
 		{
 			"constant": true,
@@ -19628,99 +22688,6 @@
 	"SimulateTrade": [
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "_orders",
-					"type": "tuple[]"
-				},
-				{
-					"name": "_amount",
-					"type": "uint256"
-				},
-				{
-					"name": "_fillOnly",
-					"type": "bool"
-				}
-			],
-			"name": "simulateZeroXTrade",
-			"outputs": [
-				{
-					"name": "_sharesFilled",
-					"type": "uint256"
-				},
-				{
-					"name": "_tokensDepleted",
-					"type": "uint256"
-				},
-				{
-					"name": "_sharesDepleted",
-					"type": "uint256"
-				},
-				{
-					"name": "_settlementFees",
-					"type": "uint256"
-				},
-				{
-					"name": "_numFills",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "zeroXTrade",
 			"outputs": [
@@ -19780,6 +22747,107 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"name": "_fillOnly",
+					"type": "bool"
+				}
+			],
+			"name": "simulateZeroXTrade",
+			"outputs": [
+				{
+					"name": "_sharesFilled",
+					"type": "uint256"
+				},
+				{
+					"name": "_tokensDepleted",
+					"type": "uint256"
+				},
+				{
+					"name": "_sharesDepleted",
+					"type": "uint256"
+				},
+				{
+					"name": "_settlementFees",
+					"type": "uint256"
+				},
+				{
+					"name": "_numFills",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -20160,91 +23228,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_requestedFillAmount",
-					"type": "uint256"
-				},
-				{
-					"name": "_affiliateAddress",
-					"type": "address"
-				},
-				{
-					"name": "_tradeGroupId",
-					"type": "bytes32"
-				},
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "_orders",
-					"type": "tuple[]"
-				},
-				{
-					"name": "_signatures",
-					"type": "bytes[]"
-				}
-			],
-			"name": "trade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": true,
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTransferFromAllowed",
@@ -20332,6 +23315,99 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_requestedFillAmount",
+					"type": "uint256"
+				},
+				{
+					"name": "_affiliateAddress",
+					"type": "address"
+				},
+				{
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				},
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_orders",
+					"type": "tuple[]"
+				},
+				{
+					"name": "_signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "trade",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{
@@ -20486,6 +23562,14 @@
 						{
 							"name": "takerAssetData",
 							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
 						}
 					],
 					"name": "_zeroXOrder",
@@ -20588,6 +23672,105 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"name": "_order",
+					"type": "tuple"
+				}
+			],
+			"name": "parseOrderData",
+			"outputs": [
+				{
+					"components": [
+						{
+							"name": "marketAddress",
+							"type": "address"
+						},
+						{
+							"name": "price",
+							"type": "uint256"
+						},
+						{
+							"name": "outcome",
+							"type": "uint8"
+						},
+						{
+							"name": "orderType",
+							"type": "uint8"
+						},
+						{
+							"name": "kycToken",
+							"type": "address"
+						}
+					],
+					"name": "_data",
+					"type": "tuple"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "shareToken",
 			"outputs": [
@@ -20677,75 +23860,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"components": [
-						{
-							"name": "makerAddress",
-							"type": "address"
-						},
-						{
-							"name": "takerAddress",
-							"type": "address"
-						},
-						{
-							"name": "feeRecipientAddress",
-							"type": "address"
-						},
-						{
-							"name": "senderAddress",
-							"type": "address"
-						},
-						{
-							"name": "makerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "takerAssetAmount",
-							"type": "uint256"
-						},
-						{
-							"name": "makerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "takerFee",
-							"type": "uint256"
-						},
-						{
-							"name": "expirationTimeSeconds",
-							"type": "uint256"
-						},
-						{
-							"name": "salt",
-							"type": "uint256"
-						},
-						{
-							"name": "makerAssetData",
-							"type": "bytes"
-						},
-						{
-							"name": "takerAssetData",
-							"type": "bytes"
-						}
-					],
-					"name": "_order",
-					"type": "tuple"
-				}
-			],
-			"name": "getTokenIdFromOrder",
-			"outputs": [
-				{
-					"name": "_tokenId",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -20815,25 +23929,29 @@
 						{
 							"name": "takerAssetData",
 							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
 						}
 					],
 					"name": "_order",
 					"type": "tuple"
-				},
+				}
+			],
+			"name": "getTokenIdFromOrder",
+			"outputs": [
 				{
-					"name": "_amount",
+					"name": "_tokenId",
 					"type": "uint256"
 				}
 			],
-			"name": "creatorHasFundsForTrade",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -20896,20 +24014,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "EIP712_DOMAIN_HASH",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"components": [
@@ -20960,39 +24064,43 @@
 						{
 							"name": "takerAssetData",
 							"type": "bytes"
+						},
+						{
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"name": "takerFeeAssetData",
+							"type": "bytes"
 						}
 					],
 					"name": "_order",
 					"type": "tuple"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
 				}
 			],
-			"name": "parseOrderData",
+			"name": "creatorHasFundsForTrade",
 			"outputs": [
 				{
-					"components": [
-						{
-							"name": "marketAddress",
-							"type": "address"
-						},
-						{
-							"name": "price",
-							"type": "uint256"
-						},
-						{
-							"name": "outcome",
-							"type": "uint8"
-						},
-						{
-							"name": "orderType",
-							"type": "uint8"
-						},
-						{
-							"name": "kycToken",
-							"type": "address"
-						}
-					],
-					"name": "_data",
-					"type": "tuple"
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_DOMAIN_HASH",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
 				}
 			],
 			"payable": false,
@@ -21065,6 +24173,11 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
+		},
+		{
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
 		},
 		{
 			"anonymous": false,
@@ -21170,114 +24283,6 @@
 			"type": "event"
 		}
 	],
-	"UniswapV2": [
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "reservesCumulativeToken0",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "reservesCumulativeToken1",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "",
-					"type": "address"
-				},
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "swap",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getReservesCumulative",
-			"outputs": [
-				{
-					"name": "_token0",
-					"type": "uint256"
-				},
-				{
-					"name": "_token1",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_reservesCumulativeToken0",
-					"type": "uint256"
-				},
-				{
-					"name": "_reservesCumulativeToken1",
-					"type": "uint256"
-				}
-			],
-			"name": "setReservesCumulative",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_recipient",
-					"type": "address"
-				}
-			],
-			"name": "mintLiquidity",
-			"outputs": [
-				{
-					"name": "liquidity",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
 	"UniswapV2Factory": [
 		{
 			"constant": true,
@@ -21363,120 +24368,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"Formulas": [
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_totalBad",
-					"type": "uint256"
-				},
-				{
-					"name": "_total",
-					"type": "uint256"
-				},
-				{
-					"name": "_targetDivisor",
-					"type": "uint256"
-				},
-				{
-					"name": "_previousValue",
-					"type": "uint256"
-				},
-				{
-					"name": "_floor",
-					"type": "uint256"
-				}
-			],
-			"name": "calculateFloatingValue",
-			"outputs": [
-				{
-					"name": "_newValue",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_previousDisputeWindow",
-					"type": "address"
-				},
-				{
-					"name": "_previousValidityBondInAttoCash",
-					"type": "uint256"
-				}
-			],
-			"name": "calculateValidityBond",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_previousDisputeWindow",
-					"type": "address"
-				},
-				{
-					"name": "_previousDesignatedReportStakeInAttoRep",
-					"type": "uint256"
-				},
-				{
-					"name": "_initialReportMinValue",
-					"type": "uint256"
-				}
-			],
-			"name": "calculateDesignatedReportStake",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_previousDisputeWindow",
-					"type": "address"
-				},
-				{
-					"name": "_previousDesignatedReportNoShowBondInAttoRep",
-					"type": "uint256"
-				},
-				{
-					"name": "_initialReportMinValue",
-					"type": "uint256"
-				}
-			],
-			"name": "calculateDesignatedReportNoShowBond",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -21675,31 +24566,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"RepSymbol": [
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_augurAddress",
-					"type": "address"
-				},
-				{
-					"name": "_universeAddress",
-					"type": "address"
-				}
-			],
-			"name": "getRepSymbol",
-			"outputs": [
-				{
-					"name": "",
-					"type": "string"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	]
