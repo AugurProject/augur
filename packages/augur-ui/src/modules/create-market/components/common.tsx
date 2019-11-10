@@ -787,7 +787,9 @@ export const InputFactory = (props: InputFactoryProps) => {
       <DatePickerSelector
         onChange={value => {
           input.setEndTime = value;
-          updateData(value);
+          const stringValue = convertUnixToFormattedDate(Number(value))
+            .formattedSimpleData;
+          updateData(stringValue);
         }}
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
@@ -969,7 +971,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      userInput = String(endTimeFormatted.timestamp);
+      if (input.type === TemplateInputType.DATETIME)
+        userInput = endTimeFormatted.formattedUtc;
+      else
+        userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,

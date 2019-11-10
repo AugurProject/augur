@@ -19,6 +19,7 @@ import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { constructMarketParamsReturn } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
+import { TemplateInputType } from '@augurproject/artifacts/build';
 
 export function submitNewMarket(
   market: NewMarket,
@@ -58,10 +59,22 @@ export function submitNewMarket(
     if (market.template) {
       const { template } = market;
 
-      // TODO: need to add all inputs in order to check during validation
       const inputs = template.inputs.reduce(
         (p, i: TemplateInput) =>
-          i.userInput ? [...p, { id: i.id, value: i.userInput, type: i.type }] : p,
+          i.userInput
+            ? [
+                ...p,
+                {
+                  id: i.id,
+                  value: i.userInput,
+                  type: i.type,
+                  timestamp:
+                    i.type === (TemplateInputType.DATETIME && i.userInputObject)
+                      ? i.userInputObject.endTimeFormatted.timestamp
+                      : i.userInput,
+                },
+              ]
+            : p,
         []
       );
       extraInfoTemplate = {

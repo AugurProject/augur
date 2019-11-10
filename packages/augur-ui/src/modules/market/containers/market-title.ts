@@ -11,6 +11,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     description: market.description || '',
     id: marketId,
+    isTemplate: market.isTemplate,
+    template: market.template,
   };
 };
 

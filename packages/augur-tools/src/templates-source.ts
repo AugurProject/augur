@@ -2471,7 +2471,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will the [0] win vs the [1]?`,
-                example: `NFL:Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `NFL: Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
