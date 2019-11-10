@@ -179,7 +179,6 @@ export class ContractCompiler {
                 "GnosisSafe",
                 "ProxyFactory",
                 "ZeroXTrade",
-                "ZeroXExchange",
                 "BuyParticipationTokens",
                 "RedeemStake",
                 "CashFaucet",
@@ -190,12 +189,16 @@ export class ContractCompiler {
                 "ERC20Proxy",
                 "ERC721Proxy",
                 "ERC1155Proxy",
-                "ZeroXExchange",
+                "Exchange",
                 "ZeroXCoordinator",
                 "CoordinatorRegistry",
                 "DevUtils",
                 "WETH9",
                 "ZRXToken",
+                // Maker
+                "TestNetDaiJoin",
+                "TestNetDaiPot",
+                "TestNetDaiVat"
             ];
             const name = path.parse(file).base.replace(".sol", "");
             if (!allowedFilenames.includes(name)) return true;

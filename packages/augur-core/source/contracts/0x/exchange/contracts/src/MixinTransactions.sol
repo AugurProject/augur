@@ -107,10 +107,7 @@ contract MixinTransactions is
         transactionsExecuted[transactionHash] = true;
         (bool didSucceed, bytes memory returnData) = address(this).delegatecall(transaction.data);
         if (!didSucceed) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.TransactionExecutionError(
-                transactionHash,
-                returnData
-            ));
+            revert();
         }
 
         // Reset current transaction signer if it was previously updated
@@ -136,37 +133,24 @@ contract MixinTransactions is
         // Check transaction is not expired
         // solhint-disable-next-line not-rely-on-time
         if (block.timestamp >= transaction.expirationTimeSeconds) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.TransactionError(
-                LibExchangeRichErrors.TransactionErrorCodes.EXPIRED,
-                transactionHash
-            ));
+            revert();
         }
 
         // Validate that transaction is executed with the correct gasPrice
         uint256 requiredGasPrice = transaction.gasPrice;
         if (tx.gasprice != requiredGasPrice) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.TransactionGasPriceError(
-                transactionHash,
-                tx.gasprice,
-                requiredGasPrice
-            ));
+            revert();
         }
 
         // Prevent `executeTransaction` from being called when context is already set
         address currentContextAddress_ = currentContextAddress;
         if (currentContextAddress_ != address(0)) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.TransactionInvalidContextError(
-                transactionHash,
-                currentContextAddress_
-            ));
+            revert();
         }
 
         // Validate transaction has not been executed
         if (transactionsExecuted[transactionHash]) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.TransactionError(
-                LibExchangeRichErrors.TransactionErrorCodes.ALREADY_EXECUTED,
-                transactionHash
-            ));
+            revert();
         }
 
         // Validate signature
@@ -178,12 +162,7 @@ contract MixinTransactions is
                 signature
             )
         ) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.SignatureError(
-                LibExchangeRichErrors.SignatureErrorCodes.BAD_TRANSACTION_SIGNATURE,
-                transactionHash,
-                signerAddress,
-                signature
-            ));
+            revert();
         }
     }
 

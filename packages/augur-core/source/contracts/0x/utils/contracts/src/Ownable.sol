@@ -44,7 +44,8 @@ contract Ownable is
         onlyOwner
     {
         if (newOwner == address(0)) {
-            LibRichErrors.rrevert(LibOwnableRichErrors.TransferOwnerToZeroError());
+            revert("TransferOwnerToZeroError");
+            //LibRichErrors.rrevert(LibOwnableRichErrors.TransferOwnerToZeroError());
         } else {
             owner = newOwner;
             emit OwnershipTransferred(msg.sender, newOwner);
@@ -56,10 +57,11 @@ contract Ownable is
         view
     {
         if (msg.sender != owner) {
-            LibRichErrors.rrevert(LibOwnableRichErrors.OnlyOwnerError(
-                msg.sender,
-                owner
-            ));
+            revert("OnlyOwnerError");
+            //LibRichErrors.rrevert(LibOwnableRichErrors.OnlyOwnerError(
+            //    msg.sender,
+            //    owner
+            //));
         }
     }
 }

@@ -36,9 +36,12 @@ contract MixinWeth is
         payable
     {
         if (msg.sender != address(ETHER_TOKEN)) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibForwarderRichErrors.DefaultFunctionWethContractOnlyError(
                 msg.sender
             ));
+            */
         }
     }
 
@@ -47,7 +50,8 @@ contract MixinWeth is
         internal
     {
         if (msg.value == 0) {
-            LibRichErrors.rrevert(LibForwarderRichErrors.MsgValueCannotEqualZeroError());
+            revert();
+            //LibRichErrors.rrevert(LibForwarderRichErrors.MsgValueCannotEqualZeroError());
         }
         ETHER_TOKEN.deposit.value(msg.value)();
     }
@@ -68,17 +72,23 @@ contract MixinWeth is
     {
         // Ensure feePercentage is less than 5%.
         if (feePercentage > MAX_FEE_PERCENTAGE) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibForwarderRichErrors.FeePercentageTooLargeError(
                 feePercentage
             ));
+            */
         }
 
         // Ensure that no extra WETH owned by this contract has been spent.
         if (wethSpent > msg.value) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibForwarderRichErrors.OverspentWethError(
                 wethSpent,
                 msg.value
             ));
+            */
         }
 
         // Calculate amount of WETH that hasn't been spent.
@@ -93,10 +103,7 @@ contract MixinWeth is
 
         // Ensure fee is less than amount of WETH remaining.
         if (ethFee > wethRemaining) {
-            LibRichErrors.rrevert(LibForwarderRichErrors.InsufficientEthForFeeError(
-                ethFee,
-                wethRemaining
-            ));
+            revert();
         }
 
         // Do nothing if no WETH remaining

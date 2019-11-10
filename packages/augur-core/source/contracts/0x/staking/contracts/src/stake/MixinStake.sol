@@ -72,12 +72,7 @@ contract MixinStake is
         );
 
         if (amount > currentWithdrawableStake) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InsufficientBalanceError(
-                    amount,
-                    currentWithdrawableStake
-                )
-            );
+            revert();
         }
 
         // burn undelegated stake

@@ -40,11 +40,14 @@ contract MixinSignatureValidator is
     {
         uint256 signatureLength = signature.length;
         if (signatureLength == 0) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
                 LibCoordinatorRichErrors.SignatureErrorCodes.INVALID_LENGTH,
                 hash,
                 signature
             ));
+            */
         }
 
         // Pop last byte off of signature byte array.
@@ -52,11 +55,14 @@ contract MixinSignatureValidator is
 
         // Ensure signature is supported
         if (signatureTypeRaw >= uint8(SignatureType.NSignatureTypes)) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
                 LibCoordinatorRichErrors.SignatureErrorCodes.UNSUPPORTED,
                 hash,
                 signature
             ));
+            */
         }
 
         SignatureType signatureType = SignatureType(signatureTypeRaw);
@@ -67,31 +73,40 @@ contract MixinSignatureValidator is
         // it an explicit option. This aids testing and analysis. It is
         // also the initialization value for the enum type.
         if (signatureType == SignatureType.Illegal) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
                 LibCoordinatorRichErrors.SignatureErrorCodes.ILLEGAL,
                 hash,
                 signature
             ));
+            */
 
         // Always invalid signature.
         // Like Illegal, this is always implicitly available and therefore
         // offered explicitly. It can be implicitly created by providing
         // a correctly formatted but incorrect signature.
         } else if (signatureType == SignatureType.Invalid) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
                 LibCoordinatorRichErrors.SignatureErrorCodes.INVALID,
                 hash,
                 signature
             ));
+            */
 
         // Signature using EIP712
         } else if (signatureType == SignatureType.EIP712) {
             if (signatureLength != 66) {
+                revert();
+                /*
                 LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
                     LibCoordinatorRichErrors.SignatureErrorCodes.INVALID_LENGTH,
                     hash,
                     signature
                 ));
+                */
             }
             uint8 v = uint8(signature[0]);
             bytes32 r = signature.readBytes32(1);
@@ -107,11 +122,14 @@ contract MixinSignatureValidator is
         // Signed using web3.eth_sign
         } else if (signatureType == SignatureType.EthSign) {
             if (signatureLength != 66) {
+                revert();
+                /*
                 LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
                     LibCoordinatorRichErrors.SignatureErrorCodes.INVALID_LENGTH,
                     hash,
                     signature
                 ));
+                */
             }
             uint8 v = uint8(signature[0]);
             bytes32 r = signature.readBytes32(1);
@@ -133,10 +151,13 @@ contract MixinSignatureValidator is
         // that we currently support. In this case returning false
         // may lead the caller to incorrectly believe that the
         // signature was invalid.)
+        revert();
+        /*
         LibRichErrors.rrevert(LibCoordinatorRichErrors.SignatureError(
             LibCoordinatorRichErrors.SignatureErrorCodes.UNSUPPORTED,
             hash,
             signature
         ));
+        */
     }
 }

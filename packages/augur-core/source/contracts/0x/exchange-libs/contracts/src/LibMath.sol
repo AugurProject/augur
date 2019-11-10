@@ -47,11 +47,14 @@ library LibMath {
                 denominator,
                 target
         )) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibMathRichErrors.RoundingError(
                 numerator,
                 denominator,
                 target
             ));
+            */
         }
 
         partialAmount = numerator.safeMul(target).safeDiv(denominator);
@@ -78,11 +81,7 @@ library LibMath {
                 denominator,
                 target
         )) {
-            LibRichErrors.rrevert(LibMathRichErrors.RoundingError(
-                numerator,
-                denominator,
-                target
-            ));
+            revert();
         }
 
         // safeDiv computes `floor(a / b)`. We use the identity (a, b integer):
@@ -152,7 +151,7 @@ library LibMath {
         returns (bool isError)
     {
         if (denominator == 0) {
-            LibRichErrors.rrevert(LibMathRichErrors.DivisionByZeroError());
+            revert();
         }
 
         // The absolute rounding error is the difference between the rounded
@@ -205,7 +204,7 @@ library LibMath {
         returns (bool isError)
     {
         if (denominator == 0) {
-            LibRichErrors.rrevert(LibMathRichErrors.DivisionByZeroError());
+            revert();
         }
 
         // See the comments in `isRoundingError`.

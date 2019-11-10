@@ -16,11 +16,7 @@ library LibSafeMath {
         }
         uint256 c = a * b;
         if (c / a != b) {
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256BinOpError(
-                LibSafeMathRichErrors.BinOpErrorCodes.MULTIPLICATION_OVERFLOW,
-                a,
-                b
-            ));
+            revert();
         }
         return c;
     }
@@ -31,11 +27,7 @@ library LibSafeMath {
         returns (uint256)
     {
         if (b == 0) {
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256BinOpError(
-                LibSafeMathRichErrors.BinOpErrorCodes.DIVISION_BY_ZERO,
-                a,
-                b
-            ));
+            revert();
         }
         uint256 c = a / b;
         return c;
@@ -47,11 +39,14 @@ library LibSafeMath {
         returns (uint256)
     {
         if (b > a) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256BinOpError(
                 LibSafeMathRichErrors.BinOpErrorCodes.SUBTRACTION_UNDERFLOW,
                 a,
                 b
             ));
+            */
         }
         return a - b;
     }
@@ -63,11 +58,14 @@ library LibSafeMath {
     {
         uint256 c = a + b;
         if (c < a) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256BinOpError(
                 LibSafeMathRichErrors.BinOpErrorCodes.ADDITION_OVERFLOW,
                 a,
                 b
             ));
+            */
         }
         return c;
     }

@@ -182,13 +182,7 @@ contract MixinProtocolFees is
         // solhint-disable-next-line avoid-call-value
         (bool didSucceed, bytes memory returnData) = feeCollector.call.value(valuePaid)(payProtocolFeeData);
         if (!didSucceed) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.PayProtocolFeeError(
-                orderHash,
-                protocolFee,
-                makerAddress,
-                takerAddress,
-                returnData
-            ));
+            revert();
         }
         return valuePaid;
     }

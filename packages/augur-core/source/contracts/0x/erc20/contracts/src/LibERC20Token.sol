@@ -114,6 +114,7 @@ library LibERC20Token {
                 }
             }
         }
-        LibRichErrors.rrevert(resultData);
+        revert();
+        //LibRichErrors.rrevert(resultData);
     }
 }

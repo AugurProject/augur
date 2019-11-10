@@ -33,10 +33,7 @@ library LibSafeDowncast {
     {
         b = uint96(a);
         if (uint256(b) != a) {
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256DowncastError(
-                LibSafeMathRichErrors.DowncastErrorCodes.VALUE_TOO_LARGE_TO_DOWNCAST_TO_UINT96,
-                a
-            ));
+            revert();
         }
         return b;
     }
@@ -50,10 +47,7 @@ library LibSafeDowncast {
     {
         b = uint64(a);
         if (uint256(b) != a) {
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256DowncastError(
-                LibSafeMathRichErrors.DowncastErrorCodes.VALUE_TOO_LARGE_TO_DOWNCAST_TO_UINT64,
-                a
-            ));
+            revert();
         }
         return b;
     }
@@ -67,10 +61,7 @@ library LibSafeDowncast {
     {
         b = uint32(a);
         if (uint256(b) != a) {
-            LibRichErrors.rrevert(LibSafeMathRichErrors.Uint256DowncastError(
-                LibSafeMathRichErrors.DowncastErrorCodes.VALUE_TOO_LARGE_TO_DOWNCAST_TO_UINT32,
-                a
-            ));
+            revert();
         }
         return b;
     }

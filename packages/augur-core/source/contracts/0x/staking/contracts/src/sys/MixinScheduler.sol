@@ -69,10 +69,7 @@ contract MixinScheduler is
         // validate that we can increment the current epoch
         uint256 epochEndTime = getCurrentEpochEarliestEndTimeInSeconds();
         if (epochEndTime > currentBlockTimestamp) {
-            LibRichErrors.rrevert(LibStakingRichErrors.BlockTimestampTooLowError(
-                epochEndTime,
-                currentBlockTimestamp
-            ));
+            revert();
         }
 
         // incremment epoch
@@ -88,11 +85,7 @@ contract MixinScheduler is
         view
     {
         if (currentEpochStartTimeInSeconds != 0) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InitializationError(
-                    LibStakingRichErrors.InitializationErrorCodes.MixinSchedulerAlreadyInitialized
-                )
-            );
+            revert();
         }
     }
 }

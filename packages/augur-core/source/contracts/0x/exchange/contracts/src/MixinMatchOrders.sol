@@ -174,10 +174,7 @@ contract MixinMatchOrders is
         // These equations can be combined to get the following:
         if (leftOrder.makerAssetAmount.safeMul(rightOrder.makerAssetAmount) <
             leftOrder.takerAssetAmount.safeMul(rightOrder.takerAssetAmount)) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.NegativeSpreadError(
-                leftOrderHash,
-                rightOrderHash
-            ));
+            revert();
         }
     }
 
@@ -204,26 +201,18 @@ contract MixinMatchOrders is
     {
         // Ensure that the left and right orders have nonzero lengths.
         if (leftOrders.length == 0) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.BatchMatchOrdersError(
-                LibExchangeRichErrors.BatchMatchOrdersErrorCodes.ZERO_LEFT_ORDERS
-            ));
+            revert();
         }
         if (rightOrders.length == 0) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.BatchMatchOrdersError(
-                LibExchangeRichErrors.BatchMatchOrdersErrorCodes.ZERO_RIGHT_ORDERS
-            ));
+            revert();
         }
 
         // Ensure that the left and right arrays are compatible.
         if (leftOrders.length != leftSignatures.length) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.BatchMatchOrdersError(
-                LibExchangeRichErrors.BatchMatchOrdersErrorCodes.INVALID_LENGTH_LEFT_SIGNATURES
-            ));
+            revert();
         }
         if (rightOrders.length != rightSignatures.length) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.BatchMatchOrdersError(
-                LibExchangeRichErrors.BatchMatchOrdersErrorCodes.INVALID_LENGTH_RIGHT_SIGNATURES
-            ));
+            revert();
         }
 
         batchMatchedFillResults.left = new LibFillResults.FillResults[](leftOrders.length);

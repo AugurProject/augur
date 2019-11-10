@@ -145,7 +145,8 @@ contract MixinCoordinatorApprovalVerifier is
     {
         // Verify that Ethereum tx signer is the same as the approved txOrigin
         if (tx.origin != txOrigin) {
-            LibRichErrors.rrevert(LibCoordinatorRichErrors.InvalidOriginError(txOrigin));
+            revert();
+            //LibRichErrors.rrevert(LibCoordinatorRichErrors.InvalidOriginError(txOrigin));
         }
 
         // Hash 0x transaction
@@ -185,10 +186,13 @@ contract MixinCoordinatorApprovalVerifier is
             address approverAddress = orders[i].feeRecipientAddress;
             bool isOrderApproved = approvalSignerAddresses.contains(approverAddress);
             if (!isOrderApproved) {
+                revert();
+                /*
                 LibRichErrors.rrevert(LibCoordinatorRichErrors.InvalidApprovalSignatureError(
                     transactionHash,
                     approverAddress
                 ));
+                */
             }
         }
     }

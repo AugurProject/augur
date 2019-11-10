@@ -46,10 +46,13 @@ contract MixinAssetProxyDispatcher is
         bytes4 assetProxyId = IAssetProxy(assetProxy).getProxyId();
         address currentAssetProxy = _assetProxies[assetProxyId];
         if (currentAssetProxy != address(0)) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyExistsError(
                 assetProxyId,
                 currentAssetProxy
             ));
+            */
         }
 
         // Add asset proxy and log registration.
@@ -91,11 +94,14 @@ contract MixinAssetProxyDispatcher is
 
             // Ensure assetData is padded to 32 bytes (excluding the id) and is at least 4 bytes long
             if (assetData.length % 32 != 4) {
+                revert();
+                /*
                 LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyDispatchError(
                     LibExchangeRichErrors.AssetProxyDispatchErrorCodes.INVALID_ASSET_DATA_LENGTH,
                     orderHash,
                     assetData
                 ));
+                */
             }
 
             // Lookup assetProxy.
@@ -104,11 +110,14 @@ contract MixinAssetProxyDispatcher is
 
             // Ensure that assetProxy exists
             if (assetProxy == address(0)) {
+                revert();
+                /*
                 LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyDispatchError(
                     LibExchangeRichErrors.AssetProxyDispatchErrorCodes.UNKNOWN_ASSET_PROXY,
                     orderHash,
                     assetData
                 ));
+                */
             }
 
             // Construct the calldata for the transferFrom call.
@@ -125,11 +134,14 @@ contract MixinAssetProxyDispatcher is
 
             // If the transaction did not succeed, revert with the returned data.
             if (!didSucceed) {
+                revert();
+                /*
                 LibRichErrors.rrevert(LibExchangeRichErrors.AssetProxyTransferError(
                     orderHash,
                     assetData,
                     returnData
                 ));
+                */
             }
         }
     }

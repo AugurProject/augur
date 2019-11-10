@@ -29,22 +29,23 @@ import "ROOT/0x/exchange-libs/contracts/src/LibEIP712ExchangeDomain.sol";
 import "ROOT/0x/exchange-libs/contracts/src/LibExchangeRichErrors.sol";
 import "ROOT/0x/exchange/contracts/src/interfaces/IExchangeCore.sol";
 import "ROOT/0x/exchange/contracts/src/MixinAssetProxyDispatcher.sol";
-import "ROOT/0x/exchange/contracts/src/MixinProtocolFees.sol";
-import "ROOT/0x/exchange/contracts/src/MixinSignatureValidator.sol";
+//import "ROOT/0x/exchange/contracts/src/MixinProtocolFees.sol";
+//import "ROOT/0x/exchange/contracts/src/MixinSignatureValidator.sol";
 
 
-contract MixinExchangeCore is
-    IExchangeCore,
-    Refundable,
-    LibEIP712ExchangeDomain,
-    MixinAssetProxyDispatcher,
-    MixinProtocolFees,
-    MixinSignatureValidator
+contract TEST
+    //IExchangeCore,
+    //Refundable,
+    //LibEIP712ExchangeDomain,
+    //MixinAssetProxyDispatcher,
+    //MixinProtocolFees,
+    //MixinSignatureValidator
 {
     using LibOrder for LibOrder.Order;
     using LibSafeMath for uint256;
     using LibBytes for bytes;
 
+/*
     // Mapping of orderHash => amount of takerAsset already bought by maker
     mapping (bytes32 => uint256) public filled;
 
@@ -74,7 +75,11 @@ contract MixinExchangeCore is
 
         // Ensure orderEpoch is monotonically increasing
         if (newOrderEpoch <= oldOrderEpoch) {
-            revert();
+            LibRichErrors.rrevert(LibExchangeRichErrors.OrderEpochError(
+                makerAddress,
+                orderSenderAddress,
+                oldOrderEpoch
+            ));
         }
 
         // Update orderEpoch
@@ -334,20 +339,31 @@ contract MixinExchangeCore is
     {
         // An order can only be filled if its status is FILLABLE.
         if (orderInfo.orderStatus != uint8(LibOrder.OrderStatus.FILLABLE)) {
-            revert();
+            LibRichErrors.rrevert(LibExchangeRichErrors.OrderStatusError(
+                orderInfo.orderHash,
+                LibOrder.OrderStatus(orderInfo.orderStatus)
+            ));
         }
 
         // Validate sender is allowed to fill this order
         if (order.senderAddress != address(0)) {
             if (order.senderAddress != msg.sender) {
-                revert();
+                LibRichErrors.rrevert(LibExchangeRichErrors.ExchangeInvalidContextError(
+                    LibExchangeRichErrors.ExchangeContextErrorCodes.INVALID_SENDER,
+                    orderInfo.orderHash,
+                    msg.sender
+                ));
             }
         }
 
         // Validate taker is allowed to fill this order
         if (order.takerAddress != address(0)) {
             if (order.takerAddress != takerAddress) {
-                revert();
+                LibRichErrors.rrevert(LibExchangeRichErrors.ExchangeInvalidContextError(
+                    LibExchangeRichErrors.ExchangeContextErrorCodes.INVALID_TAKER,
+                    orderInfo.orderHash,
+                    takerAddress
+                ));
             }
         }
 
@@ -358,7 +374,12 @@ contract MixinExchangeCore is
                 signature
             )
         ) {
-            revert();
+            LibRichErrors.rrevert(LibExchangeRichErrors.SignatureError(
+                LibExchangeRichErrors.SignatureErrorCodes.BAD_ORDER_SIGNATURE,
+                orderInfo.orderHash,
+                order.makerAddress,
+                signature
+            ));
         }
     }
 
@@ -375,14 +396,22 @@ contract MixinExchangeCore is
         // Validate sender is allowed to cancel this order
         if (order.senderAddress != address(0)) {
             if (order.senderAddress != msg.sender) {
-                revert();
+                LibRichErrors.rrevert(LibExchangeRichErrors.ExchangeInvalidContextError(
+                    LibExchangeRichErrors.ExchangeContextErrorCodes.INVALID_SENDER,
+                    orderInfo.orderHash,
+                    msg.sender
+                ));
             }
         }
 
         // Validate transaction signed by maker
         address makerAddress = _getCurrentContextAddress();
         if (order.makerAddress != makerAddress) {
-            revert();
+            LibRichErrors.rrevert(LibExchangeRichErrors.ExchangeInvalidContextError(
+                LibExchangeRichErrors.ExchangeContextErrorCodes.INVALID_MAKER,
+                orderInfo.orderHash,
+                makerAddress
+            ));
         }
     }
 
@@ -461,4 +490,5 @@ contract MixinExchangeCore is
         orderTakerAssetFilledAmount = filled[orderHash];
         return (orderHash, orderTakerAssetFilledAmount);
     }
+    */
 }

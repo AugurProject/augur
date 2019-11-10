@@ -46,12 +46,7 @@ contract MixinFinalizer is
         // Make sure the previous epoch has been fully finalized.
         uint256 numPoolsToFinalizeFromPrevEpoch = aggregatedStatsByEpoch[prevEpoch].numPoolsToFinalize;
         if (numPoolsToFinalizeFromPrevEpoch != 0) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.PreviousEpochNotFinalizedError(
-                    prevEpoch,
-                    numPoolsToFinalizeFromPrevEpoch
-                )
-            );
+            revert();
         }
 
         // Convert all ETH to WETH; the WETH balance of this contract is the total rewards.
@@ -207,12 +202,7 @@ contract MixinFinalizer is
 
         // A pool that has any fees remaining has not been finalized
         if (poolStats.feesCollected != 0) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.PoolNotFinalizedError(
-                    poolId,
-                    prevEpoch
-                )
-            );
+            revert();
         }
     }
 

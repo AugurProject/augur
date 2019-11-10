@@ -224,9 +224,7 @@ contract ZrxVault is
         view
     {
         if (msg.sender != stakingProxyAddress) {
-            LibRichErrors.rrevert(LibStakingRichErrors.OnlyCallableByStakingContractError(
-                msg.sender
-            ));
+            revert();
         }
     }
 
@@ -236,7 +234,7 @@ contract ZrxVault is
         view
     {
         if (!isInCatastrophicFailure) {
-            LibRichErrors.rrevert(LibStakingRichErrors.OnlyCallableIfInCatastrophicFailureError());
+            revert();
         }
     }
 
@@ -246,7 +244,7 @@ contract ZrxVault is
         view
     {
         if (isInCatastrophicFailure) {
-            LibRichErrors.rrevert(LibStakingRichErrors.OnlyCallableIfNotInCatastrophicFailureError());
+            revert();
         }
     }
 }

@@ -40,9 +40,12 @@ contract ReentrancyGuard {
     {
         // Ensure mutex is unlocked.
         if (_locked) {
+            revert();
+            /*
             LibRichErrors.rrevert(
                 LibReentrancyGuardRichErrors.IllegalReentrancyError()
             );
+            */
         }
         // Lock mutex.
         _locked = true;

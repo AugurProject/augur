@@ -72,12 +72,10 @@ library LibStakingRichErrors {
         0xca1d07a2;
 
     // bytes4(keccak256("OnlyCallableIfInCatastrophicFailureError()"))
-    bytes internal constant ONLY_CALLABLE_IF_IN_CATASTROPHIC_FAILURE_ERROR =
-        hex"3ef081cc";
+    bytes internal constant ONLY_CALLABLE_IF_IN_CATASTROPHIC_FAILURE_ERROR = "OnlyCallableIfInCatastrophicFailureError";
 
     // bytes4(keccak256("OnlyCallableIfNotInCatastrophicFailureError()"))
-    bytes internal constant ONLY_CALLABLE_IF_NOT_IN_CATASTROPHIC_FAILURE_ERROR =
-        hex"7dd020ce";
+    bytes internal constant ONLY_CALLABLE_IF_NOT_IN_CATASTROPHIC_FAILURE_ERROR = "OnlyCallableIfNotInCatastrophicFailureError";
 
     // bytes4(keccak256("OperatorShareError(uint8,bytes32,uint32)"))
     bytes4 internal constant OPERATOR_SHARE_ERROR_SELECTOR =
@@ -88,8 +86,7 @@ library LibStakingRichErrors {
         0x9ae94f01;
 
     // bytes4(keccak256("ProxyDestinationCannotBeNilError()"))
-    bytes internal constant PROXY_DESTINATION_CANNOT_BE_NIL_ERROR =
-        hex"6eff8285";
+    bytes internal constant PROXY_DESTINATION_CANNOT_BE_NIL_ERROR = "PROXY_DESTINATION_CANNOT_BE_NIL_ERROR";
 
     // bytes4(keccak256("InitializationError(uint8)"))
     bytes4 internal constant INITIALIZATION_ERROR_SELECTOR =

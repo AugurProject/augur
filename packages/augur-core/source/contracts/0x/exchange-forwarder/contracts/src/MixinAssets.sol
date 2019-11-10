@@ -67,7 +67,8 @@ contract MixinAssets is
         if (proxyId == ERC20_DATA_ID) {
             address proxyAddress = EXCHANGE.getAssetProxy(ERC20_DATA_ID);
             if (proxyAddress == address(0)) {
-                LibRichErrors.rrevert(LibForwarderRichErrors.UnregisteredAssetProxyError());
+                revert();
+                //LibRichErrors.rrevert(LibForwarderRichErrors.UnregisteredAssetProxyError());
             }
             IERC20Token assetToken = IERC20Token(assetData.readAddress(16));
             assetToken.approve(proxyAddress, MAX_UINT);
@@ -90,9 +91,10 @@ contract MixinAssets is
         } else if (proxyId == ERC721_DATA_ID) {
             _transferERC721Token(assetData, amount);
         } else {
-            LibRichErrors.rrevert(LibForwarderRichErrors.UnsupportedAssetProxyError(
-                proxyId
-            ));
+            revert();
+            //LibRichErrors.rrevert(LibForwarderRichErrors.UnsupportedAssetProxyError(
+            //    proxyId
+            //));
         }
     }
 
@@ -120,9 +122,10 @@ contract MixinAssets is
         internal
     {
         if (amount != 1) {
-            LibRichErrors.rrevert(LibForwarderRichErrors.Erc721AmountMustEqualOneError(
-                amount
-            ));
+            revert();
+            //LibRichErrors.rrevert(LibForwarderRichErrors.Erc721AmountMustEqualOneError(
+            //    amount
+            //));
         }
         // Decode asset data.
         address token = assetData.readAddress(16);

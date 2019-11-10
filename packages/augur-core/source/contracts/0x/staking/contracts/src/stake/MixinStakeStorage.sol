@@ -54,12 +54,7 @@ contract MixinStakeStorage is
 
         // sanity check on balance
         if (amount > from.nextEpochBalance) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InsufficientBalanceError(
-                    amount,
-                    from.nextEpochBalance
-                )
-            );
+            revert();
         }
 
         // move stake for next epoch
