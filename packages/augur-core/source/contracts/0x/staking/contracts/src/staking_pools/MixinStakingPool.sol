@@ -135,12 +135,7 @@ contract MixinStakingPool is
     {
         if (_poolById[poolId].operator == NIL_ADDRESS) {
             // we use the pool's operator as a proxy for its existence
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.PoolExistenceError(
-                    poolId,
-                    false
-                )
-            );
+            revert();
         }
     }
 
@@ -159,18 +154,10 @@ contract MixinStakingPool is
         // sanity checks
         if (newOperatorShare > PPM_DENOMINATOR) {
             // operator share must be a valid fraction
-            LibRichErrors.rrevert(LibStakingRichErrors.OperatorShareError(
-                LibStakingRichErrors.OperatorShareErrorCodes.OperatorShareTooLarge,
-                poolId,
-                newOperatorShare
-            ));
+            revert();
         } else if (newOperatorShare >= currentOperatorShare) {
             // new share must be less than the current share
-            LibRichErrors.rrevert(LibStakingRichErrors.OperatorShareError(
-                LibStakingRichErrors.OperatorShareErrorCodes.CanOnlyDecreaseOperatorShare,
-                poolId,
-                newOperatorShare
-            ));
+            revert();
         }
     }
 
@@ -182,12 +169,7 @@ contract MixinStakingPool is
     {
         address operator = _poolById[poolId].operator;
         if (msg.sender != operator) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.OnlyCallableByPoolOperatorError(
-                    msg.sender,
-                    poolId
-                )
-            );
+            revert();
         }
     }
 }

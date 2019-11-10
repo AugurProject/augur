@@ -48,7 +48,8 @@ contract MixinForwarderCore is
     {
         address proxyAddress = EXCHANGE.getAssetProxy(ERC20_DATA_ID);
         if (proxyAddress == address(0)) {
-            LibRichErrors.rrevert(LibForwarderRichErrors.UnregisteredAssetProxyError());
+            revert();
+            //LibRichErrors.rrevert(LibForwarderRichErrors.UnregisteredAssetProxyError());
         }
         ETHER_TOKEN.approve(proxyAddress, MAX_UINT);
 

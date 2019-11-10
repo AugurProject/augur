@@ -42,8 +42,7 @@ library LibAuthorizableRichErrors {
         0xeb5108a2;
 
     // bytes4(keccak256("ZeroCantBeAuthorizedError()"))
-    bytes internal constant ZERO_CANT_BE_AUTHORIZED_ERROR_BYTES =
-        hex"57654fe4";
+    bytes internal constant ZERO_CANT_BE_AUTHORIZED_ERROR_BYTES = "ZeroCantBeAuthorizedError";
 
     // solhint-disable func-name-mixedcase
     function AuthorizedAddressMismatchError(

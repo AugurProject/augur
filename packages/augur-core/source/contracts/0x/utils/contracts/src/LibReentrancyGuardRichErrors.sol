@@ -22,8 +22,7 @@ pragma solidity 0.5.10;
 library LibReentrancyGuardRichErrors {
 
     // bytes4(keccak256("IllegalReentrancyError()"))
-    bytes internal constant ILLEGAL_REENTRANCY_ERROR_SELECTOR_BYTES =
-        hex"0c3b823f";
+    bytes internal constant ILLEGAL_REENTRANCY_ERROR_SELECTOR_BYTES = "IllegalReentrancyError";
 
     // solhint-disable func-name-mixedcase
     function IllegalReentrancyError()

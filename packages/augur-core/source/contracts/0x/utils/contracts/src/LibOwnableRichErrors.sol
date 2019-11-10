@@ -8,8 +8,7 @@ library LibOwnableRichErrors {
         0x1de45ad1;
 
     // bytes4(keccak256("TransferOwnerToZeroError()"))
-    bytes internal constant TRANSFER_OWNER_TO_ZERO_ERROR_BYTES =
-        hex"e69edc3e";
+    bytes internal constant TRANSFER_OWNER_TO_ZERO_ERROR_BYTES = "TransferOwnerToZeroError";
 
     // solhint-disable func-name-mixedcase
     function OnlyOwnerError(

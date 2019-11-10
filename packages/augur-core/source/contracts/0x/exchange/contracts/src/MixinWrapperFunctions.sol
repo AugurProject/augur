@@ -246,11 +246,7 @@ contract MixinWrapperFunctions is
     {
         fillResults = marketSellOrdersNoThrow(orders, takerAssetFillAmount, signatures);
         if (fillResults.takerAssetFilledAmount < takerAssetFillAmount) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.IncompleteFillError(
-                LibExchangeRichErrors.IncompleteFillErrorCode.INCOMPLETE_MARKET_SELL_ORDERS,
-                takerAssetFillAmount,
-                fillResults.takerAssetFilledAmount
-            ));
+            revert();
         }
     }
 
@@ -271,11 +267,7 @@ contract MixinWrapperFunctions is
     {
         fillResults = marketBuyOrdersNoThrow(orders, makerAssetFillAmount, signatures);
         if (fillResults.makerAssetFilledAmount < makerAssetFillAmount) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.IncompleteFillError(
-                LibExchangeRichErrors.IncompleteFillErrorCode.INCOMPLETE_MARKET_BUY_ORDERS,
-                makerAssetFillAmount,
-                fillResults.makerAssetFilledAmount
-            ));
+            revert();
         }
     }
 
@@ -310,11 +302,7 @@ contract MixinWrapperFunctions is
             signature
         );
         if (fillResults.takerAssetFilledAmount != takerAssetFillAmount) {
-            LibRichErrors.rrevert(LibExchangeRichErrors.IncompleteFillError(
-                LibExchangeRichErrors.IncompleteFillErrorCode.INCOMPLETE_FILL_ORDER,
-                takerAssetFillAmount,
-                fillResults.takerAssetFilledAmount
-            ));
+            revert();
         }
         return fillResults;
     }

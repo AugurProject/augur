@@ -127,7 +127,8 @@ contract MixinExchangeWrapper is
             makerAssetAcquiredAmount = singleFillResults.makerAssetFilledAmount;
         // Unsupported fee
         } else {
-            LibRichErrors.rrevert(LibForwarderRichErrors.UnsupportedFeeError(order.takerFeeAssetData));
+            revert();
+            //LibRichErrors.rrevert(LibForwarderRichErrors.UnsupportedFeeError(order.takerFeeAssetData));
         }
 
         return (wethSpentAmount, makerAssetAcquiredAmount);
@@ -251,7 +252,8 @@ contract MixinExchangeWrapper is
                 .safeSub(singleFillResults.takerFeePaid);
         // Unsupported fee
         } else {
-            LibRichErrors.rrevert(LibForwarderRichErrors.UnsupportedFeeError(order.takerFeeAssetData));
+            revert();
+            //LibRichErrors.rrevert(LibForwarderRichErrors.UnsupportedFeeError(order.takerFeeAssetData));
         }
 
         return (wethSpentAmount, makerAssetAcquiredAmount);
@@ -310,10 +312,13 @@ contract MixinExchangeWrapper is
         }
 
         if (totalMakerAssetAcquiredAmount < makerAssetBuyAmount) {
+            revert();
+            /*
             LibRichErrors.rrevert(LibForwarderRichErrors.CompleteBuyFailedError(
                 makerAssetBuyAmount,
                 totalMakerAssetAcquiredAmount
             ));
+            */
         }
     }
 }

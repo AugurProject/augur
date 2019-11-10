@@ -43,7 +43,7 @@ contract Exchange is
     {}
 
     // For testing purposes
-    function isValidSignature(LibOrder.Order memory order, bytes32 orderHash, bytes memory signature) public returns (bool) {
+    function isValidSignature(LibOrder.Order memory order, bytes32 orderHash, bytes memory signature) public view returns (bool) {
         return _isValidOrderWithHashSignature(order, orderHash, signature);
     }
 }

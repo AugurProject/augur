@@ -118,11 +118,7 @@ contract MixinParams is
             cobbDouglasAlphaNumerator != 0 &&
             cobbDouglasAlphaDenominator != 0
         ) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InitializationError(
-                    LibStakingRichErrors.InitializationErrorCodes.MixinParamsAlreadyInitialized
-                )
-            );
+            revert();
         }
     }
 

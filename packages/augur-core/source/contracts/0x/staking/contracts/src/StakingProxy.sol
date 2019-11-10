@@ -57,9 +57,7 @@ contract StakingProxy is
         // Sanity check that we have a staking contract to call
         address stakingContract_ = stakingContract;
         if (stakingContract_ == NIL_ADDRESS) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.ProxyDestinationCannotBeNilError()
-            );
+            revert();
         }
 
         // Call the staking contract with the provided calldata.
@@ -113,9 +111,7 @@ contract StakingProxy is
 
         // Ensure that a staking contract has been attached to the proxy.
         if (staking == NIL_ADDRESS) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.ProxyDestinationCannotBeNilError()
-            );
+            revert();
         }
 
         // Execute all of the calls encoded in the provided calldata.
@@ -149,35 +145,23 @@ contract StakingProxy is
         // Epoch length must be between 5 and 30 days long
         uint256 _epochDurationInSeconds = epochDurationInSeconds;
         if (_epochDurationInSeconds < 5 days || _epochDurationInSeconds > 30 days) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InvalidParamValueError(
-                    LibStakingRichErrors.InvalidParamValueErrorCodes.InvalidEpochDuration
-            ));
+            revert();
         }
 
         // Alpha must be 0 < x <= 1
         uint32 _cobbDouglasAlphaDenominator = cobbDouglasAlphaDenominator;
         if (cobbDouglasAlphaNumerator > _cobbDouglasAlphaDenominator || _cobbDouglasAlphaDenominator == 0) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InvalidParamValueError(
-                    LibStakingRichErrors.InvalidParamValueErrorCodes.InvalidCobbDouglasAlpha
-            ));
+            revert();
         }
 
         // Weight of delegated stake must be <= 100%
         if (rewardDelegatedStakeWeight > PPM_DENOMINATOR) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InvalidParamValueError(
-                    LibStakingRichErrors.InvalidParamValueErrorCodes.InvalidRewardDelegatedStakeWeight
-            ));
+            revert();
         }
 
         // Minimum stake must be > 1
         if (minimumPoolStake < 2) {
-            LibRichErrors.rrevert(
-                LibStakingRichErrors.InvalidParamValueError(
-                    LibStakingRichErrors.InvalidParamValueErrorCodes.InvalidMinimumPoolStake
-            ));
+            revert();
         }
     }
 

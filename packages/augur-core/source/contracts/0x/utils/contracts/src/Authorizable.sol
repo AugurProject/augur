@@ -60,7 +60,7 @@ contract Authorizable is
         onlyOwner
     {
         if (!authorized[target]) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.TargetNotAuthorizedError(target));
+            revert();
         }
         for (uint256 i = 0; i < authorities.length; i++) {
             if (authorities[i] == target) {
@@ -99,7 +99,7 @@ contract Authorizable is
         view
     {
         if (!authorized[msg.sender]) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.SenderNotAuthorizedError(msg.sender));
+            revert();
         }
     }
 
@@ -110,12 +110,12 @@ contract Authorizable is
     {
         // Ensure that the target is not the zero address.
         if (target == address(0)) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.ZeroCantBeAuthorizedError());
+            revert();
         }
 
         // Ensure that the target is not already authorized.
         if (authorized[target]) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.TargetAlreadyAuthorizedError(target));
+            revert();
         }
 
         authorized[target] = true;
@@ -133,19 +133,13 @@ contract Authorizable is
         internal
     {
         if (!authorized[target]) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.TargetNotAuthorizedError(target));
+            revert();
         }
         if (index >= authorities.length) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.IndexOutOfBoundsError(
-                index,
-                authorities.length
-            ));
+            revert();
         }
         if (authorities[index] != target) {
-            LibRichErrors.rrevert(LibAuthorizableRichErrors.AuthorizedAddressMismatchError(
-                authorities[index],
-                target
-            ));
+            revert();
         }
 
         delete authorized[target];

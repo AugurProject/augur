@@ -4374,15 +4374,195 @@ Allows to get the address for a new proxy contact created via [`createProxyWithN
 
 
 
-### `IRepSymbol`
+### `TestNetDaiJoin`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRepSymbol.getRepSymbol(address,address)"><code class="function-signature">getRepSymbol(address _augur, address _universe)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetDaiJoin.constructor(address,address)"><code class="function-signature">constructor(address vat_, address dai_)</code></a></li><li><a href="#TestNetDaiJoin.mul(uint256,uint256)"><code class="function-signature">mul(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiJoin.join(address,uint256)"><code class="function-signature">join(address urn, uint256 wad)</code></a></li><li><a href="#TestNetDaiJoin.exit(address,uint256)"><code class="function-signature">exit(address usr, uint256 wad)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IRepSymbol.getRepSymbol(address,address)"></a><code class="function-signature">getRepSymbol(address _augur, address _universe) <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiJoin.constructor(address,address)"></a><code class="function-signature">constructor(address vat_, address dai_)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiJoin.mul(uint256,uint256)"></a><code class="function-signature">mul(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiJoin.join(address,uint256)"></a><code class="function-signature">join(address urn, uint256 wad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiJoin.exit(address,uint256)"></a><code class="function-signature">exit(address usr, uint256 wad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IDaiPot`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDaiPot.drip()"><code class="function-signature">drip()</code></a></li><li><a href="#IDaiPot.join(uint256)"><code class="function-signature">join(uint256 wad)</code></a></li><li><a href="#IDaiPot.exit(uint256)"><code class="function-signature">exit(uint256 wad)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IDaiPot.drip()"></a><code class="function-signature">drip()</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IDaiPot.join(uint256)"></a><code class="function-signature">join(uint256 wad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IDaiPot.exit(uint256)"></a><code class="function-signature">exit(uint256 wad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `TestNetDaiPot`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetDaiPot.constructor(address,contract ITime)"><code class="function-signature">constructor(address vat_, contract ITime _time)</code></a></li><li><a href="#TestNetDaiPot.rpow(uint256,uint256,uint256)"><code class="function-signature">rpow(uint256 x, uint256 n, uint256 base)</code></a></li><li><a href="#TestNetDaiPot.rmul(uint256,uint256)"><code class="function-signature">rmul(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiPot.Add(uint256,uint256)"><code class="function-signature">Add(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiPot.Sub(uint256,uint256)"><code class="function-signature">Sub(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiPot.Mul(uint256,uint256)"><code class="function-signature">Mul(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiPot.drip()"><code class="function-signature">drip()</code></a></li><li><a href="#TestNetDaiPot.setDSR(uint256)"><code class="function-signature">setDSR(uint256 _dsr)</code></a></li><li><a href="#TestNetDaiPot.join(uint256)"><code class="function-signature">join(uint256 wad)</code></a></li><li><a href="#TestNetDaiPot.exit(uint256)"><code class="function-signature">exit(uint256 wad)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.constructor(address,contract ITime)"></a><code class="function-signature">constructor(address vat_, contract ITime _time)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.rpow(uint256,uint256,uint256)"></a><code class="function-signature">rpow(uint256 x, uint256 n, uint256 base) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.rmul(uint256,uint256)"></a><code class="function-signature">rmul(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.Add(uint256,uint256)"></a><code class="function-signature">Add(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.Sub(uint256,uint256)"></a><code class="function-signature">Sub(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.Mul(uint256,uint256)"></a><code class="function-signature">Mul(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.drip()"></a><code class="function-signature">drip()</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.setDSR(uint256)"></a><code class="function-signature">setDSR(uint256 _dsr) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.join(uint256)"></a><code class="function-signature">join(uint256 wad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiPot.exit(uint256)"></a><code class="function-signature">exit(uint256 wad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `TestNetDaiVat`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetDaiVat.add(uint256,uint256)"><code class="function-signature">add(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiVat.sub(uint256,uint256)"><code class="function-signature">sub(uint256 x, uint256 y)</code></a></li><li><a href="#TestNetDaiVat.hope(address)"><code class="function-signature">hope(address usr)</code></a></li><li><a href="#TestNetDaiVat.nope(address)"><code class="function-signature">nope(address usr)</code></a></li><li><a href="#TestNetDaiVat.wish(address,address)"><code class="function-signature">wish(address bit, address usr)</code></a></li><li><a href="#TestNetDaiVat.suck(address,address,uint256)"><code class="function-signature">suck(address, address v, uint256 rad)</code></a></li><li><a href="#TestNetDaiVat.move(address,address,uint256)"><code class="function-signature">move(address src, address dst, uint256 rad)</code></a></li><li><a href="#TestNetDaiVat.frob(bytes32,address,address,address,int256,int256)"><code class="function-signature">frob(bytes32 i, address u, address v, address w, int256 dink, int256 dart)</code></a></li><li><a href="#TestNetDaiVat.faucet(address,uint256)"><code class="function-signature">faucet(address _target, uint256 _amount)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.add(uint256,uint256)"></a><code class="function-signature">add(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.sub(uint256,uint256)"></a><code class="function-signature">sub(uint256 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.hope(address)"></a><code class="function-signature">hope(address usr)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.nope(address)"></a><code class="function-signature">nope(address usr)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.wish(address,address)"></a><code class="function-signature">wish(address bit, address usr) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.suck(address,address,uint256)"></a><code class="function-signature">suck(address, address v, uint256 rad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.move(address,address,uint256)"></a><code class="function-signature">move(address src, address dst, uint256 rad)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.frob(bytes32,address,address,address,int256,int256)"></a><code class="function-signature">frob(bytes32 i, address u, address v, address w, int256 dink, int256 dart)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestNetDaiVat.faucet(address,uint256)"></a><code class="function-signature">faucet(address _target, uint256 _amount)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -4394,17 +4574,11 @@ Allows to get the address for a new proxy contact created via [`createProxyWithN
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse,address)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse, address _erc1820RegistryAddress)</code></a></li><li><a href="#ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.initialize1820InterfaceImplementations()"><code class="function-signature">initialize1820InterfaceImplementations()</code></a></li><li class="inherited"><a href="#StandardToken.noHooksTransfer(address,uint256)"><code class="function-signature">noHooksTransfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.internalNoHooksTransfer(address,address,uint256)"><code class="function-signature">internalNoHooksTransfer(address _from, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.increaseApproval(address,uint256)"><code class="function-signature">increaseApproval(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#StandardToken.decreaseApproval(address,uint256)"><code class="function-signature">decreaseApproval(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC777.granularity()"><code class="function-signature">granularity()</code></a></li><li class="inherited"><a href="#ERC777.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#ERC777.balanceOf(address)"><code class="function-signature">balanceOf(address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.send(address,uint256,bytes)"><code class="function-signature">send(address recipient, uint256 amount, bytes data)</code></a></li><li class="inherited"><a href="#ERC777.transfer(address,uint256)"><code class="function-signature">transfer(address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._transfer(address,address,uint256,bool)"><code class="function-signature">_transfer(address from, address recipient, uint256 amount, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777.isOperatorFor(address,address)"><code class="function-signature">isOperatorFor(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.authorizeOperator(address)"><code class="function-signature">authorizeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.revokeOperator(address)"><code class="function-signature">revokeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.defaultOperators()"><code class="function-signature">defaultOperators()</code></a></li><li class="inherited"><a href="#ERC777.operatorSend(address,address,uint256,bytes,bytes)"><code class="function-signature">operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#ERC777.allowance(address,address)"><code class="function-signature">allowance(address holder, address spender)</code></a></li><li class="inherited"><a href="#ERC777.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 value)</code></a></li><li class="inherited"><a href="#ERC777.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address holder, address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._mint(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_mint(address operator, address account, uint256 amount, bytes userData, bytes operatorData, bool requireReceptionAck)</code></a></li><li class="inherited"><a href="#ERC777._burn(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_burn(address operator, address from, uint256 amount, bytes data, bytes operatorData, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777._approve(address,address,uint256)"><code class="function-signature">_approve(address holder, address spender, uint256 value)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li><li class="inherited"><a href="#IERC777.Sent(address,address,address,uint256,bytes,bytes)"><code class="function-signature">Sent(address operator, address from, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Minted(address,address,uint256,bytes,bytes)"><code class="function-signature">Minted(address operator, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Burned(address,address,uint256,bytes,bytes)"><code class="function-signature">Burned(address operator, address from, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.AuthorizedOperator(address,address)"><code class="function-signature">AuthorizedOperator(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#IERC777.RevokedOperator(address,address)"><code class="function-signature">RevokedOperator(address operator, address tokenHolder)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse,address)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse, address _erc1820RegistryAddress)</code></a></li><li><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.initialize1820InterfaceImplementations()"><code class="function-signature">initialize1820InterfaceImplementations()</code></a></li><li class="inherited"><a href="#StandardToken.noHooksTransfer(address,uint256)"><code class="function-signature">noHooksTransfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.internalNoHooksTransfer(address,address,uint256)"><code class="function-signature">internalNoHooksTransfer(address _from, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.increaseApproval(address,uint256)"><code class="function-signature">increaseApproval(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#StandardToken.decreaseApproval(address,uint256)"><code class="function-signature">decreaseApproval(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC777.granularity()"><code class="function-signature">granularity()</code></a></li><li class="inherited"><a href="#ERC777.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#ERC777.balanceOf(address)"><code class="function-signature">balanceOf(address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.send(address,uint256,bytes)"><code class="function-signature">send(address recipient, uint256 amount, bytes data)</code></a></li><li class="inherited"><a href="#ERC777.transfer(address,uint256)"><code class="function-signature">transfer(address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._transfer(address,address,uint256,bool)"><code class="function-signature">_transfer(address from, address recipient, uint256 amount, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777.isOperatorFor(address,address)"><code class="function-signature">isOperatorFor(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.authorizeOperator(address)"><code class="function-signature">authorizeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.revokeOperator(address)"><code class="function-signature">revokeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.defaultOperators()"><code class="function-signature">defaultOperators()</code></a></li><li class="inherited"><a href="#ERC777.operatorSend(address,address,uint256,bytes,bytes)"><code class="function-signature">operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#ERC777.allowance(address,address)"><code class="function-signature">allowance(address holder, address spender)</code></a></li><li class="inherited"><a href="#ERC777.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 value)</code></a></li><li class="inherited"><a href="#ERC777.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address holder, address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._mint(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_mint(address operator, address account, uint256 amount, bytes userData, bytes operatorData, bool requireReceptionAck)</code></a></li><li class="inherited"><a href="#ERC777._burn(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_burn(address operator, address from, uint256 amount, bytes data, bytes operatorData, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777._approve(address,address,uint256)"><code class="function-signature">_approve(address holder, address spender, uint256 value)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li><li class="inherited"><a href="#IERC777.Sent(address,address,address,uint256,bytes,bytes)"><code class="function-signature">Sent(address operator, address from, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Minted(address,address,uint256,bytes,bytes)"><code class="function-signature">Minted(address operator, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Burned(address,address,uint256,bytes,bytes)"><code class="function-signature">Burned(address operator, address from, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.AuthorizedOperator(address,address)"><code class="function-signature">AuthorizedOperator(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#IERC777.RevokedOperator(address,address)"><code class="function-signature">RevokedOperator(address operator, address tokenHolder)</code></a></li></ul></div>
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="ReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse,address)"></a><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ReputationToken.symbol()"></a><code class="function-signature">symbol() <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -4519,7 +4693,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse,address)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse, address _erc1820RegistryAddress)</code></a></li><li><a href="#TestNetReputationToken.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li class="inherited"><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li class="inherited"><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.initialize1820InterfaceImplementations()"><code class="function-signature">initialize1820InterfaceImplementations()</code></a></li><li class="inherited"><a href="#StandardToken.noHooksTransfer(address,uint256)"><code class="function-signature">noHooksTransfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.internalNoHooksTransfer(address,address,uint256)"><code class="function-signature">internalNoHooksTransfer(address _from, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.increaseApproval(address,uint256)"><code class="function-signature">increaseApproval(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#StandardToken.decreaseApproval(address,uint256)"><code class="function-signature">decreaseApproval(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC777.granularity()"><code class="function-signature">granularity()</code></a></li><li class="inherited"><a href="#ERC777.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#ERC777.balanceOf(address)"><code class="function-signature">balanceOf(address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.send(address,uint256,bytes)"><code class="function-signature">send(address recipient, uint256 amount, bytes data)</code></a></li><li class="inherited"><a href="#ERC777.transfer(address,uint256)"><code class="function-signature">transfer(address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._transfer(address,address,uint256,bool)"><code class="function-signature">_transfer(address from, address recipient, uint256 amount, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777.isOperatorFor(address,address)"><code class="function-signature">isOperatorFor(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.authorizeOperator(address)"><code class="function-signature">authorizeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.revokeOperator(address)"><code class="function-signature">revokeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.defaultOperators()"><code class="function-signature">defaultOperators()</code></a></li><li class="inherited"><a href="#ERC777.operatorSend(address,address,uint256,bytes,bytes)"><code class="function-signature">operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#ERC777.allowance(address,address)"><code class="function-signature">allowance(address holder, address spender)</code></a></li><li class="inherited"><a href="#ERC777.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 value)</code></a></li><li class="inherited"><a href="#ERC777.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address holder, address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._mint(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_mint(address operator, address account, uint256 amount, bytes userData, bytes operatorData, bool requireReceptionAck)</code></a></li><li class="inherited"><a href="#ERC777._burn(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_burn(address operator, address from, uint256 amount, bytes data, bytes operatorData, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777._approve(address,address,uint256)"><code class="function-signature">_approve(address holder, address spender, uint256 value)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li><li class="inherited"><a href="#IERC777.Sent(address,address,address,uint256,bytes,bytes)"><code class="function-signature">Sent(address operator, address from, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Minted(address,address,uint256,bytes,bytes)"><code class="function-signature">Minted(address operator, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Burned(address,address,uint256,bytes,bytes)"><code class="function-signature">Burned(address operator, address from, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.AuthorizedOperator(address,address)"><code class="function-signature">AuthorizedOperator(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#IERC777.RevokedOperator(address,address)"><code class="function-signature">RevokedOperator(address operator, address tokenHolder)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse,address)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse, address _erc1820RegistryAddress)</code></a></li><li><a href="#TestNetReputationToken.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li class="inherited"><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.initialize1820InterfaceImplementations()"><code class="function-signature">initialize1820InterfaceImplementations()</code></a></li><li class="inherited"><a href="#StandardToken.noHooksTransfer(address,uint256)"><code class="function-signature">noHooksTransfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.internalNoHooksTransfer(address,address,uint256)"><code class="function-signature">internalNoHooksTransfer(address _from, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#StandardToken.increaseApproval(address,uint256)"><code class="function-signature">increaseApproval(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#StandardToken.decreaseApproval(address,uint256)"><code class="function-signature">decreaseApproval(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC777.granularity()"><code class="function-signature">granularity()</code></a></li><li class="inherited"><a href="#ERC777.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#ERC777.balanceOf(address)"><code class="function-signature">balanceOf(address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.send(address,uint256,bytes)"><code class="function-signature">send(address recipient, uint256 amount, bytes data)</code></a></li><li class="inherited"><a href="#ERC777.transfer(address,uint256)"><code class="function-signature">transfer(address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._transfer(address,address,uint256,bool)"><code class="function-signature">_transfer(address from, address recipient, uint256 amount, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777.isOperatorFor(address,address)"><code class="function-signature">isOperatorFor(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#ERC777.authorizeOperator(address)"><code class="function-signature">authorizeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.revokeOperator(address)"><code class="function-signature">revokeOperator(address operator)</code></a></li><li class="inherited"><a href="#ERC777.defaultOperators()"><code class="function-signature">defaultOperators()</code></a></li><li class="inherited"><a href="#ERC777.operatorSend(address,address,uint256,bytes,bytes)"><code class="function-signature">operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#ERC777.allowance(address,address)"><code class="function-signature">allowance(address holder, address spender)</code></a></li><li class="inherited"><a href="#ERC777.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 value)</code></a></li><li class="inherited"><a href="#ERC777.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address holder, address recipient, uint256 amount)</code></a></li><li class="inherited"><a href="#ERC777._mint(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_mint(address operator, address account, uint256 amount, bytes userData, bytes operatorData, bool requireReceptionAck)</code></a></li><li class="inherited"><a href="#ERC777._burn(address,address,uint256,bytes,bytes,bool)"><code class="function-signature">_burn(address operator, address from, uint256 amount, bytes data, bytes operatorData, bool callHooks)</code></a></li><li class="inherited"><a href="#ERC777._approve(address,address,uint256)"><code class="function-signature">_approve(address holder, address spender, uint256 value)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li><li class="inherited"><a href="#IERC777.Sent(address,address,address,uint256,bytes,bytes)"><code class="function-signature">Sent(address operator, address from, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Minted(address,address,uint256,bytes,bytes)"><code class="function-signature">Minted(address operator, address to, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.Burned(address,address,uint256,bytes,bytes)"><code class="function-signature">Burned(address operator, address from, uint256 amount, bytes data, bytes operatorData)</code></a></li><li class="inherited"><a href="#IERC777.AuthorizedOperator(address,address)"><code class="function-signature">AuthorizedOperator(address operator, address tokenHolder)</code></a></li><li class="inherited"><a href="#IERC777.RevokedOperator(address,address)"><code class="function-signature">RevokedOperator(address operator, address tokenHolder)</code></a></li></ul></div>
 
 
 
@@ -4662,399 +4836,6 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 <h4><a class="anchor" aria-hidden="true" id="WarpSync.getCreationReward(contract IUniverse)"></a><code class="function-signature">getCreationReward(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
-
-
-
-
-
-### `IExchange`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IExchange.getOrderInfo(struct IExchange.Order)"><code class="function-signature">getOrderInfo(struct IExchange.Order order)</code></a></li><li><a href="#IExchange.fillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#IExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IExchange.getOrderInfo(struct IExchange.Order)"></a><code class="function-signature">getOrderInfo(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.OrderInfo</span></code><span class="function-visibility">public</span></h4>
-
-Gets information about an order: status, hash, and amount filled.
- @param order Order to gather information on.
- @return OrderInfo Information about the order and its state.
-         See LibOrder.OrderInfo for a complete description.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IExchange.fillOrder(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
-
-Fills the input order.
- @param order Order struct containing order specifications.
- @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
-
-Fills an order with specified parameters and ECDSA signature.
-      Returns false if the transaction would otherwise revert.
- @param order Order struct containing order specifications.
- @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
-
-
-
-
-
-### `IWallet`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWallet.isValidSignature(bytes32,bytes)"><code class="function-signature">isValidSignature(bytes32 hash, bytes signature)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IWallet.isValidSignature(bytes32,bytes)"></a><code class="function-signature">isValidSignature(bytes32 hash, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-Verifies that a signature is valid.
- @param hash Message hash that is signed.
- @param signature Proof of signing.
- @return Validity of order signature.
-
-
-
-
-
-### `ReentrancyGuard`
-
-
-
-<div class="contract-index"></div>
-
-
-
-
-
-### `ZeroXExchange`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXExchange.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#ZeroXExchange.addFillResults(struct IExchange.FillResults,struct IExchange.FillResults)"><code class="function-signature">addFillResults(struct IExchange.FillResults totalFillResults, struct IExchange.FillResults singleFillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.abiEncodeFillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">abiEncodeFillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.fillOrder(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)"><code class="function-signature">executeTransaction(uint256 salt, address signerAddress, bytes data, bytes signature)</code></a></li><li><a href="#ZeroXExchange.updateFilledState(struct IExchange.Order,address,bytes32,uint256,struct IExchange.FillResults)"><code class="function-signature">updateFilledState(struct IExchange.Order, address, bytes32 orderHash, uint256 orderTakerAssetFilledAmount, struct IExchange.FillResults fillResults)</code></a></li><li><a href="#ZeroXExchange.fillOrderInternal(struct IExchange.Order,uint256,bytes)"><code class="function-signature">fillOrderInternal(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature)</code></a></li><li><a href="#ZeroXExchange.assertValidFill(struct IExchange.Order,struct IExchange.OrderInfo,uint256,uint256,uint256)"><code class="function-signature">assertValidFill(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, uint256 takerAssetFillAmount, uint256 takerAssetFilledAmount, uint256 makerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.calculateFillResults(struct IExchange.Order,uint256)"><code class="function-signature">calculateFillResults(struct IExchange.Order order, uint256 takerAssetFilledAmount)</code></a></li><li><a href="#ZeroXExchange.hashZeroExTransaction(uint256,address,bytes)"><code class="function-signature">hashZeroExTransaction(uint256 salt, address signerAddress, bytes data)</code></a></li><li><a href="#ZeroXExchange.getOrderInfo(struct IExchange.Order)"><code class="function-signature">getOrderInfo(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.getOrderHash(struct IExchange.Order)"><code class="function-signature">getOrderHash(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashOrder(struct IExchange.Order)"><code class="function-signature">hashOrder(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.hashEIP712Message(bytes32)"><code class="function-signature">hashEIP712Message(bytes32 hashStruct)</code></a></li><li><a href="#ZeroXExchange.getCurrentContextAddress()"><code class="function-signature">getCurrentContextAddress()</code></a></li><li><a href="#ZeroXExchange.assertFillableOrder(struct IExchange.Order,struct IExchange.OrderInfo,address,bytes)"><code class="function-signature">assertFillableOrder(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, address takerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.safeGetPartialAmountFloor(uint256,uint256,uint256)"><code class="function-signature">safeGetPartialAmountFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.isRoundingErrorFloor(uint256,uint256,uint256)"><code class="function-signature">isRoundingErrorFloor(uint256 numerator, uint256 denominator, uint256 target)</code></a></li><li><a href="#ZeroXExchange.dispatchTransferFrom(bytes,address,address,uint256)"><code class="function-signature">dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.isValidSignature(bytes32,address,bytes)"><code class="function-signature">isValidSignature(bytes32 hash, address signerAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.popLastByte(bytes)"><code class="function-signature">popLastByte(bytes b)</code></a></li><li><a href="#ZeroXExchange.readBytes32(bytes,uint256)"><code class="function-signature">readBytes32(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.isValidWalletSignature(bytes32,address,bytes)"><code class="function-signature">isValidWalletSignature(bytes32 hash, address walletAddress, bytes signature)</code></a></li><li><a href="#ZeroXExchange.transferFrom(bytes,address,address,uint256)"><code class="function-signature">transferFrom(bytes assetData, address from, address to, uint256 amount)</code></a></li><li><a href="#ZeroXExchange.decodeERC1155AssetData(bytes)"><code class="function-signature">decodeERC1155AssetData(bytes assetData)</code></a></li><li><a href="#ZeroXExchange.sliceDestructive(bytes,uint256,uint256)"><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to)</code></a></li><li><a href="#ZeroXExchange.readBytes4(bytes,uint256)"><code class="function-signature">readBytes4(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.readAddress(bytes,uint256)"><code class="function-signature">readAddress(bytes b, uint256 index)</code></a></li><li><a href="#ZeroXExchange.cancelOrder(struct IExchange.Order)"><code class="function-signature">cancelOrder(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.batchCancelOrders(struct IExchange.Order[])"><code class="function-signature">batchCancelOrders(struct IExchange.Order[] orders)</code></a></li><li><a href="#ZeroXExchange.cancelOrderInternal(struct IExchange.Order)"><code class="function-signature">cancelOrderInternal(struct IExchange.Order order)</code></a></li><li><a href="#ZeroXExchange.assertValidCancel(struct IExchange.Order,struct IExchange.OrderInfo)"><code class="function-signature">assertValidCancel(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo)</code></a></li><li><a href="#ZeroXExchange.updateCancelledState(struct IExchange.Order,bytes32)"><code class="function-signature">updateCancelledState(struct IExchange.Order order, bytes32 orderHash)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.addFillResults(struct IExchange.FillResults,struct IExchange.FillResults)"></a><code class="function-signature">addFillResults(struct IExchange.FillResults totalFillResults, struct IExchange.FillResults singleFillResults)</code><span class="function-visibility">internal</span></h4>
-
-Adds properties of both FillResults instances.
-      Modifies the first FillResults instance specified.
- @param totalFillResults Fill results instance that will be added onto.
- @param singleFillResults Fill results instance that will be added to totalFillResults.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.fillOrderNoThrow(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrderNoThrow(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
-
-Fills the input order.
-      Returns false if the transaction would otherwise revert.
- @param order Order struct containing order specifications.
- @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.abiEncodeFillOrder(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">abiEncodeFillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
-
-ABI encodes calldata for [`fillOrder`](.#ZeroXExchange.fillOrder(struct%20IExchange.Order,uint256,bytes)).
- @param order Order struct containing order specifications.
- @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
- @return ABI encoded calldata for [`fillOrder`](.#ZeroXExchange.fillOrder(struct%20IExchange.Order,uint256,bytes)).
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.fillOrder(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrder(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">public</span></h4>
-
-Fills the input order.
- @param order Order struct containing order specifications.
- @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)"></a><code class="function-signature">executeTransaction(uint256 salt, address signerAddress, bytes data, bytes signature)</code><span class="function-visibility">internal</span></h4>
-
-Executes an exchange method call in the context of signer.
- @param salt Arbitrary number to ensure uniqueness of transaction hash.
- @param signerAddress Address of transaction signer.
- @param data AbiV2 encoded calldata.
- @param signature Proof of signer transaction by signer.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.updateFilledState(struct IExchange.Order,address,bytes32,uint256,struct IExchange.FillResults)"></a><code class="function-signature">updateFilledState(struct IExchange.Order, address, bytes32 orderHash, uint256 orderTakerAssetFilledAmount, struct IExchange.FillResults fillResults)</code><span class="function-visibility">internal</span></h4>
-
-Updates state with results of a fill order.
- @param orderTakerAssetFilledAmount Amount of order already filled.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.fillOrderInternal(struct IExchange.Order,uint256,bytes)"></a><code class="function-signature">fillOrderInternal(struct IExchange.Order order, uint256 takerAssetFillAmount, bytes signature) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">internal</span></h4>
-
-Fills the input order.
- @param order Order struct containing order specifications.
- @param takerAssetFillAmount Desired amount of takerAsset to sell.
- @param signature Proof that order has been created by maker.
- @return Amounts filled and fees paid by maker and taker.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.assertValidFill(struct IExchange.Order,struct IExchange.OrderInfo,uint256,uint256,uint256)"></a><code class="function-signature">assertValidFill(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, uint256 takerAssetFillAmount, uint256 takerAssetFilledAmount, uint256 makerAssetFilledAmount)</code><span class="function-visibility">internal</span></h4>
-
-Validates context for fillOrder. Succeeds or throws.
- @param order to be filled.
- @param orderInfo OrderStatus, orderHash, and amount already filled of order.
- @param takerAssetFillAmount Desired amount of order to fill by taker.
- @param takerAssetFilledAmount Amount of takerAsset that will be filled.
- @param makerAssetFilledAmount Amount of makerAsset that will be transfered.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.calculateFillResults(struct IExchange.Order,uint256)"></a><code class="function-signature">calculateFillResults(struct IExchange.Order order, uint256 takerAssetFilledAmount) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.FillResults</span></code><span class="function-visibility">internal</span></h4>
-
-Calculates amounts filled and fees paid by maker and taker.
- @param order to be filled.
- @param takerAssetFilledAmount Amount of takerAsset that will be filled.
- @return fillResults Amounts filled and fees paid by maker and taker.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.hashZeroExTransaction(uint256,address,bytes)"></a><code class="function-signature">hashZeroExTransaction(uint256 salt, address signerAddress, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
-
-Calculates EIP712 hash of the Transaction.
- @param salt Arbitrary number to ensure uniqueness of transaction hash.
- @param signerAddress Address of transaction signer.
- @param data AbiV2 encoded calldata.
- @return EIP712 hash of the Transaction.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.getOrderInfo(struct IExchange.Order)"></a><code class="function-signature">getOrderInfo(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.OrderInfo</span></code><span class="function-visibility">public</span></h4>
-
-Gets information about an order: status, hash, and amount filled.
- @param order Order to gather information on.
- @return OrderInfo Information about the order and its state.
-         See LibOrder.OrderInfo for a complete description.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.getOrderHash(struct IExchange.Order)"></a><code class="function-signature">getOrderHash(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
-
-Calculates Keccak-256 hash of the order.
- @param order The order structure.
- @return Keccak-256 EIP712 hash of the order.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.hashOrder(struct IExchange.Order)"></a><code class="function-signature">hashOrder(struct IExchange.Order order) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
-
-Calculates EIP712 hash of the order.
- @param order The order structure.
- @return EIP712 hash of the order.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.hashEIP712Message(bytes32)"></a><code class="function-signature">hashEIP712Message(bytes32 hashStruct) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
-
-Calculates EIP712 encoding for a hash struct in this EIP712 Domain.
- @param hashStruct The EIP712 hash struct.
- @return EIP712 hash applied to this EIP712 Domain.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.getCurrentContextAddress()"></a><code class="function-signature">getCurrentContextAddress() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
-
-The current function will be called in the context of this address (either 0x transaction signer or `msg.sender`).
-      If calling a fill function, this address will represent the taker.
-      If calling a cancel function, this address will represent the maker.
- @return Signer of 0x transaction if entry point is [`executeTransaction`](.#ZeroXExchange.executeTransaction(uint256,address,bytes,bytes)).
-         `msg.sender` if entry point is any other function.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.assertFillableOrder(struct IExchange.Order,struct IExchange.OrderInfo,address,bytes)"></a><code class="function-signature">assertFillableOrder(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo, address takerAddress, bytes signature)</code><span class="function-visibility">internal</span></h4>
-
-Validates context for fillOrder. Succeeds or throws.
- @param order to be filled.
- @param orderInfo OrderStatus, orderHash, and amount already filled of order.
- @param takerAddress Address of order taker.
- @param signature Proof that the orders was created by its maker.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.safeGetPartialAmountFloor(uint256,uint256,uint256)"></a><code class="function-signature">safeGetPartialAmountFloor(uint256 numerator, uint256 denominator, uint256 target) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-Calculates partial value given a numerator and denominator rounded down.
-      Reverts if rounding error is &gt;= 0.1%
- @param numerator Numerator.
- @param denominator Denominator.
- @param target Value to calculate partial of.
- @return Partial value of target rounded down.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.isRoundingErrorFloor(uint256,uint256,uint256)"></a><code class="function-signature">isRoundingErrorFloor(uint256 numerator, uint256 denominator, uint256 target) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-Checks if rounding error &gt;= 0.1% when rounding down.
- @param numerator Numerator.
- @param denominator Denominator.
- @param target Value to multiply with numerator/denominator.
- @return Rounding error is present.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.dispatchTransferFrom(bytes,address,address,uint256)"></a><code class="function-signature">dispatchTransferFrom(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">internal</span></h4>
-
-Forwards arguments to assetProxy and calls [`transferFrom`](.#ZeroXExchange.transferFrom(bytes,address,address,uint256)). Either succeeds or throws.
- @param assetData Byte array encoded for the asset.
- @param from Address to transfer token from.
- @param to Address to transfer token to.
- @param amount Amount of token to transfer.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.isValidSignature(bytes32,address,bytes)"></a><code class="function-signature">isValidSignature(bytes32 hash, address signerAddress, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-Verifies that a hash has been signed by the given signer.
- @param hash Any 32 byte hash.
- @param signerAddress Address that should have signed the given hash.
- @param signature Proof that the hash has been signed by signer.
- @return True if the address recovered from the provided signature matches the input signer address.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.popLastByte(bytes)"></a><code class="function-signature">popLastByte(bytes b) <span class="return-arrow">→</span> <span class="return-type">bytes1</span></code><span class="function-visibility">internal</span></h4>
-
-Pops the last byte off of a byte array by modifying its length.
- @param b Byte array that will be modified.
- @return The byte that was popped off.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.readBytes32(bytes,uint256)"></a><code class="function-signature">readBytes32(bytes b, uint256 index) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
-
-Reads a bytes32 value from a position in a byte array.
- @param b Byte array containing a bytes32 value.
- @param index Index in byte array of bytes32 value.
- @return bytes32 value from byte array.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.isValidWalletSignature(bytes32,address,bytes)"></a><code class="function-signature">isValidWalletSignature(bytes32 hash, address walletAddress, bytes signature) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-Verifies signature using logic defined by Wallet contract.
- @param hash Any 32 byte hash.
- @param walletAddress Address that should have signed the given hash
-                      and defines its own signature verification method.
- @param signature Proof that the hash has been signed by signer.
- @return True if signature is valid for given wallet..
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.transferFrom(bytes,address,address,uint256)"></a><code class="function-signature">transferFrom(bytes assetData, address from, address to, uint256 amount)</code><span class="function-visibility">external</span></h4>
-
-Transfers assets. Either succeeds or throws.
- @param assetData Encoded byte array.
- @param from Address to transfer asset from.
- @param to Address to transfer asset to.
- @param amount Amount of asset to transfer.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.decodeERC1155AssetData(bytes)"></a><code class="function-signature">decodeERC1155AssetData(bytes assetData) <span class="return-arrow">→</span> <span class="return-type">bytes4,address,uint256[],uint256[],bytes</span></code><span class="function-visibility">public</span></h4>
-
-Decode ERC-1155 asset data from the format described in the AssetProxy contract specification.
- @param assetData AssetProxy-compliant asset data describing an ERC-1155 set of assets.
- @return The ERC-1155 AssetProxy identifier, the address of the ERC-1155
- contract hosting the assets, an array of the identifiers of the
- assets to be traded, an array of asset amounts to be traded, and
- callback data.  Each element of the arrays corresponds to the
- same-indexed element of the other array.  Return values specified as
- `memory` are returned as pointers to locations within the memory of
- the input parameter `assetData`.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.sliceDestructive(bytes,uint256,uint256)"></a><code class="function-signature">sliceDestructive(bytes b, uint256 from, uint256 to) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.readBytes4(bytes,uint256)"></a><code class="function-signature">readBytes4(bytes b, uint256 index) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">internal</span></h4>
-
-Reads an unpadded bytes4 value from a position in a byte array.
- @param b Byte array containing a bytes4 value.
- @param index Index in byte array of bytes4 value.
- @return bytes4 value from byte array.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.readAddress(bytes,uint256)"></a><code class="function-signature">readAddress(bytes b, uint256 index) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
-
-Reads an address from a position in a byte array.
- @param b Byte array containing an address.
- @param index Index in byte array of address.
- @return address from byte array.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.cancelOrder(struct IExchange.Order)"></a><code class="function-signature">cancelOrder(struct IExchange.Order order)</code><span class="function-visibility">public</span></h4>
-
-After calling, the order can not be filled anymore.
-      Throws if order is invalid or sender does not have permission to cancel.
- @param order Order to cancel. Order must be OrderStatus.FILLABLE.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.batchCancelOrders(struct IExchange.Order[])"></a><code class="function-signature">batchCancelOrders(struct IExchange.Order[] orders)</code><span class="function-visibility">public</span></h4>
-
-Synchronously cancels multiple orders in a single transaction.
- @param orders Array of order specifications.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.cancelOrderInternal(struct IExchange.Order)"></a><code class="function-signature">cancelOrderInternal(struct IExchange.Order order)</code><span class="function-visibility">internal</span></h4>
-
-After calling, the order can not be filled anymore.
-      Throws if order is invalid or sender does not have permission to cancel.
- @param order Order to cancel. Order must be OrderStatus.FILLABLE.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.assertValidCancel(struct IExchange.Order,struct IExchange.OrderInfo)"></a><code class="function-signature">assertValidCancel(struct IExchange.Order order, struct IExchange.OrderInfo orderInfo)</code><span class="function-visibility">internal</span></h4>
-
-Validates context for cancelOrder. Succeeds or throws.
- @param order to be cancelled.
- @param orderInfo OrderStatus, orderHash, and amount already filled of order.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXExchange.updateCancelledState(struct IExchange.Order,bytes32)"></a><code class="function-signature">updateCancelledState(struct IExchange.Order order, bytes32 orderHash)</code><span class="function-visibility">internal</span></h4>
-
-Updates state with results of cancelling an order.
-      State is only updated if the order is currently fillable.
-      Otherwise, updating state would have no effect.
- @param order that was cancelled.
- @param orderHash Hash of order that was cancelled.
 
 
 

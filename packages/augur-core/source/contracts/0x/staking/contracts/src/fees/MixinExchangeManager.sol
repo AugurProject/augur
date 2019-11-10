@@ -32,9 +32,7 @@ contract MixinExchangeManager is
     /// @dev Asserts that the call is coming from a valid exchange.
     modifier onlyExchange() {
         if (!validExchanges[msg.sender]) {
-            LibRichErrors.rrevert(LibStakingRichErrors.OnlyCallableByExchangeError(
-                msg.sender
-            ));
+            revert();
         }
         _;
     }
@@ -46,10 +44,7 @@ contract MixinExchangeManager is
         onlyAuthorized
     {
         if (validExchanges[addr]) {
-            LibRichErrors.rrevert(LibStakingRichErrors.ExchangeManagerError(
-                LibStakingRichErrors.ExchangeManagerErrorCodes.ExchangeAlreadyRegistered,
-                addr
-            ));
+            revert();
         }
         validExchanges[addr] = true;
         emit ExchangeAdded(addr);
@@ -62,10 +57,7 @@ contract MixinExchangeManager is
         onlyAuthorized
     {
         if (!validExchanges[addr]) {
-            LibRichErrors.rrevert(LibStakingRichErrors.ExchangeManagerError(
-                LibStakingRichErrors.ExchangeManagerErrorCodes.ExchangeNotRegistered,
-                addr
-            ));
+            revert();
         }
         validExchanges[addr] = false;
         emit ExchangeRemoved(addr);
