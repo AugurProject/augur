@@ -6,8 +6,6 @@ import {
   LargeSubheader,
   SmallSubheader,
   MediumSubheader,
-  DaiGraphic,
-  TestBet,
   LinkContentSection,
   Stepper,
 } from 'modules/modal/common';
@@ -20,35 +18,32 @@ interface OnboardingProps {
   buttons: DefaultButtonProps[];
   largeHeader?: string;
   smallHeader?: string;
-  daiGraphic?: boolean;
   mediumHeader?: string;
   linkContent?: LinkContent[];
-  testBet?: boolean;
   currentStep?: number;
+  icon: React.ReactNode;
 }
 
 export const Onboarding = ({
   largeHeader,
   buttons,
   smallHeader,
-  daiGraphic,
   mediumHeader,
   linkContent,
-  testBet,
   currentStep,
+  icon,
 }: OnboardingProps) => (
   <div className={Styles.Onboarding}>
     <main>
+      {icon && <div>{icon}</div>}
       {largeHeader && <LargeSubheader text={largeHeader} />}
       {smallHeader && <SmallSubheader text={smallHeader} />}
-      {daiGraphic && <DaiGraphic />}
-      {testBet && <TestBet />}
       {mediumHeader && <MediumSubheader text={mediumHeader} />}
       {linkContent && <LinkContentSection linkContent={linkContent} />}
     </main>
     <div>
       {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-      {currentStep && <Stepper currentStep={currentStep} maxSteps={3} /> }
+      {currentStep && <Stepper currentStep={currentStep} maxSteps={4} /> }
     </div>
   </div>
 );

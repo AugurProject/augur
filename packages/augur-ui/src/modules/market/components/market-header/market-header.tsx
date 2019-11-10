@@ -7,6 +7,7 @@ import {
   TwoArrowsOutline,
   LeftChevron,
   CopyAlternateIcon,
+  TemplateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
@@ -28,6 +29,7 @@ import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints } from 'modules/types';
 import Clipboard from 'clipboard';
+import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
@@ -40,13 +42,15 @@ interface MarketHeaderProps {
   currentTime: number;
   marketType: string;
   scalarDenomination: string;
-  resolutionSource: any;
   isLogged: boolean;
   toggleFavorite: Function;
   isFavorite: boolean;
   history: History;
   preview?: boolean;
   reportingBarShowing: boolean;
+  next: Function;
+  back: Function;
+  showTutorial?: boolean;
 }
 
 interface MarketHeaderState {
@@ -60,7 +64,6 @@ export default class MarketHeader extends Component<
 > {
   static defaultProps = {
     scalarDenomination: null,
-    resolutionSource: 'General knowledge',
     marketType: null,
     currentTime: 0,
     isFavorite: false,
@@ -129,7 +132,6 @@ export default class MarketHeader extends Component<
     const {
       description,
       marketType,
-      resolutionSource,
       minPrice,
       maxPrice,
       scalarDenomination,
@@ -141,6 +143,9 @@ export default class MarketHeader extends Component<
       preview,
       reportingBarShowing,
       toggleFavorite,
+      showTutorial,
+      next,
+      back
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -190,6 +195,7 @@ export default class MarketHeader extends Component<
                     {LeftChevron} Back
                   </button>
                   <MarketTypeLabel marketType={marketType} />
+                  {market.isTemplate && <>{TemplateIcon}</>}
                 </WordTrail>
                 <SocialMediaButtons marketAddress={market.id} marketDescription={description} />
                 <div id="copy_marketId" data-clipboard-text={market.id}>
@@ -220,10 +226,6 @@ export default class MarketHeader extends Component<
             <div className={Styles.MainValues}>
               <div>
                 <h1>{description}</h1>
-                <div className={Styles.Details}>
-                  <h4>Resolution Source</h4>
-                  <span>{resolutionSource}</span>
-                </div>
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Additional Details</h4>

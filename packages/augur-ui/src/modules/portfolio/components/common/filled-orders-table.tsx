@@ -4,7 +4,6 @@ import React from 'react';
 
 import { formatShares } from 'utils/format-number';
 import { MarketData } from 'modules/types';
-import MarketLink from 'modules/market/components/market-link/market-link';
 import {
   LinearPropertyLabel,
   LinearPropertyViewTransaction,
@@ -13,6 +12,7 @@ import {
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/filled-orders-table.styles.less';
+import MarketTitle from 'modules/market/containers/market-title';
 
 export interface FilledOrdersTableProps {
   filledOrder: MarketData;
@@ -25,9 +25,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
     <div className={Styles.FilledOrders}>
       <div>
         {showMarketInfo && (
-          <MarketLink id={filledOrder.marketId}>
-            {filledOrder.marketDescription}
-          </MarketLink>
+          <MarketTitle id={filledOrder.marketId} />
         )}
         <ul>
           <li>Filled</li>

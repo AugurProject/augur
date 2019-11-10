@@ -6,6 +6,11 @@ import {
   MetaMask,
   Portis,
   Trezor,
+  CategorySports,
+  CategoryPolitics,
+  CategoryEntertainment,
+  CategoryFinance,
+  CategoryCrypto,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
@@ -18,6 +23,8 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 export const ETH = 'ETH';
 export const REP = 'REP';
 export const DAI = 'DAI';
+
+export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
@@ -92,10 +99,14 @@ export const WALLET_TYPE = {
 };
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
-export const SIGNIN_LOADING_TEXT_PORTIS = 'Follow instructions in the Portis window.';
-export const SIGNIN_LOADING_TEXT_FORTMATIC = 'Follow instructions in the Fortmatic window.';
-export const SIGNIN_LOADING_TEXT_TORUS = 'Follow instructions in the Tor.us window.';
-export const SIGNIN_SIGN_WALLET = 'Your wallet will ask you to digitally sign in to link it with Augur';
+export const SIGNIN_LOADING_TEXT_PORTIS =
+  'Follow instructions in the Portis window.';
+export const SIGNIN_LOADING_TEXT_FORTMATIC =
+  'Follow instructions in the Fortmatic window.';
+export const SIGNIN_LOADING_TEXT_TORUS =
+  'Follow instructions in the Tor.us window.';
+export const SIGNIN_SIGN_WALLET =
+  'Your wallet will ask you to digitally sign in to link it with Augur';
 
 export const ERROR_TYPES = {
   UNABLE_TO_CONNECT: {
@@ -340,8 +351,6 @@ export const TAGS_MAX_LENGTH = 25;
 export const TAGS_MAX_NUM = 2;
 export const RESOURCES_MAX_NUM = 5;
 export const RESOURCES_MAX_LENGTH = 1250;
-export const EXPIRY_SOURCE_GENERIC = 'EXPIRY_SOURCE_GENERIC';
-export const EXPIRY_SOURCE_SPECIFIC = 'EXPIRY_SOURCE_SPECIFIC';
 export const DESIGNATED_REPORTER_SELF = 'DESIGNATED_REPORTER_SELF';
 export const DESIGNATED_REPORTER_SPECIFIC = 'DESIGNATED_REPORTER_SPECIFIC';
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
@@ -487,6 +496,9 @@ export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
 export const MODAL_TEST_BET = 'MODAL_TEST_BET';
 export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
+export const MODAL_AUGUR_USES_DAI = 'MODAL_AUGUR_USES_DAI';
+export const MODAL_TUTORIAL_OUTRO = 'MODAL_TUTORIAL_OUTRO';
+export const MODAL_TUTORIAL_INTRO = 'MODAL_TUTORIAL_INTRO';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
@@ -883,6 +895,15 @@ export const POPULAR_CATEGORIES = [
   'finance',
   'crypto',
 ];
+
+export const POPULAR_CATEGORIES_ICONS = [
+  CategorySports,
+  CategoryPolitics,
+  CategoryEntertainment,
+  CategoryFinance,
+  CategoryCrypto,
+];
+
 export const CATEGORIES_MAX = 5;
 
 export enum PAGINATION_VIEW_OPTIONS {
@@ -891,3 +912,221 @@ export enum PAGINATION_VIEW_OPTIONS {
   FIFTY = '50',
   HUNDRED = '100',
 }
+
+export enum TRADING_TUTORIAL_STEPS {
+  INTRO_MODAL = 0,
+  MARKET_DETAILS = 1,
+  //MARKET_DATA = 2,
+  BUYING_SHARES = 2,
+  SELECT_OUTCOME = 3,
+  QUANTITY = 4,
+  LIMIT_PRICE = 5,
+  ORDER_VALUE = 6,
+  ORDER_BOOK = 7,
+  PLACE_ORDER = 8,
+  OPEN_ORDERS = 9,
+  MY_FILLS = 10,
+  POSITIONS = 11,
+  OUTRO_MODAL = 12,
+}
+
+export const TRADING_TUTORIAL_COPY = {
+  [TRADING_TUTORIAL_STEPS.MARKET_DETAILS]: {
+    title: 'Market Details',
+    subheader: [
+      {
+        text:
+          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
+        linkText: 'community guidelines.',
+        link: 'https://www.docs.augur.net',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.BUYING_SHARES]: {
+    title: 'Buying Shares',
+    subheader: [
+      {
+        text:
+          "Let's practice buying shares, or going 'long' on an outcome. First, make sure the 'buy shares' tab is selected.",
+      },
+      {
+        text: "To learn more about selling shares, or going 'short,' see our",
+        linkText: 'guide.',
+        link: 'https://www.docs.augur.net',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.SELECT_OUTCOME]: {
+    title: 'Select Outcome',
+    subheader: [
+      {
+        text: "Select the outcome you believe will be correct or appreciate in price.",
+      },
+      {
+        text: "To learn why invalid is an outcome, see our",
+        linkText: "guide.",
+        link: 'https://www.docs.augur.net'
+      },
+    ],
+  },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
+    title: 'Quantity',
+    subheader: [
+      {
+        text: 'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99'
+      },
+      {
+        text: 'Please enter a quantity of 100.',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.LIMIT_PRICE]: {
+    title: 'Limit Price',
+    subheader: [
+      {
+        text: 'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.'
+      },
+      {
+        text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
+      },
+      {
+        text: 'Enter a limit price of $.40.'
+      }
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.ORDER_VALUE]: {
+    title: 'Total Order Value',
+    subheader: [
+      {
+        text: "This shows the amount of money required to make this trade.",
+      },
+      {
+        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.PLACE_ORDER]: {
+    title: 'Place your order',
+    subheader: [
+      {
+        text: "Review your order and if everything looks correct then go ahead and click the 'Place Buy Order' button.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {
+    title: 'Order Book',
+    subheader: [
+      {
+        text:
+          'In edition you can select an available order from the order book to automatically fill into your order ticket.',
+      },
+      {
+        text:
+          'The orders in red are sell orders (offers); the quantities shown are available to buy at the listed prices. The orders in green (bids) are orders from users who wish to buy shares. The quantities show how much you can sell to them at the listed prices.',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.OPEN_ORDERS]: {
+    title: 'Open Orders',
+    subheader: [
+      {
+        text:
+          "Once you order is confirmed, you'll get a notification in the top right and you'll see your funds update in the top bar.",
+      },
+      {
+        text:
+          'If you place an order and it doesn’t fill immediately, your order will remain on the order book as an open order until it’s traded with or cancelled.',
+      },
+      {
+        text: 'You can view your open orders for the market in this tab.',
+      },
+      {
+        text:
+          'As you can see our order just disappeared from open orders because it was filled. Click next to see it in my fills.',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.MY_FILLS]: {
+    title: 'My Fills',
+    subheader: [
+      {
+        text:
+          "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.POSITIONS]: {
+    title: 'Positions',
+    subheader: [
+      {
+        text:
+          'Tracks your overall exposure in the current market. This includes your overall position, the average price you put on that position, potential profit and loss (unrealized P/L) and any realized gains or losses (realized P/L).',
+      },
+    ],
+  },
+};
+
+export const GWEI_CONVERSION = 1000000000;
+
+export const EVENT_EXPIRATION_TOOLTIP = {
+  header: 'Event expiration',
+  content: 'This date time indicates when the settlement process begins.',
+};
+
+export const TUTORIAL_QUANTITY = 100;
+export const TUTORIAL_PRICE = 0.4;
+export const TRADING_TUTORIAL_OUTCOMES = [
+  {
+    id: 0,
+    description: 'Invalid',
+    isTradeable: true,
+  },
+  {
+    id: 1,
+    description: 'Los Angeles Rams',
+    isTradeable: true,
+  },
+  {
+    id: 2,
+    description: 'New England Patriots',
+    isTradeable: true,
+  },
+  {
+    id: 3,
+    description: 'Tie/No Winner',
+    isTradeable: true,
+  },
+];
+
+export const DISPUTING_GUIDE = {
+  title: 'DISPUTING QUICK GUIDE',
+  content: [{
+    header: 'Disputing',
+    paragraphs: [
+      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
+    ]
+  }, {
+    header: 'How to dispute an outcome',
+    paragraphs: [
+      'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.'
+    ]
+  }, {
+    header: 'How a market resolves',
+    paragraphs: [
+      'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.'
+    ]
+  }, {
+    header: 'The benefits of reporting',
+    paragraphs: [
+      'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
+    ]
+  }],
+  learnMoreButtonText: 'Learn more about disputing',
+  closeButtonText: 'Close'
+};
+
+export const REPORTING_GUIDE = {
+  title: 'REPORTING QUICK GUIDE',
+  content: [],
+  learnMoreButtonText: 'Learn more about reporting',
+  closeButtonText: 'Close'
+};

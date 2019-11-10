@@ -15,8 +15,8 @@ else
   ADDRESSES=`cat ${PUBLIC_ADDRESSES}|jq -c .[\"${NETWORK_ID}\"]`
 fi
 
-echo ${PUBLIC_ADDRESSES}
-echo "${ADDRESSES}"
+echo "local_addresses:"
+echo "${ADDRESSES}"|jq
 
 docker run \
   -it \

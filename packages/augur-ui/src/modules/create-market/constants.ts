@@ -3,7 +3,6 @@ import {
   SCALAR,
   CATEGORICAL,
   YES_NO_OUTCOMES,
-  EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
   SETTLEMENT_FEE_DEFAULT,
   AFFILIATE_FEE_DEFAULT,
@@ -13,7 +12,30 @@ import {
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
-
+import {
+  SPORTS,
+  POLITICS,
+  FINANCE,
+  ENTERTAINMENT,
+  CRYPTO,
+  SOCCER,
+  AMERICAN_FOOTBALL,
+  BASEBALL,
+  GOLF,
+  BASKETBALL,
+  TENNIS,
+  HOCKEY,
+  HORSE_RACING,
+  NFL,
+  NCAA,
+  US_POLITICS,
+  WORLD,
+  STOCKS,
+  INDEXES,
+  BITCOIN,
+  ETHEREUM,
+  LITECOIN,
+} from '@augurproject/artifacts';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -34,7 +56,6 @@ export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
-
 export const DEFAULT_TICK_SIZE = 0.01;
 
 export const EMPTY_STATE: NewMarket = {
@@ -43,7 +64,6 @@ export const EMPTY_STATE: NewMarket = {
     description: null,
     categories: ['', '', ''],
     designatedReporterAddress: null,
-    expirySourceType: null,
     setEndTime: null,
     hour: null,
     minute: null,
@@ -61,9 +81,6 @@ export const EMPTY_STATE: NewMarket = {
   scalarBigNum: '',
   scalarDenomination: '',
   description: '',
-  expirySourceType: EXPIRY_SOURCE_GENERIC,
-  expirySource: '',
-  backupSource: '',
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: '',
   endTime: null,
@@ -89,18 +106,28 @@ export const EMPTY_STATE: NewMarket = {
   initialLiquidityGas: ZERO,
 };
 
-const EventDetailsContent = {
+export const EventDetailsContentTemplate = `template`;
+export const EventDetailsContent = (type = `custom`) => ({
   title: 'Event details',
-  largeHeader: 'Create a custom market',
-  explainerBlockTitle: 'A note on choosing a market',
+  largeHeader: `Create a ${type} market`,
+  explainerBlockTitle: 'A market is invalid if:',
   explainerBlockSubtexts: [
-    "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
+    'The market question is subjective in nature.',
+    'The result of the event was known at market creation time.',
+    'The outcome was not known at event expiration time.',
+    'The title, details and outcomes are in direct conflict with each other.',
+    'There are strong arguments for the market resolving as multiple outcomes, unless it is explicitly stated how the market should be resolved in resolution details.',
+    'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
+    'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name',
+    'If it’s a stock, currency or cryptocurrency and its ticker is not used in the market question.',
+    'If it’s an index and the indexes full name is not in the market question.',
     'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
   ],
-  mainContent: FORM_DETAILS,
+  mainContent: type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
   firstButton: BACK,
   secondButton: NEXT,
-};
+  useBullets: true
+});
 
 export const LiquidityContent = {
   title: 'Fees & liquidity',
@@ -125,7 +152,7 @@ export const ReviewContent = {
 };
 
 export const CUSTOM_CONTENT_PAGES = [
-  EventDetailsContent,
+  EventDetailsContent(),
   LiquidityContent,
   ReviewContent,
 ];
@@ -142,47 +169,12 @@ export const MARKET_TYPE_NAME = {
   [CATEGORICAL]: 'Categorical',
 };
 
-export const REQUIRED = 'REQUIRED';
-export const CHOICE = 'CHOICE';
-// Market templates
-export const SPORTS = 'Sports';
-export const POLITICS = 'Politics';
-export const FINANCE = 'Finance';
-export const ENTERTAINMENT = 'Entertainment';
-export const CRYPTO = 'Crypto';
-export const USD = 'USD';
-export const USDT = 'USDT';
-export const EUR = 'EUR';
-
 // Market Subtemplates
-export const SOCCER = 'Soccer';
-export const AMERICAN_FOOTBALL = 'American Football';
-export const BASEBALL = 'Baseball';
-export const GOLF = 'Golf';
-export const BASKETBALL = 'Basketball';
-export const TENNIS = 'Tennis';
-export const HOCKEY = 'Hockey';
-export const HORSE_RACING = 'Horse Racing';
-export const US_ELECTIONS = 'US Elections';
-export const US_POLITICS = 'US Politics';
-export const WORLD = 'World';
-export const STOCKS = 'Stocks';
-export const COMMONDITIES = 'Commondities';
-export const INDEXES = 'Indexes';
 export const AWARDS = 'Awards';
 export const MOVIES = 'Movies';
 export const MUSIC = 'Music';
 export const TV = 'TV';
-export const BITCOIN = 'Bitcoin';
-export const ETHEREUM = 'Ethereum';
-export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
-export const BTC = 'BTC';
-export const ETH = 'ETH';
-export const LTC = 'LTC';
-export const NBA = 'NBA';
-export const NCAA = 'NCAA';
-export const NFL = 'NFL';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -292,12 +284,6 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [POLITICS]: [
     {
-      value: US_ELECTIONS,
-      header: US_ELECTIONS,
-      description: defaultDescription,
-      icon: icons.USElections,
-    },
-    {
       value: US_POLITICS,
       header: US_POLITICS,
       description: defaultDescription,
@@ -316,12 +302,6 @@ export const MARKET_SUB_TEMPLATES = {
       header: STOCKS,
       description: defaultDescription,
       icon: icons.Stocks,
-    },
-    {
-      value: COMMONDITIES,
-      header: COMMONDITIES,
-      description: defaultDescription,
-      icon: icons.Commodities,
     },
     {
       value: INDEXES,
@@ -422,7 +402,6 @@ export const END_TIME = 'setEndTime';
 export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';
-export const EXPIRY_SOURCE = 'expirySource';
 
 export const OUTCOMES = 'outcomes';
 
@@ -468,12 +447,6 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledString: true,
     checkFilledStringMessage: 'Enter a wallet address',
     checkForAddress: true,
-  },
-  [EXPIRY_SOURCE]: {
-    label: EXPIRY_SOURCE,
-    readableName: 'website',
-    checkFilledString: true,
-    checkFilledStringMessage: 'Enter a website',
   },
   [OUTCOMES]: {
     label: OUTCOMES,
@@ -534,19 +507,7 @@ export const VALIDATION_ATTRIBUTES = {
   },
 };
 
-export enum TemplateInputType {
-  TEXT = 'TEXT',
-  DATEYEAR = 'DATEYEAR',
-  DATETIME = 'DATETIME',
-  DROPDOWN = 'DROPDOWN',
-  DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN',
-  ADDED_OUTCOME = 'ADDED_OUTCOME',
-  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
-  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
-  USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME',
-}
-
-export enum ValidationType {
-  WHOLE_NUMBER = 'WHOLE_NUMBER',
-  NUMBER = 'NUMBER',
+export const TemplateBannerText = {
+  [INDEXES] : 'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
+  [STOCKS] : 'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL'
 }

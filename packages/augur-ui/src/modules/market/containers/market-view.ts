@@ -9,34 +9,221 @@ import {
   MODAL_MARKET_REVIEW,
   MARKET_REVIEW_SEEN,
   MODAL_MARKET_LOADING,
+  TRADING_TUTORIAL,
+  TUTORIAL_QUANTITY,
+  TUTORIAL_PRICE,
+  CATEGORICAL,
+  TRADING_TUTORIAL_OUTCOMES,
+  BUY,
+  SELL,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import { NewMarket } from 'modules/types';
+import deepClone from 'utils/deep-clone';
+import { formatDai, formatShares } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
+import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
+import { getMarketAgeInDays } from 'utils/format-date';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
-  const market = ownProps.market || selectMarket(marketId);
+  let market = {};
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
+  if (tradingTutorial) {
+    // TODO move trading tutorial market state to constants
+    market = {
+      ...deepClone<NewMarket>(EMPTY_STATE),
+      id: TRADING_TUTORIAL,
+      description: 'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
+      numOutcomes:  4,
+      defaultSelectedOutcomeId: 1,
+      marketType: CATEGORICAL,
+      outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
+      orderBook: {
+        0: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 0,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[0].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.7),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.7),
+            outcomeId: 0,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[0].description,
+            price: '.7',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.7),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ],
+        1: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 1,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.5),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.5),
+            outcomeId: 1,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
+            price: '.5',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.5),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ],
+        2: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 2,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[2].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.5),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.5),
+            outcomeId: 2,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[2].description,
+            price: '.5',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.5),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ],
+        3: [
+          {
+            disappear: true,
+            avgPrice: formatDai(TUTORIAL_PRICE),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(TUTORIAL_PRICE),
+            outcomeId: 3,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[3].description,
+            price: TUTORIAL_PRICE.toString(),
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(TUTORIAL_PRICE),
+            type: BUY,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          },
+          {
+            disappear: false,
+            avgPrice: formatDai(.6),
+            cumulativeShares: TUTORIAL_QUANTITY.toString(),
+            id: 1,
+            mySize: '0',
+            orderEstimate: createBigNumber(.6),
+            outcomeId: 3,
+            outcomeName: TRADING_TUTORIAL_OUTCOMES[3].description,
+            price: '.6',
+            quantity: TUTORIAL_QUANTITY.toString(),
+            shares: TUTORIAL_QUANTITY.toString(),
+            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
+            tokensEscrowed: formatDai(.6),
+            type: SELL,
+            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
+          }
+        ]
+      }
+    };
+  } else {
+    market = ownProps.market || selectMarket(marketId)
+  }
 
   const marketReviewSeen =
-    windowRef &&
+   tradingTutorial ||
+    (windowRef &&
     windowRef.localStorage &&
-    Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
+    Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN)));
 
   if (market === null) {
     return {
+      tradingTutorial,
       isMarketLoading: true,
       isConnected: connection.isConnected && universe.id != null,
+      canHotload: connection.canHotload,
       marketId,
       marketReviewSeen,
     };
   }
 
+  const daysPassed =
+    market &&
+    market.creationTime &&
+    getMarketAgeInDays(market.creationTime, selectCurrentTimestampInSeconds(state));
 
   return {
+    daysPassed,
+    preview: tradingTutorial,
+    tradingTutorial,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     outcomes: market.outcomes || [],
     isConnected: connection.isConnected && universe.id != null,
@@ -54,6 +241,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  hotloadMarket: marketId => hotloadMarket(marketId),
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
@@ -72,6 +260,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
     closeMarketLoadingModal: () => dispatch(closeModal()),
+    addAlert: (alert) => dispatch(addAlert(alert)),
+    removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
 });
 
 const Market = withRouter(

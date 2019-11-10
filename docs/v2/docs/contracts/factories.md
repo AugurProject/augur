@@ -3057,6 +3057,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 <h4><a class="anchor" aria-hidden="true" id="IRepPriceOracle.pokeRepPriceInAttoCash(contract IV2ReputationToken)"></a><code class="function-signature">pokeRepPriceInAttoCash(contract IV2ReputationToken _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
+<h4><a class="anchor" aria-hidden="true" id="IRepPriceOracle.pokeRepPriceInAttoCash(contract IV2ReputationToken)"></a><code class="function-signature">pokeRepPriceInAttoCash(contract IV2ReputationToken _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 

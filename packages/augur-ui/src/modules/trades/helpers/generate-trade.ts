@@ -32,6 +32,10 @@ export const generateTrade = memoize(
       (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || "0",
       10,
     );
+    const costInDai = createBigNumber(
+      (outcomeTradeInProgress && outcomeTradeInProgress.costInDai) || "0",
+      10,
+    )
     const shareCost = createBigNumber(
       (outcomeTradeInProgress && outcomeTradeInProgress.shareCost) || "0",
       10,
@@ -112,6 +116,9 @@ export const generateTrade = memoize(
       totalFee: formatDaiValue(totalFee, { blankZero: true }),
       totalFeePercent: formatDaiValue(feePercent, { blankZero: true }),
       totalCost: formatDaiValue(totalCost.abs().toFixed(), {
+        blankZero: false,
+      }),
+      costInDai: formatDaiValue(costInDai.abs().toFixed(), {
         blankZero: false,
       }),
       shareCost: formatDaiValue(shareCost.abs().toFixed(), {

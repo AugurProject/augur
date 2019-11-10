@@ -23,6 +23,7 @@ import {
     ZeroXTrade,
     GnosisSafeRegistry,
     WarpSync,
+    RepPriceOracle,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -161,6 +162,14 @@ Deploying to: ${networkConfiguration.networkName}
             await this.upload0xContracts();
         }
 
+        // Uniswap
+        if (externalAddresses.UniswapV2Factory) {
+            console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
+            await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
+        } else {
+            await this.uploadUniswapContracts();
+        }
+
         await this.initializeAllContracts();
         await this.doTradingApprovals();
 
@@ -209,6 +218,8 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'TestNetReputationToken') continue;
             if (contract.contractName === 'TestNetReputationTokenFactory') continue;
             if (contract.contractName === 'CashFaucetProxy') continue;
+            if (contract.contractName === 'UniswapV2') continue;
+            if (contract.contractName === 'UniswapV2Factory') continue;
             if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract: this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
@@ -308,7 +319,21 @@ Deploying to: ${networkConfiguration.networkName}
 
       const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
       zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
+
+      const devUtilsContract = await this.contracts.get('DevUtils');
+      devUtilsContract.address = await this.uploadAndAddToAugur(
+        devUtilsContract,
+        'DevUtils',
+        [zeroXExchangeContract.address]
+      );
+
       return zeroXExchangeContract.address;
+    }
+
+    private async uploadUniswapContracts(): Promise<string> {
+        const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
+        uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0", 0]);
+        return uniswapV2FactoryContract.address;
     }
 
     async uploadLegacyRep(): Promise<string> {
@@ -348,6 +373,8 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'AugurTrading') return;
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
+        if (contractName === 'UniswapV2') return;
+        if (contractName === 'UniswapV2Factory') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
         if (contractName === 'GnosisSafe') return;
@@ -361,6 +388,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'GnosisSafe') return;
         if (contractName === 'ZeroXExchange') return;
+        if (contractName === 'DevUtils') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
         if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'ICashFaucet'].includes(contract.contractName)) return;
@@ -434,6 +462,10 @@ Deploying to: ${networkConfiguration.networkName}
         const WarpSyncContract = await this.getContractAddress('WarpSync');
         const warpSync = new WarpSync(this.dependencies, WarpSyncContract);
         promises.push(warpSync.initialize(this.augur!.address));
+
+        const RepPriceOracleContract = await this.getContractAddress('RepPriceOracle');
+        const repPriceOracle = new RepPriceOracle(this.dependencies, RepPriceOracleContract);
+        promises.push(repPriceOracle.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress('TimeControlled');
@@ -520,6 +552,8 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
+        mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
+        mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {

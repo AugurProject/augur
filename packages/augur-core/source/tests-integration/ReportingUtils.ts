@@ -51,13 +51,9 @@ export class ReportingUtils {
             console.log("numOwnedShares after buying complete set", numOwnedShares.toString());
 
             // Sell Complete Sets
-            ethBalance = await fixture.getEthBalance();
-            console.log("ethBalance before selling complete set", ethBalance.toString());
             let numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
             console.log("numOwnedShares before selling complete set", numOwnedSharesBefore.toString());
             await fixture.sellCompleteSets(market, numShares);
-            ethBalance = await fixture.getEthBalance();
-            console.log("ethBalance before selling complete set", ethBalance.toString());
             numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
             console.log("numOwnedShares after selling complete set", numOwnedSharesBefore.toString());
         } else {

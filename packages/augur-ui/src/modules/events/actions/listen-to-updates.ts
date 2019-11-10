@@ -43,7 +43,10 @@ import {
 } from '@augurproject/sdk';
 
 const StartUpEvents = {
-  'SDKReady': wrapLogHandler(handleSDKReadyEvent),
+  [SubscriptionEventName.SDKReady]: wrapLogHandler(handleSDKReadyEvent),
+  [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
+    handleMarketsUpdatedLog
+  ),
 };
 
 const EVENTS = {

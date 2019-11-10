@@ -33,7 +33,7 @@ import {
   BUY,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, LiquidityOrder } from 'modules/types';
+import { CreateMarketData, LiquidityOrder, ExtraInfoTemplate } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 
@@ -451,7 +451,6 @@ function getPayoutNumerators(inputs: doReportDisputeAddStake) {
 export interface CreateNewMarketParams {
   outcomes?: string[];
   scalarDenomination: string;
-  expirySource: string;
   description: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -465,7 +464,7 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
-  backupSource?: string;
+  template?: ExtraInfoTemplate;
 }
 
 export function createMarket(
@@ -498,7 +497,6 @@ export function createMarketRetry(market: CreateMarketData) {
     scalarDenomination: extraInfo._scalarDenomination,
     marketType: market.marketType,
     endTime: market.endTime.timestamp,
-    expirySource: extraInfo.resolutionSource,
     description: market.description,
     designatedReporterAddress: market.txParams._designatedReporterAddress,
     minPrice: market.txParams._prices && market.txParams._prices[0],
@@ -509,7 +507,6 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
-    backupSource: extraInfo.backupSource,
   };
 
   return createMarket(newMarket, true);
@@ -521,7 +518,11 @@ export async function approveToTrade() {
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
-  return contracts.cash.approve(augurContract, allowance);
+  contracts.cash.approve(augurContract, allowance);
+  contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
+  contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true);
+  contracts.cash.approve(contracts.fillOrder.address, allowance);
+  contracts.cash.approve(contracts.createOrder.address, allowance);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {

@@ -43,6 +43,12 @@ export default class ModuleTabs extends Component<ModuleTabsProps> {
     this.renderContent = this.renderContent.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.selected !== prevProps.selected) {
+      this.setState({selected: this.props.selected});
+    }
+  }
+
   handleClick(e, index, onClickCallback) {
     if (e) e.preventDefault();
     this.setState({

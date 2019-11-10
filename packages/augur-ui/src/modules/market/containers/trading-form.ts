@@ -28,6 +28,8 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import getValue from 'utils/get-value';
+import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 
 const getMarketPath = id => {
   return {
@@ -48,7 +50,7 @@ const mapStateToProps = (state, ownProps) => {
     ownProps.selectedOutcomeId !== undefined &&
     ownProps.selectedOutcomeId !== null
       ? ownProps.selectedOutcomeId
-      : market.defaultSelectedOutcomeId;
+      : ownProps.market.defaultSelectedOutcomeId;
   let outcomeOrderBook = {};
   if (ownProps.initialLiquidity) {
     outcomeOrderBook = formatOrderBook(
@@ -63,6 +65,7 @@ const mapStateToProps = (state, ownProps) => {
     availableEth: createBigNumber(state.loginAccount.balances.eth),
     availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
+    currentTimestamp: state.blockchain.currentAugurTimestamp,
     orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
@@ -90,6 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
   addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  addPendingOrder: (order, marketId) => dispatch(addPendingOrder(order, marketId)),
   loginModal: () =>
     dispatch(
       updateModal({

@@ -16,7 +16,6 @@ interface TradingFormProps {
   hasFunds: boolean;
   isLogged: boolean;
   allowanceBigNumber: BigNumber;
-  isConnectionTrayOpen: boolean;
   market: MarketData;
   disclaimerSeen: boolean;
   disclaimerModal: Function;
@@ -29,7 +28,6 @@ interface TradingFormProps {
   updateSelectedOutcome: Function;
   updateTradeCost: Function;
   updateTradeShares: Function;
-  toggleConnectionTray: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
   initialLiquidity?: boolean;
@@ -37,6 +35,10 @@ interface TradingFormProps {
   addFundsModal: Function;
   loginModal: Function;
   signupModal: Function;
+  currentTimestamp: Number;
+  tradingTutorial?: boolean;
+  addPendingOrder: Function;
+  tutorialNext?: Function;
 }
 
 interface TradingFormState {
@@ -89,7 +91,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       availableEth,
       availableDai,
       isLogged,
-      isConnectionTrayOpen,
       market,
       selectedOrderProperties,
       gasPrice,
@@ -97,7 +98,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       updateSelectedOutcome,
       updateTradeCost,
       updateTradeShares,
-      toggleConnectionTray,
       onSubmitPlaceTrade,
       disclaimerSeen,
       disclaimerModal,
@@ -108,6 +108,10 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       addFundsModal,
       loginModal,
       signupModal,
+      currentTimestamp,
+      tradingTutorial,
+      addPendingOrder,
+      tutorialNext
     } = this.props;
     const s = this.state;
 
@@ -116,10 +120,10 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     let initialMessage: string | boolean = '';
 
     switch (true) {
-      case !isLogged:
+      case !isLogged && !tradingTutorial:
         initialMessage = 'Login or Signup to place an order.';
         break;
-      case isLogged && !hasFunds:
+      case isLogged && !hasFunds && !tradingTutorial:
         initialMessage = 'Add funds to begin trading.';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:
@@ -133,6 +137,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}
+          currentTimestamp={currentTimestamp}
           allowanceBigNumber={allowanceBigNumber}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
@@ -153,6 +158,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
           orderBook={orderBook}
+          tradingTutorial={tradingTutorial}
+          addPendingOrder={addPendingOrder}
+          tutorialNext={tutorialNext}
         />
         {initialMessage && (
           <div>

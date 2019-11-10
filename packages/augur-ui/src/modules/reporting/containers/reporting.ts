@@ -10,7 +10,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  openReportingModal: () => dispatch(updateModal({ type: MODAL_DR_QUICK_GUIDE })),
+  openReportingModal: () => dispatch(updateModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'reporting' })),
 });
 
 const ReportingContainer = withRouter(

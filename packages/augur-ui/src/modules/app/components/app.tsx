@@ -16,6 +16,7 @@ import ToastsContainer from 'modules/alerts/containers/toasts-view';
 import {
   MobileNavHamburgerIcon,
   MobileNavCloseIcon,
+  XIcon,
 } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
@@ -29,12 +30,16 @@ import {
 import {
   MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import { Universe, Blockchain, LoginAccount, EnvObject } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import makePath from 'modules/routes/helpers/make-path';
 
 interface AppProps {
   blockchain: Blockchain;
@@ -54,6 +59,7 @@ interface AppProps {
   finalizeMarket: Function;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
+  sdkEndpoint: string;
   useWeb3Transport: boolean;
   logout: Function;
   sidebarStatus: {
@@ -77,6 +83,7 @@ export default class AppView extends Component<AppProps> {
   static defaultProps = {
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
+    sdkEndpoint: null,
     useWeb3Transport: false,
   };
 
@@ -85,7 +92,7 @@ export default class AppView extends Component<AppProps> {
       title: 'Markets',
       route: MARKETS,
       requireLogin: false,
-      disabled: false
+      disabled: false,
     },
     {
       title: 'Account Summary',
@@ -120,6 +127,7 @@ export default class AppView extends Component<AppProps> {
       env,
       ethereumNodeHttp,
       ethereumNodeWs,
+      sdkEndpoint,
       history,
       initAugur,
       location,
@@ -141,6 +149,7 @@ export default class AppView extends Component<AppProps> {
         ...env,
         ethereumNodeHttp,
         ethereumNodeWs,
+        sdkEndpoint,
         useWeb3Transport,
       },
       (err: any, res: any) => {
@@ -152,7 +161,6 @@ export default class AppView extends Component<AppProps> {
         }
       }
     );
-
     const currentPath = parsePath(location.pathname)[0];
     updateCurrentBasePath(currentPath);
 
@@ -295,7 +303,7 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <button
-        type='button'
+        type="button"
         className={Styles['SideBar__mobile-bars']}
         onClick={() => this.mobileMenuButtonClick()}
       >
@@ -322,11 +330,14 @@ export default class AppView extends Component<AppProps> {
 
     const currentPath = parsePath(location.pathname)[0];
 
+    const onTradingTutorial =
+      parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
+
     return (
       <main>
         <Helmet
-          defaultTitle='Decentralized Prediction Markets | Augur'
-          titleTemplate='%s | Augur'
+          defaultTitle="Decentralized Prediction Markets | Augur"
+          titleTemplate="%s | Augur"
         />
         {Object.keys(modal).length !== 0 && <Modal />}
         {toasts.length > 0 && <ToastsContainer toasts={toasts} />}
@@ -335,14 +346,32 @@ export default class AppView extends Component<AppProps> {
             [Styles['App--blur']]: Object.keys(modal).length !== 0,
           })}
         >
-          <section className={Styles.Main}>
+          <section
+            className={classNames(Styles.Main, {
+              [Styles.TradingTutorial]: onTradingTutorial,
+            })}
+          >
+            {onTradingTutorial && (
+              <section className={Styles.TutorialBanner}>
+                <span>Test market</span>
+                <button
+                  onClick={() =>
+                    history.push({
+                      pathname: makePath(MARKETS),
+                    })
+                  }
+                >
+                  {XIcon}
+                </button>
+              </section>
+            )}
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove, {
                 [Styles.SideNavOpen]:
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN,
               })}
-              role='presentation'
+              role="presentation"
             >
               <TopBar />
             </section>
@@ -350,7 +379,7 @@ export default class AppView extends Component<AppProps> {
             <section
               className={Styles.SideBar}
               onClick={e => this.mainSectionClickHandler(e, false)}
-              role='presentation'
+              role="presentation"
             >
               <div>{this.renderMobileMenuButton()}</div>
 
@@ -392,6 +421,9 @@ export default class AppView extends Component<AppProps> {
             <section
               className={classNames(Styles.Main__wrap, {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
+                [Styles['TopBarOpen']]:
+                  sidebarStatus.mobileMenuState ===
+                  MOBILE_MENU_STATES.SIDEBAR_OPEN,
               })}
             >
               {currentPath === MARKETS ? (
@@ -401,16 +433,17 @@ export default class AppView extends Component<AppProps> {
                   mobileMenuState={sidebarStatus.mobileMenuState}
                 />
               ) : (
-                <div className='no-nav-placehold' />
+                <div className="no-nav-placehold" />
               )}
               <section
                 className={classNames(Styles.Main__content, {
+                  [Styles.ModalShowing]: Object.keys(modal).length !== 0,
                   [Styles.SideNavOpen]:
                     sidebarStatus.mobileMenuState ===
                     MOBILE_MENU_STATES.SIDEBAR_OPEN,
                 })}
                 onClick={this.mainSectionClickHandler}
-                role='presentation'
+                role="presentation"
               >
                 <ForkingBanner />
 

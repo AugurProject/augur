@@ -21,6 +21,7 @@ import {
   Clock,
   Arrow,
   LoadingEllipse,
+  CategorySports,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 import {
@@ -69,6 +70,7 @@ interface DatePickerProps {
   navPrev?: any;
   navNext?: any;
   errorMessage?: string;
+  condensedStyle?: boolean;
 }
 
 interface TextInputProps {
@@ -148,6 +150,7 @@ interface TimezoneDropdownProps {
   disabled?: boolean;
   timestamp?: number;
   timezone: string;
+  condensedStyle?: boolean;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
@@ -161,7 +164,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
   }, [props.timezone, props.timestamp]);
 
   return (
-    <section className={Styles.Timezones}>
+    <section className={classNames(Styles.Timezones, {[Styles.Condensed]: props.condensedStyle})}>
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
@@ -250,12 +253,8 @@ export interface RadioBarProps extends BaseRadioButtonProp {
   placeholder?: string;
   textValue?: string;
   errorMessage?: string;
-  onSecondTextChange?: Function;
-  secondPlaceholder?: string;
-  secondTextValue?: string;
-  secondErrorMessage?: string;
-  secondHeader?: string;
   multiSelect?: boolean;
+  disabled?: boolean;
 }
 
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
@@ -1085,11 +1084,6 @@ export const RadioBar = ({
   placeholder,
   textValue,
   errorMessage,
-  onSecondTextChange,
-  secondPlaceholder,
-  secondTextValue,
-  secondErrorMessage,
-  secondHeader,
   multiSelect,
   disabled,
 }: RadioBarProps) => (
@@ -1114,17 +1108,6 @@ export const RadioBar = ({
           onChange={onTextChange}
           errorMessage={errorMessage}
         />
-        {onSecondTextChange && (
-          <>
-            <h5>{secondHeader}</h5>
-            <TextInput
-              placeholder={secondPlaceholder}
-              value={secondTextValue}
-              onChange={onSecondTextChange}
-              errorMessage={secondErrorMessage}
-            />
-          </>
-        )}
       </>
     ) : null}
   </div>
@@ -1278,7 +1261,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: this.props.value === null ? '' : this.props.value,
+    value: !this.props.value ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;
@@ -1415,6 +1398,7 @@ interface TimeSelectorProps {
   focused?: boolean;
   errorMessage?: string;
   uniqueKey?: string;
+  condensedStyle?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1461,6 +1445,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       focused,
       errorMessage,
       uniqueKey,
+      condensedStyle
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1468,7 +1453,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={Styles.TimeSelector}
+        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle})}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
@@ -1574,7 +1559,9 @@ class IndividualTimeSelector extends React.Component<
   increment = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) + 1;
+      let newValue = parseFloat(value) + 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1584,7 +1571,9 @@ class IndividualTimeSelector extends React.Component<
   decrement = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) - 1;
+      let newValue = parseFloat(value) - 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1668,6 +1657,7 @@ Checkbox.defaultProps = {
 export const DatePicker = (props: DatePickerProps) => (
   <div
     className={classNames(Styles.DatePicker, {
+      [Styles.Condensed]: props.condensedStyle,
       [Styles.error]:
         props.errorMessage &&
         props.errorMessage !== '' &&
@@ -2203,6 +2193,7 @@ export interface CategoryRowProps {
   loading?: boolean;
   category: string;
   count: number;
+  icon?: React.ReactNode;
 }
 
 export const CategoryRow = ({
@@ -2212,6 +2203,7 @@ export const CategoryRow = ({
   loading = false,
   category,
   count,
+  icon,
 }: CategoryRowProps) => (
   <div
     onClick={() => handleClick()}
@@ -2222,7 +2214,7 @@ export const CategoryRow = ({
     })}
   >
     <span>
-      {category && category.length <= 3 ? category.toUpperCase() : category}
+     {icon} {category && category.length <= 3 ? category.toUpperCase() : category}
     </span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}
