@@ -323,9 +323,6 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async upload0xContracts(): Promise<string> {
-      // @ts-ignore
-      console.log(this.contracts.contracts.keys()); // TODO remove when done debugging
-
       const networkId = (await this.provider.getNetwork()).chainId;
 
       const erc20ProxyContract = this.contracts.get('ERC20Proxy');
@@ -580,9 +577,20 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
-        mapping['Exchange'] = this.contracts.get('Exchange').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
+
+        // 0x
+        mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['ERC721Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['ERC1155Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['Exchange'] = this.contracts.get('Exchange').address!;
+        mapping['Coordinator'] = this.contracts.get('Coordinator').address!;
+        mapping['CoordinatorRegistry'] = this.contracts.get('CoordinatorRegistry').address!;
+        mapping['DevUtils'] = this.contracts.get('DevUtils').address!;
+        mapping['WETH9'] = this.contracts.get('WETH9').address!;
+        mapping['ZRXToken'] = this.contracts.get('ZRXToken').address!;
+
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {

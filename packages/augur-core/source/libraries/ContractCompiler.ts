@@ -183,14 +183,12 @@ export class ContractCompiler {
                 "RepPriceOracle",
                 "UniswapV2Factory",
                 "ERC1820Registry",
-
                 // utility
                 "BuyParticipationTokens",
                 "Formulas",
                 "HotLoading",
                 "RedeemStake",
                 "RepSymbol",
-
                 // factories
                 "DisputeCrowdsourcerFactory",
                 "DisputeWindowFactory",
@@ -200,7 +198,6 @@ export class ContractCompiler {
                 "ReputationTokenFactory",
                 "TestNetReputationTokenFactory",
                 "UniverseFactory",
-
                 // 0x contracts
                 "ERC20Proxy",
                 "ERC721Proxy",

@@ -22,6 +22,8 @@
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "docker:0x": "./docker-builder/run-zerox.sh",
+    "docker:0x:local:ganache": "./docker-builder/run-zerox.sh 123456 http://localhost:8545",
+    "docker:0x:local:geth": "./docker-builder/run-zerox.sh 12346 http://localhost:8545",
     "deploy": "ts-node ./src/flash/cli run deploy",
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
