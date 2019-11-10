@@ -4,6 +4,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
+import { analytics } from 'services/analytics';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -34,5 +35,7 @@ export function logout() {
     if (windowRef.fm) {
       await windowRef.fm.user.logout();
     }
+
+    analytics.reset();
   };
 }
