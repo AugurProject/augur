@@ -1,9 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
-.Container {
-  background: @color-module-background;
-  border: 1px solid fade(@color-dark-grey, 50%);
+.DefaultModalBorder {
+  border: @size-3 solid @color-secondary-action-outline;
   border-radius: @border-radius-extra-rounded;
+
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+  }
+}
+
+.Container {
+  .DefaultModalBorder;
+
+  background: @color-module-background;
   display: flex;
   flex-flow: column nowrap;
   max-height: 90vh;
@@ -701,8 +711,6 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   background: @color-module-background;
-  border: none;
-  border-radius: @size-8;
   box-shadow: 0px @size-4 @size-4 rgba(0, 0, 0, 0.25);
   max-width: @login-signup-modal-width;
   padding: 48px 56px;

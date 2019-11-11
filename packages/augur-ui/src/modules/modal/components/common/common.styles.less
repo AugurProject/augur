@@ -1,5 +1,15 @@
 @import (reference) "~assets/styles/shared";
 
+.DefaultModalBorder {
+  border: @size-3 solid @color-secondary-action-outline;
+  border-radius: @border-radius-extra-rounded;
+
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+  }
+}
+
 .ModalView {
   background-color: fade(@color-page-background, 80%);
   height: 100vh;
@@ -30,9 +40,9 @@
 }
 
 .ModalContainer {
+  .DefaultModalBorder;
+
   background: @color-module-background;
-  border: @size-1 solid @color-dark-grey;
-  border-radius: @size-5;
   color: @color-primary-text;
   max-width: 35rem;
   padding: @size-24 0;

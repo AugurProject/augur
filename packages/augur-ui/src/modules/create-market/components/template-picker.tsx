@@ -53,6 +53,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
       header: `${getTemplateReadableDescription(template)}`,
       description: `Example: ${template.example}`,
       value: index.toString(),
+      renderMarkdown: true,
     };
   });
 
@@ -106,6 +107,14 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
               scalarDenomination:
                 newMarket.marketType === SCALAR &&
                 templates[value].denomination,
+              minPrice:
+                newMarket.marketType === SCALAR && templates[value].minPrice
+                  ? templates[value].minPrice
+                  : newMarket.minPrice,
+              maxPrice:
+                newMarket.marketType === SCALAR && templates[value].maxPrice
+                  ? templates[value].maxPrice
+                  : newMarket.maxPrice,
               marketType: newMarket.marketType,
               categories: [
                 newMarket.categories[0],

@@ -45,6 +45,7 @@ import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues } from 'modules/types';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 
 interface CheckboxProps {
   id: string;
@@ -283,6 +284,7 @@ export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   onChange: Function;
   error?: boolean;
   hideRadioButton?: boolean;
+  renderMarkdown?: boolean;
 }
 
 interface CheckboxBarProps extends BaseRadioButtonProp {
@@ -696,12 +698,12 @@ export class CategoryMultiSelect extends Component<
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel="Tertiary Category"
+            staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
             errorMessage={errorMessage && errorMessage[2]}
             value={values[2]}
-            placeholder="Custom Tertiary Category"
+            placeholder="Custom Sub Category"
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
@@ -921,25 +923,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     );
   }
 }
-
-export const MultiSelectRadioBarGroup = ({
-  radioButtons,
-  onChange,
-}: RadioGroupProps) => (
-  <div className={Styles.RadioBarGroup}>
-    {radioButtons.map(radio => (
-      <RadioBar
-        key={radio.value}
-        {...radio}
-        checked={radio.isSelected}
-        multiSelect
-        onChange={selected => {
-          onChange(selected);
-        }}
-      />
-    ))}
-  </div>
-);
 
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
@@ -1162,19 +1145,22 @@ export const RadioTwoLineBar = ({
   error,
   description,
   hideRadioButton,
+  renderMarkdown
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
       [Styles.HideRadioButton]: hideRadioButton,
       [Styles.Checked]: hideRadioButton && checked,
+      [Styles.RenderMarkdown]: !!renderMarkdown,
     })}
     role="button"
     onClick={e => onChange(value)}
   >
     {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
-    <p>{description}</p>
+    {renderMarkdown && <MarkdownRenderer hideLabel noPrewrap text={description} />}
+    {!renderMarkdown && <p>{description}</p>}
   </div>
 );
 

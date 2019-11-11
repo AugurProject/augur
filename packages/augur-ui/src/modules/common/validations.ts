@@ -173,9 +173,9 @@ export function checkForUserInputFilled(inputs) {
   const errors = inputs.map(input => {
     if (
       input.validationType === ValidationType.WHOLE_NUMBER &&
-      moreThanDecimals(input.userInput, 0)
+      moreThanDecimals(input.userInput, 0) || isPositive(input.userInput)
     ) {
-      return 'Must be a whole number';
+      return 'Must be a whole positive number';
     } else if (
       input.validationType === ValidationType.NUMBER &&
       checkValidNumber(input.userInput)
@@ -186,12 +186,13 @@ export function checkForUserInputFilled(inputs) {
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
+        input.type === TemplateInputType.ESTDATETIME ||
         input.type === TemplateInputType.DROPDOWN ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
       (!input.userInput || input.userInput === '')
     ) {
       return 'Input is required';
-    } else if (input.type === TemplateInputType.DATETIME) {
+    } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
       if (input.userInputObject) {
         let validations: NewMarketPropertiesValidations = {};
         if (input.userInputObject.hour === null) {
