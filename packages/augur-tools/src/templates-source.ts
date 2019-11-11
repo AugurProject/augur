@@ -37,7 +37,7 @@ import {
   DOUBLES,
   WNBA,
 } from './templates-template';
-import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS, HOCKEY_EVENT_DEP_TEAMS, BASEBALL_EVENT_DEP_TEAMS } from './templates-lists';
+import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS, HOCKEY_EVENT_DEP_TEAMS, BASEBALL_EVENT_DEP_TEAMS, FOOTBALL_EVENT_DEP_TEAMS } from './templates-lists';
 
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical'
@@ -2854,6 +2854,13 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: FOOTBALL_EVENT_DEP_TEAMS,
+                  }
                 ],
                 resolutionRules: {},
               },

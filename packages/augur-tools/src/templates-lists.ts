@@ -2470,7 +2470,7 @@ export const HOCKEY_EVENT_DEP_TEAMS = {
 };
 
 export const BASEBALL_EVENT_DEP_TEAMS = {
-  'Eastern Conference Finals': LIST_VALUES.MLB_NAT_TEAMS,
-  'Western Conference Finals': LIST_VALUES.MLB_AMER_TEAMS,
-  'Stanley Cup': LIST_VALUES.MLB_TEAMS,
+  'National League Championship Series': LIST_VALUES.MLB_NAT_TEAMS,
+  'American League Championship Series': LIST_VALUES.MLB_AMER_TEAMS,
+  'World Series': LIST_VALUES.MLB_TEAMS,
 };
