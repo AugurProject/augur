@@ -1585,6 +1585,130 @@ export const LIST_VALUES = {
       label: 'TOUR Championship',
     },
   ],
+  MLB_AMER_TEAMS: [
+    {
+      value: 'Baltimore Orioles',
+      label: 'Baltimore Orioles',
+    },
+    {
+      value: 'Boston Red Sox',
+      label: 'Boston Red Sox',
+    },
+    {
+      value: 'Chicago White Sox',
+      label: 'Chicago White Sox',
+    },
+    {
+      value: 'Cleveland Indians',
+      label: 'Cleveland Indians',
+    },
+    {
+      value: 'Detroit Tigers',
+      label: 'Detroit Tigers',
+    },
+    {
+      value: 'Houston Astros',
+      label: 'Houston Astros',
+    },
+    {
+      value: 'Kansas City Royals',
+      label: 'Kansas City Royals',
+    },
+    {
+      value: 'Las Angeles Angels',
+      label: 'Las Angeles Angels',
+    },
+    {
+      value: 'Minnesota Twins',
+      label: 'Minnesota Twins',
+    },
+    {
+      value: 'New York Yankees',
+      label: 'New York Yankees',
+    },
+    {
+      value: 'Oakland Athletics',
+      label: 'Oakland Athletics',
+    },
+    {
+      value: 'Seattle Mariners',
+      label: 'Seattle Mariners',
+    },
+    {
+      value: 'Tampa Bay Rays',
+      label: 'Tampa Bay Rays',
+    },
+    {
+      value: 'Texas Rangers',
+      label: 'Texas Rangers',
+    },
+    {
+      value: 'Toronto Blue Jays',
+      label: 'Toronto Blue Jays',
+    },
+  ],
+  MLB_NAT_TEAMS: [
+    {
+      value: 'Arizona Diamondbacks',
+      label: 'Arizona Diamondbacks',
+    },
+    {
+      value: 'Atlanta Braves',
+      label: 'Atlanta Braves',
+    },
+    {
+      value: 'Chicago Cubs',
+      label: 'Chicago Cubs',
+    },
+    {
+      value: 'Cincinnati Reds',
+      label: 'Cincinnati Reds',
+    },
+    {
+      value: 'Colorado Rockies',
+      label: 'Colorado Rockies',
+    },
+    {
+      value: 'Las Angeles Dodgers',
+      label: 'Las Angeles Dodgers',
+    },
+    {
+      value: 'Miami Marlins',
+      label: 'Miami Marlins',
+    },
+    {
+      value: 'Milwaukee Brewers',
+      label: 'Milwaukee Brewers',
+    },
+    {
+      value: 'New York Mets',
+      label: 'New York Mets',
+    },
+    {
+      value: 'Philadelphia Phillies',
+      label: 'Philadelphia Phillies',
+    },
+    {
+      value: 'Pittsburgh Pirates',
+      label: 'Pittsburgh Pirates',
+    },
+    {
+      value: 'San Diego Padres',
+      label: 'San Diego Padres',
+    },
+    {
+      value: 'San Francisco Giants',
+      label: 'San Francisco Giants',
+    },
+    {
+      value: 'St. Louis Cardinals',
+      label: 'St. Louis Cardinals',
+    },
+    {
+      value: 'Washington Nationals',
+      label: 'Washington Nationals',
+    },
+  ],
   MLB_TEAMS: [
     {
       value: 'Arizona Diamondbacks',
@@ -2343,4 +2467,10 @@ export const HOCKEY_EVENT_DEP_TEAMS = {
   'Eastern Conference Finals': LIST_VALUES.NHL_EAST_TEAMS,
   'Western Conference Finals': LIST_VALUES.NHL_WEST_TEAMS,
   'Stanley Cup': LIST_VALUES.NHL_TEAMS,
+};
+
+export const BASEBALL_EVENT_DEP_TEAMS = {
+  'Eastern Conference Finals': LIST_VALUES.MLB_NAT_TEAMS,
+  'Western Conference Finals': LIST_VALUES.MLB_AMER_TEAMS,
+  'Stanley Cup': LIST_VALUES.MLB_TEAMS,
 };
