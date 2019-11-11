@@ -985,6 +985,7 @@ export const TRADING_TUTORIAL_COPY = {
       },
       {
         text: 'Please enter a quantity of 100.',
+        lighten: true
       },
     ],
   },
@@ -998,7 +999,8 @@ export const TRADING_TUTORIAL_COPY = {
         text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
       },
       {
-        text: 'Enter a limit price of $.40.'
+        text: 'Enter a limit price of $.40.',
+        lighten: true
       }
     ],
   },

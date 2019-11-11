@@ -25,6 +25,7 @@ export interface TextLink {
   text: string;
   link?: string;
   linkText?: string;
+  lighten?: boolean;
 }
 
 export interface TextObject {
