@@ -80,6 +80,10 @@
   display: flex;
   margin: @size-4 0;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
+  
+  @media all and (max-height: 700px) {
+    min-height: 700px;
+  }
 }
 
 .MarketView__body {
