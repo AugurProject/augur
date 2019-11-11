@@ -266,7 +266,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               ...this.state,
               ...order,
               orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-              orderEscrowdDai: '',
+              orderEscrowdDai: totalCost ? formattedValue.roundedValue.toString() : '',
               gasCostEst: '',
               trade: trade,
             },

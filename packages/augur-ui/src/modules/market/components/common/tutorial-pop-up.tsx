@@ -6,17 +6,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
 } from 'modules/reporting/common';
-
-interface TextLink {
-  text: string;
-  link?: string;
-  linkText?: string;
-}
-
-interface TextObject {
-  title: string;
-  subheader: TextLink[];
-}
+import { TextObject } from 'modules/types';
 
 export interface TutorialPopUpProps {
   next: Function;
@@ -47,7 +37,7 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
     <div>
       <h1>{props.text.title}</h1>
       {props.text.subheader.map((subheader, idx) => (
-        <span key={idx}>
+        <span className={classNames({[Styles.Lighten]: subheader.lighten})} key={idx}>
           {subheader.text}
           {subheader.linkText && (
             <a href={subheader.link} target="blank">
