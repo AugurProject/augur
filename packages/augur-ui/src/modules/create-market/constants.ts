@@ -122,6 +122,7 @@ export const EventDetailsContent = (type = `custom`) => ({
     'If it’s a stock, currency or cryptocurrency and its ticker is not used in the market question.',
     'If it’s an index and the indexes full name is not in the market question.',
     'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
+    'For any sports market that lists a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
   ],
   mainContent: type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
   firstButton: BACK,

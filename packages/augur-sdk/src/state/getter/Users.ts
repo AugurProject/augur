@@ -231,7 +231,7 @@ export class Users {
     userStakedRep.disputing.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
 
 
-    const positions = Users.getProfitLossSummary(augur, db, {
+    const positions = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
     })

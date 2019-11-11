@@ -30,6 +30,8 @@ import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints } from 'modules/types';
 import Clipboard from 'clipboard';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
+import MarketTitle from 'modules/market/containers/market-title';
+import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 
 const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
@@ -145,7 +147,7 @@ export default class MarketHeader extends Component<
       toggleFavorite,
       showTutorial,
       next,
-      back
+      back,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -225,7 +227,7 @@ export default class MarketHeader extends Component<
             </div>
             <div className={Styles.MainValues}>
               <div>
-                <h1>{description}</h1>
+                {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Additional Details</h4>
