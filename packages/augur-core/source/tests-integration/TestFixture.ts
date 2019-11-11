@@ -187,10 +187,14 @@ export class TestFixture {
     }
 
     async sellCompleteSets(market: Market, amount: BigNumber): Promise<void> {
+      console.log('WORDUP', 0, market.address, amount.toString());
         const shareTokenContract = await this.contractDeployer.getContractAddress('ShareToken');
+      console.log('WORDUP', 1, shareTokenContract);
         const shareToken = new ShareToken(this.dependencies, shareTokenContract);
+      console.log('WORDUP', 2);
 
-        await shareToken.publicSellCompleteSets(market.address, amount);
+        const todo = await shareToken.publicSellCompleteSets(market.address, amount);
+      console.log('WORDUP', 3, todo);
         return;
     }
 
@@ -212,9 +216,14 @@ export class TestFixture {
     }
 
     async getNumSharesInMarket(market: Market, outcome: BigNumber): Promise<BigNumber> {
+      console.log('MUSHROOM', 0);
         const shareTokenAddress = await this.contractDeployer.getContractAddress('ShareToken');
+      console.log('MUSHROOM', 1, shareTokenAddress);
         const shareToken = new ShareToken(this.dependencies, shareTokenAddress);
-        return shareToken.balanceOfMarketOutcome_(market.address, outcome, this.account);
+      console.log('MUSHROOM', 2);
+        const todo = await shareToken.balanceOfMarketOutcome_(market.address, outcome, this.account);
+        console.log('MUSHROOM', 3, todo);
+        return todo;
     }
 
     async getDisputeWindow(market: Market): Promise<DisputeWindow> {

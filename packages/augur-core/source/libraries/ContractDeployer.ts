@@ -305,6 +305,7 @@ Deploying to: ${networkConfiguration.networkName}
     }
 
     private async uploadUniswapContracts(): Promise<string> {
+        console.log('Uploading UniswapV2Factory contract');
         const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
         uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0", 0]);
         return uniswapV2FactoryContract.address;
