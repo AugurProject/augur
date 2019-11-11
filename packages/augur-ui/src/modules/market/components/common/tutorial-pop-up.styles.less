@@ -1,5 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
+@keyframes fadeinout {
+  100% { opacity: 1; }
+}
+
 .TutorialPopUp {
   position: absolute;
   bottom: 0;
@@ -12,6 +16,8 @@
   max-width: 300px;
   height: fit-content;
   border: 1px solid fade(@color-outline, 50%);
+  animation: fadeinout 0.75s linear forwards;
+  opacity: 0;
 
   > div {
     position: relative;
