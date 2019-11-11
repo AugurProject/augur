@@ -35,6 +35,7 @@ import {
   WOMENS,
   SINGLES,
   DOUBLES,
+  WNBA,
 } from './templates-template';
 import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS } from './templates-lists';
 
@@ -774,7 +775,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Singles Tennis: Which player will win the [2] [3]?`,
+                question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
                 inputs: [
                   {
@@ -1575,6 +1576,371 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
                     values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year Range`,
+                    values: LIST_VALUES.YEAR_RANGE,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [{ text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`}]
+                },
+              },
+            ],
+          },
+          [WNBA]: {
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `WNBA: Will the [0] win vs the [1], Estimated schedule start time: [2]?`,
+                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `WNBA: Will the [0] win vs the [1] by [2] or more points, Estimated schedule start time: [3]?`,
+                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `WNBA: Will the [0] & [1] score [2] or more combined points, Estimated schedule start time: [3]?`,
+                example: `WNBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points, Estimated schedule start time: Sept 19, 2019 9:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as "NO"'`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: YES_NO,
+                question: `WNBA: Will the [0] win the [1] NBA Championship?`,
+                example: `WNBA: Will the Golden State Warriors win the 2019-20 NBA Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year Range`,
+                    values: LIST_VALUES.YEAR_RANGE,
+                  },
+                ],
+                resolutionRules: {},
+              },
+              {
+                marketType: YES_NO,
+                question: `WNBA: Will [0] win the [1] [2] award?`,
+                example: `WNBA: Will Steph Curry win the 2019-20 NBA Most Valuable Player award?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Name`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEAR_RANGE,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Award`,
+                    values: LIST_VALUES.NBA_BASKETBALL_AWARD,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`
+                    }
+                  ]
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `WNBA: Which team will win: [0] vs [1], Estimated schedule start time: [2]?`,
+                example: `WNBA: Which Team will win: Brooklyn Nets vs NY Knicks, Estimated schedule start time: Sept 19, 2019 8:20 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and Overtime`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `WNBA: [0] vs [1]: Total Points scored; Over/Under [2].5, Estimated schedule start time: [3]?`,
+                example: `WNBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5, Estimated schedule start time: Sept 19, 2019 1:00 pm EST?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Which WNBA team will win the [0] Championship?`,
+                example: `Which WNBA team will win the 2019-20 Championship?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEAR_RANGE,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Which WNBA player will win the [0] [1] award?`,
+                example: `Which WNBA player will win the 2019-20 Most Valuable Player award?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year Range`,
+                    values: LIST_VALUES.YEAR_RANGE,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Award`,
+                    values: LIST_VALUES.NBA_BASKETBALL_AWARD,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `WNBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
+                example: `WNBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Action`,
+                    values: LIST_VALUES.BASKETBALL_ACTION,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year Range`,
+                    values: LIST_VALUES.YEAR_RANGE,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Results are determined to the first decimal place, meaning a player averaging 10.6 rebounds per game is higher than a player averaging 10.0.`
+                    },
+                    {
+                      text: `In the event of a tie between two players these rules will be used to determine the winner: For points scored, field goal % should be used as the tie breaker.`
+                    },
+                    {
+                      text: `For the most rebounds, the player with the total most offensive rebounds, should be used as a tie breaker.`
+                    },
+                    {
+                      text: `For most total Assists, The player with the "Least" amount of turnovers should be used as the tie breaker.`
+                    },
+                    {
+                      text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: SCALAR,
+                question: `WNBA: Total number of wins [0] will finish [1] regular season with?`,
+                example: `WNBA: Total number of wins NY Knicks will finish 2019-20 regular season with?`,
+                denomination: 'wins',
+                tickSize: 1,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team`,
+                    values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
                     id: 1,

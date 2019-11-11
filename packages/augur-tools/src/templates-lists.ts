@@ -1,4 +1,3 @@
-
 export const LIST_VALUES = {
   YEARS: [
     {
@@ -55,8 +54,8 @@ export const LIST_VALUES = {
     },
     {
       value: 'AP Most Valuable Player',
-      label: 'AP Most Valuable Player'
-    }
+      label: 'AP Most Valuable Player',
+    },
   ],
   FOOTBALL_EVENT: [
     {
@@ -652,8 +651,8 @@ export const LIST_VALUES = {
       label: "Women's",
     },
     {
-      value: "Mixed",
-      label: "Mixed",
+      value: 'Mixed',
+      label: 'Mixed',
     },
   ],
   BASKETBALL_ACTION: [
@@ -706,6 +705,260 @@ export const LIST_VALUES = {
       label: 'Calder Trophy',
     },
   ],
+  NHL_EAST_TEAMS: [
+    {
+      label: 'Boston Bruins',
+      value: 'Boston Bruins',
+    },
+    {
+      label: 'Buffalo Sabres',
+      value: 'Buffalo Sabres',
+    },
+    {
+      label: 'Carolina Hurricanes',
+      value: 'Carolina Hurricanes',
+    },
+    {
+      label: 'Columbus Blue Jackets',
+      value: 'Columbus Blue Jackets',
+    },
+    {
+      label: 'Detroit Red Wings',
+      value: 'Detroit Red Wings',
+    },
+    {
+      label: 'Florida Panthers',
+      value: 'Florida Panthers',
+    },
+    {
+      label: 'Montreal Canadiens',
+      value: 'Montreal Canadiens',
+    },
+    {
+      label: 'New Jersey Devils',
+      value: 'New Jersey Devils',
+    },
+    {
+      label: 'New York Islanders',
+      value: 'New York Islanders',
+    },
+    {
+      label: 'New York Rangers',
+      value: 'New York Rangers',
+    },
+    {
+      label: 'Ottawa Senators',
+      value: 'Ottawa Senators',
+    },
+    {
+      label: 'Philadelphia Flyers',
+      value: 'Philadelphia Flyers',
+    },
+    {
+      label: 'Pittsburgh Penguins',
+      value: 'Pittsburgh Penguins',
+    },
+    {
+      label: 'Tampa Bay Lightning',
+      value: 'Tampa Bay Lightning',
+    },
+    {
+      label: 'Toronto Maple Leafs',
+      value: 'Toronto Maple Leafs',
+    },
+    {
+      label: 'Washington Capitals',
+      value: 'Washington Capitals',
+    },
+  ],
+  NHL_WEST_TEAMS: [
+    {
+      label: 'Anaheim Ducks',
+      value: 'Anaheim Ducks',
+    },
+    {
+      label: 'Arizona Coyotes',
+      value: 'Arizona Coyotes',
+    },
+    {
+      label: 'Calgary Flames',
+      value: 'Calgary Flames',
+    },
+    {
+      label: 'Chicago Blackhawks',
+      value: 'Chicago Blackhawks',
+    },
+    {
+      label: 'Colorado Avalanche',
+      value: 'Colorado Avalanche',
+    },
+    {
+      label: 'Dallas Stars',
+      value: 'Dallas Stars',
+    },
+    {
+      label: 'Edmonton Oilers',
+      value: 'Edmonton Oilers',
+    },
+    {
+      label: 'Los Angeles Kings',
+      value: 'Los Angeles Kings',
+    },
+    {
+      label: 'Minnesota Wild',
+      value: 'Minnesota Wild',
+    },
+    {
+      label: 'Nashville Predators',
+      value: 'Nashville Predators',
+    },
+    {
+      label: 'St. Louis Blues',
+      value: 'St. Louis Blues',
+    },
+    {
+      label: 'San Jose Sharks',
+      value: 'San Jose Sharks',
+    },
+    {
+      label: 'Vancouver Canucks',
+      value: 'Vancouver Canucks',
+    },
+    {
+      label: 'Vegas Golden Knights',
+      value: 'Vegas Golden Knights',
+    },
+    {
+      label: 'Winnipeg Jets',
+      value: 'Winnipeg Jets',
+    },
+  ],
+  NHL_TEAMS: [
+    {
+      label: 'Anaheim Ducks',
+      value: 'Anaheim Ducks',
+    },
+    {
+      label: 'Arizona Coyotes',
+      value: 'Arizona Coyotes',
+    },
+    {
+      label: 'Boston Bruins',
+      value: 'Boston Bruins',
+    },
+    {
+      label: 'Buffalo Sabres',
+      value: 'Buffalo Sabres',
+    },
+    {
+      label: 'Calgary Flames',
+      value: 'Calgary Flames',
+    },
+    {
+      label: 'Carolina Hurricanes',
+      value: 'Carolina Hurricanes',
+    },
+    {
+      label: 'Chicago Blackhawks',
+      value: 'Chicago Blackhawks',
+    },
+    {
+      label: 'Colorado Avalanche',
+      value: 'Colorado Avalanche',
+    },
+    {
+      label: 'Columbus Blue Jackets',
+      value: 'Columbus Blue Jackets',
+    },
+    {
+      label: 'Dallas Stars',
+      value: 'Dallas Stars',
+    },
+    {
+      label: 'Detroit Red Wings',
+      value: 'Detroit Red Wings',
+    },
+    {
+      label: 'Edmonton Oilers',
+      value: 'Edmonton Oilers',
+    },
+    {
+      label: 'Florida Panthers',
+      value: 'Florida Panthers',
+    },
+    {
+      label: 'Los Angeles Kings',
+      value: 'Los Angeles Kings',
+    },
+    {
+      label: 'Minnesota Wild',
+      value: 'Minnesota Wild',
+    },
+    {
+      label: 'Montreal Canadiens',
+      value: 'Montreal Canadiens',
+    },
+    {
+      label: 'Nashville Predators',
+      value: 'Nashville Predators',
+    },
+    {
+      label: 'New Jersey Devils',
+      value: 'New Jersey Devils',
+    },
+    {
+      label: 'New York Islanders',
+      value: 'New York Islanders',
+    },
+    {
+      label: 'New York Rangers',
+      value: 'New York Rangers',
+    },
+    {
+      label: 'Ottawa Senators',
+      value: 'Ottawa Senators',
+    },
+    {
+      label: 'Philadelphia Flyers',
+      value: 'Philadelphia Flyers',
+    },
+    {
+      label: 'Pittsburgh Penguins',
+      value: 'Pittsburgh Penguins',
+    },
+    {
+      label: 'San Jose Sharks',
+      value: 'San Jose Sharks',
+    },
+    {
+      label: 'St. Louis Blues',
+      value: 'St. Louis Blues',
+    },
+    {
+      label: 'Tampa Bay Lightning',
+      value: 'Tampa Bay Lightning',
+    },
+    {
+      label: 'Toronto Maple Leafs',
+      value: 'Toronto Maple Leafs',
+    },
+    {
+      label: 'Vancouver Canucks',
+      value: 'Vancouver Canucks',
+    },
+    {
+      label: 'Vegas Golden Knights',
+      value: 'Vegas Golden Knights',
+    },
+    {
+      label: 'Washington Capitals',
+      value: 'Washington Capitals',
+    },
+    {
+      label: 'Winnipeg Jets',
+      value: 'Winnipeg Jets',
+    },
+  ],
   HORSE_RACING_EVENT: [
     {
       value: 'Kentucky Derby',
@@ -724,8 +977,8 @@ export const LIST_VALUES = {
       label: 'Triple Crown',
     },
     {
-      value: 'Breeder\'s cup',
-      label: 'Breeder\'s cup',
+      value: "Breeder's cup",
+      label: "Breeder's cup",
     },
     {
       value: 'Travers Stakes',
@@ -796,16 +1049,16 @@ export const LIST_VALUES = {
       label: 'ISPS Handa Vic Open',
     },
     {
-      value: 'ISPS Handa Women\'s Australian Open',
-      label: 'ISPS Handa Women\'s Australian Open',
+      value: "ISPS Handa Women's Australian Open",
+      label: "ISPS Handa Women's Australian Open",
     },
     {
       value: 'Honda LPGA Thailand',
       label: 'Honda LPGA Thailand',
     },
     {
-      value: 'HSBC Women\'s World Championship',
-      label: 'HSBC Women\'s World Championship',
+      value: "HSBC Women's World Championship",
+      label: "HSBC Women's World Championship",
     },
     {
       value: 'Bank Of Hope Founders Cup',
@@ -836,8 +1089,8 @@ export const LIST_VALUES = {
       label: 'Pure Silk Championship',
     },
     {
-      value: 'U.S. Women\'s Open',
-      label: 'U.S. Women\'s Open',
+      value: "U.S. Women's Open",
+      label: "U.S. Women's Open",
     },
     {
       value: 'ShopRite LPGA Classic Presented by Acer',
@@ -848,8 +1101,8 @@ export const LIST_VALUES = {
       label: 'Meijer LPGA Classic For Simply Give',
     },
     {
-      value: 'KPMG Women\'s PGA Championship',
-      label: 'KPMG Women\'s PGA Championship',
+      value: "KPMG Women's PGA Championship",
+      label: "KPMG Women's PGA Championship",
     },
     {
       value: 'Walmart NW Arkansas Championship Presented by P&G',
@@ -872,16 +1125,16 @@ export const LIST_VALUES = {
       label: 'The Evian Championship',
     },
     {
-      value: 'AIG Women\'s British Open',
-      label: 'AIG Women\'s British Open',
+      value: "AIG Women's British Open",
+      label: "AIG Women's British Open",
     },
     {
       value: 'Aberdeen Standard Investments Ladies Scottish Open',
       label: 'Aberdeen Standard Investments Ladies Scottish Open',
     },
     {
-      value: 'CP Women\'s Open',
-      label: 'CP Women\'s Open',
+      value: "CP Women's Open",
+      label: "CP Women's Open",
     },
     {
       value: 'Cambia Portland Classic',
@@ -1042,8 +1295,8 @@ export const LIST_VALUES = {
       label: 'Betfred British Masters hosted by Lee Westwood	',
     },
     {
-      value: 'Olympic Men\'s Golf Competition',
-      label: 'Olympic Men\'s Golf Competition',
+      value: "Olympic Men's Golf Competition",
+      label: "Olympic Men's Golf Competition",
     },
     {
       value: 'UK Event Confirmed	',
@@ -1312,8 +1565,8 @@ export const LIST_VALUES = {
       label: '3M Open',
     },
     {
-      value: 'Olympic Men\'s Golf Competition',
-      label: 'Olympic Men\'s Golf Competition',
+      value: "Olympic Men's Golf Competition",
+      label: "Olympic Men's Golf Competition",
     },
     {
       value: 'Wyndham Championship',
@@ -1452,6 +1705,138 @@ export const LIST_VALUES = {
     {
       value: 'Washington Nationals',
       label: 'Washington Nationals',
+    },
+  ],
+  NFL_AFC_TEAMS: [
+    {
+      label: 'Buffalo Bills',
+      value: 'Buffalo Bills',
+    },
+    {
+      label: 'Miami Dolphins',
+      value: 'Miami Dolphins',
+    },
+    {
+      label: 'New England Patriots',
+      value: 'New England Patriots',
+    },
+    {
+      label: 'New York Jets',
+      value: 'New York Jets',
+    },
+    {
+      label: 'Baltimore Ravens',
+      value: 'Baltimore Ravens',
+    },
+    {
+      label: 'Cincinnati Bengals',
+      value: 'Cincinnati Bengals',
+    },
+    {
+      label: 'Cleveland Browns',
+      value: 'Cleveland Browns',
+    },
+    {
+      label: 'Pittsburgh Steelers',
+      value: 'Pittsburgh Steelers',
+    },
+    {
+      label: 'Houston Texans',
+      value: 'Houston Texans',
+    },
+    {
+      label: 'Indianapolis Colts',
+      value: 'Indianapolis Colts',
+    },
+    {
+      label: 'Jacksonville Jaguars',
+      value: 'Jacksonville Jaguars',
+    },
+    {
+      label: 'Tennessee Titans',
+      value: 'Tennessee Titans',
+    },
+    {
+      label: 'Denver Broncos',
+      value: 'Denver Broncos',
+    },
+    {
+      label: 'Kansas City Chiefs',
+      value: 'Kansas City Chiefs',
+    },
+    {
+      label: 'Oakland Raiders',
+      value: 'Oakland Raiders',
+    },
+    {
+      label: 'Los Angeles Chargers',
+      value: 'Los Angeles Chargers',
+    },
+  ],
+  NFL_NFC_TEAMS: [
+    {
+      label: 'Dallas Cowboys',
+      value: 'Dallas Cowboys',
+    },
+    {
+      label: 'New York Giants',
+      value: 'New York Giants',
+    },
+    {
+      label: 'Philadelphia Eagles',
+      value: 'Philadelphia Eagles',
+    },
+    {
+      label: 'Washington Redskins',
+      value: 'Washington Redskins',
+    },
+    {
+      label: 'Chicago Bears',
+      value: 'Chicago Bears',
+    },
+    {
+      label: 'Detroit Lions',
+      value: 'Detroit Lions',
+    },
+    {
+      label: 'Green Bay Packers',
+      value: 'Green Bay Packers',
+    },
+    {
+      label: 'Minnesota Vikings',
+      value: 'Minnesota Vikings',
+    },
+    {
+      label: 'Atlanta Falcons',
+      value: 'Atlanta Falcons',
+    },
+    {
+      label: 'Carolina Panthers',
+      value: 'Carolina Panthers',
+    },
+    {
+      label: 'New Orleans Saints',
+      value: 'New Orleans Saints',
+    },
+    {
+      label: 'Tampa Bay Buccaneers',
+      value: 'Tampa Bay Buccaneers',
+    },
+    {
+      label: 'Arizona Cardinals',
+      value: 'Arizona Cardinals',
+    },
+    {
+      label: 'Los Angeles Rams',
+      value: 'Los Angeles Rams',
+    },
+    {
+      label: 'San Francisco 49ers',
+      value: 'San Francisco 49ers',
+    },
+    {
+      label: 'Seattle Seahawks',
+      value: 'Seattle Seahawks',
     },
   ],
   NFL_TEAMS: [
@@ -1830,6 +2215,56 @@ export const LIST_VALUES = {
       label: 'Utah Jazz',
     },
   ],
+  WNBA_TEAMS: [
+    {
+      value: 'Atlanta Dream',
+      label: 'Atlanta Dream',
+    },
+    {
+      value: 'Chicago Sky',
+      label: 'Chicago Sky',
+    },
+    {
+      value: 'Connecticut Sun',
+      label: 'Connecticut Sun',
+    },
+    {
+      value: 'Dallas Wings',
+      label: 'Dallas Wings',
+    },
+    {
+      value: 'Indiana Fever',
+      label: 'Indiana Fever',
+    },
+    {
+      value: 'Las Vegas Aces',
+      label: 'Las Vegas Aces',
+    },
+    {
+      value: 'Los Angeles Sparks',
+      label: 'Los Angeles Sparks',
+    },
+    {
+      value: 'Minnesota Lynx',
+      label: 'Minnesota Lynx',
+    },
+    {
+      value: 'New York Liberty',
+      label: 'New York Liberty',
+    },
+    {
+      value: 'Phoenix Mercury',
+      label: 'Phoenix Mercury',
+    },
+    {
+      value: 'Seattle Storm',
+      label: 'Seattle Storm',
+    },
+    {
+      value: 'Washington Mystics',
+      label: 'Washington Mystics',
+    },
+  ],
   BTC_USD_EXCHANGES: [
     {
       value: 'Coinbase Pro (pro.coinbase.com)',
@@ -1892,9 +2327,20 @@ export const LIST_VALUES = {
   ],
 };
 
-
 export const BASKETBALL_EVENT_DEP_TEAMS = {
   'Eastern Conference Finals': LIST_VALUES.NBA_EAST_TEAMS,
   'Western Conference Finals': LIST_VALUES.NBA_WEST_TEAMS,
   'NBA Championship': LIST_VALUES.NBA_TEAMS,
+};
+
+export const FOOTBALL_EVENT_DEP_TEAMS = {
+  'AFC Championship game': LIST_VALUES.NFL_AFC_TEAMS,
+  'NFC Championship game': LIST_VALUES.NFL_NFC_TEAMS,
+  Superbowl: LIST_VALUES.NBA_TEAMS,
+};
+
+export const HOCKEY_EVENT_DEP_TEAMS = {
+  'Eastern Conference Finals': LIST_VALUES.NHL_EAST_TEAMS,
+  'Western Conference Finals': LIST_VALUES.NHL_WEST_TEAMS,
+  'Stanley Cup': LIST_VALUES.NHL_TEAMS,
 };
