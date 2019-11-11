@@ -198,7 +198,7 @@ export class Users {
     const userTradeHistory = await Trading.getTradingHistory(augur, db, {
       account: params.account,
       universe: params.universe,
-      ignoreReportingStates: [MarketReportingState.Finalized]
+      filterFinalized: true
     });
 
     const uniqMarketIds = Object.keys(userTradeHistory);

@@ -60,7 +60,6 @@ test('Hot Loading :: Get Dispute Window Data', async () => {
 
   await expect(disputeWindowData).toBeDefined();
 
-  await expect(disputeWindowData.address).toEqual("");
   await expect(typeof(disputeWindowData.startTime)).toEqual(typeof(0));
   await expect(typeof(disputeWindowData.endTime)).toEqual(typeof(0));
   await expect(disputeWindowData.purchased).toEqual("0");
