@@ -21,7 +21,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
         name: this.props.toasts[0].name, 
         toast: false,
       };
-      //this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
+      this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
     }, 2000);
   }
 
