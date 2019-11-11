@@ -717,7 +717,7 @@ interface InputFactoryProps {
   inputIndex: number;
   onChange: Function;
   newMarket: NewMarket;
-  currentTimestamp: string;
+  currentTimestamp: number;
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
@@ -797,7 +797,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
-  } else if (input.type === TemplateInputType.DATETIME) {
+  } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
     return (
       <span>
         {input.userInput ? input.userInput : `[${input.placeholder}]`}
@@ -971,7 +971,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      userInput = endTimeFormatted.formattedUtc;
+      if (input.type === TemplateInputType.DATETIME)
+        userInput = endTimeFormatted.formattedUtc;
+      else
+        userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1058,7 +1061,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   onChange: Function;
-  currentTime: number;
+  currentTimestamp: number;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
@@ -1068,7 +1071,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const inputs = template.inputs;
 
   const dateTimeIndex = inputs.findIndex(
-    input => input.type === TemplateInputType.DATETIME
+    input => (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME)
   );
 
   return (
