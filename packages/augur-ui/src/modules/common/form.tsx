@@ -44,7 +44,7 @@ import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
-import { MarketData, DisputeInputtedValues } from 'modules/types';
+import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 
 interface CheckboxProps {

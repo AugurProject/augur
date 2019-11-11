@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useReducer } from 'react';
 import classNames from 'classnames';
 
 import { SecondaryButton, ExternalLinkButton } from 'modules/common/buttons';
@@ -46,8 +46,15 @@ import {
   CHOICE,
   REQUIRED,
 } from '@augurproject/artifacts';
-import { TemplateBannerText } from 'modules/create-market/constants';
-import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import {
+  TemplateBannerText,
+  SelectEventNoticeText,
+} from 'modules/create-market/constants';
+import {
+  DismissableNotice,
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+} from 'modules/reporting/common';
+import { NameValuePair } from 'modules/portfolio/types';
 
 export interface HeaderProps {
   text: string;
@@ -797,7 +804,10 @@ export const InputFactory = (props: InputFactoryProps) => {
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
-  } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
+  } else if (
+    input.type === TemplateInputType.DATETIME ||
+    input.type === TemplateInputType.ESTDATETIME
+  ) {
     return (
       <span>
         {input.userInput ? input.userInput : `[${input.placeholder}]`}
@@ -973,8 +983,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     if (hour !== null && minute !== null) {
       if (input.type === TemplateInputType.DATETIME)
         userInput = endTimeFormatted.formattedUtc;
-      else
-        userInput = String(endTimeFormatted.timestamp);
+      else userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1071,7 +1080,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const inputs = template.inputs;
 
   const dateTimeIndex = inputs.findIndex(
-    input => (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME)
+    input =>
+      input.type === TemplateInputType.DATETIME ||
+      input.type === TemplateInputType.ESTDATETIME
   );
 
   return (
@@ -1127,7 +1138,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
 };
 
 export interface TemplateBannersProps {
-  categories: string[]
+  categories: string[];
 }
 
 export const TemplateBanners = (props: TemplateBannersProps) => {
@@ -1155,6 +1166,27 @@ export interface CategoricalTemplateProps {
 }
 
 export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
+  const { newMarket } = props;
+  const { template } = newMarket;
+  const inputs = template.inputs;
+  const hasDropdowns = inputs.find(
+    i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
+  );
+  return hasDropdowns ? (
+    <CategoricalTemplateDropdowns {...props} />
+  ) : (
+    <CategoricalTemplateTextInputs {...props} />
+  );
+};
+
+export interface CategoricalTemplateTextInputsProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+export const CategoricalTemplateTextInputs = (
+  props: CategoricalTemplateTextInputsProps
+) => {
   const { onChange, newMarket } = props;
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
@@ -1230,6 +1262,121 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
   );
 };
 
+export interface CategoricalTemplateDropdownsProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+interface CategoricalDropDownItem {
+  value: string;
+  list: NameValuePair[];
+  editable: boolean;
+}
+interface CategoricalDropDownAction {
+  type: string;
+  data: CategoricalDropDownItem;
+}
+export const CategoricalTemplateDropdowns = (
+  props: CategoricalTemplateDropdownsProps
+) => {
+  const ACTIONS = {
+    ADD: 'ADD',
+    REMOVE: 'REMOVE',
+    REMOVE_ALL: 'REMOVE_ALL',
+  };
+  const [outcomeList, dispatch] = useReducer(
+    (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
+      switch (action.type) {
+        case ACTIONS.ADD:
+          const newAddState = [...state, action.data];
+          props.onChange('outcomes', newAddState.map(i => i.value));
+          return newAddState;
+        case ACTIONS.REMOVE:
+          const newRemoveState = state.filter(s => s.value !== action.data.value)
+          props.onChange('outcomes', newRemoveState.map(i => i.value));
+          return newRemoveState;
+        case ACTIONS.REMOVE_ALL:
+          return [];
+        default:
+          return state;
+      }
+    },
+    []
+  );
+
+  const [sourceUserInput, setSourceUserInput] = useState(undefined);
+  const [depDropdownInput] = useState(
+    props.newMarket.template.inputs.find(
+      input =>
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
+    )
+  );
+  const [defaultOutcomeItems] = useState(
+    props.newMarket.template.inputs
+      .filter(input => input.type === TemplateInputType.ADDED_OUTCOME)
+      .map(input => ({
+        value: input.placeholder,
+        editable: false,
+      }))
+  );
+  const [newItem, setNewItem] = useState(null);
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
+      defaultOutcomeItems.map(i => dispatch({ type: ACTIONS.ADD, data: i }));
+    }
+    const { template } = props.newMarket;
+    const source = template.inputs.find(
+      i => i.id === depDropdownInput.inputSourceId
+    );
+    setShowBanner(!!!source.userInput);
+    if (sourceUserInput !== source.userInput) {
+      dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
+      setNewItem({
+        value: depDropdownInput.userInput || depDropdownInput.placeholder,
+        list: depDropdownInput.values[source.userInput],
+      });
+      setSourceUserInput(source.userInput);
+    }
+  });
+
+  const { newMarket } = props;
+  const { validations } = newMarket;
+
+  return (
+    <>
+      <Subheaders
+        header="Outcomes"
+        subheader="List the outcomes people can choose from."
+        link
+      />
+      <NumberedList
+        initialList={newMarket.outcomes.map(o => ({
+          value: o,
+          editable: false,
+        }))}
+        minShown={1}
+        maxList={7}
+        placeholder={'Enter outcome'}
+        updateList={() => {}}
+        hideAdd={true}
+        errorMessage={validations.outcomes}
+      />
+      {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
+    </>
+  );
+};
+
+const SelectEventNotice = ({ text }) => (
+  <DismissableNotice
+    title={text}
+    className={Styles.TopBannerMargin}
+    buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+    show
+  />
+);
+
 export interface ResolutionRulesProps {
   newMarket: NewMarket;
   onChange: Function;
@@ -1282,9 +1429,9 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
         <>
           <span>Added Resolution details:</span>
           <div className={Styles.AddResolutionRules}>
-            {resolutionRules[REQUIRED].map((rule, index) =>
+            {resolutionRules[REQUIRED].map((rule, index) => (
               <div key={index}>{rule.text}</div>
-            )}
+            ))}
           </div>
         </>
       )}
