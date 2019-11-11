@@ -960,6 +960,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'Mens', label: 'Mens' },
           { value: 'Womens', label: 'Womens' },
           { value: 'Doubles', label: 'Doubles' },
+          { value: 'Singles', label: 'Singles' },
           { value: CUSTOM, label: CUSTOM }
         ],
         autoCompleteList: [
@@ -1071,6 +1072,8 @@ export const setCategories: SortedGroup[] = [
           { value: 'Erste Bank Open 500', label: 'Erste Bank Open 500' },
           { value: 'Swiss Indoors Basel', label: 'Swiss Indoors Basel' },
           { value: 'Rolex Paris Masters', label: 'Rolex Paris Masters' },
+          { value: 'Doubles', label: 'Doubles' },
+          { value: 'Singles', label: 'Singles' }
         ],
       },
       {
