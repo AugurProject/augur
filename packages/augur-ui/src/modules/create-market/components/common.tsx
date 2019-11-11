@@ -1133,7 +1133,9 @@ export interface TemplateBannersProps {
 export const TemplateBanners = (props: TemplateBannersProps) => {
   const text = props.categories.reduce(
     (p, c) =>
-      Object.keys(TemplateBannerText).includes(c) ? TemplateBannerText[c] : p,
+      Object.keys(TemplateBannerText).includes(c.toLowerCase())
+        ? TemplateBannerText[c.toLowerCase()]
+        : p,
     null
   );
   if (!text) return null;
@@ -1144,7 +1146,7 @@ export const TemplateBanners = (props: TemplateBannersProps) => {
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       show
     />
-  )
+  );
 };
 
 export interface CategoricalTemplateProps {

@@ -45,7 +45,7 @@ export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
 
 export interface DismissableNoticeProps {
   title: string;
-  description: string;
+  description?: string;
   buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES;
   buttonText?: string;
   buttonAction?: Function;

@@ -117,17 +117,18 @@ export const EventDetailsContent = (type = `custom`) => ({
     'The outcome was not known at event expiration time.',
     'The title, details and outcomes are in direct conflict with each other.',
     'There are strong arguments for the market resolving as multiple outcomes, unless it is explicitly stated how the market should be resolved in resolution details.',
-    'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
+    "If using a resolution source (a source is a noun that reports on or decides the result of a market), the source's URL or full name is NOT in the Market Question, regardless of it being in the resolution details.",
     'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name',
     'If it’s a stock, currency or cryptocurrency and its ticker is not used in the market question.',
     'If it’s an index and the indexes full name is not in the market question.',
     'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
     'For any sports market that lists a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
   ],
-  mainContent: type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
+  mainContent:
+    type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
   firstButton: BACK,
   secondButton: NEXT,
-  useBullets: true
+  useBullets: true,
 });
 
 export const LiquidityContent = {
@@ -509,6 +510,8 @@ export const VALIDATION_ATTRIBUTES = {
 };
 
 export const TemplateBannerText = {
-  [INDEXES] : 'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
-  [STOCKS] : 'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL'
-}
+  indexes:
+    'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
+  stocks:
+    'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
+};
