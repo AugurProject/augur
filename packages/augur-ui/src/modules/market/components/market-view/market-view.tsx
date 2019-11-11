@@ -729,6 +729,13 @@ export default class MarketView extends Component<
                         preview={preview}
                         next={this.next}
                         back={this.back}
+                        showTutorialData={tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA}
+                        step={tutorialStep}
+                        totalSteps={totalSteps}
+                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                        showTutorialDetails={tradingTutorial &&
+                          tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.MARKET_DETAILS}
                       />
                       {tradingTutorial &&
                         tutorialStep ===

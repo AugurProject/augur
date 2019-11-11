@@ -21,6 +21,17 @@ export enum SizeTypes {
   LARGE = 'large',
 }
 
+export interface TextLink {
+  text: string;
+  link?: string;
+  linkText?: string;
+}
+
+export interface TextObject {
+  title: string;
+  subheader: TextLink[];
+}
+
 export interface Alert {
   id: string;
   uniqueId: string;

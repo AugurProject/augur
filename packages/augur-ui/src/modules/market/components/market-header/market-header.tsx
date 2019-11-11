@@ -27,9 +27,9 @@ import MarketHeaderReporting from 'modules/market/containers/market-header-repor
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { MarketData, QueryEndpoints } from 'modules/types';
+import { MarketData, QueryEndpoints, TextObject } from 'modules/types';
 import Clipboard from 'clipboard';
-import { TutorialPopUp } from '../common/tutorial-pop-up';
+import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 
 const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
@@ -50,7 +50,11 @@ interface MarketHeaderProps {
   reportingBarShowing: boolean;
   next: Function;
   back: Function;
-  showTutorial?: boolean;
+  showTutorialData?: boolean;
+  text: TextObject;
+  step: number;
+  totalSteps: number;
+  showTutorialDetails?: boolean;
 }
 
 interface MarketHeaderState {
@@ -143,9 +147,13 @@ export default class MarketHeader extends Component<
       preview,
       reportingBarShowing,
       toggleFavorite,
-      showTutorial,
+      showTutorialData,
       next,
       back,
+      step,
+      totalSteps,
+      text,
+      showTutorialDetails
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -185,7 +193,7 @@ export default class MarketHeader extends Component<
       >
         {!headerCollapsed && (
           <div>
-            <div>
+            <div className={classNames({[Styles.ShowTutorial]: showTutorialDetails})}>
               <div>
                 <WordTrail items={[...categoriesWithClick]}>
                   <button
@@ -250,7 +258,7 @@ export default class MarketHeader extends Component<
                 )}
               </div>
             </div>
-            <div>
+            <div className={classNames({[Styles.ShowTutorial]: showTutorialData})}>
               <div className={Styles.Properties}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
@@ -273,6 +281,16 @@ export default class MarketHeader extends Component<
                   />
                 )}
               </div>
+              {showTutorialData && (
+                <TutorialPopUp
+                  top
+                  step={step}
+                  totalSteps={totalSteps}
+                  text={text}
+                  next={next}
+                  back={back}
+                />
+              )}
             </div>
           </div>
         )}

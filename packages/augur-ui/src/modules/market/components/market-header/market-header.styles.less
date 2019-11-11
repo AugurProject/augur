@@ -345,16 +345,19 @@ div.Toggle {
 }
 
 .Properties {
-  border: 1px solid @color-dark-grey;
-  border-bottom: 0;
-  border-right: 0;
+  border-left: 1px solid @color-dark-grey;
   display: flex;
   flex: 1;
   flex-direction: column;
   min-width: 630px;
+  background: @color-module-background;
+}
+
+.ShowTutorial {
+  z-index: @mask-illuminate;
 
   > section {
-    border-bottom: 1px solid @color-dark-grey;
+    top: 270px;
   }
 }
 
@@ -372,16 +375,24 @@ div.Toggle {
 
     > div:first-of-type {
       align-items: normal;
-      padding-left: @size-14;
+      padding-left: 0;
       overflow: auto;
       margin-bottom: @size-5;
+      flex-direction: column;
 
       div.Properties {
-        display: none;
+        min-width: unset;
+        border: 0;
+        border-top: 1px solid @color-dark-grey;
+
+        > div:last-of-type {
+          border-top: 0;
+        }
       }
 
       > div:first-of-type {
         padding-top: @size-12;
+        padding-left: @size-14;
         align-items: flex-start;
 
         > div:first-of-type {

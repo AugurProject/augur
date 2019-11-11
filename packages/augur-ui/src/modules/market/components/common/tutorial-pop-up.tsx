@@ -6,17 +6,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
 } from 'modules/reporting/common';
-
-interface TextLink {
-  text: string;
-  link?: string;
-  linkText?: string;
-}
-
-interface TextObject {
-  title: string;
-  subheader: TextLink[];
-}
+import { TextObject } from 'modules/types';
 
 export interface TutorialPopUpProps {
   next: Function;

@@ -12,6 +12,7 @@ import {
 
 import Styles from 'modules/modal/modal.styles.less';
 import { LinkContent } from 'modules/types';
+import classNames from 'classnames';
 
 interface OnboardingProps {
   closeAction: Function;
@@ -22,6 +23,7 @@ interface OnboardingProps {
   linkContent?: LinkContent[];
   currentStep?: number;
   icon: React.ReactNode;
+  condensed?: boolean;
 }
 
 export const Onboarding = ({
@@ -32,8 +34,9 @@ export const Onboarding = ({
   linkContent,
   currentStep,
   icon,
+  condensed
 }: OnboardingProps) => (
-  <div className={Styles.Onboarding}>
+  <div className={classNames(Styles.Onboarding, {[Styles.Condensed]: condensed})}>
     <main>
       {icon && <div>{icon}</div>}
       {largeHeader && <LargeSubheader text={largeHeader} />}
