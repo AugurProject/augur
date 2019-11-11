@@ -36,7 +36,6 @@ import { Arrayish } from "ethers/utils";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
-  readonly signer: EthersSigner;
   private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
@@ -91,7 +90,6 @@ export class Augur<TProvider extends Provider = Provider> {
   constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, browserMesh: BrowserMesh = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
-    this.signer = this.dependencies.signer;
     this.networkId = networkId;
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
@@ -272,12 +270,16 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrders)(params);
   }
 
-  syncUserData = (account: string): void => {
+  syncUserData(account: string): void {
     Augur.connector.syncUserData(account);
   }
 
-  setSigner = (signer: EthersSigner): void => {
-    this.dependencies.setSigner(signer);
+  get signer(): EthersSigner {
+    return this.dependencies.signer;
+  }
+
+  set signer(signer: EthersSigner)  {
+    this.dependencies.signer = signer;
   }
 
   getTradingHistory = this.bindTo(Trading.getTradingHistory);
