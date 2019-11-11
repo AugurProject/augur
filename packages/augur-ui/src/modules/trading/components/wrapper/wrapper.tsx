@@ -33,13 +33,19 @@ function pick(object, keys) {
   }, {});
 }
 
+interface SelectedOrderProperties {
+  orderPrice: string,
+  orderQuantity: string,
+  selectedNav: string
+}
+
 interface WrapperProps {
   orderBook: OutcomeOrderBook;
   allowanceBigNumber: BigNumber;
   market: MarketData;
   disclaimerSeen: boolean;
   disclaimerModal: Function;
-  selectedOrderProperties: object;
+  selectedOrderProperties: SelectedOrderProperties;
   availableEth: BigNumber;
   availableDai: BigNumber;
   selectedOutcome: OutcomeFormatted;
@@ -53,7 +59,7 @@ interface WrapperProps {
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
   initialLiquidity?: boolean;
-  currentTimestamp: Number;
+  currentTimestamp: number;
   tradingTutorial?: boolean;
   addPendingOrder: Function;
   tutorialNext?: Function;
@@ -119,32 +125,32 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps) {
     const { selectedOrderProperties } = this.props;
 
     if (
       JSON.stringify(selectedOrderProperties) !==
-      JSON.stringify(nextProps.selectedOrderProperties)
+      JSON.stringify(prevProps.selectedOrderProperties)
     ) {
       if (
-        nextProps.selectedOrderProperties.orderPrice !==
+        selectedOrderProperties.orderPrice !==
           this.state.orderPrice ||
-        nextProps.selectedOrderProperties.orderQuantity !==
+        selectedOrderProperties.orderQuantity !==
           this.state.orderQuantity ||
-        nextProps.selectedOrderProperties.selectedNav !== this.state.selectedNav
+        selectedOrderProperties.selectedNav !== this.state.selectedNav
       ) {
         if (
-          !nextProps.selectedOrderProperties.orderPrice &&
-          !nextProps.selectedOrderProperties.orderQuantity
+          !selectedOrderProperties.orderPrice &&
+          !selectedOrderProperties.orderQuantity
         ) {
           return this.clearOrderForm();
         }
 
         this.updateTradeTotalCost(
           {
-            ...nextProps.selectedOrderProperties,
+            ...selectedOrderProperties,
             orderQuantity: convertExponentialToDecimal(
-              nextProps.selectedOrderProperties.orderQuantity
+              selectedOrderProperties.orderQuantity
             ),
           },
           true
