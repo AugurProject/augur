@@ -1019,8 +1019,12 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Place your order',
     subheader: [
       {
-        text: "Review your order and if everything looks correct then go ahead and click the 'Place Buy Order' button.",
+        text: "Review your order and make sure everything looks correct.",
       },
+      {
+        text: "Now go ahead and press the 'Place Buy Order' button or click next.",
+        lighten: true,
+      }
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {
