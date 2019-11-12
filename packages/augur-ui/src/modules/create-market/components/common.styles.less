@@ -544,19 +544,29 @@
 }
 
 .OutcomeDropdownInput {
-  display: flex;
-  flex-direction: column;
-  margin: @size-12 @size-24 0 @size-40;
-
   > div {
-    margin-bottom: @size-24;
-    max-width: 260px;
+    display: flex;
+    flex-flow: row nowrap;
+
+    > span {
+      .text-14;
+
+      color: @color-primary-text;
+      flex: 0 0 auto;
+      padding: @size-16;
+    }
+
+    > div {
+      margin-bottom: @size-24;
+      max-width: 260px;
+    }
   }
 
   > Button {
     display: flex;
     width: 70px;
     height: @size-40;
+    margin-left: 44px;
 
     > svg {
       height: @size-16;

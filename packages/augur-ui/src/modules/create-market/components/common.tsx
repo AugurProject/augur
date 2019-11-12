@@ -15,7 +15,7 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
 import { Error } from 'modules/common/form';
-import Styles from 'modules/create-market/components/common.styles.less';
+import Styles, { outcomesList } from 'modules/create-market/components/common.styles.less';
 import {
   FormattedNumber,
   DateFormattedObject,
@@ -632,7 +632,6 @@ export class NumberedList extends Component<
         },
         () => {
           updateList(list.map(item => item.value));
-          //onRemoved && onRemoved(list[index].value);
         }
       );
     }
@@ -1274,11 +1273,13 @@ export interface CategoricalTemplateDropdownsProps {
 interface CategoricalDropDownItem {
   value: string;
   editable: boolean;
+  removable: boolean;
+  current: boolean;
 }
 
 interface CategoricalDropDownAction {
   type: string;
-  data: CategoricalDropDownItem;
+  data: Partial<CategoricalDropDownItem>;
 }
 export const CategoricalTemplateDropdowns = (
   props: CategoricalTemplateDropdownsProps
@@ -1288,7 +1289,9 @@ export const CategoricalTemplateDropdowns = (
     ADD: 'ADD',
     REMOVE: 'REMOVE',
     REMOVE_ALL: 'REMOVE_ALL',
-    INIT_ADD: 'INIT_ADD'
+    INIT_ADD: 'INIT_ADD',
+    REPLACE_CURRENT: 'REPLACE_CURRENT',
+    ADD_NEW: 'ADD_NEW',
   };
   const [outcomeList, dispatch] = useReducer(
     (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
@@ -1304,8 +1307,14 @@ export const CategoricalTemplateDropdowns = (
         case ACTIONS.REMOVE_ALL:
           props.onChange('outcomes', []);
           return [];
+        case ACTIONS.REPLACE_CURRENT:
+          const removeCurrent = state.filter(s => !s.current);
+          const newUpdatedState = [...removeCurrent, action.data];
+          props.onChange('outcomes', newUpdatedState.map(i => i.value));
+          return newUpdatedState;
+        case ACTIONS.ADD_NEW:
+          return state.map(o => ({...o, current: false}));
         case ACTIONS.INIT_ADD:
-          console.log("init add", [...state, action.data]);
           return [...state, action.data];
         default:
           return state;
@@ -1347,7 +1356,7 @@ export const CategoricalTemplateDropdowns = (
       outcomes.map((i: string) =>
         dispatch({
           type: ACTIONS.INIT_ADD,
-          data: { value: i, editable: false },
+          data: { value: i, editable: false, removable: false, current: false },
         })
       );
       setSourceUserInput(source.userInput);
@@ -1367,9 +1376,8 @@ export const CategoricalTemplateDropdowns = (
 
   const { newMarket } = props;
   const { validations } = newMarket;
-  const min = defaultOutcomeItems.length;
-  const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES;
-
+  const canAddMore = outcomeList.length <= MAX_ADDED_OUTCOMES;
+  const currentValue = outcomeList.find(o => o.current);
   return (
     <>
       <Subheaders
@@ -1377,58 +1385,65 @@ export const CategoricalTemplateDropdowns = (
         subheader="List the outcomes people can choose from."
         link
       />
-      <NumberedList
-        initialList={outcomeList}
-        minShown={min}
-        maxList={MAX_ADDED_OUTCOMES}
-        placeholder={'Enter outcome'}
-        updateList={() => {}}
-        onRemoved={(value) =>
-          dispatch({ type: ACTIONS.REMOVE, data: value })
-        }
-        hideAdd={true}
-        errorMessage={validations.outcomes}
-      />
+      {outcomeList
+        .filter(o => !o.current)
+        .map((item, index) => (
+          <NumberedInput
+            key={index}
+            value={item.value}
+            placeholder={''}
+            onChange={() => {}}
+            number={index}
+            removable={item.removable}
+            onRemove={index =>
+              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+            }
+            errorMessage={validations && validations.outcomes && validations.outcomes[index]}
+            editable={item.editable}
+          />
+        ))}
       {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
-      {!showBanner && canAddMore &&
+      {!showBanner && (
         <OutcomeDropdownInput
+          number={outcomeList.filter(o => !o.current).length}
           list={dropdownList}
-          onAdd={(value) => dispatch({ type: ACTIONS.ADD, data: { value, editable: false }})}
+          defaultValue={currentValue && currentValue.value}
+          onChange={value => {
+            dispatch({
+              type: ACTIONS.REPLACE_CURRENT,
+              data: { value, editable: false, removable: true, current: true },
+            });
+          }}
+          errorMessage={validations && validations.outcomes}
+          onAdd={() => dispatch({ type: ACTIONS.ADD_NEW, data: {} })}
+          canAddMore={canAddMore}
         />
-      }
+      )}
     </>
   );
 };
 
-const OutcomeDropdownInput = ({ list, onAdd }) => {
-  const [newItem, setNewItem] = useState(null);
-  const [resetValue, setResetValue] = useState(null);
-  useEffect(() => {
-    setResetValue(null);
-  }, [list])
-  return (
+const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, errorMessage, canAddMore }) =>
     <div className={Styles.OutcomeDropdownInput}>
-      <FormDropdown
-        id={'outcomeDropDown'}
-        defaultValue={resetValue}
-        staticLabel={'Select Value'}
-        onChange={value => setNewItem(value)}
-        options={list}
-      />
+      <div>
+        <span>{`${number + 1}.`}</span>
+        <FormDropdown
+          id={'outcomeDropDown'}
+          defaultValue={defaultValue}
+          staticLabel={'Select Value'}
+          onChange={value => onChange(value)}
+          options={list}
+          errorMessage={errorMessage[number + 1]}
+        />
+      </div>
       <SecondaryButton
-        disabled={!newItem}
+        disabled={!canAddMore}
         text="Add"
-        action={() => {
-          onAdd(newItem);
-          // force dropdown to reset
-          setResetValue(resetValue === '' ? null : '');
-          setNewItem(null);
-        }}
+        action={() => onAdd('')}
         icon={AddIcon}
       />
     </div>
-  );
-};
+
 
 const SelectEventNotice = ({ text }) => (
   <DismissableNotice
