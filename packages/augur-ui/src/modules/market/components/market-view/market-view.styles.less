@@ -80,7 +80,7 @@
   display: flex;
   margin: @size-4 0;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
-  
+
   @media all and (max-height: 700px) {
     min-height: 700px;
   }
@@ -350,8 +350,13 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  align-self: center;
   justify-content: center;
-  margin: 0 22.5625rem;
+  width: calc(100% - 41.75rem);
+
+  @media @breakpoint-max-desktop {
+    width: 100%;
+  }
 }
 
 .Hide {
@@ -466,11 +471,5 @@ div.OutcomeNameDisplay {
     text-transform: uppercase;
     padding: @size-12 @size-16;
     background: @color-dark-grey;
-  }
-
-  .MarketView__comments {
-    justify-content: center;
-    margin: 0rem;
-    width: 100%;
   }
 }
