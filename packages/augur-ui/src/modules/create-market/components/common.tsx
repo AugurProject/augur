@@ -567,6 +567,7 @@ export const NumberedInput = ({
         {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
           <span>{errorMessage}</span>
         )}
+        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
       </>
     )}
   </li>
@@ -631,7 +632,7 @@ export class NumberedList extends Component<
         },
         () => {
           updateList(list.map(item => item.value));
-          onRemoved && onRemoved(list[index].value);
+          //onRemoved && onRemoved(list[index].value);
         }
       );
     }
@@ -1287,6 +1288,7 @@ export const CategoricalTemplateDropdowns = (
     ADD: 'ADD',
     REMOVE: 'REMOVE',
     REMOVE_ALL: 'REMOVE_ALL',
+    INIT_ADD: 'INIT_ADD'
   };
   const [outcomeList, dispatch] = useReducer(
     (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
@@ -1302,12 +1304,16 @@ export const CategoricalTemplateDropdowns = (
         case ACTIONS.REMOVE_ALL:
           props.onChange('outcomes', []);
           return [];
+        case ACTIONS.INIT_ADD:
+          console.log("init add", [...state, action.data]);
+          return [...state, action.data];
         default:
           return state;
       }
     },
     []
   );
+  const [initialized, setInitialized] = useState(false);
   const [sourceUserInput, setSourceUserInput] = useState(undefined);
   const [depDropdownInput] = useState(
     props.newMarket.template.inputs.find(
@@ -1327,18 +1333,35 @@ export const CategoricalTemplateDropdowns = (
   const [showBanner, setShowBanner] = useState(true);
 
   useEffect(() => {
-    if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
-      defaultOutcomeItems.map(i => dispatch({ type: ACTIONS.ADD, data: i }));
-    }
     const { template } = props.newMarket;
     const source = template.inputs.find(
       i => i.id === depDropdownInput.inputSourceId
     );
+
     setShowBanner(!!!source.userInput);
-    if (sourceUserInput !== source.userInput) {
-      dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
-      setdropdownList(depDropdownInput.values[source.userInput]);
+
+    // in case of re-hyration of market creation form need to set newMarket outcomes
+    if (!initialized) {
+      const { outcomes } = props.newMarket;
+      setInitialized(true);
+      outcomes.map((i: string) =>
+        dispatch({
+          type: ACTIONS.INIT_ADD,
+          data: { value: i, editable: false },
+        })
+      );
       setSourceUserInput(source.userInput);
+      setdropdownList(depDropdownInput.values[source.userInput]);
+    } else {
+      if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
+        defaultOutcomeItems.map((i: CategoricalDropDownItem) => dispatch({ type: ACTIONS.ADD, data: i }));
+      }
+
+      if (sourceUserInput !== source.userInput) {
+        dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
+        setdropdownList(depDropdownInput.values[source.userInput]);
+        setSourceUserInput(source.userInput);
+      }
     }
   });
 
@@ -1378,7 +1401,7 @@ export const CategoricalTemplateDropdowns = (
 };
 
 const OutcomeDropdownInput = ({ list, onAdd, canAdd }) => {
-  const [newItem, setNewItem] = useState();
+  const [newItem, setNewItem] = useState(null);
   const [resetValue, setResetValue] = useState(null);
   useEffect(() => {
     setResetValue(null);
@@ -1393,7 +1416,7 @@ const OutcomeDropdownInput = ({ list, onAdd, canAdd }) => {
         options={list}
       />
       <SecondaryButton
-        disabled={!canAdd}
+        disabled={!canAdd || !newItem}
         text="Add"
         action={() => {
           onAdd(newItem);
