@@ -75,6 +75,8 @@ export class InitialReporter extends c.InitialReporter<BigNumber> {
 }
 export class Market extends c.Market<BigNumber> {
 }
+export class OICash extends c.OICash<BigNumber> {
+}
 export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
 }
 export class ReputationToken extends c.ReputationToken<BigNumber> {

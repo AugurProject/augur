@@ -183,6 +183,7 @@ export class ContractCompiler {
                 "RepPriceOracle",
                 "UniswapV2Factory",
                 "ERC1820Registry",
+                "OICash",
                 // utility
                 "BuyParticipationTokens",
                 "Formulas",
