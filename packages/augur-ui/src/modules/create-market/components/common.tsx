@@ -55,6 +55,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
 import { NameValuePair } from 'modules/portfolio/types';
+import { SquareDropdown } from 'modules/common/selection';
 
 export interface HeaderProps {
   text: string;
@@ -528,6 +529,7 @@ export interface NumberedListProps {
   updateList: Function;
   errorMessage?: string;
   hideAdd?: boolean;
+  onRemoved?: Function;
 }
 
 export interface NumberedListState {
@@ -618,7 +620,7 @@ export class NumberedList extends Component<
 
   removeItem = index => {
     const { isMin, list } = this.state;
-    const { minShown, maxList, updateList } = this.props;
+    const { minShown, maxList, updateList, onRemoved } = this.props;
     if (!isMin) {
       list.splice(index, 1);
       this.setState(
@@ -629,6 +631,7 @@ export class NumberedList extends Component<
         },
         () => {
           updateList(list.map(item => item.value));
+          onRemoved && onRemoved(list[index].value);
         }
       );
     }
@@ -1252,7 +1255,7 @@ export const CategoricalTemplateTextInputs = (
         minShown={2}
         maxList={7}
         placeholder={'Enter outcome'}
-        updateList={(value: Array<string>) => {
+        updateList={(value: string[]) => {
           onChange('outcomes', value);
         }}
         hideAdd={hideAdd}
@@ -1269,9 +1272,9 @@ export interface CategoricalTemplateDropdownsProps {
 
 interface CategoricalDropDownItem {
   value: string;
-  list: NameValuePair[];
   editable: boolean;
 }
+
 interface CategoricalDropDownAction {
   type: string;
   data: CategoricalDropDownItem;
@@ -1279,6 +1282,7 @@ interface CategoricalDropDownAction {
 export const CategoricalTemplateDropdowns = (
   props: CategoricalTemplateDropdownsProps
 ) => {
+  const MAX_ADDED_OUTCOMES = 7;
   const ACTIONS = {
     ADD: 'ADD',
     REMOVE: 'REMOVE',
@@ -1296,6 +1300,7 @@ export const CategoricalTemplateDropdowns = (
           props.onChange('outcomes', newRemoveState.map(i => i.value));
           return newRemoveState;
         case ACTIONS.REMOVE_ALL:
+          props.onChange('outcomes', []);
           return [];
         default:
           return state;
@@ -1303,7 +1308,6 @@ export const CategoricalTemplateDropdowns = (
     },
     []
   );
-
   const [sourceUserInput, setSourceUserInput] = useState(undefined);
   const [depDropdownInput] = useState(
     props.newMarket.template.inputs.find(
@@ -1319,8 +1323,8 @@ export const CategoricalTemplateDropdowns = (
         editable: false,
       }))
   );
-  const [newItem, setNewItem] = useState(null);
-  const [showBanner, setShowBanner] = useState(false);
+  const [dropdownList, setdropdownList] = useState([]);
+  const [showBanner, setShowBanner] = useState(true);
 
   useEffect(() => {
     if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
@@ -1333,16 +1337,14 @@ export const CategoricalTemplateDropdowns = (
     setShowBanner(!!!source.userInput);
     if (sourceUserInput !== source.userInput) {
       dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
-      setNewItem({
-        value: depDropdownInput.userInput || depDropdownInput.placeholder,
-        list: depDropdownInput.values[source.userInput],
-      });
+      setdropdownList(depDropdownInput.values[source.userInput]);
       setSourceUserInput(source.userInput);
     }
   });
 
   const { newMarket } = props;
   const { validations } = newMarket;
+  const min = defaultOutcomeItems.length;
 
   return (
     <>
@@ -1352,19 +1354,54 @@ export const CategoricalTemplateDropdowns = (
         link
       />
       <NumberedList
-        initialList={newMarket.outcomes.map(o => ({
-          value: o,
-          editable: false,
-        }))}
-        minShown={1}
-        maxList={7}
+        initialList={outcomeList}
+        minShown={min}
+        maxList={MAX_ADDED_OUTCOMES}
         placeholder={'Enter outcome'}
         updateList={() => {}}
+        onRemoved={(value) =>
+          dispatch({ type: ACTIONS.REMOVE, data: value })
+        }
         hideAdd={true}
         errorMessage={validations.outcomes}
       />
       {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
+      {!showBanner &&
+        <OutcomeDropdownInput
+          list={dropdownList}
+          onAdd={(value) => dispatch({ type: ACTIONS.ADD, data: { value, editable: false }})}
+          canAdd={outcomeList.length < MAX_ADDED_OUTCOMES}
+        />
+      }
     </>
+  );
+};
+
+const OutcomeDropdownInput = ({ list, onAdd, canAdd }) => {
+  const [newItem, setNewItem] = useState();
+  const [resetValue, setResetValue] = useState(null);
+  useEffect(() => {
+    setResetValue(null);
+  }, [list])
+  return (
+    <div className={Styles.OutcomeDropdownInput}>
+      <FormDropdown
+        id={'outcomeDropDown'}
+        defaultValue={resetValue}
+        staticLabel={'Select Value'}
+        onChange={value => setNewItem(value)}
+        options={list}
+      />
+      <SecondaryButton
+        disabled={!canAdd}
+        text="Add"
+        action={() => {
+          onAdd(newItem);
+          setResetValue('');
+        }}
+        icon={AddIcon}
+      />
+    </div>
   );
 };
 

@@ -542,3 +542,30 @@
     padding: @size-16;
   }
 }
+
+.OutcomeDropdownInput {
+  display: flex;
+  flex-direction: column;
+  margin: @size-12 @size-24 0 @size-40;
+
+  > div {
+    margin-bottom: @size-24;
+    max-width: 260px;
+  }
+
+  > Button {
+    display: flex;
+    width: 70px;
+    height: @size-40;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      margin-right: @size-8;
+
+      > path {
+        fill: @color-primary-text;
+      }
+    }
+  }
+}

@@ -20,7 +20,7 @@ export interface DropdownProps {
   onChange: any;
   className?: string;
   defaultValue?: string | number;
-  options: Array<NameValuePair>;
+  options: NameValuePair[];
   large?: boolean;
   staticLabel?: string;
   staticMenuLabel?: string;
@@ -45,7 +45,7 @@ interface SelectionOption {
 }
 
 interface PillSelectionProps {
-  options: Array<SelectionOption>;
+  options: SelectionOption[];
   onChange(value: number): void;
   defaultSelection: number;
 }
