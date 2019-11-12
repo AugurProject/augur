@@ -1368,6 +1368,7 @@ export const CategoricalTemplateDropdowns = (
   const { newMarket } = props;
   const { validations } = newMarket;
   const min = defaultOutcomeItems.length;
+  const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES;
 
   return (
     <>
@@ -1389,7 +1390,7 @@ export const CategoricalTemplateDropdowns = (
         errorMessage={validations.outcomes}
       />
       {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
-      {!showBanner &&
+      {!showBanner && canAddMore &&
         <OutcomeDropdownInput
           list={dropdownList}
           onAdd={(value) => dispatch({ type: ACTIONS.ADD, data: { value, editable: false }})}
