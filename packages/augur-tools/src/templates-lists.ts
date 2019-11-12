@@ -3042,528 +3042,526 @@ export const LIST_VALUES = {
     },
   ],
   NCAA_FOOTBALL_TEAMS: [
-    [
-      {
-        label: 'Cincinnati Bearcats',
-        value: 'Cincinnati Bearcats',
-      },
-      {
-        label: 'Connecticut Huskies',
-        value: 'Connecticut Huskies',
-      },
-      {
-        label: 'East Carolina Pirates',
-        value: 'East Carolina Pirates',
-      },
-      {
-        label: 'Houston Cougars',
-        value: 'Houston Cougars',
-      },
-      {
-        label: 'Memphis Tigers',
-        value: 'Memphis Tigers',
-      },
-      {
-        label: 'Navy Midshipmen',
-        value: 'Navy Midshipmen',
-      },
-      {
-        label: 'SMU Mustangs',
-        value: 'SMU Mustangs',
-      },
-      {
-        label: 'South Florida Bulls',
-        value: 'South Florida Bulls',
-      },
-      {
-        label: 'Temple Owls',
-        value: 'Temple Owls',
-      },
-      {
-        label: 'Tulane Green Wave',
-        value: 'Tulane Green Wave',
-      },
-      {
-        label: 'Tulsa Golden Hurricane',
-        value: 'Tulsa Golden Hurricane',
-      },
-      {
-        label: 'UCF Knights',
-        value: 'UCF Knights',
-      },
-      {
-        label: 'Boston College Eagles',
-        value: 'Boston College Eagles',
-      },
-      {
-        label: 'Clemson Tigers',
-        value: 'Clemson Tigers',
-      },
-      {
-        label: 'Duke Blue Devils',
-        value: 'Duke Blue Devils',
-      },
-      {
-        label: 'Florida State Seminoles',
-        value: 'Florida State Seminoles',
-      },
-      {
-        label: 'Georgia Tech Yellow Jackets',
-        value: 'Georgia Tech Yellow Jackets',
-      },
-      {
-        label: 'Louisville Cardinals',
-        value: 'Louisville Cardinals',
-      },
-      {
-        label: 'Miami Hurricanes',
-        value: 'Miami Hurricanes',
-      },
-      {
-        label: 'North Carolina Tar Heels',
-        value: 'North Carolina Tar Heels',
-      },
-      {
-        label: 'North Carolina State Wolfpack',
-        value: 'North Carolina State Wolfpack',
-      },
-      {
-        label: 'Pittsburgh Panthers',
-        value: 'Pittsburgh Panthers',
-      },
-      {
-        label: 'Syracuse Orange',
-        value: 'Syracuse Orange',
-      },
-      {
-        label: 'Virginia Cavaliers',
-        value: 'Virginia Cavaliers',
-      },
-      {
-        label: 'Virginia Tech Hokies',
-        value: 'Virginia Tech Hokies',
-      },
-      {
-        label: 'Wake Forest Demon Deacons',
-        value: 'Wake Forest Demon Deacons',
-      },
-      {
-        label: 'Baylor Bears',
-        value: 'Baylor Bears',
-      },
-      {
-        label: 'Iowa State Cyclones',
-        value: 'Iowa State Cyclones',
-      },
-      {
-        label: 'Kansas Jayhawks',
-        value: 'Kansas Jayhawks',
-      },
-      {
-        label: 'Kansas State Wildcats',
-        value: 'Kansas State Wildcats',
-      },
-      {
-        label: 'Oklahoma Sooners',
-        value: 'Oklahoma Sooners',
-      },
-      {
-        label: 'Oklahoma State Cowboys',
-        value: 'Oklahoma State Cowboys',
-      },
-      {
-        label: 'TCU Horned Frogs',
-        value: 'TCU Horned Frogs',
-      },
-      {
-        label: 'Teas Longhorns',
-        value: 'Teas Longhorns',
-      },
-      {
-        label: 'Texas Tech Red Raiders',
-        value: 'Texas Tech Red Raiders',
-      },
-      {
-        label: 'West Virginia Mountaineers',
-        value: 'West Virginia Mountaineers',
-      },
-      {
-        label: 'Illinois Fighting Illini',
-        value: 'Illinois Fighting Illini',
-      },
-      {
-        label: 'Indian Hoosiers',
-        value: 'Indian Hoosiers',
-      },
-      {
-        label: 'Iowa Hawkeyes',
-        value: 'Iowa Hawkeyes',
-      },
-      {
-        label: 'Maryland Terrapins',
-        value: 'Maryland Terrapins',
-      },
-      {
-        label: 'Michigan Wolverines',
-        value: 'Michigan Wolverines',
-      },
-      {
-        label: 'Michigan State Spartans',
-        value: 'Michigan State Spartans',
-      },
-      {
-        label: 'Minnesota Golden Gophers',
-        value: 'Minnesota Golden Gophers',
-      },
-      {
-        label: 'Nebraska Cornhuskers',
-        value: 'Nebraska Cornhuskers',
-      },
-      {
-        label: 'Northwestern Wildcards',
-        value: 'Northwestern Wildcards',
-      },
-      {
-        label: 'Ohio State Buckeyes',
-        value: 'Ohio State Buckeyes',
-      },
-      {
-        label: 'Penn State Nittany Lions',
-        value: 'Penn State Nittany Lions',
-      },
-      {
-        label: 'Purdue Boilermakers',
-        value: 'Purdue Boilermakers',
-      },
-      {
-        label: 'Rutgers Scarlet Knights',
-        value: 'Rutgers Scarlet Knights',
-      },
-      {
-        label: 'Wisconsin Badgers',
-        value: 'Wisconsin Badgers',
-      },
-      {
-        label: 'Charlotte 49ers',
-        value: 'Charlotte 49ers',
-      },
-      {
-        label: 'FIU Golden Panthers',
-        value: 'FIU Golden Panthers',
-      },
-      {
-        label: 'Florida Atlantic Owls',
-        value: 'Florida Atlantic Owls',
-      },
-      {
-        label: 'Louisiana Tech Bulldogs',
-        value: 'Louisiana Tech Bulldogs',
-      },
-      {
-        label: 'Marshall Thundering Herd',
-        value: 'Marshall Thundering Herd',
-      },
-      {
-        label: 'Middle Tennessee Blue Raiders',
-        value: 'Middle Tennessee Blue Raiders',
-      },
-      {
-        label: 'North Texas Mean Green',
-        value: 'North Texas Mean Green',
-      },
-      {
-        label: 'Old Dominion Monarchs',
-        value: 'Old Dominion Monarchs',
-      },
-      {
-        label: 'Rice Owls',
-        value: 'Rice Owls',
-      },
-      {
-        label: 'Southern Miss Golden Eagles',
-        value: 'Southern Miss Golden Eagles',
-      },
-      {
-        label: 'UAB Blazers',
-        value: 'UAB Blazers',
-      },
-      {
-        label: 'UTEP Miners',
-        value: 'UTEP Miners',
-      },
-      {
-        label: 'UTSA Roadrunners',
-        value: 'UTSA Roadrunners',
-      },
-      {
-        label: 'Western Kentucky Hilltoppers',
-        value: 'Western Kentucky Hilltoppers',
-      },
-      {
-        label: 'Army Black Knights',
-        value: 'Army Black Knights',
-      },
-      {
-        label: 'BYU Cougars',
-        value: 'BYU Cougars',
-      },
-      {
-        label: 'Liberty Flames',
-        value: 'Liberty Flames',
-      },
-      {
-        label: 'Massachusetts Minutemen',
-        value: 'Massachusetts Minutemen',
-      },
-      {
-        label: 'New Mexico State Aggies',
-        value: 'New Mexico State Aggies',
-      },
-      {
-        label: 'Notre Dame Fighting Irish',
-        value: 'Notre Dame Fighting Irish',
-      },
-      {
-        label: 'Akron Zips',
-        value: 'Akron Zips',
-      },
-      {
-        label: 'Ball State Cardinals',
-        value: 'Ball State Cardinals',
-      },
-      {
-        label: 'Bowling Green Falcons',
-        value: 'Bowling Green Falcons',
-      },
-      {
-        label: 'Buffalo Bulls',
-        value: 'Buffalo Bulls',
-      },
-      {
-        label: 'Central Michigan Chippewas',
-        value: 'Central Michigan Chippewas',
-      },
-      {
-        label: 'Eastern Michigan Eagles',
-        value: 'Eastern Michigan Eagles',
-      },
-      {
-        label: 'Kent State Golden Flashes',
-        value: 'Kent State Golden Flashes',
-      },
-      {
-        label: 'Miami (OH) Redhawks',
-        value: 'Miami (OH) Redhawks',
-      },
-      {
-        label: 'Northern Illinois Huskies',
-        value: 'Northern Illinois Huskies',
-      },
-      {
-        label: 'Ohio Bobcats',
-        value: 'Ohio Bobcats',
-      },
-      {
-        label: 'Toledo Rockets',
-        value: 'Toledo Rockets',
-      },
-      {
-        label: 'Western Michigan Broncos',
-        value: 'Western Michigan Broncos',
-      },
-      {
-        label: 'Air Force Falcons',
-        value: 'Air Force Falcons',
-      },
-      {
-        label: 'Boise State Broncos',
-        value: 'Boise State Broncos',
-      },
-      {
-        label: 'Colorado State Rams',
-        value: 'Colorado State Rams',
-      },
-      {
-        label: 'Fresno State Bulldogs',
-        value: 'Fresno State Bulldogs',
-      },
-      {
-        label: 'Hawaii Rainbow Warriors',
-        value: 'Hawaii Rainbow Warriors',
-      },
-      {
-        label: 'Nevada Wolf Pack',
-        value: 'Nevada Wolf Pack',
-      },
-      {
-        label: 'New Mexico Lobos',
-        value: 'New Mexico Lobos',
-      },
-      {
-        label: 'San Diego State Aztecs',
-        value: 'San Diego State Aztecs',
-      },
-      {
-        label: 'San Jose State Spartans',
-        value: 'San Jose State Spartans',
-      },
-      {
-        label: 'UNLV Rebels',
-        value: 'UNLV Rebels',
-      },
-      {
-        label: 'Utah State Aggies',
-        value: 'Utah State Aggies',
-      },
-      {
-        label: 'Wyoming Cowboys',
-        value: 'Wyoming Cowboys',
-      },
-      {
-        label: 'Arizona Wildcats',
-        value: 'Arizona Wildcats',
-      },
-      {
-        label: 'Arizona State Sun Devils',
-        value: 'Arizona State Sun Devils',
-      },
-      {
-        label: 'California Golden Bears',
-        value: 'California Golden Bears',
-      },
-      {
-        label: 'Colorado Buffaloes',
-        value: 'Colorado Buffaloes',
-      },
-      {
-        label: 'Oregon Ducks',
-        value: 'Oregon Ducks',
-      },
-      {
-        label: 'Oregon State Beavers',
-        value: 'Oregon State Beavers',
-      },
-      {
-        label: 'Stanford Cardinal',
-        value: 'Stanford Cardinal',
-      },
-      {
-        label: 'UCLA Bruins',
-        value: 'UCLA Bruins',
-      },
-      {
-        label: 'USC Trojans',
-        value: 'USC Trojans',
-      },
-      {
-        label: 'Utah Utes',
-        value: 'Utah Utes',
-      },
-      {
-        label: 'Washington Huskies',
-        value: 'Washington Huskies',
-      },
-      {
-        label: 'Washington State Cougars',
-        value: 'Washington State Cougars',
-      },
-      {
-        label: 'Alabama Crimson Tide',
-        value: 'Alabama Crimson Tide',
-      },
-      {
-        label: 'Arkansas Razorbacks',
-        value: 'Arkansas Razorbacks',
-      },
-      {
-        label: 'Auburn Tigers',
-        value: 'Auburn Tigers',
-      },
-      {
-        label: 'Florida Gators',
-        value: 'Florida Gators',
-      },
-      {
-        label: 'Georgia Bulldogs',
-        value: 'Georgia Bulldogs',
-      },
-      {
-        label: 'Kentucky Wildcats',
-        value: 'Kentucky Wildcats',
-      },
-      {
-        label: 'LSU Tigers',
-        value: 'LSU Tigers',
-      },
-      {
-        label: 'Mississippi State Bulldogs',
-        value: 'Mississippi State Bulldogs',
-      },
-      {
-        label: 'Missouri Tigers',
-        value: 'Missouri Tigers',
-      },
-      {
-        label: 'Ole Miss Rebels',
-        value: 'Ole Miss Rebels',
-      },
-      {
-        label: 'South Carolina Gamecocks',
-        value: 'South Carolina Gamecocks',
-      },
-      {
-        label: 'Tennessee Volunteers',
-        value: 'Tennessee Volunteers',
-      },
-      {
-        label: 'Texas A&M Aggies',
-        value: 'Texas A&M Aggies',
-      },
-      {
-        label: 'Vanderbilt Commodores',
-        value: 'Vanderbilt Commodores',
-      },
-      {
-        label: 'Appalachian State Mountaineers',
-        value: 'Appalachian State Mountaineers',
-      },
-      {
-        label: 'Arkansas State Red Wolves',
-        value: 'Arkansas State Red Wolves',
-      },
-      {
-        label: 'Coastal Carolina Chanticleers',
-        value: 'Coastal Carolina Chanticleers',
-      },
-      {
-        label: 'Georgia Southern Eagles',
-        value: 'Georgia Southern Eagles',
-      },
-      {
-        label: 'Georgia State Panthers',
-        value: 'Georgia State Panthers',
-      },
-      {
-        label: 'Louisiana Ragin’ Cajuns',
-        value: 'Louisiana Ragin’ Cajuns',
-      },
-      {
-        label: 'Louisiana-Monroe Warhawks',
-        value: 'Louisiana-Monroe Warhawks',
-      },
-      {
-        label: 'South Alabama Jaguars',
-        value: 'South Alabama Jaguars',
-      },
-      {
-        label: 'Texas State Bobcats',
-        value: 'Texas State Bobcats',
-      },
-      {
-        label: 'Troy Trojans',
-        value: 'Troy Trojans',
-      },
-    ],
+    {
+      label: 'Cincinnati Bearcats',
+      value: 'Cincinnati Bearcats',
+    },
+    {
+      label: 'Connecticut Huskies',
+      value: 'Connecticut Huskies',
+    },
+    {
+      label: 'East Carolina Pirates',
+      value: 'East Carolina Pirates',
+    },
+    {
+      label: 'Houston Cougars',
+      value: 'Houston Cougars',
+    },
+    {
+      label: 'Memphis Tigers',
+      value: 'Memphis Tigers',
+    },
+    {
+      label: 'Navy Midshipmen',
+      value: 'Navy Midshipmen',
+    },
+    {
+      label: 'SMU Mustangs',
+      value: 'SMU Mustangs',
+    },
+    {
+      label: 'South Florida Bulls',
+      value: 'South Florida Bulls',
+    },
+    {
+      label: 'Temple Owls',
+      value: 'Temple Owls',
+    },
+    {
+      label: 'Tulane Green Wave',
+      value: 'Tulane Green Wave',
+    },
+    {
+      label: 'Tulsa Golden Hurricane',
+      value: 'Tulsa Golden Hurricane',
+    },
+    {
+      label: 'UCF Knights',
+      value: 'UCF Knights',
+    },
+    {
+      label: 'Boston College Eagles',
+      value: 'Boston College Eagles',
+    },
+    {
+      label: 'Clemson Tigers',
+      value: 'Clemson Tigers',
+    },
+    {
+      label: 'Duke Blue Devils',
+      value: 'Duke Blue Devils',
+    },
+    {
+      label: 'Florida State Seminoles',
+      value: 'Florida State Seminoles',
+    },
+    {
+      label: 'Georgia Tech Yellow Jackets',
+      value: 'Georgia Tech Yellow Jackets',
+    },
+    {
+      label: 'Louisville Cardinals',
+      value: 'Louisville Cardinals',
+    },
+    {
+      label: 'Miami Hurricanes',
+      value: 'Miami Hurricanes',
+    },
+    {
+      label: 'North Carolina Tar Heels',
+      value: 'North Carolina Tar Heels',
+    },
+    {
+      label: 'North Carolina State Wolfpack',
+      value: 'North Carolina State Wolfpack',
+    },
+    {
+      label: 'Pittsburgh Panthers',
+      value: 'Pittsburgh Panthers',
+    },
+    {
+      label: 'Syracuse Orange',
+      value: 'Syracuse Orange',
+    },
+    {
+      label: 'Virginia Cavaliers',
+      value: 'Virginia Cavaliers',
+    },
+    {
+      label: 'Virginia Tech Hokies',
+      value: 'Virginia Tech Hokies',
+    },
+    {
+      label: 'Wake Forest Demon Deacons',
+      value: 'Wake Forest Demon Deacons',
+    },
+    {
+      label: 'Baylor Bears',
+      value: 'Baylor Bears',
+    },
+    {
+      label: 'Iowa State Cyclones',
+      value: 'Iowa State Cyclones',
+    },
+    {
+      label: 'Kansas Jayhawks',
+      value: 'Kansas Jayhawks',
+    },
+    {
+      label: 'Kansas State Wildcats',
+      value: 'Kansas State Wildcats',
+    },
+    {
+      label: 'Oklahoma Sooners',
+      value: 'Oklahoma Sooners',
+    },
+    {
+      label: 'Oklahoma State Cowboys',
+      value: 'Oklahoma State Cowboys',
+    },
+    {
+      label: 'TCU Horned Frogs',
+      value: 'TCU Horned Frogs',
+    },
+    {
+      label: 'Teas Longhorns',
+      value: 'Teas Longhorns',
+    },
+    {
+      label: 'Texas Tech Red Raiders',
+      value: 'Texas Tech Red Raiders',
+    },
+    {
+      label: 'West Virginia Mountaineers',
+      value: 'West Virginia Mountaineers',
+    },
+    {
+      label: 'Illinois Fighting Illini',
+      value: 'Illinois Fighting Illini',
+    },
+    {
+      label: 'Indian Hoosiers',
+      value: 'Indian Hoosiers',
+    },
+    {
+      label: 'Iowa Hawkeyes',
+      value: 'Iowa Hawkeyes',
+    },
+    {
+      label: 'Maryland Terrapins',
+      value: 'Maryland Terrapins',
+    },
+    {
+      label: 'Michigan Wolverines',
+      value: 'Michigan Wolverines',
+    },
+    {
+      label: 'Michigan State Spartans',
+      value: 'Michigan State Spartans',
+    },
+    {
+      label: 'Minnesota Golden Gophers',
+      value: 'Minnesota Golden Gophers',
+    },
+    {
+      label: 'Nebraska Cornhuskers',
+      value: 'Nebraska Cornhuskers',
+    },
+    {
+      label: 'Northwestern Wildcards',
+      value: 'Northwestern Wildcards',
+    },
+    {
+      label: 'Ohio State Buckeyes',
+      value: 'Ohio State Buckeyes',
+    },
+    {
+      label: 'Penn State Nittany Lions',
+      value: 'Penn State Nittany Lions',
+    },
+    {
+      label: 'Purdue Boilermakers',
+      value: 'Purdue Boilermakers',
+    },
+    {
+      label: 'Rutgers Scarlet Knights',
+      value: 'Rutgers Scarlet Knights',
+    },
+    {
+      label: 'Wisconsin Badgers',
+      value: 'Wisconsin Badgers',
+    },
+    {
+      label: 'Charlotte 49ers',
+      value: 'Charlotte 49ers',
+    },
+    {
+      label: 'FIU Golden Panthers',
+      value: 'FIU Golden Panthers',
+    },
+    {
+      label: 'Florida Atlantic Owls',
+      value: 'Florida Atlantic Owls',
+    },
+    {
+      label: 'Louisiana Tech Bulldogs',
+      value: 'Louisiana Tech Bulldogs',
+    },
+    {
+      label: 'Marshall Thundering Herd',
+      value: 'Marshall Thundering Herd',
+    },
+    {
+      label: 'Middle Tennessee Blue Raiders',
+      value: 'Middle Tennessee Blue Raiders',
+    },
+    {
+      label: 'North Texas Mean Green',
+      value: 'North Texas Mean Green',
+    },
+    {
+      label: 'Old Dominion Monarchs',
+      value: 'Old Dominion Monarchs',
+    },
+    {
+      label: 'Rice Owls',
+      value: 'Rice Owls',
+    },
+    {
+      label: 'Southern Miss Golden Eagles',
+      value: 'Southern Miss Golden Eagles',
+    },
+    {
+      label: 'UAB Blazers',
+      value: 'UAB Blazers',
+    },
+    {
+      label: 'UTEP Miners',
+      value: 'UTEP Miners',
+    },
+    {
+      label: 'UTSA Roadrunners',
+      value: 'UTSA Roadrunners',
+    },
+    {
+      label: 'Western Kentucky Hilltoppers',
+      value: 'Western Kentucky Hilltoppers',
+    },
+    {
+      label: 'Army Black Knights',
+      value: 'Army Black Knights',
+    },
+    {
+      label: 'BYU Cougars',
+      value: 'BYU Cougars',
+    },
+    {
+      label: 'Liberty Flames',
+      value: 'Liberty Flames',
+    },
+    {
+      label: 'Massachusetts Minutemen',
+      value: 'Massachusetts Minutemen',
+    },
+    {
+      label: 'New Mexico State Aggies',
+      value: 'New Mexico State Aggies',
+    },
+    {
+      label: 'Notre Dame Fighting Irish',
+      value: 'Notre Dame Fighting Irish',
+    },
+    {
+      label: 'Akron Zips',
+      value: 'Akron Zips',
+    },
+    {
+      label: 'Ball State Cardinals',
+      value: 'Ball State Cardinals',
+    },
+    {
+      label: 'Bowling Green Falcons',
+      value: 'Bowling Green Falcons',
+    },
+    {
+      label: 'Buffalo Bulls',
+      value: 'Buffalo Bulls',
+    },
+    {
+      label: 'Central Michigan Chippewas',
+      value: 'Central Michigan Chippewas',
+    },
+    {
+      label: 'Eastern Michigan Eagles',
+      value: 'Eastern Michigan Eagles',
+    },
+    {
+      label: 'Kent State Golden Flashes',
+      value: 'Kent State Golden Flashes',
+    },
+    {
+      label: 'Miami (OH) Redhawks',
+      value: 'Miami (OH) Redhawks',
+    },
+    {
+      label: 'Northern Illinois Huskies',
+      value: 'Northern Illinois Huskies',
+    },
+    {
+      label: 'Ohio Bobcats',
+      value: 'Ohio Bobcats',
+    },
+    {
+      label: 'Toledo Rockets',
+      value: 'Toledo Rockets',
+    },
+    {
+      label: 'Western Michigan Broncos',
+      value: 'Western Michigan Broncos',
+    },
+    {
+      label: 'Air Force Falcons',
+      value: 'Air Force Falcons',
+    },
+    {
+      label: 'Boise State Broncos',
+      value: 'Boise State Broncos',
+    },
+    {
+      label: 'Colorado State Rams',
+      value: 'Colorado State Rams',
+    },
+    {
+      label: 'Fresno State Bulldogs',
+      value: 'Fresno State Bulldogs',
+    },
+    {
+      label: 'Hawaii Rainbow Warriors',
+      value: 'Hawaii Rainbow Warriors',
+    },
+    {
+      label: 'Nevada Wolf Pack',
+      value: 'Nevada Wolf Pack',
+    },
+    {
+      label: 'New Mexico Lobos',
+      value: 'New Mexico Lobos',
+    },
+    {
+      label: 'San Diego State Aztecs',
+      value: 'San Diego State Aztecs',
+    },
+    {
+      label: 'San Jose State Spartans',
+      value: 'San Jose State Spartans',
+    },
+    {
+      label: 'UNLV Rebels',
+      value: 'UNLV Rebels',
+    },
+    {
+      label: 'Utah State Aggies',
+      value: 'Utah State Aggies',
+    },
+    {
+      label: 'Wyoming Cowboys',
+      value: 'Wyoming Cowboys',
+    },
+    {
+      label: 'Arizona Wildcats',
+      value: 'Arizona Wildcats',
+    },
+    {
+      label: 'Arizona State Sun Devils',
+      value: 'Arizona State Sun Devils',
+    },
+    {
+      label: 'California Golden Bears',
+      value: 'California Golden Bears',
+    },
+    {
+      label: 'Colorado Buffaloes',
+      value: 'Colorado Buffaloes',
+    },
+    {
+      label: 'Oregon Ducks',
+      value: 'Oregon Ducks',
+    },
+    {
+      label: 'Oregon State Beavers',
+      value: 'Oregon State Beavers',
+    },
+    {
+      label: 'Stanford Cardinal',
+      value: 'Stanford Cardinal',
+    },
+    {
+      label: 'UCLA Bruins',
+      value: 'UCLA Bruins',
+    },
+    {
+      label: 'USC Trojans',
+      value: 'USC Trojans',
+    },
+    {
+      label: 'Utah Utes',
+      value: 'Utah Utes',
+    },
+    {
+      label: 'Washington Huskies',
+      value: 'Washington Huskies',
+    },
+    {
+      label: 'Washington State Cougars',
+      value: 'Washington State Cougars',
+    },
+    {
+      label: 'Alabama Crimson Tide',
+      value: 'Alabama Crimson Tide',
+    },
+    {
+      label: 'Arkansas Razorbacks',
+      value: 'Arkansas Razorbacks',
+    },
+    {
+      label: 'Auburn Tigers',
+      value: 'Auburn Tigers',
+    },
+    {
+      label: 'Florida Gators',
+      value: 'Florida Gators',
+    },
+    {
+      label: 'Georgia Bulldogs',
+      value: 'Georgia Bulldogs',
+    },
+    {
+      label: 'Kentucky Wildcats',
+      value: 'Kentucky Wildcats',
+    },
+    {
+      label: 'LSU Tigers',
+      value: 'LSU Tigers',
+    },
+    {
+      label: 'Mississippi State Bulldogs',
+      value: 'Mississippi State Bulldogs',
+    },
+    {
+      label: 'Missouri Tigers',
+      value: 'Missouri Tigers',
+    },
+    {
+      label: 'Ole Miss Rebels',
+      value: 'Ole Miss Rebels',
+    },
+    {
+      label: 'South Carolina Gamecocks',
+      value: 'South Carolina Gamecocks',
+    },
+    {
+      label: 'Tennessee Volunteers',
+      value: 'Tennessee Volunteers',
+    },
+    {
+      label: 'Texas A&M Aggies',
+      value: 'Texas A&M Aggies',
+    },
+    {
+      label: 'Vanderbilt Commodores',
+      value: 'Vanderbilt Commodores',
+    },
+    {
+      label: 'Appalachian State Mountaineers',
+      value: 'Appalachian State Mountaineers',
+    },
+    {
+      label: 'Arkansas State Red Wolves',
+      value: 'Arkansas State Red Wolves',
+    },
+    {
+      label: 'Coastal Carolina Chanticleers',
+      value: 'Coastal Carolina Chanticleers',
+    },
+    {
+      label: 'Georgia Southern Eagles',
+      value: 'Georgia Southern Eagles',
+    },
+    {
+      label: 'Georgia State Panthers',
+      value: 'Georgia State Panthers',
+    },
+    {
+      label: 'Louisiana Ragin’ Cajuns',
+      value: 'Louisiana Ragin’ Cajuns',
+    },
+    {
+      label: 'Louisiana-Monroe Warhawks',
+      value: 'Louisiana-Monroe Warhawks',
+    },
+    {
+      label: 'South Alabama Jaguars',
+      value: 'South Alabama Jaguars',
+    },
+    {
+      label: 'Texas State Bobcats',
+      value: 'Texas State Bobcats',
+    },
+    {
+      label: 'Troy Trojans',
+      value: 'Troy Trojans',
+    },
   ],
 };
 
