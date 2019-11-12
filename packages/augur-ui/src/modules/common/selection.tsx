@@ -38,6 +38,10 @@ export interface DropdownProps {
 interface DropdownState {
   selected: NameValuePair;
   showList: boolean;
+  sortedList: NameValuePair[];
+  scrollWidth?: number;
+  clientWidth?: number;
+  isDisabled?: boolean;
 }
 
 interface SelectionOption {
@@ -73,9 +77,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     clientWidth: null,
     isDisabled: true,
     sortedList:
-      !this.props.noSort &&
-      this.props.options &&
-      this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1)),
+      !this.props.noSort && this.props.options
+        ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+        : this.props.options,
   };
 
   componentDidMount() {
