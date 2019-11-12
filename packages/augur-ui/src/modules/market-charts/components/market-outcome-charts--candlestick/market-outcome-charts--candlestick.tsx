@@ -114,7 +114,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             marketMin={marketMin}
             marketMax={marketMax}
             volumeType={volumeType}
-            isMobile={isMobile}
           />
         </div>
       </section>
