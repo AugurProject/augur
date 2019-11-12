@@ -1353,12 +1353,17 @@ export const CategoricalTemplateDropdowns = (
     if (!initialized) {
       const { outcomes } = props.newMarket;
       setInitialized(true);
-      outcomes.map((i: string) =>
+      outcomes.map((i: string) => {
+        const defaultItems = defaultOutcomeItems.map((i: CategoricalDropDownItem) => i.value);
+        const data = { value: i, editable: false, removable: true, current: false };
+        if (defaultItems.includes(i)) {
+          data.removable = false;
+        }
         dispatch({
           type: ACTIONS.INIT_ADD,
-          data: { value: i, editable: false, removable: false, current: false },
+          data,
         })
-      );
+      });
       setSourceUserInput(source.userInput);
       setdropdownList(depDropdownInput.values[source.userInput]);
     } else {
@@ -1376,8 +1381,9 @@ export const CategoricalTemplateDropdowns = (
 
   const { newMarket } = props;
   const { validations } = newMarket;
-  const canAddMore = outcomeList.length <= MAX_ADDED_OUTCOMES;
   const currentValue = outcomeList.find(o => o.current);
+  const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES && !!currentValue;
+  const allFull = outcomeList.length === MAX_ADDED_OUTCOMES && !!!currentValue;
   return (
     <>
       <Subheaders
@@ -1403,7 +1409,7 @@ export const CategoricalTemplateDropdowns = (
           />
         ))}
       {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
-      {!showBanner && (
+      {!showBanner && !allFull && (
         <OutcomeDropdownInput
           number={outcomeList.filter(o => !o.current).length}
           list={dropdownList}
