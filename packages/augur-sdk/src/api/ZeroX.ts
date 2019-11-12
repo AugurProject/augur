@@ -13,6 +13,7 @@ import { signatureUtils } from '@0x/order-utils';
 import { Web3ProviderEngine } from '@0x/subproviders';
 import { SignerSubprovider } from "../zeroX/SignerSubprovider";
 import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
+import { formatBytes32String } from "ethers/utils";
 
 export enum Verbosity {
   Panic = 0,
@@ -327,8 +328,8 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
-        makerFeeAssetData: "",
-        takerFeeAssetData: "",
+        makerFeeAssetData: formatBytes32String(''),
+        takerFeeAssetData: formatBytes32String(''),
       };
     })
 
