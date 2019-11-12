@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH, NULL_ADDRESS } from '../constants';
+import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -25,8 +25,9 @@ import {
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
-import { MarketList } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
+import { spawn } from 'child_process';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -290,9 +291,9 @@ export function addScripts(flash: FlashSession) {
       const type =
         String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
       const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
-      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(Number(args.price).toFixed(2))), new BigNumber(0), new BigNumber("0.01"));
-      const nullOrderId = stringTo32ByteHex("");
-      const tradegroupId = stringTo32ByteHex("tradegroupId");
+      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(Number(args.price).toFixed(2))), new BigNumber(0), new BigNumber('0.01'));
+      const nullOrderId = stringTo32ByteHex('');
+      const tradegroupId = stringTo32ByteHex('tradegroupId');
       const result = await user.placeOrder(
         String(args.marketId),
         new BigNumber(type),
@@ -346,14 +347,14 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const address = args.userAccount as string;
       const user = await this.ensureUser(null, null, true, address);
-      const adjPrice = Number(args.price).toFixed(2)
+      const adjPrice = Number(args.price).toFixed(2);
       // switch bid/ask order type to take the order
       const type =
         String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 1 : 0;
       const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
-      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(adjPrice)), new BigNumber(0), new BigNumber("0.01"));
-      const tradegroupId = stringTo32ByteHex("tradegroupId");
-      const result = await user.takeBestOrder(
+      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(adjPrice)), new BigNumber(0), new BigNumber('0.01'));
+      const tradegroupId = stringTo32ByteHex('tradegroupId');
+      await user.takeBestOrder(
         String(args.marketId),
         new BigNumber(type),
         onChainShares,
@@ -478,7 +479,7 @@ export function addScripts(flash: FlashSession) {
     name: 'generate-templates',
     async call(this: FlashSession) {
       generateTemplateValidations();
-      this.log(`Generated Templates to augur-artifacts\n`);
+      this.log('Generated Templates to augur-artifacts\n');
     },
   });
 
@@ -927,4 +928,47 @@ export function addScripts(flash: FlashSession) {
       return markets;
     },
   });
+
+  flash.addScript({
+    name: '0x-docker',
+    async call(this: FlashSession) {
+      if (this.noProvider()) return null;
+
+      const networkId = await this.provider.getNetworkId();
+      const ethNode = this.network.http;
+      const addresses = Addresses[networkId];
+
+      // We set --net=host so that 0x mesh docker can talk to the host, where
+      // the ethnode is being run. It might be elsewhere in non-dev deployments.
+      // This is also making the '-p', options unnecessary.
+
+      console.log('Starting 0x mesh');
+      const mesh = spawn('docker', [
+        'run',
+        '--rm',
+        '-p', '60557:60557',
+        '-p', '60558:60558',
+        '-p', '60559:60559',
+        '-e', 'ETHEREUM_NETWORK_ID=42', // doesn't understand atypical network ids
+        '--net=host',
+        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
+        '-e', 'USE_BOOTSTRAP_LIST=false',
+        '-e', 'BLOCK_POLLING_INTERVAL=1s',
+        `-e', 'CUSTOM_CONTRACT_ADDRESSES='${JSON.stringify(addresses)}'`,
+        '-e', 'VERBOSITY=5',
+        '0xorg/mesh:latest',
+      ]);
+
+      mesh.on('error', console.error);
+      mesh.on('exit', (code, signal) => {
+        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
+      });
+      mesh.stdout.on('data', (data) => {
+        console.log(data.toString());
+      });
+      mesh.stderr.on('data', (data) => {
+        console.error(data.toString());
+      });
+    },
+  })
 }

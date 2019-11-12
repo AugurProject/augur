@@ -139,7 +139,7 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, zeroXExchange.address, salt)
     signature = signOrder(orderHash, contractsFixture.privateKeys[0])
     
-    assert zeroXExchange.isValidSignature(orderHash, contractsFixture.accounts[0], signature)
+    assert zeroXExchange.isValidSignature(rawZeroXOrderData, orderHash, signature)
 
     # Validate the signed order state
     marketAddress, price, outcome, orderType, kycToken = ZeroXTrade.parseOrderData(rawZeroXOrderData)
@@ -175,12 +175,11 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     amountRemaining = ZeroXTrade.trade(fillAmount + 1, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[2], value=150000)
     assert amountRemaining == 1
 
-    # The order is completely filled so further attempts to take it will not actuall result in any trade occuring
+    # The order is completely filled so further attempts to take it will result in failure
     assert cash.faucet(fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
-    with TokenDelta(cash, 0, contractsFixture.accounts[0], "Tester 0 cash not taken"):
-        with TokenDelta(cash, 0, contractsFixture.accounts[1], "Tester 1 cash not taken"):
-            ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
+    with raises(TransactionFailed):
+        ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
 
     assert yesShareTokenBalance == fix(1)
     assert noShareTokenBalance == fix(1)
@@ -206,12 +205,11 @@ def test_cancelation(contractsFixture, cash, market, universe):
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
-    # Lets take the order as another user and confirm we cannot take a canceled order. It will just be a no-op
+    # Lets take the order as another user and confirm we cannot take a canceled order
     assert cash.faucet(fix(1, 60))
     assert cash.faucet(fix(1, 40), sender=contractsFixture.accounts[1])
-    with TokenDelta(cash, 0, contractsFixture.accounts[0], "Trade occured when cancelled"):
-        with TokenDelta(cash, 0, contractsFixture.accounts[1], "Trade occured when cancelled"):
-            ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
+    with raises(TransactionFailed):
+        ZeroXTrade.trade(fillAmount, affiliateAddress, tradeGroupId, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
 
     # Now lets make and cancel several
     # First we'll create a signed order

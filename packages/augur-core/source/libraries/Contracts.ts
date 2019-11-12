@@ -24,6 +24,7 @@ export class Contracts implements Iterable<ContractData> {
         console.log(`Processing ${_.size(compilerOutput.contracts)} contracts`);
         for (let relativeFilePath in compilerOutput.contracts) {
             for (let contractName in compilerOutput.contracts[relativeFilePath]) {
+                console.log(`Processing contract: ${contractName}`);
                 const bytecode = Buffer.from(compilerOutput.contracts[relativeFilePath][contractName].evm.bytecode.object, 'hex');
                 const compiledContract = new ContractData(relativeFilePath, contractName, compilerOutput.contracts[relativeFilePath][contractName].abi, bytecode);
                 this.contracts.set(contractName, compiledContract);

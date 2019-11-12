@@ -2042,86 +2042,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `IMarketFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarketFactory.createMarket(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"><code class="function-signature">createMarket(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketFactory.createMarket(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">createMarket(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IOICash`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOICash.initialize(contract IAugur,contract IUniverse,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, address _erc1820RegistryAddress)</code></a></li><li class="inherited"><a href="factories#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="factories#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="factories#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="factories#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="factories#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="factories#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="factories#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="factories#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOICash.initialize(contract IAugur,contract IUniverse,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, address _erc1820RegistryAddress)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `IOICashFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOICashFactory.createOICash(contract IAugur)"><code class="function-signature">createOICash(contract IAugur _augur)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOICashFactory.createOICash(contract IAugur)"></a><code class="function-signature">createOICash(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">contract IOICash</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IReputationTokenFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IReputationTokenFactory.createReputationToken(contract IAugur,contract IUniverse)"><code class="function-signature">createReputationToken(contract IAugur _augur, contract IUniverse _parentUniverse)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IReputationTokenFactory.createReputationToken(contract IAugur,contract IUniverse)"></a><code class="function-signature">createReputationToken(contract IAugur _augur, contract IUniverse _parentUniverse) <span class="return-arrow">→</span> <span class="return-type">contract IV2ReputationToken</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IUniverseFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniverseFactory.createUniverse(contract IUniverse,bytes32,uint256[])"><code class="function-signature">createUniverse(contract IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] _payoutNumerators)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniverseFactory.createUniverse(contract IUniverse,bytes32,uint256[])"></a><code class="function-signature">createUniverse(contract IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] _payoutNumerators) <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
 ### `InitialReporterFactory`
 
 
@@ -2138,6 +2058,22 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IMarketFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarketFactory.createMarket(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"><code class="function-signature">createMarket(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketFactory.createMarket(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">createMarket(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `MarketFactory`
 
 
@@ -2147,6 +2083,22 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="MarketFactory.createMarket(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">createMarket(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IOICash`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOICash.initialize(contract IAugur,contract IUniverse,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, address _erc1820RegistryAddress)</code></a></li><li class="inherited"><a href="factories#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="factories#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="factories#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="factories#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="factories#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="factories#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="factories#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="factories#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOICash.initialize(contract IAugur,contract IUniverse,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, address _erc1820RegistryAddress)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2397,9 +2349,9 @@ Requirements:
 - the caller must be the current manager for `account`.
 - [`interfaceHash`](reporting#IERC1820Registry.interfaceHash(string)) must not be an [`IERC165`](reporting#ierc165) interface id (i.e. it must not
 end in 28 zeroes).
-- `implementer` must implement [`IERC1820Implementer`](libraries#ierc1820implementer) and return true when
+- `implementer` must implement `IERC1820Implementer` and return true when
 queried for support, unless `implementer` is the caller. See
-[`IERC1820Implementer.canImplementInterfaceForAddress`](libraries#IERC1820Implementer.canImplementInterfaceForAddress(bytes32,address)).
+`IERC1820Implementer.canImplementInterfaceForAddress`.
 
 
 
@@ -2662,6 +2614,22 @@ This function may revert to prevent the operation from being executed.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IRepSymbol.getRepSymbol(address,address)"></a><code class="function-signature">getRepSymbol(address _augur, address _universe) <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IReputationTokenFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IReputationTokenFactory.createReputationToken(contract IAugur,contract IUniverse)"><code class="function-signature">createReputationToken(contract IAugur _augur, contract IUniverse _parentUniverse)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IReputationTokenFactory.createReputationToken(contract IAugur,contract IUniverse)"></a><code class="function-signature">createReputationToken(contract IAugur _augur, contract IUniverse _parentUniverse) <span class="return-arrow">→</span> <span class="return-type">contract IV2ReputationToken</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3039,6 +3007,22 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 <h4><a class="anchor" aria-hidden="true" id="IFormulas.calculateDesignatedReportNoShowBond(contract IDisputeWindow,uint256,uint256)"></a><code class="function-signature">calculateDesignatedReportNoShowBond(contract IDisputeWindow _previousDisputeWindow, uint256 _previousDesignatedReportNoShowBondInAttoRep, uint256 _initialReportMinValue) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IOICashFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOICashFactory.createOICash(contract IAugur)"><code class="function-signature">createOICash(contract IAugur _augur)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOICashFactory.createOICash(contract IAugur)"></a><code class="function-signature">createOICash(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">contract IOICash</span></code><span class="function-visibility">public</span></h4>
 
 
 

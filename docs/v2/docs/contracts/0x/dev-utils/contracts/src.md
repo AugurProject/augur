@@ -706,7 +706,7 @@ Executes a batch of Exchange method calls in the context of signer(s).
 The current function will be called in the context of this address (either 0x transaction signer or `msg.sender`).
       If calling a fill function, this address will represent the taker.
       If calling a cancel function, this address will represent the maker.
- @return Signer of 0x transaction if entry point is [`executeTransaction`](#ITransactions.executeTransaction(struct%20LibZeroExTransaction.ZeroExTransaction,bytes)).
+ @return Signer of 0x transaction if entry point is [`executeTransaction`](../../exchange/contracts/src#ITransactions.executeTransaction(struct%20LibZeroExTransaction.ZeroExTransaction,bytes)).
          `msg.sender` if entry point is any other function.
 
 
