@@ -501,6 +501,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              tradingTutorial={tradingTutorial}
               currentTimestamp={currentTimestamp}
               orderBook={orderBook}
               marketType={marketType}

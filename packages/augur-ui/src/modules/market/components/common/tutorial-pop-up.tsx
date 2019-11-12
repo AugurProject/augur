@@ -10,7 +10,6 @@ import { TextObject } from 'modules/types';
 
 export interface TutorialPopUpProps {
   next: Function;
-  back: Function;
   left?: boolean;
   right?: boolean;
   top?: boolean;
@@ -20,8 +19,6 @@ export interface TutorialPopUpProps {
   text: TextObject;
   leftBottom?: boolean;
   error?: string;
-  hideNext?: boolean;
-  hideBack?: boolean;
 }
 
 export const TutorialPopUp = (props: TutorialPopUpProps) => (
@@ -56,19 +53,10 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
       )}
 
       <div>
-        {!props.hideBack ? (
-          <SecondaryButton text="Back" action={() => props.back()} />
-        ) : (
-          <div />
-        )}
         <span>
           <span>{props.step}</span>/ {props.totalSteps}
         </span>
-        {!props.hideNext ? (
-          <SecondaryButton text="Next" action={() => props.next()} />
-        ) : (
-          <div />
-        )}
+        <SecondaryButton text="Next" action={() => props.next()} />
       </div>
     </div>
   </section>

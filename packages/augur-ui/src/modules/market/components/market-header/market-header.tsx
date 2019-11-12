@@ -51,7 +51,6 @@ interface MarketHeaderProps {
   preview?: boolean;
   reportingBarShowing: boolean;
   next: Function;
-  back: Function;
   showTutorialData?: boolean;
   text: TextObject;
   step: number;
@@ -151,7 +150,6 @@ export default class MarketHeader extends Component<
       toggleFavorite,
       showTutorialData,
       next,
-      back,
       step,
       totalSteps,
       text,
@@ -290,7 +288,6 @@ export default class MarketHeader extends Component<
                   totalSteps={totalSteps}
                   text={text}
                   next={next}
-                  back={back}
                 />
               )}
             </div>

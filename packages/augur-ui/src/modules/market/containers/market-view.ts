@@ -27,10 +27,9 @@ import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { formatDai, formatShares } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
-import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
-import { getMarketAgeInDays } from 'utils/format-date';
+import { getMarketAgeInDays, formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -46,6 +45,8 @@ const mapStateToProps = (state, ownProps) => {
       numOutcomes:  4,
       defaultSelectedOutcomeId: 1,
       marketType: CATEGORICAL,
+      endTimeFormatted: convertUnixToFormattedDate(1668452763),
+      creationTimeFormatted: convertUnixToFormattedDate(1573585563),
       outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
       orderBook: {
         0: [
