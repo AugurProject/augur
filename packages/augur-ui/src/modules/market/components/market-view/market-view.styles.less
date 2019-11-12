@@ -351,11 +351,14 @@
   flex-direction: column;
   flex-grow: 1;
   align-self: center;
+  align-items: center;
   justify-content: center;
-  width: calc(100% - 41.75rem);
+  width: calc(100% - 40.625rem);
 
-  @media @breakpoint-max-desktop {
-    width: 100%;
+  > div:first-of-type,
+  > div:first-of-type > span,
+  > div:first-of-type > span > iframe {
+    width: 100% !important;
   }
 }
 
@@ -471,5 +474,9 @@ div.OutcomeNameDisplay {
     text-transform: uppercase;
     padding: @size-12 @size-16;
     background: @color-dark-grey;
+  }
+
+  .MarketView__comments {
+    width: 100%;
   }
 }
