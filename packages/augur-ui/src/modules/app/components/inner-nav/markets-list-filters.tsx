@@ -88,7 +88,7 @@ export default class MarketsListFilters extends React.Component<
 
           <div className={Styles.Filter}>
             <span>Fees</span>
-            {this.generateTooltip('...')}
+            {this.generateTooltip('Filters markets based on estimated total fees paid to market creators and reporters')}
           </div>
 
           <RadioBarGroup
@@ -102,7 +102,7 @@ export default class MarketsListFilters extends React.Component<
 
           <div className={Styles.Filter}>
             <span>Liquidity Spread</span>
-            {this.generateTooltip('...')}
+            {this.generateTooltip('Filters markets based on how wide a bid/offer spread is and the depth of volume')}
           </div>
 
           <RadioBarGroup
@@ -116,7 +116,7 @@ export default class MarketsListFilters extends React.Component<
 
           <div className={Styles.Filter}>
             <span>Invalid Markets</span>
-            {this.generateTooltip('...')}
+            {this.generateTooltip('Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid')}
           </div>
 
           <RadioBarGroup
