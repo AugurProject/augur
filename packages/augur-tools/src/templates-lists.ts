@@ -2451,6 +2451,10 @@ export const LIST_VALUES = {
   ],
   NCAA_FOOTBALL_EVENT: [
     {
+      label: 'National',
+      value: 'National',
+    },
+    {
       label: 'American Athletic Conference',
       value: 'American Athletic Conference',
     },
@@ -3588,7 +3592,7 @@ export const BASEBALL_EVENT_DEP_TEAMS = {
 };
 
 export const NCAA_FOOTBALL_EVENT_DEP_TEAMS = {
-  'National': LIST_VALUES.NCAA_FOOTBALL_TEAMS,
+  National: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
   'American Athletic Conference': LIST_VALUES.NCAA_FOOTBALL_AMER_ATH_CONF,
   'Atlantic Coast Conference': LIST_VALUES.NCAA_FOOTBALL_ATL_COAST_CONF,
   'Big 12': LIST_VALUES.NCAA_FOOTBALL_BIG_12,
