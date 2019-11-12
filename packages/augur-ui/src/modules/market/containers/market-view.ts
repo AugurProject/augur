@@ -76,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
+            type: SELL,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           },
           {
@@ -93,7 +93,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(.7),
-            type: SELL,
+            type: BUY,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ],
@@ -112,7 +112,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
+            type: SELL,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           },
           {
@@ -129,7 +129,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(.5),
-            type: SELL,
+            type: BUY,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ],
@@ -148,7 +148,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
+            type: SELL,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           },
           {
@@ -165,7 +165,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(.5),
-            type: SELL,
+            type: BUY,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ],
@@ -184,7 +184,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
+            type: SELL,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           },
           {
@@ -201,7 +201,7 @@ const mapStateToProps = (state, ownProps) => {
             shares: TUTORIAL_QUANTITY.toString(),
             sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
             tokensEscrowed: formatDai(.6),
-            type: SELL,
+            type: BUY,
             unmatchedShares: formatShares(TUTORIAL_QUANTITY)
           }
         ]
