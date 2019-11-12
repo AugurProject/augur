@@ -328,8 +328,8 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
-        makerFeeAssetData: formatBytes32String(''),
-        takerFeeAssetData: formatBytes32String(''),
+        makerFeeAssetData: "0x",
+        takerFeeAssetData: "0x",
       };
     })
 
