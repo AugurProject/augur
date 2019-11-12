@@ -30,6 +30,7 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
       [Styles.Right]: props.right,
       [Styles.LeftBottom]: props.leftBottom,
     })}
+    key={props.step}
   >
     <div>
       <h1>{props.text.title}</h1>
