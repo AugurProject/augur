@@ -9458,6 +9458,13 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public getDisputeWindowStartTimeAndDuration_ = async (timestamp: TBigNumber, initial: boolean, options?: { sender?: string }): Promise<{_startTime: TBigNumber, _duration: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_timestamp","type":"uint256"},{"name":"_initial","type":"bool"}],"name":"getDisputeWindowStartTimeAndDuration","outputs":[{"name":"_startTime","type":"uint256"},{"name":"_duration","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [timestamp, initial], options.sender)
+		return <{_startTime: TBigNumber, _duration: TBigNumber}>result
+	}
+
 	public getInitialReportMinValue_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialReportMinValue","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -11790,6 +11797,20 @@ export class Formulas<TBigNumber> extends Contract<TBigNumber> {
 export class HotLoading<TBigNumber> extends Contract<TBigNumber> {
 	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
 		super(dependencies, address)
+	}
+
+	public getTotalValidityBonds_ = async (markets: Array<string>, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_markets","type":"address[]"}],"name":"getTotalValidityBonds","outputs":[{"name":"_totalValidityBonds","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [markets], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getCurrentDisputeWindowData_ = async (augur: string, universe: string, options?: { sender?: string }): Promise<{ disputeWindow: string, startTime: TBigNumber, endTime: TBigNumber, purchased: TBigNumber, fees: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_augur","type":"address"},{"name":"_universe","type":"address"}],"name":"getCurrentDisputeWindowData","outputs":[{"components":[{"name":"disputeWindow","type":"address"},{"name":"startTime","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"purchased","type":"uint256"},{"name":"fees","type":"uint256"}],"name":"_disputeWindowData","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [augur, universe], options.sender)
+		return <{ disputeWindow: string, startTime: TBigNumber, endTime: TBigNumber, purchased: TBigNumber, fees: TBigNumber }>result[0]
 	}
 
 	public getLastTradedPrices_ = async (market: string, numOutcomes: TBigNumber, orders: string, options?: { sender?: string }): Promise<Array<TBigNumber>> => {

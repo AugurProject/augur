@@ -6,21 +6,10 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
 } from 'modules/reporting/common';
-
-interface TextLink {
-  text: string;
-  link?: string;
-  linkText?: string;
-}
-
-interface TextObject {
-  title: string;
-  subheader: TextLink[];
-}
+import { TextObject } from 'modules/types';
 
 export interface TutorialPopUpProps {
   next: Function;
-  back: Function;
   left?: boolean;
   right?: boolean;
   top?: boolean;
@@ -30,8 +19,6 @@ export interface TutorialPopUpProps {
   text: TextObject;
   leftBottom?: boolean;
   error?: string;
-  hideNext?: boolean;
-  hideBack?: boolean;
 }
 
 export const TutorialPopUp = (props: TutorialPopUpProps) => (
@@ -47,7 +34,7 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
     <div>
       <h1>{props.text.title}</h1>
       {props.text.subheader.map((subheader, idx) => (
-        <span key={idx}>
+        <span className={classNames({[Styles.Lighten]: subheader.lighten})} key={idx}>
           {subheader.text}
           {subheader.linkText && (
             <a href={subheader.link} target="blank">
@@ -66,19 +53,10 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
       )}
 
       <div>
-        {!props.hideBack ? (
-          <SecondaryButton text="Back" action={() => props.back()} />
-        ) : (
-          <div />
-        )}
         <span>
           <span>{props.step}</span>/ {props.totalSteps}
         </span>
-        {!props.hideNext ? (
-          <SecondaryButton text="Next" action={() => props.next()} />
-        ) : (
-          <div />
-        )}
+        <SecondaryButton text="Next" action={() => props.next()} />
       </div>
     </div>
   </section>

@@ -340,7 +340,7 @@ export default class AppView extends Component<AppProps> {
           titleTemplate="%s | Augur"
         />
         {Object.keys(modal).length !== 0 && <Modal />}
-        {toasts.length > 0 && <ToastsContainer toasts={toasts} />}
+        {toasts.length > 0 && <ToastsContainer toasts={toasts} onTradingTutorial={onTradingTutorial}/>}
         <div
           className={classNames({
             [Styles['App--blur']]: Object.keys(modal).length !== 0,

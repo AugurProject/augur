@@ -77,6 +77,7 @@ interface FromProps {
   availableDai: BigNumber;
   currentTimestamp: number;
   Ox_ENABLED: boolean;
+  tradingTutorial?: boolean;
 }
 
 interface TestResults {
@@ -631,6 +632,7 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       currentTimestamp,
       Ox_ENABLED,
+      tradingTutorial
     } = this.props;
     const s = this.state;
 
@@ -699,6 +701,7 @@ class Form extends Component<FromProps, FormState> {
                 }
                 placeholder="0.00"
                 value={quantityValue}
+                tabIndex={tradingTutorial ? "-1" : '1'}
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
@@ -733,6 +736,7 @@ class Form extends Component<FromProps, FormState> {
                 max={max}
                 min={min}
                 placeholder="0.00"
+                tabIndex={tradingTutorial ? "-1" : '2'}
                 value={
                   s[this.INPUT_TYPES.PRICE]
                     ? createBigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
@@ -779,6 +783,7 @@ class Form extends Component<FromProps, FormState> {
                 step={MIN_QUANTITY.toFixed()}
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
+                tabIndex={tradingTutorial ? "-1" : '2'}
                 value={
                   s[this.INPUT_TYPES.EST_DAI]
                     ? createBigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
