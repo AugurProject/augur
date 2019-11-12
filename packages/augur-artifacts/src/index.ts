@@ -63,10 +63,9 @@ export interface ContractAddresses {
     CashFaucet?: string;
     GnosisSafeRegistry?: string;
     HotLoading?: string;
-    ZeroXTrade?: string; // TODO sup with this?
+    ZeroXTrade?: string;
     // 0x
     //   The 0x contract names must be what 0x mesh expects.
-    // TODO add a translator to the 0x mesh script so this isn't true?
     ERC20Proxy?: string;
     ERC721Proxy?: string;
     ERC1155Proxy?: string;
