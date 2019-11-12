@@ -295,8 +295,7 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Deposit'}
   >
-    {QRCodeIcon}
-    Receive
+    Add funds
   </button>
 );
 
@@ -307,8 +306,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    {PaperAirplaneIcon}
-    Send
+    Withdraw funds
   </button>
 );
 
