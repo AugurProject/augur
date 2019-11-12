@@ -986,6 +986,8 @@ export default class MarketView extends Component<
                             toggle={this.toggleTradeHistory}
                             extend={extendTradeHistory}
                             hide={extendOrderBook}
+                            tradingTutorial={tradingTutorial}
+                            groupedTradeHistory={market.groupedTradeHistory}
                           />
                         )}
                       </div>

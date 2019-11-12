@@ -48,6 +48,18 @@ const mapStateToProps = (state, ownProps) => {
       endTimeFormatted: convertUnixToFormattedDate(1668452763),
       creationTimeFormatted: convertUnixToFormattedDate(1573585563),
       outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
+      groupedTradeHistory: {
+        '21Nov 2019': [
+          {
+            date: '21Nov 2019',
+            amount: createBigNumber(50),
+            key: "21Nov 2019undefined0.555007",
+            price: createBigNumber(.1),
+            time: "19:55:44",
+            type: BUY
+          }
+        ]
+      },
       orderBook: {
         0: [
           {
