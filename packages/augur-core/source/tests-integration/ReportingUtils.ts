@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { BigNumber } from "bignumber.js";
 import { expect } from "chai";
 import { TestFixture } from './TestFixture';
-import { Market, RepPriceOracle, ReputationToken, Universe } from "../libraries/ContractInterfaces";
+import { Market, Universe } from '../libraries/ContractInterfaces';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -53,27 +53,7 @@ export class ReportingUtils {
             // Sell Complete Sets
             let numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
             console.log("numOwnedShares before selling complete set", numOwnedSharesBefore.toString());
-
-            console.log('AMERICA', 0);
-            const universe = fixture.universe;
-            const repTokenAddress = await universe.getReputationToken_();
-            const repToken = new ReputationToken(fixture.dependencies, repTokenAddress);
-            console.log('total rep supply', await repToken.totalSupply_());
-            console.log('rep token symbol', await repToken.symbol_());
-            console.log('reptoken', repTokenAddress);
-            const repPriceOracleAddress = await universe.repPriceOracle_();
-            const oracle = new RepPriceOracle(fixture.dependencies, repPriceOracleAddress);
-            console.log('oracular', oracle.address);
-            console.log('augury', await oracle.augur_());
-            console.log('unifact', await oracle.uniswapFactory_());
-            const uniswapExchangeAddress = await oracle.getOrCreateUniswapExchange(repTokenAddress);
-            console.log('uniswap exchange', uniswapExchangeAddress);
-            console.log('poke oracle', await oracle.pokeRepPriceInAttoCash(repTokenAddress));
-            console.log('poke universe', await universe.pokeRepMarketCapInAttoCash());
-            console.log('AMERICA', 1);
-
             await fixture.sellCompleteSets(market, numShares);
-            console.log('AMERICA', 2);
             numOwnedSharesBefore = await fixture.getNumSharesInMarket(market, outcome);
             console.log("numOwnedShares after selling complete set", numOwnedSharesBefore.toString());
         } else {
