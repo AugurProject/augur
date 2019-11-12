@@ -1394,14 +1394,13 @@ export const CategoricalTemplateDropdowns = (
         <OutcomeDropdownInput
           list={dropdownList}
           onAdd={(value) => dispatch({ type: ACTIONS.ADD, data: { value, editable: false }})}
-          canAdd={outcomeList.length < MAX_ADDED_OUTCOMES}
         />
       }
     </>
   );
 };
 
-const OutcomeDropdownInput = ({ list, onAdd, canAdd }) => {
+const OutcomeDropdownInput = ({ list, onAdd }) => {
   const [newItem, setNewItem] = useState(null);
   const [resetValue, setResetValue] = useState(null);
   useEffect(() => {
@@ -1417,11 +1416,13 @@ const OutcomeDropdownInput = ({ list, onAdd, canAdd }) => {
         options={list}
       />
       <SecondaryButton
-        disabled={!canAdd || !newItem}
+        disabled={!newItem}
         text="Add"
         action={() => {
           onAdd(newItem);
+          // force dropdown to reset
           setResetValue(resetValue === '' ? null : '');
+          setNewItem(null);
         }}
         icon={AddIcon}
       />
