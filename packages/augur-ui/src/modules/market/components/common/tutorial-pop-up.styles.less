@@ -45,7 +45,11 @@
       }
     }
 
-    > div {
+    > div:nth-last-child(2) {
+      margin-bottom: @size-12;
+    }
+
+    > div:last-of-type {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -62,14 +66,8 @@
         }
       }
 
-      &:nth-last-child(2) {
-        margin-bottom: @size-12;
-      }
-
-      &:last-of-type {
-        > div {
-            width: @size-32;
-        }
+      > div {
+          width: @size-32;
       }
     }
 
