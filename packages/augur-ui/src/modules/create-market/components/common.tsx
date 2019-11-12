@@ -1421,7 +1421,7 @@ const OutcomeDropdownInput = ({ list, onAdd, canAdd }) => {
         text="Add"
         action={() => {
           onAdd(newItem);
-          setResetValue('');
+          setResetValue(resetValue === '' ? null : '');
         }}
         icon={AddIcon}
       />
