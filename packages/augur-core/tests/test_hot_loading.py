@@ -126,6 +126,68 @@ def test_reporting(kitchenSinkFixture, augur, cash, market):
     marketData = getMarketData(hotLoading, augur, market, fillOrder, orders)
     assert marketData.reportingState == 6
 
+def test_dispute_window_hot_loading(kitchenSinkFixture, augur, cash, universe, reputationToken):
+    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    account = kitchenSinkFixture.accounts[0]
+
+    disputeWindowData = getDisputeWindowData(hotLoading, augur, universe)
+
+    expectedStartTime, duration = universe.getDisputeWindowStartTimeAndDuration(kitchenSinkFixture.contracts["Time"].getTimestamp(), False)
+    expectedEndTime = expectedStartTime + duration
+
+    assert disputeWindowData.address != nullAddress
+    assert disputeWindowData.startTime == expectedStartTime
+    assert disputeWindowData.endTime == expectedEndTime
+    assert disputeWindowData.purchased == 0
+    assert disputeWindowData.fees == 0
+
+    # Add fees and purchase some PTs to see those shown
+    cash.faucet(5000)
+    cash.transfer(disputeWindowData.address, 5000)
+
+    disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", disputeWindowData.address)
+    disputeWindow.buy(2000)
+
+    disputeWindowData = getDisputeWindowData(hotLoading, augur, universe)
+    assert disputeWindowData.purchased == 2000
+    assert disputeWindowData.fees == 5000
+
+    # it will predict the data if no window exists yet
+
+    kitchenSinkFixture.contracts["Time"].incrementTimestamp(duration)
+    expectedStartTime = expectedEndTime
+    expectedEndTime = expectedStartTime + duration
+
+    disputeWindowData = getDisputeWindowData(hotLoading, augur, universe)
+
+    assert disputeWindowData.address == nullAddress
+    assert disputeWindowData.startTime == expectedStartTime
+    assert disputeWindowData.endTime == expectedEndTime
+    assert disputeWindowData.purchased == 0
+    assert disputeWindowData.fees == 0
+
+def test_validity_bonds(kitchenSinkFixture, augur, cash, market, categoricalMarket, scalarMarket):
+    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    account = kitchenSinkFixture.accounts[0]
+
+    totalValidityBonds = hotLoading.getTotalValidityBonds([market.address, categoricalMarket.address, scalarMarket.address])
+
+    expectedTotal = sum(m.getValidityBondAttoCash() for m in [market, categoricalMarket, scalarMarket])
+
+    assert totalValidityBonds == expectedTotal
+
+    # Add to a markets total and see it reflected
+    additionalAmount = 100
+    cash.faucet(additionalAmount)
+    cash.approve(market.address, additionalAmount)
+    assert market.increaseValidityBond(additionalAmount)
+    
+    expectedTotal += additionalAmount
+
+    totalValidityBonds = hotLoading.getTotalValidityBonds([market.address, categoricalMarket.address, scalarMarket.address])
+    assert totalValidityBonds == expectedTotal
+
+
 class MarketData:
 
     def __init__(self, marketData):
@@ -152,6 +214,17 @@ class MarketData:
         self.reportingFeeDivisor = marketData[20]
         self.outcomeVolumes = marketData[21]
 
-
 def getMarketData(hotLoading, augur, market, fillOrder, orders):
     return MarketData(hotLoading.getMarketData(augur.address, market.address, fillOrder.address, orders.address))
+
+class DisputeWindowData:
+
+    def __init__(self, disputeWindowData):
+        self.address = disputeWindowData[0]
+        self.startTime = disputeWindowData[1]
+        self.endTime = disputeWindowData[2]
+        self.purchased = disputeWindowData[3]
+        self.fees = disputeWindowData[4]
+
+def getDisputeWindowData(hotLoading, augur, universe):
+    return DisputeWindowData(hotLoading.getCurrentDisputeWindowData(augur.address, universe.address))

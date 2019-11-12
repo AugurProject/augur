@@ -45,6 +45,7 @@ contract IUniverse {
     function isOpenInterestCash(address) public view returns (bool);
     function isForkingMarket() public view returns (bool);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);
+    function getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial) public view returns (uint256, uint256);
     function isParentOf(IUniverse _shadyChild) public view returns (bool);
     function updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash) public returns (bool);
     function isContainerForDisputeWindow(IDisputeWindow _shadyTarget) public view returns (bool);
