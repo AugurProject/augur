@@ -59,6 +59,7 @@ export const loadAccountPositionsTotals = (
   dispatch(
     updateLoginAccount({
       totalFrozenFunds: positions[30].frozenFunds,
+      totalRealizedPL: positions[30].realized,
       tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })
   );

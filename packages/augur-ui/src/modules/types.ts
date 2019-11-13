@@ -582,6 +582,7 @@ export interface LoginAccount {
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
+  totalRealizedPL?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;

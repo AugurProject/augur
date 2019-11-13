@@ -51,6 +51,8 @@ export interface MovementLabelProps {
   showBrackets?: boolean;
   showPercent?: boolean;
   showPlusMinus?: boolean;
+  showCurrency?: string;
+  showNegative?: boolean;
 }
 
 export interface MovementIconProps {
@@ -65,6 +67,8 @@ export interface MovementTextProps {
   showBrackets: boolean;
   showPercent: boolean;
   showPlusMinus: boolean;
+  showCurrency?: string;
+  showNegative?: boolean;
 }
 
 export interface PropertyLabelProps {
@@ -746,7 +750,7 @@ export const MovementText = (props: MovementTextProps) => {
   // Transform label
   const removeMinus: Function = (label: number): number => {
     if (props.value < 0 && !props.showPlusMinus) {
-      return Math.abs(props.value);
+      return typeof props.value === 'string' ? props.value.replace("-", "") : Math.abs(props.value);
     }
     return label;
   };
@@ -782,7 +786,7 @@ export const MovementText = (props: MovementTextProps) => {
     <div
       className={`${props.showColors ? textColorStyle : ''} ${textSizeStyle}`}
     >
-      {formattedString}
+      {`${props.showNegative && props.value < 0 ? '-' : ''}${!!props.showCurrency ? props.showCurrency : ""}${formattedString}`}
     </div>
   );
 };
@@ -814,6 +818,8 @@ export const MovementLabel = (props: MovementLabelProps) => {
           showPercent={showPercent}
           showBrackets={showBrackets}
           showPlusMinus={showPlusMinus}
+          showCurrency={props.showCurrency}
+          showNegative={props.showNegative}
         />
       }
     </div>
