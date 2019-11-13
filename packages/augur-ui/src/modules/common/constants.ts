@@ -1198,19 +1198,26 @@ function createTrade(date, amount, key, price, time, type) {
 
 export const TUTORIAL_TRADING_HISTORY = {
   '21Nov 2019': [
-    createTrade('21Nov 2019', 100, '1', 0.5, '19:50:22', BUY),
+    createTrade('21Nov 2019', 100, '1', 0.5, '19:56:22', BUY),
     createTrade('21Nov 2019', 81, '2', 0.4, '19:55:21', BUY),
+    createTrade('20Nov 2019', 56, '3', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 16, '4', 0.24, '11:45:11', SELL),
   ],
   '22Nov 2019': [
     createTrade('22Nov 2019', 40, '1', 0.5, '13:50:32', BUY),
     createTrade('22Nov 2019', 88, '2', 0.4, '02:11:01', SELL),
+    createTrade('20Nov 2019', 78, '3', 0.12, '01:35:21', SELL),
   ],
   '25Nov 2019': [
-    createTrade('25Nov 2019', 22, '1', 0.5, '06:50:18', SELL),
-    createTrade('25Nov 2019', 35, '2', 0.4, '11:44:05', BUY),
+    createTrade('25Nov 2019', 22, '1', 0.5, '11:50:18', SELL),
+    createTrade('25Nov 2019', 35, '2', 0.4, '06:44:05', BUY),
+    createTrade('20Nov 2019', 44, '3', 0.3, '01:35:21', BUY),
   ],
   '20Nov 2019': [
-    createTrade('20Nov 2019', 102, '1', 0.1, '18:50:22', SELL),
+    createTrade('20Nov 2019', 102, '1', 0.1, '16:50:22', SELL),
     createTrade('20Nov 2019', 56, '2', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 44, '3', 0.3, '12:34:21', BUY),
+    createTrade('20Nov 2019', 12, '4', 0.45, '02:35:21', SELL),
+    createTrade('20Nov 2019', 78, '6', 0.12, '02:23:21', SELL),
   ],
 };
