@@ -233,8 +233,10 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   } else {
     if (!props.expanded && props.outcomes.length > showOutcomeNumber) {
       outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
-    } else {
+    } else if (props.marketType === YES_NO) {
       outcomesCopy.reverse().splice(outcomesCopy.length, 0, removedInvalid);
+    } else {
+      outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
     }
   }
 
