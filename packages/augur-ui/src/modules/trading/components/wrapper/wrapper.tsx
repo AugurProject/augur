@@ -256,8 +256,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             totalCost: formatNumber(totalCost),
             numShares: order.orderQuantity,
             shareCost: formatNumber(0),
-            potentialDaiLoss: formatNumber(0),
-            potentialDaiProfit: formatNumber(0),
+            potentialDaiLoss: formatNumber(40),
+            potentialDaiProfit: formatNumber(60),
             side: order.selectedNav,
           };
 

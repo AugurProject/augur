@@ -41,20 +41,6 @@
   }
 }
 
-.MarketView__overlay {
-  background-color: @color-module-background;
-  bottom: 0;
-  color: @color-primary-text;
-  height: calc(~'100vh - @{multi-top-bar-height}');
-  left: 0;
-  min-height: 700px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100vw;
-  z-index: @mask-modal;
-}
-
 .MarketView__paneContainer--mobile {
   flex: 1;
   padding: @size-8 @size-4;
@@ -83,6 +69,10 @@
   
   @media all and (max-height: 700px) {
     min-height: 700px;
+  }
+
+  &.Tutorial {
+    min-height: calc(~'100vh - @{multi-top-bar-height} - @{tutorial-banner-height}');
   }
 }
 
