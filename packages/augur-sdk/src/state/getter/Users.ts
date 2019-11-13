@@ -677,7 +677,7 @@ try {
 
     const ownedMarketsResponse = await db.findMarkets({ selector: {
       marketCreator: params.account,
-      reportingState: { $not: MarketReportingState.Finalized }
+      finalized: false,
     }});
     const ownedMarkets = _.map(ownedMarketsResponse, "market");
     const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(ownedMarkets);
