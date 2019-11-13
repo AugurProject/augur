@@ -10,7 +10,7 @@ import {
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
-import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions//update-markets-data';
+import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions/update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
@@ -31,6 +31,7 @@ export interface LoadMarketsFilterOptions {
   includeInvalidMarkets: boolean;
   limit: number;
   offset: number;
+  templateFilter?: string;
 }
 
 export const loadMarketsByFilter = (
@@ -42,7 +43,8 @@ export const loadMarketsByFilter = (
 ) => {
   const { universe, connection } = getState();
   if (!(universe && universe.id)) return;
-
+  // change this when wired up to Vis filter
+  filterOptions.templateFilter = 'all';
   // Check to see if SDK is connected first
   // since URL parameters can trigger this action before the SDK is ready
   if (!connection.isConnected) return;
@@ -133,7 +135,9 @@ export const loadMarketsByFilter = (
     reportingStates,
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
+    templateFilter: filterOptions.templateFilter as Getters.Markets.TemplateFilters,
   };
+
   // not pass properties at their max value
   if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
   if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS)
