@@ -144,6 +144,7 @@ export const Pagination = (props: PaginationProps) => {
           defaultValue={itemsPerPage}
           options={getLimitOptions(itemCount, maxLimit)}
           onChange={updateLimit}
+          noSort
         />
       }
     </div>

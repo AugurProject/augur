@@ -673,6 +673,7 @@ class Form extends Component<FromProps, FormState> {
               }))}
             large
             showColor
+            noSort
           />
         </div>
         <ul>

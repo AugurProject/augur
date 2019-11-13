@@ -32,11 +32,16 @@ export interface DropdownProps {
   activeClassName?: string;
   showColor?: boolean;
   disabled?: boolean;
+  noSort?: boolean;
 }
 
 interface DropdownState {
   selected: NameValuePair;
   showList: boolean;
+  sortedList: NameValuePair[];
+  scrollWidth?: number;
+  clientWidth?: number;
+  isDisabled?: boolean;
 }
 
 interface SelectionOption {
@@ -71,6 +76,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     scrollWidth: null,
     clientWidth: null,
     isDisabled: true,
+    sortedList:
+      !this.props.noSort && this.props.options
+        ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+        : this.props.options,
   };
 
   componentDidMount() {
@@ -86,8 +95,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     this.measure();
     if (nextProps.defaultValue !== this.props.defaultValue) {
       this.setState({
-        selected: this.props.options.find(o => o.value === this.props.defaultValue)
-      })
+        selected: this.props.options.find(
+          o => o.value === this.props.defaultValue
+        ),
+      });
     }
   }
 
@@ -160,7 +171,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       showColor,
       disabled,
     } = this.props;
-    const { selected, showList, isDisabled } = this.state;
+    const { selected, showList, isDisabled, sortedList } = this.state;
 
     return (
       <div
@@ -201,7 +212,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             [`${Styles.active}`]: showList,
           })}
         >
-          {options.map(option => (
+          {sortedList.map(option => (
             <button
               key={`${option.value}${option.label}`}
               value={option.value}
@@ -218,7 +229,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             }}
             value={selected.value}
           >
-            {options.map(option => (
+            {sortedList.map(option => (
               <option
                 key={`${option.value}${option.label}`}
                 value={option.value}
