@@ -2,16 +2,16 @@ import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
 import { augurEmitter } from '../events';
 import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
-import { Address, MarketTypeName, ExtraInfoTemplate } from "../state/logs/types";
+import { Address, MarketTypeName } from "../state/logs/types";
 import { MarketInfoOutcome } from "../state/getter/Markets";
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import {
-    convertOnChainAmountToDisplayAmount,
     convertOnChainPriceToDisplayPrice,
     marketTypeToName,
     numTicksToTickSize,
     QUINTILLION
   } from "../index";
-  import { calculatePayoutNumeratorsValue, getOutcomeValue, PayoutNumeratorValue } from "../utils";
+  import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from "../utils";
 
 export interface GetDisputeWindowParams {
   augur: Address;
