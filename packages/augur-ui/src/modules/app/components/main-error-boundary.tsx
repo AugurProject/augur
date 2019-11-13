@@ -16,7 +16,7 @@ export default class MainErrorBoundary extends Component<{}, MEBState> {
     hasError: false
   };
 
-  UNSAFE_componentWillReceiveProps() {
+  componentDidUpdate() {
     if (this.state.hasError) {
       this.setState({ hasError: false });
     }
