@@ -567,7 +567,6 @@ export const NumberedInput = ({
         {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
           <span>{errorMessage}</span>
         )}
-        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
       </>
     )}
   </li>
@@ -1225,6 +1224,7 @@ export const CategoricalTemplateTextInputs = (
       return null;
     });
 
+  const min = initialList.length >  2 ? initialList.length : 2;
   outcomes.forEach(outcome => {
     if (initialList.filter(option => option.value === outcome).length === 0) {
       initialList.push({
@@ -1252,7 +1252,7 @@ export const CategoricalTemplateTextInputs = (
       />
       <NumberedList
         initialList={initialList}
-        minShown={2}
+        minShown={min}
         maxList={7}
         placeholder={'Enter outcome'}
         updateList={(value: string[]) => {
