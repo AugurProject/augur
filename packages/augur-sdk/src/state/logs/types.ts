@@ -425,6 +425,7 @@ export interface MarketData extends Log, Doc {
   pacingOn: boolean;
   noShowBond: string;
   disavowed: boolean;
+  isTemplate: boolean;
 }
 
 export interface DisputeDoc extends Log, Doc {

@@ -21,6 +21,7 @@ import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION, padHex } from '../../utils';
 import { Block } from 'ethereumjs-blockstream';
+import { isTemplateMarket } from '@augurproject/artifacts';
 
 
 interface MarketOrderBookData {
@@ -261,6 +262,9 @@ export class MarketDB extends DerivedDB {
     try {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+      if(log['extraInfo'].template) {
+        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template);
+      }
     } catch (err) {
       log['extraInfo'] = {};
     }

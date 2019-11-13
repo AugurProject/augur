@@ -1102,12 +1102,7 @@ async function getMarketsInfo(
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
       stakes: formatStakeDetails(db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
-    let isTemplate = false;
-    try {
-      isTemplate = template && isTemplateMarket(description, template);
-    } catch(e) {
-      console.error("could not process template", e);
-    }
+
     return {
       id: marketData.market,
       universe: marketData.universe,
@@ -1146,7 +1141,7 @@ async function getMarketsInfo(
       disputeInfo,
       disavowed: marketData.disavowed,
       template,
-      isTemplate,
+      isTemplate: marketData.isTemplate,
     };
   });
 }
