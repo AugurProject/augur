@@ -15,7 +15,7 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/containers/link';
 import { Error } from 'modules/common/form';
-import Styles, { outcomesList } from 'modules/create-market/components/common.styles.less';
+import Styles from 'modules/create-market/components/common.styles.less';
 import {
   FormattedNumber,
   DateFormattedObject,
