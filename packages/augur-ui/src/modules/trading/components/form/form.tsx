@@ -158,19 +158,19 @@ class Form extends Component<FromProps, FormState> {
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.updateTestProperty(this.INPUT_TYPES.QUANTITY, nextProps);
-    this.updateTestProperty(this.INPUT_TYPES.PRICE, nextProps);
-    this.updateTestProperty(this.INPUT_TYPES.EST_DAI, nextProps);
-    this.updateTestProperty(this.INPUT_TYPES.EXPIRATION_DATE, nextProps);
+  componentDidUpdate() {
+    this.updateTestProperty(this.INPUT_TYPES.QUANTITY, this.props);
+    this.updateTestProperty(this.INPUT_TYPES.PRICE, this.props);
+    this.updateTestProperty(this.INPUT_TYPES.EST_DAI, this.props);
+    this.updateTestProperty(this.INPUT_TYPES.EXPIRATION_DATE, this.props);
 
     if (
-      nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
+      this.props[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
       this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]
     ) {
       this.setState({
         [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
-          nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
+          this.props[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
       });
     }
   }

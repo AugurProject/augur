@@ -12,7 +12,8 @@ import {
   OutcomesList,
   SmallSubheadersTooltip,
   NoFundsErrors,
-  DateTimeHeaders
+  DateTimeHeaders,
+  PreviewMarketTitleHeader
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -60,47 +61,51 @@ export default class Review extends React.Component<
   ReviewProps,
   ReviewState
 > {
-  state: ReviewState = {
-    gasCost: null,
-    validityBond: null,
-    designatedReportNoShowReputationBond: null,
-    insufficientFunds: {},
-    formattedInitialLiquidityDai: formatEtherEstimate(
-      this.props.newMarket.initialLiquidityDai
-    ),
-    formattedInitialLiquidityGas: formatEtherEstimate(
-      formatGasCostToEther(
-        this.props.newMarket.initialLiquidityGas,
-        { decimalsRounded: 4 },
-        this.props.gasPrice
-      )
-    ),
-  };
 
-  UNSAFE_componentWillMount() {
+  constructor(props: ReviewProps) {
+    super(props);
+
+    this.state = {
+      gasCost: null,
+      validityBond: null,
+      designatedReportNoShowReputationBond: null,
+      insufficientFunds: {},
+      formattedInitialLiquidityDai: formatEtherEstimate(
+        this.props.newMarket.initialLiquidityDai
+      ),
+      formattedInitialLiquidityGas: formatEtherEstimate(
+        formatGasCostToEther(
+          this.props.newMarket.initialLiquidityGas,
+          { decimalsRounded: 4 },
+          this.props.gasPrice
+        )
+      ),
+    };
+
     this.calculateMarketCreationCosts();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+  componentDidUpdate(prevProps, prevState) {
     const { newMarket, gasPrice } = this.props;
+
     if (
-      newMarket.initialLiquidityDai !== nextProps.newMarket.initialLiquidityDai
+      newMarket.initialLiquidityDai !== prevProps.newMarket.initialLiquidityDai
     )
       this.setState({
         formattedInitialLiquidityDai: formatEtherEstimate(
-          nextProps.newMarket.initialLiquidityDai
+          prevProps.newMarket.initialLiquidityDai
         ),
       });
     if (
       newMarket.initialLiquidityGas !==
-        nextProps.newMarket.initialLiquidityGas ||
-      gasPrice !== nextProps.gasPrice
+      prevProps.newMarket.initialLiquidityGas ||
+      gasPrice !== prevProps.gasPrice
     ) {
       this.setState(
         {
           formattedInitialLiquidityGas: formatEtherEstimate(
             formatGasCostToEther(
-              nextProps.newMarket.initialLiquidityGas,
+              prevProps.newMarket.initialLiquidityGas,
               { decimalsRounded: 4 },
               gasPrice
             )
@@ -111,21 +116,24 @@ export default class Review extends React.Component<
         }
       );
     }
-    if (this.state.validityBond !== nextState.validityBond) {
-      if (nextState.validityBond) {
+
+    if (this.state.validityBond !== prevState.validityBond) {
+      if (this.state.validityBond) {
         const insufficientFunds = this.getInsufficientFundsAmounts();
         if (this.state.insufficientFunds !== insufficientFunds) {
           this.updateFunds(insufficientFunds);
         }
       }
     }
+
     if (
-      this.props.availableEthFormatted.value !== nextProps.availableEthFormatted.value ||
-      this.props.availableRepFormatted.value !== nextProps.availableRepFormatted.value
+      this.props.availableEthFormatted.value !== prevProps.availableEthFormatted.value ||
+      this.props.availableRepFormatted.value !== prevProps.availableRepFormatted.value
     ) {
       this.calculateMarketCreationCosts();
     }
   }
+
 
   getInsufficientFundsAmounts(testWithLiquidity = false): InsufficientFunds {
     const { availableEthFormatted, availableRepFormatted, availableDaiFormatted } = this.props;
@@ -254,7 +262,8 @@ export default class Review extends React.Component<
           <SmallSubheaders header="Primary Category" subheader={categories[0]} />
           <SmallSubheaders header="Secondary category" subheader={categories[1]} />
           <SmallSubheaders header="Sub category" subheader={categories[2] === "" ? "–" : categories[2]} />
-          <SmallSubheaders header="Market Question" subheader={description} />
+          <PreviewMarketTitleHeader market={newMarket} />
+
           {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
