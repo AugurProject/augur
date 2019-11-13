@@ -516,4 +516,5 @@ export const TemplateBannerText = {
     'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
 };
 
-export const SelectEventNoticeText = 'Choose an event in the market question in order to select outcomes.'
+export const SelectEventNoticeText =
+  'Choose an event in the market question in order to select outcomes.';
