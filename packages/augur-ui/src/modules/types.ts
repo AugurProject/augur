@@ -285,7 +285,7 @@ export interface NewMarketPropertiesValidations {
   hour?: string;
   minute?: string;
   meridiem?: string;
-  outcomes?: string;
+  outcomes?: string | string[];
   settlementFee?: string;
   affiliateFee?: number;
   inputs?: NewMarketPropertiesValidations[];
@@ -296,7 +296,7 @@ export interface NewMarketPropertyValidations {
   scalarDenomination?: string;
   affiliateFee?: number;
   inputs?: NewMarketPropertiesValidations[];
-  outcomes?: string;
+  outcomes?: string | string[];
 }
 export interface NewMarket {
   uniqueId: number;

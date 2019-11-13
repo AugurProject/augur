@@ -3574,7 +3574,7 @@ export const BASKETBALL_EVENT_DEP_TEAMS = {
 export const FOOTBALL_EVENT_DEP_TEAMS = {
   'AFC Championship game': LIST_VALUES.NFL_AFC_TEAMS,
   'NFC Championship game': LIST_VALUES.NFL_NFC_TEAMS,
-  'Super Bowl': LIST_VALUES.NBA_TEAMS,
+  'Super Bowl': LIST_VALUES.NFL_TEAMS,
 };
 
 export const HOCKEY_EVENT_DEP_TEAMS = {
