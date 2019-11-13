@@ -1,5 +1,4 @@
 import logError from 'utils/log-error';
-import { updateTopBarPL } from 'modules/positions/actions/update-top-bar-pl';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppState } from 'store';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
@@ -164,6 +163,5 @@ export const userPositionProcessing = (
     };
     dispatch(updateAccountPositionsData(positionData));
   });
-  dispatch(updateTopBarPL());
   if (callback) callback(null, positions);
 };
