@@ -37,7 +37,7 @@ import {
   DOUBLES,
   WNBA,
 } from './templates-template';
-import { LIST_VALUES } from './templates-lists';
+import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS, HOCKEY_EVENT_DEP_TEAMS, BASEBALL_EVENT_DEP_TEAMS, FOOTBALL_EVENT_DEP_TEAMS, NCAA_FOOTBALL_EVENT_DEP_TEAMS } from './templates-lists';
 
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical'
@@ -410,13 +410,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -439,13 +441,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -475,8 +479,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
@@ -498,13 +503,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -535,13 +542,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -597,11 +606,19 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.HOCKEY_EVENT,
-              },              {
+              },
+              {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                inputSourceId: 1,
+                placeholder: `Select Team`,
+                values: HOCKEY_EVENT_DEP_TEAMS,
+              }
             ],
             resolutionRules: {},
           },
@@ -643,8 +660,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
@@ -1454,11 +1472,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -1489,6 +1512,13 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: BASKETBALL_EVENT_DEP_TEAMS,
+                  }
                 ],
                 resolutionRules: {
                   [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
@@ -1825,11 +1855,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -2212,11 +2247,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 5,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -2279,8 +2319,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
@@ -2304,13 +2345,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team A`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team B`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 2,
@@ -2354,6 +2397,13 @@ export const TEMPLATES = {
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                inputSourceId: 1,
+                placeholder: `Select Team`,
+                values: BASEBALL_EVENT_DEP_TEAMS,
+              }
             ],
             resolutionRules: {},
           },
@@ -2364,13 +2414,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 2,
@@ -2444,8 +2496,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
@@ -2816,6 +2869,13 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: FOOTBALL_EVENT_DEP_TEAMS,
+                  }
                 ],
                 resolutionRules: {},
               },
@@ -2878,13 +2938,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2911,13 +2973,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2950,13 +3014,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2985,17 +3051,19 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which College Football Team will win: [0] vs [1]?`,
-                example: `Which College Football Team will win:  Alabama vs Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `Which College Football Team will win: Alabama vs Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -3027,13 +3095,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -3092,13 +3162,15 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 4,
@@ -3120,7 +3192,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college football team will win [0] National Championship?`,
+                question: `Which college football team will win [0] [1] Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
                 inputs: [
                   {
@@ -3131,9 +3203,22 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_EVENT,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: NCAA_FOOTBALL_EVENT_DEP_TEAMS,
+                  }
                 ],
                 resolutionRules: {},
               },
@@ -3175,8 +3260,9 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,

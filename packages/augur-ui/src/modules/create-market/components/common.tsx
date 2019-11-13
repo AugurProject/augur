@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useReducer } from 'react';
 import classNames from 'classnames';
 
 import { SecondaryButton, ExternalLinkButton } from 'modules/common/buttons';
@@ -46,8 +46,14 @@ import {
   CHOICE,
   REQUIRED,
 } from '@augurproject/artifacts';
-import { TemplateBannerText } from 'modules/create-market/constants';
-import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import {
+  TemplateBannerText,
+  SelectEventNoticeText,
+} from 'modules/create-market/constants';
+import {
+  DismissableNotice,
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+} from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 
 export interface HeaderProps {
@@ -532,6 +538,7 @@ export interface NumberedListProps {
   updateList: Function;
   errorMessage?: string;
   hideAdd?: boolean;
+  onRemoved?: Function;
 }
 
 export interface NumberedListState {
@@ -569,6 +576,7 @@ export const NumberedInput = ({
         {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
           <span>{errorMessage}</span>
         )}
+        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
       </>
     )}
   </li>
@@ -624,7 +632,7 @@ export class NumberedList extends Component<
 
   removeItem = index => {
     const { isMin, list } = this.state;
-    const { minShown, maxList, updateList } = this.props;
+    const { minShown, maxList, updateList, onRemoved } = this.props;
     if (!isMin) {
       list.splice(index, 1);
       this.setState(
@@ -810,7 +818,10 @@ export const InputFactory = (props: InputFactoryProps) => {
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
-  } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
+  } else if (
+    input.type === TemplateInputType.DATETIME ||
+    input.type === TemplateInputType.ESTDATETIME
+  ) {
     return (
       <span>
         {input.userInput ? input.userInput : `[${input.placeholder}]`}
@@ -986,8 +997,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     if (hour !== null && minute !== null) {
       if (input.type === TemplateInputType.DATETIME)
         userInput = endTimeFormatted.formattedUtc;
-      else
-        userInput = String(endTimeFormatted.timestamp);
+      else userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1084,7 +1094,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const inputs = template.inputs;
 
   const dateTimeIndex = inputs.findIndex(
-    input => (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME)
+    input =>
+      input.type === TemplateInputType.DATETIME ||
+      input.type === TemplateInputType.ESTDATETIME
   );
 
   return (
@@ -1140,13 +1152,15 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
 };
 
 export interface TemplateBannersProps {
-  categories: string[]
+  categories: string[];
 }
 
 export const TemplateBanners = (props: TemplateBannersProps) => {
   const text = props.categories.reduce(
     (p, c) =>
-      Object.keys(TemplateBannerText).includes(c) ? TemplateBannerText[c] : p,
+      Object.keys(TemplateBannerText).includes(c.toLowerCase())
+        ? TemplateBannerText[c.toLowerCase()]
+        : p,
     null
   );
   if (!text) return null;
@@ -1157,7 +1171,7 @@ export const TemplateBanners = (props: TemplateBannersProps) => {
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       show
     />
-  )
+  );
 };
 
 export interface CategoricalTemplateProps {
@@ -1166,6 +1180,27 @@ export interface CategoricalTemplateProps {
 }
 
 export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
+  const { newMarket } = props;
+  const { template } = newMarket;
+  const inputs = template.inputs;
+  const hasDropdowns = inputs.find(
+    i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
+  );
+  return hasDropdowns ? (
+    <CategoricalTemplateDropdowns {...props} />
+  ) : (
+    <CategoricalTemplateTextInputs {...props} />
+  );
+};
+
+export interface CategoricalTemplateTextInputsProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+export const CategoricalTemplateTextInputs = (
+  props: CategoricalTemplateTextInputsProps
+) => {
   const { onChange, newMarket } = props;
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
@@ -1201,6 +1236,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       return null;
     });
 
+  const min = initialList.length >  2 ? initialList.length : 2;
   outcomes.forEach(outcome => {
     if (initialList.filter(option => option.value === outcome).length === 0) {
       initialList.push({
@@ -1228,10 +1264,10 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       />
       <NumberedList
         initialList={initialList}
-        minShown={2}
+        minShown={min}
         maxList={7}
         placeholder={'Enter outcome'}
-        updateList={(value: Array<string>) => {
+        updateList={(value: string[]) => {
           onChange('outcomes', value);
         }}
         hideAdd={hideAdd}
@@ -1240,6 +1276,201 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
     </>
   );
 };
+
+export interface CategoricalTemplateDropdownsProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+interface CategoricalDropDownItem {
+  value: string;
+  editable: boolean;
+  removable: boolean;
+  current: boolean;
+}
+
+interface CategoricalDropDownAction {
+  type: string;
+  data: Partial<CategoricalDropDownItem>;
+}
+export const CategoricalTemplateDropdowns = (
+  props: CategoricalTemplateDropdownsProps
+) => {
+  const MAX_ADDED_OUTCOMES = 7;
+  const ACTIONS = {
+    ADD: 'ADD',
+    REMOVE: 'REMOVE',
+    REMOVE_ALL: 'REMOVE_ALL',
+    INIT_ADD: 'INIT_ADD',
+    REPLACE_CURRENT: 'REPLACE_CURRENT',
+    ADD_NEW: 'ADD_NEW',
+  };
+  const [outcomeList, dispatch] = useReducer(
+    (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
+      switch (action.type) {
+        case ACTIONS.ADD:
+          const newAddState = [...state, action.data];
+          props.onChange('outcomes', newAddState.map(i => i.value));
+          return newAddState;
+        case ACTIONS.REMOVE:
+          const newRemoveState = state.filter(s => s.value !== action.data.value)
+          props.onChange('outcomes', newRemoveState.map(i => i.value));
+          return newRemoveState;
+        case ACTIONS.REMOVE_ALL:
+          props.onChange('outcomes', []);
+          return [];
+        case ACTIONS.REPLACE_CURRENT:
+          const removeCurrent = state.filter(s => !s.current);
+          const newUpdatedState = [...removeCurrent, action.data];
+          props.onChange('outcomes', newUpdatedState.map(i => i.value));
+          return newUpdatedState;
+        case ACTIONS.ADD_NEW:
+          return state.map(o => ({...o, current: false}));
+        case ACTIONS.INIT_ADD:
+          return [...state, action.data];
+        default:
+          return state;
+      }
+    },
+    []
+  );
+  const [initialized, setInitialized] = useState(false);
+  const [sourceUserInput, setSourceUserInput] = useState(undefined);
+  const [depDropdownInput] = useState(
+    props.newMarket.template.inputs.find(
+      input =>
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
+    )
+  );
+  const [defaultOutcomeItems] = useState(
+    props.newMarket.template.inputs
+      .filter(input => input.type === TemplateInputType.ADDED_OUTCOME)
+      .map(input => ({
+        value: input.placeholder,
+        editable: false,
+      }))
+  );
+  const [dropdownList, setdropdownList] = useState([]);
+  const [showBanner, setShowBanner] = useState(true);
+
+  useEffect(() => {
+    const { template } = props.newMarket;
+    const source = template.inputs.find(
+      i => i.id === depDropdownInput.inputSourceId
+    );
+
+    setShowBanner(!!!source.userInput);
+
+    // in case of re-hyration of market creation form need to set newMarket outcomes
+    if (!initialized) {
+      const { outcomes } = props.newMarket;
+      setInitialized(true);
+      outcomes.map((i: string) => {
+        const defaultItems = defaultOutcomeItems.map((i: CategoricalDropDownItem) => i.value);
+        const data = { value: i, editable: false, removable: true, current: false };
+        if (defaultItems.includes(i)) {
+          data.removable = false;
+        }
+        dispatch({
+          type: ACTIONS.INIT_ADD,
+          data,
+        })
+      });
+      setSourceUserInput(source.userInput);
+      setdropdownList(depDropdownInput.values[source.userInput]);
+    } else {
+      if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
+        defaultOutcomeItems.map((i: CategoricalDropDownItem) => dispatch({ type: ACTIONS.ADD, data: i }));
+      }
+
+      if (sourceUserInput !== source.userInput) {
+        dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
+        setdropdownList(depDropdownInput.values[source.userInput]);
+        setSourceUserInput(source.userInput);
+      }
+    }
+  });
+
+  const { newMarket } = props;
+  const { validations } = newMarket;
+  const currentValue = outcomeList.find(o => o.current);
+  const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES && !!currentValue;
+  const allFull = outcomeList.length === MAX_ADDED_OUTCOMES && !!!currentValue;
+  return (
+    <>
+      <Subheaders
+        header="Outcomes"
+        subheader="List the outcomes people can choose from."
+        link
+      />
+      {outcomeList
+        .filter(o => !o.current)
+        .map((item, index) => (
+          <NumberedInput
+            key={index}
+            value={item.value}
+            placeholder={''}
+            onChange={() => {}}
+            number={index}
+            removable={item.removable}
+            onRemove={index =>
+              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+            }
+            errorMessage={validations && validations.outcomes && validations.outcomes[index]}
+            editable={item.editable}
+          />
+        ))}
+      {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
+      {!showBanner && !allFull && (
+        <OutcomeDropdownInput
+          number={outcomeList.filter(o => !o.current).length}
+          list={dropdownList}
+          defaultValue={currentValue && currentValue.value}
+          onChange={value => {
+            dispatch({
+              type: ACTIONS.REPLACE_CURRENT,
+              data: { value, editable: false, removable: true, current: true },
+            });
+          }}
+          errorMessage={validations && validations.outcomes}
+          onAdd={() => dispatch({ type: ACTIONS.ADD_NEW, data: {} })}
+          canAddMore={canAddMore}
+        />
+      )}
+    </>
+  );
+};
+
+const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, errorMessage, canAddMore }) =>
+    <div className={Styles.OutcomeDropdownInput}>
+      <div>
+        <span>{`${number + 1}.`}</span>
+        <FormDropdown
+          id={'outcomeDropDown'}
+          defaultValue={defaultValue}
+          staticLabel={'Select Value'}
+          onChange={value => onChange(value)}
+          options={list}
+          errorMessage={errorMessage && errorMessage[number]}
+        />
+      </div>
+      <SecondaryButton
+        disabled={!canAddMore}
+        text="Add"
+        action={() => onAdd('')}
+        icon={AddIcon}
+      />
+    </div>
+
+
+const SelectEventNotice = ({ text }) => (
+  <DismissableNotice
+    title={text}
+    className={Styles.TopBannerMargin}
+    buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+    show
+  />
+);
 
 export interface ResolutionRulesProps {
   newMarket: NewMarket;
@@ -1293,9 +1524,9 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
         <>
           <span>Added Resolution details:</span>
           <div className={Styles.AddResolutionRules}>
-            {resolutionRules[REQUIRED].map((rule, index) =>
+            {resolutionRules[REQUIRED].map((rule, index) => (
               <div key={index}>{rule.text}</div>
-            )}
+            ))}
           </div>
         </>
       )}

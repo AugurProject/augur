@@ -139,11 +139,11 @@
 
     > button {
       display: flex;
-      margin-left: 44px;
+      margin-left: @size-44;
 
       > svg {
-        height: @size-16;
-        width: @size-16;
+        height: @size-10;
+        width: @size-10;
         margin-right: @size-8;
 
         > path {
@@ -184,7 +184,7 @@
   }
 
   > button {
-    margin: @size-16;
+    margin-left: @size-44;
 
     svg {
       height: @size-10;
@@ -540,5 +540,42 @@
     border-radius: @border-radius-default;
     margin-bottom: @size-8;
     padding: @size-16;
+  }
+}
+
+.OutcomeDropdownInput {
+  > div {
+    display: flex;
+    flex-flow: row nowrap;
+
+    > span {
+      .text-14;
+
+      color: @color-primary-text;
+      flex: 0 0 auto;
+      padding: @size-16;
+    }
+
+    > div {
+      margin-bottom: @size-24;
+      max-width: 260px;
+    }
+  }
+
+  > Button {
+    display: flex;
+    width: 70px;
+    height: @size-40;
+    margin-left: @size-44;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      margin-right: @size-8;
+
+      > path {
+        fill: @color-primary-text;
+      }
+    }
   }
 }
