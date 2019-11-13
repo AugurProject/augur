@@ -584,15 +584,17 @@ export class NumberedList extends Component<
     isMin: this.props.initialList.length === this.props.minShown,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(props, state) {
     if (
-      JSON.stringify(this.props.initialList) !==
-      JSON.stringify(nextProps.initialList)
+      JSON.stringify(props.initialList) !==
+      JSON.stringify(state.list)
     ) {
-      this.setState({
-        list: nextProps.initialList,
-      });
-    }
+      return {
+        list: props.initialList
+      };
+    };
+
+    return null;
   }
 
   onChange = (value, index) => {
