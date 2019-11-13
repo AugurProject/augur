@@ -47,6 +47,7 @@ export const selectAccountFunds = createSelector(
   loginAccount => {
     let totalAvailableTradingBalance = ZERO;
     let totalFrozenFunds = ZERO;
+    let totalRealizedPL = ZERO;
 
     if (loginAccount.balances.dai && loginAccount.balances.dai) {
       totalAvailableTradingBalance = createBigNumber(loginAccount.balances.dai);
@@ -56,12 +57,17 @@ export const selectAccountFunds = createSelector(
       totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds);
     }
 
+    if (loginAccount.totalRealizedPL) {
+      totalRealizedPL = createBigNumber(loginAccount.totalRealizedPL);
+    }
+
     const totalAccountValue = totalAvailableTradingBalance.plus(
       totalFrozenFunds
     );
 
     return {
       totalAvailableTradingBalance,
+      totalRealizedPL,
       totalFrozenFunds,
       totalAccountValue
     };
