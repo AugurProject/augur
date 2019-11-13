@@ -22,10 +22,10 @@ export const generateTemplateValidations = async () => {
   topCategories.map(c => addTemplates(newTemplates[c], validations));
   const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(
     newTemplates
-  )}`;
-  const newValidation = `export const TEMPLATE_VALIDATIONS = ${JSON.stringify(
+  )};`;
+  const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(
     validations
-  )}`;
+  )};`;
 
   if (!fs.existsSync(templateTemplateFile))
     return console.error(templateTemplateFile, 'does not exist');

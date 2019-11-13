@@ -15,6 +15,7 @@ import {
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatShares, formatDai } from 'utils/format-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -916,18 +917,18 @@ export enum PAGINATION_VIEW_OPTIONS {
 export enum TRADING_TUTORIAL_STEPS {
   INTRO_MODAL = 0,
   MARKET_DETAILS = 1,
-  //MARKET_DATA = 2,
-  BUYING_SHARES = 2,
-  SELECT_OUTCOME = 3,
-  QUANTITY = 4,
-  LIMIT_PRICE = 5,
-  ORDER_VALUE = 6,
-  ORDER_BOOK = 7,
-  PLACE_ORDER = 8,
-  OPEN_ORDERS = 9,
-  MY_FILLS = 10,
-  POSITIONS = 11,
-  OUTRO_MODAL = 12,
+  MARKET_DATA = 2,
+  BUYING_SHARES = 3,
+  SELECT_OUTCOME = 4,
+  QUANTITY = 5,
+  LIMIT_PRICE = 6,
+  ORDER_VALUE = 7,
+  ORDER_BOOK = 8,
+  PLACE_ORDER = 9,
+  OPEN_ORDERS = 10,
+  MY_FILLS = 11,
+  POSITIONS = 12,
+  OUTRO_MODAL = 13,
 }
 
 export const TRADING_TUTORIAL_COPY = {
@@ -939,6 +940,15 @@ export const TRADING_TUTORIAL_COPY = {
           "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
         link: 'https://www.docs.augur.net',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.MARKET_DATA]: {
+    title: 'Market Data',
+    subheader: [
+      {
+        text:
+          "Here you can get an idea of the market's trading volume (how much has changed hands) and open interest (sum of trades matched). Make sure that the event expiration leaves time for the outcome to be made known and that you're comfortable with the market's fees.",
       },
     ],
   },
@@ -976,6 +986,7 @@ export const TRADING_TUTORIAL_COPY = {
       },
       {
         text: 'Please enter a quantity of 100.',
+        lighten: true
       },
     ],
   },
@@ -989,7 +1000,8 @@ export const TRADING_TUTORIAL_COPY = {
         text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
       },
       {
-        text: 'Enter a limit price of $.40.'
+        text: 'Enter a limit price of $.40.',
+        lighten: true
       }
     ],
   },
@@ -1008,8 +1020,12 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Place your order',
     subheader: [
       {
-        text: "Review your order and if everything looks correct then go ahead and click the 'Place Buy Order' button.",
+        text: "Review your order and make sure everything looks correct.",
       },
+      {
+        text: "Now go ahead and press the 'Place Buy Order' button or click next.",
+        lighten: true,
+      }
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {
@@ -1129,4 +1145,79 @@ export const REPORTING_GUIDE = {
   content: [],
   learnMoreButtonText: 'Learn more about reporting',
   closeButtonText: 'Close'
+};
+
+function createOrder(disappear, price, quantity, id, outcomeId, type) {
+  return {
+    disappear,
+    avgPrice: formatDai(price),
+    cumulativeShares: quantity.toString(),
+    id,
+    mySize: '0',
+    orderEstimate: createBigNumber(price),
+    outcomeId,
+    outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
+    price: price.toString(),
+    quantity: quantity.toString(),
+    shares: quantity.toString(),
+    sharesEscrowed: formatShares(quantity),
+    tokensEscrowed: formatDai(price),
+    type,
+    unmatchedShares: formatShares(quantity),
+  };
+}
+
+function createOutcomeOrders(outcomeId) {
+  return [
+    createOrder(true, TUTORIAL_PRICE, TUTORIAL_QUANTITY, 0, outcomeId, SELL),
+    createOrder(false, .5, 150, 1, outcomeId, SELL),
+    createOrder(false, .6, 200, 2, outcomeId, SELL),
+    createOrder(false, .3, 100, 3, outcomeId, BUY),
+    createOrder(false, .2, 150, 4, outcomeId, BUY),
+    createOrder(false, .1, 200, 5, outcomeId, BUY),
+  ]
+}
+
+export const TUTORIAL_ORDER_BOOK = {
+  0: createOutcomeOrders(0),
+  1: createOutcomeOrders(1),
+  2: createOutcomeOrders(2),
+  3: createOutcomeOrders(3),
+};
+
+function createTrade(date, amount, key, price, time, type) {
+  return {
+    date,
+    amount: createBigNumber(amount),
+    key,
+    price: createBigNumber(price),
+    time,
+    type,
+  };
+}
+
+export const TUTORIAL_TRADING_HISTORY = {
+  '21Nov 2019': [
+    createTrade('21Nov 2019', 100, '1', 0.5, '19:56:22', BUY),
+    createTrade('21Nov 2019', 81, '2', 0.4, '19:55:21', BUY),
+    createTrade('20Nov 2019', 56, '3', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 16, '4', 0.24, '11:45:11', SELL),
+  ],
+  '22Nov 2019': [
+    createTrade('22Nov 2019', 40, '1', 0.5, '13:50:32', BUY),
+    createTrade('22Nov 2019', 88, '2', 0.4, '02:11:01', SELL),
+    createTrade('20Nov 2019', 78, '3', 0.12, '01:35:21', SELL),
+  ],
+  '25Nov 2019': [
+    createTrade('25Nov 2019', 22, '1', 0.5, '11:50:18', SELL),
+    createTrade('25Nov 2019', 35, '2', 0.4, '06:44:05', BUY),
+    createTrade('20Nov 2019', 44, '3', 0.3, '01:35:21', BUY),
+  ],
+  '20Nov 2019': [
+    createTrade('20Nov 2019', 102, '1', 0.1, '16:50:22', SELL),
+    createTrade('20Nov 2019', 56, '2', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 44, '3', 0.3, '12:34:21', BUY),
+    createTrade('20Nov 2019', 12, '4', 0.45, '02:35:21', SELL),
+    createTrade('20Nov 2019', 78, '6', 0.12, '02:23:21', SELL),
+  ],
 };

@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import makePath from "modules/routes/helpers/make-path";
-import { DEFAULT_VIEW } from "modules/routes/constants/views";
-import { SecondaryButton } from "modules/common/buttons";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import makePath from 'modules/routes/helpers/make-path';
+import { DEFAULT_VIEW } from 'modules/routes/constants/views';
+import { SecondaryButton } from 'modules/common/buttons';
 
-import Styles from "modules/app/components/main-error-boundary.styles";
-import ButtonStyles from "modules/common/buttons.styles";
+import Styles from 'modules/app/components/main-error-boundary.styles';
+import ButtonStyles from 'modules/common/buttons.styles';
 
 interface MEBState {
   hasError: boolean;
@@ -13,15 +13,16 @@ interface MEBState {
 
 export default class MainErrorBoundary extends Component<{}, MEBState> {
   state: MEBState = {
-    hasError: false
+    hasError: false,
   };
 
-  UNSAFE_componentWillReceiveProps() {
-    if (this.state.hasError) {
+  componentDidUpdate(prevProps: {}, prevState: MEBState) {
+    const { hasError } = this.state
+    if (hasError) {
       this.setState({ hasError: false });
     }
   }
-
+ 
   componentDidCatch(error, info) {
     this.setState({ hasError: true });
   }
@@ -46,7 +47,7 @@ export default class MainErrorBoundary extends Component<{}, MEBState> {
               <Link
                 className={ButtonStyles.PrimaryButton}
                 to={{
-                  pathname: makePath(DEFAULT_VIEW, false)
+                  pathname: makePath(DEFAULT_VIEW, false),
                 }}
                 onClick={e => {
                   // change location to DEFAULT_VIEW and update state.

@@ -714,7 +714,7 @@ export default class MarketView extends Component<
               </>
             ) : (
               <>
-                <div className={Styles.MarketView__parent}>
+                <div className={classNames(Styles.MarketView__parent, {[Styles.Tutorial]: tradingTutorial})}>
                   <section className={Styles.MarketView__body}>
                     <div
                       className={classNames({
@@ -729,7 +729,13 @@ export default class MarketView extends Component<
                         market={preview && market}
                         preview={preview}
                         next={this.next}
-                        back={this.back}
+                        showTutorialData={tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA}
+                        step={tutorialStep}
+                        totalSteps={totalSteps}
+                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                        showTutorialDetails={tradingTutorial &&
+                          tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.MARKET_DETAILS}
                       />
                       {tradingTutorial &&
                         tutorialStep ===
@@ -740,8 +746,6 @@ export default class MarketView extends Component<
                             totalSteps={totalSteps}
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                             next={this.next}
-                            back={this.back}
-                            hideBack
                           />
                         )}
                     </div>
@@ -811,9 +815,15 @@ export default class MarketView extends Component<
                                   tutorialStep ===
                                   TRADING_TUTORIAL_STEPS.PLACE_ORDER
                                 }
-                                next={this.next}
-                                hideNext={tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER}
-                                back={this.back}
+                                next={() => {
+                                  if (tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER) {
+                                    this.updateSelectedOrderProperties({
+                                      orderQuantity: '',
+                                      orderPrice: '',
+                                    });
+                                  }
+                                  this.next();
+                                }}
                                 step={tutorialStep}
                                 totalSteps={totalSteps}
                                 text={TRADING_TUTORIAL_COPY[tutorialStep]}
@@ -911,7 +921,6 @@ export default class MarketView extends Component<
                                 <TutorialPopUp
                                   bottom
                                   next={this.next}
-                                  back={this.back}
                                   step={tutorialStep}
                                   totalSteps={totalSteps}
                                   text={TRADING_TUTORIAL_COPY[tutorialStep]}
@@ -954,7 +963,6 @@ export default class MarketView extends Component<
                           <TutorialPopUp
                             right
                             next={this.next}
-                            back={this.back}
                             step={tutorialStep}
                             totalSteps={totalSteps}
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
@@ -979,13 +987,15 @@ export default class MarketView extends Component<
                             toggle={this.toggleTradeHistory}
                             extend={extendTradeHistory}
                             hide={extendOrderBook}
+                            tradingTutorial={tradingTutorial}
+                            groupedTradeHistory={market.groupedTradeHistory}
                           />
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
-                <MarketComments marketId={marketId} networkId={networkId} />
+                {!tradingTutorial && <MarketComments marketId={marketId} networkId={networkId} />}
               </>
             )
           }

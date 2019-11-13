@@ -10,12 +10,9 @@ import {
   MARKET_REVIEW_SEEN,
   MODAL_MARKET_LOADING,
   TRADING_TUTORIAL,
-  TUTORIAL_QUANTITY,
-  TUTORIAL_PRICE,
   CATEGORICAL,
   TRADING_TUTORIAL_OUTCOMES,
-  BUY,
-  SELL,
+  TUTORIAL_ORDER_BOOK, TUTORIAL_TRADING_HISTORY
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -25,12 +22,9 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
-import { formatDai, formatShares } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
-import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
-import { getMarketAgeInDays } from 'utils/format-date';
+import { getMarketAgeInDays, formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -46,153 +40,11 @@ const mapStateToProps = (state, ownProps) => {
       numOutcomes:  4,
       defaultSelectedOutcomeId: 1,
       marketType: CATEGORICAL,
+      endTimeFormatted: convertUnixToFormattedDate(1668452763),
+      creationTimeFormatted: convertUnixToFormattedDate(1573585563),
       outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
-      orderBook: {
-        0: [
-          {
-            disappear: true,
-            avgPrice: formatDai(TUTORIAL_PRICE),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(TUTORIAL_PRICE),
-            outcomeId: 0,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[0].description,
-            price: TUTORIAL_PRICE.toString(),
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          },
-          {
-            disappear: false,
-            avgPrice: formatDai(.7),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(.7),
-            outcomeId: 0,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[0].description,
-            price: '.7',
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(.7),
-            type: SELL,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          }
-        ],
-        1: [
-          {
-            disappear: true,
-            avgPrice: formatDai(TUTORIAL_PRICE),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(TUTORIAL_PRICE),
-            outcomeId: 1,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
-            price: TUTORIAL_PRICE.toString(),
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          },
-          {
-            disappear: false,
-            avgPrice: formatDai(.5),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(.5),
-            outcomeId: 1,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[1].description,
-            price: '.5',
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(.5),
-            type: SELL,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          }
-        ],
-        2: [
-          {
-            disappear: true,
-            avgPrice: formatDai(TUTORIAL_PRICE),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(TUTORIAL_PRICE),
-            outcomeId: 2,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[2].description,
-            price: TUTORIAL_PRICE.toString(),
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          },
-          {
-            disappear: false,
-            avgPrice: formatDai(.5),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(.5),
-            outcomeId: 2,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[2].description,
-            price: '.5',
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(.5),
-            type: SELL,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          }
-        ],
-        3: [
-          {
-            disappear: true,
-            avgPrice: formatDai(TUTORIAL_PRICE),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(TUTORIAL_PRICE),
-            outcomeId: 3,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[3].description,
-            price: TUTORIAL_PRICE.toString(),
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(TUTORIAL_PRICE),
-            type: BUY,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          },
-          {
-            disappear: false,
-            avgPrice: formatDai(.6),
-            cumulativeShares: TUTORIAL_QUANTITY.toString(),
-            id: 1,
-            mySize: '0',
-            orderEstimate: createBigNumber(.6),
-            outcomeId: 3,
-            outcomeName: TRADING_TUTORIAL_OUTCOMES[3].description,
-            price: '.6',
-            quantity: TUTORIAL_QUANTITY.toString(),
-            shares: TUTORIAL_QUANTITY.toString(),
-            sharesEscrowed: formatShares(TUTORIAL_QUANTITY),
-            tokensEscrowed: formatDai(.6),
-            type: SELL,
-            unmatchedShares: formatShares(TUTORIAL_QUANTITY)
-          }
-        ]
-      }
+      groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
+      orderBook: TUTORIAL_ORDER_BOOK
     };
   } else {
     market = ownProps.market || selectMarket(marketId)

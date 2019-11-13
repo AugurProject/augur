@@ -86,13 +86,12 @@ export default class MarketOutcomesChartHighchart extends Component<
           gridLineWidth: 1,
           gridLineColor: null,
           labels: {
-            format: '{value:%b %d}',
             style: { fontSize: '9px' },
           },
           crosshair: {
             label: {
               enabled: true,
-              format: '{value:%b %d}',
+              format: '{value:%b %d %H:%M}',
             },
           },
         },
@@ -185,7 +184,7 @@ export default class MarketOutcomesChartHighchart extends Component<
 
     return {
       labels: {
-        format: interval.isEqualTo(mmSecondsInHour) ? hours : days,
+        // format: interval.isEqualTo(mmSecondsInHour) ? hours : days,
         style: null,
       },
       crosshair: {
@@ -194,6 +193,7 @@ export default class MarketOutcomesChartHighchart extends Component<
           enabled: true,
           shape: 'square',
           padding: 4,
+          format: '{value:%b %d %H:%M}',
         },
       },
     };
@@ -205,7 +205,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     selectedOutcomeId,
   ) {
     const { options } = this.state;
-    const { isScalar, scalarDenomination } = this.props;
+    const { isScalar, scalarDenomination, creationTime } = this.props;
     const { priceTimeSeries } = bucketedPriceTimeSeries;
 
     const highestLength = Object.keys(priceTimeSeries).reduce(

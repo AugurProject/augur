@@ -11,7 +11,8 @@ import {
   ZeroXSimulateTradeData,
   BrowserMesh,
   EmptyConnector,
-  HotLoadMarketInfo
+  HotLoadMarketInfo,
+  DisputeWindow
 } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -642,5 +643,12 @@ export class ContractAPI {
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
     return await this.augur.hotLoading.getMarketDataParams({market});
+  }
+
+  async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
+    return await this.augur.hotLoading.getCurrentDisputeWindowData({
+      augur: this.augur.contracts.augur.address,
+      universe: this.augur.contracts.universe.address,
+    });
   }
 }

@@ -1,5 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
+@keyframes fadeinout {
+  100% { opacity: 1; }
+}
+
 .TutorialPopUp {
   position: absolute;
   bottom: 0;
@@ -12,10 +16,12 @@
   max-width: 300px;
   height: fit-content;
   border: 1px solid fade(@color-outline, 50%);
+  animation: fadeinout 0.5s linear forwards;
+  opacity: 0;
 
   > div {
     position: relative;
-    padding: @size-20 @size-12 @size-12;
+    padding: @size-16 @size-12 @size-12;
     display: flex;
     flex-direction: column;
 
@@ -31,7 +37,7 @@
 
       color: @color-secondary-text;
       line-height: 140%;
-      margin-bottom: @size-12;
+      margin-bottom: @size-16;
 
       > a {
         margin-left: @size-3;
@@ -39,15 +45,20 @@
       }
     }
 
-    > div {
+    > div:nth-last-child(2) {
+      margin-bottom: @size-12;
+    }
+
+    > div:last-of-type {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
 
       > span {
         .mono-9-bold;
 
         color: @color-secondary-text;
+        line-height: @size-12;
 
         > span {
           color: @color-primary-text;
@@ -55,14 +66,8 @@
         }
       }
 
-      &:nth-last-child(2) {
-        margin-bottom: @size-12;
-      }
-
-      &:last-of-type {
-        > div {
-            width: @size-32;
-        }
+      > div {
+          width: @size-32;
       }
     }
 
@@ -169,4 +174,8 @@
       }
     }
   }
+}
+
+.Lighten {
+  color: @color-primary-text !important;
 }

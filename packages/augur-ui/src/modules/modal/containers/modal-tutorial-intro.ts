@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   largeHeader: 'Welcome to our test market',
+  condensed: true,
   smallHeader: "Here we're going to take you through each step of placing a trade on Augur. You can exit this walkthrough at any time and access it again via the help menu",
   buttons: [
     {

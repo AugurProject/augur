@@ -241,6 +241,7 @@ export class MarketDB extends DerivedDB {
 
   private processMarketCreated(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.PreReporting;
+    log['finalized'] = false;
     log['invalidFilter'] = false;
     log['marketOI'] = '0x00';
     log['volume'] = '0x00';
@@ -289,6 +290,7 @@ export class MarketDB extends DerivedDB {
     log['reportingState'] = MarketReportingState.Finalized;
     log['finalizationBlockNumber'] = log['blockNumber'];
     log['finalizationTime'] = log['timestamp'];
+    log['finalized'] = true;
     return log;
   }
 

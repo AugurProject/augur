@@ -251,14 +251,18 @@ contract Universe is IUniverse {
     function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public returns (IDisputeWindow) {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
-            uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
-            uint256 _buffer = Reporting.getDisputeWindowBufferSeconds();
-            uint256 _startTime = _timestamp.sub(_buffer).div(_duration).mul(_duration).add(_buffer);
+            (uint256 _startTime, uint256 _duration) = getDisputeWindowStartTimeAndDuration(_timestamp, _initial);
             IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, _windowId, _duration, _startTime, !_initial);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);
         }
         return disputeWindows[_windowId];
+    }
+
+    function getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial) public view returns (uint256 _startTime, uint256 _duration) {
+        _duration = getDisputeRoundDurationInSeconds(_initial);
+        uint256 _buffer = Reporting.getDisputeWindowBufferSeconds();
+        _startTime = _timestamp.sub(_buffer).div(_duration).mul(_duration).add(_buffer);
     }
 
     /**

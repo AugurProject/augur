@@ -66,9 +66,9 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
     this.buidOptions(data);
   }
 
-  UNSAFE_componentWillUpdate(nextProps: ChartProps) {
-    if (JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data)) {
-      this.buidOptions(nextProps.data);
+  componentDidUpdate(prevProps: ChartProps) {
+    if (JSON.stringify(this.props.data) !== JSON.stringify(prevProps.data)) {
+      this.buidOptions(this.props.data);
     }
   }
 

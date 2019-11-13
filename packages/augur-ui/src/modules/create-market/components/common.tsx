@@ -54,8 +54,7 @@ import {
   DismissableNotice,
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
-import { NameValuePair } from 'modules/portfolio/types';
-import { SquareDropdown } from 'modules/common/selection';
+import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 
 export interface HeaderProps {
   text: string;
@@ -182,6 +181,16 @@ export const SmallSubheaders = (props: SubheadersProps) => (
     <h1>{props.header}</h1>
     {props.renderMarkdown && <MarkdownRenderer text={props.subheader} />}
     {!props.renderMarkdown && <span>{props.subheader}</span>}
+  </div>
+);
+
+interface PreviewMarketTitleHeaderProps {
+  market: NewMarket;
+}
+export const PreviewMarketTitleHeader = (props: PreviewMarketTitleHeaderProps) => (
+  <div className={Styles.SmallSubheaders}>
+    <h1>Market Question</h1>
+    <PreviewMarketTitle market={props.market} />
   </div>
 );
 
@@ -567,6 +576,7 @@ export const NumberedInput = ({
         {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
           <span>{errorMessage}</span>
         )}
+        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
       </>
     )}
   </li>
@@ -582,15 +592,17 @@ export class NumberedList extends Component<
     isMin: this.props.initialList.length === this.props.minShown,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(props, state) {
     if (
-      JSON.stringify(this.props.initialList) !==
-      JSON.stringify(nextProps.initialList)
+      JSON.stringify(props.initialList) !==
+      JSON.stringify(state.list)
     ) {
-      this.setState({
-        list: nextProps.initialList,
-      });
-    }
+      return {
+        list: props.initialList
+      };
+    };
+
+    return null;
   }
 
   onChange = (value, index) => {

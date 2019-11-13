@@ -9,7 +9,6 @@ import {
 import {
   AccountAddressDisplay,
   FundsHelp,
-  DaiEthSelector,
 } from 'modules/modal/common';
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
@@ -25,7 +24,6 @@ interface AddFundsProps {
   closeAction: Function;
   address: string;
   accountMeta: LoginAccount['meta'];
-  isGnosis: boolean;
   autoSelect?: boolean;
   fundType: string;
 }
@@ -59,7 +57,6 @@ export const AddFunds = ({
   closeAction,
   accountMeta,
   address,
-  isGnosis = false,
   autoSelect = false,
   fundType = DAI,
 }: AddFundsProps) => {
@@ -72,7 +69,7 @@ export const AddFunds = ({
   }
 
   const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelection : null);
-  const [daiSelected, setDaiSelected] = useState(true);
+  const fundTypeLabel = fundType === DAI ? 'DAI ($)' : 'REP';
 
   const FUND_OTPIONS = [
     // TODO build uniswap component
@@ -141,26 +138,18 @@ export const AddFunds = ({
               <h1>Credit/debit card</h1>
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
                 <h2>
-                  Add up to $250 worth of DAI {generateDaiTooltip()} instantly
+                  Add up to $250 worth of {fundTypeLabel} {generateDaiTooltip()} instantly
                 </h2>
               )}
               {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-                <h2>Add DAI {generateDaiTooltip()} instantly</h2>
-              )}
-
-              {!isGnosis && <h3>Asset to buy</h3>}
-              {!isGnosis && (
-                <DaiEthSelector
-                  handleClick={isSelected => setDaiSelected(isSelected)}
-                  daiSelected={daiSelected}
-                />
+              <h2>Add {fundTypeLabel} {generateDaiTooltip()} instantly</h2>
               )}
 
               <h3>Amount</h3>
               <TextInput
                 placeholder='0'
                 onChange={noop}
-                innerLabel={daiSelected ? 'DAI' : 'ETH'}
+                innerLabel={'DAI'}
               />
 
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -197,7 +186,7 @@ export const AddFunds = ({
             <>
               <h1>Coinbase</h1>
               <h2>
-                Add up to $25,000 worth of {fundType} {fundType === DAI ? <>($) {generateDaiTooltip()}</> : ''} using
+                Add up to $25,000 worth of {fundType === DAI ? <>{fundTypeLabel} {generateDaiTooltip()}</> : fundType} using
                 a Coinbase account
               </h2>
               <ol>
@@ -207,8 +196,8 @@ export const AddFunds = ({
                     www.coinbase.com
                   </a>
                 </li>
-                <li>Buy the cryptocurrency {fundType}</li>
-                <li>Send the {fundType} to your account address</li>
+                <li>Buy the cryptocurrency {fundTypeLabel}</li>
+                <li>Send the {fundTypeLabel} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
               <AccountAddressDisplay copyable address={address} />
@@ -225,19 +214,19 @@ export const AddFunds = ({
                   Buy{' '}
                   {fundType === DAI ? (
                     <>
-                      {fundType} {generateDaiTooltip()}
+                      {fundTypeLabel} {generateDaiTooltip()}
                     </>
                   ) : (
-                    fundType
+                    fundTypeLabel
                   )}{' '}
                   using any external service
                 </li>
-                <li>Transfer the {fundType} to your account address</li>
+                <li>Transfer the {fundTypeLabel} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
               <AccountAddressDisplay copyable address={address} />
               <ExternalLinkButton
-                label={`popular services for buying ${fundType}`}
+                label={`popular services for buying ${fundTypeLabel}`}
               />
             </>
           )}

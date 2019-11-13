@@ -2,18 +2,29 @@ import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
 import { augurEmitter } from '../events';
 import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
-import { Address, MarketTypeName, ExtraInfoTemplate } from "../state/logs/types";
+import { Address, MarketTypeName } from "../state/logs/types";
 import { MarketInfoOutcome } from "../state/getter/Markets";
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import {
-    convertOnChainAmountToDisplayAmount,
     convertOnChainPriceToDisplayPrice,
     marketTypeToName,
     numTicksToTickSize,
     QUINTILLION
   } from "../index";
-  import { calculatePayoutNumeratorsValue, getOutcomeValue, PayoutNumeratorValue } from "../utils";
+  import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from "../utils";
 
+export interface GetDisputeWindowParams {
+  augur: Address;
+  universe: Address;
+}
 
+export interface DisputeWindow {
+    address: Address;
+    startTime: number;
+    endTime: number;
+    purchased: string;
+    fees: string;
+}
 
 export interface GetMarketDataParams {
   market: string;
@@ -183,5 +194,16 @@ export class HotLoading {
 
     augurEmitter.emit(SubscriptionEventName.MarketsUpdated, { marketsInfo });
     return marketsInfo;
+  }
+
+  async getCurrentDisputeWindowData(params: GetDisputeWindowParams): Promise<DisputeWindow> {
+    const disputeWindowData = await this.augur.contracts.hotLoading.getCurrentDisputeWindowData_(params.augur, params.universe);
+    return {
+      address: disputeWindowData[0] == "0x0000000000000000000000000000000000000000" ? "" : disputeWindowData[0],
+		  startTime: disputeWindowData[1].toNumber(),
+		  endTime: disputeWindowData[2].toNumber(),
+		  purchased: disputeWindowData[3].toString(),
+		  fees: disputeWindowData[4].toString()
+    }
   }
 }

@@ -195,81 +195,93 @@ export class Users {
       );
     }
 
-    const userTradeHistory = await Trading.getTradingHistory(augur, db, {
-      account: params.account,
-      universe: params.universe,
-      ignoreReportingStates: [MarketReportingState.Finalized]
-    });
-
-    const uniqMarketIds = Object.keys(userTradeHistory);
-    let marketTradeHistory = {};
-    if (uniqMarketIds.length > 0) {
-      marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
-    }
-
-    const userOpenOrders = await Trading.getOrders(augur, db, {
-      account: params.account,
-      universe: params.universe,
-      orderState: OrderState.OPEN,
-    });
-
-    const marketList = await Markets.getMarkets(augur, db, {
-      creator: params.account,
-      universe: params.universe,
-    });
-
-    // user created markets are included, REP staked as no-show bond
-    const userStakedRep: AccountReportingHistory = await Accounts.getAccountRepStakeSummary(augur, db, {
-      account: params.account,
-      universe: params.universe,
-    })
-
-    const stakedRepMarketIds = [];
-    if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0)
-    userStakedRep.reporting.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
-    if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
-    userStakedRep.disputing.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
-
-
-    const positions = await Users.getProfitLossSummary(augur, db, {
-      account: params.account,
-      universe: params.universe,
-    })
-
     let userPositionTotals = null;
-    if (positions && Object.keys(positions).length > 0) {
-      userPositionTotals = {
-        totalFrozenFunds: positions[30].frozenFunds,
-        tradingPositionsTotal: {
-          unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
-        },
-      };
+    let marketTradeHistory = null;
+    let marketsInfo = null;
+    let marketList = null;
+    let userTradeHistory = null;
+    let userOpenOrders = null;
+    let userPositions: UserTradingPositions = null;
+    let userStakedRep: AccountReportingHistory = null;
+    try {
+      userTradeHistory = await Trading.getTradingHistory(augur, db, {
+        account: params.account,
+        universe: params.universe,
+        filterFinalized: true
+      });
+
+      const uniqMarketIds = Object.keys(userTradeHistory);
+
+      if (uniqMarketIds.length > 0) {
+        marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
+      }
+
+      userOpenOrders = await Trading.getOrders(augur, db, {
+        account: params.account,
+        universe: params.universe,
+        orderState: OrderState.OPEN,
+      });
+
+      marketList = await Markets.getMarkets(augur, db, {
+        creator: params.account,
+        universe: params.universe,
+      });
+
+      // user created markets are included, REP staked as no-show bond
+      userStakedRep = await Accounts.getAccountRepStakeSummary(augur, db, {
+        account: params.account,
+        universe: params.universe,
+      })
+
+      const stakedRepMarketIds = [];
+      if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0)
+      userStakedRep.reporting.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
+      if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
+      userStakedRep.disputing.contracts.map(c => [...stakedRepMarketIds, c.marketId]);
+
+
+      const positions = await Users.getProfitLossSummary(augur, db, {
+        account: params.account,
+        universe: params.universe,
+      })
+
+      if (positions && Object.keys(positions).length > 0) {
+        userPositionTotals = {
+          totalFrozenFunds: positions[30].frozenFunds,
+          tradingPositionsTotal: {
+            unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
+          },
+        };
+      }
+
+      userPositions = await Users.getUserTradingPositions(augur, db, {
+        account: params.account,
+        universe: params.universe,
+      })
+
+      const userPositionsMarketIds: string[] = Array.from(
+        new Set([
+          ...userPositions.tradingPositions.reduce(
+            (p, position) => [...p, position.marketId],
+            []
+          ),
+        ])
+      );
+
+      const userOpenOrdersMarketIds = Object.keys(userOpenOrders);
+      const marketIds: string[] = Array.from(
+        new Set(
+          ...uniqMarketIds,
+          ...userOpenOrdersMarketIds,
+          ...stakedRepMarketIds,
+          ...userPositionsMarketIds,
+        )
+      );
+      marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
+
+    } catch(e) {
+      console.error(e);
     }
-
-    const userPositions = await Users.getUserTradingPositions(augur, db, {
-      account: params.account,
-      universe: params.universe,
-    })
-
-    const userPositionsMarketIds: string[] = Array.from(
-      new Set([
-        ...userPositions.tradingPositions.reduce(
-          (p, position) => [...p, position.marketId],
-          []
-        ),
-      ])
-    );
-
-    const userOpenOrdersMarketIds = Object.keys(userOpenOrders);
-    const marketIds: string[] = Array.from(
-      new Set(
-        ...uniqMarketIds,
-        ...userOpenOrdersMarketIds,
-        ...stakedRepMarketIds,
-        ...userPositionsMarketIds,
-      )
-    );
-    const marketsInfo = await Markets.getMarketsInfo(augur, db, { marketIds });
     return {
       userTradeHistory,
       marketTradeHistory,
@@ -585,8 +597,6 @@ try {
       }
     );
 
-    // TODO add raw token balances that have no PL data for third party client integration to work ok.
-
     tradingPositions = _.flatten(
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
@@ -676,7 +686,14 @@ try {
       },
       new BigNumber(0)
     );
-    // TODO add market validity bond to total. Need to send a log for this since it is variable over time.
+
+    const ownedMarketsResponse = await db.findMarkets({ selector: {
+      marketCreator: params.account,
+      finalized: false,
+    }});
+    const ownedMarkets = _.map(ownedMarketsResponse, "market");
+    const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(ownedMarkets);
+    frozenFundsTotal = frozenFundsTotal.plus(totalValidityBonds);
 
     const universe = params.universe
       ? params.universe
@@ -692,7 +709,7 @@ try {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
       frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
-      unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
+      unrealizedRevenue24hChangePercent: profitLossSummary && profitLossSummary[1].unrealizedPercent || "0",
     };
 
   }
@@ -852,48 +869,51 @@ try {
     const result: NumericDictionary<MarketTradingPosition> = {};
     const now = await augur.contracts.augur.getTimestamp_();
     const endTime = params.endTime || now.toNumber();
-    for (const days of [1, 30]) {
-      const periodInterval = days * 60 * 60 * 24;
-      const startTime = endTime - periodInterval;
+    try {
+      for (const days of [1, 30]) {
+        const periodInterval = days * 60 * 60 * 24;
+        const startTime = endTime - periodInterval;
 
-      const [startProfit, endProfit, ...rest] = await Users.getProfitLoss(
-        augur,
-        db,
-        {
-          universe: params.universe,
-          account: params.account,
-          startTime,
-          endTime,
-          periodInterval,
-        }
-      );
-
-      if (rest.length !== 0) {
-        throw new Error(
-          'PL calculation in summary returning more thant two bucket'
+        const [startProfit, endProfit, ...rest] = await Users.getProfitLoss(
+          augur,
+          db,
+          {
+            universe: params.universe,
+            account: params.account,
+            startTime,
+            endTime,
+            periodInterval,
+          }
         );
+
+        if (rest.length !== 0) {
+          throw new Error(
+            'PL calculation in summary returning more thant two bucket'
+          );
+        }
+
+        const negativeStartProfit: MarketTradingPosition = {
+          timestamp: startProfit.timestamp,
+          realized: new BigNumber(startProfit.realized).negated().toFixed(),
+          unrealized: new BigNumber(startProfit.unrealized).negated().toFixed(),
+          frozenFunds: '0',
+          marketId: '',
+          total: '0',
+          unrealizedCost: '0',
+          realizedCost: '0',
+          totalCost: '0',
+          realizedPercent: '0',
+          unrealizedPercent: '0',
+          totalPercent: '0',
+          currentValue: '0',
+          userSharesBalances: {}
+        };
+
+        result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
       }
-
-      const negativeStartProfit: MarketTradingPosition = {
-        timestamp: startProfit.timestamp,
-        realized: new BigNumber(startProfit.realized).negated().toFixed(),
-        unrealized: new BigNumber(startProfit.unrealized).negated().toFixed(),
-        frozenFunds: '0',
-        marketId: '',
-        total: '0',
-        unrealizedCost: '0',
-        realizedCost: '0',
-        totalCost: '0',
-        realizedPercent: '0',
-        unrealizedPercent: '0',
-        totalPercent: '0',
-        currentValue: '0',
-        userSharesBalances: {}
-      };
-
-      result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
+    } catch(e) {
+      console.error(e);
     }
-
     return result;
   }
 }
