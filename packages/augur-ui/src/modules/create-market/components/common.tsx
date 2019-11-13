@@ -54,8 +54,6 @@ import {
   DismissableNotice,
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
-import { NameValuePair } from 'modules/portfolio/types';
-import { SquareDropdown } from 'modules/common/selection';
 
 export interface HeaderProps {
   text: string;
