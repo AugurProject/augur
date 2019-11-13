@@ -201,23 +201,9 @@ export class Gnosis {
     const gnosisSafeRegistryAddress = this.augur.contracts.gnosisSafeRegistry
       .address;
 
-    const setupData = await this.buildGnosisSetupData(
+    const gnosisSafeData = await this.buildGnosisSetupData(
       params.owner,
       params.payment
-    );
-    const gnosisSafeData = await this.provider.encodeContractFunction(
-      'GnosisSafe',
-      'setup',
-      [
-        [params.owner],
-        1,
-        gnosisSafeRegistryAddress,
-        setupData,
-        NULL_ADDRESS,
-        params.paymentToken,
-        new BigNumber(params.payment),
-        NULL_ADDRESS,
-      ]
     );
 
     // This _could_ be made into a constant if this ends up being a problem in any way
