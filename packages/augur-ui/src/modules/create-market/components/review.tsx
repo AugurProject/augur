@@ -12,7 +12,8 @@ import {
   OutcomesList,
   SmallSubheadersTooltip,
   NoFundsErrors,
-  DateTimeHeaders
+  DateTimeHeaders,
+  PreviewMarketTitleHeader
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -254,7 +255,8 @@ export default class Review extends React.Component<
           <SmallSubheaders header="Primary Category" subheader={categories[0]} />
           <SmallSubheaders header="Secondary category" subheader={categories[1]} />
           <SmallSubheaders header="Sub category" subheader={categories[2] === "" ? "–" : categories[2]} />
-          <SmallSubheaders header="Market Question" subheader={description} />
+          <PreviewMarketTitleHeader market={newMarket} />
+
           {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
