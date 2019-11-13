@@ -15,6 +15,7 @@ import {
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatShares, formatDai } from 'utils/format-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -1144,4 +1145,79 @@ export const REPORTING_GUIDE = {
   content: [],
   learnMoreButtonText: 'Learn more about reporting',
   closeButtonText: 'Close'
+};
+
+function createOrder(disappear, price, quantity, id, outcomeId, type) {
+  return {
+    disappear,
+    avgPrice: formatDai(price),
+    cumulativeShares: quantity.toString(),
+    id,
+    mySize: '0',
+    orderEstimate: createBigNumber(price),
+    outcomeId,
+    outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
+    price: price.toString(),
+    quantity: quantity.toString(),
+    shares: quantity.toString(),
+    sharesEscrowed: formatShares(quantity),
+    tokensEscrowed: formatDai(price),
+    type,
+    unmatchedShares: formatShares(quantity),
+  };
+}
+
+function createOutcomeOrders(outcomeId) {
+  return [
+    createOrder(true, TUTORIAL_PRICE, TUTORIAL_QUANTITY, 0, outcomeId, SELL),
+    createOrder(false, .5, 150, 1, outcomeId, SELL),
+    createOrder(false, .6, 200, 2, outcomeId, SELL),
+    createOrder(false, .3, 100, 3, outcomeId, BUY),
+    createOrder(false, .2, 150, 4, outcomeId, BUY),
+    createOrder(false, .1, 200, 5, outcomeId, BUY),
+  ]
+}
+
+export const TUTORIAL_ORDER_BOOK = {
+  0: createOutcomeOrders(0),
+  1: createOutcomeOrders(1),
+  2: createOutcomeOrders(2),
+  3: createOutcomeOrders(3),
+};
+
+function createTrade(date, amount, key, price, time, type) {
+  return {
+    date,
+    amount: createBigNumber(amount),
+    key,
+    price: createBigNumber(price),
+    time,
+    type,
+  };
+}
+
+export const TUTORIAL_TRADING_HISTORY = {
+  '21Nov 2019': [
+    createTrade('21Nov 2019', 100, '1', 0.5, '19:56:22', BUY),
+    createTrade('21Nov 2019', 81, '2', 0.4, '19:55:21', BUY),
+    createTrade('20Nov 2019', 56, '3', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 16, '4', 0.24, '11:45:11', SELL),
+  ],
+  '22Nov 2019': [
+    createTrade('22Nov 2019', 40, '1', 0.5, '13:50:32', BUY),
+    createTrade('22Nov 2019', 88, '2', 0.4, '02:11:01', SELL),
+    createTrade('20Nov 2019', 78, '3', 0.12, '01:35:21', SELL),
+  ],
+  '25Nov 2019': [
+    createTrade('25Nov 2019', 22, '1', 0.5, '11:50:18', SELL),
+    createTrade('25Nov 2019', 35, '2', 0.4, '06:44:05', BUY),
+    createTrade('20Nov 2019', 44, '3', 0.3, '01:35:21', BUY),
+  ],
+  '20Nov 2019': [
+    createTrade('20Nov 2019', 102, '1', 0.1, '16:50:22', SELL),
+    createTrade('20Nov 2019', 56, '2', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 44, '3', 0.3, '12:34:21', BUY),
+    createTrade('20Nov 2019', 12, '4', 0.45, '02:35:21', SELL),
+    createTrade('20Nov 2019', 78, '6', 0.12, '02:23:21', SELL),
+  ],
 };

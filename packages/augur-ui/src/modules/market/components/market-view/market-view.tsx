@@ -994,7 +994,7 @@ export default class MarketView extends Component<
                     </div>
                   </div>
                 </div>
-                <MarketComments marketId={marketId} networkId={networkId} />
+                {!tradingTutorial && <MarketComments marketId={marketId} networkId={networkId} />}
               </>
             )
           }
