@@ -1439,7 +1439,7 @@ const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, err
           staticLabel={'Select Value'}
           onChange={value => onChange(value)}
           options={list}
-          errorMessage={errorMessage[number]}
+          errorMessage={errorMessage && errorMessage[number]}
         />
       </div>
       <SecondaryButton
