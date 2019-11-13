@@ -58,8 +58,6 @@ describe('Gnosis :: ', () => {
   });
 
   describe('getOrCreateGnosisSafe method', () => {
-    const safe = '0xDEADBEEF';
-
     test('should return wallet address if it exists', async done => {
       john.augur
         .getAugurEventEmitter()
@@ -113,7 +111,6 @@ describe('Gnosis :: ', () => {
           safe: expect.stringContaining('0x'),
           owner: john.account.publicKey,
           payment: expect.stringContaining('0x'),
-
         })
       );
     });
@@ -124,7 +121,6 @@ describe('Gnosis :: ', () => {
       john.augur.contracts.cash.address
     );
 
-    // This are random values used to create a relay request on the mainnet relay.
     const calculateGnosisSafeAddressParams: CalculateGnosisSafeAddressParams = {
       owner: john.account.publicKey,
       paymentToken: safe.paymentToken,

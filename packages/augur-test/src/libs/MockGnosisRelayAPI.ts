@@ -25,7 +25,6 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
   // If we ever need to have multiple inflight safe creation txs this should become an mapping.
   private currentTxHash: string | null;
   private currentCreateSafeResponse: SafeResponse | null;
-  private currentCreateSafeData: CreateSafeData | null;
 
   constructor(private payer: ContractAPI) {
     this.payer.provider.storeAbiData(abi.GnosisSafe as Abi, 'ProxyFactory');
@@ -89,7 +88,6 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
         )
         .toString('hex');
 
-    this.currentCreateSafeData = createSafeTx;
     this.currentCreateSafeResponse = {
       safe,
       setupData: gnosisSafeData,
