@@ -916,18 +916,18 @@ export enum PAGINATION_VIEW_OPTIONS {
 export enum TRADING_TUTORIAL_STEPS {
   INTRO_MODAL = 0,
   MARKET_DETAILS = 1,
-  //MARKET_DATA = 2,
-  BUYING_SHARES = 2,
-  SELECT_OUTCOME = 3,
-  QUANTITY = 4,
-  LIMIT_PRICE = 5,
-  ORDER_VALUE = 6,
-  ORDER_BOOK = 7,
-  PLACE_ORDER = 8,
-  OPEN_ORDERS = 9,
-  MY_FILLS = 10,
-  POSITIONS = 11,
-  OUTRO_MODAL = 12,
+  MARKET_DATA = 2,
+  BUYING_SHARES = 3,
+  SELECT_OUTCOME = 4,
+  QUANTITY = 5,
+  LIMIT_PRICE = 6,
+  ORDER_VALUE = 7,
+  ORDER_BOOK = 8,
+  PLACE_ORDER = 9,
+  OPEN_ORDERS = 10,
+  MY_FILLS = 11,
+  POSITIONS = 12,
+  OUTRO_MODAL = 13,
 }
 
 export const TRADING_TUTORIAL_COPY = {
@@ -939,6 +939,15 @@ export const TRADING_TUTORIAL_COPY = {
           "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
         link: 'https://www.docs.augur.net',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.MARKET_DATA]: {
+    title: 'Market Data',
+    subheader: [
+      {
+        text:
+          "Here you can get an idea of the market's trading volume (how much has changed hands) and open interest (sum of trades matched). Make sure that the event expiration leaves time for the outcome to be made known and that you're comfortable with the market's fees.",
       },
     ],
   },
@@ -976,6 +985,7 @@ export const TRADING_TUTORIAL_COPY = {
       },
       {
         text: 'Please enter a quantity of 100.',
+        lighten: true
       },
     ],
   },
@@ -989,7 +999,8 @@ export const TRADING_TUTORIAL_COPY = {
         text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
       },
       {
-        text: 'Enter a limit price of $.40.'
+        text: 'Enter a limit price of $.40.',
+        lighten: true
       }
     ],
   },
@@ -1008,8 +1019,12 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Place your order',
     subheader: [
       {
-        text: "Review your order and if everything looks correct then go ahead and click the 'Place Buy Order' button.",
+        text: "Review your order and make sure everything looks correct.",
       },
+      {
+        text: "Now go ahead and press the 'Place Buy Order' button or click next.",
+        lighten: true,
+      }
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {

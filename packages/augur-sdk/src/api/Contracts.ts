@@ -27,6 +27,7 @@ export class Contracts {
   cashFaucet: ContractInterfaces.CashFaucet;
   gnosisSafeRegistry: ContractInterfaces.GnosisSafeRegistry;
   hotLoading: ContractInterfaces.HotLoading;
+  zeroXExchange: ContractInterfaces.Exchange;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -54,6 +55,7 @@ export class Contracts {
     this.cashFaucet = new ContractInterfaces.CashFaucet(dependencies, addresses.CashFaucet);
     this.gnosisSafeRegistry = new ContractInterfaces.GnosisSafeRegistry(dependencies, addresses.GnosisSafeRegistry);
     this.hotLoading = new ContractInterfaces.HotLoading(dependencies, addresses.HotLoading);
+    this.zeroXExchange = new ContractInterfaces.Exchange(dependencies, addresses.Exchange);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);

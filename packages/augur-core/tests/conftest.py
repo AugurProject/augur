@@ -356,6 +356,8 @@ class ContractsFixture:
             if "TEST" in dependencyPath:
                 dependencyPath = path.join(BASE_PATH, self.relativeTestContractsPath, match).replace("TEST/", "")
             if not path.isfile(dependencyPath):
+                print("BAD DEPS for", filePath)
+                print("BAD DEPS is", dependencyPath)
                 raise Exception("Could not resolve dependency file path: %s" % dependencyPath)
             if not dependencyPath in knownDependencies:
                 self.getAllDependencies(dependencyPath, knownDependencies)
@@ -452,6 +454,7 @@ class ContractsFixture:
             # skip the legacy reputation directory since it is unnecessary and we don't support uploads of contracts with constructors yet
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
+            if '0x' in directory: continue # uploaded separately
             if 'uniswap' in directory: continue
             for filename in filenames:
                 name = path.splitext(filename)[0]
@@ -488,6 +491,32 @@ class ContractsFixture:
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Time'].address])
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
+
+    def upload0xContracts(self):
+        chainId = 123456
+        contractSetups = [
+            ("ERC20Proxy", "asset-proxy/contracts/src/ERC20Proxy", []),
+            ("ERC721Proxy", "asset-proxy/contracts/src/ERC721Proxy", []),
+            ("ERC1155Proxy", "asset-proxy/contracts/src/ERC1155Proxy", []),
+            ("ZeroXExchange", "exchange/contracts/src/Exchange", [chainId]),
+            ("ZeroXCoordinator", "coordinator/contracts/src/Coordinator", ["EXCHANGE", chainId]),
+            ("CoordinatorRegistry", "coordinator/contracts/src/registry/CoordinatorRegistry", []),
+            ("DevUtils", "dev-utils/contracts/src/DevUtils", ["EXCHANGE"]),
+            ("WETH9", "erc20/contracts/src/WETH9", []),
+            ("ZRXToken", "erc20/contracts/src/ZRXToken", []),
+        ]
+        zeroXContracts = dict()
+        for alias, filename, constructorArgs in contractSetups:
+            if constructorArgs and constructorArgs[0] == "EXCHANGE":
+                constructorArgs[0] = zeroXContracts["ZeroXExchange"]
+            contract = self.upload("../source/contracts/0x/{}.sol".format(filename), constructorArgs=constructorArgs)
+            zeroXContracts[alias] = contract.address
+            self.contracts[alias] = contract
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC1155Proxy"])
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC20Proxy"])
+        self.contracts["ERC1155Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        return zeroXContracts
 
     def uploadUniswapContracts(self):
         resolvedUniswapPath = resolveRelativePath("../source/contracts/uniswap/UniswapV2.sol")
@@ -646,6 +675,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAugurTrading()
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
+    fixture.upload0xContracts()
     fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.doAugurTradingApprovals()

@@ -58,13 +58,22 @@ export interface ContractAddresses {
     TimeControlled?: string;
     GnosisSafe?: string;
     ProxyFactory?: string;
-    ZeroXTrade?: string;
-    ZeroXExchange?: string;
     BuyParticipationTokens?: string;
     RedeemStake?: string;
     CashFaucet?: string;
     GnosisSafeRegistry?: string;
     HotLoading?: string;
+    ZeroXTrade?: string;
+    // 0x
+    //   The 0x contract names must be what 0x mesh expects.
+    ERC20Proxy?: string;
+    ERC721Proxy?: string;
+    ERC1155Proxy?: string;
+    Exchange?: string; // ZeroXExchange
+    Coordinator?: string; // ZeroXCoordinator
+    DevUtils?: string;
+    WETH9?: string;
+    ZRXToken?: string;
 }
 
 export interface AllContractAddresses {[networkId: string]: ContractAddresses}

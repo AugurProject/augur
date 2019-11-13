@@ -256,8 +256,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             totalCost: formatNumber(totalCost),
             numShares: order.orderQuantity,
             shareCost: formatNumber(0),
-            potentialDaiLoss: formatNumber(0),
-            potentialDaiProfit: formatNumber(0),
+            potentialDaiLoss: formatNumber(40),
+            potentialDaiProfit: formatNumber(60),
             side: order.selectedNav,
           };
 
@@ -266,7 +266,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               ...this.state,
               ...order,
               orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-              orderEscrowdDai: '',
+              orderEscrowdDai: totalCost ? formattedValue.roundedValue.toString() : '',
               gasCostEst: '',
               trade: trade,
             },
@@ -501,6 +501,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              tradingTutorial={tradingTutorial}
               currentTimestamp={currentTimestamp}
               orderBook={orderBook}
               marketType={marketType}

@@ -13,6 +13,7 @@ import { signatureUtils } from '@0x/order-utils';
 import { Web3ProviderEngine } from '@0x/subproviders';
 import { SignerSubprovider } from "../zeroX/SignerSubprovider";
 import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
+import { formatBytes32String } from "ethers/utils";
 
 export enum Verbosity {
   Panic = 0,
@@ -90,6 +91,8 @@ export interface ZeroXTradeOrder {
   salt: BigNumber;
   makerAssetData: string;
   takerAssetData: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
 }
 
 export interface MatchingOrders {
@@ -200,7 +203,7 @@ export class ZeroX {
       new BigNumber(params.outcome),
       params.kycToken,
       params.expirationTime,
-      this.augur.addresses.ZeroXExchange,
+      this.augur.addresses.Exchange,
       salt
     );
     const signedOrder: any[] = result[0];
@@ -220,6 +223,8 @@ export class ZeroX {
       salt: new BigNumber(signedOrder[9]._hex),
       makerAssetData: signedOrder[10],
       takerAssetData: signedOrder[11],
+      makerFeeAssetData: signedOrder[12],
+      takerFeeAssetData: signedOrder[13],
       signature,
       exchangeAddress: NULL_ADDRESS,
       orderHash
@@ -323,6 +328,8 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
+        makerFeeAssetData: "0x",
+        takerFeeAssetData: "0x",
       };
     })
 

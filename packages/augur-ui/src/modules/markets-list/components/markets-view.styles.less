@@ -1,6 +1,13 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketsView {
+  max-width: 1136px;
+  margin: auto;
+
+  @media @breakpoint-mobile {
+    margin: unset;
+  }
+
   > div:first-of-type {
     display: flex;
     align-items: center;

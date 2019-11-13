@@ -16,7 +16,7 @@ export const loadAccountOpenOrders = (
     universe: universe.id,
     account: loginAccount.address,
     orderState: OPEN,
-    ignoreReportingStates: [REPORTING_STATE.FINALIZED]
+    filterFinalized: true
   });
   if (marketIdAggregator) marketIdAggregator(Object.keys(orders));
   dispatch(updateUserOpenOrders(orders));
