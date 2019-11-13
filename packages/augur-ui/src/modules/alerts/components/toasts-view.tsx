@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import Alert from 'modules/alerts/components/alert';
 
 import Styles from 'modules/alerts/components/toasts-view.styles.less';
+import classNames from 'classnames';
 
 interface ToastsViewProps {
   toasts: Array<any>;
   removeAlert: Function;
   toggleAlerts: Function;
   updateExistingAlert: Function;
+  onTradingTutorial?: boolean;
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
@@ -28,13 +30,13 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
   }
 
   render() {
-    const { removeAlert, toggleAlerts, toasts } = this.props;
+    const { removeAlert, toggleAlerts, toasts, onTradingTutorial } = this.props;
 
     const toast = toasts[0];
     if (!toast) return null;
 
     return (
-      <div className={Styles.ToastsView}>
+      <div className={classNames(Styles.ToastsView, {[Styles.MoveDown]: onTradingTutorial})}>
         <Alert
           key={`${toast.id}-${toast.title}`}
           removeAlert={() => removeAlert(toast.uniqueId, toast.name)}

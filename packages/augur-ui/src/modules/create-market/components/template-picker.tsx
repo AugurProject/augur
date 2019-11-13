@@ -53,6 +53,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
       header: `${getTemplateReadableDescription(template)}`,
       description: `Example: ${template.example}`,
       value: index.toString(),
+      renderMarkdown: true,
     };
   });
 

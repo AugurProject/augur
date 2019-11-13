@@ -9,7 +9,6 @@ import {
   TimezoneDropdown,
   FormDropdown,
   RadioBarGroup,
-  MultiSelectRadioBarGroup,
 } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
@@ -49,6 +48,7 @@ import {
 } from '@augurproject/artifacts';
 import { TemplateBannerText } from 'modules/create-market/constants';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 
 export interface HeaderProps {
   text: string;
@@ -175,6 +175,16 @@ export const SmallSubheaders = (props: SubheadersProps) => (
     <h1>{props.header}</h1>
     {props.renderMarkdown && <MarkdownRenderer text={props.subheader} />}
     {!props.renderMarkdown && <span>{props.subheader}</span>}
+  </div>
+);
+
+interface PreviewMarketTitleHeaderProps {
+  market: NewMarket;
+}
+export const PreviewMarketTitleHeader = (props: PreviewMarketTitleHeaderProps) => (
+  <div className={Styles.SmallSubheaders}>
+    <h1>Market Question</h1>
+    <PreviewMarketTitle market={props.market} />
   </div>
 );
 
@@ -574,15 +584,17 @@ export class NumberedList extends Component<
     isMin: this.props.initialList.length === this.props.minShown,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(props, state) {
     if (
-      JSON.stringify(this.props.initialList) !==
-      JSON.stringify(nextProps.initialList)
+      JSON.stringify(props.initialList) !==
+      JSON.stringify(state.list)
     ) {
-      this.setState({
-        list: nextProps.initialList,
-      });
-    }
+      return {
+        list: props.initialList
+      };
+    };
+
+    return null;
   }
 
   onChange = (value, index) => {
@@ -718,7 +730,7 @@ interface InputFactoryProps {
   inputIndex: number;
   onChange: Function;
   newMarket: NewMarket;
-  currentTimestamp: string;
+  currentTimestamp: number;
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
@@ -798,7 +810,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
-  } else if (input.type === TemplateInputType.DATETIME) {
+  } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
     return (
       <span>
         {input.userInput ? input.userInput : `[${input.placeholder}]`}
@@ -972,7 +984,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      userInput = endTimeFormatted.formattedUtc;
+      if (input.type === TemplateInputType.DATETIME)
+        userInput = endTimeFormatted.formattedUtc;
+      else
+        userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1059,7 +1074,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   onChange: Function;
-  currentTime: number;
+  currentTimestamp: number;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
@@ -1069,7 +1084,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const inputs = template.inputs;
 
   const dateTimeIndex = inputs.findIndex(
-    input => input.type === TemplateInputType.DATETIME
+    input => (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME)
   );
 
   return (
@@ -1277,17 +1292,11 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
       {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
         <>
           <span>Added Resolution details:</span>
-          <MultiSelectRadioBarGroup
-            radioButtons={resolutionRules[REQUIRED].map((rule, index) => {
-              return {
-                header: rule.text,
-                value: index.toString(),
-                isSelected: true,
-                disabled: true,
-              };
-            })}
-            onChange={(value: string) => {}}
-          />
+          <div className={Styles.AddResolutionRules}>
+            {resolutionRules[REQUIRED].map((rule, index) =>
+              <div key={index}>{rule.text}</div>
+            )}
+          </div>
         </>
       )}
     </div>

@@ -393,7 +393,7 @@ export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps)
 );
 
 export const TestBet = (
-  <img height='132px' width='225px' src='images/test-bet-placeholder.png' />
+  <img height='141px' src='images/test-bet.png' />
 );
 
 export const AlertMessage = (props: AlertMessageProps) => (
@@ -571,7 +571,7 @@ interface FundsHelpProps {
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy {fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
+    <span>Learn how to buy {fundType === DAI ? `${DAI} ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
     <ExternalLinkButton label='Learn More' />
   </div>
 );

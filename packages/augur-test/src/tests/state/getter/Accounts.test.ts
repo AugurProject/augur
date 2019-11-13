@@ -954,37 +954,7 @@ describe('State API :: Accounts :: ', () => {
 
     allOrders = await api.route('getAllOrders', {
       account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.PreReporting],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.DesignatedReporting],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.OpenReporting],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(3);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.CrowdsourcingDispute],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.AwaitingNextWindow],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.Finalized],
+      filterFinalized: true,
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
   });

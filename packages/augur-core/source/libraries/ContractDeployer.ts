@@ -5,25 +5,30 @@ import { stringTo32ByteHex, resolveAll } from './HelperFunctions';
 import { CompilerOutput } from 'solc';
 import { DeployerConfiguration } from './DeployerConfiguration';
 import {
-    Augur,
-    AugurTrading,
-    Universe,
-    ReputationToken,
-    LegacyReputationToken,
-    TimeControlled,
-    ShareToken,
-    Trade,
-    CreateOrder,
-    CancelOrder,
-    FillOrder,
-    Orders,
-    Cash,
-    ProfitLoss,
-    SimulateTrade,
-    ZeroXTrade,
-    GnosisSafeRegistry,
-    WarpSync,
-    RepPriceOracle,
+  Augur,
+  AugurTrading,
+  Universe,
+  ReputationToken,
+  LegacyReputationToken,
+  TimeControlled,
+  ShareToken,
+  Trade,
+  CreateOrder,
+  CancelOrder,
+  FillOrder,
+  Orders,
+  Cash,
+  ProfitLoss,
+  SimulateTrade,
+  ZeroXTrade,
+  GnosisSafeRegistry,
+  WarpSync,
+  RepPriceOracle,
+  // 0x
+  DevUtils,
+  Exchange,
+  ERC1155Proxy,
+  ERC20Proxy,
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -299,12 +304,6 @@ Deploying to: ${networkConfiguration.networkName}
         gnosisSafeContract.address = await this.uploadAndAddToAugur(gnosisSafeContract, 'GnosisSafe', []);
     }
 
-    private async upload0xContracts(): Promise<string> {
-        const zeroXExchangeContract = await this.contracts.get('ZeroXExchange');
-        zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange');
-        return zeroXExchangeContract.address;
-    }
-
     private async uploadUniswapContracts(): Promise<string> {
         const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
         uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0", 0]);
@@ -321,6 +320,49 @@ Deploying to: ${networkConfiguration.networkName}
         const contract = await this.contracts.get('RepPriceOracle');
         contract.address = await this.uploadAndAddToAugur(contract, 'RepPriceOracle');
         return contract.address;
+    }
+
+    private async upload0xContracts(): Promise<string> {
+      const networkId = (await this.provider.getNetwork()).chainId;
+
+      const erc20ProxyContract = this.contracts.get('ERC20Proxy');
+      erc20ProxyContract.address = await this.uploadAndAddToAugur(erc20ProxyContract, 'ERC20Proxy');
+
+      const erc721ProxyContract = this.contracts.get('ERC721Proxy');
+      erc721ProxyContract.address = await this.uploadAndAddToAugur(erc721ProxyContract, 'ERC721Proxy');
+
+      const erc1155ProxyContract = this.contracts.get('ERC1155Proxy');
+      erc1155ProxyContract.address = await this.uploadAndAddToAugur(erc1155ProxyContract, 'ERC1155Proxy');
+
+      const zeroXExchangeContract = await this.contracts.get('Exchange');
+      zeroXExchangeContract.address = await this.uploadAndAddToAugur(zeroXExchangeContract, 'ZeroXExchange', [networkId]);
+
+      const zeroXCoordinatorContract = await this.contracts.get('Coordinator');
+      zeroXCoordinatorContract.address = await this.uploadAndAddToAugur(zeroXCoordinatorContract, 'ZeroXCoordinator', [zeroXExchangeContract.address, networkId]);
+
+      const coordinatorRegistryContract = await this.contracts.get('CoordinatorRegistry');
+      coordinatorRegistryContract.address = await this.uploadAndAddToAugur(coordinatorRegistryContract, 'CoordinatorRegistry');
+
+      const devUtilsContract = this.contracts.get('DevUtils');
+      devUtilsContract.address = await this.uploadAndAddToAugur(devUtilsContract, 'DevUtils', [zeroXExchangeContract.address]);
+
+      const weth9Contract = this.contracts.get('WETH9');
+      weth9Contract.address = await this.uploadAndAddToAugur(weth9Contract, 'WETH9');
+
+      const zrxTokenContract = this.contracts.get('ZRXToken');
+      zrxTokenContract.address = await this.uploadAndAddToAugur(zrxTokenContract, 'ZRXToken');
+
+      const actualZeroXExchangeContract = new Exchange(this.dependencies, zeroXExchangeContract.address);
+      await actualZeroXExchangeContract.registerAssetProxy(erc1155ProxyContract.address);
+      await actualZeroXExchangeContract.registerAssetProxy(erc20ProxyContract.address);
+
+      const actualERC1155ProxyContract = new ERC1155Proxy(this.dependencies, erc1155ProxyContract.address);
+      await actualERC1155ProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
+
+      const actualERC20ProxyContract = new ERC20Proxy(this.dependencies, erc20ProxyContract.address);
+      await actualERC20ProxyContract.addAuthorizedAddress(zeroXExchangeContract.address);
+
+      return zeroXExchangeContract.address;
     }
 
     private async uploadAllContracts(serial=true): Promise<void> {
@@ -352,7 +394,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'UniswapV2Factory') return;
         if (contractName === 'TestNetReputationToken') return;
         if (contractName === 'ProxyFactory') return;
-        if (contractName === 'GnosisSafe') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
@@ -362,7 +403,18 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'GnosisSafe') return;
-        if (contractName === 'ZeroXExchange') return;
+        // 0x
+        if ([
+          'ERC20Proxy',
+          'ERC721Proxy',
+          'ERC1155Proxy',
+          'Exchange',
+          'Coordinator',
+          'CoordinatorRegistry',
+          'DevUtils',
+          'WETH9',
+          'ZRXToken',
+        ].includes(contractName)) return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
         if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'ICashFaucet'].includes(contract.contractName)) return;
@@ -525,9 +577,20 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['GnosisSafeRegistry'] = this.contracts.get('GnosisSafeRegistry').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
-        mapping['ZeroXExchange'] = this.contracts.get('ZeroXExchange').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
+
+        // 0x
+        mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['ERC721Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['ERC1155Proxy'] = this.contracts.get('ERC20Proxy').address!;
+        mapping['Exchange'] = this.contracts.get('Exchange').address!;
+        mapping['Coordinator'] = this.contracts.get('Coordinator').address!;
+        mapping['CoordinatorRegistry'] = this.contracts.get('CoordinatorRegistry').address!;
+        mapping['DevUtils'] = this.contracts.get('DevUtils').address!;
+        mapping['WETH9'] = this.contracts.get('WETH9').address!;
+        mapping['ZRXToken'] = this.contracts.get('ZRXToken').address!;
+
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
 
         for (const contract of this.contracts) {

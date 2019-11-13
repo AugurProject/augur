@@ -10,7 +10,7 @@ import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Gnosis } from "./api/Gnosis";
-import { HotLoading } from "./api/HotLoading";
+import { HotLoading, DisputeWindow, GetDisputeWindowParams } from "./api/HotLoading";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
@@ -36,7 +36,6 @@ import { Arrayish } from "ethers/utils";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
-  readonly signer: EthersSigner;
   private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
@@ -91,7 +90,6 @@ export class Augur<TProvider extends Provider = Provider> {
   constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, browserMesh: BrowserMesh = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
-    this.signer = this.dependencies.signer;
     this.networkId = networkId;
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
@@ -104,7 +102,6 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
-    this.universe = new Universe();
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     this.hotLoading = new HotLoading(this);
     this.zeroX = meshClient && browserMesh ? new ZeroX(this, meshClient, browserMesh) : undefined;
@@ -272,12 +269,16 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrders)(params);
   }
 
-  syncUserData = (account: string): void => {
+  syncUserData(account: string): void {
     Augur.connector.syncUserData(account);
   }
 
-  setSigner = (signer: EthersSigner): void => {
-    this.dependencies.setSigner(signer);
+  get signer(): EthersSigner {
+    return this.dependencies.signer;
+  }
+
+  set signer(signer: EthersSigner)  {
+    this.dependencies.signer = signer;
   }
 
   getTradingHistory = this.bindTo(Trading.getTradingHistory);
@@ -295,12 +296,15 @@ export class Augur<TProvider extends Provider = Provider> {
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
   getAccountRepStakeSummary = this.bindTo(Accounts.getAccountRepStakeSummary);
   getUserCurrentDisputeStake = this.bindTo(Accounts.getUserCurrentDisputeStake);
-  getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
   getPlatformActivityStats = this.bindTo(Platform.getPlatformActivityStats);
   getCategoryStats = this.bindTo(Markets.getCategoryStats);
 
   async hotloadMarket(marketId: string) {
     return this.hotLoading.getMarketDataParams({ market: marketId });
+  }
+
+  async getDisputeWindow(params: GetDisputeWindowParams): Promise<DisputeWindow> {
+    return await this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
