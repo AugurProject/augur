@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
+// import Highmaps from 'highcharts/highmaps';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles.less';
 import { PERIOD_RANGES, DAI } from 'modules/common/constants';
@@ -16,20 +17,27 @@ interface HighChartsWrapperProps {
   marketMax: BigNumber;
   marketMin: BigNumber;
   volumeType: string;
-  isMobile: boolean;
   currentTimeInSeconds: number;
 }
+
+const GROUPING_UNITS = [
+  ['minute', [1]],
+  ['hour', [1]],
+  ['day', [1]],
+  ['week', [1]],
+  ['month', [1]],
+  ['year', [1]],
+];
 
 export default class MarketOutcomeChartsCandlestickHighchart extends Component<
   HighChartsWrapperProps,
   {}
 > {
-  static defaultProps = {
-    isMobile: false,
-  };
-
   chart: Highcharts.Chart;
   container: HTMLDivElement;
+  xMin: Number;
+  xMax: Number;
+  xMinCurrent: Number;
 
   constructor(props) {
     super(props);
@@ -38,6 +46,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       this
     );
     this.clearCandleInfoAndPlotViz = this.clearCandleInfoAndPlotViz.bind(this);
+    this.mouseWheelHandler = this.mouseWheelHandler.bind(this);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -55,40 +64,49 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       this.buildOptions(
         nextProps.priceTimeSeries,
         nextProps.selectedPeriod,
+        nextProps.volumeType
       );
     }
   }
 
   componentDidMount() {
-    const { priceTimeSeries, selectedPeriod } = this.props;
+    const { priceTimeSeries, selectedPeriod, volumeType } = this.props;
     if (priceTimeSeries) {
-      this.buildOptions(priceTimeSeries, selectedPeriod);
+      this.buildOptions(priceTimeSeries, selectedPeriod, volumeType);
     }
+    this.container.addEventListener("mousewheel", this.mouseWheelHandler, false);
+  }
+
+  mouseWheelHandler(e) {
+    e.preventDefault();
+    // console.log(this.chart.xAxis[0].range)
+    const spinAmount = Math.ceil(e.wheelDelta / 100);
+    const changeRate = spinAmount * this.chart.xAxis[0].minRange;
+    const newMin = this.xMinCurrent + changeRate;
+    this.xMinCurrent = newMin < this.xMin ? this.xMin : newMin;
+    this.chart.xAxis[0].setExtremes(this.xMinCurrent, this.xMax, false);
+    this.chart.yAxis[0].setExtremes(this.chart.yAxis[0].dataMin * 0.95, this.chart.yAxis[0].dataMax * 1.05);
   }
 
   buildOptions(
     priceTimeSeries: PriceTimeSeriesData[],
-    selectedPeriod: number
+    selectedPeriod: number,
+    volumeType: string
   ) {
-    const { isMobile, marketMax, marketMin, pricePrecision } = this.props;
-    const candlestick = priceTimeSeries.map(price => {
-      return [price.period, price.open, price.high, price.low, price.close];
+    const { marketMax, marketMin, pricePrecision } = this.props;
+    const candlestick = [];
+    const volume = [];
+    this.xMin = priceTimeSeries[0] && priceTimeSeries[0].period || 0;
+    this.xMinCurrent = this.xMin;
+    this.xMax = priceTimeSeries[0] && priceTimeSeries[priceTimeSeries.length -1].period || 0;
+    priceTimeSeries.forEach(price => {
+      candlestick.push([price.period, price.open, price.high, price.low, price.close]);
+      const volumeValue = volumeType === 'DAI' ? price.volume : price.shareVolume;
+      volume.push([price.period, volumeValue]);
     });
-
-    const volume = priceTimeSeries.map(price => {
-      return [price.period, price.volume];
-    });
-
-    const groupingUnits = [
-      ['minute', [1]],
-      ['hour', [1]],
-      ['day', [1]],
-      ['week', [1]],
-      ['month', [1]],
-      ['year', [1]],
-    ];
 
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
+    this.xMinCurrent = this.xMax - range;
     const options = {
       lang: {
         noData: 'No Completed Trades',
@@ -115,8 +133,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         type: 'candlestick',
         followTouchMove: true,
         panning: true,
-        zoomType: 'xy',
-        panKey: 'shift',
         animation: false,
         spacing: [10, 8, 10, 0],
         events: {
@@ -196,7 +212,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           yAxis: 0,
           zIndex: 1,
           dataGrouping: {
-            units: groupingUnits,
+            units: GROUPING_UNITS,
           },
           maxPointWidth: 20,
           minPointWidth: 10,
@@ -210,13 +226,14 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           maxPointWidth: 20,
           minPointWidth: 10,
           dataGrouping: {
-            units: groupingUnits,
+            units: GROUPING_UNITS,
           },
         },
       ],
     };
 
     this.chart = Highcharts.stockChart(this.container, options);
+    this.chart.yAxis[0].setExtremes(this.chart.yAxis[0].dataMin * 0.95, this.chart.yAxis[0].dataMax * 1.05);
   }
 
   componentWillUnmount() {
@@ -224,6 +241,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       this.chart.destroy();
       this.chart = null;
     }
+    this.container.removeEventListener("mousewheel", this.mouseWheelHandler, false);
   }
 
   displayCandleInfoAndPlotViz(evt) {

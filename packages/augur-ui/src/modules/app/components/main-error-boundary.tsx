@@ -16,7 +16,6 @@ export default class MainErrorBoundary extends Component<{}, MEBState> {
     hasError: false,
   };
 
-
   componentDidUpdate(prevProps: {}, prevState: MEBState) {
     const { hasError } = this.state
     if (prevState.hasError && hasError) {

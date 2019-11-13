@@ -153,6 +153,27 @@ export enum TemplateInputType {
   USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME',
 }
 
+export interface ExtraInfoTemplateInput {
+  id: number;
+  value: string;
+  timestamp?: string;
+  type: string;
+}
+
+export interface ExtraInfoTemplate {
+  hash: string;
+  question: string;
+  inputs: ExtraInfoTemplateInput[]
+}
+
+export interface ExtraInfo {
+  _scalarDenomination?: string;
+  longDescription?: string;
+  description?: string;
+  categories?: string[];
+  template?: ExtraInfoTemplate;
+}
+
 export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
@@ -160,6 +181,37 @@ export const ValidationTemplateInputType = {
   [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`
 };
 
+export let TEMPLATE_VALIDATIONS = {};
+
+export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
+  const validation = TEMPLATE_VALIDATIONS[hash];
+  if (!validation || !validation.templateValidation) return false;
+  return !!marketTitle.match(validation.templateValidation);
+};
+
+export const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
+  let result = false;
+  if (
+    !template ||
+    !template.hash ||
+    !template.question ||
+    template.inputs.length === 0
+  )
+    return result;
+
+  let checkMarketTitle = template.question;
+  template.inputs.map((i: ExtraInfoTemplateInput) => {
+    checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
+  });
+
+  if (checkMarketTitle !== title) return result;
+  try {
+    result = isValidTemplateMarket(template.hash, checkMarketTitle);
+  } catch (e) {
+    console.error(e);
+  }
+  return result;
+};
 
 //##TEMPLATES##
 

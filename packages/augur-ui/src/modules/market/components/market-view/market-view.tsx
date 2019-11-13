@@ -713,7 +713,7 @@ export default class MarketView extends Component<
               </>
             ) : (
               <>
-                <div className={Styles.MarketView__parent}>
+                <div className={classNames(Styles.MarketView__parent, {[Styles.Tutorial]: tradingTutorial})}>
                   <section className={Styles.MarketView__body}>
                     <div
                       className={classNames({

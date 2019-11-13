@@ -1,4 +1,5 @@
 import { MarketReportingState } from '../../constants';
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 
 export type Address = string;
 export type Bytes32 = string;
@@ -382,18 +383,6 @@ export interface UniverseCreatedLog extends Log, Doc {
 
 export interface LiquidityData {
   [spread: number]: number;
-}
-
-export interface ExtraInfoTemplateInput {
-  id: number;
-  value: string;
-  timestamp?: string;
-  type: string;
-}
-export interface ExtraInfoTemplate {
-  hash: string;
-  question: string;
-  inputs: ExtraInfoTemplateInput[]
 }
 
 export interface ExtraInfo {

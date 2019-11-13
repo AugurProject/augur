@@ -11,8 +11,8 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
-  ExtraInfoTemplate
 } from "../logs/types";
+import { ExtraInfoTemplate, isTemplateMarket } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
 import { MarketReportingState } from "../../constants";
 import {
@@ -149,6 +149,7 @@ export interface MarketInfo {
   noShowBondAmount: string;
   disavowed: boolean;
   template: ExtraInfoTemplate;
+  isTemplate: boolean;
 }
 
 export interface DisputeInfo {
@@ -1101,7 +1102,12 @@ async function getMarketsInfo(
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
       stakes: formatStakeDetails(db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
-
+    let isTemplate = false;
+    try {
+      isTemplate = template && isTemplateMarket(description, template);
+    } catch(e) {
+      console.error("could not process template", e);
+    }
     return {
       id: marketData.market,
       universe: marketData.universe,
@@ -1140,6 +1146,7 @@ async function getMarketsInfo(
       disputeInfo,
       disavowed: marketData.disavowed,
       template,
+      isTemplate,
     };
   });
 }
