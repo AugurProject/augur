@@ -33,9 +33,10 @@ import {
   BUY,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, LiquidityOrder, ExtraInfoTemplate } from 'modules/types';
+import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
