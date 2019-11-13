@@ -567,6 +567,7 @@ export const NumberedInput = ({
         {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
           <span>{errorMessage}</span>
         )}
+        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
       </>
     )}
   </li>
