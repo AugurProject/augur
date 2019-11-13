@@ -3,12 +3,12 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/constants';
 import { fork } from '@augurproject/tools';
 import { formatBytes32String } from 'ethers/utils';
 import { UniverseDetails } from '@augurproject/sdk/build/state/getter/Universe';
 import { getPayoutNumerators, makeValidScalarOutcome } from '@augurproject/tools/build/flash/fork';
 import { NULL_ADDRESS } from '../../../libs/Utils';
+import { TestEthersProvider } from '../../../libs/TestEthersProvider';
 
 const mock = makeDbMock();
 
@@ -19,26 +19,33 @@ describe('State API :: Universe :: ', () => {
   let mary: ContractAPI;
   let bob: ContractAPI;
 
-  // Normally these calls are in beforeAll but these tests affect the same state,
-  // on-chain and in-middleware, so both need to be rebuilt between each test.
-  beforeEach(async () => {
+  let baseProvider: TestEthersProvider;
+
+  beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
-    const provider = await makeProvider(seed, ACCOUNTS);
+    baseProvider = await makeProvider(seed, ACCOUNTS);
+    const addresses = baseProvider.getContractAddresses();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
-    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, seed.addresses);
-
-    db = mock.makeDB(john.augur, ACCOUNTS);
-
-    api = new API(john.augur, db);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], baseProvider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], baseProvider, addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], baseProvider, addresses);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
     await bob.approveCentralAuthority();
   }, 120000);
 
+  beforeEach(async () => {
+    const provider = await baseProvider.fork();
+    const addresses = baseProvider.getContractAddresses();
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+    db = makeDbMock().makeDB(john.augur, ACCOUNTS);
+    api = new API(john.augur, db);
+  });
+
   // TODO Fix the 0x error occurring when multiuple fork getter tests run in one file.
-  test.skip('getForkMigrationTotals : YesNo', async () => {
+  test('getForkMigrationTotals : YesNo', async () => {
     const universe = john.augur.contracts.universe;
 
     const actualDB = await db;
@@ -79,8 +86,7 @@ describe('State API :: Universe :: ', () => {
         {
           outcomeName: 'Invalid',
           outcome: '0',
-          amount: '60000000349680582682291668',
-          isMalformed: false,
+          amount: '1000000000000000000000',
           payoutNumerators: [
             '100',
             '0',
@@ -90,8 +96,7 @@ describe('State API :: Universe :: ', () => {
         {
           outcomeName: 'No',
           outcome: '1',
-          amount: '60000000349680582682291668',
-          isMalformed: false,
+          amount: '1000000000000000000000',
           payoutNumerators: [
             '0',
             '100',
@@ -103,7 +108,7 @@ describe('State API :: Universe :: ', () => {
 
   }, 200000);
 
-  test.skip('getForkMigrationTotals : Categorical', async () => {
+  test('getForkMigrationTotals : Categorical', async () => {
     const universe = john.augur.contracts.universe;
 
     const actualDB = await db;
@@ -144,10 +149,10 @@ describe('State API :: Universe :: ', () => {
       marketId: market.address,
       outcomes: [
         {
-          outcomeName: 'foo'.padEnd(32, '\0'),
+          outcomeName: 'Invalid',
           outcome: '0',
-          amount: '60000000349680582682291668',
-          isMalformed: false,
+          isInvalid: true,
+          amount: '1000000000000000000000',
           payoutNumerators: [
             '100',
             '0',
@@ -157,10 +162,9 @@ describe('State API :: Universe :: ', () => {
           ],
         },
         {
-          outcomeName: 'bar'.padEnd(32, '\0'),
+          outcomeName: 'foo'.padEnd(32, '\0'),
           outcome: '1',
-          amount: '60000000349680582682291668',
-          isMalformed: false,
+          amount: '1000000000000000000000',
           payoutNumerators: [
             '0',
             '100',
@@ -174,7 +178,7 @@ describe('State API :: Universe :: ', () => {
 
   }, 200000);
 
-  test.skip('getForkMigrationTotals : Scalar', async () => {
+  test('getForkMigrationTotals : Scalar', async () => {
     const universe = john.augur.contracts.universe;
 
     const actualDB = await db;
@@ -213,10 +217,9 @@ describe('State API :: Universe :: ', () => {
       marketId: market.address,
       outcomes: [
         {
-          outcomeName: '250000000000000000000',
-          outcome:     '50000000000000000000',
-          amount: '60000000349680582682291668',
-          isMalformed: false,
+          outcomeName: 'Invalid',
+          outcome:     '0',
+          amount: '1000000000000000000000',
           isInvalid: true,
           payoutNumerators: [
             '20000',
@@ -225,11 +228,9 @@ describe('State API :: Universe :: ', () => {
           ],
         },
         {
-          outcomeName: '250000000000000000000',
-          outcome:     '184000000000000000000',
-          amount: '60000000349680582682291668',
-          isMalformed: false,
-          isInvalid: false,
+          outcomeName: '116000000000000000000',
+          outcome:     '116000000000000000000',
+          amount: '1000000000000000000000',
           payoutNumerators: [
             '0',
             '13400',
