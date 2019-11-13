@@ -35,7 +35,7 @@ export const Transactions = ({
       <div className={Styles.Content}>
         <p>Your transactions history</p>
         <ViewTransactionsButton action={transactions} />
-        <p>Your wallet</p>
+        <p>Your account</p>
         <DepositButton action={addFunds} />
         <WithdrawButton action={withdraw} />
         {!isMainnet && (
