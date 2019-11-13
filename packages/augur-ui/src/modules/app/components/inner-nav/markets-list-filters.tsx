@@ -9,7 +9,7 @@ import {
   SHOW_INVALID_MARKETS_PARAM_NAME,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
-import { helpIcon } from 'modules/common/icons';
+import { helpIcon, FilterIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -84,7 +84,10 @@ export default class MarketsListFilters extends React.Component<
         <div className={classNames(Styles.FiltersGroup, {
           [Styles.Searching]: this.props.isSearching,
         })}>
-          <div>Filters</div>
+          <div>
+            {FilterIcon}
+            Filters
+          </div>
 
           <div className={Styles.Filter}>
             <span>Fees</span>

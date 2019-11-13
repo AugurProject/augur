@@ -29,6 +29,7 @@
 
       @media @breakpoint-mobile {
         grid-template-columns: 34px auto @size-16;
+        height: @size-32;
       }
 
       > h5 {
@@ -71,6 +72,12 @@
     text-transform: uppercase;
     color: @color-secondary-text;
     margin: @size-24 @size-32 0 @size-32;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      margin-right: @size-12;
+    }
 
     @media @breakpoint-mobile {
       .text-14-bold;
