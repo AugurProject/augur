@@ -308,7 +308,7 @@ export default class MarketsView extends Component<
         <FilterNotice
           color="red"
           show={!displayFee || !displayLiquiditySpread}
-          showDismissButton={false}
+          showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
           settings={{
             propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
