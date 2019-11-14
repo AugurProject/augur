@@ -24,10 +24,6 @@ const BASE_GAS_ESTIMATE = new BigNumber(75000);
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
-  private readonly gnosisRelay: IGnosisRelayAPI;
-
-  safeAddress: string;
-
   useRelay = true;
   useSafe = false;
 
@@ -35,11 +31,11 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   constructor(
     provider: EthersProvider,
-    gnosisRelay: IGnosisRelayAPI,
+    private readonly gnosisRelay: IGnosisRelayAPI,
     signer: EthersSigner,
     private gasToken: string = NULL_ADDRESS,
     public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
-    safeAddress?: string,
+    public safeAddress?: string,
     address?: string
   ) {
     super(provider, signer, address);
