@@ -53,6 +53,7 @@ interface MarketsViewProps {
   updateLoginAccountSettings: Function;
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
+  templateFilter: string;
 }
 
 interface MarketsViewState {
@@ -108,6 +109,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
       isConnected,
       isLogged,
+      templateFilter,
     } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
@@ -118,6 +120,7 @@ export default class MarketsView extends Component<
         marketFilter !== prevProps.marketFilter ||
         marketSort !== prevProps.marketSort ||
         maxFee !== prevProps.maxFee ||
+        templateFilter !== prevProps.templateFilter ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
 
@@ -157,6 +160,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
       marketFilter,
       marketSort,
+      templateFilter,
     } = this.props;
 
     const { limit, offset } = this.state;
@@ -175,6 +179,7 @@ export default class MarketsView extends Component<
         offset,
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
+        templateFilter,
       },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);

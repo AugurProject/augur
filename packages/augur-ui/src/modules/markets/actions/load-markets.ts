@@ -43,8 +43,6 @@ export const loadMarketsByFilter = (
 ) => {
   const { universe, connection } = getState();
   if (!(universe && universe.id)) return;
-  // change this when wired up to Vis filter
-  filterOptions.templateFilter = 'all';
   // Check to see if SDK is connected first
   // since URL parameters can trigger this action before the SDK is ready
   if (!connection.isConnected) return;

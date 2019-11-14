@@ -5,6 +5,7 @@ export const MARKET_MAX_FEES = 'maxFee';
 export const MARKET_MAX_SPREAD = 'maxLiquiditySpread';
 export const MARKET_SHOW_INVALID = 'includeInvalidMarkets';
 export const TRANSACTION_PERIOD = 'transactionPeriod';
+export const TEMPLATE_FILTER = 'templateFilter'
 
 export function updateFilterSortOptions(
   optionKey: string,

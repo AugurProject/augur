@@ -46,6 +46,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketCardFormat: state.marketsList.marketCardFormat,
     showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {}).showInvalidMarketsBannerHideOrShow,
     showInvalidMarketsBannerFeesOrLiquiditySpread: (state.loginAccount.settings || {}).showInvalidMarketsBannerFeesOrLiquiditySpread,
+    templateFilter: state.filterSortOptions.templateFilter,
   };
 };
 

@@ -351,6 +351,7 @@ interface DatePickerSelectorProps {
   errrorMessage?: string;
   placeholder?: string;
   errorMessage?: string;
+  condensedStyle?: boolean;
 }
 
 export const DatePickerSelector = (props: DatePickerSelectorProps) => {

@@ -460,7 +460,7 @@ export interface FilterSortOptions {
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
-  hasOrders: boolean;
+  templateFilter: string;
 }
 
 export interface Favorite {
