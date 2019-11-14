@@ -37,7 +37,7 @@ import {
   DOUBLES,
   WNBA,
 } from './templates-template';
-import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS, HOCKEY_EVENT_DEP_TEAMS, BASEBALL_EVENT_DEP_TEAMS, FOOTBALL_EVENT_DEP_TEAMS, NCAA_FOOTBALL_EVENT_DEP_TEAMS } from './templates-lists';
+import { LIST_VALUES, BASKETBALL_EVENT_DEP_TEAMS, HOCKEY_EVENT_DEP_TEAMS, BASEBALL_EVENT_DEP_TEAMS, FOOTBALL_EVENT_DEP_TEAMS, NCAA_FOOTBALL_EVENT_DEP_TEAMS, NCAA_BASKETBALL_EVENT_DEP_TEAMS } from './templates-lists';
 
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical'
@@ -2003,13 +2003,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2042,13 +2044,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2087,13 +2091,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2129,8 +2135,9 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
@@ -2154,8 +2161,9 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
@@ -2185,13 +2193,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2226,13 +2236,15 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 3,
@@ -2297,6 +2309,13 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: NCAA_BASKETBALL_EVENT_DEP_TEAMS,
+                  }
                 ],
                 resolutionRules: {
                   [REQUIRED]: [

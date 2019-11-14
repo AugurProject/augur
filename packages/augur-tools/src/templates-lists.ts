@@ -71,136 +71,6 @@ export const LIST_VALUES = {
       label: 'NFC Championship game',
     },
   ],
-  NCAA_BASKETBALL_CONF: [
-    {
-      label: 'American East',
-      value: 'American East',
-    },
-    {
-      label: 'American',
-      value: 'American',
-    },
-    {
-      label: 'Atlantic 10',
-      value: 'Atlantic 10',
-    },
-    {
-      label: 'ACC',
-      value: 'ACC',
-    },
-    {
-      label: 'Atlantic Sun',
-      value: 'Atlantic Sun',
-    },
-    {
-      label: 'Big 12',
-      value: 'Big 12',
-    },
-    {
-      label: 'Big East',
-      value: 'Big East',
-    },
-    {
-      label: 'Big Sky',
-      value: 'Big Sky',
-    },
-    {
-      label: 'Big South',
-      value: 'Big South',
-    },
-    {
-      label: 'Big Ten',
-      value: 'Big Ten',
-    },
-    {
-      label: 'Big West',
-      value: 'Big West',
-    },
-    {
-      label: 'Colonial',
-      value: 'Colonial',
-    },
-    {
-      label: 'Conference USA',
-      value: 'Conference USA',
-    },
-    {
-      label: 'Horizon',
-      value: 'Horizon',
-    },
-    {
-      label: 'Ivy',
-      value: 'Ivy',
-    },
-    {
-      label: 'MAAC',
-      value: 'MAAC',
-    },
-    {
-      label: 'Mid-American',
-      value: 'Mid-American',
-    },
-    {
-      label: 'MEAC',
-      value: 'MEAC',
-    },
-    {
-      label: 'Missouri Valley',
-      value: 'Missouri Valley',
-    },
-    {
-      label: 'Mountain West',
-      value: 'Mountain West',
-    },
-    {
-      label: 'Northeast',
-      value: 'Northeast',
-    },
-    {
-      label: 'Ohio Valley',
-      value: 'Ohio Valley',
-    },
-    {
-      label: 'Pac-12',
-      value: 'Pac-12',
-    },
-    {
-      label: 'Patriot League',
-      value: 'Patriot League',
-    },
-    {
-      label: 'SEC',
-      value: 'SEC',
-    },
-    {
-      label: 'Southern',
-      value: 'Southern',
-    },
-    {
-      label: 'Southland',
-      value: 'Southland',
-    },
-    {
-      label: 'SWAC',
-      value: 'SWAC',
-    },
-    {
-      label: 'Summit League',
-      value: 'Summit League',
-    },
-    {
-      label: 'Sun Belt',
-      value: 'Sun Belt',
-    },
-    {
-      label: 'West Coast',
-      value: 'West Coast',
-    },
-    {
-      label: 'WAC',
-      value: 'WAC',
-    },
-  ],
   BASEBALL_EVENT: [
     {
       value: 'American League Championship Series',
@@ -577,8 +447,8 @@ export const LIST_VALUES = {
   ],
   NCAA_BASKETBALL_EVENTS: [
     {
-      value: 'NCAA Tournament',
-      label: 'NCAA Tournament',
+      value: 'NCAA Tournament/ March Madness',
+      label: 'NCAA Tournament/ March Madness',
     },
     {
       value: 'Sweet 16',
@@ -3563,6 +3433,2962 @@ export const LIST_VALUES = {
       value: 'Troy Trojans',
     },
   ],
+  NCAA_BASKETBALL_TEAMS: [
+    {
+      label: 'Abilene Christian',
+      value: 'Abilene Christian',
+    },
+    {
+      label: 'Air Force',
+      value: 'Air Force',
+    },
+    {
+      label: 'Akron',
+      value: 'Akron',
+    },
+    {
+      label: 'Alabama',
+      value: 'Alabama',
+    },
+    {
+      label: 'Alabama A&M',
+      value: 'Alabama A&M',
+    },
+    {
+      label: 'Alabama State',
+      value: 'Alabama State',
+    },
+    {
+      label: 'Albany',
+      value: 'Albany',
+    },
+    {
+      label: 'Alcorn State',
+      value: 'Alcorn State',
+    },
+    {
+      label: 'American University',
+      value: 'American University',
+    },
+    {
+      label: 'Appalachian State',
+      value: 'Appalachian State',
+    },
+    {
+      label: 'Arizona',
+      value: 'Arizona',
+    },
+    {
+      label: 'Arizona State',
+      value: 'Arizona State',
+    },
+    {
+      label: 'Arkansas',
+      value: 'Arkansas',
+    },
+    {
+      label: 'Arkansas-Little Rock',
+      value: 'Arkansas-Little Rock',
+    },
+    {
+      label: 'Arkansas-Pine Bluff',
+      value: 'Arkansas-Pine Bluff',
+    },
+    {
+      label: 'Arkansas State',
+      value: 'Arkansas State',
+    },
+    {
+      label: 'Army',
+      value: 'Army',
+    },
+    {
+      label: 'Auburn',
+      value: 'Auburn',
+    },
+    {
+      label: 'Austin Peay',
+      value: 'Austin Peay',
+    },
+    {
+      label: 'Ball State',
+      value: 'Ball State',
+    },
+    {
+      label: 'Baylor',
+      value: 'Baylor',
+    },
+    {
+      label: 'Belmont',
+      value: 'Belmont',
+    },
+    {
+      label: 'Bethune Cookman',
+      value: 'Bethune Cookman',
+    },
+    {
+      label: 'Binghamton',
+      value: 'Binghamton',
+    },
+    {
+      label: 'Boise State',
+      value: 'Boise State',
+    },
+    {
+      label: 'Boston College',
+      value: 'Boston College',
+    },
+    {
+      label: 'Boston University',
+      value: 'Boston University',
+    },
+    {
+      label: 'Bowling Green',
+      value: 'Bowling Green',
+    },
+    {
+      label: 'Bradley',
+      value: 'Bradley',
+    },
+    {
+      label: 'Brown',
+      value: 'Brown',
+    },
+    {
+      label: 'Bryant University',
+      value: 'Bryant University',
+    },
+    {
+      label: 'Bucknell',
+      value: 'Bucknell',
+    },
+    {
+      label: 'Buffalo',
+      value: 'Buffalo',
+    },
+    {
+      label: 'Butler',
+      value: 'Butler',
+    },
+    {
+      label: 'BYU',
+      value: 'BYU',
+    },
+    {
+      label: 'Cal-Davis',
+      value: 'Cal-Davis',
+    },
+    {
+      label: 'Cal-St. Bakersfield',
+      value: 'Cal-St. Bakersfield',
+    },
+    {
+      label: 'Cal-St. Fullerton',
+      value: 'Cal-St. Fullerton',
+    },
+    {
+      label: 'Cal-St. Northridge',
+      value: 'Cal-St. Northridge',
+    },
+    {
+      label: 'California',
+      value: 'California',
+    },
+    {
+      label: 'Cal Poly SLO',
+      value: 'Cal Poly SLO',
+    },
+    {
+      label: 'Campbell',
+      value: 'Campbell',
+    },
+    {
+      label: 'Canisius',
+      value: 'Canisius',
+    },
+    {
+      label: 'Central Arkansas',
+      value: 'Central Arkansas',
+    },
+    {
+      label: 'Central Connecticut State',
+      value: 'Central Connecticut State',
+    },
+    {
+      label: 'Central Florida',
+      value: 'Central Florida',
+    },
+    {
+      label: 'Central Michigan',
+      value: 'Central Michigan',
+    },
+    {
+      label: 'Charleston Southern',
+      value: 'Charleston Southern',
+    },
+    {
+      label: 'Charlotte',
+      value: 'Charlotte',
+    },
+    {
+      label: 'Chicago State',
+      value: 'Chicago State',
+    },
+    {
+      label: 'Cincinnati',
+      value: 'Cincinnati',
+    },
+    {
+      label: 'Clemson',
+      value: 'Clemson',
+    },
+    {
+      label: 'Cleveland State',
+      value: 'Cleveland State',
+    },
+    {
+      label: 'Coastal Carolina',
+      value: 'Coastal Carolina',
+    },
+    {
+      label: 'Colgate',
+      value: 'Colgate',
+    },
+    {
+      label: 'College of Charleston',
+      value: 'College of Charleston',
+    },
+    {
+      label: 'Colorado',
+      value: 'Colorado',
+    },
+    {
+      label: 'Colorado State',
+      value: 'Colorado State',
+    },
+    {
+      label: 'Columbia',
+      value: 'Columbia',
+    },
+    {
+      label: 'Connecticut',
+      value: 'Connecticut',
+    },
+    {
+      label: 'Coppin State',
+      value: 'Coppin State',
+    },
+    {
+      label: 'Cornell',
+      value: 'Cornell',
+    },
+    {
+      label: 'Creighton',
+      value: 'Creighton',
+    },
+    {
+      label: 'Dartmouth',
+      value: 'Dartmouth',
+    },
+    {
+      label: 'Davidson',
+      value: 'Davidson',
+    },
+    {
+      label: 'Dayton',
+      value: 'Dayton',
+    },
+    {
+      label: 'Delaware',
+      value: 'Delaware',
+    },
+    {
+      label: 'Delaware State',
+      value: 'Delaware State',
+    },
+    {
+      label: 'Denver',
+      value: 'Denver',
+    },
+    {
+      label: 'DePaul',
+      value: 'DePaul',
+    },
+    {
+      label: 'Detroit',
+      value: 'Detroit',
+    },
+    {
+      label: 'Drake',
+      value: 'Drake',
+    },
+    {
+      label: 'Drexel',
+      value: 'Drexel',
+    },
+    {
+      label: 'Duke',
+      value: 'Duke',
+    },
+    {
+      label: 'Duquesne',
+      value: 'Duquesne',
+    },
+    {
+      label: 'East Carolina',
+      value: 'East Carolina',
+    },
+    {
+      label: 'Eastern Illinois',
+      value: 'Eastern Illinois',
+    },
+    {
+      label: 'Eastern Kentucky',
+      value: 'Eastern Kentucky',
+    },
+    {
+      label: 'Eastern Michigan',
+      value: 'Eastern Michigan',
+    },
+    {
+      label: 'Eastern Washington',
+      value: 'Eastern Washington',
+    },
+    {
+      label: 'East Tenn State',
+      value: 'East Tenn State',
+    },
+    {
+      label: 'Elon University',
+      value: 'Elon University',
+    },
+    {
+      label: 'Evansville',
+      value: 'Evansville',
+    },
+    {
+      label: 'Fairfield',
+      value: 'Fairfield',
+    },
+    {
+      label: 'Fairleigh Dickinson',
+      value: 'Fairleigh Dickinson',
+    },
+    {
+      label: 'Florida',
+      value: 'Florida',
+    },
+    {
+      label: 'Florida A&M',
+      value: 'Florida A&M',
+    },
+    {
+      label: 'Florida Atlantic',
+      value: 'Florida Atlantic',
+    },
+    {
+      label: 'Florida Gulf Coast',
+      value: 'Florida Gulf Coast',
+    },
+    {
+      label: 'Florida International',
+      value: 'Florida International',
+    },
+    {
+      label: 'Florida State',
+      value: 'Florida State',
+    },
+    {
+      label: 'Fordham',
+      value: 'Fordham',
+    },
+    {
+      label: 'Fresno State',
+      value: 'Fresno State',
+    },
+    {
+      label: 'Furman',
+      value: 'Furman',
+    },
+    {
+      label: 'Gardner-Webb',
+      value: 'Gardner-Webb',
+    },
+    {
+      label: 'George Mason',
+      value: 'George Mason',
+    },
+    {
+      label: 'Georgetown',
+      value: 'Georgetown',
+    },
+    {
+      label: 'George Washington',
+      value: 'George Washington',
+    },
+    {
+      label: 'Georgia',
+      value: 'Georgia',
+    },
+    {
+      label: 'Georgia State',
+      value: 'Georgia State',
+    },
+    {
+      label: 'Georgia Tech',
+      value: 'Georgia Tech',
+    },
+    {
+      label: 'Gonzaga',
+      value: 'Gonzaga',
+    },
+    {
+      label: 'Grambling',
+      value: 'Grambling',
+    },
+    {
+      label: 'Grand Canyon',
+      value: 'Grand Canyon',
+    },
+    {
+      label: 'Hampton',
+      value: 'Hampton',
+    },
+    {
+      label: 'Hartford',
+      value: 'Hartford',
+    },
+    {
+      label: 'Harvard',
+      value: 'Harvard',
+    },
+    {
+      label: 'Hawaii',
+      value: 'Hawaii',
+    },
+    {
+      label: 'High Point',
+      value: 'High Point',
+    },
+    {
+      label: 'Hofstra',
+      value: 'Hofstra',
+    },
+    {
+      label: 'Holy Cross',
+      value: 'Holy Cross',
+    },
+    {
+      label: 'Houston',
+      value: 'Houston',
+    },
+    {
+      label: 'Houston Baptist',
+      value: 'Houston Baptist',
+    },
+    {
+      label: 'Howard',
+      value: 'Howard',
+    },
+    {
+      label: 'Idaho',
+      value: 'Idaho',
+    },
+    {
+      label: 'Idaho State',
+      value: 'Idaho State',
+    },
+    {
+      label: 'Illinois',
+      value: 'Illinois',
+    },
+    {
+      label: 'Illinois-Chicago',
+      value: 'Illinois-Chicago',
+    },
+    {
+      label: 'Illinois State',
+      value: 'Illinois State',
+    },
+    {
+      label: 'Incarnate Word',
+      value: 'Incarnate Word',
+    },
+    {
+      label: 'Indiana',
+      value: 'Indiana',
+    },
+    {
+      label: 'Indiana State',
+      value: 'Indiana State',
+    },
+    {
+      label: 'Iona',
+      value: 'Iona',
+    },
+    {
+      label: 'Iowa',
+      value: 'Iowa',
+    },
+    {
+      label: 'Iowa',
+      value: 'Iowa',
+    },
+    {
+      label: 'Iowa State',
+      value: 'Iowa State',
+    },
+    {
+      label: 'IPFW',
+      value: 'IPFW',
+    },
+    {
+      label: 'IUPUI',
+      value: 'IUPUI',
+    },
+    {
+      label: 'Jackson State',
+      value: 'Jackson State',
+    },
+    {
+      label: 'Jacksonville',
+      value: 'Jacksonville',
+    },
+    {
+      label: 'Jacksonville State',
+      value: 'Jacksonville State',
+    },
+    {
+      label: 'James Madison',
+      value: 'James Madison',
+    },
+    {
+      label: 'Kansas',
+      value: 'Kansas',
+    },
+    {
+      label: 'Kansas State',
+      value: 'Kansas State',
+    },
+    {
+      label: 'Kennesaw State',
+      value: 'Kennesaw State',
+    },
+    {
+      label: 'Kent State',
+      value: 'Kent State',
+    },
+    {
+      label: 'Kentucky',
+      value: 'Kentucky',
+    },
+    {
+      label: 'Lafayette',
+      value: 'Lafayette',
+    },
+    {
+      label: 'Lamar',
+      value: 'Lamar',
+    },
+    {
+      label: 'La Salle',
+      value: 'La Salle',
+    },
+    {
+      label: 'Lehigh',
+      value: 'Lehigh',
+    },
+    {
+      label: 'Liberty',
+      value: 'Liberty',
+    },
+    {
+      label: 'Lipscomb',
+      value: 'Lipscomb',
+    },
+    {
+      label: 'Long Beach State',
+      value: 'Long Beach State',
+    },
+    {
+      label: 'Long Island University',
+      value: 'Long Island University',
+    },
+    {
+      label: 'Longwood',
+      value: 'Longwood',
+    },
+    {
+      label: 'Louisiana-Lafayette',
+      value: 'Louisiana-Lafayette',
+    },
+    {
+      label: 'Louisiana-Monroe',
+      value: 'Louisiana-Monroe',
+    },
+    {
+      label: 'Louisiana Tech',
+      value: 'Louisiana Tech',
+    },
+    {
+      label: 'Louisville',
+      value: 'Louisville',
+    },
+    {
+      label: 'Loyola-Chicago',
+      value: 'Loyola-Chicago',
+    },
+    {
+      label: 'Loyola-Maryland',
+      value: 'Loyola-Maryland',
+    },
+    {
+      label: 'Loyola-Marymount',
+      value: 'Loyola-Marymount',
+    },
+    {
+      label: 'LSU',
+      value: 'LSU',
+    },
+    {
+      label: 'Maine',
+      value: 'Maine',
+    },
+    {
+      label: 'Manhattan',
+      value: 'Manhattan',
+    },
+    {
+      label: 'Marist',
+      value: 'Marist',
+    },
+    {
+      label: 'Marquette',
+      value: 'Marquette',
+    },
+    {
+      label: 'Marshall',
+      value: 'Marshall',
+    },
+    {
+      label: 'Maryland',
+      value: 'Maryland',
+    },
+    {
+      label: 'Maryland-Baltimore County',
+      value: 'Maryland-Baltimore County',
+    },
+    {
+      label: 'Maryland-Eastern Shore',
+      value: 'Maryland-Eastern Shore',
+    },
+    {
+      label: 'Massachusetts',
+      value: 'Massachusetts',
+    },
+    {
+      label: 'McNeese State',
+      value: 'McNeese State',
+    },
+    {
+      label: 'Memphis',
+      value: 'Memphis',
+    },
+    {
+      label: 'Mercer',
+      value: 'Mercer',
+    },
+    {
+      label: 'Miami (FL)',
+      value: 'Miami (FL)',
+    },
+    {
+      label: 'Miami (OH)',
+      value: 'Miami (OH)',
+    },
+    {
+      label: 'Michigan',
+      value: 'Michigan',
+    },
+    {
+      label: 'Michigan State',
+      value: 'Michigan State',
+    },
+    {
+      label: 'Middle Tennessee State',
+      value: 'Middle Tennessee State',
+    },
+    {
+      label: 'Minnesota',
+      value: 'Minnesota',
+    },
+    {
+      label: 'Mississippi',
+      value: 'Mississippi',
+    },
+    {
+      label: 'Mississippi State',
+      value: 'Mississippi State',
+    },
+    {
+      label: 'Mississippi Valley State',
+      value: 'Mississippi Valley State',
+    },
+    {
+      label: 'Missouri',
+      value: 'Missouri',
+    },
+    {
+      label: 'Missouri-Kansas City',
+      value: 'Missouri-Kansas City',
+    },
+    {
+      label: 'Missouri State',
+      value: 'Missouri State',
+    },
+    {
+      label: 'Monmouth',
+      value: 'Monmouth',
+    },
+    {
+      label: 'Montana',
+      value: 'Montana',
+    },
+    {
+      label: 'Montana State',
+      value: 'Montana State',
+    },
+    {
+      label: 'Morehead State',
+      value: 'Morehead State',
+    },
+    {
+      label: 'Morgan State',
+      value: 'Morgan State',
+    },
+    {
+      label: 'Mount St. Mary’s',
+      value: 'Mount St. Mary’s',
+    },
+    {
+      label: 'Murray State',
+      value: 'Murray State',
+    },
+    {
+      label: 'N.C. State',
+      value: 'N.C. State',
+    },
+    {
+      label: 'Navy',
+      value: 'Navy',
+    },
+    {
+      label: 'Nebraska',
+      value: 'Nebraska',
+    },
+    {
+      label: 'Nebraska-Omaha',
+      value: 'Nebraska-Omaha',
+    },
+    {
+      label: 'New Hampshire',
+      value: 'New Hampshire',
+    },
+    {
+      label: 'New Mexico',
+      value: 'New Mexico',
+    },
+    {
+      label: 'New Mexico State',
+      value: 'New Mexico State',
+    },
+    {
+      label: 'New Orleans',
+      value: 'New Orleans',
+    },
+    {
+      label: 'Niagara',
+      value: 'Niagara',
+    },
+    {
+      label: 'Nicholls State',
+      value: 'Nicholls State',
+    },
+    {
+      label: 'Norfolk State',
+      value: 'Norfolk State',
+    },
+    {
+      label: 'North Carolina',
+      value: 'North Carolina',
+    },
+    {
+      label: 'North Carolina A&T',
+      value: 'North Carolina A&T',
+    },
+    {
+      label: 'North Carolina Central',
+      value: 'North Carolina Central',
+    },
+    {
+      label: 'North Dakota State',
+      value: 'North Dakota State',
+    },
+    {
+      label: 'Northeastern',
+      value: 'Northeastern',
+    },
+    {
+      label: 'Northern Illinois',
+      value: 'Northern Illinois',
+    },
+    {
+      label: 'Northern Iowa',
+      value: 'Northern Iowa',
+    },
+    {
+      label: 'Northern Kentucky',
+      value: 'Northern Kentucky',
+    },
+    {
+      label: 'North Florida',
+      value: 'North Florida',
+    },
+    {
+      label: 'North Texas',
+      value: 'North Texas',
+    },
+    {
+      label: 'Northwestern',
+      value: 'Northwestern',
+    },
+    {
+      label: 'Northwestern State',
+      value: 'Northwestern State',
+    },
+    {
+      label: 'Notre Dame',
+      value: 'Notre Dame',
+    },
+    {
+      label: 'Oakland',
+      value: 'Oakland',
+    },
+    {
+      label: 'Ohio State',
+      value: 'Ohio State',
+    },
+    {
+      label: 'Ohio University',
+      value: 'Ohio University',
+    },
+    {
+      label: 'Oklahoma',
+      value: 'Oklahoma',
+    },
+    {
+      label: 'Oklahoma State',
+      value: 'Oklahoma State',
+    },
+    {
+      label: 'Old Dominion',
+      value: 'Old Dominion',
+    },
+    {
+      label: 'Oral Roberts',
+      value: 'Oral Roberts',
+    },
+    {
+      label: 'Oregon',
+      value: 'Oregon',
+    },
+    {
+      label: 'Oregon State',
+      value: 'Oregon State',
+    },
+    {
+      label: 'Pacific',
+      value: 'Pacific',
+    },
+    {
+      label: 'Penn State',
+      value: 'Penn State',
+    },
+    {
+      label: 'Pennsylvania',
+      value: 'Pennsylvania',
+    },
+    {
+      label: 'Pepperdine',
+      value: 'Pepperdine',
+    },
+    {
+      label: 'Pittsburgh',
+      value: 'Pittsburgh',
+    },
+    {
+      label: 'Portland',
+      value: 'Portland',
+    },
+    {
+      label: 'Prairie View A&M',
+      value: 'Prairie View A&M',
+    },
+    {
+      label: 'Presbyterian College',
+      value: 'Presbyterian College',
+    },
+    {
+      label: 'Princeton',
+      value: 'Princeton',
+    },
+    {
+      label: 'Providence',
+      value: 'Providence',
+    },
+    {
+      label: 'Purdue',
+      value: 'Purdue',
+    },
+    {
+      label: 'Quinnipiac',
+      value: 'Quinnipiac',
+    },
+    {
+      label: 'Radford',
+      value: 'Radford',
+    },
+    {
+      label: 'Rhode Island',
+      value: 'Rhode Island',
+    },
+    {
+      label: 'Rice',
+      value: 'Rice',
+    },
+    {
+      label: 'Richmond',
+      value: 'Richmond',
+    },
+    {
+      label: 'Rider',
+      value: 'Rider',
+    },
+    {
+      label: 'Robert Morris',
+      value: 'Robert Morris',
+    },
+    {
+      label: 'Rutgers',
+      value: 'Rutgers',
+    },
+    {
+      label: 'Sacramento State',
+      value: 'Sacramento State',
+    },
+    {
+      label: 'Sacred Heart',
+      value: 'Sacred Heart',
+    },
+    {
+      label: 'Saint Louis',
+      value: 'Saint Louis',
+    },
+    {
+      label: 'Samford',
+      value: 'Samford',
+    },
+    {
+      label: 'Sam Houston State',
+      value: 'Sam Houston State',
+    },
+    {
+      label: 'San Diego',
+      value: 'San Diego',
+    },
+    {
+      label: 'San Diego State',
+      value: 'San Diego State',
+    },
+    {
+      label: 'San Francisco',
+      value: 'San Francisco',
+    },
+    {
+      label: 'San Jose State',
+      value: 'San Jose State',
+    },
+    {
+      label: 'Santa Clara',
+      value: 'Santa Clara',
+    },
+    {
+      label: 'Savannah State',
+      value: 'Savannah State',
+    },
+    {
+      label: 'Seattle',
+      value: 'Seattle',
+    },
+    {
+      label: 'SE Louisiana',
+      value: 'SE Louisiana',
+    },
+    {
+      label: 'SE Missouri State',
+      value: 'SE Missouri State',
+    },
+    {
+      label: 'Seton Hall',
+      value: 'Seton Hall',
+    },
+    {
+      label: 'Siena',
+      value: 'Siena',
+    },
+    {
+      label: 'SMU',
+      value: 'SMU',
+    },
+    {
+      label: 'South Alabama',
+      value: 'South Alabama',
+    },
+    {
+      label: 'South Carolina',
+      value: 'South Carolina',
+    },
+    {
+      label: 'South Carolina State',
+      value: 'South Carolina State',
+    },
+    {
+      label: 'South Dakota',
+      value: 'South Dakota',
+    },
+    {
+      label: 'South Dakota State',
+      value: 'South Dakota State',
+    },
+    {
+      label: 'Southern Illinois',
+      value: 'Southern Illinois',
+    },
+    {
+      label: 'Southern Illinois-Edwardsville',
+      value: 'Southern Illinois-Edwardsville',
+    },
+    {
+      label: 'Southern Mississippi',
+      value: 'Southern Mississippi',
+    },
+    {
+      label: 'Southern University',
+      value: 'Southern University',
+    },
+    {
+      label: 'Southern Utah',
+      value: 'Southern Utah',
+    },
+    {
+      label: 'South Florida',
+      value: 'South Florida',
+    },
+    {
+      label: 'St. Bonaventure',
+      value: 'St. Bonaventure',
+    },
+    {
+      label: 'St. Francis (NY)',
+      value: 'St. Francis (NY)',
+    },
+    {
+      label: 'St. Francis (PA)',
+      value: 'St. Francis (PA)',
+    },
+    {
+      label: 'St. John’s',
+      value: 'St. John’s',
+    },
+    {
+      label: 'St. Joseph',
+      value: 'St. Joseph',
+    },
+    {
+      label: 'St. Mary’s',
+      value: 'St. Mary’s',
+    },
+    {
+      label: 'St. Peter’s',
+      value: 'St. Peter’s',
+    },
+    {
+      label: 'Stanford',
+      value: 'Stanford',
+    },
+    {
+      label: 'Stephen F. Austin',
+      value: 'Stephen F. Austin',
+    },
+    {
+      label: 'Stetson',
+      value: 'Stetson',
+    },
+    {
+      label: 'Stony Brook',
+      value: 'Stony Brook',
+    },
+    {
+      label: 'Syracuse',
+      value: 'Syracuse',
+    },
+    {
+      label: 'Temple',
+      value: 'Temple',
+    },
+    {
+      label: 'Tennessee',
+      value: 'Tennessee',
+    },
+    {
+      label: 'Tennessee State',
+      value: 'Tennessee State',
+    },
+    {
+      label: 'Tennessee Tech',
+      value: 'Tennessee Tech',
+    },
+    {
+      label: 'Texas',
+      value: 'Texas',
+    },
+    {
+      label: 'Texas A&M',
+      value: 'Texas A&M',
+    },
+    {
+      label: 'Texas A&M Corpus Christi',
+      value: 'Texas A&M Corpus Christi',
+    },
+    {
+      label: 'Texas Christian',
+      value: 'Texas Christian',
+    },
+    {
+      label: 'Texas Southern',
+      value: 'Texas Southern',
+    },
+    {
+      label: 'Texas State',
+      value: 'Texas State',
+    },
+    {
+      label: 'Texas Tech',
+      value: 'Texas Tech',
+    },
+    {
+      label: 'The Citadel',
+      value: 'The Citadel',
+    },
+    {
+      label: 'Toledo',
+      value: 'Toledo',
+    },
+    {
+      label: 'Towson',
+      value: 'Towson',
+    },
+    {
+      label: 'Troy',
+      value: 'Troy',
+    },
+    {
+      label: 'Tulane',
+      value: 'Tulane',
+    },
+    {
+      label: 'Tulsa',
+      value: 'Tulsa',
+    },
+    {
+      label: 'UAB',
+      value: 'UAB',
+    },
+    {
+      label: 'UC-Irvine',
+      value: 'UC-Irvine',
+    },
+    {
+      label: 'UC-Riverside',
+      value: 'UC-Riverside',
+    },
+    {
+      label: 'UC-Santa Barbara',
+      value: 'UC-Santa Barbara',
+    },
+    {
+      label: 'UCLA',
+      value: 'UCLA',
+    },
+    {
+      label: 'UMass-Lowell',
+      value: 'UMass-Lowell',
+    },
+    {
+      label: 'UNC-Asheville',
+      value: 'UNC-Asheville',
+    },
+    {
+      label: 'UNC-Greensboro',
+      value: 'UNC-Greensboro',
+    },
+    {
+      label: 'UNC-Wilmington',
+      value: 'UNC-Wilmington',
+    },
+    {
+      label: 'UNLV',
+      value: 'UNLV',
+    },
+    {
+      label: 'USC',
+      value: 'USC',
+    },
+    {
+      label: 'USC-Upstate',
+      value: 'USC-Upstate',
+    },
+    {
+      label: 'UT-Arlington',
+      value: 'UT-Arlington',
+    },
+    {
+      label: 'UT-Chattanooga',
+      value: 'UT-Chattanooga',
+    },
+    {
+      label: 'UT-Martin',
+      value: 'UT-Martin',
+    },
+    {
+      label: 'UT-Pan American',
+      value: 'UT-Pan American',
+    },
+    {
+      label: 'UT-San Antonio',
+      value: 'UT-San Antonio',
+    },
+    {
+      label: 'Utah',
+      value: 'Utah',
+    },
+    {
+      label: 'Utah State',
+      value: 'Utah State',
+    },
+    {
+      label: 'Utah Valley',
+      value: 'Utah Valley',
+    },
+    {
+      label: 'UTEP',
+      value: 'UTEP',
+    },
+    {
+      label: 'Valparaiso',
+      value: 'Valparaiso',
+    },
+    {
+      label: 'Vanderbilt',
+      value: 'Vanderbilt',
+    },
+    {
+      label: 'VCU',
+      value: 'VCU',
+    },
+    {
+      label: 'Vermont',
+      value: 'Vermont',
+    },
+    {
+      label: 'Villanova',
+      value: 'Villanova',
+    },
+    {
+      label: 'Virginia',
+      value: 'Virginia',
+    },
+    {
+      label: 'Virginia Tech',
+      value: 'Virginia Tech',
+    },
+    {
+      label: 'VMI',
+      value: 'VMI',
+    },
+    {
+      label: 'Wagner',
+      value: 'Wagner',
+    },
+    {
+      label: 'Wake Forest',
+      value: 'Wake Forest',
+    },
+    {
+      label: 'Washington',
+      value: 'Washington',
+    },
+    {
+      label: 'Washington State',
+      value: 'Washington State',
+    },
+    {
+      label: 'Weber State',
+      value: 'Weber State',
+    },
+    {
+      label: 'Western Carolina',
+      value: 'Western Carolina',
+    },
+    {
+      label: 'Western Illinois',
+      value: 'Western Illinois',
+    },
+    {
+      label: 'Western Kentucky',
+      value: 'Western Kentucky',
+    },
+    {
+      label: 'Western Michigan',
+      value: 'Western Michigan',
+    },
+    {
+      label: 'West Virginia',
+      value: 'West Virginia',
+    },
+    {
+      label: 'Wichita State',
+      value: 'Wichita State',
+    },
+    {
+      label: 'William & Mary',
+      value: 'William & Mary',
+    },
+    {
+      label: 'Winthrop',
+      value: 'Winthrop',
+    },
+    {
+      label: 'Wisconsin',
+      value: 'Wisconsin',
+    },
+    {
+      label: 'Wisconsin-Green Bay',
+      value: 'Wisconsin-Green Bay',
+    },
+    {
+      label: 'Wisconsin-Milwaukee',
+      value: 'Wisconsin-Milwaukee',
+    },
+    {
+      label: 'Wofford',
+      value: 'Wofford',
+    },
+    {
+      label: 'Wright State',
+      value: 'Wright State',
+    },
+    {
+      label: 'Wyoming',
+      value: 'Wyoming',
+    },
+    {
+      label: 'Xavier',
+      value: 'Xavier',
+    },
+    {
+      label: 'Yale',
+      value: 'Yale',
+    },
+    {
+      label: 'Youngstown State',
+      value: 'Youngstown State',
+    },
+  ],
+  NCAA_BASKETBALL_CONF: [
+    {
+      label: 'Atlantic Coast',
+      value: 'Atlantic Coast',
+    },
+    {
+      label: 'Big East',
+      value: 'Big East',
+    },
+    {
+      label: 'Big-10',
+      value: 'Big-10',
+    },
+    {
+      label: 'Big-12',
+      value: 'Big-12',
+    },
+    {
+      label: 'Pacific-12',
+      value: 'Pacific-12',
+    },
+    {
+      label: 'Southeastern',
+      value: 'Southeastern',
+    },
+    {
+      label: 'American Athletic',
+      value: 'American Athletic',
+    },
+    {
+      label: 'Atlantic-10',
+      value: 'Atlantic-10',
+    },
+    {
+      label: 'Conference USA',
+      value: 'Conference USA',
+    },
+    {
+      label: 'Mountain West',
+      value: 'Mountain West',
+    },
+    {
+      label: 'West Coast',
+      value: 'West Coast',
+    },
+    {
+      label: 'America East',
+      value: 'America East',
+    },
+    {
+      label: 'Colonial Athletic Association',
+      value: 'Colonial Athletic Association',
+    },
+    {
+      label: 'Horizon League',
+      value: 'Horizon League',
+    },
+    {
+      label: 'Metro Atlantic Athletic',
+      value: 'Metro Atlantic Athletic',
+    },
+    {
+      label: 'Mid-American',
+      value: 'Mid-American',
+    },
+    {
+      label: 'Missouri Valley',
+      value: 'Missouri Valley',
+    },
+    {
+      label: 'Sun Belt',
+      value: 'Sun Belt',
+    },
+    {
+      label: 'Atlantic Sun',
+      value: 'Atlantic Sun',
+    },
+    {
+      label: 'Big Sky',
+      value: 'Big Sky',
+    },
+    {
+      label: 'Big West',
+      value: 'Big West',
+    },
+    {
+      label: 'Ivy League',
+      value: 'Ivy League',
+    },
+    {
+      label: 'Ohio Valley',
+      value: 'Ohio Valley',
+    },
+    {
+      label: 'Patriot',
+      value: 'Patriot',
+    },
+    {
+      label: 'Southern',
+      value: 'Southern',
+    },
+    {
+      label: 'Big South',
+      value: 'Big South',
+    },
+    {
+      label: 'Mid-Eastern Athletic',
+      value: 'Mid-Eastern Athletic',
+    },
+    {
+      label: 'Northeast',
+      value: 'Northeast',
+    },
+    {
+      label: 'Southland',
+      value: 'Southland',
+    },
+    {
+      label: 'Southwestern Athletic',
+      value: 'Southwestern Athletic',
+    },
+    {
+      label: 'Summit',
+      value: 'Summit',
+    },
+    {
+      label: 'Western Athletic Conference',
+      value: 'Western Athletic Conference',
+    },
+  ],
+  NCAA_BASKETBALL_ATL_COAST_CONF: [
+    {
+      label: 'Boston College',
+      value: 'Boston College',
+    },
+    {
+      label: 'Clemson',
+      value: 'Clemson',
+    },
+    {
+      label: 'Duke',
+      value: 'Duke',
+    },
+    {
+      label: 'Florida State',
+      value: 'Florida State',
+    },
+    {
+      label: 'Georgia Tech',
+      value: 'Georgia Tech',
+    },
+    {
+      label: 'Louisville',
+      value: 'Louisville',
+    },
+    {
+      label: 'Miami (FL)',
+      value: 'Miami (FL)',
+    },
+    {
+      label: 'North Carolina',
+      value: 'North Carolina',
+    },
+    {
+      label: 'N.C. State',
+      value: 'N.C. State',
+    },
+    {
+      label: 'Notre Dame',
+      value: 'Notre Dame',
+    },
+    {
+      label: 'Pittsburgh',
+      value: 'Pittsburgh',
+    },
+    {
+      label: 'Syracuse',
+      value: 'Syracuse',
+    },
+    {
+      label: 'Virginia',
+      value: 'Virginia',
+    },
+    {
+      label: 'Virginia Tech',
+      value: 'Virginia Tech',
+    },
+    {
+      label: 'Wake Forest',
+      value: 'Wake Forest',
+    },
+  ],
+  NCAA_BASKETBALL_BIG_EAST: [
+    {
+      label: 'Butler',
+      value: 'Butler',
+    },
+    {
+      label: 'Creighton',
+      value: 'Creighton',
+    },
+    {
+      label: 'DePaul',
+      value: 'DePaul',
+    },
+    {
+      label: 'Georgetown',
+      value: 'Georgetown',
+    },
+    {
+      label: 'Marquette',
+      value: 'Marquette',
+    },
+    {
+      label: 'Providence',
+      value: 'Providence',
+    },
+    {
+      label: 'St. John’s',
+      value: 'St. John’s',
+    },
+    {
+      label: 'Seton Hall',
+      value: 'Seton Hall',
+    },
+    {
+      label: 'Villanova',
+      value: 'Villanova',
+    },
+    {
+      label: 'Xavier',
+      value: 'Xavier',
+    },
+  ],
+  NCAA_BASKETBALL_BIG_10: [
+    {
+      label: 'Illinois',
+      value: 'Illinois',
+    },
+    {
+      label: 'Indiana',
+      value: 'Indiana',
+    },
+    {
+      label: 'Iowa',
+      value: 'Iowa',
+    },
+    {
+      label: 'Maryland',
+      value: 'Maryland',
+    },
+    {
+      label: 'Michigan',
+      value: 'Michigan',
+    },
+    {
+      label: 'Michigan State',
+      value: 'Michigan State',
+    },
+    {
+      label: 'Minnesota',
+      value: 'Minnesota',
+    },
+    {
+      label: 'Nebraska',
+      value: 'Nebraska',
+    },
+    {
+      label: 'Northwestern',
+      value: 'Northwestern',
+    },
+    {
+      label: 'Ohio State',
+      value: 'Ohio State',
+    },
+    {
+      label: 'Penn State',
+      value: 'Penn State',
+    },
+    {
+      label: 'Purdue',
+      value: 'Purdue',
+    },
+    {
+      label: 'Rutgers',
+      value: 'Rutgers',
+    },
+    {
+      label: 'Wisconsin',
+      value: 'Wisconsin',
+    },
+  ],
+  NCAA_BASKETBALL_BIG_12: [
+    {
+      label: 'Baylor',
+      value: 'Baylor',
+    },
+    {
+      label: 'Iowa',
+      value: 'Iowa',
+    },
+    {
+      label: 'Iowa State',
+      value: 'Iowa State',
+    },
+    {
+      label: 'Kansas',
+      value: 'Kansas',
+    },
+    {
+      label: 'Kansas State',
+      value: 'Kansas State',
+    },
+    {
+      label: 'Oklahoma',
+      value: 'Oklahoma',
+    },
+    {
+      label: 'Oklahoma State',
+      value: 'Oklahoma State',
+    },
+    {
+      label: 'Texas',
+      value: 'Texas',
+    },
+    {
+      label: 'Texas Christian',
+      value: 'Texas Christian',
+    },
+    {
+      label: 'Texas Tech',
+      value: 'Texas Tech',
+    },
+    {
+      label: 'West Virginia',
+      value: 'West Virginia',
+    },
+  ],
+  NCAA_BASKETBALL_PACIFIC_12: [
+    {
+      label: 'Arizona',
+      value: 'Arizona',
+    },
+    {
+      label: 'Arizona State',
+      value: 'Arizona State',
+    },
+    {
+      label: 'California',
+      value: 'California',
+    },
+    {
+      label: 'Colorado',
+      value: 'Colorado',
+    },
+    {
+      label: 'Oregon',
+      value: 'Oregon',
+    },
+    {
+      label: 'Oregon State',
+      value: 'Oregon State',
+    },
+    {
+      label: 'Stanford',
+      value: 'Stanford',
+    },
+    {
+      label: 'UCLA',
+      value: 'UCLA',
+    },
+    {
+      label: 'USC',
+      value: 'USC',
+    },
+    {
+      label: 'Utah',
+      value: 'Utah',
+    },
+    {
+      label: 'Washington',
+      value: 'Washington',
+    },
+    {
+      label: 'Washington State',
+      value: 'Washington State',
+    },
+  ],
+  NCAA_BASKETBALL_SOUTHEASTERN: [
+    {
+      label: 'Alabama',
+      value: 'Alabama',
+    },
+    {
+      label: 'Arkansas',
+      value: 'Arkansas',
+    },
+    {
+      label: 'Auburn',
+      value: 'Auburn',
+    },
+    {
+      label: 'Florida',
+      value: 'Florida',
+    },
+    {
+      label: 'Georgia',
+      value: 'Georgia',
+    },
+    {
+      label: 'LSU',
+      value: 'LSU',
+    },
+    {
+      label: 'Kentucky',
+      value: 'Kentucky',
+    },
+    {
+      label: 'Missouri',
+      value: 'Missouri',
+    },
+    {
+      label: 'Mississippi',
+      value: 'Mississippi',
+    },
+    {
+      label: 'Mississippi State',
+      value: 'Mississippi State',
+    },
+    {
+      label: 'South Carolina',
+      value: 'South Carolina',
+    },
+    {
+      label: 'Texas A&M',
+      value: 'Texas A&M',
+    },
+    {
+      label: 'Tennessee',
+      value: 'Tennessee',
+    },
+    {
+      label: 'Vanderbilt',
+      value: 'Vanderbilt',
+    },
+  ],
+  NCAA_BASKETBALL_AMER_ATH: [
+    {
+      label: 'Central Florida',
+      value: 'Central Florida',
+    },
+    {
+      label: 'Cincinnati',
+      value: 'Cincinnati',
+    },
+    {
+      label: 'Connecticut',
+      value: 'Connecticut',
+    },
+    {
+      label: 'East Carolina',
+      value: 'East Carolina',
+    },
+    {
+      label: 'Houston',
+      value: 'Houston',
+    },
+    {
+      label: 'Memphis',
+      value: 'Memphis',
+    },
+    {
+      label: 'SMU',
+      value: 'SMU',
+    },
+    {
+      label: 'South Florida',
+      value: 'South Florida',
+    },
+    {
+      label: 'Temple',
+      value: 'Temple',
+    },
+    {
+      label: 'Tulane',
+      value: 'Tulane',
+    },
+    {
+      label: 'Tulsa',
+      value: 'Tulsa',
+    },
+  ],
+  NCAA_BASKETBALL_ATL_10: [
+    {
+      label: 'Davidson',
+      value: 'Davidson',
+    },
+    {
+      label: 'Dayton',
+      value: 'Dayton',
+    },
+    {
+      label: 'Duquesne',
+      value: 'Duquesne',
+    },
+    {
+      label: 'Fordham',
+      value: 'Fordham',
+    },
+    {
+      label: 'George Mason',
+      value: 'George Mason',
+    },
+    {
+      label: 'George Washington',
+      value: 'George Washington',
+    },
+    {
+      label: 'La Salle',
+      value: 'La Salle',
+    },
+    {
+      label: 'Massachusetts',
+      value: 'Massachusetts',
+    },
+    {
+      label: 'Rhode Island',
+      value: 'Rhode Island',
+    },
+    {
+      label: 'Richmond',
+      value: 'Richmond',
+    },
+    {
+      label: 'Saint Louis',
+      value: 'Saint Louis',
+    },
+    {
+      label: 'St. Bonaventure',
+      value: 'St. Bonaventure',
+    },
+    {
+      label: 'St. Joseph',
+      value: 'St. Joseph',
+    },
+    {
+      label: 'VCU',
+      value: 'VCU',
+    },
+  ],
+  NCAA_BASKETBALL_CONF_USA: [
+    {
+      label: 'Charlotte',
+      value: 'Charlotte',
+    },
+    {
+      label: 'Florida Atlantic',
+      value: 'Florida Atlantic',
+    },
+    {
+      label: 'Florida International',
+      value: 'Florida International',
+    },
+    {
+      label: 'Louisiana Tech',
+      value: 'Louisiana Tech',
+    },
+    {
+      label: 'Marshall',
+      value: 'Marshall',
+    },
+    {
+      label: 'Middle Tennessee State',
+      value: 'Middle Tennessee State',
+    },
+    {
+      label: 'North Texas',
+      value: 'North Texas',
+    },
+    {
+      label: 'Old Dominion',
+      value: 'Old Dominion',
+    },
+    {
+      label: 'Rice',
+      value: 'Rice',
+    },
+    {
+      label: 'Southern Mississippi',
+      value: 'Southern Mississippi',
+    },
+    {
+      label: 'UAB',
+      value: 'UAB',
+    },
+    {
+      label: 'UTEP',
+      value: 'UTEP',
+    },
+    {
+      label: 'UT-San Antonio',
+      value: 'UT-San Antonio',
+    },
+    {
+      label: 'Western Kentucky',
+      value: 'Western Kentucky',
+    },
+  ],
+  NCAA_BASKETBALL_MNT_WEST: [
+    {
+      label: 'Air Force',
+      value: 'Air Force',
+    },
+    {
+      label: 'Boise State',
+      value: 'Boise State',
+    },
+    {
+      label: 'Colorado State',
+      value: 'Colorado State',
+    },
+    {
+      label: 'Fresno State',
+      value: 'Fresno State',
+    },
+    {
+      label: 'New Mexico',
+      value: 'New Mexico',
+    },
+    {
+      label: 'San Diego State',
+      value: 'San Diego State',
+    },
+    {
+      label: 'UNLV',
+      value: 'UNLV',
+    },
+    {
+      label: 'Utah State',
+      value: 'Utah State',
+    },
+    {
+      label: 'Wyoming',
+      value: 'Wyoming',
+    },
+    {
+      label: 'San Jose State',
+      value: 'San Jose State',
+    },
+  ],
+  NCAA_BASKETBALL_WEST_COAST: [
+    {
+      label: 'BYU',
+      value: 'BYU',
+    },
+    {
+      label: 'Gonzaga',
+      value: 'Gonzaga',
+    },
+    {
+      label: 'Loyola-Marymount',
+      value: 'Loyola-Marymount',
+    },
+    {
+      label: 'Pacific',
+      value: 'Pacific',
+    },
+    {
+      label: 'Pepperdine',
+      value: 'Pepperdine',
+    },
+    {
+      label: 'Portland',
+      value: 'Portland',
+    },
+    {
+      label: 'San Diego',
+      value: 'San Diego',
+    },
+    {
+      label: 'San Francisco',
+      value: 'San Francisco',
+    },
+    {
+      label: 'Santa Clara',
+      value: 'Santa Clara',
+    },
+    {
+      label: 'St. Mary’s',
+      value: 'St. Mary’s',
+    },
+  ],
+  NCAA_BASKETBALL_AMER_EAST: [
+    {
+      label: 'Albany',
+      value: 'Albany',
+    },
+    {
+      label: 'Binghamton',
+      value: 'Binghamton',
+    },
+    {
+      label: 'Hartford',
+      value: 'Hartford',
+    },
+    {
+      label: 'Maryland-Baltimore County',
+      value: 'Maryland-Baltimore County',
+    },
+    {
+      label: 'New Hampshire',
+      value: 'New Hampshire',
+    },
+    {
+      label: 'Maine',
+      value: 'Maine',
+    },
+    {
+      label: 'Stony Brook',
+      value: 'Stony Brook',
+    },
+    {
+      label: 'UMass-Lowell',
+      value: 'UMass-Lowell',
+    },
+    {
+      label: 'Vermont',
+      value: 'Vermont',
+    },
+  ],
+  NCAA_BASKETBALL_COL_ATH_ASSOC: [
+    {
+      label: 'College of Charleston',
+      value: 'College of Charleston',
+    },
+    {
+      label: 'Delaware',
+      value: 'Delaware',
+    },
+    {
+      label: 'Drexel',
+      value: 'Drexel',
+    },
+    {
+      label: 'Hofstra',
+      value: 'Hofstra',
+    },
+    {
+      label: 'James Madison',
+      value: 'James Madison',
+    },
+    {
+      label: 'Northeastern',
+      value: 'Northeastern',
+    },
+    {
+      label: 'Towson',
+      value: 'Towson',
+    },
+    {
+      label: 'UNC-Wilmington',
+      value: 'UNC-Wilmington',
+    },
+    {
+      label: 'William & Mary',
+      value: 'William & Mary',
+    },
+  ],
+  NCAA_BASKETBALL_HORI_LEAGUE: [
+    {
+      label: 'Detroit',
+      value: 'Detroit',
+    },
+    {
+      label: 'Cleveland State',
+      value: 'Cleveland State',
+    },
+    {
+      label: 'Illinois-Chicago',
+      value: 'Illinois-Chicago',
+    },
+    {
+      label: 'Wisconsin-Green Bay',
+      value: 'Wisconsin-Green Bay',
+    },
+    {
+      label: 'Wisconsin-Milwaukee',
+      value: 'Wisconsin-Milwaukee',
+    },
+    {
+      label: 'Valparaiso',
+      value: 'Valparaiso',
+    },
+    {
+      label: 'Wright State',
+      value: 'Wright State',
+    },
+    {
+      label: 'Youngstown State',
+      value: 'Youngstown State',
+    },
+  ],
+  NCAA_BASKETBALL_METRO_ATL_ATH: [
+    {
+      label: 'Canisius',
+      value: 'Canisius',
+    },
+    {
+      label: 'Fairfield',
+      value: 'Fairfield',
+    },
+    {
+      label: 'Iona',
+      value: 'Iona',
+    },
+    {
+      label: 'Manhattan',
+      value: 'Manhattan',
+    },
+    {
+      label: 'Marist',
+      value: 'Marist',
+    },
+    {
+      label: 'Monmouth',
+      value: 'Monmouth',
+    },
+    {
+      label: 'Niagara',
+      value: 'Niagara',
+    },
+    {
+      label: 'Quinnipiac',
+      value: 'Quinnipiac',
+    },
+    {
+      label: 'Rider',
+      value: 'Rider',
+    },
+    {
+      label: 'Siena',
+      value: 'Siena',
+    },
+    {
+      label: 'St. Peter’s',
+      value: 'St. Peter’s',
+    },
+  ],
+  NCAA_BASKETBALL_MID_AMER: [
+    {
+      label: 'Akron',
+      value: 'Akron',
+    },
+    {
+      label: 'Ball State',
+      value: 'Ball State',
+    },
+    {
+      label: 'Bowling Green',
+      value: 'Bowling Green',
+    },
+    {
+      label: 'Buffalo',
+      value: 'Buffalo',
+    },
+    {
+      label: 'Central Michigan',
+      value: 'Central Michigan',
+    },
+    {
+      label: 'Eastern Michigan',
+      value: 'Eastern Michigan',
+    },
+    {
+      label: 'Kent State',
+      value: 'Kent State',
+    },
+    {
+      label: 'Miami (OH)',
+      value: 'Miami (OH)',
+    },
+    {
+      label: 'Northern Illinois',
+      value: 'Northern Illinois',
+    },
+    {
+      label: 'Ohio University',
+      value: 'Ohio University',
+    },
+    {
+      label: 'Toledo',
+      value: 'Toledo',
+    },
+    {
+      label: 'Western Michigan',
+      value: 'Western Michigan',
+    },
+  ],
+  NCAA_BASKETBALL_MISS_VALLEY: [
+    {
+      label: 'Bradley',
+      value: 'Bradley',
+    },
+    {
+      label: 'Drake',
+      value: 'Drake',
+    },
+    {
+      label: 'Evansville',
+      value: 'Evansville',
+    },
+    {
+      label: 'Illinois State',
+      value: 'Illinois State',
+    },
+    {
+      label: 'Indiana State',
+      value: 'Indiana State',
+    },
+    {
+      label: 'Loyola-Chicago',
+      value: 'Loyola-Chicago',
+    },
+    {
+      label: 'Missouri State',
+      value: 'Missouri State',
+    },
+    {
+      label: 'Northern Iowa',
+      value: 'Northern Iowa',
+    },
+    {
+      label: 'Southern Illinois',
+      value: 'Southern Illinois',
+    },
+    {
+      label: 'Wichita State',
+      value: 'Wichita State',
+    },
+  ],
+  NCAA_BASKETBALL_SUN_BELT: [
+    {
+      label: 'Appalachian State',
+      value: 'Appalachian State',
+    },
+    {
+      label: 'Arkansas-Little Rock',
+      value: 'Arkansas-Little Rock',
+    },
+    {
+      label: 'Arkansas State',
+      value: 'Arkansas State',
+    },
+    {
+      label: 'Georgia State',
+      value: 'Georgia State',
+    },
+    {
+      label: 'Louisiana-Lafayette',
+      value: 'Louisiana-Lafayette',
+    },
+    {
+      label: 'Louisiana-Monroe',
+      value: 'Louisiana-Monroe',
+    },
+    {
+      label: 'South Alabama',
+      value: 'South Alabama',
+    },
+    {
+      label: 'Texas State',
+      value: 'Texas State',
+    },
+    {
+      label: 'Troy',
+      value: 'Troy',
+    },
+    {
+      label: 'UT-Arlington',
+      value: 'UT-Arlington',
+    },
+  ],
+  NCAA_BASKETBALL_ATL_SUN: [
+    {
+      label: 'East Tenn State',
+      value: 'East Tenn State',
+    },
+    {
+      label: 'Florida Gulf Coast',
+      value: 'Florida Gulf Coast',
+    },
+    {
+      label: 'Jacksonville',
+      value: 'Jacksonville',
+    },
+    {
+      label: 'Kennesaw State',
+      value: 'Kennesaw State',
+    },
+    {
+      label: 'Lipscomb',
+      value: 'Lipscomb',
+    },
+    {
+      label: 'Mercer',
+      value: 'Mercer',
+    },
+    {
+      label: 'Northern Kentucky',
+      value: 'Northern Kentucky',
+    },
+    {
+      label: 'North Florida',
+      value: 'North Florida',
+    },
+    {
+      label: 'Stetson',
+      value: 'Stetson',
+    },
+    {
+      label: 'USC-Upstate',
+      value: 'USC-Upstate',
+    },
+  ],
+  NCAA_BASKETBALL_BIG_SKY: [
+    {
+      label: 'Eastern Washington',
+      value: 'Eastern Washington',
+    },
+    {
+      label: 'Idaho',
+      value: 'Idaho',
+    },
+    {
+      label: 'Idaho State',
+      value: 'Idaho State',
+    },
+    {
+      label: 'Montana',
+      value: 'Montana',
+    },
+    {
+      label: 'Montana State',
+      value: 'Montana State',
+    },
+    {
+      label: 'Sacramento State',
+      value: 'Sacramento State',
+    },
+    {
+      label: 'Southern Utah',
+      value: 'Southern Utah',
+    },
+    {
+      label: 'Weber State',
+      value: 'Weber State',
+    },
+  ],
+  NCAA_BASKETBALL_BIG_WEST: [
+    {
+      label: 'Cal-Davis',
+      value: 'Cal-Davis',
+    },
+    {
+      label: 'Cal Poly SLO',
+      value: 'Cal Poly SLO',
+    },
+    {
+      label: 'Cal-St. Fullerton',
+      value: 'Cal-St. Fullerton',
+    },
+    {
+      label: 'Cal-St. Northridge',
+      value: 'Cal-St. Northridge',
+    },
+    {
+      label: 'Hawaii',
+      value: 'Hawaii',
+    },
+    {
+      label: 'Long Beach State',
+      value: 'Long Beach State',
+    },
+    {
+      label: 'UC-Irvine',
+      value: 'UC-Irvine',
+    },
+    {
+      label: 'UC-Riverside',
+      value: 'UC-Riverside',
+    },
+    {
+      label: 'UC-Santa Barbara',
+      value: 'UC-Santa Barbara',
+    },
+  ],
+  NCAA_BASKETBALL_IVY_LEAGUE: [
+    {
+      label: 'Brown',
+      value: 'Brown',
+    },
+    {
+      label: 'Columbia',
+      value: 'Columbia',
+    },
+    {
+      label: 'Cornell',
+      value: 'Cornell',
+    },
+    {
+      label: 'Dartmouth',
+      value: 'Dartmouth',
+    },
+    {
+      label: 'Harvard',
+      value: 'Harvard',
+    },
+    {
+      label: 'Pennsylvania',
+      value: 'Pennsylvania',
+    },
+    {
+      label: 'Princeton',
+      value: 'Princeton',
+    },
+    {
+      label: 'Yale',
+      value: 'Yale',
+    },
+  ],
+  NCAA_BASKETBALL_OHIO_VALLEY: [
+    {
+      label: 'Austin Peay',
+      value: 'Austin Peay',
+    },
+    {
+      label: 'Belmont',
+      value: 'Belmont',
+    },
+    {
+      label: 'Eastern Illinois',
+      value: 'Eastern Illinois',
+    },
+    {
+      label: 'Eastern Kentucky',
+      value: 'Eastern Kentucky',
+    },
+    {
+      label: 'Jacksonville State',
+      value: 'Jacksonville State',
+    },
+    {
+      label: 'Morehead State',
+      value: 'Morehead State',
+    },
+    {
+      label: 'Murray State',
+      value: 'Murray State',
+    },
+    {
+      label: 'SE Missouri State',
+      value: 'SE Missouri State',
+    },
+    {
+      label: 'Southern Illinois-Edwardsville',
+      value: 'Southern Illinois-Edwardsville',
+    },
+    {
+      label: 'Tennessee State',
+      value: 'Tennessee State',
+    },
+    {
+      label: 'Tennessee Tech',
+      value: 'Tennessee Tech',
+    },
+    {
+      label: 'UT-Martin',
+      value: 'UT-Martin',
+    },
+  ],
+  NCAA_BASKETBALL_PATRIOT: [
+    {
+      label: 'American University',
+      value: 'American University',
+    },
+    {
+      label: 'Army',
+      value: 'Army',
+    },
+    {
+      label: 'Boston University',
+      value: 'Boston University',
+    },
+    {
+      label: 'Bucknell',
+      value: 'Bucknell',
+    },
+    {
+      label: 'Colgate',
+      value: 'Colgate',
+    },
+    {
+      label: 'Holy Cross',
+      value: 'Holy Cross',
+    },
+    {
+      label: 'Lafayette',
+      value: 'Lafayette',
+    },
+    {
+      label: 'Lehigh',
+      value: 'Lehigh',
+    },
+    {
+      label: 'Loyola-Maryland',
+      value: 'Loyola-Maryland',
+    },
+    {
+      label: 'Navy',
+      value: 'Navy',
+    },
+  ],
+  NCAA_BASKETBALL_SOUTHERN: [
+    {
+      label: 'The Citadel',
+      value: 'The Citadel',
+    },
+    {
+      label: 'Elon University',
+      value: 'Elon University',
+    },
+    {
+      label: 'Furman',
+      value: 'Furman',
+    },
+    {
+      label: 'Samford',
+      value: 'Samford',
+    },
+    {
+      label: 'UNC-Greensboro',
+      value: 'UNC-Greensboro',
+    },
+    {
+      label: 'UT-Chattanooga',
+      value: 'UT-Chattanooga',
+    },
+    {
+      label: 'Western Carolina',
+      value: 'Western Carolina',
+    },
+    {
+      label: 'Wofford',
+      value: 'Wofford',
+    },
+  ],
+  NCAA_BASKETBALL_BIG_SOUTH: [
+    {
+      label: 'Campbell',
+      value: 'Campbell',
+    },
+    {
+      label: 'Charleston Southern',
+      value: 'Charleston Southern',
+    },
+    {
+      label: 'Coastal Carolina',
+      value: 'Coastal Carolina',
+    },
+    {
+      label: 'Gardner-Webb',
+      value: 'Gardner-Webb',
+    },
+    {
+      label: 'High Point',
+      value: 'High Point',
+    },
+    {
+      label: 'Liberty',
+      value: 'Liberty',
+    },
+    {
+      label: 'Longwood',
+      value: 'Longwood',
+    },
+    {
+      label: 'Presbyterian College',
+      value: 'Presbyterian College',
+    },
+    {
+      label: 'Radford',
+      value: 'Radford',
+    },
+    {
+      label: 'UNC-Asheville',
+      value: 'UNC-Asheville',
+    },
+    {
+      label: 'VMI',
+      value: 'VMI',
+    },
+    {
+      label: 'Winthrop',
+      value: 'Winthrop',
+    },
+  ],
+  NCAA_BASKETBALL_MID_EAST_ATH: [
+    {
+      label: 'Bethune Cookman',
+      value: 'Bethune Cookman',
+    },
+    {
+      label: 'Coppin State',
+      value: 'Coppin State',
+    },
+    {
+      label: 'Florida A&M',
+      value: 'Florida A&M',
+    },
+    {
+      label: 'Delaware State',
+      value: 'Delaware State',
+    },
+    {
+      label: 'Hampton',
+      value: 'Hampton',
+    },
+    {
+      label: 'Howard',
+      value: 'Howard',
+    },
+    {
+      label: 'Maryland-Eastern Shore',
+      value: 'Maryland-Eastern Shore',
+    },
+    {
+      label: 'Morgan State',
+      value: 'Morgan State',
+    },
+    {
+      label: 'Norfolk State',
+      value: 'Norfolk State',
+    },
+    {
+      label: 'North Carolina A&T',
+      value: 'North Carolina A&T',
+    },
+    {
+      label: 'North Carolina Central',
+      value: 'North Carolina Central',
+    },
+    {
+      label: 'Savannah State',
+      value: 'Savannah State',
+    },
+    {
+      label: 'South Carolina State',
+      value: 'South Carolina State',
+    },
+  ],
+  NCAA_BASKETBALL_NORTHEAST: [
+    {
+      label: 'Bryant University',
+      value: 'Bryant University',
+    },
+    {
+      label: 'Central Connecticut State',
+      value: 'Central Connecticut State',
+    },
+    {
+      label: 'Long Island University',
+      value: 'Long Island University',
+    },
+    {
+      label: 'Mount St. Mary’s',
+      value: 'Mount St. Mary’s',
+    },
+    {
+      label: 'Sacred Heart',
+      value: 'Sacred Heart',
+    },
+    {
+      label: 'Fairleigh Dickinson',
+      value: 'Fairleigh Dickinson',
+    },
+    {
+      label: 'Robert Morris',
+      value: 'Robert Morris',
+    },
+    {
+      label: 'St. Francis (NY)',
+      value: 'St. Francis (NY)',
+    },
+    {
+      label: 'St. Francis (PA)',
+      value: 'St. Francis (PA)',
+    },
+    {
+      label: 'Wagner',
+      value: 'Wagner',
+    },
+  ],
+  NCAA_BASKETBALL_SOUTHLAND: [
+    {
+      label: 'Abilene Christian',
+      value: 'Abilene Christian',
+    },
+    {
+      label: 'Central Arkansas',
+      value: 'Central Arkansas',
+    },
+    {
+      label: 'Houston Baptist',
+      value: 'Houston Baptist',
+    },
+    {
+      label: 'Incarnate Word',
+      value: 'Incarnate Word',
+    },
+    {
+      label: 'Lamar',
+      value: 'Lamar',
+    },
+    {
+      label: 'McNeese State',
+      value: 'McNeese State',
+    },
+    {
+      label: 'New Orleans',
+      value: 'New Orleans',
+    },
+    {
+      label: 'Nicholls State',
+      value: 'Nicholls State',
+    },
+    {
+      label: 'Northwestern State',
+      value: 'Northwestern State',
+    },
+    {
+      label: 'Oral Roberts',
+      value: 'Oral Roberts',
+    },
+    {
+      label: 'Sam Houston State',
+      value: 'Sam Houston State',
+    },
+    {
+      label: 'Stephen F. Austin',
+      value: 'Stephen F. Austin',
+    },
+    {
+      label: 'SE Louisiana',
+      value: 'SE Louisiana',
+    },
+    {
+      label: 'Texas A&M Corpus Christi',
+      value: 'Texas A&M Corpus Christi',
+    },
+  ],
+  NCAA_BASKETBALL_SOUTHWESTERN_ATH: [
+    {
+      label: 'Alabama A&M',
+      value: 'Alabama A&M',
+    },
+    {
+      label: 'Alabama State',
+      value: 'Alabama State',
+    },
+    {
+      label: 'Alcorn State',
+      value: 'Alcorn State',
+    },
+    {
+      label: 'Arkansas-Pine Bluff',
+      value: 'Arkansas-Pine Bluff',
+    },
+    {
+      label: 'Grambling',
+      value: 'Grambling',
+    },
+    {
+      label: 'Jackson State',
+      value: 'Jackson State',
+    },
+    {
+      label: 'Mississippi Valley State',
+      value: 'Mississippi Valley State',
+    },
+    {
+      label: 'Prairie View A&M',
+      value: 'Prairie View A&M',
+    },
+    {
+      label: 'Southern University',
+      value: 'Southern University',
+    },
+    {
+      label: 'Texas Southern',
+      value: 'Texas Southern',
+    },
+  ],
+  NCAA_BASKETBALL_SUMMIT: [
+    {
+      label: 'Denver',
+      value: 'Denver',
+    },
+    {
+      label: 'IPFW',
+      value: 'IPFW',
+    },
+    {
+      label: 'IUPUI',
+      value: 'IUPUI',
+    },
+    {
+      label: 'Nebraska-Omaha',
+      value: 'Nebraska-Omaha',
+    },
+    {
+      label: 'North Dakota State',
+      value: 'North Dakota State',
+    },
+    {
+      label: 'Oakland',
+      value: 'Oakland',
+    },
+    {
+      label: 'South Dakota',
+      value: 'South Dakota',
+    },
+    {
+      label: 'South Dakota State',
+      value: 'South Dakota State',
+    },
+    {
+      label: 'Western Illinois',
+      value: 'Western Illinois',
+    },
+  ],
+  NCAA_BASKETBALL_WESTERN_ATH_CONF: [
+    {
+      label: 'Cal-St. Bakersfield',
+      value: 'Cal-St. Bakersfield',
+    },
+    {
+      label: 'Chicago State',
+      value: 'Chicago State',
+    },
+    {
+      label: 'Missouri-Kansas City',
+      value: 'Missouri-Kansas City',
+    },
+    {
+      label: 'New Mexico State',
+      value: 'New Mexico State',
+    },
+    {
+      label: 'Utah Valley',
+      value: 'Utah Valley',
+    },
+    {
+      label: 'Seattle',
+      value: 'Seattle',
+    },
+    {
+      label: 'Grand Canyon',
+      value: 'Grand Canyon',
+    },
+    {
+      label: 'UT-Pan American',
+      value: 'UT-Pan American',
+    },
+  ],
 };
 
 export const BASKETBALL_EVENT_DEP_TEAMS = {
@@ -3602,4 +6428,39 @@ export const NCAA_FOOTBALL_EVENT_DEP_TEAMS = {
   'Pac-12': LIST_VALUES.NCAA_FOOTBALL_PAC_12,
   'Southeastern Conference': LIST_VALUES.NCAA_FOOTBALL_SOUTH_CONF,
   'Sun Belt': LIST_VALUES.NCAA_FOOTBALL_SUN_BELT,
+};
+
+export const NCAA_BASKETBALL_EVENT_DEP_TEAMS = {
+  'Atlantic Coast': LIST_VALUES.NCAA_BASKETBALL_ATL_COAST_CONF,
+  'Big East': LIST_VALUES.NCAA_BASKETBALL_BIG_EAST,
+  'Big-10': LIST_VALUES.NCAA_BASKETBALL_BIG_10,
+  'Big-12': LIST_VALUES.NCAA_BASKETBALL_BIG_12,
+  'Pacific-12': LIST_VALUES.NCAA_BASKETBALL_PACIFIC_12,
+  Southeastern: LIST_VALUES.NCAA_BASKETBALL_SOUTHEASTERN,
+  'American Athletic': LIST_VALUES.NCAA_BASKETBALL_AMER_ATH,
+  'Atlantic-10': LIST_VALUES.NCAA_BASKETBALL_ATL_10,
+  'Conference USA': LIST_VALUES.NCAA_BASKETBALL_CONF_USA,
+  'Mountain West': LIST_VALUES.NCAA_BASKETBALL_MNT_WEST,
+  'West Coast': LIST_VALUES.NCAA_BASKETBALL_WEST_COAST,
+  'America East': LIST_VALUES.NCAA_BASKETBALL_AMER_EAST,
+  'Colonial Athletic Association': LIST_VALUES.NCAA_BASKETBALL_COL_ATH_ASSOC,
+  'Horizon League': LIST_VALUES.NCAA_BASKETBALL_HORI_LEAGUE,
+  'Metro Atlantic Athletic': LIST_VALUES.NCAA_BASKETBALL_METRO_ATL_ATH,
+  'Mid-American': LIST_VALUES.NCAA_BASKETBALL_MID_AMER,
+  'Missouri Valley': LIST_VALUES.NCAA_BASKETBALL_MISS_VALLEY,
+  'Sun Belt': LIST_VALUES.NCAA_BASKETBALL_SUN_BELT,
+  'Atlantic Sun': LIST_VALUES.NCAA_BASKETBALL_ATL_SUN,
+  'Big Sky': LIST_VALUES.NCAA_BASKETBALL_BIG_SKY,
+  'Big West': LIST_VALUES.NCAA_BASKETBALL_BIG_WEST,
+  'Ivy League': LIST_VALUES.NCAA_BASKETBALL_IVY_LEAGUE,
+  'Ohio Valley': LIST_VALUES.NCAA_BASKETBALL_OHIO_VALLEY,
+  Patriot: LIST_VALUES.NCAA_BASKETBALL_PATRIOT,
+  Southern: LIST_VALUES.NCAA_BASKETBALL_SOUTHERN,
+  'Big South': LIST_VALUES.NCAA_BASKETBALL_BIG_SOUTH,
+  'Mid-Eastern Athletic': LIST_VALUES.NCAA_BASKETBALL_MID_EAST_ATH,
+  Northeast: LIST_VALUES.NCAA_BASKETBALL_NORTHEAST,
+  Southland: LIST_VALUES.NCAA_BASKETBALL_SOUTHLAND,
+  'Southwestern Athletic': LIST_VALUES.NCAA_BASKETBALL_SOUTHWESTERN_ATH,
+  Summit: LIST_VALUES.NCAA_BASKETBALL_SUMMIT,
+  'Western Athletic Conference': LIST_VALUES.NCAA_BASKETBALL_WESTERN_ATH_CONF,
 };
