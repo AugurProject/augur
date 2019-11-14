@@ -214,12 +214,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const data = tx.data;
 
     const relayEstimateRequest = {
-      safe: this.address,
+      safe: this.safeAddress,
       to,
       data: tx.data,
       value: new BigNumber(value.toString()),
       operation,
-      gasToken: this.gasToken,
+      gasToken: '0x9d16B75cB462AF2a1723963D735ee39D957F1468', // TODO: TEMP workaround, this.gasToken returns undefined
     };
 
     let gasEstimates: RelayTxEstimateResponse;
@@ -242,9 +242,9 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       value,
       data,
       operation,
-      new ethers.utils.BigNumber(safeTxGas.toFixed()),
-      new ethers.utils.BigNumber(baseGas.toFixed()),
-      new ethers.utils.BigNumber(gasPrice.toFixed()),
+      new ethers.utils.BigNumber(Number(safeTxGas).toFixed()),
+      new ethers.utils.BigNumber(Number(baseGas).toFixed()),
+      new ethers.utils.BigNumber(Number(gasPrice).toFixed()),
       gasToken,
       refundReceiver,
       nonce
