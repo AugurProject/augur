@@ -163,6 +163,13 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
+export const TEMPLATE_FILTER_ALL = Getters.Markets.TemplateFilters.all;
+export const templateFilterValues = [
+  { header: 'All', value: TEMPLATE_FILTER_ALL},
+  { header: 'Augur templates', value: Getters.Markets.TemplateFilters.templateOnly},
+  { header: 'Custom markets', value: Getters.Markets.TemplateFilters.customOnly},
+]
+
 // # Valid Market Liquidity Spreads
 export const MAX_SPREAD_ALL_SPREADS =
   Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
@@ -298,6 +305,7 @@ export const CATEGORY_PARAM_NAME = 'category';
 export const MAXFEE_PARAM_NAME = 'maxFee';
 export const SPREAD_PARAM_NAME = 'spread';
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
+export const TEMPLATE_FILTER = 'templateFilter';
 
 // # Close Dialog Status
 export const CLOSE_DIALOG_CLOSING = 'CLOSE_DIALOG_CLOSING';

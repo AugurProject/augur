@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import {
   feeFilters,
   spreadFilters,
   invalidFilters,
+  templateFilterValues,
   MAXFEE_PARAM_NAME,
   SPREAD_PARAM_NAME,
   SHOW_INVALID_MARKETS_PARAM_NAME,
+  TEMPLATE_FILTER,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
 import { helpIcon, FilterIcon } from 'modules/common/icons';
@@ -21,148 +23,214 @@ interface MarketsListFiltersProps {
   maxFee: string;
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
+  allTemplateFilter: string;
   isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;
   updateShowInvalid: Function;
+  updateTemplateFilter: Function;
   history: History;
   location: Location;
 }
 
-interface MarketsListFiltersState {
-  selectedFee: string;
-  selectedSpread: string;
-  showInvalidDefault: string;
-}
+const MarketsListFilters = (props: MarketsListFiltersProps) => {
+  const [selectedFee, setSelectedFee] = useState(props.maxFee);
+  const [selectedSpread, setSelectedSpread] = useState(
+    props.maxLiquiditySpread
+  );
+  const [showInvalidDefault, setShowInvalidDefault] = useState(
+    String(props.includeInvalidMarkets)
+  );
+  const [templateFilter, setTemplateFilter] = useState(props.allTemplateFilter);
 
-export default class MarketsListFilters extends React.Component<
-  MarketsListFiltersProps,
-  MarketsListFiltersState
-> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedFee: null,
-      selectedSpread: null,
-      showInvalidDefault: null,
-    };
-  }
-
-  componentDidMount() {
-    const filterOptionsFromQuery = parseQuery(this.props.location.search);
-    this.setState(
-      {
-        selectedFee: filterOptionsFromQuery.maxFee || this.props.maxFee,
-        selectedSpread: filterOptionsFromQuery.spread || this.props.maxLiquiditySpread,
-        showInvalidDefault:
-          filterOptionsFromQuery.showInvalid || this.props.includeInvalidMarkets,
-      },
-      () => {
-        this.props.updateMaxFee(this.state.selectedFee);
-        this.props.updateMaxSpread(this.state.selectedSpread);
-        this.props.updateShowInvalid(this.state.showInvalidDefault);
-      }
-    );
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.location.search !== nextProps.location.search) {
-      const filterOptionsFromQuery = parseQuery(nextProps.location.search);
-      this.setState({
-        selectedFee:  filterOptionsFromQuery.maxFee ? filterOptionsFromQuery.maxFee : this.state.selectedFee,
-        selectedSpread: filterOptionsFromQuery.spread ? filterOptionsFromQuery.spread : this.state.selectedSpread,
-      });
+  useEffect(() => {
+    const filterOptionsFromQuery = parseQuery(props.location.search);
+    if (
+      filterOptionsFromQuery.maxFee &&
+      filterOptionsFromQuery.maxFee !== selectedFee
+    ) {
+      setSelectedFee(filterOptionsFromQuery.maxFee);
+      props.updateMaxFee(filterOptionsFromQuery.maxFee);
     }
-  }
+    if (
+      filterOptionsFromQuery.selectedFee &&
+      filterOptionsFromQuery.selectedFee !== selectedSpread
+    ) {
+      setSelectedSpread(filterOptionsFromQuery.selectedSpread);
+      props.updateMaxSpread(filterOptionsFromQuery.selectedSpread);
+    }
+    if (
+      filterOptionsFromQuery.templateFilter &&
+      filterOptionsFromQuery.templateFilter !== templateFilter
+    ) {
+      setTemplateFilter(filterOptionsFromQuery.templateFilter);
+      props.updateTemplateFilter(filterOptionsFromQuery.templateFilter);
+    }
+  }, [props.location.search]);
 
-  render() {
-    if (!this.state.selectedFee) return null;
+  if (!selectedFee) return null;
 
-    return (
-      <div className={Styles.Filters}>
-        <div className={classNames(Styles.FiltersGroup, {
-          [Styles.Searching]: this.props.isSearching,
-        })}>
-          <div>
-            {FilterIcon}
-            Filters
-          </div>
-
-          <div className={Styles.Filter}>
-            <span>Fees</span>
-            {this.generateTooltip('Filters markets based on estimated total fees paid to market creators and reporters')}
-          </div>
-
-          <RadioBarGroup
-            radioButtons={feeFilters}
-            defaultSelected={this.state.selectedFee}
-            onChange={(value: string) => {
-              updateQuery(MAXFEE_PARAM_NAME, value, this.props.location, this.props.history);
-              this.props.updateMaxFee(value);
-            }}
-          />
-
-          <div className={Styles.Filter}>
-            <span>Liquidity Spread</span>
-            {this.generateTooltip('Filters markets based on how wide a bid/offer spread is and the depth of volume')}
-          </div>
-
-          <RadioBarGroup
-            radioButtons={spreadFilters}
-            defaultSelected={this.state.selectedSpread}
-            onChange={(value: string) => {
-              updateQuery(SPREAD_PARAM_NAME, value, this.props.location, this.props.history);
-              this.props.updateMaxSpread(value);
-            }}
-          />
-
-          <div className={Styles.Filter}>
-            <span>Invalid Markets</span>
-            {this.generateTooltip('Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid')}
-          </div>
-
-          <RadioBarGroup
-            radioButtons={invalidFilters}
-            defaultSelected={this.state.showInvalidDefault}
-            onChange={(value: string) => {
-              updateQuery(
-                SHOW_INVALID_MARKETS_PARAM_NAME,
-                value,
-                this.props.location,
-                this.props.history
-              );
-              this.props.updateShowInvalid(value);
-            }}
-          />
+  return (
+    <div className={Styles.Filters}>
+      <div
+        className={classNames(Styles.FiltersGroup, {
+          [Styles.Searching]: props.isSearching,
+        })}
+      >
+        <div>
+          {FilterIcon}
+          Filters
         </div>
-      </div>
-    );
-  }
 
-  generateTooltip(tipText: string) {
-    return (
-      <span className={Styles.Filter_TooltipContainer}>
-        <label
-          className={classNames(
-            TooltipStyles.TooltipHint,
-            Styles.Filter_TooltipHint
+        <div className={Styles.Filter}>
+          <span>Markets</span>
+          {templateFilterTooltip()}
+        </div>
+
+        <RadioBarGroup
+          radioButtons={templateFilterValues}
+          defaultSelected={templateFilter}
+          onChange={(value: string) => {
+            updateQuery(TEMPLATE_FILTER, value, props.location, props.history);
+            setTemplateFilter(value);
+            props.updateTemplateFilter(value);
+          }}
+        />
+
+        <div className={Styles.Filter}>
+          <span>Fees</span>
+          {generateTooltip(
+            'Filters markets based on estimated total fees paid to market creators and reporters',
+            'fees'
           )}
-          data-tip
-          data-for='tooltip--confirm'
-        >
-          {helpIcon}
-        </label>
-        <ReactTooltip
-          id='tooltip--confirm'
-          className={TooltipStyles.Tooltip}
-          effect='solid'
-          place='top'
-          type='light'
-        >
-          <p>{tipText}</p>
-        </ReactTooltip>
-      </span>
-    );
-  }
-}
+        </div>
+
+        <RadioBarGroup
+          radioButtons={feeFilters}
+          defaultSelected={selectedFee}
+          onChange={(value: string) => {
+            updateQuery(
+              MAXFEE_PARAM_NAME,
+              value,
+              props.location,
+              props.history
+            );
+            setSelectedFee(value);
+            props.updateMaxFee(value);
+          }}
+        />
+
+        <div className={Styles.Filter}>
+          <span>Liquidity Spread</span>
+          {generateTooltip(
+            'Filters markets based on how wide a bid/offer spread is and the depth of volume',
+            'liquidity'
+          )}
+        </div>
+
+        <RadioBarGroup
+          radioButtons={spreadFilters}
+          defaultSelected={selectedSpread}
+          onChange={(value: string) => {
+            updateQuery(
+              SPREAD_PARAM_NAME,
+              value,
+              props.location,
+              props.history
+            );
+            setSelectedSpread(value);
+            props.updateMaxSpread(value);
+          }}
+        />
+
+        <div className={Styles.Filter}>
+          <span>Invalid Markets</span>
+          {generateTooltip(
+            'Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid',
+            'invalid'
+          )}
+        </div>
+
+        <RadioBarGroup
+          radioButtons={invalidFilters}
+          defaultSelected={showInvalidDefault}
+          onChange={(value: string) => {
+            updateQuery(
+              SHOW_INVALID_MARKETS_PARAM_NAME,
+              value,
+              props.location,
+              props.history
+            );
+            setShowInvalidDefault(value);
+            props.updateShowInvalid(value);
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default MarketsListFilters;
+
+const generateTooltip = (tipText: string, key: string) => {
+  return (
+    <span className={Styles.Filter_TooltipContainer}>
+      <label
+        className={classNames(
+          TooltipStyles.TooltipHint,
+          Styles.Filter_TooltipHint
+        )}
+        data-tip
+        data-for={key}
+      >
+        {helpIcon}
+      </label>
+      <ReactTooltip
+        id={key}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        <p>{tipText}</p>
+      </ReactTooltip>
+    </span>
+  );
+};
+
+const templateFilterTooltip = () => {
+  return (
+    <span className={Styles.Filter_TooltipContainer}>
+      <label
+        className={classNames(
+          TooltipStyles.TooltipHint,
+          Styles.Filter_TooltipHint
+        )}
+        data-tip
+        data-for={'template'}
+      >
+        {helpIcon}
+      </label>
+      <ReactTooltip
+        id={'template'}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        <>
+          <p>
+            <b>Augur templates</b> provide market creators with a set structure
+            for popular markets that reduce the potential for error during
+            market creation.
+          </p>
+          <p>
+            <b>Custom markets</b> are fully open and don't follow a set
+            pattern/structure, as a result they are more likely to contain
+            potential issues and should be examined carefully before betting.
+          </p>
+        </>
+      </ReactTooltip>
+    </span>
+  );
+};
