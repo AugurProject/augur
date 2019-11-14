@@ -49,6 +49,11 @@ const MaxLiquiditySpreadValue  = {
   '0': null,
 }
 
+export enum TemplateFilters {
+  all = 'all',
+  templateOnly = 'templateOnly',
+  customOnly = 'customOnly',
+}
 // Valid market liquidity spreads
 export enum MaxLiquiditySpread {
   OneHundredPercent = '100', // all liquidity spreads
@@ -60,6 +65,7 @@ export enum MaxLiquiditySpread {
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
 export const GetMaxLiquiditySpread = t.keyof(MaxLiquiditySpreadValue);
+export const GetTemplateFilterValue = t.keyof(TemplateFilters);
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -77,6 +83,7 @@ const getMarketsParamsSpecific = t.intersection([
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
     userPortfolioAddress: t.string,
+    templateFilter: GetTemplateFilterValue,
   }),
 ]);
 
@@ -494,6 +501,18 @@ export class Markets {
       request.selector = Object.assign(request.selector, {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
+    }
+
+    if (params.templateFilter) {
+      if (params.templateFilter === TemplateFilters.templateOnly) {
+        request.selector = Object.assign(request.selector, {
+          isTemplate: { $eq: true },
+        });
+      } else if (params.templateFilter === TemplateFilters.customOnly) {
+        request.selector = Object.assign(request.selector, {
+          isTemplate: { $eq: false },
+        });
+      }
     }
 
     // Filter out markets not related to the specified user
