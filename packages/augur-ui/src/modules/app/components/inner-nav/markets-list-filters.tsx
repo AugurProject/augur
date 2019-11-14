@@ -84,9 +84,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
         <div className={Styles.Filter}>
           <span>Markets</span>
-          {generateTooltip(
-            "Augur templates provide market creators with a set structure for popular markets that reduce the potential for error during market creation. Custom markets are fully open and don't follow a set pattern/structure, as a result they are more likely to contain potential issues and should be examined carefully before betting."
-          )}
+          {templateFilterTooltip()}
         </div>
 
         <RadioBarGroup
@@ -102,7 +100,8 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
         <div className={Styles.Filter}>
           <span>Fees</span>
           {generateTooltip(
-            'Filters markets based on estimated total fees paid to market creators and reporters'
+            'Filters markets based on estimated total fees paid to market creators and reporters',
+            'fees'
           )}
         </div>
 
@@ -124,7 +123,8 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
         <div className={Styles.Filter}>
           <span>Liquidity Spread</span>
           {generateTooltip(
-            'Filters markets based on how wide a bid/offer spread is and the depth of volume'
+            'Filters markets based on how wide a bid/offer spread is and the depth of volume',
+            'liquidity'
           )}
         </div>
 
@@ -146,7 +146,8 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
         <div className={Styles.Filter}>
           <span>Invalid Markets</span>
           {generateTooltip(
-            'Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid'
+            'Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid',
+            'invalid'
           )}
         </div>
 
@@ -171,7 +172,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
 
 export default MarketsListFilters;
 
-const generateTooltip = (tipText: string) => {
+const generateTooltip = (tipText: string, key: string) => {
   return (
     <span className={Styles.Filter_TooltipContainer}>
       <label
@@ -180,18 +181,55 @@ const generateTooltip = (tipText: string) => {
           Styles.Filter_TooltipHint
         )}
         data-tip
-        data-for="tooltip--confirm"
+        data-for={key}
       >
         {helpIcon}
       </label>
       <ReactTooltip
-        id="tooltip--confirm"
+        id={key}
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="top"
         type="light"
       >
         <p>{tipText}</p>
+      </ReactTooltip>
+    </span>
+  );
+};
+
+const templateFilterTooltip = () => {
+  return (
+    <span className={Styles.Filter_TooltipContainer}>
+      <label
+        className={classNames(
+          TooltipStyles.TooltipHint,
+          Styles.Filter_TooltipHint
+        )}
+        data-tip
+        data-for={'template'}
+      >
+        {helpIcon}
+      </label>
+      <ReactTooltip
+        id={'template'}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        <>
+          <p>
+            <b>Augur templates</b> provide market creators with a set structure
+            for popular markets that reduce the potential for error during
+            market creation.
+          </p>
+          <p>
+            <b>Custom markets</b> are fully open and don't follow a set
+            pattern/structure, as a result they are more likely to contain
+            potential issues and should be examined carefully before betting.
+          </p>
+        </>
       </ReactTooltip>
     </span>
   );
