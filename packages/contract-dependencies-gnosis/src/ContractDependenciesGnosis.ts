@@ -1,22 +1,22 @@
-import { Operation } from '@augurproject/gnosis-relay-api';
-import { Transaction, TransactionReceipt } from 'contract-dependencies';
-import {
-  ContractDependenciesEthers,
-  TransactionMetadata,
-  TransactionStatus,
-  EthersProvider,
-  EthersSigner,
-} from 'contract-dependencies-ethers';
+import { abi } from '@augurproject/artifacts';
 import {
   IGnosisRelayAPI,
+  Operation,
   RelayTransaction,
   RelayTxEstimateData,
   RelayTxEstimateResponse,
 } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
+import { Transaction } from 'contract-dependencies';
+import {
+  ContractDependenciesEthers,
+  EthersProvider,
+  EthersSigner,
+  TransactionMetadata,
+  TransactionStatus,
+} from 'contract-dependencies-ethers';
 import { ethers } from 'ethers';
 import { getAddress } from 'ethers/utils/address';
-import { abi } from '@augurproject/artifacts';
 import * as _ from 'lodash';
 
 const DEFAULT_GAS_PRICE = new BigNumber(10 ** 9);
@@ -25,13 +25,11 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   private readonly gnosisRelay: IGnosisRelayAPI;
-  readonly gasToken: string;
 
   safeAddress: string;
 
   useRelay = true;
   useSafe = false;
-  gasPrice: BigNumber;
 
   gnosisSafe: ethers.Contract;
 
@@ -39,16 +37,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     provider: EthersProvider,
     gnosisRelay: IGnosisRelayAPI,
     signer: EthersSigner,
-    gasToken?: string,
-    gasPrice?: BigNumber,
+    private gasToken: string = NULL_ADDRESS,
+    public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     safeAddress?: string,
     address?: string
   ) {
     super(provider, signer, address);
-    this.gnosisRelay = gnosisRelay;
-    this.gasToken = gasToken ? gasToken : NULL_ADDRESS;
-    this.gasPrice = gasPrice ? gasPrice : DEFAULT_GAS_PRICE;
-
     if (safeAddress) {
       this.setSafeAddress(safeAddress);
     }
@@ -219,7 +213,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       data: tx.data,
       value: new BigNumber(value.toString()),
       operation,
-      gasToken: '0x9d16B75cB462AF2a1723963D735ee39D957F1468', // TODO: TEMP workaround, this.gasToken returns undefined
+      gasToken: this.gasToken
     };
 
     let gasEstimates: RelayTxEstimateResponse;

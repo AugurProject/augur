@@ -54,7 +54,7 @@ export class SDK {
       ethersProvider,
       gnosisRelay,
       signer,
-      account,
+      Addresses[this.networkId].Cash,
     );
 
     const connector = this.pickConnector(env['sdkEndpoint']);
@@ -150,9 +150,9 @@ export class SDK {
 
   pickConnector(sdkEndpoint: string) {
     if (sdkEndpoint) {
-      return new WebsocketConnector(sdkEndpoint);
+      return new Connectors.WebsocketConnector(sdkEndpoint);
     } else if (isMobileSafari()) {
-      return new SEOConnector()
+      return new Connectors.SEOConnector()
     } else {
       return new WebWorkerConnector();
     }
