@@ -1,28 +1,26 @@
-import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
-import { CalculateGnosisSafeAddressParams } from '@augurproject/sdk/build/api/Gnosis';
-import { Augur, Provider } from '@augurproject/sdk';
-import {
-  SEOConnector,
-  WebsocketConnector
-} from '@augurproject/sdk/build/connector';
-import {
-  EthersSigner,
-} from 'contract-dependencies-ethers';
-
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
-import { isEmpty } from 'utils/is-empty';
-import { WebWorkerConnector } from './ww-connector';
+import { Addresses } from '@augurproject/artifacts';
 
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import {
+  Augur,
+  CalculateGnosisSafeAddressParams,
+  Connectors,
+  Provider,
+} from '@augurproject/sdk';
+import { EthersSigner } from 'contract-dependencies-ethers';
+
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
-import { Addresses } from '@augurproject/artifacts';
-import { EnvObject } from 'modules/types';
 import {
   listenToUpdates,
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
+import { EnvObject } from 'modules/types';
+import { isEmpty } from 'utils/is-empty';
 import { isMobileSafari } from 'utils/is-safari';
 import { analytics } from './analytics';
+import { WebWorkerConnector } from './ww-connector';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
