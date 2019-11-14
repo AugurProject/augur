@@ -407,6 +407,7 @@ export interface MarketsList {
   };
   selectedCategories: string[];
   marketCardFormat: string;
+  isSearchInPlace: boolean;
 }
 
 export interface DefaultOrderProperties {
