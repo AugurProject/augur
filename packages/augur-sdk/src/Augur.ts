@@ -399,10 +399,19 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Users.getAccountTimeRangedStats> => {
     return this.bindTo(Users.getAccountTimeRangedStats)(params);
   };
-  getUserAccountData = this.bindTo(Users.getUserAccountData);
-  getAccountTransactionHistory = this.bindTo(
-    Accounts.getAccountTransactionHistory
-  );
+
+  getUserAccountData = (
+    params: Parameters<typeof Users.getUserAccountData>[2]
+  ): ReturnType<typeof Users.getUserAccountData> => {
+    return this.bindTo(Users.getUserAccountData)(params);
+  };
+
+  getAccountTransactionHistory = (
+    params: Parameters<typeof Accounts.getAccountTransactionHistory>[2]
+  ): ReturnType<typeof Accounts.getAccountTransactionHistory> => {
+    return this.bindTo(Accounts.getAccountTransactionHistory)(params);
+  };
+
   getAccountRepStakeSummary = (
     params: Parameters<typeof Accounts.getAccountRepStakeSummary>[2]
   ): ReturnType<typeof Accounts.getAccountRepStakeSummary> => {
