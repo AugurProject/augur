@@ -51,7 +51,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
-import orderBook from 'modules/market-charts/containers/order-book';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -532,7 +531,7 @@ export default class MarketView extends Component<
 
     if (tradingTutorial && (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS || tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS)) {
       let orderBook = market.orderBook;
-      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => order.disappear);
+      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => !order.disappear);
       orderBookMarket = {
         ...market,
         orderBook
