@@ -10,7 +10,7 @@ import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { Abi } from 'ethereum';
 import * as ethUtil from 'ethereumjs-util';
 import { ethers, utils as ethersUtils } from 'ethers';
-
+import { toChecksumAddress } from "ethereumjs-util";
 import { NULL_ADDRESS, Provider, SubscriptionEventName } from '..';
 import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
@@ -39,6 +39,9 @@ export interface GnosisSafeStatusPayload
   status: GnosisSafeState;
   txHash?: string;
 }
+
+// TODO remove when onBlock event works
+let intervalId = null;
 
 export class Gnosis {
   constructor(
@@ -73,7 +76,7 @@ export class Gnosis {
       ) {
         const signerAddress = await this.dependencies.signer.getAddress();
         if (signerAddress === s.owner) {
-          this.augur.setGnosisSafeAddress(s.safe);
+          this.augur.setGnosisSafeAddress(toChecksumAddress(s.safe));
           this.augur.setUseGnosisSafe(true);
         }
       }
@@ -82,7 +85,6 @@ export class Gnosis {
       // Be sure the safe creation transaction has been mined.
       if (status.status === GnosisSafeState.CREATED) {
         const tx = await this.augur.getTransaction(status.txHash);
-
         // @todo Is this sufficient to consider it mined?
         if (tx.blockNumber) {
           const data = await this.buildGnosisSetupData(s.owner);
@@ -113,6 +115,8 @@ export class Gnosis {
 
       // Clear the "watch" when we reach a terminal safe state.
       if (status.status in [GnosisSafeState.AVAILABLE, GnosisSafeState.ERROR]) {
+        // TODO remove when onBlock event works
+        clearInterval(intervalId); // No need to poll blocks anymore
         this.safesToCheck = this.safesToCheck.filter(r => s.safe !== r.safe);
       }
     }
@@ -145,7 +149,8 @@ export class Gnosis {
       const safe = await this.calculateGnosisSafeAddress(params);
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
 
-      if (safe !== params.safe) {
+      // Normalize addresses
+      if (safe.toLowerCase() !== params.safe.toLowerCase()) {
         console.log(
           `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
             params
@@ -157,11 +162,15 @@ export class Gnosis {
           this.safesToCheck.push({
             status: status.status,
             owner,
-            safe,
+            safe: toChecksumAddress(safe),
           });
         }
 
-        await this.onNewBlock();
+        // TODO remove when onBlock event works
+        intervalId = setInterval(() => {
+          this.onNewBlock();
+        }, 5000);
+        // await this.onNewBlock();
 
         return params;
       } else if (status.status === GnosisSafeState.CREATED) {
@@ -181,8 +190,12 @@ export class Gnosis {
       paymentToken: this.augur.contracts.cash.address,
     });
 
+    // TODO remove when onBlock event works
+    intervalId = setInterval(() => {
+      this.onNewBlock();
+    }, 5000);
     // Fire events to notify any interested parties.
-    await this.onNewBlock();
+    // await this.onNewBlock();
 
     return {
       ...result,
@@ -271,6 +284,7 @@ export class Gnosis {
       .address;
 
     const setupData = await this.buildRegistrationData();
+
     const response = await this.gnosisRelay.createSafe({
       saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
       owners: [params.owner],
@@ -281,7 +295,7 @@ export class Gnosis {
     });
 
     this.safesToCheck.push({
-      safe: response.safe,
+      safe: toChecksumAddress(response.safe),
       owner: params.owner,
       status: GnosisSafeState.WAITING_FOR_FUNDS,
     });
@@ -296,14 +310,14 @@ export class Gnosis {
       throw new Error('No Gnosis Relay provided to Augur SDK');
     }
 
-    const safe = await this.getGnosisSafeAddress(params.owner);
+    const safe = await this.getGnosisSafeAddress(toChecksumAddress(params.owner));
     if (safe !== NULL_ADDRESS) {
       return {
         status: GnosisSafeState.AVAILABLE,
       };
     }
 
-    return this.gnosisRelay.checkSafe(params.safe);
+    return this.gnosisRelay.checkSafe(toChecksumAddress(params.safe));
   }
 
   private async buildRegistrationData() {
