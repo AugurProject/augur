@@ -9,6 +9,7 @@ import { Addresses } from '@augurproject/artifacts';
 import { EnvObject } from 'modules/types';
 import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
 import { isMobileSafari } from 'utils/is-safari';
+import { analytics } from './analytics';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -65,6 +66,8 @@ export class SDK {
       this.sdk.syncUserData(address);
       if (signer) this.sdk.signer = signer;
       this.signerNetworkId = signerNetworkId;
+
+      analytics.identify(address, { address, signerNetworkId })
     }
   }
 

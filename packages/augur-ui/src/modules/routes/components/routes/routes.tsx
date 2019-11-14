@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route';
 import makePath from 'modules/routes/helpers/make-path';
@@ -7,6 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import * as VIEWS from 'modules/routes/constants/views';
 import * as COMPONENTS from 'modules/routes/constants/components';
 
+import { withPageAnalytic } from 'services/analytics';
 
 const getLoggedInAccountFromLocalStorage = () => {
   let loggedInAccount = null;
@@ -14,16 +15,19 @@ const getLoggedInAccountFromLocalStorage = () => {
     loggedInAccount = window.localStorage.getItem('loggedInAccount');
   }
   return loggedInAccount;
-}
+};
 
-const Routes = (p) => {
+const Routes = p => {
   const loggedInAccount = getLoggedInAccountFromLocalStorage();
 
   return (
     <Switch>
       <Route path={makePath(VIEWS.MARKETS)} component={COMPONENTS.Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
-      <Route path={makePath(VIEWS.LANDING_PAGE)} component={COMPONENTS.MarketsLandingPage} />
+      <Route
+        path={makePath(VIEWS.LANDING_PAGE)}
+        component={COMPONENTS.MarketsLandingPage}
+      />
 
       <AuthenticatedRoute
         path={makePath(VIEWS.MY_POSITIONS)}
@@ -52,5 +56,5 @@ const Routes = (p) => {
       <Redirect to={makePath(VIEWS.MARKETS)} />
     </Switch>
   );
-}
-export default Routes;
+};
+export default withRouter(withPageAnalytic(Routes));
