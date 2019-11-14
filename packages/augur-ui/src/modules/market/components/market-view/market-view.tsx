@@ -76,7 +76,6 @@ interface MarketViewProps {
   hotloadMarket: Function;
   canHotload: boolean;
   removeAlert: Function;
-  daysPassed?: number;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -408,7 +407,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
-      daysPassed,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -592,7 +590,6 @@ export default class MarketView extends Component<
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}
-                          daysPassed={daysPassed}
                         />
                       </div>
                     </div>
