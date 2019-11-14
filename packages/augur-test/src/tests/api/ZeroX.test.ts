@@ -12,7 +12,7 @@ import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
 import { MockBrowserMesh } from "../../libs/MockBrowserMesh";
 import * as _ from 'lodash';
 
-describe('Augur API :: ZeroX :: ', () => {
+describe.skip('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
   let mary: ContractAPI;
   let meshClient: WSClient;

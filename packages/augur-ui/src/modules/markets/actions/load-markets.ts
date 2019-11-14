@@ -43,6 +43,7 @@ export const loadMarketsByFilter = (
 ) => {
   const { universe, connection } = getState();
   if (!(universe && universe.id)) return;
+
   // Check to see if SDK is connected first
   // since URL parameters can trigger this action before the SDK is ready
   if (!connection.isConnected) return;

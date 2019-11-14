@@ -22,7 +22,7 @@ export default class MainErrorBoundary extends Component<{}, MEBState> {
       this.setState({ hasError: false });
     }
   }
- 
+
   componentDidCatch(error, info) {
     this.setState({ hasError: true });
   }

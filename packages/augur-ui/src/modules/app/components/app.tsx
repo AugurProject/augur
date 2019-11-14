@@ -122,7 +122,7 @@ export default class AppView extends Component<AppProps> {
     },
   ];
 
-  handleComponentMount = () => {
+  UNSAFE_componentWillMount() {
     const {
       env,
       ethereumNodeHttp,
@@ -168,7 +168,6 @@ export default class AppView extends Component<AppProps> {
   }
 
   componentDidMount() {
-    this.handleComponentMount();
     window.addEventListener('resize', this.handleWindowResize);
 
     // Restyle all scrollbars on windows
@@ -178,7 +177,7 @@ export default class AppView extends Component<AppProps> {
     this.checkIsMobile();
   }
 
-  componentDidUpdate(prevProps: AppProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: AppProps) {
     const {
       isMobile,
       location,
@@ -186,16 +185,16 @@ export default class AppView extends Component<AppProps> {
       updateCurrentBasePath,
       updateMobileMenuState,
     } = this.props;
-    if (isMobile !== prevProps.isMobile) {
+    if (isMobile !== nextProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-    if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
-      this.sideNavMenuData[5].disabled = !!prevProps.universe.forkingInfo;
+    if (universe.forkingInfo !== nextProps.universe.forkingInfo) {
+      this.sideNavMenuData[5].disabled = !!nextProps.universe.forkingInfo;
     }
 
-    if (location !== prevProps.location) {
+    if (location !== nextProps.location) {
       const lastBasePath = parsePath(location.pathname)[0];
-      const nextBasePath = parsePath(prevProps.location.pathname)[0];
+      const nextBasePath = parsePath(nextProps.location.pathname)[0];
 
       if (lastBasePath !== nextBasePath) {
         updateCurrentBasePath(nextBasePath);

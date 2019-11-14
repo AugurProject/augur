@@ -39,7 +39,7 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
     props.maxLiquiditySpread
   );
   const [showInvalidDefault, setShowInvalidDefault] = useState(
-    props.includeInvalidMarkets
+    String(props.includeInvalidMarkets)
   );
   const [templateFilter, setTemplateFilter] = useState(props.allTemplateFilter);
 
