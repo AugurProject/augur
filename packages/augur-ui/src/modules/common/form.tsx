@@ -210,9 +210,9 @@ export const Error = (props: ErrorProps) => (
 export interface BaseRadioButtonProp {
   id: string;
   checked: boolean;
+  value?: string;
 }
 export interface RadioCardProps extends BaseRadioButtonProp {
-  value: string;
   header: string;
   description: string;
   onChange?: Function;
@@ -246,7 +246,6 @@ export interface RadioGroupState {
 
 export interface RadioBarProps extends BaseRadioButtonProp {
   header: string;
-  value: string;
   onChange?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -261,7 +260,6 @@ export interface RadioBarProps extends BaseRadioButtonProp {
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   market: MarketData;
   header: string;
-  value: string | null;
   updateChecked?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -280,7 +278,6 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   header: string;
   description: string;
-  value: string;
   onChange: Function;
   error?: boolean;
   hideRadioButton?: boolean;
@@ -289,7 +286,6 @@ export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
 
 interface CheckboxBarProps extends BaseRadioButtonProp {
   header: string;
-  value: string;
   onChange: Function;
   error?: boolean;
 }
