@@ -1464,8 +1464,7 @@ export const CategoricalTemplateDropdowns = (
       )}
       <Subheaders
         header="Required Outcomes"
-        subheader="Outcomes that are required and unchangeable"
-        link
+        subheader="Required unchangeable additional outcomes"
       />
       {outcomeList
         .filter(o => !o.current && !o.removable)
