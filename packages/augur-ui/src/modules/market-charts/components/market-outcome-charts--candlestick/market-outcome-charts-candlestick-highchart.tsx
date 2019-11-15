@@ -131,8 +131,8 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         volume.push([price.period, volumeValue]);
       });
     }
-       
-    
+
+
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
     this.xMinCurrent = this.xMax - range;
     const options = {
@@ -269,7 +269,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     const { updateHoveredPeriod, priceTimeSeries, volumeType, selectedPeriod } = this.props;
     const period = selectedPeriod * 1000;
     const { x: timestamp } = evt.target;
-    const mid = this.chart.xAxis[0].toPixels(timestamp, true));
+    const mid = this.chart.xAxis[0].toPixels(timestamp, true);
     const scaledFrom = this.chart.xAxis[0].toPixels(timestamp - (period * .25), true);
     const scaledTo = this.chart.xAxis[0].toPixels(timestamp + (period * .25), true);
     const maxFrom = mid - 10;
@@ -278,8 +278,8 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     // make sure to never draw larger than 20 px as that's the max size of bars.
     const from = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledFrom : maxFrom, true);
     const to = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledTo : maxTo, true);
-  
- 
+
+
     const pts = priceTimeSeries.find(p => p.period === timestamp);
 
     if (pts) {
