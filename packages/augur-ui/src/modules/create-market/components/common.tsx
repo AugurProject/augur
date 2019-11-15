@@ -1290,6 +1290,8 @@ interface CategoricalDropDownItem {
   editable: boolean;
   removable: boolean;
   current: boolean;
+  error?: string;
+  id?: number;
 }
 
 interface CategoricalDropDownAction {
@@ -1307,36 +1309,44 @@ export const CategoricalTemplateDropdowns = (
     INIT_ADD: 'INIT_ADD',
     REPLACE_CURRENT: 'REPLACE_CURRENT',
     ADD_NEW: 'ADD_NEW',
+    HAS_ERROR: 'HAS_ERROR'
   };
   const [outcomeList, dispatch] = useReducer(
     (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
       switch (action.type) {
         case ACTIONS.ADD:
-          const newAddState = [...state, action.data];
-          props.onChange('outcomes', OrderOutcomesItems(newAddState));
+          const newAddState = OrderOutcomesItems([...state, action.data]);
+          props.onChange('outcomes', newAddState.map(o => o.value));
           return newAddState;
         case ACTIONS.REMOVE:
-          const newRemoveState = state.filter(s => s.value !== action.data.value)
-          props.onChange('outcomes', OrderOutcomesItems(newRemoveState));
+          const newRemoveState = OrderOutcomesItems(state.filter(s => s.value !== action.data.value))
+          props.onChange('outcomes', newRemoveState.map(o => o.value));
           return newRemoveState;
         case ACTIONS.REMOVE_ALL:
           props.onChange('outcomes', []);
           return [];
         case ACTIONS.REPLACE_CURRENT:
           const removeCurrent = state.filter(s => !s.current);
-          const newUpdatedState = [...removeCurrent, action.data];
-          props.onChange('outcomes', OrderOutcomesItems(newUpdatedState));
+          const newUpdatedState = OrderOutcomesItems([...removeCurrent, action.data]);
+          props.onChange('outcomes', newUpdatedState.map(o => o.value));
           return newUpdatedState;
         case ACTIONS.ADD_NEW:
           return state.map(o => ({...o, current: false}));
         case ACTIONS.INIT_ADD:
-          return [...state, action.data];
+          return OrderOutcomesItems([...state, action.data]);
+        case ACTIONS.HAS_ERROR:
+          const { id, error} = action.data;
+          if (!!state[id]) {
+            state[id].error = error;
+          }
+          return state;
         default:
           return state;
       }
     },
     []
   );
+  const [tooFewOutcomesError, setTooFewOutomesError] = useState(null);
   const [initialized, setInitialized] = useState(false);
   const [sourceUserInput, setSourceUserInput] = useState(undefined);
   const [depDropdownInput] = useState(
@@ -1414,10 +1424,22 @@ export const CategoricalTemplateDropdowns = (
         setSourceUserInput(source && source.userInput);
       }
     }
+    setTooFewOutomesError(null);
+    if (
+      props.newMarket.validations &&
+      props.newMarket.validations.outcomes &&
+      Array.isArray(props.newMarket.validations.outcomes)
+    ) {
+      props.newMarket.validations.outcomes.forEach((error, index) => {
+        if (!!error) {
+          outcomeList.length > index
+            ? dispatch({ type: ACTIONS.HAS_ERROR, data: { error, id: index } })
+            : setTooFewOutomesError(error);
+        }
+      });
+    }
   });
 
-  const { newMarket } = props;
-  const { validations } = newMarket;
   const currentValue = outcomeList.find(o => o.current);
   const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES && !!currentValue;
   const allFull = outcomeList.length === MAX_ADDED_OUTCOMES && !!!currentValue;
@@ -1441,7 +1463,7 @@ export const CategoricalTemplateDropdowns = (
             onRemove={index =>
               dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
             }
-            errorMessage={validations && validations.outcomes && validations.outcomes[index]}
+            errorMessage={item.error}
             editable={item.editable}
           />
         ))}
@@ -1457,7 +1479,7 @@ export const CategoricalTemplateDropdowns = (
               data: { value, editable: false, removable: true, current: true },
             });
           }}
-          errorMessage={validations && validations.outcomes}
+          errorMessage={tooFewOutcomesError || (currentValue && currentValue.error)}
           onAdd={() => dispatch({ type: ACTIONS.ADD_NEW, data: {} })}
           canAddMore={canAddMore}
         />
@@ -1479,7 +1501,7 @@ export const CategoricalTemplateDropdowns = (
             onRemove={index =>
               dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
             }
-            errorMessage={validations && validations.outcomes && validations.outcomes[index]}
+            errorMessage={item.error}
             editable={item.editable}
           />
         ))}
@@ -1498,7 +1520,7 @@ const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, err
           staticLabel={'Select Value'}
           onChange={value => onChange(value)}
           options={list}
-          errorMessage={errorMessage && errorMessage[number]}
+          errorMessage={errorMessage}
           sort
         />
       </div>
@@ -1525,7 +1547,7 @@ const OrderOutcomesItems = (
 ) => {
   const isRemovable = outcomesValues.filter(o => o.removable);
   const nonRemovable = outcomesValues.filter(o => !o.removable);
-  return [...isRemovable, ...nonRemovable].map(o => o.value);
+  return [...isRemovable, ...nonRemovable];
 };
 
 export interface ResolutionRulesProps {
