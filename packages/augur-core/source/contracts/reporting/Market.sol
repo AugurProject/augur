@@ -7,6 +7,8 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/factories/InitialReporterFactory.sol';
@@ -37,6 +39,8 @@ contract Market is Initializable, Ownable, IMarket {
     IAugur public augur;
     IWarpSync public warpSync;
     IShareToken public shareToken;
+    IAffiliateValidator affiliateValidator;
+    IAffiliates affiliates;
 
     // Attributes
     uint256 private numTicks;
@@ -62,7 +66,7 @@ contract Market is Initializable, Ownable, IMarket {
 
     mapping (address => uint256) public affiliateFeesAttoCash;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
         require(msg.sender == _augur.lookup("MarketFactory"));
@@ -70,6 +74,8 @@ contract Market is Initializable, Ownable, IMarket {
         universe = _universe;
         cash = ICash(_augur.lookup("Cash"));
         warpSync = IWarpSync(augur.lookup("WarpSync"));
+        affiliateValidator = _affiliateValidator;
+        affiliates = IAffiliates(augur.lookup("Affiliates"));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
@@ -328,15 +334,25 @@ contract Market is Initializable, Ownable, IMarket {
         return feeDivisor == 0 ? 0 : _amount / feeDivisor;
     }
 
-    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool) {
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint) public returns (bool) {
         require(augur.isKnownFeeSender(msg.sender));
+
+        address _affiliateAddress = affiliates.getAndValidateReferrer(_sourceAccount, affiliateValidator);
+        address _fingerprintAccount = affiliates.getFingerprintAccount(_fingerprint);
+        if (_fingerprintAccount == _affiliateAddress) {
+            // don't let affiliates refer themselves
+            _affiliateAddress = address(0);
+        }
+
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
             uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
             affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
             totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
+
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
+
         if (isFinalized()) {
             distributeMarketCreatorAndAffiliateFees(_affiliateAddress);
         }

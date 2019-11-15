@@ -10,7 +10,7 @@ from json import dump as json_dump, load as json_load, dumps as json_dumps
 from os import path, walk, makedirs, remove as remove_file
 from re import findall
 from contract import Contract
-from utils import stringToBytes, BuyWithCash, PrintGasUsed
+from utils import stringToBytes, BuyWithCash, PrintGasUsed, nullAddress
 
 from web3 import (
     EthereumTesterProvider,
@@ -590,65 +590,68 @@ class ContractsFixture:
         log = logs[0]
         return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\"]}", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\"]}", validityBond=0, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         marketCreationFee = validityBond or universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes = None, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\"]}"):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes = None, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\"]}", affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
         if outcomes is None:
             outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}"):
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
+    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
             universe = universe,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
+            affiliateValidator = affiliateValidator,
             affiliateFeeDivisor = 4,
             designatedReporterAddress = designatedReporter,
             sender = sender,
             extraInfo= extraInfo,
             validityBond= validityBond)
 
-    def createReasonableCategoricalMarket(self, universe, numOutcomes, sender=None):
+    def createReasonableCategoricalMarket(self, universe, numOutcomes, sender=None, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         return self.createCategoricalMarket(
             universe = universe,
             numOutcomes = numOutcomes,
+            affiliateValidator = affiliateValidator,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             designatedReporterAddress = sender,
             sender = sender)
 
-    def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=None):
+    def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=None, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         return self.createScalarMarket(
             universe = universe,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
+            affiliateValidator = affiliateValidator,
             affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
             minPrice= minPrice,

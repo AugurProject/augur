@@ -4,6 +4,7 @@ import 'ROOT/IWarpSync.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
 import 'ROOT/libraries/Initializable.sol';
 
 
@@ -90,7 +91,7 @@ contract WarpSync is IWarpSync, Initializable {
         uint256 _repBond = _universe.getOrCacheMarketRepBond();
         _reputationToken.mintForWarpSync(_repBond, address(this));
         uint256 _endTime = augur.getTimestamp() + MARKET_LENGTH;
-        IMarket _market = _universe.createScalarMarket(_endTime, 0, 0, address(this), PRICES, MAX_NUM_TICKS, EXTRA_INFO);
+        IMarket _market = _universe.createScalarMarket(_endTime, 0, IAffiliateValidator(0), 0, address(this), PRICES, MAX_NUM_TICKS, EXTRA_INFO);
         markets[address(_universe)] = address(_market);
     }
 }
