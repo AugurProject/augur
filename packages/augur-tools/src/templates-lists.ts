@@ -203,8 +203,8 @@ export const LIST_VALUES = {
       label: 'Chancellor',
     },
     {
-      value: 'Chief minister',
-      label: 'Chief minister',
+      value: 'Chief Executive',
+      label: 'Chief Executive',
     },
   ],
   US_STATES: [
@@ -445,10 +445,36 @@ export const LIST_VALUES = {
       label: 'Most Improved player',
     },
   ],
+  WNBA_BASKETBALL_AWARD: [
+    {
+      value: 'Most Valuable Player',
+      label: 'Most Valuable Player',
+    },
+    {
+      value: 'Rookie of the year',
+      label: 'Rookie of the year',
+    },
+    {
+      value: '6th Woman',
+      label: '6th Woman',
+    },
+    {
+      value: 'Defensive Player of the Year',
+      label: 'Defensive Player of the Year',
+    },
+    {
+      value: 'Most Improved player',
+      label: 'Most Improved player',
+    },
+  ],
   NCAA_BASKETBALL_EVENTS: [
     {
-      value: 'NCAA Tournament/ March Madness',
-      label: 'NCAA Tournament/ March Madness',
+      value: 'Championship game',
+      label: 'Championship game',
+    },
+    {
+      value: 'NCAA D1 Tournament',
+      label: 'NCAA D1 Tournament',
     },
     {
       value: 'Sweet 16',
