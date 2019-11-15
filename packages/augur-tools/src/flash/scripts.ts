@@ -979,48 +979,6 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: '0x-docker',
-    async call(this: FlashSession) {
-      if (this.noProvider()) return null;
-
-      const networkId = await this.provider.getNetworkId();
-      const ethNode = this.network.http;
-      const addresses = Addresses[networkId];
-
-      // We set --net=host so that 0x mesh docker can talk to the host, where
-      // the ethnode is being run. It might be elsewhere in non-dev deployments.
-      // This is also making the '-p', options unnecessary.
-
-      console.log('Starting 0x mesh');
-      const mesh = spawn('docker', [
-        'run',
-        '--rm',
-        '-p', '60557:60557',
-        '-p', '60558:60558',
-        '-p', '60559:60559',
-        '-e', 'ETHEREUM_NETWORK_ID=42', // doesn't understand atypical network ids
-        '--net=host',
-        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
-        '-e', 'USE_BOOTSTRAP_LIST=false',
-        '-e', 'BLOCK_POLLING_INTERVAL=1s',
-        `-e', 'CUSTOM_CONTRACT_ADDRESSES='${JSON.stringify(addresses)}'`,
-        '-e', 'VERBOSITY=5',
-        '0xorg/mesh:latest',
-      ]);
-
-      mesh.on('error', console.error);
-      mesh.on('exit', (code, signal) => {
-        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
-      });
-      mesh.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      mesh.stderr.on('data', (data) => {
-        console.error(data.toString());
-      });
-    },
-  })
-  flash.addScript({
     name: 'get-contract-address',
     options: [
       {
