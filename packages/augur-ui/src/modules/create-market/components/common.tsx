@@ -1067,10 +1067,18 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               break;
           }
         }}
-        validations={
-          newMarket.validations.inputs &&
-          newMarket.validations.inputs[inputIndex]
-        }
+        validations={{
+          setEndTime:
+            props.input.userInputObject &&
+            !(props.input.userInputObject as UserInputDateTime).endTime &&
+            newMarket.validations.inputs &&
+            newMarket.validations.inputs[inputIndex],
+          hour:
+            props.input.userInputObject &&
+            !(props.input.userInputObject as UserInputDateTime).hour &&
+            newMarket.validations.inputs &&
+            newMarket.validations.inputs[inputIndex],
+        }}
         hour={hour ? String(hour) : null}
         minute={minute ? String(minute) : null}
         meridiem={meridiem}
