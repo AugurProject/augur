@@ -1186,7 +1186,8 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
   const { template } = newMarket;
   const inputs = template.inputs;
   const hasDropdowns = inputs.find(
-    i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
+    i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
+    i.type === TemplateInputType.USER_DROPDOWN_OUTCOME
   );
   return hasDropdowns ? (
     <CategoricalTemplateDropdowns {...props} />
@@ -1341,7 +1342,8 @@ export const CategoricalTemplateDropdowns = (
   const [depDropdownInput] = useState(
     props.newMarket.template.inputs.find(
       input =>
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
+        input.type === TemplateInputType.USER_DROPDOWN_OUTCOME
     )
   );
   const [defaultOutcomeItems] = useState(
@@ -1357,38 +1359,58 @@ export const CategoricalTemplateDropdowns = (
 
   useEffect(() => {
     const { template } = props.newMarket;
-    const source = template.inputs.find(
-      i => i.id === depDropdownInput.inputSourceId
-    );
+    const isDepDropdown =
+      depDropdownInput.type ===
+      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP;
 
-    setShowBanner(!!!source.userInput);
+    const source = template.inputs.find(
+      (i: TemplateInput) => i.id === depDropdownInput.inputSourceId
+    );
+    setShowBanner(isDepDropdown && !!!source.userInput);
 
     // in case of re-hyration of market creation form need to set newMarket outcomes
     if (!initialized) {
       const { outcomes } = props.newMarket;
       setInitialized(true);
       outcomes.map((i: string) => {
-        const defaultItems = defaultOutcomeItems.map((i: CategoricalDropDownItem) => i.value);
-        const data = { value: i, editable: false, removable: true, current: false };
+        const defaultItems = defaultOutcomeItems.map(
+          (i: CategoricalDropDownItem) => i.value
+        );
+        const data = {
+          value: i,
+          editable: false,
+          removable: true,
+          current: false,
+        };
         if (defaultItems.includes(i)) {
           data.removable = false;
         }
         dispatch({
           type: ACTIONS.INIT_ADD,
           data,
-        })
+        });
       });
-      setSourceUserInput(source.userInput);
-      setdropdownList(depDropdownInput.values[source.userInput]);
+      setSourceUserInput(source && source.userInput);
+      setdropdownList(
+        isDepDropdown
+          ? depDropdownInput.values[source.userInput]
+          : depDropdownInput.values
+      );
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
-        defaultOutcomeItems.map((i: CategoricalDropDownItem) => dispatch({ type: ACTIONS.ADD, data: i }));
+        defaultOutcomeItems.map((i: CategoricalDropDownItem) =>
+          dispatch({ type: ACTIONS.ADD, data: i })
+        );
       }
 
-      if (sourceUserInput !== source.userInput) {
+      if (isDepDropdown && sourceUserInput !== source.userInput) {
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
-        setdropdownList(depDropdownInput.values[source.userInput]);
-        setSourceUserInput(source.userInput);
+        setdropdownList(
+          isDepDropdown
+            ? depDropdownInput.values[source.userInput]
+            : depDropdownInput.values
+        );
+        setSourceUserInput(source && source.userInput);
       }
     }
   });
