@@ -127,6 +127,10 @@ h6 {
       opacity: 0.1;
     }
   }
+
+  &.Tutorial {
+    height: calc(~"100vh - @{multi-top-bar-height} - @{tutorial-banner-height}");
+  }
   
   &.ModalShowing {
     @media @breakpoint-max-tablet {
