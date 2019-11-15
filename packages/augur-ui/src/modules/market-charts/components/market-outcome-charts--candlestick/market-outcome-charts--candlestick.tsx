@@ -86,7 +86,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             defaultValue={defaultCandlePeriod}
             options={PERIODS}
             onChange={updateSelectedPeriod}
-            noSort
           />
           <CandlestickOchl
             hoveredPeriod={hoveredPeriod}
