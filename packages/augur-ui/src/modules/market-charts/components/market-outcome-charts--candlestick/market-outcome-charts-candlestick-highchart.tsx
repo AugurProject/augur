@@ -111,7 +111,8 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       // use the first found trade to indicate -
       let lastPrice = priceTimeSeries[0].open;
       priceBuckets.forEach(timestamp => {
-        const index = priceTimeSeries.findIndex(item => item.period >= timestamp && item.period < timestamp + period);
+        // const index = priceTimeSeries.findIndex(item => item.period >= timestamp && item.period < timestamp + period);
+        const index = priceTimeSeries.findIndex(item => item.period === timestamp);
         if (index > 0) {
           const price = priceTimeSeries[index];
           lastPrice = price.close;
@@ -162,13 +163,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
         panning: true,
         animation: false,
         spacing: [10, 8, 10, 0],
-        events: {
-          selection: function(event) {
-            if (event.resetSelection) {
-              event.target.axes[0].range = range;
-            }
-          }
-        }
       },
       xAxis: {
         ordinal: false,
@@ -272,12 +266,20 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
   }
 
   displayCandleInfoAndPlotViz(evt) {
-    const { updateHoveredPeriod, priceTimeSeries, volumeType } = this.props;
+    const { updateHoveredPeriod, priceTimeSeries, volumeType, selectedPeriod } = this.props;
+    const period = selectedPeriod * 1000;
     const { x: timestamp } = evt.target;
-    const xRangeTo = this.chart.xAxis[0].toValue(16, true);
-    const xRangeFrom = this.chart.xAxis[0].toValue(0, true);
-    const range = Math.abs((xRangeFrom - xRangeTo) * 0.6);
-
+    const mid = this.chart.xAxis[0].toPixels(timestamp, true));
+    const scaledFrom = this.chart.xAxis[0].toPixels(timestamp - (period * .25), true);
+    const scaledTo = this.chart.xAxis[0].toPixels(timestamp + (period * .25), true);
+    const maxFrom = mid - 10;
+    const maxTo = mid + 10;
+    const scaledRange = scaledTo - scaledFrom;
+    // make sure to never draw larger than 20 px as that's the max size of bars.
+    const from = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledFrom : maxFrom, true);
+    const to = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledTo : maxTo, true);
+  
+ 
     const pts = priceTimeSeries.find(p => p.period === timestamp);
 
     if (pts) {
@@ -296,8 +298,8 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
     const plotBand = {
       id: 'new-plot-band',
-      from: timestamp - range,
-      to: timestamp + range,
+      from,
+      to,
     };
 
     this.chart.xAxis[0].addPlotBand(plotBand);
