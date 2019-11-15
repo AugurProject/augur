@@ -169,7 +169,7 @@ function checkValidNumbers(values) {
   return valid;
 }
 
-export function checkForUserInputFilled(inputs) {
+export function checkForUserInputFilled(inputs, endTimeFormatted) {
   const errors = inputs.map(input => {
     if (
       input.validationType === ValidationType.WHOLE_NUMBER &&
@@ -196,10 +196,14 @@ export function checkForUserInputFilled(inputs) {
         let validations: NewMarketPropertiesValidations = {};
         if (input.userInputObject.hour === null) {
           validations.hour = 'Choose a time';
-        }
+        } 
+
         if (input.userInputObject.endTime === null) {
           validations.setEndTime = 'Choose a date';
+        } else if (endTimeFormatted.timestamp && input.userInputObject.endTime > endTimeFormatted.timestamp) {
+          validations.setEndTime = 'Date must be before event expiration time';
         }
+        
         return validations;
       } else {
         return '';
