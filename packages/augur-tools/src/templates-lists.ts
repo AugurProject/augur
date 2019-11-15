@@ -3931,10 +3931,6 @@ export const LIST_VALUES = {
       value: 'Iowa',
     },
     {
-      label: 'Iowa',
-      value: 'Iowa',
-    },
-    {
       label: 'Iowa State',
       value: 'Iowa State',
     },
@@ -6430,7 +6426,7 @@ export const NCAA_FOOTBALL_EVENT_DEP_TEAMS = {
   'Sun Belt': LIST_VALUES.NCAA_FOOTBALL_SUN_BELT,
 };
 
-export const NCAA_BASKETBALL_EVENT_DEP_TEAMS = {
+export const NCAA_BASKETBALL_CONF_DEP_TEAMS = {
   'Atlantic Coast': LIST_VALUES.NCAA_BASKETBALL_ATL_COAST_CONF,
   'Big East': LIST_VALUES.NCAA_BASKETBALL_BIG_EAST,
   'Big-10': LIST_VALUES.NCAA_BASKETBALL_BIG_10,

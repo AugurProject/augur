@@ -32,7 +32,7 @@ export interface DropdownProps {
   activeClassName?: string;
   showColor?: boolean;
   disabled?: boolean;
-  noSort?: boolean;
+  sort?: boolean;
 }
 
 interface DropdownState {
@@ -77,10 +77,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     clientWidth: null,
     isDisabled: true,
     sortedList:
-      !this.props.noSort && this.props.options
+      this.props.sort && this.props.options
         ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
         : this.props.options,
   };
+  labelRef: any;
 
   componentDidMount() {
     this.measure();
@@ -100,15 +101,27 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         ),
       });
     }
+    if (
+      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
+    ) {
+      const sortedList =
+        nextProps.sort && nextProps.options
+          ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+          : nextProps.options;
+      this.setState({
+        sortedList,
+      });
+    }
   }
 
-  shouldComponentUpdate(nextProps: any, nextState: any) {
+  shouldComponentUpdate(nextProps: DropdownProps, nextState: DropdownState) {
     if (
       nextState.selected !== this.state.selected ||
       nextState.showList !== this.state.showList ||
       this.props.disabled !== nextProps.disabled ||
       this.props.staticLabel !== nextProps.staticLabel ||
-      this.props.defaultValue !== nextProps.defaultValue
+      this.props.defaultValue !== nextProps.defaultValue ||
+      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
     ) {
       return true;
     }
