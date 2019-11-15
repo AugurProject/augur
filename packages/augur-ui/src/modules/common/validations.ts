@@ -186,7 +186,6 @@ export function checkForUserInputFilled(inputs) {
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
-        input.type === TemplateInputType.ESTDATETIME ||
         input.type === TemplateInputType.DROPDOWN ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
       (!input.userInput || input.userInput === '')
