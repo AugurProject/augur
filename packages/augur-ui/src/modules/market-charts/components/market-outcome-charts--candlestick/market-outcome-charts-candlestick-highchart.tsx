@@ -79,7 +79,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
   mouseWheelHandler(e) {
     e.preventDefault();
-    // console.log(this.chart.xAxis[0].range)
     const spinAmount = Math.ceil(e.wheelDelta / 100);
     const changeRate = spinAmount * this.chart.xAxis[0].minRange;
     const newMin = this.xMinCurrent + changeRate;
@@ -93,18 +92,46 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     selectedPeriod: number,
     volumeType: string
   ) {
-    const { marketMax, marketMin, pricePrecision } = this.props;
+    const { marketMax, marketMin, pricePrecision, currentTimeInSeconds } = this.props;
     const candlestick = [];
     const volume = [];
     this.xMin = priceTimeSeries[0] && priceTimeSeries[0].period || 0;
     this.xMinCurrent = this.xMin;
     this.xMax = priceTimeSeries[0] && priceTimeSeries[priceTimeSeries.length -1].period || 0;
-    priceTimeSeries.forEach(price => {
-      candlestick.push([price.period, price.open, price.high, price.low, price.close]);
-      const volumeValue = volumeType === 'DAI' ? price.volume : price.shareVolume;
-      volume.push([price.period, volumeValue]);
-    });
-
+    const start = priceTimeSeries.length > 1 && priceTimeSeries[0].period ? priceTimeSeries[0].period : 0;
+    const end = priceTimeSeries.length > 1 && priceTimeSeries[priceTimeSeries.length -1].period ? priceTimeSeries[priceTimeSeries.length -1].period : 0
+    const fullRange = end - start;
+    const priceBuckets = [];
+    const period = selectedPeriod * 1000;
+    if (fullRange > 0) {
+      const num = (fullRange / period);
+      for (let i = 0; i <= num; i++) {
+        priceBuckets.push(start + (i * period));
+      }
+      // use the first found trade to indicate -
+      let lastPrice = priceTimeSeries[0].open;
+      priceBuckets.forEach(timestamp => {
+        const index = priceTimeSeries.findIndex(item => item.period >= timestamp && item.period < timestamp + period);
+        if (index > 0) {
+          const price = priceTimeSeries[index];
+          lastPrice = price.close;
+          candlestick.push([price.period, price.open, price.high, price.low, price.close]);
+          const volumeValue = volumeType === 'DAI' ? price.volume : price.shareVolume;
+          volume.push([price.period, volumeValue]);
+        } else {
+          candlestick.push([timestamp, lastPrice, lastPrice, lastPrice, lastPrice]);
+          volume.push([timestamp, 0]);
+        }
+      })
+    } else {
+      priceTimeSeries.forEach(price => {
+        candlestick.push([price.period, price.open, price.high, price.low, price.close]);
+        const volumeValue = volumeType === 'DAI' ? price.volume : price.shareVolume;
+        volume.push([price.period, volumeValue]);
+      });
+    }
+       
+    
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
     this.xMinCurrent = this.xMax - range;
     const options = {
@@ -250,6 +277,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     const xRangeTo = this.chart.xAxis[0].toValue(16, true);
     const xRangeFrom = this.chart.xAxis[0].toValue(0, true);
     const range = Math.abs((xRangeFrom - xRangeTo) * 0.6);
+
     const pts = priceTimeSeries.find(p => p.period === timestamp);
 
     if (pts) {
