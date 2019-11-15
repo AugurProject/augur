@@ -99,7 +99,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             staticMenuLabel={staticMenuLabel}
             onChange={this.updateVolumeType}
             highlight={!!hoveredPeriod.volume}
-            noSort
           />
         </div>
         <div
