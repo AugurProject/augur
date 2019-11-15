@@ -70,14 +70,6 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
               })}
               onClick={() => {
                 setTertiary(option);
-                updateNewMarket({
-                  ...newMarket,
-                  categories: [
-                    newMarket.categories[0],
-                    newMarket.categories[1],
-                    option.label,
-                  ],
-                });
                 setDefaultValue(null);
               }}
             >
