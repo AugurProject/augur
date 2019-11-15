@@ -129,7 +129,7 @@ export default class FeesLiquidity extends React.Component<
             link
             smallSubheader
             header="Market creator fee"
-            subheader="You have the option of setting a fee on your market. It is a percentage amount you get whenever shares are redeemed for ETH. Fees are typically set below 2%."
+            subheader="You have the option of setting a fee on your market. It is a percentage amount you get whenever shares are redeemed for DAI. Fees are typically set below 2%."
           />
           <TextInput
             value={settlementFee}

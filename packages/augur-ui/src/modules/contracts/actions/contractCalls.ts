@@ -250,7 +250,7 @@ export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
 }
 
 export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(106);
+  return new BigNumber(182);
 }
 
 export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {

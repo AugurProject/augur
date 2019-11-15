@@ -693,6 +693,7 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
+  Gnosis_ENABLED: boolean;
 }
 export const NoFundsErrors = (props: NoFundsErrorsProps) => {
   const {
@@ -705,11 +706,12 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
     availableEthFormatted,
     availableRepFormatted,
     availableDaiFormatted,
+    Gnosis_ENABLED,
   } = props;
 
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && (
+      {noEth && !Gnosis_ENABLED && (
         <Error
           alternate
           header="Not enough ETH in your wallet"

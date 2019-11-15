@@ -3,6 +3,8 @@ import {
   IS_MOBILE_SMALL,
   UPDATE_APP_STATUS,
   IS_HELP_MENU_OPEN,
+  ETH_TO_DAI_RATE,
+  GNOSIS_ENABLED,
 } from 'modules/app/actions/update-app-status';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { AppStatus, BaseAction } from 'modules/types';
@@ -11,6 +13,8 @@ const DEFAULT_STATE = {
   [IS_MOBILE]: false,
   [IS_MOBILE_SMALL]: false,
   [IS_HELP_MENU_OPEN]: false,
+  [ETH_TO_DAI_RATE]: null,
+  [GNOSIS_ENABLED]: false,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

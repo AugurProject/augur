@@ -4,6 +4,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
 import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
+import getValue from 'utils/get-value';
 
 const mapStateToProps = state => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
@@ -30,6 +31,7 @@ const mapStateToProps = state => {
       state.loginAccount &&
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
+    Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
   };
 };
 

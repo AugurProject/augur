@@ -5,6 +5,7 @@ import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { updateAppStatus, GNOSIS_ENABLED } from 'modules/app/actions/update-app-status';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -20,11 +21,12 @@ export const updateSdk = (
       const updateUserAccount = safeAddress => {
         const newAccount = {
           ...loginAccount,
-          meta: { ...loginAccount.meta, isGnosis: true, address: safeAddress },
+          meta: { ...loginAccount.meta, address: safeAddress },
           mixedCaseAddress: toChecksumAddress(safeAddress),
           address: safeAddress.toLowerCase(),
         };
         dispatch(updateLoginAccount(newAccount));
+        dispatch(updateAppStatus(GNOSIS_ENABLED, true));
       };
 
       await augurSdk.syncUserData(

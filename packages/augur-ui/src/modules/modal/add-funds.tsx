@@ -13,6 +13,7 @@ import {
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { ACCOUNT_TYPES, DAI, REP } from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -24,6 +25,7 @@ interface AddFundsProps {
   closeAction: Function;
   address: string;
   accountMeta: LoginAccount['meta'];
+  Gnosis_ENABLED: boolean;
   autoSelect?: boolean;
   fundType: string;
 }
@@ -57,6 +59,7 @@ export const AddFunds = ({
   closeAction,
   accountMeta,
   address,
+  Gnosis_ENABLED = false,
   autoSelect = false,
   fundType = DAI,
 }: AddFundsProps) => {
@@ -142,7 +145,7 @@ export const AddFunds = ({
                 </h2>
               )}
               {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-              <h2>Add {fundTypeLabel} {generateDaiTooltip()} instantly</h2>
+                <h2>Add {fundTypeLabel} {generateDaiTooltip()} instantly</h2>
               )}
 
               <h3>Amount</h3>
@@ -200,7 +203,7 @@ export const AddFunds = ({
                 <li>Send the {fundTypeLabel} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
-              <AccountAddressDisplay copyable address={address} />
+              <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
             </>
           )}
           {selectedOption === '3' && (
@@ -224,7 +227,7 @@ export const AddFunds = ({
                 <li>Transfer the {fundTypeLabel} to your account address</li>
               </ol>
               <h3>Your Account Address</h3>
-              <AccountAddressDisplay copyable address={address} />
+              <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
               <ExternalLinkButton
                 label={`popular services for buying ${fundTypeLabel}`}
               />

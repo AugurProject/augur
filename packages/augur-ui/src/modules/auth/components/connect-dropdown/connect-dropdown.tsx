@@ -31,6 +31,7 @@ interface ConnectDropdownProps {
   universeOutcomeName: string;
   parentUniverseId: string;
   universeHasChildren: boolean;
+  Gnosis_ENABLED: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -48,6 +49,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     universeOutcomeName,
     parentUniverseId,
     universeHasChildren,
+    Gnosis_ENABLED,
   } = props;
 
   if (!isLogged && !restoredAccount) return null;
@@ -67,6 +69,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       name: 'DAI',
       logo: DaiLogoIcon,
+      disabled: false,
     },
     {
       value: formatEther(balances.eth, {
@@ -75,6 +78,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       name: 'ETH',
       logo: EthIcon,
+      disabled: Gnosis_ENABLED ? balances.eth === 0 : false,
     },
     {
       name: 'REP',
@@ -83,6 +87,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formattedValue,
+      disabled: Gnosis_ENABLED ? balances.rep === 0 : false,
     },
   ];
 
@@ -105,7 +110,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     {
       accountType: ACCOUNT_TYPES.WEB3WALLET,
       action: () => setShowMetaMaskHelper(true),
-      disabled: false,
     },
   ];
 
@@ -121,9 +125,9 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       <ReactTooltip
         id={id}
         className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
+        effect='solid'
+        place='top'
+        type='light'
       >
         <p>{text}</p>
       </ReactTooltip>
@@ -138,10 +142,12 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       <div className={Styles.AccountInfo}>
         <div className={Styles.AddFunds}>
           <div>Your account</div>
-          <PrimaryButton action={() => showAddFundsModal()} text="Add Funds" />
+          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
-        {accountFunds.map((fundType, idx) => (
+        {accountFunds
+          .filter(fundType => !fundType.disabled)
+          .map((fundType, idx) => (
           <div key={idx} className={Styles.AccountFunds}>
             <div>
               {fundType.logo} {fundType.name}
@@ -153,7 +159,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         ))}
 
         <div className={Styles.MobileAddFunds}>
-          <PrimaryButton action={() => showAddFundsModal()} text="Add Funds" />
+          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
         {walletProviders
@@ -179,7 +185,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 </div>
                 <SecondaryButton
                   action={() => wallet.action()}
-                  text="OPEN"
+                  text='OPEN'
                   icon={Open}
                   disabled={wallet.disabled}
                 />
@@ -201,7 +207,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
           <SecondaryButton
             action={() => gasModal()}
-            text="EDIT"
+            text='EDIT'
             icon={Pencil}
           />
         </div>
@@ -214,7 +220,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             </div>
             <SecondaryButton
               action={() => universeSelectorModal()}
-              text="CHANGE UNIVERSE"
+              text='CHANGE UNIVERSE'
             />
           </div>
         )}

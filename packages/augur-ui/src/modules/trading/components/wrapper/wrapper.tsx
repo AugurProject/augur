@@ -63,7 +63,10 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   addPendingOrder: Function;
   tutorialNext?: Function;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
 }
+
 
 interface WrapperState {
   orderPrice: string;
@@ -425,6 +428,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       currentTimestamp,
       tradingTutorial,
       tutorialNext,
+      Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
     let {
       marketType,
@@ -554,6 +559,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
+              Gnosis_ENABLED={Gnosis_ENABLED}
+              ethToDaiRate={ethToDaiRate}
             />
           )}
         <div

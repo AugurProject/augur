@@ -9,6 +9,7 @@ import Styles from 'modules/market/components/trading-form/trading-form.styles.l
 import { PrimaryButton } from 'modules/common/buttons';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { BigNumber } from 'utils/create-big-number';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build';
 
 interface TradingFormProps {
   availableEth: BigNumber;
@@ -39,6 +40,8 @@ interface TradingFormProps {
   tradingTutorial?: boolean;
   addPendingOrder: Function;
   tutorialNext?: Function;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
 }
 
 interface TradingFormState {
@@ -111,7 +114,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       currentTimestamp,
       tradingTutorial,
       addPendingOrder,
-      tutorialNext
+      tutorialNext,
+      Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
     const s = this.state;
 
@@ -144,6 +149,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           sortedOutcomes={sortedOutcomes}
           availableEth={availableEth}
           availableDai={availableDai}
+          Gnosis_ENABLED={Gnosis_ENABLED}
+          ethToDaiRate={ethToDaiRate}
           updateSelectedOrderProperties={
             this.props.updateSelectedOrderProperties
           }

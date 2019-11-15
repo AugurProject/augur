@@ -1,7 +1,7 @@
-import React from "react";
-import classNames from "classnames";
+import React from 'react';
+import classNames from 'classnames';
 
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import getValue from 'utils/get-value';
 import findInsufficientFunds, { InsufficientFunds } from 'modules/markets/helpers/insufficient-funds';
 import {
@@ -23,8 +23,8 @@ import {
   ETH,
   DAI,
   REP
-} from "modules/common/constants";
-import { MARKET_TYPE_NAME } from "modules/create-market/constants";
+} from 'modules/common/constants';
+import { MARKET_TYPE_NAME } from 'modules/create-market/constants';
 import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCalls';
 import {
   formatEtherEstimate,
@@ -34,8 +34,8 @@ import {
 } from 'utils/format-number';
 import { NewMarket, FormattedNumber } from 'modules/types';
 
-import Styles from "modules/create-market/components/review.styles.less";
-import { buildResolutionDetails } from "modules/create-market/get-template";
+import Styles from 'modules/create-market/components/review.styles.less';
+import { buildResolutionDetails } from 'modules/create-market/get-template';
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -46,6 +46,8 @@ interface ReviewProps {
   availableEthFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
 }
 
 interface ReviewState {
@@ -90,12 +92,13 @@ export default class Review extends React.Component<
 
     if (
       newMarket.initialLiquidityDai !== prevProps.newMarket.initialLiquidityDai
-    )
+    ) {
       this.setState({
         formattedInitialLiquidityDai: formatEtherEstimate(
           prevProps.newMarket.initialLiquidityDai
         ),
       });
+    }
     if (
       newMarket.initialLiquidityGas !==
       prevProps.newMarket.initialLiquidityGas ||
@@ -223,6 +226,8 @@ export default class Review extends React.Component<
       availableEthFormatted,
       availableDaiFormatted,
       availableRepFormatted,
+      Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
     const s = this.state;
 
@@ -242,18 +247,28 @@ export default class Review extends React.Component<
       affiliateFee,
       endTimeFormatted,
       timezone,
-      template
+      template,
     } = newMarket;
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
+
+    // Total Gas in ETH
     const totalEth = formatEther(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
+
+    // Total Gas in DAI
+    const totalGasInDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(totalEth.value)));
+
+    // Initial liquidity Gas in DAI
+    const initialLiquidityGasInDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(s.formattedInitialLiquidityGas.value)));
+
+    // IF Gnosis safe include gas fees in total DAI
+    const totalGasDai = formatDai(totalGasInDai.value);
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
     const noDai = s.insufficientFunds[DAI];
 
     const resolutionDetails = template ? buildResolutionDetails(detailsText, template.resolutionRules) : detailsText;
-
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
         <Header text="Market details" />
@@ -296,7 +311,7 @@ export default class Review extends React.Component<
         <LineBreak />
         <Header text="Funds required" />
         <div>
-          <Subheaders header="Validity bond" subheader={"The bond is paid in ETH and is refunded to the Market Creator if the Final Outcome of the Market is not Invalid. The Validity Bond is a dynamic amount based on the percentage of Markets in Augur that are being Finalized as Invalid."} link />
+          <Subheaders header="Validity bond" subheader={"The bond is paid in DAI and is refunded to the Market Creator if the Final Outcome of the Market is not Invalid. The Validity Bond is a dynamic amount based on the percentage of Markets in Augur that are being Finalized as Invalid."} link />
           <span>
             <LinearPropertyLabel
               label={"Valididty Bond"}
@@ -318,26 +333,35 @@ export default class Review extends React.Component<
               label={"Initial Liquidity"}
               value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
             />
-            <LinearPropertyLabelTooltip
-              label={"Estimated Gas Cost"}
-              value={s.formattedInitialLiquidityGas.formattedValue + " ETH"}
-            />
+            {Gnosis_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
+              label={'Estimated Gas Cost'}
+              value={initialLiquidityGasInDai.formattedValue + ' DAI'}
+            />}
+            {!Gnosis_ENABLED && <LinearPropertyLabelTooltip
+              label={'Estimated Gas Cost'}
+              value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
+            />}
           </span>
 
-          <Subheaders header="Totals" subheader={"Sum total of DAI, ETH and REP required to create this market"} />
+          <Subheaders header="Totals" subheader={Gnosis_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            <LinearPropertyLabel
+            {Gnosis_ENABLED && <LinearPropertyLabel
+              label={"Gas Costs"}
+              value={totalGasDai.formattedValue + " DAI"}
+            />}
+            {!Gnosis_ENABLED && <LinearPropertyLabel
               label={"Total ETH"}
               value={totalEth.formattedValue + " ETH"}
-            />
+            />}
             <LinearPropertyLabel
               label={"TOTAL REP"}
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
             />
+
           </span>
           <NoFundsErrors
             noEth={noEth}
@@ -349,6 +373,7 @@ export default class Review extends React.Component<
             totalDai={totalDai}
             totalEth={totalEth}
             totalRep={s.designatedReportNoShowReputationBond}
+            Gnosis_ENABLED={Gnosis_ENABLED}
           />
         </div>
       </div>

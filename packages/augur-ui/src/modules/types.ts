@@ -520,6 +520,8 @@ export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
+  ethToDaiRate: BigNumber;
+  gnosisEnabled: boolean;
 }
 
 export interface AuthStatus {

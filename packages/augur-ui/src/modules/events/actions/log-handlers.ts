@@ -122,6 +122,7 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
 export const handleGnosisStateUpdate = (response) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
+  // TODO This isn't getting hit
   console.log('handleGnosisStateUpdate', response);
 };
 

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { augurSdk } from 'services/augursdk';
 import TradingForm from 'modules/market/components/trading-form/trading-form';
 import { createBigNumber } from 'utils/create-big-number';
 import { windowRef } from 'utils/window-ref';
@@ -43,8 +43,11 @@ const getMarketPath = id => {
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
 
-  const hasFunds =
-    !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
+  const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
+  const ethToDaiRate = getValue(state, 'appStatus.ethToDaiRate');
+  const hasFunds = Gnosis_ENABLED
+    ? !!state.loginAccount.balances.dai
+    : !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
 
   const selectedOutcomeId =
     ownProps.selectedOutcomeId !== undefined &&
@@ -74,6 +77,8 @@ const mapStateToProps = (state, ownProps) => {
       ownProps.market.marketType,
       ownProps.market.outcomesFormatted
     ),
+    Gnosis_ENABLED,
+    ethToDaiRate,
   };
 };
 
