@@ -5,8 +5,8 @@ import 'ROOT/external/IAffiliateValidator.sol';
 
 
 contract AffiliateValidator is Ownable, IAffiliateValidator {
-    // Mapping of keys to affiliate address
-    mapping (bytes32 => address) keys;
+    // Mapping of affiliate address to their key
+    mapping (address => bytes32) keys;
 
     mapping (address => bool) operators;
 
@@ -18,16 +18,19 @@ contract AffiliateValidator is Ownable, IAffiliateValidator {
         operators[_operator] = false;
     }
 
-    function addKey(address _account, bytes32 _key, bytes calldata _signature) external {
+    function addKey(bytes32 _key, bytes calldata _signature) external {
         // XXX validate signature
-        keys[_key] = _account;
+        keys[msg.sender] = _key;
     }
 
-    function isValidKey(address _account, bytes32 _key) external returns (bool) {
-        return keys[_key] == _account;
+    function isValidReference(address _account, address _referrer) external returns (bool) {
+        bytes32 _accountKey = keys[_account];
+        bytes32 _referralKey = keys[_referrer];
+        if (_accountKey == bytes32(0) || _referralKey == bytes32(0)) {
+            return false;
+        }
+        return _accountKey != _referralKey;
     }
 
-    function onTransferOwnership(address, address) internal {
-        
-    }
+    function onTransferOwnership(address, address) internal {}
 }

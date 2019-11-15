@@ -750,7 +750,6 @@ def test_create_order_after_exhausting_book(isMatch, contractsFixture, cash, mar
         assert orders.getBetterOrderId(fillOrderID) == longTo32Bytes(0)
         assert orders.getWorseOrderId(fillOrderID) == longTo32Bytes(0)
 
-''' XXX make work
 @mark.parametrize(('finalized', 'invalid'), [
     (True, True),
     (False, True),
@@ -758,11 +757,17 @@ def test_create_order_after_exhausting_book(isMatch, contractsFixture, cash, mar
     (False, False),
 ])
 def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, universe):
+    affiliates = contractsFixture.contracts['Affiliates']
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     orders = contractsFixture.contracts['Orders']
     shareToken = contractsFixture.contracts['ShareToken']
     shareToken = contractsFixture.contracts["ShareToken"]
+    fingerprint = longTo32Bytes(11)
+
+    affiliateAddress = contractsFixture.accounts[3]
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=contractsFixture.accounts[1])
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=contractsFixture.accounts[2])
 
     if finalized:
         if invalid:
@@ -791,20 +796,23 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     assert orderID
 
     expectedAffiliateFees = fix(100) / 400
+    sourceKickback = expectedAffiliateFees / 5
+    expectedAffiliateFees -= sourceKickback
     cash.faucet(fix(60), sender=contractsFixture.accounts[2])
     # Trade and specify an affiliate address.
     if finalized:
         if invalid:
             nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
             totalFees = fix(100) / 50 # Market fees + reporting fees
+            totalFees -= sourceKickback
             with TokenDelta(cash, totalFees, nextDisputeWindowAddress, "Dispute Window did not recieve the correct fees"):
-                assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+                assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, fingerprint, nullAddress, sender=contractsFixture.accounts[2]) == 0
         else:
             with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
-                assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+                assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, fingerprint, nullAddress, sender=contractsFixture.accounts[2]) == 0
     else:
-        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
-        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, fingerprint, nullAddress, sender=contractsFixture.accounts[2]) == 0
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, fingerprint, nullAddress, sender=contractsFixture.accounts[2]) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == fix(1)
@@ -846,4 +854,3 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     if not invalid:
         with TokenDelta(cash, 0, contractsFixture.accounts[3], "Affiliate double received fees"):
             market.withdrawAffiliateFees(contractsFixture.accounts[3])
-'''

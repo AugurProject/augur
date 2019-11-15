@@ -338,16 +338,19 @@ contract Market is Initializable, Ownable, IMarket {
         require(augur.isKnownFeeSender(msg.sender));
 
         address _affiliateAddress = affiliates.getAndValidateReferrer(_sourceAccount, affiliateValidator);
-        address _fingerprintAccount = affiliates.getFingerprintAccount(_fingerprint);
-        if (_fingerprintAccount == _affiliateAddress) {
+        bytes32 _affiliateFingerprint = affiliates.getAccountFingerprint(_affiliateAddress);
+        if (_fingerprint == _affiliateFingerprint) {
             // don't let affiliates refer themselves
             _affiliateAddress = address(0);
         }
 
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
-            uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
+            uint256 _totalAffiliateFees = _marketCreatorFees / affiliateFeeDivisor;
+            uint256 _sourceCut = _totalAffiliateFees / Reporting.getAffiliateSourceCutDivisor();
+            uint256 _affiliateFees = _totalAffiliateFees.sub(_sourceCut);
+            universe.withdraw(_sourceAccount, _sourceCut, address(this));
             affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
-            _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
+            _marketCreatorFees = _marketCreatorFees.sub(_totalAffiliateFees);
             totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
 

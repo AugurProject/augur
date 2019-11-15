@@ -218,8 +218,8 @@ def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, m
     with TokenDelta(cash, expectedPayout, kitchenSinkFixture.accounts[1], "Claiming multiple markets did not give expected payout"):
         assert augurTrading.claimMarketsProceeds([market.address, scalarMarket.address], kitchenSinkFixture.accounts[1], longTo32Bytes(11))
 
-''' XXX make work
 def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
+    affiliates = kitchenSinkFixture.contracts['Affiliates']
     shareToken = kitchenSinkFixture.contracts['ShareToken']
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
@@ -228,10 +228,14 @@ def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
     expectedPayout = expectedValue - expectedSettlementFees
     expectedAffiliateFees = expectedMarketCreatorFees / market.affiliateFeeDivisor()
     expectedMarketCreatorFees = expectedMarketCreatorFees - expectedAffiliateFees
+    sourceKickback = expectedAffiliateFees / 5
+    expectedAffiliateFees -= sourceKickback
     fingerprint = longTo32Bytes(11)
 
     assert universe.getOpenInterestInAttoCash() == 0
     affiliateAddress = kitchenSinkFixture.accounts[5]
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=kitchenSinkFixture.accounts[1])
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=kitchenSinkFixture.accounts[2])
 
     # get YES shares with a1
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 100, shareToken.address, sender = kitchenSinkFixture.accounts[1])
@@ -247,9 +251,7 @@ def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
             shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], fingerprint)
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
+    assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout + sourceKickback
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[1]) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[2]) == 0
-'''

@@ -45,7 +45,7 @@ contract GnosisSafeRegistry is Initializable {
         _affiliates.setFingerprint(_fingerprint);
 
         if (_referralAddress != address(0)) {
-            _affiliates.setReferrer(_referralAddress, _referralKey);
+            _affiliates.setReferrer(_referralAddress);
         }
     }
 

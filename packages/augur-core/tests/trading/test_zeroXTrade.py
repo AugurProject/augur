@@ -560,7 +560,6 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[2]) == 0
 
-''' XXX Make work
 @mark.parametrize(('finalized', 'invalid'), [
     (True, True),
     (False, True),
@@ -568,6 +567,7 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     (False, False),
 ])
 def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, universe):
+    affiliates = contractsFixture.contracts['Affiliates']
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     shareToken = contractsFixture.contracts['ShareToken']
@@ -576,6 +576,11 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     shareToken = contractsFixture.contracts['ShareToken']
+    fingerprint = longTo32Bytes(11)
+
+    affiliateAddress = contractsFixture.accounts[3]
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=contractsFixture.accounts[1])
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=contractsFixture.accounts[2])
 
     if finalized:
         if invalid:
@@ -605,19 +610,22 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     signatures = [signature]
 
     expectedAffiliateFees = fix(100) / 400
+    sourceKickback = expectedAffiliateFees / 5
+    expectedAffiliateFees -= sourceKickback
     cash.faucet(fix(60), sender=contractsFixture.accounts[2])
     # Trade and specify an affiliate address.
     if finalized:
         if invalid:
             nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
             totalFees = fix(100) / 50 # Market fees + reporting fees
+            totalFees -= sourceKickback
             with TokenDelta(cash, totalFees, nextDisputeWindowAddress, "Dispute Window did not recieve the correct fees"):
-                assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
+                assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
         else:
             with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
-                assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
+                assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
     else:
-        assert ZeroXTrade.trade(fix(1), contractsFixture.accounts[3], tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
+        assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == fix(1)
@@ -659,7 +667,6 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     if not invalid:
         with TokenDelta(cash, 0, contractsFixture.accounts[3], "Affiliate double received fees"):
             market.withdrawAffiliateFees(contractsFixture.accounts[3])
-'''
 
 def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
