@@ -622,7 +622,6 @@ export default class MarketView extends Component<
                             }))}
                           large
                           showColor
-                          noSort
                         />
                       </div>
                       <ModuleTabs selected={0} fillForMobile>

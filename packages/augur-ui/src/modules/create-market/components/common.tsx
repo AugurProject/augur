@@ -851,6 +851,7 @@ export const InputFactory = (props: InputFactoryProps) => {
           }
           updateData(value);
         }}
+        sort
       />
     );
   } else {
@@ -1453,6 +1454,7 @@ const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, err
           onChange={value => onChange(value)}
           options={list}
           errorMessage={errorMessage && errorMessage[number]}
+          sort
         />
       </div>
       <SecondaryButton
