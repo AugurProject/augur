@@ -459,7 +459,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
-      checkUserInputFilled ? checkForUserInputFilled(value) : '',
+      checkUserInputFilled ? checkForUserInputFilled(value, newMarket.endTimeFormatted) : '',
     ];
 
     if (label === END_TIME) {

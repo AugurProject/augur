@@ -170,7 +170,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                example: `Will Rory Mcllroy win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -207,7 +207,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                example: `Will Rory Mcllroy make the cut at the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -244,7 +244,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                example: `Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -287,7 +287,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                example: `Will Lexi Thompson win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -324,7 +324,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                example: `Will Lexi Thompson make the cut at the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -361,7 +361,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                example: `Which golfer will win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -1629,7 +1629,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will the [0] win vs the [1]?`,
-                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                example: `WNBA: Will the Los Angeles Sparks win vs the New York Liberty?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1664,7 +1664,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will the [0] win vs the [1] by [2] or more points?`,
-                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                example: `WNBA: Will the Los Angeles Sparks win vs the New York Liberty by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1705,7 +1705,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will the [0] & [1] score [2] or more combined points?`,
-                example: `WNBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                example: `WNBA: Will the Los Angeles Sparks & the New York Liberty score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1766,7 +1766,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will [0] win the [1] [2] award?`,
-                example: `WNBA: Will Steph Curry win the 2019-20 NBA Most Valuable Player award?`,
+                example: `WNBA: Will Maya Moore win the 2019-20 WNBA Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -1797,7 +1797,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which team will win: [0] vs [1]?`,
-                example: `WNBA: Which Team will win: Brooklyn Nets vs NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                example: `WNBA: Which Team will win: Phoenix Mercury vs Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1828,7 +1828,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `WNBA: [0] vs [1]: Total Points scored; Over/Under [2].5?`,
-                example: `WNBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `WNBA: Phoenix Mercury vs Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1909,7 +1909,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Award`,
-                    values: LIST_VALUES.NBA_BASKETBALL_AWARD,
+                    values: LIST_VALUES.WNBA_BASKETBALL_AWARD,
                   },
                   {
                     id: 2,
@@ -1971,7 +1971,7 @@ export const TEMPLATES = {
               {
                 marketType: SCALAR,
                 question: `WNBA: Total number of wins [0] will finish [1] regular season with?`,
-                example: `WNBA: Total number of wins NY Knicks will finish 2019-20 regular season with?`,
+                example: `WNBA: Total number of wins New York Liberty will finish 2019-20 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [
@@ -2321,6 +2321,48 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `NCAA BB: Which college basketball team will win the [0] [1] D1 National Championship?`,
+                example: `NCAA BB: Which college basketball team will win the Men's 2020 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and Overtime`,
                     },
                   ],
                 },
