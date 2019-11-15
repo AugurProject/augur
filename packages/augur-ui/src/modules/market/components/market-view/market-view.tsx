@@ -51,7 +51,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
-import orderBook from 'modules/market-charts/containers/order-book';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -77,7 +76,6 @@ interface MarketViewProps {
   hotloadMarket: Function;
   canHotload: boolean;
   removeAlert: Function;
-  daysPassed?: number;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -409,7 +407,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
-      daysPassed,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -532,7 +529,7 @@ export default class MarketView extends Component<
 
     if (tradingTutorial && (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS || tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS)) {
       let orderBook = market.orderBook;
-      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => order.disappear);
+      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => !order.disappear);
       orderBookMarket = {
         ...market,
         orderBook
@@ -593,7 +590,6 @@ export default class MarketView extends Component<
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}
-                          daysPassed={daysPassed}
                         />
                       </div>
                     </div>
