@@ -54,6 +54,7 @@ interface MarketsViewProps {
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
   templateFilter: string;
+  setMarketsListSearchInPlace: Function;
 }
 
 interface MarketsViewState {
@@ -168,6 +169,8 @@ export default class MarketsView extends Component<
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
+    this.props.setMarketsListSearchInPlace(Boolean(search));
+    
     this.props.loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],

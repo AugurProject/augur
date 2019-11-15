@@ -12,7 +12,7 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
-import { setLoadMarketsPending, updateMarketsListMeta, updateMarketsListCardFormat } from '../actions/update-markets-list';
+import { setLoadMarketsPending, updateMarketsListMeta, updateMarketsListCardFormat, setMarketsListSearchInPlace } from '../actions/update-markets-list';
 import { MAX_SPREAD_ALL_SPREADS, MAX_FEE_100_PERCENT  } from 'modules/common/constants';
 import { updateFilterSortOptions, MARKET_FILTER, MARKET_MAX_FEES, MARKET_MAX_SPREAD } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
@@ -64,6 +64,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => 
   updateMarketsListCardFormat: (format) => dispatch(updateMarketsListCardFormat(format)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
   updateLoginAccountSettings: settings => dispatch(updateLoginAccountSettings(settings)),
+  setMarketsListSearchInPlace: isSearchInPlace =>
+    dispatch(setMarketsListSearchInPlace(isSearchInPlace)),
 });
 
 const Markets = withRouter(
