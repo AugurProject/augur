@@ -295,6 +295,12 @@ export function getRep() {
   return rep.faucet(createBigNumber('100000000000000000000'));
 }
 
+export function getLegacyRep() {
+  const { contracts } = augurSdk.get();
+  const rep = contracts.legacyReputationToken;
+  return rep.faucet(createBigNumber('10000000000000000000'));
+}
+
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
   const vBond = await contracts.universe.getOrCacheValidityBond_();
