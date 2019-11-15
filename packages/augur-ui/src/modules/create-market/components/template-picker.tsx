@@ -118,7 +118,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                 newMarket.categories[1],
                 tertiary.label,
               ],
-              template: template,
+              template,
             });
           }}
         />
