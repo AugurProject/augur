@@ -21,6 +21,7 @@ import { isEmpty } from 'utils/is-empty';
 import { isMobileSafari } from 'utils/is-safari';
 import { analytics } from './analytics';
 import { WebWorkerConnector } from './ww-connector';
+import { isLocalHost } from 'utils/is-localhost';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -120,7 +121,9 @@ export class SDK {
     if (this.sdk) {
       if (signer) this.sdk.signer = signer;
       this.signerNetworkId = signerNetworkId;
-      analytics.identify(address, { address, signerNetworkId })
+      if (!isLocalHost()) {
+        analytics.identify(address, { address, signerNetworkId });
+      }
 
       if (useGnosis) {
         const safeAddress = await this.getOrCreateGnosisSafe(address) as string;

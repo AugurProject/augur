@@ -10,7 +10,6 @@ import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { Abi } from 'ethereum';
 import * as ethUtil from 'ethereumjs-util';
 import { ethers, utils as ethersUtils } from 'ethers';
-import { toChecksumAddress } from "ethereumjs-util";
 import { NULL_ADDRESS, Provider, SubscriptionEventName } from '..';
 import { Augur } from '../Augur';
 import { Address } from '../state/logs/types';
@@ -50,10 +49,12 @@ export class Gnosis {
     private readonly augur: Augur,
     private readonly dependencies: ContractDependenciesGnosis
   ) {
+
+    // TODO this currently doesn't work. Using setInterval for now ISSUE#?
     // Check safe status on new block. Possible to wait for a transfer event to show up in the DB if this is problematic.
-    augur
-      .getAugurEventEmitter()
-      .on(SubscriptionEventName.NewBlock, this.onNewBlock);
+    // augur
+    //   .getAugurEventEmitter()
+    //   .on(SubscriptionEventName.NewBlock, this.onNewBlock);
 
     this.provider.storeAbiData(abi.GnosisSafe as Abi, 'GnosisSafe');
     this.provider.storeAbiData(abi.ProxyFactory as Abi, 'ProxyFactory');
@@ -71,14 +72,16 @@ export class Gnosis {
   private onNewBlock = async () => {
     for (const s of this.safesToCheck) {
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(s);
-      if (
-        status.status in [GnosisSafeState.AVAILABLE, GnosisSafeState.CREATED]
-      ) {
+      if ([GnosisSafeState.AVAILABLE, GnosisSafeState.CREATED].includes(status.status)) {
         const signerAddress = await this.dependencies.signer.getAddress();
         if (signerAddress === s.owner) {
-          this.augur.setGnosisSafeAddress(toChecksumAddress(s.safe));
+          this.augur.setGnosisSafeAddress(ethUtil.toChecksumAddress(s.safe));
           this.augur.setUseGnosisSafe(true);
         }
+      }
+
+      if ([GnosisSafeState.AVAILABLE].includes(status.status)) {
+        clearInterval(intervalId); // No need to poll anymore
       }
 
       // Can only register Contract if the current signer is the safe owner.
@@ -114,8 +117,7 @@ export class Gnosis {
         });
 
       // Clear the "watch" when we reach a terminal safe state.
-      if (status.status in [GnosisSafeState.AVAILABLE, GnosisSafeState.ERROR]) {
-        // TODO remove when onBlock event works
+      if ([GnosisSafeState.AVAILABLE, GnosisSafeState.ERROR].includes(status.status)) {
         clearInterval(intervalId); // No need to poll blocks anymore
         this.safesToCheck = this.safesToCheck.filter(r => s.safe !== r.safe);
       }
@@ -133,6 +135,7 @@ export class Gnosis {
   ): Promise<CalculateGnosisSafeAddressParams | Address> {
     const owner = typeof params === 'string' ? params : params.owner;
     const safe = await this.getGnosisSafeAddress(owner);
+
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.augur
         .getAugurEventEmitter()
@@ -151,6 +154,7 @@ export class Gnosis {
 
       // Normalize addresses
       if (safe.toLowerCase() !== params.safe.toLowerCase()) {
+        // TODO handle this in the UI
         console.log(
           `Saved relay safe creation params invalid. Calculated safe address is ${safe}. Passed params: ${JSON.stringify(
             params
@@ -162,15 +166,13 @@ export class Gnosis {
           this.safesToCheck.push({
             status: status.status,
             owner,
-            safe: toChecksumAddress(safe),
+            safe: ethUtil.toChecksumAddress(safe),
           });
         }
 
-        // TODO remove when onBlock event works
         intervalId = setInterval(() => {
           this.onNewBlock();
         }, 5000);
-        // await this.onNewBlock();
 
         return params;
       } else if (status.status === GnosisSafeState.CREATED) {
@@ -190,12 +192,9 @@ export class Gnosis {
       paymentToken: this.augur.contracts.cash.address,
     });
 
-    // TODO remove when onBlock event works
     intervalId = setInterval(() => {
       this.onNewBlock();
     }, 5000);
-    // Fire events to notify any interested parties.
-    // await this.onNewBlock();
 
     return {
       ...result,
@@ -295,7 +294,7 @@ export class Gnosis {
     });
 
     this.safesToCheck.push({
-      safe: toChecksumAddress(response.safe),
+      safe: ethUtil.toChecksumAddress(response.safe),
       owner: params.owner,
       status: GnosisSafeState.WAITING_FOR_FUNDS,
     });
@@ -310,14 +309,14 @@ export class Gnosis {
       throw new Error('No Gnosis Relay provided to Augur SDK');
     }
 
-    const safe = await this.getGnosisSafeAddress(toChecksumAddress(params.owner));
+    const safe = await this.getGnosisSafeAddress(ethUtil.toChecksumAddress(params.owner));
     if (safe !== NULL_ADDRESS) {
       return {
         status: GnosisSafeState.AVAILABLE,
       };
     }
 
-    return this.gnosisRelay.checkSafe(toChecksumAddress(params.safe));
+    return this.gnosisRelay.checkSafe(ethUtil.toChecksumAddress(params.safe));
   }
 
   private async buildRegistrationData() {

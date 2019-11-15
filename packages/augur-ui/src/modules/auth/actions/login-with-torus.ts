@@ -2,7 +2,7 @@ import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Web3Provider } from 'ethers/providers';
+import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Torus from '@toruslabs/torus-embed';
 import Web3 from 'web3';
 import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
@@ -39,7 +39,7 @@ export const loginWithTorus = () => async (
       await torus.login();
 
       const web3 = new Web3(torus.provider);
-      const provider = new Web3Provider(torus.provider);
+      const provider = new PersonalSigningWeb3Provider(torus.provider);
       const isWeb3 = true;
       windowRef.torus = torus;
 

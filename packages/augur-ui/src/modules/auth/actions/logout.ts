@@ -5,6 +5,7 @@ import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import { analytics } from 'services/analytics';
+import { isLocalHost } from 'utils/is-localhost';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -36,6 +37,8 @@ export function logout() {
       await windowRef.fm.user.logout();
     }
 
-    analytics.reset();
+    if (!isLocalHost()) {
+      analytics.reset();
+    }
   };
 }

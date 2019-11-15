@@ -124,9 +124,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     let txHash: string;
     // If the Relay Service is not being used so we'll execute the TX directly
     const relayTransaction = await this.ethersTransactionToRelayTransaction(tx, Operation.DelegateCall);
-    console.log('Created', JSON.stringify(relayTransaction));
     if (this.useRelay) {
-      console.log('relayTransaction', JSON.stringify(relayTransaction));
       txHash = await this.gnosisRelay.execTransaction(relayTransaction);
     } else {
       txHash = await this.execTransactionDirectly(relayTransaction);
@@ -181,12 +179,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const signatures = `0x${r}${s}${v}`;
     const response = await this.gnosisSafe.execTransaction(
       relayTransaction.to,
-      new ethers.utils.BigNumber(relayTransaction.value.toFixed()),
+      new ethers.utils.BigNumber(Number(relayTransaction.value).toFixed()),
       relayTransaction.data,
       relayTransaction.operation,
-      new ethers.utils.BigNumber(relayTransaction.safeTxGas.toFixed()),
-      new ethers.utils.BigNumber(relayTransaction.dataGas.toFixed()),
-      new ethers.utils.BigNumber(relayTransaction.gasPrice.toFixed()),
+      new ethers.utils.BigNumber(Number(relayTransaction.safeTxGas).toFixed()),
+      new ethers.utils.BigNumber(Number(relayTransaction.dataGas).toFixed()),
+      new ethers.utils.BigNumber(Number(relayTransaction.gasPrice).toFixed()),
       relayTransaction.gasToken,
       relayTransaction.refundReceiver,
       signatures
@@ -221,7 +219,8 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       gasEstimates = await this.estimateTransactionDirectly(tx);
     }
 
-    const safeTxGas = gasEstimates.safeTxGas;
+    // We need to bump up safeTxGas or TX's fail on Portis/Fortmatic/Torus
+    const safeTxGas = (new ethers.utils.BigNumber(Number(gasEstimates.safeTxGas))).add(1000);
     const baseGas = gasEstimates.baseGas;
     const gasPrice = this.gasPrice;
     const gasToken = this.gasToken;
@@ -232,7 +231,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       value,
       data,
       operation,
-      new ethers.utils.BigNumber(Number(safeTxGas).toFixed()),
+      safeTxGas,
       new ethers.utils.BigNumber(Number(baseGas).toFixed()),
       new ethers.utils.BigNumber(Number(gasPrice).toFixed()),
       gasToken,
@@ -254,7 +253,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     return Object.assign(
       {
-        safeTxGas,
+        safeTxGas: safeTxGas.toString(),
         dataGas: baseGas,
         gasPrice,
         refundReceiver,

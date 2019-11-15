@@ -34,7 +34,7 @@ export interface RelayTxEstimateData {
 }
 
 export interface RelayTransaction extends RelayTxEstimateData {
-  safeTxGas: BigNumber;
+  safeTxGas: BigNumber | string;
   dataGas: BigNumber;
   gasPrice: BigNumber;
   refundReceiver: string;
