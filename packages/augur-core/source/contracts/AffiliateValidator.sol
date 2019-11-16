@@ -45,13 +45,13 @@ contract AffiliateValidator is Ownable, IAffiliateValidator {
         return operators[recovered];
     }
 
-    function isValidReference(address _account, address _referrer) external view returns (bool) {
+    function validateReference(address _account, address _referrer) external view {
         bytes32 _accountKey = keys[_account];
         bytes32 _referralKey = keys[_referrer];
         if (_accountKey == bytes32(0) || _referralKey == bytes32(0)) {
-            return false;
+            revert("Key must be registered for both accounts");
         }
-        return _accountKey != _referralKey;
+        require(_accountKey != _referralKey, "Key must not be equal for both accounts");
     }
 
     function onTransferOwnership(address, address) internal {}

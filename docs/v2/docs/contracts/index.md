@@ -10,7 +10,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AffiliateValidator.addOperator(address)"><code class="function-signature">addOperator(address _operator)</code></a></li><li><a href="#AffiliateValidator.removeOperator(address)"><code class="function-signature">removeOperator(address _operator)</code></a></li><li><a href="#AffiliateValidator.addKey(bytes32,uint256,bytes32,bytes32,uint8)"><code class="function-signature">addKey(bytes32 _key, uint256 _salt, bytes32 _r, bytes32 _s, uint8 _v)</code></a></li><li><a href="#AffiliateValidator.getKeyHash(bytes32,uint256)"><code class="function-signature">getKeyHash(bytes32 _key, uint256 _salt)</code></a></li><li><a href="#AffiliateValidator.isValidSignature(bytes32,bytes32,bytes32,uint8)"><code class="function-signature">isValidSignature(bytes32 _hash, bytes32 _r, bytes32 _s, uint8 _v)</code></a></li><li><a href="#AffiliateValidator.isValidReference(address,address)"><code class="function-signature">isValidReference(address _account, address _referrer)</code></a></li><li><a href="#AffiliateValidator.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AffiliateValidator.addOperator(address)"><code class="function-signature">addOperator(address _operator)</code></a></li><li><a href="#AffiliateValidator.removeOperator(address)"><code class="function-signature">removeOperator(address _operator)</code></a></li><li><a href="#AffiliateValidator.addKey(bytes32,uint256,bytes32,bytes32,uint8)"><code class="function-signature">addKey(bytes32 _key, uint256 _salt, bytes32 _r, bytes32 _s, uint8 _v)</code></a></li><li><a href="#AffiliateValidator.getKeyHash(bytes32,uint256)"><code class="function-signature">getKeyHash(bytes32 _key, uint256 _salt)</code></a></li><li><a href="#AffiliateValidator.isValidSignature(bytes32,bytes32,bytes32,uint8)"><code class="function-signature">isValidSignature(bytes32 _hash, bytes32 _r, bytes32 _s, uint8 _v)</code></a></li><li><a href="#AffiliateValidator.validateReference(address,address)"><code class="function-signature">validateReference(address _account, address _referrer)</code></a></li><li><a href="#AffiliateValidator.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
 
 
 
@@ -44,7 +44,7 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AffiliateValidator.isValidReference(address,address)"></a><code class="function-signature">isValidReference(address _account, address _referrer) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AffiliateValidator.validateReference(address,address)"></a><code class="function-signature">validateReference(address _account, address _referrer)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -62,11 +62,11 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAffiliateValidator.isValidReference(address,address)"><code class="function-signature">isValidReference(address _account, address _referrer)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAffiliateValidator.validateReference(address,address)"><code class="function-signature">validateReference(address _account, address _referrer)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAffiliateValidator.isValidReference(address,address)"></a><code class="function-signature">isValidReference(address _account, address _referrer) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAffiliateValidator.validateReference(address,address)"></a><code class="function-signature">validateReference(address _account, address _referrer)</code><span class="function-visibility">external</span></h4>
 
 
 

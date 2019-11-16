@@ -1918,13 +1918,6 @@ export class AffiliateValidator<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public isValidReference_ = async (account: string, referrer: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_account","type":"address"},{"name":"_referrer","type":"address"}],"name":"isValidReference","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account, referrer], options.sender)
-		return <boolean>result[0]
-	}
-
 	public addKey = async (key: string, salt: TBigNumber, r: string, s: string, v: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_key","type":"bytes32"},{"name":"_salt","type":"uint256"},{"name":"_r","type":"bytes32"},{"name":"_s","type":"bytes32"},{"name":"_v","type":"uint8"}],"name":"addKey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -1991,6 +1984,12 @@ export class AffiliateValidator<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_key","type":"bytes32"},{"name":"_salt","type":"uint256"}],"name":"getKeyHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"}
 		const result = await this.localCall(abi, [key, salt], options.sender)
 		return <string>result[0]
+	}
+
+	public validateReference_ = async (account: string, referrer: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_account","type":"address"},{"name":"_referrer","type":"address"}],"name":"validateReference","outputs":[],"payable":false,"stateMutability":"view","type":"function"}
+		await this.localCall(abi, [account, referrer], options.sender)
 	}
 
 	public transferOwnership = async (newOwner: string, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -6017,9 +6016,21 @@ export class Affiliates<TBigNumber> extends Contract<TBigNumber> {
 		await this.localCall(abi, [referrer], options.sender)
 	}
 
+	public getAndValidateReferrer = async (account: string, affiliateValidator: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_account","type":"address"},{"name":"_affiliateValidator","type":"address"}],"name":"getAndValidateReferrer","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [account, affiliateValidator], 'getAndValidateReferrer', options.sender)
+	}
+	
+	public getAndValidateReferrer_estimateGas = async (account: string, affiliateValidator: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_account","type":"address"},{"name":"_affiliateValidator","type":"address"}],"name":"getAndValidateReferrer","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [account, affiliateValidator], 'getAndValidateReferrer', options.sender)
+	}
+
 	public getAndValidateReferrer_ = async (account: string, affiliateValidator: string, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_account","type":"address"},{"name":"affiliateValidator","type":"address"}],"name":"getAndValidateReferrer","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_account","type":"address"},{"name":"_affiliateValidator","type":"address"}],"name":"getAndValidateReferrer","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [account, affiliateValidator], options.sender)
 		return <string>result[0]
 	}

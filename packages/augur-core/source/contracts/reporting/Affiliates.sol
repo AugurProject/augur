@@ -10,6 +10,10 @@ contract Affiliates {
     // Maps an account to the referral account. Used to apply affiliate fees on settlement.
     mapping (address => address) public referrals;
 
+    uint256 constant internal AFFILIATE_VALIDATOR_GAS = 30000;
+
+    bytes4 constant internal AFFILIATE_VALIDATOR_SELECTOR = bytes4(keccak256("validateReference(address,address)"));
+
     function setFingerprint(bytes32 _fingerprint) external {
         fingerprints[msg.sender] = _fingerprint;
     }
@@ -32,12 +36,23 @@ contract Affiliates {
         return referrals[_account];
     }
 
-    function getAndValidateReferrer(address _account, IAffiliateValidator affiliateValidator) external view returns (address) {
+    function getAndValidateReferrer(address _account, IAffiliateValidator _affiliateValidator) external returns (address) {
         address _referrer = referrals[_account];
         if (_referrer == address(0) || _account == _referrer) {
             return address(0);
         }
-        if (affiliateValidator != IAffiliateValidator(0) && !affiliateValidator.isValidReference(_account, _referrer)) {
+        if (_affiliateValidator == IAffiliateValidator(0)) {
+            return _referrer;
+        }
+        // We call and limit gas here so that a malicious market maker cannot specify a malicious affiliate validator. It will simply turn off affiliate validation
+        (bool _success,) = address(_affiliateValidator).call.gas(AFFILIATE_VALIDATOR_GAS)(
+            abi.encodeWithSelector(
+                AFFILIATE_VALIDATOR_SELECTOR,
+                _account,
+                _referrer
+            )
+        );
+        if (!_success) {
             return address(0);
         }
         return _referrer;

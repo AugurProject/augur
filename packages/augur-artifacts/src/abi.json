@@ -5784,29 +5784,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_account",
-					"type": "address"
-				},
-				{
-					"name": "_referrer",
-					"type": "address"
-				}
-			],
-			"name": "isValidReference",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -5899,6 +5876,24 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"name": "_referrer",
+					"type": "address"
+				}
+			],
+			"name": "validateReference",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -13868,14 +13863,14 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
+			"constant": false,
 			"inputs": [
 				{
 					"name": "_account",
 					"type": "address"
 				},
 				{
-					"name": "affiliateValidator",
+					"name": "_affiliateValidator",
 					"type": "address"
 				}
 			],
@@ -13887,7 +13882,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
