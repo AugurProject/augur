@@ -6,6 +6,7 @@ import { windowRef } from 'utils/window-ref';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import { analytics } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
+import { augurSdk } from 'services/augursdk';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -36,6 +37,8 @@ export function logout() {
     if (windowRef.fm) {
       await windowRef.fm.user.logout();
     }
+
+    augurSdk.sdk.setUseGnosisSafe(false);
 
     if (!isLocalHost()) {
       analytics.reset();
