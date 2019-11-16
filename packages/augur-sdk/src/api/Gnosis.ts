@@ -50,11 +50,11 @@ export class Gnosis {
     private readonly dependencies: ContractDependenciesGnosis
   ) {
 
-    // TODO this currently doesn't work. Using setInterval for now ISSUE#?
+    // TODO this currently doesn't work - using setInterval as workaround
     // Check safe status on new block. Possible to wait for a transfer event to show up in the DB if this is problematic.
-    // augur
-    //   .getAugurEventEmitter()
-    //   .on(SubscriptionEventName.NewBlock, this.onNewBlock);
+    augur
+      .getAugurEventEmitter()
+      .on(SubscriptionEventName.NewBlock, this.onNewBlock);
 
     this.provider.storeAbiData(abi.GnosisSafe as Abi, 'GnosisSafe');
     this.provider.storeAbiData(abi.ProxyFactory as Abi, 'ProxyFactory');
