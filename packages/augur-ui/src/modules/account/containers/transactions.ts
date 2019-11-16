@@ -9,12 +9,11 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_TRANSACTIONS,
   MODAL_ACCOUNT_APPROVAL,
-  REP,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls'
+import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
 
 const mapStateToProps = (state: AppState) => {
   const networkId = getNetworkId();
@@ -30,6 +29,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdraw: () => dispatch(updateModal({ type: MODAL_WITHDRAW })),
   transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
   approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
+  legacyRepFaucet: () => getLegacyRep(),
 });
 
 const TransactionsContainer = connect(
