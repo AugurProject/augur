@@ -6,11 +6,6 @@ from utils import fix, AssertLog, EtherDelta, TokenDelta, BuyWithCash, nullAddre
 from constants import YES, NO
 
 
-def captureLog(contract, logs, message):
-    translated = contract.translator.listen(message)
-    if not translated: return
-    logs.append(translated)
-
 def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
     shareToken = kitchenSinkFixture.contracts["ShareToken"]

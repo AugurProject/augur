@@ -6,6 +6,7 @@ import { ContractInterfaces } from "@augurproject/core";
 export interface CreateYesNoMarketParams {
   endTime: BigNumber;
   feePerCashInAttoCash: BigNumber;
+  affiliateValidator?: string;
   affiliateFeeDivisor: BigNumber;
   designatedReporter: string;
   extraInfo: string;
@@ -14,6 +15,7 @@ export interface CreateYesNoMarketParams {
 export interface CreateCategoricalMarketParams {
   endTime: BigNumber;
   feePerCashInAttoCash: BigNumber;
+  affiliateValidator?: string;
   affiliateFeeDivisor: BigNumber;
   designatedReporter: string;
   outcomes: string[];
@@ -23,6 +25,7 @@ export interface CreateCategoricalMarketParams {
 export interface CreateScalarMarketParams {
   endTime: BigNumber;
   feePerCashInAttoCash: BigNumber;
+  affiliateValidator?: string;
   affiliateFeeDivisor: BigNumber;
   designatedReporter: string;
   extraInfo: string;
@@ -39,10 +42,13 @@ export class Market {
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
+    // TODO
+    const affiliateValidator = params.affiliateValidator || "0x0000000000000000000000000000000000000000";
 
     const events = await universe.createYesNoMarket(
       params.endTime,
       params.feePerCashInAttoCash,
+      affiliateValidator,
       params.affiliateFeeDivisor,
       params.designatedReporter,
       params.extraInfo)
@@ -53,10 +59,13 @@ export class Market {
 
   async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
+    // TODO
+    const affiliateValidator = params.affiliateValidator || "0x0000000000000000000000000000000000000000";
 
     const events = await universe.createCategoricalMarket(
       params.endTime,
       params.feePerCashInAttoCash,
+      affiliateValidator,
       params.affiliateFeeDivisor,
       params.designatedReporter,
       params.outcomes,
@@ -68,10 +77,13 @@ export class Market {
 
   async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
+    // TODO
+    const affiliateValidator = params.affiliateValidator || "0x0000000000000000000000000000000000000000";
 
     const events = await universe.createScalarMarket(
       params.endTime,
       params.feePerCashInAttoCash,
+      affiliateValidator,
       params.affiliateFeeDivisor,
       params.designatedReporter,
       params.prices,

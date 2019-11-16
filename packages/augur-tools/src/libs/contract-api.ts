@@ -207,7 +207,7 @@ export class ContractAPI {
     if (cost) {
       await this.faucet(cost);
     }
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), NULL_ADDRESS);
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(""));
   }
 
   async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
@@ -230,7 +230,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -245,12 +245,12 @@ export class ContractAPI {
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, formatBytes32String(""));
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, formatBytes32String(""));
   }
 
   async cancelOrder(orderID: string): Promise<void> {
@@ -280,7 +280,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -299,7 +299,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -319,7 +319,7 @@ export class ContractAPI {
       outcome,
       tradeGroupId: formatBytes32String('42'),
       expirationTime: new BigNumber(Date.now() + 10000000),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders,
       displayMinPrice: new BigNumber(0),
@@ -330,8 +330,8 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
-    await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, affiliateAddress);
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, fingerprint = formatBytes32String('11')): Promise<void> {
+    await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {

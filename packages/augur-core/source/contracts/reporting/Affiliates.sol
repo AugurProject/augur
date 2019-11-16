@@ -24,18 +24,18 @@ contract Affiliates {
         referrals[msg.sender] = _referrer;
     }
 
-    function getAccountFingerprint(address _account) external returns (bytes32) {
+    function getAccountFingerprint(address _account) external view returns (bytes32) {
         return fingerprints[_account];
     }
 
-    function getReferrer(address _account) external returns (address) {
+    function getReferrer(address _account) external view returns (address) {
         return referrals[_account];
     }
 
-    function getAndValidateReferrer(address _account, IAffiliateValidator affiliateValidator) external returns (address) {
+    function getAndValidateReferrer(address _account, IAffiliateValidator affiliateValidator) external view returns (address) {
         address _referrer = referrals[_account];
-        if (_referrer == address(0)) {
-            return _referrer;
+        if (_referrer == address(0) || _account == _referrer) {
+            return address(0);
         }
         if (affiliateValidator != IAffiliateValidator(0) && !affiliateValidator.isValidReference(_account, _referrer)) {
             return address(0);

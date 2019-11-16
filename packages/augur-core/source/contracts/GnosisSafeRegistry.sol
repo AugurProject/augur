@@ -30,7 +30,7 @@ contract GnosisSafeRegistry is Initializable {
     }
 
     // The misdirection here is because this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
-    function callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress, bytes32 _referralKey) public {
+    function callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress) public {
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
 
         _cash.approve(_createOrder, MAX_APPROVAL_AMOUNT);

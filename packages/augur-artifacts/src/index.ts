@@ -64,6 +64,8 @@ export interface ContractAddresses {
     GnosisSafeRegistry?: string;
     HotLoading?: string;
     ZeroXTrade?: string;
+    Affiliates?: string;
+    AffiliateValidator?: string;
     // 0x
     //   The 0x contract names must be what 0x mesh expects.
     ERC20Proxy?: string;
