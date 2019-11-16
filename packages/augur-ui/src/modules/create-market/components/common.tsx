@@ -1208,7 +1208,9 @@ export const CategoricalTemplateTextInputs = (
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
 
-  let initialList = inputs
+  const requiredOutcomes = inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME);
+  const otherOutcomes = inputs.filter(i => i.type !== TemplateInputType.ADDED_OUTCOME);
+  let initialList = [...otherOutcomes, ...requiredOutcomes]
     .filter(
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
