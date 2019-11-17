@@ -133,7 +133,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       case isLogged && !hasFunds && !tradingTutorial:
         initialMessage = 'Add funds to begin trading.';
         break;
-      case isLogged && hasFunds && gnosisStatus !== GnosisSafeState.AVAILABLE:
+      case Gnosis_ENABLED && isLogged && hasFunds && gnosisStatus !== GnosisSafeState.AVAILABLE:
         initialMessage = 'Please hold on while we create your Augur wallet';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:

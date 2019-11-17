@@ -56,7 +56,7 @@ export const Transactions = ({
             />
           </div>
         )}
-        {!isMainnet && (
+        {showFaucets &&  (
           <div>
             <p>DAI for test net</p>
             <DAIFaucetButton action={daiFaucet} />
