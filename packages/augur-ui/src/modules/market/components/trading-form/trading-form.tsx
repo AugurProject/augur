@@ -42,6 +42,7 @@ interface TradingFormProps {
   tutorialNext?: Function;
   Gnosis_ENABLED: boolean;
   ethToDaiRate: BigNumber;
+  gnosisStatus: GnosisSafeState;
 }
 
 interface TradingFormState {
@@ -117,6 +118,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       tutorialNext,
       Gnosis_ENABLED,
       ethToDaiRate,
+      gnosisStatus,
     } = this.props;
     const s = this.state;
 
@@ -130,6 +132,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
         break;
       case isLogged && !hasFunds && !tradingTutorial:
         initialMessage = 'Add funds to begin trading.';
+        break;
+      case isLogged && hasFunds && gnosisStatus !== GnosisSafeState.AVAILABLE:
+        initialMessage = 'Please hold on while we create your Augur wallet';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:
         initialMessage = 'Select an outcome to begin placing an order.';

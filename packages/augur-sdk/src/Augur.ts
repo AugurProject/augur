@@ -5,7 +5,7 @@ import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { TransactionStatusCallback, TransactionStatus, EthersSigner } from "contract-dependencies-ethers";
 import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
-import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+import { IGnosisRelayAPI, GnosisSafeState } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
@@ -221,6 +221,14 @@ export class Augur<TProvider extends Provider = Provider> {
 
   setGnosisSafeAddress(safeAddress: string): void {
     this.dependencies.setSafeAddress(safeAddress);
+  }
+
+  setGnosisStatus(status: GnosisSafeState): void {
+    this.dependencies.setStatus(status);
+  }
+
+  getGnosisStatus(): GnosisSafeState {
+    return this.dependencies.getStatus();
   }
 
   setUseGnosisSafe(useSafe: boolean): void {

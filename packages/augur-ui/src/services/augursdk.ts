@@ -99,16 +99,17 @@ export class SDK {
       const calculateGnosisSafeAddressParamsString = localStorage.getItem(gnosisLocalstorageItemKey);
       if (calculateGnosisSafeAddressParamsString) {
         const calculateGnosisSafeAddressParams = JSON.parse(calculateGnosisSafeAddressParamsString) as CalculateGnosisSafeAddressParams;
-        try {
-          await this.sdk.gnosis.getOrCreateGnosisSafe({ ...calculateGnosisSafeAddressParams, owner: walletAddress });
-          return calculateGnosisSafeAddressParams.safe;
+        const result = await this.sdk.gnosis.getOrCreateGnosisSafe({ ...calculateGnosisSafeAddressParams, owner: walletAddress });
+        if (typeof result === 'string') {
+          return result;
         }
-        catch (error){
-          console.log('ERROR:::CANT CREATE SAFE', error);
-          return calculateGnosisSafeAddressParams.safe;
-        }
+        return result.safe;
       } else {
         const result = await this.sdk.gnosis.getOrCreateGnosisSafe(walletAddress);
+
+        if (typeof result === 'string') {
+          return result;
+        }
 
         // Write response to localstorage.
         localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(result));

@@ -45,6 +45,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
   const ethToDaiRate = getValue(state, 'appStatus.ethToDaiRate');
+  const gnosisStatus = getValue(state, 'appStatus.gnosisStatus');
   const hasFunds = Gnosis_ENABLED
     ? !!state.loginAccount.balances.dai
     : !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
@@ -79,6 +80,7 @@ const mapStateToProps = (state, ownProps) => {
     ),
     Gnosis_ENABLED,
     ethToDaiRate,
+    gnosisStatus,
   };
 };
 

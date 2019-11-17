@@ -12,7 +12,7 @@ import {
 import Styles from 'modules/account/components/transactions.styles.less';
 
 interface TransactionsProps {
-  isMainnet: boolean;
+  showFaucets: boolean;
   repFaucet: Function;
   daiFaucet: Function;
   deposit: Function;
@@ -27,7 +27,7 @@ export const Transactions = ({
   transactions,
   addFunds,
   withdraw,
-  isMainnet,
+  showFaucets,
   repFaucet,
   daiFaucet,
   legacyRepFaucet,
@@ -41,13 +41,13 @@ export const Transactions = ({
         <p>Your account</p>
         <DepositButton action={addFunds} />
         <WithdrawButton action={withdraw} />
-        {!isMainnet && (
+        {showFaucets && (
           <div>
             <p>REP for test net</p>
             <REPFaucetButton action={repFaucet} />
           </div>
         )}
-        {!isMainnet && (
+        {showFaucets && (
           <div>
             <p>Legacy REP</p>
             <REPFaucetButton

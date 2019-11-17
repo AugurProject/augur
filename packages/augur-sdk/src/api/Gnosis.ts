@@ -72,16 +72,13 @@ export class Gnosis {
   private onNewBlock = async () => {
     for (const s of this.safesToCheck) {
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(s);
+      this.augur.setGnosisStatus(status.status);
       if ([GnosisSafeState.AVAILABLE, GnosisSafeState.CREATED].includes(status.status)) {
         const signerAddress = await this.dependencies.signer.getAddress();
         if (signerAddress === s.owner) {
           this.augur.setGnosisSafeAddress(ethUtil.toChecksumAddress(s.safe));
           this.augur.setUseGnosisSafe(true);
         }
-      }
-
-      if ([GnosisSafeState.AVAILABLE].includes(status.status)) {
-        clearInterval(intervalId); // No need to poll anymore
       }
 
       // Can only register Contract if the current signer is the safe owner.
@@ -135,7 +132,6 @@ export class Gnosis {
   ): Promise<CalculateGnosisSafeAddressParams | Address> {
     const owner = typeof params === 'string' ? params : params.owner;
     const safe = await this.getGnosisSafeAddress(owner);
-
     if (ethersUtils.getAddress(safe) !== ethersUtils.getAddress(NULL_ADDRESS)) {
       this.augur
         .getAugurEventEmitter()
@@ -144,6 +140,8 @@ export class Gnosis {
           safe,
           owner,
         });
+
+      this.augur.setGnosisStatus(GnosisSafeState.AVAILABLE);
       return safe;
     }
 
@@ -151,6 +149,8 @@ export class Gnosis {
     if (typeof params === 'object') {
       const safe = await this.calculateGnosisSafeAddress(params);
       const status = await this.getGnosisSafeDeploymentStatusViaRelay(params);
+
+      this.augur.setGnosisStatus(status.status);
 
       // Normalize addresses
       if (safe.toLowerCase() !== params.safe.toLowerCase()) {
@@ -187,19 +187,29 @@ export class Gnosis {
       }
     }
 
-    const result = await this.createGnosisSafeViaRelay({
-      owner,
-      paymentToken: this.augur.contracts.cash.address,
-    });
 
-    intervalId = setInterval(() => {
-      this.onNewBlock();
-    }, 5000);
+    try {
+      const result: SafeResponse = await this.createGnosisSafeViaRelay({
+        owner,
+        paymentToken: this.augur.contracts.cash.address,
+      }) as SafeResponse;
 
-    return {
-      ...result,
-      owner,
-    };
+      intervalId = setInterval(() => {
+        this.onNewBlock();
+      }, 5000);
+
+      return {
+        ...result,
+        owner,
+      };
+    }
+    catch (restoreAddress) {
+      intervalId = setInterval(() => {
+        this.onNewBlock();
+      }, 5000);
+
+      return restoreAddress;
+    }
   }
 
   /**
@@ -284,22 +294,42 @@ export class Gnosis {
 
     const setupData = await this.buildRegistrationData();
 
-    const response = await this.gnosisRelay.createSafe({
-      saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
-      owners: [params.owner],
-      threshold: 1,
-      paymentToken: params.paymentToken,
-      to: gnosisSafeRegistryAddress,
-      setupData,
-    });
+    try {
+      const response = await this.gnosisRelay.createSafe({
+        saltNonce: AUGUR_GNOSIS_SAFE_NONCE,
+        owners: [params.owner],
+        threshold: 1,
+        paymentToken: params.paymentToken,
+        to: gnosisSafeRegistryAddress,
+        setupData,
+      });
 
-    this.safesToCheck.push({
-      safe: ethUtil.toChecksumAddress(response.safe),
-      owner: params.owner,
-      status: GnosisSafeState.WAITING_FOR_FUNDS,
-    });
+      this.safesToCheck.push({
+        safe: ethUtil.toChecksumAddress(response.safe),
+        owner: params.owner,
+        status: GnosisSafeState.WAITING_FOR_FUNDS,
+      });
 
-    return response;
+      this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
+
+      return response;
+    } catch(error) {
+      const restoreAddress = await this.calculateGnosisSafeAddress({
+        payment: '1',
+        owner: params.owner,
+        safe: null,
+        paymentToken: null,
+      });
+
+      this.safesToCheck.push({
+        safe: ethUtil.toChecksumAddress(restoreAddress),
+        owner: params.owner,
+        status: GnosisSafeState.WAITING_FOR_FUNDS,
+      });
+
+      this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
+      throw ethUtil.toChecksumAddress(restoreAddress);
+    }
   }
 
   async getGnosisSafeDeploymentStatusViaRelay(

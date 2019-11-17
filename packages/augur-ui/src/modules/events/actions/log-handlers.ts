@@ -56,6 +56,11 @@ import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-mar
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
+import {
+  updateAppStatus,
+  GNOSIS_STATUS,
+} from 'modules/app/actions/update-app-status';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 
 const handleAlert = (
   log: any,
@@ -167,6 +172,16 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
+  }
+
+  if (
+    getState().appStatus.gnosisEnabled &&
+    getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
+  ) {
+    const status = augurSdk.sdk.gnosis.augur.getGnosisStatus();
+    if (status) {
+      dispatch(updateAppStatus(GNOSIS_STATUS, status));
+    }
   }
 };
 

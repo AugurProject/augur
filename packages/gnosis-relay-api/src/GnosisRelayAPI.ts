@@ -112,9 +112,15 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
   async createSafe(createSafeTx: CreateSafeData): Promise<SafeResponse> {
     const url = `${this.relayURL}v2/safes/`;
 
-    const result = await axios.post(url, createSafeTx);
+    try {
+        const result = await axios.post(url, createSafeTx);
 
-    return result.data;
+        return result.data;
+    }
+    catch(error) {
+      console.error('createSafe', error.response.data);
+      throw error.response.data;
+    }
   }
 
   async checkSafe(safeAddress: string): Promise<GnosisSafeStateReponse> {

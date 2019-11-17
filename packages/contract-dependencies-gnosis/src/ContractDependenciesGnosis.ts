@@ -5,6 +5,7 @@ import {
   RelayTransaction,
   RelayTxEstimateData,
   RelayTxEstimateResponse,
+  GnosisSafeState,
 } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
 import { Transaction } from 'contract-dependencies';
@@ -26,6 +27,7 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   useRelay = true;
   useSafe = false;
+  status = null;
 
   gnosisSafe: ethers.Contract;
 
@@ -68,6 +70,14 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       abi['GnosisSafe'],
       this.signer
     );
+  }
+
+  setStatus(status: GnosisSafeState): void {
+    this.status = status;
+  }
+
+  getStatus(): GnosisSafeState {
+    return this.status;
   }
 
   setUseSafe(useSafe: boolean): void {
