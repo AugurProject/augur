@@ -93,6 +93,7 @@ export default class Landing extends React.Component<LandingProps> {
           <ContentBlock>
             <LargeSubheaders
               link
+              copyType={MARKET_COPY_LIST.FROM_SCRATCH}
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />

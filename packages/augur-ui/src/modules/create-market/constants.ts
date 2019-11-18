@@ -522,6 +522,7 @@ export const SelectEventNoticeText =
 export enum MARKET_COPY_LIST {
   USE_A_TEMPLATE = 'USE_A_TEMPLATE',
   DONT_SEE_CAT = 'DONT_SEE_CAT',
+  FROM_SCRATCH = 'FROM_SCRATCH'
 }
 
 export const MARKET_CREATION_COPY = {
@@ -536,5 +537,9 @@ export const MARKET_CREATION_COPY = {
       'Market templates are currently only available for the categories shown. If you want to create a market with a different category, you will need to create a custom market in the “Start from scratch” section.'
     ],
   },
-  
+  [MARKET_COPY_LIST.FROM_SCRATCH]: {
+    subheader: [
+      'Creating a custom market allows for maximum flexibility in the market creation process. It is recommended for advanced users only because there is a higher risk of error that can lead to an invalid market.'
+    ],
+  },
 };
