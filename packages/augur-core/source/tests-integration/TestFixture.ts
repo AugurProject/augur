@@ -12,6 +12,7 @@ import {
   TestNetReputationToken, CashFaucet } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
+import { formatBytes32String } from 'ethers/utils';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -81,12 +82,12 @@ export class TestFixture {
         console.log('Creating Market');
         await this.cashFaucet.faucet(marketCreationFee);
         console.log('Getting Market Address');
-        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
+        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, NULL_ADDRESS, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
         if (!marketAddress || marketAddress === '0x') {
             throw new Error('Unable to get address for new categorical market.');
         }
         console.log('Sending Market Transaction');
-        await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
+        await universe.createCategoricalMarket(endTime, feePerEthInWei, NULL_ADDRESS, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
         return new Market(this.dependencies, marketAddress);
     }
 
@@ -139,10 +140,10 @@ export class TestFixture {
         return;
     }
 
-    async claimTradingProceeds(market: Market, shareholder: string, affailiateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
+    async claimTradingProceeds(market: Market, shareholder: string, fingerprint = formatBytes32String("")): Promise<void> {
         const shareTokenContract = await this.contractDeployer.getContractAddress('ShareToken');
         const shareToken = new ShareToken(this.dependencies, shareTokenContract);
-        await shareToken.claimTradingProceeds(market.address, shareholder, affailiateAddress);
+        await shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
         return;
     }
 
