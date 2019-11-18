@@ -8,7 +8,7 @@ import {
   SmallHeaderLink,
 } from 'modules/create-market/components/common';
 import { SecondaryButton } from 'modules/common/buttons';
-import { SCRATCH, TEMPLATE } from 'modules/create-market/constants';
+import { SCRATCH, TEMPLATE, MARKET_COPY_LIST } from 'modules/create-market/constants';
 import SavedDrafts from 'modules/create-market/containers/saved-drafts';
 
 import Styles from 'modules/create-market/landing.styles.less';
@@ -58,6 +58,7 @@ export default class Landing extends React.Component<LandingProps> {
           <ContentBlock>
             <LargeSubheaders
               link
+              copyType={MARKET_COPY_LIST.USE_A_TEMPLATE}
               underline
               ownLine
               header="Use a market template"
@@ -84,7 +85,7 @@ export default class Landing extends React.Component<LandingProps> {
                   categoryStats
                 )}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine />
+                <SmallHeaderLink copyType={MARKET_COPY_LIST.DONT_SEE_CAT} text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>
@@ -92,6 +93,7 @@ export default class Landing extends React.Component<LandingProps> {
           <ContentBlock>
             <LargeSubheaders
               link
+              copyType={MARKET_COPY_LIST.FROM_SCRATCH}
               header="Start from scratch"
               subheader="Create a completely custom market, only recommended for advanced users."
             />

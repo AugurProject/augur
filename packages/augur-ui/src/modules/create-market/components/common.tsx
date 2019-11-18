@@ -88,6 +88,7 @@ export interface SubheadersProps {
   ownLine?: Boolean;
   smallSubheader?: Boolean;
   renderMarkdown?: Boolean;
+  copyType?: string;
 }
 
 export interface DateTimeHeadersProps extends SubheadersProps {
@@ -105,6 +106,7 @@ export const Subheaders = (props: SubheadersProps) => (
           href={props.href}
           underline={props.underline}
           ownLine={props.ownLine}
+          copyType={props.copyType}
         />
       )}
     </p>
@@ -131,6 +133,7 @@ export interface HeaderLinkProps {
   ownLine?: Boolean;
   underline?: Boolean;
   smallSubheader?: Boolean;
+  copyType?: string;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
@@ -145,6 +148,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
         href={props.href}
         underline={props.underline}
         ownLine={props.ownLine}
+        copyType={props.copyType}
       />
     )}
   </p>
@@ -164,6 +168,7 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       ownLine={props.ownLine}
       link={props.link}
       smallSubheader={props.smallSubheader}
+      copyType={props.copyType}
     />
   </div>
 );
