@@ -586,11 +586,11 @@ export default class MarketView extends Component<
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
                         <h3>Price History</h3>
-                        <MarketOutcomesChart
+                        {!preview && <MarketOutcomesChart
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}
-                        />
+                        />}
                       </div>
                     </div>
                   </ModulePane>
