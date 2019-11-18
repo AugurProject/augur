@@ -55,7 +55,6 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
-import { StringNullableChain } from 'lodash';
 
 export interface HeaderProps {
   text: string;
