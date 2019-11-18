@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
-// import Highmaps from 'highcharts/highmaps';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles.less';
 import { PERIOD_RANGES, DAI } from 'modules/common/constants';
@@ -111,28 +110,34 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       // use the first found trade to indicate -
       let lastPrice = priceTimeSeries[0].open;
       priceBuckets.forEach(timestamp => {
-        // const index = priceTimeSeries.findIndex(item => item.period >= timestamp && item.period < timestamp + period);
         const index = priceTimeSeries.findIndex(item => item.period === timestamp);
-        if (index > 0) {
+        if (index >= 0) {
           const price = priceTimeSeries[index];
           lastPrice = price.close;
-          candlestick.push([price.period, price.open, price.high, price.low, price.close]);
-          const volumeValue = volumeType === 'DAI' ? price.volume : price.shareVolume;
-          volume.push([price.period, volumeValue]);
+          const { open, high, low, close, period, volume: daiVolume, shareVolume } = price;
+          candlestick.push({x: period, open, high, low, close });
+          const volumeValue = volumeType === DAI ? daiVolume : shareVolume;
+          volume.push([period, volumeValue]);
         } else {
-          candlestick.push([timestamp, lastPrice, lastPrice, lastPrice, lastPrice]);
+          candlestick.push({
+            x: timestamp, 
+            open: lastPrice, 
+            high: lastPrice, 
+            low: lastPrice, 
+            close: lastPrice,
+            colorIndex: 3
+          });
           volume.push([timestamp, 0]);
         }
       })
     } else {
       priceTimeSeries.forEach(price => {
         candlestick.push([price.period, price.open, price.high, price.low, price.close]);
-        const volumeValue = volumeType === 'DAI' ? price.volume : price.shareVolume;
+        const volumeValue = volumeType === DAI ? price.volume : price.shareVolume;
         volume.push([price.period, volumeValue]);
       });
     }
-
-
+       
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
     this.xMinCurrent = this.xMax - range;
     const options = {
@@ -269,19 +274,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     const { updateHoveredPeriod, priceTimeSeries, volumeType, selectedPeriod } = this.props;
     const period = selectedPeriod * 1000;
     const { x: timestamp } = evt.target;
-    const mid = this.chart.xAxis[0].toPixels(timestamp, true);
-    const scaledFrom = this.chart.xAxis[0].toPixels(timestamp - (period * .25), true);
-    const scaledTo = this.chart.xAxis[0].toPixels(timestamp + (period * .25), true);
-    const maxFrom = mid - 10;
-    const maxTo = mid + 10;
-    const scaledRange = scaledTo - scaledFrom;
-    // make sure to never draw larger than 20 px as that's the max size of bars.
-    const from = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledFrom : maxFrom, true);
-    const to = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledTo : maxTo, true);
-
-
     const pts = priceTimeSeries.find(p => p.period === timestamp);
-
     if (pts) {
       const { open, close, high, low } = pts;
 
@@ -294,16 +287,26 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           ? createBigNumber(volumeType === DAI ? pts.volume : pts.shareVolume)
           : '',
       });
+
+      const mid = this.chart.xAxis[0].toPixels(timestamp, true));
+      const scaledFrom = this.chart.xAxis[0].toPixels(timestamp - (period * .25), true);
+      const scaledTo = this.chart.xAxis[0].toPixels(timestamp + (period * .25), true);
+      const maxFrom = mid - 10;
+      const maxTo = mid + 10;
+      const scaledRange = scaledTo - scaledFrom;
+      // make sure to never draw larger than 20 px as that's the max size of bars.
+      const from = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledFrom : maxFrom, true);
+      const to = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledTo : maxTo, true);
+
+      const plotBand = {
+        id: 'new-plot-band',
+        from,
+        to,
+      };
+  
+      this.chart.xAxis[0].addPlotBand(plotBand);
+      this.updateVolumeBar(true, timestamp);
     }
-
-    const plotBand = {
-      id: 'new-plot-band',
-      from,
-      to,
-    };
-
-    this.chart.xAxis[0].addPlotBand(plotBand);
-    this.updateVolumeBar(true, timestamp);
   }
 
   clearCandleInfoAndPlotViz(evt) {
