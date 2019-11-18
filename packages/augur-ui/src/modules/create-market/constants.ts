@@ -521,6 +521,7 @@ export const SelectEventNoticeText =
 
 export enum MARKET_COPY_LIST {
   USE_A_TEMPLATE = 'USE_A_TEMPLATE',
+  DONT_SEE_CAT = 'DONT_SEE_CAT',
 }
 
 export const MARKET_CREATION_COPY = {
@@ -531,4 +532,11 @@ export const MARKET_CREATION_COPY = {
         'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.'
     ],
   },
+  [MARKET_COPY_LIST.DONT_SEE_CAT]: {
+    title: 'Don\'t See Your Category?',
+    subheader: [
+      'Market templates are currently only available for the categories shown. If you want to create a market with a different category, you will need to create a custom market in the “Start from scratch” section.'
+    ],
+  },
+  
 };

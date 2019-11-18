@@ -85,7 +85,7 @@ export default class Landing extends React.Component<LandingProps> {
                   categoryStats
                 )}
               >
-                <SmallHeaderLink text="Don't see your category?" link ownLine />
+                <SmallHeaderLink copyType={MARKET_COPY_LIST.DONT_SEE_CAT} text="Don't see your category?" link ownLine />
               </RadioCardGroup>
             </section>
           </ContentBlock>

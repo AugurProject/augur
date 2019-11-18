@@ -133,6 +133,7 @@ export interface HeaderLinkProps {
   ownLine?: Boolean;
   underline?: Boolean;
   smallSubheader?: Boolean;
+  copyType?: string;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
