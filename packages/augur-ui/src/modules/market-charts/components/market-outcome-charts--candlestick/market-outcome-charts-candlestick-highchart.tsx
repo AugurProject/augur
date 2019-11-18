@@ -94,15 +94,15 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     const { marketMax, marketMin, pricePrecision, currentTimeInSeconds } = this.props;
     const candlestick = [];
     const volume = [];
+    const priceBuckets = [];
     this.xMin = priceTimeSeries[0] && priceTimeSeries[0].period || 0;
     this.xMinCurrent = this.xMin;
     this.xMax = priceTimeSeries[0] && priceTimeSeries[priceTimeSeries.length -1].period || 0;
-    const start = priceTimeSeries.length > 1 && priceTimeSeries[0].period ? priceTimeSeries[0].period : 0;
-    const end = priceTimeSeries.length > 1 && priceTimeSeries[priceTimeSeries.length -1].period ? priceTimeSeries[priceTimeSeries.length -1].period : 0
+    const start = priceTimeSeries.length >= 1 && priceTimeSeries[0].period ? priceTimeSeries[0].period : 0;
+    const end = currentTimeInSeconds * 1000;
     const fullRange = end - start;
-    const priceBuckets = [];
     const period = selectedPeriod * 1000;
-    if (fullRange > 0) {
+    if (fullRange > 0 && priceTimeSeries.length > 0 && currentTimeInSeconds > 1000) {
       const num = (fullRange / period);
       for (let i = 0; i <= num; i++) {
         priceBuckets.push(start + (i * period));
@@ -132,9 +132,10 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       })
     } else {
       priceTimeSeries.forEach(price => {
-        candlestick.push([price.period, price.open, price.high, price.low, price.close]);
-        const volumeValue = volumeType === DAI ? price.volume : price.shareVolume;
-        volume.push([price.period, volumeValue]);
+        const { open, high, low, close, period, volume: daiVolume, shareVolume } = price;
+        candlestick.push({x: period, open, high, low, close });
+        const volumeValue = volumeType === DAI ? daiVolume : shareVolume;
+        volume.push([period, volumeValue]);
       });
     }
        
@@ -291,12 +292,12 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       const mid = this.chart.xAxis[0].toPixels(timestamp, true));
       const scaledFrom = this.chart.xAxis[0].toPixels(timestamp - (period * .25), true);
       const scaledTo = this.chart.xAxis[0].toPixels(timestamp + (period * .25), true);
-      const maxFrom = mid - 10;
-      const maxTo = mid + 10;
+      // const maxFrom = mid - 10;
+      // const maxTo = mid + 10;
       const scaledRange = scaledTo - scaledFrom;
       // make sure to never draw larger than 20 px as that's the max size of bars.
-      const from = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledFrom : maxFrom, true);
-      const to = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledTo : maxTo, true);
+      const from = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledFrom : (mid - 10), true);
+      const to = this.chart.xAxis[0].toValue(scaledRange < 20 ? scaledTo : (mid + 10), true);
 
       const plotBand = {
         id: 'new-plot-band',

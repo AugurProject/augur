@@ -7,7 +7,6 @@ import { CandlestickOchl } from 'modules/market-charts/components/market-outcome
 
 interface MarketOutcomeCandlestickProps {
   fixedPrecision: number;
-  isMobile: boolean;
   marketMax: BigNumber;
   marketMin: BigNumber;
   priceTimeSeries: Array<any>;
@@ -25,9 +24,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
   MarketOutcomeCandlestickProps,
   MarketOutcomeCandlestickState
 > {
-  static defaultProps = {
-    isMobile: false,
-  };
   drawContainer: any;
 
   constructor(props) {
@@ -59,7 +55,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
     const {
       fixedPrecision,
       pricePrecision,
-      isMobile,
       priceTimeSeries,
       selectedPeriod,
       updateSelectedPeriod,

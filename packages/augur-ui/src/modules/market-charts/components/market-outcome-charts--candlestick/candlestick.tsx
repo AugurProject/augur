@@ -18,7 +18,6 @@ interface CandlestickProps {
   minPrice: BigNumber;
   selectedOutcomeId: number;
   daysPassed: number;
-  isMobile: boolean;
 }
 
 interface CandlestickState {
@@ -29,10 +28,6 @@ export class Candlestick extends React.Component<
   CandlestickProps,
   CandlestickState
 > {
-  static defaultProps = {
-    isMobile: false,
-  };
-
   constructor(props) {
     super(props);
 
@@ -96,13 +91,12 @@ export class Candlestick extends React.Component<
   }
 
   render() {
-    const {isMobile, maxPrice, minPrice } = this.props;
+    const { maxPrice, minPrice } = this.props;
     const { priceTimeSeries, selectedPeriod } = this.state;
 
     return (
       <MarketOutcomeCandlestick
         priceTimeSeries={priceTimeSeries}
-        isMobile={isMobile}
         fixedPrecision={2}
         pricePrecision={2}
         selectedPeriod={selectedPeriod}

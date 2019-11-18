@@ -92,7 +92,6 @@ export default class MarketChartsPane extends Component<
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                     daysPassed={daysPassed}
-                    isMobile
                   />
                 )}
               </ModulePane>
