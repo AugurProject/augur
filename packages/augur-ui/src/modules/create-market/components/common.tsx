@@ -55,6 +55,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
+import { StringNullableChain } from 'lodash';
 
 export interface HeaderProps {
   text: string;
@@ -88,6 +89,7 @@ export interface SubheadersProps {
   ownLine?: Boolean;
   smallSubheader?: Boolean;
   renderMarkdown?: Boolean;
+  copyType?: string;
 }
 
 export interface DateTimeHeadersProps extends SubheadersProps {
@@ -105,6 +107,7 @@ export const Subheaders = (props: SubheadersProps) => (
           href={props.href}
           underline={props.underline}
           ownLine={props.ownLine}
+          copyType={props.copyType}
         />
       )}
     </p>
@@ -145,6 +148,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
         href={props.href}
         underline={props.underline}
         ownLine={props.ownLine}
+        copyType={props.copyType}
       />
     )}
   </p>
@@ -164,6 +168,7 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       ownLine={props.ownLine}
       link={props.link}
       smallSubheader={props.smallSubheader}
+      copyType={props.copyType}
     />
   </div>
 );

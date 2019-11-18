@@ -518,3 +518,17 @@ export const TemplateBannerText = {
 
 export const SelectEventNoticeText =
   'Choose an event in the market question in order to select outcomes.';
+
+export enum MARKET_COPY_LIST {
+  USE_A_TEMPLATE = 'USE_A_TEMPLATE',
+}
+
+export const MARKET_CREATION_COPY = {
+  [MARKET_COPY_LIST.USE_A_TEMPLATE]: {
+    title: 'Use a Market Template',
+    subheader: [
+        'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets by reducing the number of decisions and possible errors users can make. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
+        'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.'
+    ],
+  },
+};
