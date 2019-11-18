@@ -1126,9 +1126,8 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             if (inputIndex > -1) {
               const input = inputs[inputIndex];
               return (
-                <>
+                <React.Fragment key={inputIndex}>
                   <InputFactory
-                    key={inputIndex}
                     input={input}
                     inputIndex={inputIndex}
                     onChange={onChange}
@@ -1136,7 +1135,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                     currentTimestamp={currentTimestamp}
                   />
                   {trailing !== '' && <span>{trailing}</span>}
-                </>
+                </React.Fragment>
               );
             }
           }
