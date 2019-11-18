@@ -39,7 +39,7 @@ export interface GnosisSafeStatusPayload
   txHash?: string;
 }
 
-// TODO remove when onBlock event works
+// TODO remove when onBlock event works - see #4809
 let intervalId = null;
 
 export class Gnosis {
@@ -50,7 +50,7 @@ export class Gnosis {
     private readonly dependencies: ContractDependenciesGnosis
   ) {
 
-    // TODO this currently doesn't work - using setInterval as workaround
+    // TODO this currently doesn't work - using setInterval as workaround - see #4809
     // Check safe status on new block. Possible to wait for a transfer event to show up in the DB if this is problematic.
     augur
       .getAugurEventEmitter()

@@ -82,6 +82,28 @@ Running on the "kovan" testnet
 |  `yarn docker:geth:pop`               |  5 second block times, fake time, use flash scripts to move time . |
 |  `yarn docker:geth:pop-normal-time`   |  5 second block times, real time, has contracts and canned market data. |
 |  `yarn docker:geth`                   |  5 second block times, no contracts uploaded, use `dp` to upload . |
+|  `yarn docker:gnosis`                 |  Local Gnosis relayer for local development work. |
+
+## Gnosis Development
+
+For development/testing, we have a Gnosis relayer deployed on Kovan.
+
+The best way to dev against this is to use the running on the "kovan" testnet flow.
+* `ETHEREUM_NETWORK=kovan yarn workspace @augurproject/ui dev`
+
+Here are some LOADED Portis ACCOUNTS.
+```
+test1@augur.net
+test2@augur.net
+test3@augur.net
+test5@augur.net
+
+password: augurnet
+```
+
+Also, you can find the kovan relayer API below -- usful for getting status checks on safes
+https://gnosis.kovan.augur.net/api/v2/safes/{CHECKSUM_ADDRESS}/funded/
+
 
 ## 100% Open Source
 
