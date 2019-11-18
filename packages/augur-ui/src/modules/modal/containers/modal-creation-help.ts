@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: oP.copyType && MARKET_CREATION_COPY[oP.copyType].title,
+  title: 'Market Creation Help',
   description: oP.copyType && MARKET_CREATION_COPY[oP.copyType].subheader,
   closeAction: () => {
     dP.closeModal();
