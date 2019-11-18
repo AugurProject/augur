@@ -52,8 +52,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                question: `PGA: Will [0] win the [1] [2]?`,
+                example: `PGA: Will Tiger Woods win the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -89,8 +89,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                question: `PGA: Will [0] make the cut at the [1] [2]?`,
+                example: `PGA: Will Tiger Woods make the cut at the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -126,8 +126,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                question: `PGA: Which golfer will win the [0] [1]?`,
+                example: `PGA: Which golfer will win the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -169,8 +169,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Rory Mcllroy win the 2020 Omega Dubai Dessert Classic?`,
+                question: `Euro Tour: Will [0] win the [1] [2]?`,
+                example: `Euro Tour: Will Rory Mcllroy win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -206,8 +206,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Rory Mcllroy make the cut at the 2020 Omega Dubai Dessert Classic?`,
+                question: `Euro Tour: Will [0] make the cut at the [1] [2]?`,
+                example: `Euro Tour: Will Rory Mcllroy make the cut at the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -243,8 +243,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
+                question: `Euro Tour: Which golfer will win the [0] [1]?`,
+                example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -286,8 +286,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Lexi Thompson win the 2020 U.S. Women's Open?`,
+                question: `LPGA: Will [0] win the [1] [2]?`,
+                example: `LPGA: Will Lexi Thompson win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -323,8 +323,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Lexi Thompson make the cut at the 2020 U.S. Women's Open?`,
+                question: `LPGA: Will [0] make the cut at the [1] [2]?`,
+                example: `LPGA: Will Lexi Thompson make the cut at the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -360,8 +360,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 U.S. Women's Open?`,
+                question: `LPGA: Which golfer will win the [0] [1]?`,
+                example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -2650,9 +2650,6 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                    {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
@@ -2690,9 +2687,6 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
@@ -2748,12 +2742,12 @@ export const TEMPLATES = {
                     placeholder: `Numeral`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: { },
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2] award?`,
-                example: `Will Patrick Mahomes win the 2019-20 MVP award?`,
+                question: `NFL: Will [0] win the [1] [2] award?`,
+                example: `NFL: Will Patrick Mahomes win the 2019-20 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -2807,18 +2801,15 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                    {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1]?`,
-                example: `Which NFL Team will win: Seattle Seahawks vs Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL: Will [0] win by more than [1].5 points over [2]?`,
+                example: `NFL: Will Seattle Seahawks win by more than 10.5 over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2828,36 +2819,39 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Winner`,
+                    placeholder: `No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                    {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: [0] vs [1]: Total goals scored; Over/Under [2].5?`,
+                question: `NFL: [0] vs [1]: Total points scored; Over/Under [2].5?`,
                 example: `NFL: NY Giants vs Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
@@ -2903,7 +2897,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
@@ -2971,6 +2965,8 @@ export const TEMPLATES = {
                 example: `Total number of wins NY Giants will finish 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
+                minPrice: 0,
+                maxPrice: 16,
                 inputs: [
                   {
                     id: 0,
