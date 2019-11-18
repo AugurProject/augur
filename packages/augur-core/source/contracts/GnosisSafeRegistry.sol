@@ -6,6 +6,7 @@ import 'ROOT/external/IProxyFactory.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/external/IProxy.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/reporting/IAffiliates.sol';
 
 
 contract GnosisSafeRegistry is Initializable {
@@ -29,7 +30,7 @@ contract GnosisSafeRegistry is Initializable {
     }
 
     // The misdirection here is because this is called through a delegatecall execution initially. We just direct that into making an actual call to the register method
-    function callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, IERC20 _cash, IERC1155 _shareToken) public {
+    function callRegister(address _gnosisSafeRegistry, address _augur, address _createOrder, address _fillOrder, IERC20 _cash, IERC1155 _shareToken, IAffiliates _affiliates, bytes32 _fingerprint, address _referralAddress) public {
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
 
         _cash.approve(_createOrder, MAX_APPROVAL_AMOUNT);
@@ -40,6 +41,12 @@ contract GnosisSafeRegistry is Initializable {
 
         GnosisSafeRegistry _gnosisSafeRegistry = GnosisSafeRegistry(_gnosisSafeRegistry);
         _gnosisSafeRegistry.register();
+
+        _affiliates.setFingerprint(_fingerprint);
+
+        if (_referralAddress != address(0)) {
+            _affiliates.setReferrer(_referralAddress);
+        }
     }
 
     function register() external {

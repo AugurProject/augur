@@ -10,6 +10,7 @@ import { stringTo32ByteHex } from '../../libs/Utils';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
 import { MockBrowserMesh } from "../../libs/MockBrowserMesh";
+import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 
 describe.skip('Augur API :: ZeroX :: ', () => {
@@ -68,7 +69,7 @@ describe.skip('Augur API :: ZeroX :: ', () => {
       numOutcomes: 3,
       outcome,
       tradeGroupId: "42",
-      affiliateAddress: "0x000000000000000000000000000000000000000b",
+      fingerprint: formatBytes32String('11'),
       kycToken,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),

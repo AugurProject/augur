@@ -1119,17 +1119,23 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             const inputIndex = inputs.findIndex(
               findInput => findInput.id.toString() === id
             );
+            let trailing = '';
+            if (bracketPos2 < word.length) {
+              trailing = word.substring(bracketPos2 + 1, word.length);
+            }
             if (inputIndex > -1) {
               const input = inputs[inputIndex];
               return (
-                <InputFactory
-                  key={inputIndex}
-                  input={input}
-                  inputIndex={inputIndex}
-                  onChange={onChange}
-                  newMarket={newMarket}
-                  currentTimestamp={currentTimestamp}
-                />
+                <React.Fragment key={inputIndex}>
+                  <InputFactory
+                    input={input}
+                    inputIndex={inputIndex}
+                    onChange={onChange}
+                    newMarket={newMarket}
+                    currentTimestamp={currentTimestamp}
+                  />
+                  {trailing !== '' && <span>{trailing}</span>}
+                </React.Fragment>
               );
             }
           }
@@ -1208,7 +1214,9 @@ export const CategoricalTemplateTextInputs = (
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
 
-  let initialList = inputs
+  const requiredOutcomes = inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME);
+  const otherOutcomes = inputs.filter(i => i.type !== TemplateInputType.ADDED_OUTCOME);
+  let initialList = [...otherOutcomes, ...requiredOutcomes]
     .filter(
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
@@ -1290,6 +1298,8 @@ interface CategoricalDropDownItem {
   editable: boolean;
   removable: boolean;
   current: boolean;
+  error?: string;
+  id?: number;
 }
 
 interface CategoricalDropDownAction {
@@ -1307,36 +1317,44 @@ export const CategoricalTemplateDropdowns = (
     INIT_ADD: 'INIT_ADD',
     REPLACE_CURRENT: 'REPLACE_CURRENT',
     ADD_NEW: 'ADD_NEW',
+    HAS_ERROR: 'HAS_ERROR'
   };
   const [outcomeList, dispatch] = useReducer(
     (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
       switch (action.type) {
         case ACTIONS.ADD:
-          const newAddState = [...state, action.data];
-          props.onChange('outcomes', newAddState.map(i => i.value));
+          const newAddState = OrderOutcomesItems([...state, action.data]);
+          props.onChange('outcomes', newAddState.map(o => o.value));
           return newAddState;
         case ACTIONS.REMOVE:
-          const newRemoveState = state.filter(s => s.value !== action.data.value)
-          props.onChange('outcomes', newRemoveState.map(i => i.value));
+          const newRemoveState = OrderOutcomesItems(state.filter(s => s.value !== action.data.value))
+          props.onChange('outcomes', newRemoveState.map(o => o.value));
           return newRemoveState;
         case ACTIONS.REMOVE_ALL:
           props.onChange('outcomes', []);
           return [];
         case ACTIONS.REPLACE_CURRENT:
           const removeCurrent = state.filter(s => !s.current);
-          const newUpdatedState = [...removeCurrent, action.data];
-          props.onChange('outcomes', newUpdatedState.map(i => i.value));
+          const newUpdatedState = OrderOutcomesItems([...removeCurrent, action.data]);
+          props.onChange('outcomes', newUpdatedState.map(o => o.value));
           return newUpdatedState;
         case ACTIONS.ADD_NEW:
           return state.map(o => ({...o, current: false}));
         case ACTIONS.INIT_ADD:
-          return [...state, action.data];
+          return OrderOutcomesItems([...state, action.data]);
+        case ACTIONS.HAS_ERROR:
+          const { id, error} = action.data;
+          if (!!state[id]) {
+            state[id].error = error;
+          }
+          return state;
         default:
           return state;
       }
     },
     []
   );
+  const [tooFewOutcomesError, setTooFewOutomesError] = useState(null);
   const [initialized, setInitialized] = useState(false);
   const [sourceUserInput, setSourceUserInput] = useState(undefined);
   const [depDropdownInput] = useState(
@@ -1352,6 +1370,7 @@ export const CategoricalTemplateDropdowns = (
       .map(input => ({
         value: input.placeholder,
         editable: false,
+        removable: false,
       }))
   );
   const [dropdownList, setdropdownList] = useState([]);
@@ -1413,10 +1432,22 @@ export const CategoricalTemplateDropdowns = (
         setSourceUserInput(source && source.userInput);
       }
     }
+    setTooFewOutomesError(null);
+    if (
+      props.newMarket.validations &&
+      props.newMarket.validations.outcomes &&
+      Array.isArray(props.newMarket.validations.outcomes)
+    ) {
+      props.newMarket.validations.outcomes.forEach((error, index) => {
+        if (!!error) {
+          outcomeList.length > index
+            ? dispatch({ type: ACTIONS.HAS_ERROR, data: { error, id: index } })
+            : setTooFewOutomesError(error);
+        }
+      });
+    }
   });
 
-  const { newMarket } = props;
-  const { validations } = newMarket;
   const currentValue = outcomeList.find(o => o.current);
   const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES && !!currentValue;
   const allFull = outcomeList.length === MAX_ADDED_OUTCOMES && !!!currentValue;
@@ -1428,7 +1459,7 @@ export const CategoricalTemplateDropdowns = (
         link
       />
       {outcomeList
-        .filter(o => !o.current)
+        .filter(o => !o.current && o.removable)
         .map((item, index) => (
           <NumberedInput
             key={index}
@@ -1440,14 +1471,14 @@ export const CategoricalTemplateDropdowns = (
             onRemove={index =>
               dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
             }
-            errorMessage={validations && validations.outcomes && validations.outcomes[index]}
+            errorMessage={item.error}
             editable={item.editable}
           />
         ))}
       {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
       {!showBanner && !allFull && (
         <OutcomeDropdownInput
-          number={outcomeList.filter(o => !o.current).length}
+          number={outcomeList.filter(o => !o.current && o.removable).length}
           list={dropdownList}
           defaultValue={currentValue && currentValue.value}
           onChange={value => {
@@ -1456,11 +1487,33 @@ export const CategoricalTemplateDropdowns = (
               data: { value, editable: false, removable: true, current: true },
             });
           }}
-          errorMessage={validations && validations.outcomes}
+          errorMessage={tooFewOutcomesError || (currentValue && currentValue.error)}
           onAdd={() => dispatch({ type: ACTIONS.ADD_NEW, data: {} })}
           canAddMore={canAddMore}
         />
       )}
+      <Subheaders
+        header="Required Outcomes"
+        subheader="Required unchangeable additional outcomes"
+      />
+      {outcomeList
+        .filter(o => !o.current && !o.removable)
+        .map((item, index) => (
+          <NumberedInput
+            key={index}
+            value={item.value}
+            placeholder={''}
+            onChange={() => {}}
+            number={index}
+            removable={item.removable}
+            onRemove={index =>
+              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+            }
+            errorMessage={item.error}
+            editable={item.editable}
+          />
+        ))}
+
     </>
   );
 };
@@ -1475,7 +1528,7 @@ const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, err
           staticLabel={'Select Value'}
           onChange={value => onChange(value)}
           options={list}
-          errorMessage={errorMessage && errorMessage[number]}
+          errorMessage={errorMessage}
           sort
         />
       </div>
@@ -1496,6 +1549,14 @@ const SelectEventNotice = ({ text }) => (
     show
   />
 );
+
+const OrderOutcomesItems = (
+  outcomesValues: Partial<CategoricalDropDownItem>[]
+) => {
+  const isRemovable = outcomesValues.filter(o => o.removable);
+  const nonRemovable = outcomesValues.filter(o => !o.removable);
+  return [...isRemovable, ...nonRemovable];
+};
 
 export interface ResolutionRulesProps {
   newMarket: NewMarket;

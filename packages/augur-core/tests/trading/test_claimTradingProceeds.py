@@ -2,14 +2,9 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture, mark
-from utils import fix, AssertLog, EtherDelta, TokenDelta, BuyWithCash, nullAddress
+from utils import fix, AssertLog, EtherDelta, TokenDelta, BuyWithCash, nullAddress, longTo32Bytes
 from constants import YES, NO
 
-
-def captureLog(contract, logs, message):
-    translated = contract.translator.listen(message)
-    if not translated: return
-    logs.append(translated)
 
 def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
@@ -91,9 +86,9 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         with TokenDelta(cash, expectedReporterFees, universe.getOrCreateNextDisputeWindow(False), "Reporter fees not paid"):
             # redeem shares with a1
             with AssertLog(kitchenSinkFixture, "TradingProceedsClaimed", tradingProceedsClaimedLog):
-                shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
+                shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
             # redeem shares with a2
-            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], nullAddress)
+            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], longTo32Bytes(11))
 
     # assert a1 ends up with cash (minus fees) and a2 does not
     assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
@@ -124,10 +119,10 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
     prepare_finalize_market(kitchenSinkFixture, market, [0, 0, 0, numTicks])
 
     # redeem shares with a1
-    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
+    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
     assert market.isFinalized()
     # redeem shares with a2
-    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], nullAddress)
+    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], longTo32Bytes(11))
 
     assert universe.getOpenInterestInAttoCash() == 0
     # assert both accounts are paid (or not paid) accordingly
@@ -159,9 +154,9 @@ def test_redeem_shares_in_scalar_market(kitchenSinkFixture, universe, cash, scal
     finalizeMarket(kitchenSinkFixture, market, [0, 10**5, 3*10**5])
 
     # redeem shares with a1
-    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
+    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
     # redeem shares with a2
-    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], nullAddress)
+    shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], longTo32Bytes(11))
 
     # assert a1 ends up with cash (minus fees) and a2 does not
     assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout * 3 / 4
@@ -182,7 +177,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
 
     # can't claim trading proceeds before market ends
     with raises(TransactionFailed):
-        shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
+        shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
 
     # set timestamp to after market end
     kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
@@ -194,7 +189,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     # validate that everything else is OK
-    assert shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
+    assert shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))
     assert market.isFinalized()
 
 def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, market, scalarMarket):
@@ -216,9 +211,10 @@ def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, m
     finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
 
     with TokenDelta(cash, expectedPayout, kitchenSinkFixture.accounts[1], "Claiming multiple markets did not give expected payout"):
-        assert augurTrading.claimMarketsProceeds([market.address, scalarMarket.address], kitchenSinkFixture.accounts[1], nullAddress)
+        assert augurTrading.claimMarketsProceeds([market.address, scalarMarket.address], kitchenSinkFixture.accounts[1], longTo32Bytes(11))
 
 def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
+    affiliates = kitchenSinkFixture.contracts['Affiliates']
     shareToken = kitchenSinkFixture.contracts['ShareToken']
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
@@ -227,9 +223,14 @@ def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
     expectedPayout = expectedValue - expectedSettlementFees
     expectedAffiliateFees = expectedMarketCreatorFees / market.affiliateFeeDivisor()
     expectedMarketCreatorFees = expectedMarketCreatorFees - expectedAffiliateFees
+    sourceKickback = expectedAffiliateFees / 5
+    expectedAffiliateFees -= sourceKickback
+    fingerprint = longTo32Bytes(11)
 
     assert universe.getOpenInterestInAttoCash() == 0
     affiliateAddress = kitchenSinkFixture.accounts[5]
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=kitchenSinkFixture.accounts[1])
+    affiliates.setReferrer(affiliateAddress, longTo32Bytes(0), sender=kitchenSinkFixture.accounts[2])
 
     # get YES shares with a1
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 100, shareToken.address, sender = kitchenSinkFixture.accounts[1])
@@ -240,13 +241,12 @@ def test_redeem_shares_affiliate(kitchenSinkFixture, universe, cash, market):
     with TokenDelta(cash, expectedMarketCreatorFees, market.getOwner(), "market creator fees not paid"):
         with TokenDelta(cash, expectedAffiliateFees, affiliateAddress, "affiliate fees not paid"):
             # redeem shares with a1
-            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], affiliateAddress)
+            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], fingerprint)
             # redeem shares with a2
-            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], affiliateAddress)
+            shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], fingerprint)
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
+    assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout + sourceKickback
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[1]) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, kitchenSinkFixture.accounts[2]) == 0

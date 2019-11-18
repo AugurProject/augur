@@ -291,11 +291,11 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
-        shareToken.claimTradingProceeds(market.address, localFixture.accounts[0], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[0], longTo32Bytes(11))
 
     expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .98 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
-        shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], longTo32Bytes(11))
 
     # Migrate a market that has not ended yet
     assert farOutMarket.migrateThroughOneFork([], "")

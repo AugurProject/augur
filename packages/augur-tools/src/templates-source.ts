@@ -2957,6 +2957,11 @@ export const TEMPLATES = {
                     placeholder: `Award`,
                     values: LIST_VALUES.FOOTBALL_AWARDS,
                   },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
                 ],
                 resolutionRules: {},
               },
@@ -3454,7 +3459,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {
@@ -3488,6 +3493,11 @@ export const TEMPLATES = {
                 placeholder: `Office`,
                 values: LIST_VALUES.PRES_OFFICES,
               },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
             ],
             resolutionRules: {},
           },
@@ -3507,6 +3517,11 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {},
