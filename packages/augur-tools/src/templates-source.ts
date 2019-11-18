@@ -52,8 +52,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                question: `PGA: Will [0] win the [1] [2]?`,
+                example: `PGA: Will Tiger Woods win the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -89,8 +89,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                question: `PGA: Will [0] make the cut at the [1] [2]?`,
+                example: `PGA: Will Tiger Woods make the cut at the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -126,8 +126,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                question: `PGA: Which golfer will win the [0] [1]?`,
+                example: `PGA: Which golfer will win the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -169,8 +169,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Rory Mcllroy win the 2020 Omega Dubai Dessert Classic?`,
+                question: `Euro Tour: Will [0] win the [1] [2]?`,
+                example: `Euro Tour: Will Rory Mcllroy win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -206,8 +206,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Rory Mcllroy make the cut at the 2020 Omega Dubai Dessert Classic?`,
+                question: `Euro Tour: Will [0] make the cut at the [1] [2]?`,
+                example: `Euro Tour: Will Rory Mcllroy make the cut at the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -243,8 +243,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
+                question: `Euro Tour: Which golfer will win the [0] [1]?`,
+                example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -286,8 +286,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Lexi Thompson win the 2020 U.S. Women's Open?`,
+                question: `LPGA: Will [0] win the [1] [2]?`,
+                example: `LPGA: Will Lexi Thompson win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -323,8 +323,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Lexi Thompson make the cut at the 2020 U.S. Women's Open?`,
+                question: `LPGA: Will [0] make the cut at the [1] [2]?`,
+                example: `LPGA: Will Lexi Thompson make the cut at the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -360,8 +360,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 U.S. Women's Open?`,
+                question: `LPGA: Which golfer will win the [0] [1]?`,
+                example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
