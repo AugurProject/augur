@@ -69,7 +69,7 @@ def test_trading(kitchenSinkFixture, augur, cash, market):
         orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = kitchenSinkFixture.accounts[1])
     # take order
     with BuyWithCash(cash, fillerCost, kitchenSinkFixture.accounts[2], "fill order"):
-        assert trade.publicTrade(SHORT, market.address, YES, fix(2), 60, "0", "0", tradeGroupID, 6, nullAddress, nullAddress, sender=kitchenSinkFixture.accounts[2])
+        assert trade.publicTrade(SHORT, market.address, YES, fix(2), 60, "0", "0", tradeGroupID, 6, longTo32Bytes(11), nullAddress, sender=kitchenSinkFixture.accounts[2])
 
     marketData = getMarketData(hotLoading, augur, market, fillOrder, orders)
 

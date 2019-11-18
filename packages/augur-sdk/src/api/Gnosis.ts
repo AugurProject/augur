@@ -6,6 +6,7 @@ import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
 import { NULL_ADDRESS } from "../constants";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+import { formatBytes32String } from 'ethers/utils';
 
 export interface GetGnosisSafeAddressParams {
     owner: string;
@@ -38,7 +39,11 @@ export class Gnosis {
     const augurAddress = this.augur.contracts.augur.address;
     const createOrderAddress = this.augur.contracts.createOrder.address;
     const fillOrderAddress = this.augur.contracts.fillOrder.address;
-    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress]);
+    const affiliates = this.augur.contracts.affiliates.address;
+    // TODO
+    const fingerprint = formatBytes32String("");
+    const referralAddress = NULL_ADDRESS;
+    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress, affiliates, fingerprint, referralAddress]);
     const gnosisSafeData = await this.provider.encodeContractFunction("GnosisSafe", "setup", [[account], 1, gnosisSafeRegistryAddress, registrationData, NULL_ADDRESS, NULL_ADDRESS, 0, NULL_ADDRESS]);
     // Make transaction to proxy factory
     const nonce = Date.now();
@@ -54,7 +59,11 @@ export class Gnosis {
     const augurAddress = this.augur.contracts.augur.address;
     const createOrderAddress = this.augur.contracts.createOrder.address;
     const fillOrderAddress = this.augur.contracts.fillOrder.address;
-    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress]);
+    const affiliates = this.augur.contracts.affiliates.address;
+    // TODO
+    const fingerprint = formatBytes32String("");
+    const referralAddress = NULL_ADDRESS;
+    const registrationData = await this.provider.encodeContractFunction("GnosisSafeRegistry", "callRegister", [gnosisSafeRegistryAddress, augurAddress, createOrderAddress, fillOrderAddress, cashAddress, shareTokenAddress, affiliates, fingerprint, referralAddress]);
     if (this.gnosisRelay === undefined) throw new Error("No Gnosis Relay provided to Augur SDK");
     const nonce = Date.now();
     const response = await this.gnosisRelay.createSafe({

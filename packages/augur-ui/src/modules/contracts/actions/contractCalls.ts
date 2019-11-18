@@ -295,6 +295,12 @@ export function getRep() {
   return rep.faucet(createBigNumber('100000000000000000000'));
 }
 
+export function getLegacyRep() {
+  const { contracts } = augurSdk.get();
+  const rep = contracts.legacyReputationToken;
+  return rep.faucet(createBigNumber('10000000000000000000'));
+}
+
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
   const vBond = await contracts.universe.getOrCacheValidityBond_();
@@ -639,7 +645,7 @@ export async function placeTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  affiliateAddress: string = NULL_ADDRESS,
+  fingerprint: string = formatBytes32String('11'),
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
@@ -658,7 +664,7 @@ export async function placeTrade(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
@@ -675,7 +681,7 @@ export async function simulateTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  affiliateAddress: string = NULL_ADDRESS,
+  fingerprint: string = formatBytes32String('11'),
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
@@ -694,7 +700,7 @@ export async function simulateTrade(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
@@ -712,7 +718,7 @@ export async function simulateTradeGasLimit(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  affiliateAddress: string = NULL_ADDRESS,
+  fingerprint: string = formatBytes32String('11'),
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
@@ -731,7 +737,7 @@ export async function simulateTradeGasLimit(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
@@ -747,7 +753,7 @@ export async function simulateTradeGasLimit(
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
-  affiliateAddress: string = NULL_ADDRESS
+  fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
 
@@ -755,13 +761,13 @@ export async function claimMarketsProceeds(
     augur.contracts.augurTrading.claimMarketsProceeds(
       markets,
       shareHolder,
-      affiliateAddress
+      fingerprint
     );
   } else {
     augur.contracts.augurTrading.claimTradingProceeds(
       markets[0],
       shareHolder,
-      affiliateAddress
+      fingerprint
     );
   }
 }

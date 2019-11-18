@@ -7,6 +7,8 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from "ethers/utils";
 import { ContractAddresses } from '@augurproject/artifacts';
 import { TestNetReputationToken } from "@augurproject/core/build/libraries/ContractInterfaces";
+import { NULL_ADDRESS } from "../../libs/Utils";
+
 
 interface MarketCreatedEvent {
   name: 'MarketCreated';
@@ -105,6 +107,7 @@ test('Contract :: Universe :: Create Market', async () => {
   const maybeMarketCreatedEvent = (await universe.createCategoricalMarket(
     endTime,
     fee,
+    NULL_ADDRESS,
     affiliateFeeDivisor,
     ACCOUNTS[0].publicKey,
     outcomes,

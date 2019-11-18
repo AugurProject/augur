@@ -182,7 +182,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
      * Perform Augur Trades using 0x signed orders
      *
      * @param  _requestedFillAmount  Share amount to fill
-     * @param  _affiliateAddress     Address of affiliate to be paid fees if any
+     * @param  _fingerprint          Fingerprint of the user to restrict affiliate fees
      * @param  _tradeGroupId         Random id to correlate these fills as one trade action
      * @param  _orders               Array of encoded Order struct data
      * @param  _signatures           Array of signature data
@@ -190,7 +190,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
      */
     function trade(
         uint256 _requestedFillAmount,
-        address _affiliateAddress,
+        bytes32 _fingerprint,
         bytes32 _tradeGroupId,
         IExchange.Order[] memory _orders,
         bytes[] memory _signatures
@@ -222,7 +222,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
                 continue;
             }
 
-            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _affiliateAddress, _tradeGroupId, msg.sender);
+            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _fingerprint, _tradeGroupId, msg.sender);
 
             _fillAmountRemaining = _fillAmountRemaining.sub(_amountTraded);
         }
@@ -244,7 +244,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(_zeroXTradeToken == this);
     }
 
-    function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
+    function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
         // parseOrderData will validate that the token being traded is the leigitmate one for the market
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
         // If the signed order creator doesnt have enough funds we still want to continue and take their order out of the list
@@ -256,7 +256,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         if (_order.makerAddress == _taker) {
             return 0;
         }
-        fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _affiliateAddress, _taker);
+        fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _fingerprint, _taker);
         return _amount;
     }
 

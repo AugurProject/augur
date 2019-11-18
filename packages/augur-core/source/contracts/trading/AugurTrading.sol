@@ -107,12 +107,12 @@ contract AugurTrading is IAugurTrading {
      * @notice Claims winnings for multiple markets and for a particular shareholder
      * @param _markets Array of markets to claim winnings for
      * @param _shareHolder The account to claim winnings for
-     * @param _affiliateAddress An affiliate address to share market creator fees with
+     * @param _fingerprint Fingerprint of the user to restrict affiliate fees
      * @return Bool True
      */
-    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder, address _affiliateAddress) external returns (bool) {
+    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder, bytes32 _fingerprint) external returns (bool) {
         for (uint256 i=0; i < _markets.length; i++) {
-            uint256[] memory _outcomeFees = shareToken.claimTradingProceeds(_markets[i], _shareHolder, _affiliateAddress);
+            uint256[] memory _outcomeFees = shareToken.claimTradingProceeds(_markets[i], _shareHolder, _fingerprint);
             IProfitLoss(registry['ProfitLoss']).recordClaim(_markets[i], _shareHolder, _outcomeFees);
         }
         return true;
@@ -122,11 +122,11 @@ contract AugurTrading is IAugurTrading {
      * @notice Claims winnings for a market and for a particular shareholder
      * @param _market The market to claim winnings for
      * @param _shareHolder The account to claim winnings for
-     * @param _affiliateAddress An affiliate address to share market creator fees with
+     * @param _fingerprint Fingerprint of the user to restrict affiliate fees
      * @return Bool True
      */
-    function claimTradingProceeds(IMarket _market, address _shareHolder, address _affiliateAddress) external returns (bool) {
-        uint256[] memory _outcomeFees = shareToken.claimTradingProceeds(_market, _shareHolder, _affiliateAddress);
+    function claimTradingProceeds(IMarket _market, address _shareHolder, bytes32 _fingerprint) external returns (bool) {
+        uint256[] memory _outcomeFees = shareToken.claimTradingProceeds(_market, _shareHolder, _fingerprint);
         IProfitLoss(registry['ProfitLoss']).recordClaim(_market, _shareHolder, _outcomeFees);
         return true;
     }

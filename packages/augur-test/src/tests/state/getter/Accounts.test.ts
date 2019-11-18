@@ -702,7 +702,7 @@ describe('State API :: Accounts :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      "0x0000000000000000000000000000000000000000",
+      stringTo32ByteHex(''),
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);

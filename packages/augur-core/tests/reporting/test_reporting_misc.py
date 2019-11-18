@@ -101,7 +101,7 @@ def test_malicious_universe_in_market_creation(contractsFixture, cash, augur, re
     sender = userA
 
     with raises(TransactionFailed):
-        marketAddress = marketFactory.createMarket(augur.address, maliciousUniverse.address, endTime, 0, 0, designatedReporter, sender, 2, 100)
+        marketAddress = marketFactory.createMarket(augur.address, maliciousUniverse.address, endTime, 0, nullAddress, 0, designatedReporter, sender, 2, 100)
 
     # This case was fixed as the above call is no longer possible
     # The market will recieve the entire cash balance of User B

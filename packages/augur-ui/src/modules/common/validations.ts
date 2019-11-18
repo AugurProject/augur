@@ -169,11 +169,12 @@ function checkValidNumbers(values) {
   return valid;
 }
 
-export function checkForUserInputFilled(inputs) {
+export function checkForUserInputFilled(inputs, endTimeFormatted) {
   const errors = inputs.map(input => {
     if (
-      input.validationType === ValidationType.WHOLE_NUMBER &&
-      moreThanDecimals(input.userInput, 0) || isPositive(input.userInput)
+      (input.validationType === ValidationType.WHOLE_NUMBER &&
+        moreThanDecimals(input.userInput, 0)) ||
+      isPositive(input.userInput)
     ) {
       return 'Must be a whole positive number';
     } else if (
@@ -191,15 +192,40 @@ export function checkForUserInputFilled(inputs) {
       (!input.userInput || input.userInput === '')
     ) {
       return 'Input is required';
-    } else if (input.type === TemplateInputType.DATETIME || input.type === TemplateInputType.ESTDATETIME) {
+    } else if (
+      input.type === TemplateInputType.TEXT ||
+      input.type === TemplateInputType.DROPDOWN
+    ) {
+      const possibleDupes = inputs.filter(
+        possibleDupeInput =>
+          (
+            (possibleDupeInput.type === TemplateInputType.TEXT ||
+              input.type === TemplateInputType.DROPDOWN) &&
+              (possibleDupeInput.userInput && input.userInput && possibleDupeInput.userInput.toUpperCase() ===
+              input.userInput.toUpperCase()) && input.id !== possibleDupeInput.id
+          )
+      );
+      if (possibleDupes.length > 0) {
+        return 'No repeats allowed';
+      } else {
+        return '';
+      }
+    } else if (
+      input.type === TemplateInputType.DATETIME ||
+      input.type === TemplateInputType.ESTDATETIME
+    ) {
       if (input.userInputObject) {
         let validations: NewMarketPropertiesValidations = {};
         if (input.userInputObject.hour === null) {
           validations.hour = 'Choose a time';
-        }
+        } 
+
         if (input.userInputObject.endTime === null) {
           validations.setEndTime = 'Choose a date';
+        } else if (endTimeFormatted.timestamp && input.userInputObject.endTime > endTimeFormatted.timestamp) {
+          validations.setEndTime = 'Date must be before event expiration time';
         }
+        
         return validations;
       } else {
         return '';
