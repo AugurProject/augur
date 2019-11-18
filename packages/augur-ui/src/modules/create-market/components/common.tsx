@@ -1119,17 +1119,24 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             const inputIndex = inputs.findIndex(
               findInput => findInput.id.toString() === id
             );
+            let trailing = '';
+            if (bracketPos2 < word.length) {
+              trailing = word.substring(bracketPos2 + 1, word.length);
+            }
             if (inputIndex > -1) {
               const input = inputs[inputIndex];
               return (
-                <InputFactory
-                  key={inputIndex}
-                  input={input}
-                  inputIndex={inputIndex}
-                  onChange={onChange}
-                  newMarket={newMarket}
-                  currentTimestamp={currentTimestamp}
-                />
+                <>
+                  <InputFactory
+                    key={inputIndex}
+                    input={input}
+                    inputIndex={inputIndex}
+                    onChange={onChange}
+                    newMarket={newMarket}
+                    currentTimestamp={currentTimestamp}
+                  />
+                  {trailing !== '' && <span>{trailing}</span>}
+                </>
               );
             }
           }
