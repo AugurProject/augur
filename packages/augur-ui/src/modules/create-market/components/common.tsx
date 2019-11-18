@@ -49,6 +49,7 @@ import {
 import {
   TemplateBannerText,
   SelectEventNoticeText,
+  MARKET_COPY_LIST,
 } from 'modules/create-market/constants';
 import {
   DismissableNotice,
@@ -429,6 +430,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
       {!condensedStyle && (
         <Subheaders
           header={header ? header : 'Event Expiration date and time'}
+          copyType={MARKET_COPY_LIST.EVENT_EXPIRATION}
           subheader={
             subheader
               ? subheader
@@ -1630,6 +1632,7 @@ export interface InputHeadingProps {
   heading: string;
   subHeading: string;
   listItems: string[];
+  copyType?: string;
 }
 
 export const InputHeading = (props: InputHeadingProps) => (
@@ -1637,7 +1640,7 @@ export const InputHeading = (props: InputHeadingProps) => (
     <h1>{props.heading}</h1>
     <span>
       {props.subHeading}
-      <ExternalLinkButton URL={'http://www.augur.net'} label={'Learn more'} />
+      <Link copyType={props.copyType} />
     </span>
     <ul key={props.name}>
       {props.listItems.map((i, ndx) => (
