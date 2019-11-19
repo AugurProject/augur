@@ -58,13 +58,8 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
       let regexMarketTitle = t.question;
       t.inputs.map((i: TemplateInput) => {
         if (question.indexOf(`[${i.id}]`) > -1) {
-          let reg = ValidationTemplateInputType[i.type];
-          if (!reg && i.type === TemplateInputType.DROPDOWN) {
-            reg = `(${i.values.map(o => o.label).join('|')})`;
-          }
-          if (reg) {
-            regexMarketTitle = regexMarketTitle.replace(`[${i.id}]`, reg);
-          }
+          const reg = getValidationValues(i);
+          regexMarketTitle = regexMarketTitle.replace(`[${i.id}]`, reg);
         }
       });
       validations[hashValue] = {
@@ -81,4 +76,46 @@ function generateTemplateHash(template: Template): string {
   const params = JSON.stringify(template);
   const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
   return ethers.utils.sha256(value);
+}
+
+function getValidationValues(input: TemplateInput) {
+  const { type } = input;
+  let reg = ValidationTemplateInputType[type];
+  if (reg) return reg;
+  switch(type) {
+    case TemplateInputType.DENOMINATION_DROPDOWN:
+    case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
+    case TemplateInputType.DROPDOWN:
+      const validations = `(${input.values.map(o => escapeSpecialCharacters(o.label)).join('|')})`;
+    return validations;
+  }
+}
+
+interface SearchReplace {
+  find: RegExp;
+  rep: string;
+}
+
+const specialCharacters: SearchReplace[] = [
+  {
+    find: /\(/g,
+    rep: `\\(`,
+  },
+  {
+    find: /\)/g,
+    rep: `\\)`,
+  },
+  {
+    find: /\?/g,
+    rep: `\\?`,
+  },
+];
+
+function escapeSpecialCharacters(value: string) {
+  let replacementValue = value;
+  let i: SearchReplace = null;
+  specialCharacters.forEach(i => {
+    replacementValue = replacementValue.replace(i.find, i.rep)
+  });
+  return replacementValue;
 }
