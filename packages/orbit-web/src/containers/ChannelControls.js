@@ -30,7 +30,6 @@ function ChannelControls ({ channel, disabled }) {
       <SendMessage
         channelName={channel ? channel.channelName : ''}
         onSendMessage={sendMessage}
-        theme={uiStore.theme}
         useEmojis={uiStore.useEmojis}
         emojiSet={uiStore.emojiSet}
         disabled={disabled}

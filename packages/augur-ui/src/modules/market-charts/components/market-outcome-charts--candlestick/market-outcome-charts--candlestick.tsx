@@ -7,7 +7,6 @@ import { CandlestickOchl } from 'modules/market-charts/components/market-outcome
 
 interface MarketOutcomeCandlestickProps {
   fixedPrecision: number;
-  isMobile: boolean;
   marketMax: BigNumber;
   marketMin: BigNumber;
   priceTimeSeries: Array<any>;
@@ -25,9 +24,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
   MarketOutcomeCandlestickProps,
   MarketOutcomeCandlestickState
 > {
-  static defaultProps = {
-    isMobile: false,
-  };
   drawContainer: any;
 
   constructor(props) {
@@ -59,7 +55,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
     const {
       fixedPrecision,
       pricePrecision,
-      isMobile,
       priceTimeSeries,
       selectedPeriod,
       updateSelectedPeriod,
@@ -67,17 +62,11 @@ class MarketOutcomeCandlestick extends React.PureComponent<
       marketMax,
     } = this.props;
 
-    const {
-      hoveredPeriod,
-      volumeType,
-      defaultCandlePeriod,
-    } = this.state;
+    const { hoveredPeriod, volumeType, defaultCandlePeriod } = this.state;
     const staticMenuLabel = 'Show Volume in';
     const staticLabel = hoveredPeriod.volume
-    ? `V: ${hoveredPeriod.volume
-        .toFixed(fixedPrecision)
-        .toString()}`
-    : staticMenuLabel;
+      ? `V: ${hoveredPeriod.volume.toFixed(fixedPrecision).toString()}`
+      : staticMenuLabel;
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>

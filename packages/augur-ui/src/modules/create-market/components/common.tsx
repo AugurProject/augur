@@ -49,6 +49,7 @@ import {
 import {
   TemplateBannerText,
   SelectEventNoticeText,
+  MARKET_COPY_LIST,
 } from 'modules/create-market/constants';
 import {
   DismissableNotice,
@@ -88,6 +89,7 @@ export interface SubheadersProps {
   ownLine?: Boolean;
   smallSubheader?: Boolean;
   renderMarkdown?: Boolean;
+  copyType?: string;
 }
 
 export interface DateTimeHeadersProps extends SubheadersProps {
@@ -105,6 +107,7 @@ export const Subheaders = (props: SubheadersProps) => (
           href={props.href}
           underline={props.underline}
           ownLine={props.ownLine}
+          copyType={props.copyType}
         />
       )}
     </p>
@@ -131,6 +134,7 @@ export interface HeaderLinkProps {
   ownLine?: Boolean;
   underline?: Boolean;
   smallSubheader?: Boolean;
+  copyType?: string;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
@@ -145,6 +149,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
         href={props.href}
         underline={props.underline}
         ownLine={props.ownLine}
+        copyType={props.copyType}
       />
     )}
   </p>
@@ -164,6 +169,7 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       ownLine={props.ownLine}
       link={props.link}
       smallSubheader={props.smallSubheader}
+      copyType={props.copyType}
     />
   </div>
 );
@@ -424,6 +430,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
       {!condensedStyle && (
         <Subheaders
           header={header ? header : 'Event Expiration date and time'}
+          copyType={MARKET_COPY_LIST.EVENT_EXPIRATION}
           subheader={
             subheader
               ? subheader
@@ -693,6 +700,7 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
+  Gnosis_ENABLED: boolean;
 }
 export const NoFundsErrors = (props: NoFundsErrorsProps) => {
   const {
@@ -705,11 +713,12 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
     availableEthFormatted,
     availableRepFormatted,
     availableDaiFormatted,
+    Gnosis_ENABLED,
   } = props;
 
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && (
+      {noEth && !Gnosis_ENABLED && (
         <Error
           alternate
           header="Not enough ETH in your wallet"
@@ -1681,6 +1690,7 @@ export interface InputHeadingProps {
   heading: string;
   subHeading: string;
   listItems: string[];
+  copyType?: string;
 }
 
 export const InputHeading = (props: InputHeadingProps) => (
@@ -1688,7 +1698,7 @@ export const InputHeading = (props: InputHeadingProps) => (
     <h1>{props.heading}</h1>
     <span>
       {props.subHeading}
-      <ExternalLinkButton URL={'http://www.augur.net'} label={'Learn more'} />
+      <Link copyType={props.copyType} />
     </span>
     <ul key={props.name}>
       {props.listItems.map((i, ndx) => (

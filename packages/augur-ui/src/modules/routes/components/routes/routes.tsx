@@ -8,6 +8,7 @@ import * as VIEWS from 'modules/routes/constants/views';
 import * as COMPONENTS from 'modules/routes/constants/components';
 
 import { withPageAnalytic } from 'services/analytics';
+import { isLocalHost } from 'utils/is-localhost';
 
 const getLoggedInAccountFromLocalStorage = () => {
   let loggedInAccount = null;
@@ -57,4 +58,5 @@ const Routes = p => {
     </Switch>
   );
 };
-export default withRouter(withPageAnalytic(Routes));
+
+export default isLocalHost() ? withRouter(Routes) : withRouter(withPageAnalytic(Routes));

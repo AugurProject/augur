@@ -7,6 +7,7 @@
     "gts/tslint.json"
   ],
   "rules": {
+    "import-blacklist": [true, ["@augurproject\/.*\/build.*"]],
     "quotemark": [true, "single", "jsx-single", "avoid-template", "avoid-escape"],
     "ban": [true,
       {"name": ["it", "only"]},

@@ -92,6 +92,8 @@ import {
   TEMPLATE_CONTENT_PAGES,
   NO_CAT_TEMPLATE_CONTENT_PAGES,
 } from 'modules/create-market/template-navigation';
+import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -704,8 +706,14 @@ export default class Form extends React.Component<FormProps, FormState> {
             <span>Your market preview</span>
             <PrimaryButton text="Close preview" action={this.preview} />
             <MarketView
-              market={{
+                sortedOutcomes={selectSortedMarketOutcomes(
+                  newMarket.marketType,
+                  newMarket.outcomesFormatted
+                )}
+                market={{
                 ...newMarket,
+                maxPriceBigNumber: createBigNumber(newMarket.maxPrice),
+                minPriceBigNumber: createBigNumber(newMarket.minPrice),
                 details: isTemplate
                   ? buildResolutionDetails(
                       newMarket.detailsText,

@@ -92,9 +92,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
 
-  componentDidUpdate(nextProps) {
+  componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
     this.measure();
-    if (nextProps.defaultValue !== this.props.defaultValue) {
+    if (prevProps.defaultValue !== this.props.defaultValue) {
       this.setState({
         selected: this.props.options.find(
           o => o.value === this.props.defaultValue
@@ -102,12 +102,12 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       });
     }
     if (
-      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
+      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options)
     ) {
       const sortedList =
-        nextProps.sort && nextProps.options
+        prevProps.sort && prevProps.options
           ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
-          : nextProps.options;
+          : prevProps.options;
       this.setState({
         sortedList,
       });

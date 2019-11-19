@@ -4,7 +4,6 @@ import { Filter } from "ethereumjs-blockstream/output/source/models/filters";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { Log, ParsedLog } from "@augurproject/types";
 import * as _ from "lodash";
-import { augurEmitter } from "../../events";
 
 export interface BlockAndLogStreamerInterface<TBlock extends Block, TLog extends BlockStreamLog> {
   reconcileNewBlock: (block: TBlock) => Promise<void>;
@@ -34,6 +33,7 @@ export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 export interface IBlockAndLogStreamerListener {
   listenForEvent(eventName: string | string[], onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
   listenForAllEvents(onLogsAdded: LogCallbackType): void;
+  notifyNewBlockAfterLogsProcess(onLogsAdded: LogCallbackType);
   listenForBlockRemoved(callback: (blockNumber: number) => void): void;
   listenForBlockAdded(callback: (block: Block) => void): void;
   startBlockStreamListener(): void;
@@ -52,6 +52,8 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
   private contractFilterUUIDs: {[address: string] : string } = {};
   private logCallbackMetaData: LogCallbackMetaData[] = [];
   private allLogsCallbackMetaData: LogCallbackType[] = [];
+  private notifyNewBlockAfterLogsProcessMetadata:LogCallbackType[] = [];
+
 
   constructor(private deps: BlockAndLogStreamerListenerDependencies) {
     deps.blockAndLogStreamer.subscribeToOnLogsAdded(this.onLogsAdded);
@@ -123,7 +125,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       if (this.contractFilterUUIDs[contractAddress]) {
         this.deps.blockAndLogStreamer.removeLogFilter(this.contractFilterUUIDs[contractAddress]);
       }
-  
+
       this.contractFilterUUIDs[contractAddress] = this.deps.blockAndLogStreamer.addLogFilter({
         address: contractAddress,
         topics: [
@@ -131,6 +133,10 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
         ],
       });
     });
+  }
+
+  notifyNewBlockAfterLogsProcess(onBlockAdded: LogCallbackType) {
+    this.notifyNewBlockAfterLogsProcessMetadata.push(onBlockAdded);
   }
 
   /**
@@ -179,7 +185,8 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       await Promise.all(allLogsCallbackMetaDataPromises);
 
       // let the controller know a new block was added so it can update the UI
-      augurEmitter.emit('controller:new:block', block);
+      const notifyNewBlockAfterLogsProcessMetadataPromises = this.notifyNewBlockAfterLogsProcessMetadata.map((cb) => cb(blockNumber, this.deps.parseLogs(logs)));
+      await Promise.all(notifyNewBlockAfterLogsProcessMetadataPromises);
     }
   };
 

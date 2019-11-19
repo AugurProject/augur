@@ -90,7 +90,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
-      return <ModalCreationHelp />;
+      return <ModalCreationHelp {...modal} />;
     case TYPES.MODAL_DEPOSIT:
       return <ModalDeposit />;
     case TYPES.MODAL_WITHDRAW:

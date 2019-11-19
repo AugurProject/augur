@@ -33,6 +33,7 @@ import {
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
+  MARKET_COPY_LIST,
 } from 'modules/create-market/constants';
 import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
@@ -132,6 +133,7 @@ export default class FormDetails extends React.Component<
               <Subheaders
                 header="Market type"
                 link
+                copyType={MARKET_COPY_LIST.MARKET_TYPE}
                 subheader="Market types vary based on the amount of possible outcomes."
               />
               <RadioCardGroup
@@ -187,6 +189,7 @@ export default class FormDetails extends React.Component<
 
               <InputHeading
                 name={'question'}
+                copyType={MARKET_COPY_LIST.MARKET_QUESTION}
                 heading={'Market question'}
                 subHeading={'What do you want people to predict?'}
                 listItems={[
