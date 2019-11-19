@@ -219,7 +219,6 @@ export default class FormDetails extends React.Component<
               <Subheaders
                 header="Outcomes"
                 subheader="List the outcomes people can choose from."
-                link
               />
               <NumberedList
                 initialList={outcomes.map(outcome => {

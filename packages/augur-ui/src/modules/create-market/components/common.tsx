@@ -1259,7 +1259,7 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 
   return (
     <>
-      <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." link />
+      <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." />
       <NumberedList
         initialList={showOutcomes}
         minShown={2}
@@ -1338,7 +1338,6 @@ export const CategoricalTemplateTextInputs = (
       <Subheaders
         header="Outcomes"
         subheader="List the outcomes people can choose from."
-        link
       />
       <NumberedList
         initialList={initialList}
@@ -1521,7 +1520,6 @@ export const CategoricalTemplateDropdowns = (
       <Subheaders
         header="Outcomes"
         subheader="List the outcomes people can choose from."
-        link
       />
       {outcomeList
         .filter(o => !o.current && o.removable)
