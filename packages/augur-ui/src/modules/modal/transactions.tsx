@@ -483,7 +483,6 @@ export const Transactions: React.FC<TransactionsProps> = props => {
       </section>
       <div>
         <Pagination {...pageInfo} updateLimit={() => {}}/>
-        <span>Show</span>
         <FormDropdown
           options={paginationOptions}
           defaultValue={itemsPerPage}
