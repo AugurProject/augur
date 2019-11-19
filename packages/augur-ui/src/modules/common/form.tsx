@@ -887,10 +887,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.updateChecked(nextProps.defaultSelected);
+  
+  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState){
+    if (this.props.defaultSelected !== prevProps.defaultSelected){
+      this.updateChecked(this.props.defaultSelected)
     }
   }
 
@@ -1100,9 +1100,9 @@ export class RadioTwoLineBarGroup extends Component<
     selected: this.props.defaultSelected || null,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.updateChecked(nextProps.defaultSelected);
+  componentDidUpdate(prevProps: RadioGroupProps) {
+    if (this.props.defaultSelected !== prevProps.defaultSelected) {
+      this.updateChecked(this.props.defaultSelected);
     }
   }
 
@@ -1252,10 +1252,10 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: TextInputProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState){
+    const { value } = prevProps;
+    if (value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
   }
 
@@ -1509,10 +1509,10 @@ class IndividualTimeSelector extends React.Component<
     value: this.props.value,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: IndividualTimeSelectorProps) {
+    const { value } = prevProps;
+    if (value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
   }
 
@@ -1756,25 +1756,22 @@ export class Input extends Component<InputProps, InputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: InputProps, prevState: InputState) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
-  }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (
-      nextProps.canToggleVisibility &&
-      !nextState.value &&
-      nextState.isHiddenContentVisible
+      this.props.canToggleVisibility &&
+      !this.state.value &&
+      this.state.isHiddenContentVisible
     ) {
       this.updateIsHiddenContentVisible(false);
     }
 
     if (
-      this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible &&
-      nextState.isHiddenContentVisible
+      prevState.isHiddenContentVisible !== this.state.isHiddenContentVisible &&
+      this.state.isHiddenContentVisible
     ) {
       this.timeoutVisibleHiddenContent();
     }
