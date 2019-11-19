@@ -19,6 +19,7 @@ import Visibility from "modules/create-market/containers/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
 import { OutcomeFormatted, NewMarket } from "modules/types";
+import { MARKET_COPY_LIST } from "modules/create-market/constants";
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -128,6 +129,7 @@ export default class FeesLiquidity extends React.Component<
           <LargeSubheaders
             link
             smallSubheader
+            copyType={MARKET_COPY_LIST.CREATOR_FEE}
             header="Market creator fee"
             subheader="You have the option of setting a fee on your market. It is a percentage amount you get whenever shares are redeemed for DAI. Fees are typically set below 2%."
           />
@@ -146,6 +148,7 @@ export default class FeesLiquidity extends React.Component<
             link
             smallSubheader
             header="Affiliate fee"
+            copyType={MARKET_COPY_LIST.AFFILIATE_FEE}
             subheader="You have the option of assigning a percentage of the market creator fee to anyone who helps to promote your market (affiliiates)."
           />
           <TextInput
@@ -162,6 +165,7 @@ export default class FeesLiquidity extends React.Component<
         <LargeSubheaders
           link
           smallSubheader
+          copyType={MARKET_COPY_LIST.INITIAL_LIQUIDITY}
           header="Add initial market liquidity"
           subheader="Initial liquidity is the first batch of orders added to a new maket. It is essential to add initial liquidity to your market so users see it. It’s required that at least one outcome have orders such that the difference between the ask and bid is less than 15% of the range (max minus min), inclusive of fees, of the market. So in a binary or categorical market an ask of .65 and bid of .57 would be 8% and show up, an ask of .76 and bid of .55 would be 21% and not show up to users, and so on. If you do this for more outcomes and add more liquidity, your market will rank higher."
         />
