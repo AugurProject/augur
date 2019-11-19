@@ -263,7 +263,7 @@ export class MarketDB extends DerivedDB {
       log['extraInfo'] = JSON.parse(log['extraInfo']);
       log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
       if(log['extraInfo'].template) {
-        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template);
+        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes']);
       }
     } catch (err) {
       log['extraInfo'] = {};

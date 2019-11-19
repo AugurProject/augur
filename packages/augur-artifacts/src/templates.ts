@@ -195,7 +195,15 @@ export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
   return !!marketTitle.match(validation.templateValidation);
 };
 
-export const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
+function convertOutcomes(outcomes: string[]) {
+  if (!outcomes) return [];
+  return outcomes.map(o => {
+    const outcomeDescription = o.replace('0x', '');
+    return Buffer.from(outcomeDescription, 'hex').toString()
+  })
+}
+
+export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[]) => {
   let result = false;
   if (
     !template ||
@@ -205,12 +213,21 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
   )
     return result;
 
+  // check market title/question matches built template question
   let checkMarketTitle = template.question;
   template.inputs.map((i: ExtraInfoTemplateInput) => {
     checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
   });
-
   if (checkMarketTitle !== title) return result;
+
+  // check for duplicates
+  const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
+  if (new Set(values).size !== values.length) return result;
+
+  // check for outcome duplicates
+  const outcomeValue  = convertOutcomes(outcomes);
+  if (new Set(outcomeValue).size !== outcomeValue.length) return result;
+
   try {
     result = isValidTemplateMarket(template.hash, checkMarketTitle);
   } catch (e) {

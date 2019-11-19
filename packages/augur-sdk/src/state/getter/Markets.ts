@@ -12,7 +12,7 @@ import {
   OrderType,
   ParsedOrderEventLog,
 } from "../logs/types";
-import { ExtraInfoTemplate, isTemplateMarket } from '@augurproject/artifacts';
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
 import { MarketReportingState } from "../../constants";
 import {
