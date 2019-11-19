@@ -7,6 +7,7 @@ import {
   TemplateInputType,
   CategoryTemplate,
   TemplateValidation,
+  generateResolutionRulesHash,
 } from '../templates-template';
 import { TEMPLATES } from '../templates-source';
 
@@ -20,35 +21,22 @@ export const generateTemplateValidations = async () => {
   let newTemplates = JSON.parse(JSON.stringify(TEMPLATES));
   const topCategories = Object.keys(newTemplates);
   topCategories.map(c => addTemplates(newTemplates[c], validations));
-  const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(
-    newTemplates
-  )};`;
-  const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(
-    validations
-  )};`;
+  const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(newTemplates)};`;
+  const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(validations)};`;
 
-  if (!fs.existsSync(templateTemplateFile))
-    return console.error(templateTemplateFile, 'does not exist');
+  if (!fs.existsSync(templateTemplateFile)) return console.error(templateTemplateFile, 'does not exist');
 
   const contents = fs.readFileSync(templateTemplateFile, 'utf8');
 
-  const setNewTemplatesValues = contents.replace(
-    templateString,
-    newTemplateValue
-  );
-  const setNewTemplateValidations = setNewTemplatesValues.replace(
-    templateValidationString,
-    newValidation
-  );
+  const setNewTemplatesValues = contents.replace(templateString, newTemplateValue);
+  const setNewTemplateValidations = setNewTemplatesValues.replace(templateValidationString, newValidation);
 
   fs.writeFileSync(templateArtifactsFile, setNewTemplateValidations, 'utf8');
 };
 
 const addTemplates = (category: CategoryTemplate, validations: TemplateValidation) => {
   if (category.children) {
-    return Object.keys(category.children).map(c =>
-      addTemplates(category.children[c], validations)
-    );
+    return Object.keys(category.children).map(c => addTemplates(category.children[c], validations));
   }
   if (category.templates) {
     category.templates.map(t => {
@@ -64,6 +52,8 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
       });
       validations[hashValue] = {
         templateValidation: regexMarketTitle,
+        templateValidationResRules: generateResolutionRulesHash(t.resolutionRules),
+        requiredOutcomes: getRequiredOutcomes(t.inputs),
       };
     });
   }
@@ -77,10 +67,13 @@ function generateTemplateHash(template: Template): string {
   const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
   return ethers.utils.sha256(value);
 }
+function getRequiredOutcomes(inputs: TemplateInput[]) {
+  return inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME).map(i => i.placeholder);
+}
 
 function getValidationValues(input: TemplateInput) {
   const { type } = input;
-  switch(type) {
+  switch (type) {
     case TemplateInputType.TEXT:
       let reg = ValidationTemplateInputType[type];
       if (input.validationType) {
@@ -121,7 +114,7 @@ function escapeSpecialCharacters(value: string) {
   let replacementValue = value;
   let i: SearchReplace = null;
   specialCharacters.forEach(i => {
-    replacementValue = replacementValue.replace(i.find, i.rep)
+    replacementValue = replacementValue.replace(i.find, i.rep);
   });
   return replacementValue;
 }
