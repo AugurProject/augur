@@ -80,14 +80,20 @@ function generateTemplateHash(template: Template): string {
 
 function getValidationValues(input: TemplateInput) {
   const { type } = input;
-  let reg = ValidationTemplateInputType[type];
-  if (reg) return reg;
   switch(type) {
+    case TemplateInputType.TEXT:
+      let reg = ValidationTemplateInputType[type];
+      if (input.validationType) {
+        reg = ValidationTemplateInputType[input.validationType];
+      }
+      return reg;
     case TemplateInputType.DENOMINATION_DROPDOWN:
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
     case TemplateInputType.DROPDOWN:
       const validations = `(${input.values.map(o => escapeSpecialCharacters(o.label)).join('|')})`;
-    return validations;
+      return validations;
+    default:
+      return ValidationTemplateInputType[type];
   }
 }
 
