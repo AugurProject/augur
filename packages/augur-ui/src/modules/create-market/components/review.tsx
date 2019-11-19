@@ -24,7 +24,7 @@ import {
   DAI,
   REP
 } from 'modules/common/constants';
-import { MARKET_TYPE_NAME } from 'modules/create-market/constants';
+import { MARKET_TYPE_NAME, MARKET_COPY_LIST } from 'modules/create-market/constants';
 import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCalls';
 import {
   formatEtherEstimate,
@@ -311,7 +311,7 @@ export default class Review extends React.Component<
         <LineBreak />
         <Header text="Funds required" />
         <div>
-          <Subheaders header="Validity bond" subheader={"The bond is paid in DAI and is refunded to the Market Creator if the Final Outcome of the Market is not Invalid. The Validity Bond is a dynamic amount based on the percentage of Markets in Augur that are being Finalized as Invalid."} link />
+          <Subheaders copyType={MARKET_COPY_LIST.VALIDITY_BOND} header="Validity bond" subheader={"The bond is paid in DAI and is refunded to the Market Creator if the Final Outcome of the Market is not Invalid. The Validity Bond is a dynamic amount based on the percentage of Markets in Augur that are being Finalized as Invalid."} link />
           <span>
             <LinearPropertyLabel
               label={"Valididty Bond"}
@@ -319,7 +319,7 @@ export default class Review extends React.Component<
             />
           </span>
 
-          <Subheaders header="No-show bond" subheader={"A “no-show” bond must be put up by the market creator which is lost if the designated reporter doesn’t show up on time (within 3 days of the market end time) to put forth the initial tentative outcome."} link />
+          <Subheaders copyType={MARKET_COPY_LIST.NO_SHOW_BOND} header="No-show bond" subheader={"A “no-show” bond must be put up by the market creator which is lost if the designated reporter doesn’t show up on time (within 3 days of the market end time) to put forth the initial tentative outcome."} link />
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
