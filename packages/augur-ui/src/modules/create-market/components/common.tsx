@@ -1204,7 +1204,7 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
     i.type === TemplateInputType.USER_DROPDOWN_OUTCOME
   );
 
-  if (onlySimpleTextInputOutcomes(inputs)) return <SimpleTextInputOutcomes {...props } />
+  if (onlySimpleTextInputOutcomes(inputs) && !hasDropdowns) return <SimpleTextInputOutcomes {...props } />
 
   return hasDropdowns ? (
     <CategoricalTemplateDropdowns {...props} />
