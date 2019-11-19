@@ -679,7 +679,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           if (typeof val === 'string') {
             return val === '' || !val;
           } else {
-            return Object.values(val).map(val => val === '');
+            return Object.values(val).filter(v => v === '').length > 0;
           }
         });
       } else {
