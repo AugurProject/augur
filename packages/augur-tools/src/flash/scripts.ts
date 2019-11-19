@@ -979,22 +979,6 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'get-contract-address',
-    options: [
-      {
-        name: 'name',
-        abbr: 'n',
-        description: 'Name of contract',
-      },
-    ],
-    async call(
-      this: FlashSession,
-      args: FlashArguments
-    ): Promise<void> {
-      console.log(this.contractAddresses[args['name'] as string]);
-    },
-  });
-  flash.addScript({
     name: 'check-safe-registration',
     options: [
       {
@@ -1056,6 +1040,44 @@ export function addScripts(flash: FlashSession) {
         console.error(data.toString());
       });
     },
-  })
+  });
 
+  flash.addScript({
+    name: 'get-contract-address',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Name of contract',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      console.log(this.contractAddresses[args['name'] as string]);
+    },
+  });
+
+  flash.addScript({
+    name: 'get-all-contract-addresses',
+    options: [
+      {
+        name: 'ugly',
+        abbr: 'u',
+        description: 'print the addresses json as a blob instead of nicely formatted',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const ugly = args.ugly as boolean;
+      if (this.noProvider()) return;
+
+      if (ugly) {
+        console.log(JSON.stringify(this.contractAddresses))
+      } else {
+        console.log(JSON.stringify(this.contractAddresses, null, 2))
+      }
+    },
+  });
 }
