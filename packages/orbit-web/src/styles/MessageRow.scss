@@ -1,9 +1,6 @@
 @import 'Animations';
 @import 'Colors';
-
-$background-color: rgb(40, 40, 40);
-$border-color: rgb(36, 36, 36);
-$timestamp-color: #848294;
+@import 'AugurColors';
 
 .highlighted {
   background-color: rgb(37, 37, 37) !important;
@@ -22,15 +19,16 @@ $timestamp-color: #848294;
   font-size: 0.625rem; // 10px
 
   &__Timestamp {
+    align-self: flex-end;
     grid-column: 1;
     grid-row: 1;
-    color: $timestamp-color;
+    color: $orbit-color-secondary-text;
     font-family: 'Roboto Mono', sans-serif;
     font-size: 0.5625rem; // 9px
   }
 
   &__Content {
-    color: #E9E5F2;
+    color: $orbit-color-primary-text;
     grid-column: 1 / span 2;
     grid-row: 2;
     margin: 0.25em 0.5em 0;
@@ -56,9 +54,9 @@ $timestamp-color: #848294;
     grid-column: 2;
     grid-row: 1;
     color: rgba(255, 255, 255, 0.95);
-    font-family: 'Roboto Mono', sans-serif;
-    font-size: 0.5625rem; // 9px
-    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.6875rem; // 11px
+    font-weight: 700;
     user-select: none;
   }
 
@@ -92,7 +90,7 @@ $timestamp-color: #848294;
     }
 
     &__Timestamp {
-      border-right: 1px solid $timestamp-color;
+      border-right: 1px solid $orbit-color-secondary-text;
       font-style: normal;
       padding: 0 0.5em;
     }

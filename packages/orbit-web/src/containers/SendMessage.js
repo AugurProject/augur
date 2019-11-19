@@ -117,16 +117,6 @@ function SendMessage ({ channelName, onSendMessage, theme, useEmojis, emojiSet, 
             style={getEmojiPickerStyle(pickerEmojiSize)}
           />
         ) : null}
-        {/*<input*/}
-        {/*  ref={inputRef}*/}
-        {/*  type='text'*/}
-        {/*  placeholder={t('channel.sendMessagePlaceholder')}*/}
-        {/*  style={theme}*/}
-        {/*  value={inputValue}*/}
-        {/*  onKeyDown={handleInputKeyDown}*/}
-        {/*  onChange={handleInputChange}*/}
-        {/*  disabled={disabled}*/}
-        {/*/>*/}
         <textarea
           cols="30"
           rows="2"
