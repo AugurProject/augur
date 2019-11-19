@@ -526,6 +526,17 @@ export enum MARKET_COPY_LIST {
   MARKET_TYPE = 'MARKET_TYPE',
   EVENT_EXPIRATION = 'EVENT_EXPIRATION',
   MARKET_QUESTION = 'MARKET_QUESTION',
+  RESOLUTION_DETAILS = 'RESOLUTION_DETAILS',
+  DESIGNATED_REPORTER = 'DESIGNATED_REPORTER',
+  CREATOR_FEE = 'CREATOR_FEE',
+  AFFILIATE_FEE = 'AFFILIATE_FEE',
+  INITIAL_LIQUIDITY = 'INITIAL_LIQUIDITY',
+  VISIBILITY = 'VISIBILITY',
+  VALIDITY_BOND = 'VALIDITY_BOND',
+  NO_SHOW_BOND = 'NO_SHOW_BOND',
+  UNIT_OF_MEASURMENT = 'UNIT_OF_MEASURMENT',
+  NUMERIC_RANGE = 'UNIT_OF_MEASURMENT',
+  PRECISION = 'PRECISION',
 }
 
 export const MARKET_CREATION_COPY = {
@@ -533,13 +544,11 @@ export const MARKET_CREATION_COPY = {
     subheader: [
       'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets by reducing the number of decisions and possible errors users can make. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
       'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.',
-
     ],
   },
   [MARKET_COPY_LIST.DONT_SEE_CAT]: {
     subheader: [
       'Market templates are currently only available for the categories shown. If you want to create a market with a different category, you will need to create a custom market in the “Start from scratch” section.',
-
     ],
   },
   [MARKET_COPY_LIST.FROM_SCRATCH]: {
@@ -568,6 +577,45 @@ export const MARKET_CREATION_COPY = {
       'Your market question should be about a future occurrence that will take place between the time of market creation and the start of market reporting. It should concern an outcome that is objective, verifiable, and unambiguous. A market that is subjective, unverifiable, or ambiguous will most likely be sparsely traded in and almost certainly resolve Invalid.',
       'At Event Expiration (described below), there must be one and only one clear outcome. If none of the listed outcomes or more than one of the listed outcomes occurred, the market will most likely resolve Invalid.',
       'If the market question contains a date and time, make sure that the date and time are before Reporting Start Time, and ideally, specify the time in UTC+0.',
+    ],
+  },
+  [MARKET_COPY_LIST.RESOLUTION_DETAILS]: {
+    subheader: [
+      'Specify any further details that will help reporters resolve the outcome. To minimize the risk of Invalid resolution, remove as much potential ambiguity as possible and specify what will happen under different potential circumstances.',
+      'Consider possible circumstances that could render the outcome ambiguous and account for such circumstances by doing one or more of the following: 1) make the market question more specific 2) add more outcomes (if a Multiple Choice market) or 3) address specific circumstances here.',
+      'For example, if creating a market about the number of Twitter followers a public figure will have on a future date, you may specify here that if the individual changes their Twitter handle, the market shall resolve based on the following for the new handle.',
+      'If you cite a website that has more than one data set, specify which data set will be used, as in a specific chart, table, or section of the website.',
+    ],
+  },
+  [MARKET_COPY_LIST.DESIGNATED_REPORTER]: {
+    subheader: [
+      'The Designated Reporter is the Ethereum address selected to initially report on the market’s outcome. The Designated Reporter is most often set to the market creator, but it may be set to any Ethereum address.',
+      'The Designated Reporter will have 24 hours after Reporting Start Time to submit a report (select a winning outcome). If a report is not submitted by this time, the market will enter Open Reporting, at which time anyone can report on it. If the Designated Reporter does not report within 24 hours of Reporting Start Time, then they will not receive back the no-show bond. Once the designated or open reporter submit a report, other Augur users will have the option of disputing it before the market resolves.',
+    ],
+  },
+  [MARKET_COPY_LIST.CREATOR_FEE]: {
+    subheader: [
+      'The Market Creator Fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution.',
+      'Set fees to under 2% in order for your market to show up to traders, by default. If you set your fees to zero or near zero, that may provide less incentive for affiliates to promote your market. However, if you set fees too high, that may dissuade traders. Markets currently average around 1% fees.',
+    ],
+  },
+  [MARKET_COPY_LIST.AFFILIATE_FEE]: {
+    subheader: [
+      'This is the percentage of the Market Creator Fee that Affiliates collect. The Affiliate Allocation helps markets get promoted and acquire more traders. Affiliate marketers share links to Augur and then collect a portion of fees whenever someone follows that link and trades in a market. So the Affiliate Allocation incentivizes marketers to spread your market.',
+    ],
+  },
+  [MARKET_COPY_LIST.INITIAL_LIQUIDITY]: {
+    subheader: [
+      'It is essential to add liquidity to your market for users to see it. The tighter the spread and more liquidity you add, the higher your market will rank and the more people will see it.',
+      'Markets that do not have a 10% or smaller spread (for at least one outcome, if a multiple choice market), between the highest bid and the lowest offer, will not show up to traders, by default.',
+      'For instance, a Yes/No market with a .56 bid and .65 offer would have a 9% spread, so it will show up. A market with a .55 bid and .71 offer would have a 16% spread, so it will not show up.',
+    ],
+  },
+  [MARKET_COPY_LIST.VISIBILITY]: {
+    subheader: [
+      'Markets are sorted based on their liquidity, and more liquid markets rank higher and are more visible to traders. To increase the rank and visibility of your market, add Buy and Sell offers in a tight spread with sizable volume on each side.',
+      'A market must have a spread of 15% or smaller, inclusive of the Market Creator Fee, in order to be visible to traders in the default sort. If it’s a multiple choice market, it must have at least one outcome that satisfies these criteria.',
+      'For instance, a Yes/No market with a .55 bid and .65 offer would have a 10% spread, so it will show up. A market with a .55 bid and .71 offer would have a 16% spread, so it will not show up. This calculation accounts for fees. For instance, if a market has a .30 bid and a .44 offer, it will not show up if fees are over 1%.',
     ],
   },
 };

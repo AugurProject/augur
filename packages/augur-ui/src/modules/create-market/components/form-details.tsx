@@ -363,6 +363,7 @@ export default class FormDetails extends React.Component<
               <InputHeading
                 name={'resolution'}
                 heading={'Resolution details'}
+                copyType={MARKET_COPY_LIST.RESOLUTION_DETAILS}
                 subHeading={'Describe what users need to know to determine the outcome of the event.'}
                 listItems={[
                   'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
@@ -383,6 +384,7 @@ export default class FormDetails extends React.Component<
             header="Designated reporter"
             subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)."
             link
+            copyType={MARKET_COPY_LIST.DESIGNATED_REPORTER}
           />
           <RadioBarGroup
             radioButtons={[
