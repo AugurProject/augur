@@ -273,6 +273,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
+  Gnosis_ENABLED: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -938,6 +939,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
+      Gnosis_ENABLED,
     } = this.props;
 
     let { stake } = this.props;
@@ -1030,6 +1032,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  Gnosis_ENABLED={Gnosis_ENABLED}
                 />
               )}
             </>

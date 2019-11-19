@@ -21,11 +21,11 @@ services:
   web:
     image: augurproject/safe-relay-service_web:latest
     env_file:
-      - env
+      - .env
     depends_on:
       - db
       - redis
-      - ganache
+      - geth
     working_dir: /app
     ports:
       - "8888:8888"
@@ -39,21 +39,21 @@ services:
       - "6379:6379"
 
   worker: &worker
-    image: augurproject/safe-relay-service_worker:latest
+    image: augurproject/safe-relay-service_web:latest
     env_file:
-      - env
+      - .env
     depends_on:
       - db
       - redis
-      - ganache
+      - geth
     command: docker/web/celery/worker/run.sh
 
   scheduler:
     <<: *worker
     command: docker/web/celery/scheduler/run.sh
 
-  ganache:
-    image: augurproject/safe-relay-service_ganache:latest
+  geth:
+    image: augurproject/dev-pop-geth-v2:6e9aed144bf4d54674d91ae169ce5c18
     ports:
       - "8545:8545"
 

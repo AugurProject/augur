@@ -14,11 +14,21 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
+import getValue from 'utils/get-value';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
 const mapStateToProps = (state: AppState) => {
   const networkId = getNetworkId();
+  const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
+  const gnosisStatus = getValue(state, 'appStatus.gnosisStatus');
+
+  const showFaucets = Gnosis_ENABLED
+    ? networkId !== NETWORK_IDS.Mainnet && gnosisStatus === GnosisSafeState.AVAILABLE
+    : networkId !== NETWORK_IDS.Mainnet;
+
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
+    showFaucets,
   };
 };
 
