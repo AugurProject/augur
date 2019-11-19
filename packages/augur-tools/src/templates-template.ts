@@ -149,7 +149,7 @@ export enum TemplateInputType {
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
   ADDED_OUTCOME = 'ADDED_OUTCOME', // required outcome that is added to categorical market template
-  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT', // simple text input that is in question and added to categorical market outcomes
+  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_OUTCOME', // simple text input that is in question and added to categorical market outcomes
   SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME', // subsitites market question value in outcome for categorical market template
   USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME', // dropdown in market question that is added as categorical market outcome
   USER_DROPDOWN_OUTCOME = 'USER_DROPDOWN_OUTCOME', // dropdown for categorical market outcome, doesn't interact with market question.
