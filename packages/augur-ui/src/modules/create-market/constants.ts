@@ -522,24 +522,52 @@ export const SelectEventNoticeText =
 export enum MARKET_COPY_LIST {
   USE_A_TEMPLATE = 'USE_A_TEMPLATE',
   DONT_SEE_CAT = 'DONT_SEE_CAT',
-  FROM_SCRATCH = 'FROM_SCRATCH'
+  FROM_SCRATCH = 'FROM_SCRATCH',
+  MARKET_TYPE = 'MARKET_TYPE',
+  EVENT_EXPIRATION = 'EVENT_EXPIRATION',
+  MARKET_QUESTION = 'MARKET_QUESTION',
 }
 
 export const MARKET_CREATION_COPY = {
   [MARKET_COPY_LIST.USE_A_TEMPLATE]: {
     subheader: [
-        'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets by reducing the number of decisions and possible errors users can make. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
-        'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.'
+      'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets by reducing the number of decisions and possible errors users can make. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
+      'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.',
+
     ],
   },
   [MARKET_COPY_LIST.DONT_SEE_CAT]: {
     subheader: [
-      'Market templates are currently only available for the categories shown. If you want to create a market with a different category, you will need to create a custom market in the “Start from scratch” section.'
+      'Market templates are currently only available for the categories shown. If you want to create a market with a different category, you will need to create a custom market in the “Start from scratch” section.',
+
     ],
   },
   [MARKET_COPY_LIST.FROM_SCRATCH]: {
     subheader: [
-      'Creating a custom market allows for maximum flexibility in the market creation process. It is recommended for advanced users only because there is a higher risk of error that can lead to an invalid market.'
+      'Creating a custom market allows for maximum flexibility in the market creation process. It is recommended for advanced users only because there is a higher risk of error that can lead to an invalid market.',
+    ],
+  },
+  [MARKET_COPY_LIST.MARKET_TYPE]: {
+    subheader: [
+      'A Yes/No market has two possible outcomes, as well as invalid. For example, Will Donald Trump win the 2020 presidential election? If he wins, the outcome “yes” will settle at 100%. If he loses, the outcome “yes” will settle at 0%.',
+      'A multiple choice market, e.g., who will win the Super Bowl, has at least two and up to seven possible outcomes, as well as invalid. The winning outcome will settle at 100%. The losing outcomes will settle at 0%.',
+      'A scalar market is measured on a numerical outcome along a scale. Scalar markets are good for situations where you want to trade on a direction and you don’t want to expose yourself to winner take all risk. For example: How much will Google settle at on 21 August, 2019? With a range between 500$-1500$.',
+      'If you purchase at 1100$ and Google settles at 1250$. You win 150$ per share. If you purchase at 1100$ and Google settles at 1050$. You lose 50$ per share. If you sold at 1100$ and Google settles at 1250$. You lose 150$ per share. If you sold at 1100$ and Google settles at 1050$. You win 50$ per share.',
+      'If an event resolves outside of the range, the market will resolve at the closest bound.',
+    ],
+  },
+  [MARKET_COPY_LIST.EVENT_EXPIRATION]: {
+    subheader: [
+      'This is the time at which Augur users can start reporting on the outcome of the market. Since Augur does not have any centralized operator, it uses a system of incentivized communal reporting (the Augur oracle) to deem what outcome occurred.',
+      'Event Expiration date and time should be set an appropriate time at which the outcome of the market question will be known. If the outcome is not known by this time, then the market will almost certainly resolve Invalid.',
+      'Provide a sufficient cushion of time between the event in question and Event Expiration to help ensure that the outcome will be known by this point. For example, if creating a market on the outcome of a sporting event, set Event Expiration to at least several hours after the game will most likely end to accommodate for potential delays due to weather and other factors.',
+    ],
+  },
+  [MARKET_COPY_LIST.MARKET_QUESTION]: {
+    subheader: [
+      'Your market question should be about a future occurrence that will take place between the time of market creation and the start of market reporting. It should concern an outcome that is objective, verifiable, and unambiguous. A market that is subjective, unverifiable, or ambiguous will most likely be sparsely traded in and almost certainly resolve Invalid.',
+      'At Event Expiration (described below), there must be one and only one clear outcome. If none of the listed outcomes or more than one of the listed outcomes occurred, the market will most likely resolve Invalid.',
+      'If the market question contains a date and time, make sure that the date and time are before Reporting Start Time, and ideally, specify the time in UTC+0.',
     ],
   },
 };
