@@ -1,11 +1,11 @@
 import { abi } from '@augurproject/artifacts';
 import {
+  GnosisSafeState,
   IGnosisRelayAPI,
   Operation,
   RelayTransaction,
   RelayTxEstimateData,
   RelayTxEstimateResponse,
-  GnosisSafeState,
 } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
 import { Transaction } from 'contract-dependencies';
@@ -24,10 +24,18 @@ const DEFAULT_GAS_PRICE = new BigNumber(10 ** 9);
 const BASE_GAS_ESTIMATE = new BigNumber(75000);
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+function* infiniteSequence(i = 0) {
+  while (true) {
+    yield i++;
+  }
+}
+
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   useRelay = true;
   useSafe = false;
   status = null;
+
+  private _nonceGenerator: Generator<number, void, unknown>;
 
   gnosisSafe: ethers.Contract;
 
@@ -92,8 +100,24 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     this.gasPrice = gasPrice;
   }
 
+  // This is here with the idea what we would need to reset the nonce to that of the gnosis safe after some yet unknow error condition is met.
+  async setInitialNonce(): Promise<void> {
+    const i = (await this.gnosisSafe.nonce()).toNumber();
+    this._nonceGenerator = infiniteSequence(i);
+  }
+
   async getNonce(): Promise<number> {
-    return (await this.gnosisSafe.nonce()).toNumber();
+    if(!this._nonceGenerator) {
+      await this.setInitialNonce();
+    }
+    const next = this._nonceGenerator.next();
+    // This is here to make TS happy.
+    if(next.done === false) {
+      return next.value;
+    }
+
+    // This will never occur as the generator will never complete.
+    return 0;
   }
 
   async sendTransaction(
