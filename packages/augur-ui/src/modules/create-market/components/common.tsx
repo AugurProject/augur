@@ -1182,6 +1182,14 @@ export const TemplateBanners = (props: TemplateBannersProps) => {
   );
 };
 
+const onlySimpleTextInputOutcomes = (inputs: TemplateInput[]) => {
+  return inputs.filter(
+    input =>
+      input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+      input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+      input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+  ).length === 0;
+}
 export interface CategoricalTemplateProps {
   newMarket: NewMarket;
   onChange: Function;
@@ -1192,9 +1200,12 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
   const { template } = newMarket;
   const inputs = template.inputs;
   const hasDropdowns = inputs.find(
-    i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
+    (i: TemplateInput) => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
     i.type === TemplateInputType.USER_DROPDOWN_OUTCOME
   );
+
+  if (onlySimpleTextInputOutcomes(inputs)) return <SimpleTextInputOutcomes {...props } />
+
   return hasDropdowns ? (
     <CategoricalTemplateDropdowns {...props} />
   ) : (
@@ -1206,6 +1217,66 @@ export interface CategoricalTemplateTextInputsProps {
   newMarket: NewMarket;
   onChange: Function;
 }
+
+const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
+  const [marketOutcomes, setMarketOutcomes] = useState(null);
+  const [required] = useState(
+    props.newMarket.template.inputs
+      .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
+      .map(i => ({ value: i.placeholder, editable: false }))
+  );
+  const [showOutcomes, setShowOutcomes] = useState([]);
+
+  useEffect(() => {
+    if (String(marketOutcomes) !== String(props.newMarket.outcomes)) {
+      const requiredOutcomes = required.map(r => r.value);
+      let showOutcomes = [...outcomes]
+        .reduce((p, o) => (requiredOutcomes.includes(o) ? p : [...p, o]), [])
+        .map(i => ({ value: i, editable: true }));
+
+      while (showOutcomes.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
+        showOutcomes.push({
+          value: '',
+          editable: true,
+        });
+      }
+      setShowOutcomes(showOutcomes);
+      setMarketOutcomes(props.newMarket.outcomes);
+    }
+  });
+
+  const { onChange, newMarket } = props;
+  const { outcomes, validations } = newMarket;
+
+  return (
+    <>
+      <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." link />
+      <NumberedList
+        initialList={showOutcomes}
+        minShown={2}
+        maxList={7 - required.length}
+        placeholder={'Enter outcome'}
+        updateList={(value: string[]) => {
+          onChange('outcomes', [...value, ...required.map(i=>i.value)])
+        }}
+        errorMessage={validations && validations.outcomes}
+      />
+      <Subheaders header="Required Outcomes" subheader="Required unchangeable additional outcomes" />
+      {required.map((item, index) => (
+        <NumberedInput
+          key={index}
+          value={item.value}
+          placeholder={''}
+          onChange={() => {}}
+          number={index}
+          removable={false}
+          errorMessage={validations && validations.outcomes && validations.outcomes[showOutcomes.length + index]}
+          editable={false}
+        />
+      ))}
+    </>
+  );
+};
 
 export const CategoricalTemplateTextInputs = (
   props: CategoricalTemplateTextInputsProps
@@ -1248,23 +1319,10 @@ export const CategoricalTemplateTextInputs = (
     });
 
   const min = initialList.length >  2 ? initialList.length : 2;
-  outcomes.forEach(outcome => {
-    if (initialList.filter(option => option.value === outcome).length === 0) {
-      initialList.push({
-        value: outcome,
-        editable: true,
-      });
-    }
-  });
-
-  while (initialList.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
-    initialList.push({
-      value: '',
-      editable: true,
-    });
+  const list = initialList.map(o => o.value);
+  if (String(outcomes) !== String(list)) {
+    onChange('outcomes', list);
   }
-
-  const hideAdd = tellIfEditableOutcomes(inputs);
 
   return (
     <>
@@ -1277,11 +1335,9 @@ export const CategoricalTemplateTextInputs = (
         initialList={initialList}
         minShown={min}
         maxList={7}
-        placeholder={'Enter outcome'}
-        updateList={(value: string[]) => {
-          onChange('outcomes', value);
-        }}
-        hideAdd={hideAdd}
+        placeholder={''}
+        updateList={() => {}}
+        hideAdd={true}
         errorMessage={validations.outcomes}
       />
     </>

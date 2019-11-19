@@ -131,7 +131,7 @@ export function checkOutcomesArray(value) {
   } else {
     const errors = Array(value.length).fill('');
     const invalid = value.findIndex(
-      outcome => outcome.toLowerCase() === INVALID_OUTCOME.toLowerCase()
+      outcome => outcome && outcome.toLowerCase() === INVALID_OUTCOME.toLowerCase()
     );
     if (invalid !== -1)
       errors[invalid] = ['Can\'t enter "Market is Invalid" as an outcome'];
