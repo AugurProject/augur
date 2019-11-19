@@ -62,17 +62,11 @@ class MarketOutcomeCandlestick extends React.PureComponent<
       marketMax,
     } = this.props;
 
-    const {
-      hoveredPeriod,
-      volumeType,
-      defaultCandlePeriod,
-    } = this.state;
+    const { hoveredPeriod, volumeType, defaultCandlePeriod } = this.state;
     const staticMenuLabel = 'Show Volume in';
     const staticLabel = hoveredPeriod.volume
-    ? `V: ${hoveredPeriod.volume
-        .toFixed(fixedPrecision)
-        .toString()}`
-    : staticMenuLabel;
+      ? `V: ${hoveredPeriod.volume.toFixed(fixedPrecision).toString()}`
+      : staticMenuLabel;
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>

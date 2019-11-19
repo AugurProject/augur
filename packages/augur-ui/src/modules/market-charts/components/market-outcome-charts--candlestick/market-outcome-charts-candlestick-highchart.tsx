@@ -289,7 +289,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           : '',
       });
 
-      const mid = this.chart.xAxis[0].toPixels(timestamp, true));
+      const mid = this.chart.xAxis[0].toPixels(timestamp, true);
       const scaledFrom = this.chart.xAxis[0].toPixels(timestamp - (period * .25), true);
       const scaledTo = this.chart.xAxis[0].toPixels(timestamp + (period * .25), true);
       // const maxFrom = mid - 10;
