@@ -71,6 +71,24 @@ export const LIST_VALUES = {
       label: 'NFC Championship game',
     },
   ],
+  NFL_SUPER_BOWL: [
+    {
+      value: 'LIV (54th)',
+      label: 'LIV (54th)',
+    },
+    {
+      value: 'LV (55th)',
+      label: 'LV (55th)',
+    },
+    {
+      value: 'LVI (56th)',
+      label: 'LVI (56th)',
+    },
+    {
+      value: 'LVII (57th)',
+      label: 'LVII (57th)',
+    },
+  ],
   BASEBALL_EVENT: [
     {
       value: 'American League Championship Series',

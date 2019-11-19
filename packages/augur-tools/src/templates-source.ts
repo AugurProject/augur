@@ -2728,7 +2728,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will the [0] win SuperBowl [1]?`,
-                example: `NFL: Will the NY Giants win Superbowl LIV?`,
+                example: `NFL: Will the NY Giants win Superbowl LIV (54th)?`,
                 inputs: [
                   {
                     id: 0,
@@ -2738,8 +2738,9 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Numeral`,
+                    values: LIST_VALUES.NFL_SUPER_BOWL,
                   },
                 ],
                 resolutionRules: { },
