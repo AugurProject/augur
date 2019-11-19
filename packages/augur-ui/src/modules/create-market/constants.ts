@@ -618,4 +618,32 @@ export const MARKET_CREATION_COPY = {
       'For instance, a Yes/No market with a .55 bid and .65 offer would have a 10% spread, so it will show up. A market with a .55 bid and .71 offer would have a 16% spread, so it will not show up. This calculation accounts for fees. For instance, if a market has a .30 bid and a .44 offer, it will not show up if fees are over 1%.',
     ],
   },
+  [MARKET_COPY_LIST.VALIDITY_BOND]: {
+    subheader: [
+      'You must put up a “Validity Bond” denominated in Dai that will be returned upon market resolution if and only if the market does not resolve Invalid. A market may resolve Invalid if its outcome is ambiguous, subjective, unverifiable, or if the market’s listed outcomes do not include the actual outcome that occurred.',
+      'If the market resolves Invalid, the Validity Bond is forfeited to reporters. The Validity Bond is set dynamically based on the recent rate of Invalid markets.'
+    ],
+  },
+  [MARKET_COPY_LIST.NO_SHOW_BOND]: {
+    subheader: [
+      'You must put up a No-Show bond, denominated in REP that will be returned upon market resolution if and only if the Designated Reporter submits a report within 24 hours of the market’s Reporting Start Time. If the Designated Reporter does not submit a report within 24 hours, the bond is forfeited to the first person to report the outcome in open reporting.'
+    ],
+  },
+  [MARKET_COPY_LIST.UNIT_OF_MEASURMENT]: {
+    subheader: [
+      'The unit of measurement is the denomination by which a Scalar market’s outcome is quantified. For example, the USD or Euro could be the unit of measurement in a market on “What will the price of Bitcoin be on March 31st.” Each Scalar market must have one and only one unit of measurement.',
+      'Markets can be denominated in any quantifiable and measurable unit such as USD, degrees Fahrenheit, inches of rainfall, or points. If using a generic currency symbol, such as $, make sure to specify which type e.g., USD, CAD, HKD, etc.'
+    ],
+  },
+  [MARKET_COPY_LIST.NUMERIC_RANGE]: {
+    subheader: [
+      'The Numeric Range spans from the minimum to maximum price at which traders can buy or sell shares and determines how the end payout for long and short shares is calculated. Unlike other types of markets, Scalar markets are not winner takes all. The payout for long and short shares is the difference between the purchase price and settlement price.',
+      'For instance, let’s say there’s a market on how many points will be scored in a basketball game with a range from 80 to 120 points. If 1 share is purchased at 90 and 100 points are scored in the game, 10 Dai is earned per share purchased. If 1 share is sold at 90 and the final score is 100 points, 10 Dai is lost per share purchased.'
+    ],
+  },
+  [MARKET_COPY_LIST.PRECISION]: {
+    subheader: [
+      'The Precision is the smallest increment in which traders can price shares. For example, consider a market on the number of inches of rainfall in Chicago in April. If the Denomination is inches, the range is 0 to 3, and the precision is set to 1, then traders can buy or sell shares at 0, 1, 2, or 3. If the precision is set to .1, traders can buy or sell shares at 0, .1, .2 … 9.8, 9.9, 10.'
+    ],
+  },
 };

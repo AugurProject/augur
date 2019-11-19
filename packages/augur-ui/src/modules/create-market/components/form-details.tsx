@@ -241,6 +241,7 @@ export default class FormDetails extends React.Component<
             <>
               <Subheaders
                 header="Unit of measurement"
+                copyType={MARKET_COPY_LIST.UNIT_OF_MEASURMENT}
                 subheader="Choose a denomination for the range."
                 link
               />
@@ -255,6 +256,7 @@ export default class FormDetails extends React.Component<
               />
               <Subheaders
                 header="Numeric range"
+                copyType={MARKET_COPY_LIST.NUMERIC_RANGE}
                 subheader="Choose the min and max values of the range."
                 link
               />
@@ -292,6 +294,7 @@ export default class FormDetails extends React.Component<
               </section>
               <Subheaders
                 header="Precision"
+                copyType={MARKET_COPY_LIST.PRECISION}
                 subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”."
                 link
               />
