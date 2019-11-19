@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
+    "@0x/mesh-browser": "^6.0.1-beta",
     "@0x/mesh-rpc-client": "3.0.1-beta",
     "@0x/order-utils": "8.4.0",
     "@0x/subproviders": "5.0.4",

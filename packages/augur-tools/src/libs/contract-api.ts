@@ -1,6 +1,5 @@
 import {
   Augur,
-  Connectors,
   Getters,
   PlaceTradeDisplayParams,
   SimulateTradeData,
@@ -36,12 +35,12 @@ export class ContractAPI {
     addresses: ContractAddresses,
     connector: BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
+    meshBrowser: BrowserMesh = undefined,
     meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshBrowser, meshClient);
 
     return new ContractAPI(augur, provider, dependencies, account);
   }
@@ -82,7 +81,7 @@ export class ContractAPI {
   }
 
   async getRepBond(): Promise<BigNumber> {
-    return await this.augur.contracts.universe.getOrCacheMarketRepBond_();
+    return this.augur.contracts.universe.getOrCacheMarketRepBond_();
   }
 
   async marketFauceting() {
@@ -642,11 +641,11 @@ export class ContractAPI {
   }
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
-    return await this.augur.hotLoading.getMarketDataParams({market});
+    return this.augur.hotLoading.getMarketDataParams({market});
   }
 
   async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
-    return await this.augur.hotLoading.getCurrentDisputeWindowData({
+    return this.augur.hotLoading.getCurrentDisputeWindowData({
       augur: this.augur.contracts.augur.address,
       universe: this.augur.contracts.universe.address,
     });

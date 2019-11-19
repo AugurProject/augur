@@ -79,14 +79,15 @@ export class MockMeshServer {
     }
 
     initialize(): void {
-        let self = this;
+        const self = this;
         this.server.on('connect', ((connection: WebSocket.connection) => {
             connection.on('message', ((message: WSMessage) => {
                 const jsonRpcRequest = JSON.parse(message.utf8Data);
-                let response = "";
-                if (jsonRpcRequest.method == "mesh_getOrders") response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
-                else if (jsonRpcRequest.method == "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
-                else if (jsonRpcRequest.method == "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id);
+                let response = '';
+                if (jsonRpcRequest.method === 'mesh_getOrders') response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
+                else if (jsonRpcRequest.method === 'mesh_addOrders') response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
+                else if (jsonRpcRequest.method === 'mesh_subscribe') response = self.subscribe(jsonRpcRequest.id);
+                else if (jsonRpcRequest.method === 'mesh_unsubscribe') response = self.unsubscribe(jsonRpcRequest.id);
                 else throw new Error(`Bad Request: ${jsonRpcRequest.method}`);
                 connection.sendUTF(response);
             }) as any);
@@ -96,18 +97,25 @@ export class MockMeshServer {
     subscribe(id: number): string {
         return JSON.stringify({
             id,
-            jsonrpc: "2.0",
-            result: "0xab1a3e8af590364c09d0fa6a12103ada"
+            jsonrpc: '2.0',
+            result: '0xab1a3e8af590364c09d0fa6a12103ada'
         });
     }
 
+    unsubscribe(id: number): string {
+      return JSON.stringify({
+        id,
+        jsonrpc: '2.0',
+        result: '0xab1a3e8af590364c09d0fa6a12103ada'
+      });
+    }
     getOrders(id: number, params: any[]): string {
         const page = params[0];
         const response = {
             id,
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             result: {
-                snapshotID: "123",
+                snapshotID: '123',
                 ordersInfos: []
             }
         };
@@ -134,7 +142,7 @@ export class MockMeshServer {
         }
         return JSON.stringify({
             id,
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             result: {
                 accepted,
                 rejected: []
@@ -145,14 +153,14 @@ export class MockMeshServer {
     // We're just assuming we're subscribed since for our tests cases we always are. Passing around the connection like this normally isnt how itd be handled.
     notifySubscribersOrderAdded(order: StoredOrder, connection: WebSocket.connection): void {
         const response = {
-            jsonrpc: "2.0",
-            method: "mesh_subscription",
+            jsonrpc: '2.0',
+            method: 'mesh_subscription',
             params: {
-                subscription: "0xab1a3e8af590364c09d0fa6a12103ada",
+                subscription: '0xab1a3e8af590364c09d0fa6a12103ada',
                 result: [
                     Object.assign(order, {
-                        "kind": "ADDED",
-                        "txHash": "0x9e6830a7044b39e107f410e4f765995fd0d3d69d5c3b3582a1701b9d68167560"
+                        'kind': 'ADDED',
+                        'txHash': '0x9e6830a7044b39e107f410e4f765995fd0d3d69d5c3b3582a1701b9d68167560'
                     })
                 ]
             }

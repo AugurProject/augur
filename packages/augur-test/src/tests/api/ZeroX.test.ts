@@ -1,16 +1,16 @@
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { makeDbMock, makeProvider } from "../../libs";
+import { makeDbMock, makeProvider } from '../../libs';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { stringTo32ByteHex } from '../../libs/Utils';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
-import { MockBrowserMesh } from "../../libs/MockBrowserMesh";
+import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import * as _ from 'lodash';
+import { MockMeshServer, SERVER_PORT } from '../../libs/MockMeshServer';
+import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 
 describe.skip('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
@@ -20,29 +20,31 @@ describe.skip('Augur API :: ZeroX :: ', () => {
   let api: API;
   const mock = makeDbMock();
 
-  afterAll(() => {
-    meshClient.destroy();
-    stopServer();
-  });
-
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
-    await MockMeshServer.create();
-    meshClient = new WSClient(`ws://localhost:${SERVER_PORT}`);
+    // await MockMeshServer.create();
+    // meshClient = new WSClient(`ws://localhost:${SERVER_PORT}`);
+    meshClient = new WSClient('ws://localhost:60557');
+    // meshClient = new WSClient('ws://localhost:60559');
     const meshBrowser = new MockBrowserMesh(meshClient);
 
     const connector = new Connectors.DirectConnector();
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, connector, undefined, meshClient, meshBrowser);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses, connector, undefined, meshClient, meshBrowser);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, connector, undefined, meshBrowser, meshClient);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses, connector, undefined, meshBrowser, meshClient);
     const dbPromise = mock.makeDB(john.augur, ACCOUNTS);
     db = await dbPromise;
     connector.initialize(john.augur, db);
     api = new API(john.augur, dbPromise);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
+  });
+
+  afterAll(() => {
+    meshClient.destroy();
+    // stopServer();
   });
 
   test('State API :: ZeroX :: getOrders', async () => {
@@ -60,21 +62,21 @@ describe.skip('Augur API :: ZeroX :: ', () => {
     const direction = 0;
     const outcome = 0;
     const displayPrice = new BigNumber(.22);
-    const kycToken = "0x000000000000000000000000000000000000000C";
+    const kycToken = '0x000000000000000000000000000000000000000C';
     const orderHash = await john.placeZeroXOrder({
       direction,
       market: market.address,
       numTicks: await market.getNumTicks_(),
       numOutcomes: 3,
       outcome,
-      tradeGroupId: "42",
-      affiliateAddress: "0x000000000000000000000000000000000000000b",
+      tradeGroupId: '42',
+      affiliateAddress: '0x000000000000000000000000000000000000000b',
       kycToken,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
       displayAmount: new BigNumber(1),
-      displayPrice: displayPrice,
+      displayPrice,
       displayShares: new BigNumber(0),
       expirationTime: new BigNumber(450),
     });
@@ -83,15 +85,15 @@ describe.skip('Augur API :: ZeroX :: ', () => {
     await sleep(300);
 
     // Get orders for the market
-    let orders: ZeroXOrders = await api.route('getZeroXOrders', {
+    const orders: ZeroXOrders = await api.route('getZeroXOrders', {
       marketId: market.address,
     });
-    let order = _.values(orders[market.address][0]['0'])[0];
+    const order = _.values(orders[market.address][0]['0'])[0];
     await expect(order).not.toBeUndefined();
     await expect(order.price).toEqual('0.22');
     await expect(order.amount).toEqual('1');
     await expect(order.kycToken).toEqual(kycToken);
-    await expect(order.expirationTimeSeconds).toEqual("450");
+    await expect(order.expirationTimeSeconds).toEqual('450');
   });
 
   test('ZeroX Trade :: placeTrade', async () => {

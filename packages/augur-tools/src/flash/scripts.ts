@@ -935,28 +935,31 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return null;
 
       const networkId = await this.provider.getNetworkId();
-      const ethNode = this.network.http;
+      // const ethNode = this.network.http;
+      const ethNode = 'http://geth:8545';
       const addresses = Addresses[networkId];
 
-      // We set --net=host so that 0x mesh docker can talk to the host, where
-      // the ethnode is being run. It might be elsewhere in non-dev deployments.
-      // This is also making the '-p', options unnecessary.
+      console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
 
-      console.log('Starting 0x mesh');
       const mesh = spawn('docker', [
         'run',
         '--rm',
-        '-p', '60557:60557',
-        '-p', '60558:60558',
-        '-p', '60559:60559',
-        '-e', 'ETHEREUM_NETWORK_ID=42', // doesn't understand atypical network ids
-        '--net=host',
+        '--network', 'augur',
+        '--name', '0x',
+        '-p', '60557:60557', // rpc_port_number
+        '-p', '60558:60558', // P2PTCPPort
+        '-p', '60559:60559', // P2PWebSocketsPort
+        '-e', `ETHEREUM_CHAIN_ID=${networkId}`,
         '-e', `ETHEREUM_RPC_URL=${ethNode}`,
         '-e', 'USE_BOOTSTRAP_LIST=false',
         '-e', 'BLOCK_POLLING_INTERVAL=1s',
-        `-e', 'CUSTOM_CONTRACT_ADDRESSES='${JSON.stringify(addresses)}'`,
-        '-e', 'VERBOSITY=5',
-        '0xorg/mesh:latest',
+        '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
+        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
+        '-e', 'VERBOSITY=6', // 6=trace
+        // TODO make sure `0x` works here. `0.0.0.0` for sure does but is insecure
+        '-e', 'RPC_ADDR=0x:60557', // port defaults to random so we set it here
+        'albrow/mesh:fix-log-hook-segfault', // TODO use until 6.0.2-beta releases
+        // '0xorg/mesh:6.0.2-beta'
       ]);
 
       mesh.on('error', console.error);

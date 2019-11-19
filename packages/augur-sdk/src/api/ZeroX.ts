@@ -1,19 +1,24 @@
-import { BigNumber } from "bignumber.js";
-import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, convertOnChainAmountToDisplayAmount, QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '../utils';
-import * as _ from "lodash";
+import { BigNumber } from 'bignumber.js';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+  convertOnChainAmountToDisplayAmount,
+  QUINTILLION,
+  numTicksToTickSizeWithDisplayPrices
+} from '../utils';
+import * as _ from 'lodash';
 import { NULL_ADDRESS } from '../constants';
 import * as constants from '../constants';
 import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
-import { OrderInfo, WSClient, OrderEvent, ValidationResults } from '@0x/mesh-rpc-client';
-import { SignedOrder } from '@0x/types';
+import { OrderInfo, WSClient, OrderEvent as ClientOrderEvent, SignedOrder} from '@0x/mesh-rpc-client';
 import { signatureUtils } from '@0x/order-utils';
 import { Web3ProviderEngine } from '@0x/subproviders';
-import { SignerSubprovider } from "../zeroX/SignerSubprovider";
-import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
-import { formatBytes32String } from "ethers/utils";
+import { SignerSubprovider } from '../zeroX/SignerSubprovider';
+import { ProviderSubprovider } from '../zeroX/ProviderSubprovider';
+import { OrderEvent as BrowserOrderEvent, ValidationResults } from '@0x/mesh-browser';
 
 export enum Verbosity {
   Panic = 0,
@@ -39,7 +44,7 @@ export interface BrowserMeshConfiguration {
 export interface BrowserMesh {
   startAsync(): Promise<void>;
   onError(handler: (err: Error) => void): void;
-  onOrderEvents(handler: (events: OrderEvent[]) => void): void;
+  onOrderEvents(handler: (events: BrowserOrderEvent[]) => void): void;
   addOrdersAsync(orders: SignedOrder[]): Promise<ValidationResults>;
 }
 
@@ -101,35 +106,35 @@ export interface MatchingOrders {
   orderIds: string[];
 }
 
+type EitherOrderEvent = Partial<ClientOrderEvent & BrowserOrderEvent>
+
 export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
   private readonly browserMesh: BrowserMesh;
   private readonly providerEngine: Web3ProviderEngine;
 
-  constructor(augur: Augur, meshClient: WSClient, browserMesh?: BrowserMesh) {
+  constructor(augur: Augur, browserMesh: BrowserMesh, meshClient?: WSClient) {
     this.augur = augur;
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
-    if (this.browserMesh) {
-      this.browserMesh.startAsync();
-    }
+    this.browserMesh.startAsync();
     this.providerEngine = new Web3ProviderEngine();
     this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
     this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
     this.providerEngine.start();
   }
 
-  async subscribeToMeshEvents(callback: (orderEvents: OrderEvent[]) => void): Promise<void> {
-    if (this.browserMesh) {
-      await this.browserMesh.onOrderEvents(callback);
-    } else {
+  async subscribeToMeshEvents(callback: (orderEvents: EitherOrderEvent[]) => void): Promise<void> {
+    if (this.meshClient) {
       await this.meshClient.subscribeToOrdersAsync(callback);
+    } else {
+      await this.browserMesh.onOrderEvents(callback);
     }
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    return await this.meshClient.getOrdersAsync();
+    return this.meshClient.getOrdersAsync();
     // TODO when browser mesh supports this back out to using it if meshClient not provided
   }
 
@@ -190,7 +195,7 @@ export class ZeroX {
 
   async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    return await this.placeOnChainOrder(onChainTradeParams);
+    return this.placeOnChainOrder(onChainTradeParams);
   }
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
@@ -228,7 +233,7 @@ export class ZeroX {
       signature,
       exchangeAddress: NULL_ADDRESS,
       orderHash
-    }
+    };
     if (this.browserMesh) {
       await this.browserMesh.addOrdersAsync([zeroXOrder]);
     } else {
@@ -276,7 +281,7 @@ export class ZeroX {
 
   simulateMakeOrder(params: ZeroXPlaceTradeParams): BigNumber[] {
     const sharesDepleted = BigNumber.min(params.shares, params.amount);
-    const price = params.direction == 0 ? params.price : params.numTicks.minus(params.price);
+    const price = params.direction === 0 ? params.price : params.numTicks.minus(params.price);
     const tokensDepleted = params.amount.minus(sharesDepleted).multipliedBy(price);
     return [
       new BigNumber(0),
@@ -289,13 +294,13 @@ export class ZeroX {
 
   // TODO a more specific getter for this that does a lot of the processing below would likely be more appropriate
   async getMatchingOrders(params: ZeroXPlaceTradeParams, ignoreOrders?: string[]): Promise<MatchingOrders> {
-    const orderType = params.direction == 0 ? "1" : "0";
+    const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
-    let zeroXOrders = await this.augur.getZeroXOrders({
+    const zeroXOrders = await this.augur.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16).padStart(60, "0")}`,
+      matchPrice: `0x${params.price.toString(16).padStart(60, '0')}`,
       ignoreOrders
     });
 
@@ -304,13 +309,13 @@ export class ZeroX {
     }
 
     const ordersMap = zeroXOrders[params.market][outcome][orderType];
-    let sortedOrders = _.sortBy(_.values(ordersMap), (order) =>{ return order.price });
+    const sortedOrders = _.sortBy(_.values(ordersMap), (order) => order.price);
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
 
-    const ordersData = params.direction == 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
+    const ordersData = params.direction === 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
 
-    let orderIds = _.map(ordersData, (orderData) => {
+    const orderIds = _.map(ordersData, (orderData) => {
       return orderData.orderId;
     });
 
@@ -328,10 +333,10 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
-        makerFeeAssetData: "0x",
-        takerFeeAssetData: "0x",
+        makerFeeAssetData: '0x',
+        takerFeeAssetData: '0x',
       };
-    })
+    });
 
     const signatures = _.map(ordersData, (orderData) => {
       return orderData.signature;
@@ -345,7 +350,7 @@ export class ZeroX {
     if (params.price.lte(0) || params.price.gte(params.numTicks)) return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
 
     const amountNotCoveredByShares = params.amount.minus(params.shares);
-    const cost = params.direction == 0 ? params.price.multipliedBy(amountNotCoveredByShares) : params.numTicks.minus(params.price).multipliedBy(amountNotCoveredByShares);
+    const cost = params.direction === 0 ? params.price.multipliedBy(amountNotCoveredByShares) : params.numTicks.minus(params.price).multipliedBy(amountNotCoveredByShares);
 
     if (cost.gt(0)) {
       const account = await this.augur.getAccount();
@@ -363,7 +368,7 @@ export class ZeroX {
   private getTradeAmountRemaining(tradeOnChainAmountRemaining: BigNumber, events: Event[]): BigNumber {
     let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
-      if (event.name === "OrderEvent") {
+      if (event.name === 'OrderEvent') {
         const eventParams = event.parameters as OrderEventLog;
         if (eventParams.eventType === 0) { // Create
           return new BigNumber(0);

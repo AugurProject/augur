@@ -1,38 +1,38 @@
-import { Accounts } from "./state/getter/Accounts";
+import { Accounts } from './state/getter/Accounts';
 import { BigNumber } from 'bignumber.js';
-import { Callback, TXStatusCallback } from "./events";
-import { BaseConnector } from "./connector/baseConnector";
-import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { TransactionStatusCallback, TransactionStatus, EthersSigner } from "contract-dependencies-ethers";
-import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
-import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
-import { ContractInterfaces } from "@augurproject/core";
-import { Contracts } from "./api/Contracts";
-import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
-import { Gnosis } from "./api/Gnosis";
-import { HotLoading, DisputeWindow, GetDisputeWindowParams } from "./api/HotLoading";
-import { EmptyConnector } from "./connector/empty-connector";
-import { Events } from "./api/Events";
-import { Markets } from "./state/getter/Markets";
-import { Universe } from "./state/getter/Universe";
-import { Platform } from "./state/getter/Platform";
-import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
-import { Provider } from "./ethereum/Provider";
-import { Status } from "./state/getter/status";
-import { TXStatus } from "./event-handlers";
-import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
-import { Trading } from "./state/getter/Trading";
-import { Users } from "./state/getter/Users";
-import { getAddress } from "ethers/utils/address";
-import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
-import { Liquidity } from "./api/Liquidity";
-import { Liquidity as LiquidityGetter } from "./state/getter/Liquidity";
-import { TransactionResponse } from "ethers/providers";
-import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
-import { GenericEventDBDescription } from "./state/logs/types";
-import { ZeroX, BrowserMesh } from "./api/ZeroX";
+import { Callback, TXStatusCallback } from './events';
+import { BaseConnector } from './connector/baseConnector';
+import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { TransactionStatusCallback, TransactionStatus, EthersSigner } from 'contract-dependencies-ethers';
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { ContractInterfaces } from '@augurproject/core';
+import { Contracts } from './api/Contracts';
+import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from './api/Market';
+import { Gnosis } from './api/Gnosis';
+import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';
+import { EmptyConnector } from './connector/empty-connector';
+import { Events } from './api/Events';
+import { Markets } from './state/getter/Markets';
+import { Universe } from './state/getter/Universe';
+import { Platform } from './state/getter/Platform';
+import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
+import { Provider } from './ethereum/Provider';
+import { Status } from './state/getter/status';
+import { TXStatus } from './event-handlers';
+import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from './api/Trade';
+import { Trading } from './state/getter/Trading';
+import { Users } from './state/getter/Users';
+import { getAddress } from 'ethers/utils/address';
+import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from './constants';
+import { Liquidity } from './api/Liquidity';
+import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
+import { TransactionResponse } from 'ethers/providers';
+import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
+import { GenericEventDBDescription } from './state/logs/types';
+import { ZeroX, BrowserMesh } from './api/ZeroX';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { Arrayish } from "ethers/utils";
+import { Arrayish } from 'ethers/utils';
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -58,40 +58,40 @@ export class Augur<TProvider extends Provider = Provider> {
   private txFailureCallback: TXStatusCallback;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
-    { EventName: "CompleteSetsPurchased", indexes: []},
-    { EventName: "CompleteSetsSold", indexes: []},
-    { EventName: "DisputeCrowdsourcerCompleted", indexes: ["market"]},
-    { EventName: "DisputeCrowdsourcerContribution", indexes: []},
-    { EventName: "DisputeCrowdsourcerCreated", indexes: []},
-    { EventName: "DisputeCrowdsourcerRedeemed", indexes: []},
-    { EventName: "DisputeWindowCreated", indexes: []},
-    { EventName: "InitialReporterRedeemed", indexes: []},
-    { EventName: "InitialReportSubmitted", indexes: []},
-    { EventName: "InitialReporterTransferred", indexes: []},
-    { EventName: "MarketCreated", indexes: ["market"]},
-    { EventName: "MarketFinalized", indexes: ["market"]},
-    { EventName: "MarketMigrated", indexes: ["market"]},
-    { EventName: "MarketParticipantsDisavowed", indexes: []},
-    { EventName: "MarketTransferred", indexes: []},
-    { EventName: "MarketVolumeChanged", indexes: []},
-    { EventName: "MarketOIChanged", indexes: []},
-    { EventName: "OrderEvent", indexes: []},
-    { EventName: "ParticipationTokensRedeemed", indexes: []},
-    { EventName: "ReportingParticipantDisavowed", indexes: []},
-    { EventName: "TimestampSet", indexes: ["newTimestamp"]},
-    { EventName: "TradingProceedsClaimed", indexes: []},
-    { EventName: "UniverseCreated", indexes: []},
-    { EventName: "UniverseForked", indexes: ["universe"]},
-    { EventName: "TransferSingle", indexes: []},
-    { EventName: "TransferBatch", indexes: []},
-    { EventName: "ShareTokenBalanceChanged", indexes: []},
+    { EventName: 'CompleteSetsPurchased', indexes: []},
+    { EventName: 'CompleteSetsSold', indexes: []},
+    { EventName: 'DisputeCrowdsourcerCompleted', indexes: ['market']},
+    { EventName: 'DisputeCrowdsourcerContribution', indexes: []},
+    { EventName: 'DisputeCrowdsourcerCreated', indexes: []},
+    { EventName: 'DisputeCrowdsourcerRedeemed', indexes: []},
+    { EventName: 'DisputeWindowCreated', indexes: []},
+    { EventName: 'InitialReporterRedeemed', indexes: []},
+    { EventName: 'InitialReportSubmitted', indexes: []},
+    { EventName: 'InitialReporterTransferred', indexes: []},
+    { EventName: 'MarketCreated', indexes: ['market']},
+    { EventName: 'MarketFinalized', indexes: ['market']},
+    { EventName: 'MarketMigrated', indexes: ['market']},
+    { EventName: 'MarketParticipantsDisavowed', indexes: []},
+    { EventName: 'MarketTransferred', indexes: []},
+    { EventName: 'MarketVolumeChanged', indexes: []},
+    { EventName: 'MarketOIChanged', indexes: []},
+    { EventName: 'OrderEvent', indexes: []},
+    { EventName: 'ParticipationTokensRedeemed', indexes: []},
+    { EventName: 'ReportingParticipantDisavowed', indexes: []},
+    { EventName: 'TimestampSet', indexes: ['newTimestamp']},
+    { EventName: 'TradingProceedsClaimed', indexes: []},
+    { EventName: 'UniverseCreated', indexes: []},
+    { EventName: 'UniverseForked', indexes: ['universe']},
+    { EventName: 'TransferSingle', indexes: []},
+    { EventName: 'TransferBatch', indexes: []},
+    { EventName: 'ShareTokenBalanceChanged', indexes: []},
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, browserMesh: BrowserMesh = undefined) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, browserMesh: BrowserMesh = undefined, meshClient: WSClient = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
-    if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
+    if (!Augur.connector || connector.constructor.name !== 'EmptyConnector') {
       Augur.connector = connector;
     }
 
@@ -104,21 +104,21 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     this.hotLoading = new HotLoading(this);
-    this.zeroX = meshClient && browserMesh ? new ZeroX(this, meshClient, browserMesh) : undefined;
+    this.zeroX = browserMesh ? new ZeroX(this, browserMesh, meshClient) : undefined;
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();
     }
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined, meshBrowser: BrowserMesh = undefined): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshBrowser: BrowserMesh = undefined, meshClient: WSClient = undefined): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
-    if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
+    if (!Augur.connector || connector.constructor.name !== 'EmptyConnector') {
       Augur.connector = connector;
     }
 
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch, meshClient, meshBrowser);
+    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch, meshBrowser, meshClient);
 
     await augur.contracts.setReputationToken(networkId);
     return augur;
@@ -304,7 +304,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getDisputeWindow(params: GetDisputeWindowParams): Promise<DisputeWindow> {
-    return await this.hotLoading.getCurrentDisputeWindowData(params);
+    return this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
@@ -334,7 +334,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getUniverseChildren = this.bindTo(Universe.getUniverseChildren);
 
   private registerTransactionStatusEvents() {
-    this.registerTransactionStatusCallback("Transaction Status Handler", (transaction, status, hash) => {
+    this.registerTransactionStatusCallback('Transaction Status Handler', (transaction, status, hash) => {
 
       if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
         const txn: TXStatus = {
