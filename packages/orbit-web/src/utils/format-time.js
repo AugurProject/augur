@@ -9,5 +9,5 @@ export function getFormattedTimestamp (timestamp) {
 }
 
 export function getFormattedDateString (date, localeKey = 'en') {
-  return format(date, 'PPPP', { locale: locales[localeKey].dateLocale })
+  return format(date, 'EEE, PP', { locale: locales[localeKey].dateLocale })
 }

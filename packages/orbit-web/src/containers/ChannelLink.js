@@ -17,7 +17,6 @@ function ChannelLink ({ channel, theme, ...navLinkProps }) {
         hasUnreadMessages: channel.hasUnreadMessages,
         hasMentions: channel.hasMentions
       })}
-      style={theme}
       {...navLinkProps}
     >
       #{channel.channelName}

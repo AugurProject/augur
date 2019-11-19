@@ -1,9 +1,9 @@
 @import 'Colors';
+@import 'AugurColors';
 
 .SendMessage {
   box-sizing: border-box;
-  font-size: 0.625rem; // 10px
-  color: rgb(128, 128, 128);
+  font-size: 0.75rem; // 12px
   display: flex;
   flex: 1 1 auto;
   max-width: 100%;
@@ -39,7 +39,7 @@
     font-family: "Roboto";
     font-weight: 400;
 
-    color: $input-text-color;
+    color: $orbit-color-primary-text;
     background-color: #0E0E0F;
 
     border: 1px solid #252429;
@@ -59,7 +59,7 @@
   }
 
   textarea::placeholder {
-    color: #848294;
+    color: transparentize($orbit-color-secondary-text, 0.75);
     opacity: 1;
   }
 

@@ -1,5 +1,6 @@
 @import 'Animations';
 @import 'Colors';
+@import 'AugurColors';
 
 $controls-height: 2.8em;
 
@@ -165,20 +166,17 @@ input[type='button'],
 }
 
 .ChannelStatus {
-  bottom: 1.2em;
-  right: 1em;
-  margin-right: 0.5em;
   margin-left: 0.5em;
 
-  color: #AFA7C1;
+  color: $orbit-color-secondary-text;
   font-family: 'Roboto Mono', sans-serif;
   font-size: 0.5625rem; // 9px
   font-weight: normal;
-  justify-content: center;
   cursor: default;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   text-transform: uppercase;
 
   padding: 0.5em 1em;
@@ -205,15 +203,15 @@ input[type='button'],
     justify-content: flex-start;
     margin: 10px 0 10px 0;
     font-size: 0.5625rem; // 9px
-    color: rgb(228, 228, 228);
+    color: $orbit-color-secondary-text;
     cursor: default;
-    text-transform: capitalize;
+    text-transform: uppercase;
   }
 
   .firstMessage {
     display: flex;
     justify-content: center;
-    color: rgb(160, 160, 160);
+    color: $orbit-color-secondary-text;
     font-weight: bold;
     font-style: italic;
     font-size: 0.7em;

@@ -15,14 +15,24 @@
 }
 
 @font-face {
-  font-family: 'roboto';
+  font-family: 'Roboto';
   font-weight: 400;
   src: url('../../../augur-ui/src/assets/fonts/Roboto-Regular.woff2') format('woff2');
 }
 
 @font-face {
+  font-family: 'Roboto';
+  font-weight: 500;
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 700;
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Bold.woff2') format('woff2');
+}
+
+@font-face {
   font-family: 'Roboto Mono';
-  src: url('~fonts/robotomono/RobotoMono-Light.woff2') format('woff2'),
-       url('https://fonts.googleapis.com/css?family=Roboto+Mono'),
-       url('~fonts/robotomono/RobotoMono-Light.ttf') format('truetype');
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Mono-Regular.woff2') format('woff2');
 }
