@@ -44,18 +44,15 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
-                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
-              if [[ $f =~ .*augur-artifacts/.* ]]
+              if [[ $f =~ .*augur-artifacts/src/.* ]]
               then
                 echo "found an artifacts change: $f"
-                echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-tools/docker-builder/* ]]
               then
                 echo "found a docker-builder change: $f"
-                echo "##vso[task.setvariable variable=JOB_TRIGGER_DOCKER_BUILDER;isOutput=true]true"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
