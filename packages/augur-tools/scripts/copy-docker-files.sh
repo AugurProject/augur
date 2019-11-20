@@ -8,6 +8,8 @@ BLOCK_TEMP2=".temp3.file"
 ADDRESSES="../augur-artifacts/src/local-addresses.json"
 BLOCKS="../augur-artifacts/src/local-upload-block-numbers.json"
 
+docker pull $IMAGE
+
 echo "processing $IMAGE $ADDRESSES"
 docker run --rm --entrypoint cat $IMAGE /augur/packages/augur-artifacts/src/local-addresses.json > $TEMP1
 node scripts/merge-json-files -p $ADDRESSES -s $TEMP1 -o $ADD_TEMP2
