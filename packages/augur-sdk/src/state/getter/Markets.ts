@@ -1092,9 +1092,7 @@ async function getMarketsInfo(
       marketData.feePerCashInAttoCash
     ).dividedBy(QUINTILLION);
 
-    const reportingFeeRate = new BigNumber(
-      reportingFeeDivisor
-    ).dividedBy(QUINTILLION);
+    const reportingFeeRate = new BigNumber(1).div(reportingFeeDivisor);
     const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
     const noShowBondAmount = new BigNumber(marketData.noShowBond).toFixed();
 
