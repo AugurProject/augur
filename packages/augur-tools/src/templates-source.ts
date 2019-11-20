@@ -92,6 +92,9 @@ export const TEMPLATES = {
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
                     },
+                    {
+                      text: 'Includes regulation, any play-offs and sudden death',
+                    },
                   ],
                 },
               },
@@ -168,6 +171,9 @@ export const TEMPLATES = {
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
+                    {
+                      text: 'Includes regulation, any play-offs and sudden death',
+                    },
                   ],
                 },
               },
@@ -208,6 +214,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
+                    },
+                    {
+                      text: 'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -285,6 +294,9 @@ export const TEMPLATES = {
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
+                    {
+                      text: 'Includes regulation, any play-offs and sudden death',
+                    },
                   ],
                 },
               },
@@ -325,6 +337,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
+                    },
+                    {
+                      text: 'Includes regulation, any play-offs and sudden death',
                     },
                   ],
                 },
@@ -402,6 +417,9 @@ export const TEMPLATES = {
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
                     },
+                    {
+                      text: 'Includes regulation, any play-offs and sudden death',
+                    },
                   ],
                 },
               },
@@ -437,7 +455,14 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Includes any Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.`,
+                  text: `Includes any Regulation, overtime and any shoot-outs. `,
+                },
+                {
+                  text:
+                    'The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.',
+                },
+                {
+                  text: 'If game is not played market should resolve as "No"',
                 },
               ],
             },
@@ -474,8 +499,14 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
+                  text: `Includes any Regulation, overtime and any shoot-outs.`,
+                },
+                {
                   text:
-                    'Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.',
+                    'The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.',
+                },
+                {
+                  text: 'If game is not played market should resolve as "No"',
                 },
               ],
             },
@@ -498,13 +529,7 @@ export const TEMPLATES = {
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Includes all regulation, overtime and shootouts.`,
-                },
-              ],
-            },
+            resolutionRules: {},
           },
           {
             marketType: CATEGORICAL,
@@ -537,10 +562,62 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, or ends in a tie, the market should resolve as "Draw/No Winner".`,
+                  text: `Include Regulation, overtime and any shoot-outs.`,
                 },
                 {
-                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`,
+                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as "No Winner"`,
+                },
+                {
+                  text: `If game is not played market should resolve as "No Winner"`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `NHL: [0] to win by more than [1].5 goals over the [2]?`,
+            example: `NHL: St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.WHOLE_NUMBER,
+                placeholder: `Whole #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ESTDATETIME,
+                placeholder: `Date time`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Winner`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the game is not played market should resolve as "No Winner"`,
+                },
+                {
+                  text: `Include Regulation, overtime and any shoot-outs`,
+                },
+                {
+                  text:
+                    'The game must go 55 minutes or more to be considered official if not, market should resolve as "No winner"',
                 },
               ],
             },
@@ -592,10 +669,14 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                  text: `If the game is not played market should resolve as "No Winner"`,
                 },
                 {
-                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`,
+                  text: `Include Regulation, overtime and any shoot-outs`,
+                },
+                {
+                  text:
+                    'The game must go 55 minutes or more to be considered official if not, market should resolve as "No winner"',
                 },
               ],
             },
@@ -655,13 +736,7 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`,
-                },
-              ],
-            },
+            resolutionRules: {},
           },
           {
             marketType: SCALAR,
@@ -669,6 +744,8 @@ export const TEMPLATES = {
             example: `NHL: Total number of wins the LA Kings will finish 2019-20 regular season with?`,
             denomination: 'wins',
             tickSize: 1,
+            minPrice: 0,
+            maxPrice: 82,
             inputs: [
               {
                 id: 0,
@@ -757,16 +834,16 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning horse is not one of the possible outcomes listed, Other (Field) should resolve the winner.`,
+                  text: `If the winning horse is not one of the outcomes listed, market should resolve as "Other (Field)"`,
                 },
                 {
-                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event Resolution time for this market starts, "No Winner" should be the winning outcome.`,
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as "No Winner"`,
                 },
                 {
-                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's Event Expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`,
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's event expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`,
                 },
                 {
-                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs after the market's Event Expiration, the disqualified horse will still be named the winner of the market.`,
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs after the market's event expiration, the disqualified horse will still be named the winner of the market.`,
                 },
               ],
             },
@@ -1464,8 +1541,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: Will the [0] win by more than [1].5 points over the [2]?`,
-                example: `NBA: Will the Brooklyn Nets win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NBA: Will the [0] to win by more than [1].5 points over the [2]?`,
+                example: `NBA: Will the Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1911,8 +1988,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: [0] win by more than [1].5 points over the [1]?`,
-                example: `WNBA: Phoenix Mercury win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `WNBA: [0] to win by more than [1].5 points over the [1]?`,
+                example: `WNBA: Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2270,8 +2347,8 @@ export const TEMPLATES = {
                       text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
                     {
-                      text: 'If game is not played market should resolve as "No"'
-                    }
+                      text: 'If game is not played market should resolve as "No"',
+                    },
                   ],
                 },
               },
@@ -2376,8 +2453,8 @@ export const TEMPLATES = {
                       text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
                     },
                     {
-                      text: 'If game is not played market should resolve as "No Winner"'
-                    }
+                      text: 'If game is not played market should resolve as "No Winner"',
+                    },
                   ],
                 },
               },
@@ -2430,8 +2507,8 @@ export const TEMPLATES = {
                       text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
                     },
                     {
-                      text: 'If game is not played market should resolve as "No Winner"'
-                    }
+                      text: 'If game is not played market should resolve as "No Winner"',
+                    },
                   ],
                 },
               },
@@ -3038,8 +3115,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: Will [0] win by more than [1].5 points over [2]?`,
-                example: `NFL: Will Seattle Seahawks win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL: Will [0] to win by more than [1].5 points over [2]?`,
+                example: `NFL: Will Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3382,8 +3459,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB: [0] win by more than [1].5 points over [1]?`,
-                example: `NCAA FB: Alabama win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB: [0] to win by more than [1].5 points over [1]?`,
+                example: `NCAA FB: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
