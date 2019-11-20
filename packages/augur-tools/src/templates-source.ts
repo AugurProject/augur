@@ -413,8 +413,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `NHL: Will the [0] win vs the [1]?`,
-            example: `NHL: Will the St Louis Blues win vs the Dallas Stars?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `NHL: Will the [0] win vs. the [1]?`,
+            example: `NHL: Will the St Louis Blues win vs. the Dallas Stars?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -508,8 +508,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL: Which team will win: [0] vs [1]?`,
-            example: `NHL: Which Team will win: NY Rangers vs NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `NHL: Which team will win: [0] vs. [1]?`,
+            example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -547,7 +547,7 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL: [0] vs [1]: Total goals scored; Over/Under [2].5?`,
+            question: `NHL: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
             example: `NHL: St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
@@ -853,8 +853,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs [4]?`,
-                example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs Rafael Nadal?`,
+                question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
+                example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs. Rafael Nadal?`,
                 inputs: [
                   {
                     id: 0,
@@ -984,8 +984,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs [4]?`,
-                example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs Bob Bryan/Mike Bryan?`,
+                question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
+                example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
                 inputs: [
                   {
                     id: 0,
@@ -1045,8 +1045,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: Which team will win: [0] vs [1]?`,
-                example: `Men's Soccer: Which team will win: Real Madrid vs Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Men's Soccer: Which team will win: [0] vs. [1]?`,
+                example: `Men's Soccer: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1090,8 +1090,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Men's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's Soccer: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+                example: `Men's Soccer: Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1149,8 +1149,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: Which team will win: [0] vs [1]?`,
-                example: `Women's Soccer: Which team will win: Real Madrid vs Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Women's Soccer: Which team will win: [0] vs. [1]?`,
+                example: `Women's Soccer: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1194,8 +1194,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: [0] vs [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Women's Soccer: Real Madrid vs Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Women's Soccer: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+                example: `Women's Soccer: Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1257,8 +1257,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NBA: Will the [0] win vs the [1]?`,
-                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `NBA: Will the [0] win vs. the [1]?`,
+                example: `NBA: Will the Los Angeles Lakers win vs. the Golden State Warriors?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1292,8 +1292,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NBA: Will the [0] win vs the [1] by [2] or more points?`,
-                example: `NBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `NBA: Will the [0] win vs. the [1] by [2] or more points?`,
+                example: `NBA: Will the Los Angeles Lakers win vs. the Golden State Warriors by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1333,7 +1333,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NBA: Will the [0] & [1] score [2] or more combined points?`,
+                question: `NBA: Will the [0] & the [1] score [2] or more combined points?`,
                 example: `NBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
@@ -1425,8 +1425,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: Which team will win: [0] vs [1]?`,
-                example: `NBA: Which Team will win: Brooklyn Nets vs NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NBA: Which team will win: [0] vs. [1]?`,
+                example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1442,6 +1442,11 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -1451,13 +1456,61 @@ export const TEMPLATES = {
                     {
                       text: `Includes Regulation and Overtime`,
                     },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as "No Winner"`,
+                    },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: [0] vs [1]: Total Points scored; Over/Under [2].5?`,
-                example: `NBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NBA: Will the [0] win by more than [1].5 points over the [2]?`,
+                example: `NBA: Will the Brooklyn Nets win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and Overtime`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as "No Winner"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `NBA: [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
+                example: `NBA: Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1499,7 +1552,14 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    {
+                      text: `Include Regulation and Overtime`,
+                    },
+                    {
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as "No Winner"`,
+                    },
+                  ],
                 },
               },
               {
@@ -1510,7 +1570,7 @@ export const TEMPLATES = {
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
+                    placeholder: `Year Range`,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -1532,9 +1592,7 @@ export const TEMPLATES = {
                     values: BASKETBALL_EVENT_DEP_TEAMS,
                   },
                 ],
-                resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
-                },
+                resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
@@ -1612,10 +1670,12 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `NBA: Total number of wins [0] will finish [1] regular season with?`,
-                example: `NBA: Total number of wins NY Knicks will finish 2019-20 regular season with?`,
+                question: `NBA: Total number of wins the [0] will finish the [1] regular season with?`,
+                example: `NBA: Total number of wins the NY Knicks will finish the 2019-20 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
+                minPrice: 0,
+                maxPrice: 82,
                 inputs: [
                   {
                     id: 0,
@@ -1644,8 +1704,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `WNBA: Will the [0] win vs the [1]?`,
-                example: `WNBA: Will the Los Angeles Sparks win vs the New York Liberty?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `WNBA: Will the [0] win vs. the [1]?`,
+                example: `WNBA: Will the Los Angeles Sparks win vs. the New York Liberty?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1672,15 +1732,15 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `WNBA: Will the [0] win vs the [1] by [2] or more points?`,
-                example: `WNBA: Will the Los Angeles Sparks win vs the New York Liberty by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `WNBA: Will the [0] win vs. the [1] by [2] or more points?`,
+                example: `WNBA: Will the Los Angeles Sparks win vs. the New York Liberty by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1713,7 +1773,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
                   ],
                 },
@@ -1754,15 +1814,15 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `WNBA: Will the [0] win the [1] NBA Championship?`,
-                example: `WNBA: Will the Golden State Warriors win the 2019-20 NBA Championship?`,
+                question: `WNBA: Will the [0] win the [1] WNBA Championship?`,
+                example: `WNBA: Will the Los Angeles Sparks win the 2019-20 WNBA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -1812,8 +1872,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: Which team will win: [0] vs [1]?`,
-                example: `WNBA: Which Team will win: Phoenix Mercury vs Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `WNBA: Which team will win: [0] vs. [1]?`,
+                example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1829,6 +1889,11 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
@@ -1838,13 +1903,61 @@ export const TEMPLATES = {
                     {
                       text: `Includes Regulation and Overtime`,
                     },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as "No Winner"`,
+                    },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: [0] vs [1]: Total Points scored; Over/Under [2].5?`,
-                example: `WNBA: Phoenix Mercury vs Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `WNBA: [0] win by more than [1].5 points over the [1]?`,
+                example: `WNBA: Phoenix Mercury win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and Overtime`,
+                    },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as "No Winner"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `WNBA: [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
+                example: `WNBA: Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1886,7 +1999,12 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
+                  [REQUIRED]: [
+                    { text: `Include Regulation and Overtime` },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as "No Winner"`,
+                    },
+                  ],
                 },
               },
               {
@@ -1905,10 +2023,14 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 2,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.WNBA_TEAMS,
+                  },
                 ],
-                resolutionRules: {
-                  [REQUIRED]: [{ text: `Include Regulation and Overtime` }],
-                },
+                resolutionRules: {},
               },
               {
                 marketType: CATEGORICAL,
@@ -1990,6 +2112,8 @@ export const TEMPLATES = {
                 example: `WNBA: Total number of wins New York Liberty will finish 2019-20 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
+                minPrice: 0,
+                maxPrice: 34,
                 inputs: [
                   {
                     id: 0,
@@ -2018,26 +2142,26 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] win vs [1]; [2] basketball?`,
-                example: `NCAA BB: Will Duke win vs Kentucky; Men's baskeball?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `NCAA [0] BB: Will [1] win vs. [2] basketball?`,
+                example: `NCAA Men's BB: Will Duke win vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
-                    values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 3,
@@ -2059,32 +2183,32 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] win vs [1] by [2] or more points, [3] basketball?`,
-                example: `NCAA BB: Will Duke Blue Devils win vs Kentucky Wildcats by 3 or more points; Men's basketball?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `NCAA [0] BB: Will [1] win vs. [2] by [3] or more points?`,
+                example: `NCAA Men's BB: Will Duke Blue Devils win vs. Kentucky Wildcats by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
-                    values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 4,
@@ -2106,32 +2230,32 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] & [1] score [2] or more combined points; [3] basketball?`,
-                example: `NCAA BB: Will UNC & Arizona score 142 or more combined points; Men's basketball?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                question: `NCAA [0] BB: Will [1] & [2] score [3] or more combined points?`,
+                example: `NCAA Men'sBB: Will UNC & Arizona score 142 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
-                    values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 4,
@@ -2143,59 +2267,62 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
                     },
+                    {
+                      text: 'If game is not played market should resolve as "No"'
+                    }
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] win the [1] NCAA [2] National Championship?`,
-                example: `NCAA BB: Will Villanova win the 2020 NCAA Men's National Championship?`,
+                question: `NCAA [0] BB: Will [0] win the [1] NCAA National Championship?`,
+                example: `NCAA Men's BB: Will Villanova win the 2020 NCAA National Championship?`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
-                    values: LIST_VALUES.MENS_WOMENS,
                   },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: YES_NO,
-                question: `NCAA BB: Will [0] make the [1] [2] [3]?`,
-                example: `NCAA BB: Will USC make the 2020 Men's Final Four?`,
+                question: `NCAA [0] BB: Will [1] make the [2] [3]?`,
+                example: `NCAA Men's BB: Will USC make the 2020 Final Four?`,
                 inputs: [
                   {
                     id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     values: LIST_VALUES.YEARS,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
-                    values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 3,
@@ -2208,31 +2335,36 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA BB: Which team will win: [0] vs [1], [2] basketball?`,
-                example: `NCAA BB: Which Team will win: Duke vs Kentucky, Men's basketball?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
+                example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
-                    placeholder: `Team A`,
-                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
-                    placeholder: `Team B`,
-                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
-                  },
-                  {
-                    id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Men's / Women's`,
                     values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
+                  },
+                  {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
                   },
                 ],
                 resolutionRules: {
@@ -2240,13 +2372,73 @@ export const TEMPLATES = {
                     {
                       text: `Includes Regulation and Overtime`,
                     },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: 'If game is not played market should resolve as "No Winner"'
+                    }
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA BB: [0] basketball; [1] vs [2]: Total Points scored; Over/Under [3].5?`,
-                example: `NCAA BB: Men's basketball; Duke Blue Devils vs Arizona Wildcats: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA [0] BB: [1] to win by more than [2].5 points over [3]?`,
+                example: `NCAA Men's BB: Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and Overtime`,
+                    },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: 'If game is not played market should resolve as "No Winner"'
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `NCAA [0] BB: [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
+                example: `NCAA Men's BB: Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2296,15 +2488,18 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
+                      text: `Includes Regulation and Overtime`,
+                    },
+                    {
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA BB: Which college basketball team will win the [0] [1] [2] tournament?`,
-                example: `NCAA BB: Which college basketball team will win the men's 2020 ACC tournament?`,
+                question: `NCAA [0] BB: Which college basketball team will win the [1] [2] tournament?`,
+                example: `NCAA Men's BB: Which college basketball team will win the 2020 ACC tournament?`,
                 inputs: [
                   {
                     id: 0,
@@ -2347,8 +2542,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA BB: Which college basketball team will win the [0] [1] D1 National Championship?`,
-                example: `NCAA BB: Which college basketball team will win the Men's 2020 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NCAA [0] BB: Which college basketball team will win the [1] D1 National Championship?`,
+                example: `NCAA Men's BB: Which college basketball team will win the 2020 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2379,13 +2574,7 @@ export const TEMPLATES = {
                     placeholder: `Date time`,
                   },
                 ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Includes Regulation and Overtime`,
-                    },
-                  ],
-                },
+                resolutionRules: {},
               },
             ],
           },
@@ -2421,8 +2610,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: Which team will win: [0] vs [1]?`,
-            example: `MLB: Which Team will win: Yankees vs Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            question: `MLB: Which team will win: [0] vs. [1]?`,
+            example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -2451,7 +2640,17 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text:
-                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner", and Extra innings count towards settlement purposes',
+                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner"',
+                },
+                {
+                  text:
+                    'If event is postponed and concludes after markets event expiration the market should resolve as "No Winner"',
+                },
+                {
+                  text: 'If the game is not played market should resolve as "No Winner"',
+                },
+                {
+                  text: 'Extra innings count towards settlement purposes',
                 },
               ],
             },
@@ -2490,8 +2689,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: [0] vs [1]: Total Runs scored; Over/Under [2].5?`,
-            example: `NY Yankees vs Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `MLB: [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
+            example: `NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -2536,7 +2735,17 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text:
-                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner". Extra innings count towards settlement purposes',
+                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner"',
+                },
+                {
+                  text:
+                    'If event is postponed and concludes after markets event expiration the market should resolve as "No Winner"',
+                },
+                {
+                  text: 'If the game is not played market should resolve as "No Winner"',
+                },
+                {
+                  text: 'Extra innings count towards settlement purposes',
                 },
               ],
             },
@@ -2555,8 +2764,8 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.BASEBALL_EVENT,
+                placeholder: `Award`,
+                values: LIST_VALUES.BASEBALL_AWARDS,
               },
               {
                 id: 2,
@@ -2604,7 +2813,7 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs the [1]?`,
+                question: `NFL: Will the [0] win vs. the [1]?`,
                 example: `NFL: Will the NY Giants win vs. the New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
@@ -2629,7 +2838,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs. team B`,
                     },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
@@ -2639,7 +2848,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NFL: Will the [0] win vs the [1] by [2] or more points?`,
+                question: `NFL: Will the [0] win vs. the [1] by [2] or more points?`,
                 example: `NFL: Will the NY Giants win vs. the New England Patriots by 3 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
@@ -2792,8 +3001,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1]?`,
-                example: `Which NFL Team will win: NY GIants vs New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Which NFL Team will win: [0] vs. [1]?`,
+                example: `Which NFL Team will win: NY GIants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2830,7 +3039,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `NFL: Will [0] win by more than [1].5 points over [2]?`,
-                example: `NFL: Will Seattle Seahawks win by more than 10.5 over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `NFL: Will Seattle Seahawks win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2872,8 +3081,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: [0] vs [1]: Total points scored; Over/Under [2].5?`,
-                example: `NFL: NY Giants vs Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL: [0] vs. [1]: Total points scored; Over/Under [2].5?`,
+                example: `NFL: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3016,7 +3225,7 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will the [0] win vs the [1]?`,
+                question: `NCAA FB: Will [0] win vs. [1]?`,
                 example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
@@ -3041,7 +3250,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs. team B`,
                     },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
@@ -3051,7 +3260,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: YES_NO,
-                question: `NCAA FB: Will the [0] win vs the [1] by [2] or more points?`,
+                question: `NCAA FB: Will [0] win vs. [1] by [2] or more points?`,
                 example: `NCAA FB: Will Alabama Crimson Tide win vs. Florida Gators by 7 or more points?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
@@ -3082,10 +3291,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
@@ -3123,7 +3332,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO'`,
                     },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
@@ -3133,8 +3342,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which College Football Team will win: [0] vs [1]?`,
-                example: `Which College Football Team will win: Alabama vs Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Which College Football Team will win: [0] vs. [1]?`,
+                example: `Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3156,35 +3365,81 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw/No Winner`,
+                    placeholder: `No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO Winner' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB: [0] vs [1]: Total points scored; Over/Under [2].5?`,
-                example: `NCAA FB: Alabama vs Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB: [0] win by more than [1].5 points over [1]?`,
+                example: `NCAA FB: Alabama win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    { text: `Includes Regulation and Overtime` },
+                    {
+                      text: `If the game is not played, the market should resolve as 'No Winner'`,
+                    },
+                    {
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `NCAA FB: [0] vs. [1]: Total points scored; Over/Under [2].5?`,
+                example: `NCAA FB: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
@@ -3219,18 +3474,18 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as 'NO Winner'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB: Which team will win the [0] [1]: [2] vs [3]?`,
-                example: `NCAA FB: Which team will win the 2020 Cotton Bowl: Tennessee Volunteers vs Miami Hurricanes?`,
+                question: `NCAA FB: Which team will win the [0] [1]: [2] vs. [3]?`,
+                example: `NCAA FB: Which team will win the 2020 Cotton Bowl: Tennessee Volunteers vs. Miami Hurricanes?`,
                 inputs: [
                   {
                     id: 0,
@@ -3265,17 +3520,20 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as 'NO Winner'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: `If either of the teams listed are incorrect, market should resolve as Invalid`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college football team will win [0] [1] Championship?`,
+                question: `Which college football team will win [0] National Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
                 inputs: [
                   {
@@ -3297,10 +3555,9 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
-                    inputSourceId: 1,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
                     placeholder: `Select Team`,
-                    values: NCAA_FOOTBALL_EVENT_DEP_TEAMS,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                 ],
                 resolutionRules: {},
@@ -3326,7 +3583,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs team B`,
+                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs. team B`,
                     },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
@@ -3336,8 +3593,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: SCALAR,
-                question: `NCAA FB: Total number of wins [0] will finish [1] regular season with?`,
-                example: `NCAA FB: Total number of wins Michigan Wolverines will finish 2019 regular season with?`,
+                question: `NCAA FB: Total number of wins [0] will finish the [1] regular season with?`,
+                example: `NCAA FB: Total number of wins Michigan Wolverines will finish the 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [

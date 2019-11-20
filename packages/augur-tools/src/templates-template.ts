@@ -201,7 +201,7 @@ export const ValidationTemplateInputType = {
 export let TEMPLATE_VALIDATIONS = {};
 
 function hasRequiredOutcomes(requiredOutcomes: string[], outcomes: string[]) {
-  return requiredOutcomes.filter(r => outcomes.includes(r)).length === requiredOutcomes.length;
+  return requiredOutcomes.filter(r => outcomes.includes(r)).length !== requiredOutcomes.length;
 }
 
 export function generateResolutionRulesHash(rules: ResolutionRules) {
@@ -231,7 +231,8 @@ function convertOutcomes(outcomes: string[]) {
   if (!outcomes) return [];
   return outcomes.map(o => {
     const outcomeDescription = o.replace('0x', '');
-    return Buffer.from(outcomeDescription, 'hex').toString();
+    const value = Buffer.from(outcomeDescription, 'hex').toString();
+    return [...value].reduce((p, i) => i.charCodeAt(0) !== 0 ? [...p,i] : p, []).join('')
   });
 }
 
@@ -243,11 +244,12 @@ function isDependencyOutcomesCorrect(
 ) {
   let result = false;
   const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
+  console.log(testOutcomes);
   if (validationDep.length > 0) {
     validationDep.forEach(v => {
       const input = inputs.find(i => i.id === v.inputSourceId);
       if (!input) result = false;
-      const correctValues = v.values[input.value];
+      const correctValues = v.values[input.value] || [];
       result = testOutcomes.filter(o => correctValues.includes(o)).length === testOutcomes.length;
     });
   }
@@ -273,14 +275,14 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     if (new Set(values).size !== values.length) return false;
 
     // check for outcome duplicates
-    const outcomeValue = convertOutcomes(outcomes);
-    if (new Set(outcomeValue).size !== outcomeValue.length) return false;
+    const outcomeValues = convertOutcomes(outcomes);
+    if (new Set(outcomeValues).size !== outcomeValues.length) return false;
 
     // reg ex to verify market question dropdown values and inputs
     if (!isValidTemplateMarket(validation.templateValidation, checkMarketTitle)) return false;
 
     // check that required outcomes exist
-    if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomeValue)) return false;
+    if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomeValues)) return false;
 
     if (validation.outcomeDependencies !== null) {
       if (
@@ -288,7 +290,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
           validation.outcomeDependencies,
           validation.requiredOutcomes,
           template.inputs,
-          outcomes
+          outcomeValues
         )
       )
         return false;
