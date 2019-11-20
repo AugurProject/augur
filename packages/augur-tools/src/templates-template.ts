@@ -201,7 +201,7 @@ export const ValidationTemplateInputType = {
 export let TEMPLATE_VALIDATIONS = {};
 
 function hasRequiredOutcomes(requiredOutcomes: string[], outcomes: string[]) {
-  return requiredOutcomes.filter(r => outcomes.includes(r)).length !== requiredOutcomes.length;
+  return requiredOutcomes.filter(r => outcomes.includes(r)).length === requiredOutcomes.length;
 }
 
 export function generateResolutionRulesHash(rules: ResolutionRules) {
