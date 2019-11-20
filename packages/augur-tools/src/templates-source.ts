@@ -1016,7 +1016,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If either player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
                     },
                   ],
                 },
@@ -1053,7 +1053,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
+                      text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                   ],
                 },
@@ -1100,10 +1100,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                      text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                      text: `If either player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
                     },
                     {
                       text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
@@ -1202,8 +1202,8 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`
-                    }
+                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
                   ],
                 },
               },
@@ -1255,8 +1255,8 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`
-                    }
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
+                    },
                   ],
                 },
               },
@@ -1347,8 +1347,8 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`
-                    }
+                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
                   ],
                 },
               },
@@ -1400,8 +1400,8 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`
-                    }
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
+                    },
                   ],
                 },
               },
@@ -2844,6 +2844,59 @@ export const TEMPLATES = {
               },
             ],
             resolutionRules: {},
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `MLB: [0] to win by more than [1].5 runs over the [2]?`,
+            example: `MLB: NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Team A`,
+                values: LIST_VALUES.MLB_TEAMS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.WHOLE_NUMBER,
+                placeholder: `Whole #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Team B`,
+                values: LIST_VALUES.MLB_TEAMS,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ESTDATETIME,
+                placeholder: `Date time`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Winner`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text:
+                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner"',
+                },
+                {
+                  text:
+                    'If event is postponed and concludes after markets event expiration the market should resolve as "No Winner"',
+                },
+                {
+                  text: 'If the game is not played market should resolve as "No Winner"',
+                },
+                {
+                  text: 'Extra innings count towards settlement purposes',
+                },
+              ],
+            },
           },
           {
             marketType: CATEGORICAL,
