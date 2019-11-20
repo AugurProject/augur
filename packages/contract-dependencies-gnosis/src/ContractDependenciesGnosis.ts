@@ -35,7 +35,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   useSafe = false;
   status = null;
 
-  private _nonceGenerator: Generator<number, void, unknown>;
+  private _currentSignRequest: Promise<RelayTransaction>;
 
   gnosisSafe: ethers.Contract;
 
@@ -78,6 +78,21 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       abi['GnosisSafe'],
       this.signer
     );
+
+    this._currentSignRequest = this.gnosisSafe.nonce().then(nonce => ({
+      to: '0x0',
+      safe: '0x0',
+      data: '',
+      gasToken: '0x0',
+      safeTxGas: '0x0',
+      dataGas: new BigNumber(0),
+      gasPrice: new BigNumber(0),
+      refundReceiver: '0x0',
+      nonce: nonce - 1,
+      value: new BigNumber(0),
+      operation: 0,
+      signatures: [],
+    }));
   }
 
   setStatus(status: GnosisSafeState): void {
@@ -100,26 +115,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     this.gasPrice = gasPrice;
   }
 
-  // This is here with the idea what we would need to reset the nonce to that of the gnosis safe after some yet unknow error condition is met.
-  async setInitialNonce(): Promise<void> {
-    const i = (await this.gnosisSafe.nonce()).toNumber();
-    this._nonceGenerator = infiniteSequence(i);
-  }
-
-  async getNonce(): Promise<number> {
-    if(!this._nonceGenerator) {
-      await this.setInitialNonce();
-    }
-    const next = this._nonceGenerator.next();
-    // This is here to make TS happy.
-    if(next.done === false) {
-      return next.value;
-    }
-
-    // This will never occur as the generator will never complete.
-    return 0;
-  }
-
   async sendTransaction(
     tx: Transaction<ethers.utils.BigNumber>,
     txMetadata: TransactionMetadata
@@ -130,7 +125,12 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     }
     let txHash: string;
     // If the Relay Service is not being used so we'll execute the TX directly
+    const prevTransaction = await this._currentSignRequest;
     const relayTransaction = await this.ethersTransactionToRelayTransaction(tx);
+
+    if (prevTransaction === relayTransaction)
+      throw new Error('Message signature failed.');
+
     if (this.useRelay) {
       txHash = await this.gnosisRelay.execTransaction(relayTransaction);
     } else {
@@ -157,7 +157,10 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
     let txHash: string;
     // If the Relay Service is not being used so we'll execute the TX directly
-    const relayTransaction = await this.ethersTransactionToRelayTransaction(tx, Operation.DelegateCall);
+    const relayTransaction = await this.ethersTransactionToRelayTransaction(
+      tx,
+      Operation.DelegateCall
+    );
     if (this.useRelay) {
       txHash = await this.gnosisRelay.execTransaction(relayTransaction);
     } else {
@@ -230,7 +233,10 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     tx: Transaction<ethers.utils.BigNumber>,
     operation: Operation = Operation.Call
   ): Promise<RelayTransaction> {
-    const nonce = await this.getNonce();
+    const prevRequest = await this._currentSignRequest;
+    const nonce = Number(prevRequest.nonce) + 1;
+    console.log('nonce', nonce);
+
     const to = tx.to;
     const value = tx.value;
     const data = tx.data;
@@ -241,7 +247,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       data: tx.data,
       value: new BigNumber(value.toString()),
       operation,
-      gasToken: this.gasToken
+      gasToken: this.gasToken,
     };
 
     let gasEstimates: RelayTxEstimateResponse;
@@ -254,7 +260,9 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     }
 
     // We need to bump up safeTxGas or TX's fail on Portis/Fortmatic/Torus
-    const safeTxGas = (new ethers.utils.BigNumber(Number(gasEstimates.safeTxGas))).add(1000);
+    const safeTxGas = new ethers.utils.BigNumber(
+      Number(gasEstimates.safeTxGas)
+    ).add(1000);
     const baseGas = gasEstimates.baseGas;
     const gasPrice = this.gasPrice;
     const gasToken = this.gasToken;
@@ -272,29 +280,39 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       refundReceiver,
       nonce
     );
-    const flatSig = await this.signer.signMessage(
-      ethers.utils.arrayify(txHashBytes)
-    );
-    const sig = ethers.utils.splitSignature(flatSig);
 
-    const signatures = [
-      {
-        s: new BigNumber(sig.s, 16).toFixed(),
-        r: new BigNumber(sig.r, 16).toFixed(),
-        v: sig.v! + 4,
-      },
-    ];
+    this._currentSignRequest = this.signer
+      .signMessage(ethers.utils.arrayify(txHashBytes))
+      .then(
+        flatSig => {
+          const sig = ethers.utils.splitSignature(flatSig);
 
-    return Object.assign(
-      {
-        safeTxGas: safeTxGas.toString(),
-        dataGas: baseGas,
-        gasPrice,
-        refundReceiver,
-        nonce,
-        signatures,
-      },
-      relayEstimateRequest
-    );
+          const signatures = [
+            {
+              s: new BigNumber(sig.s, 16).toFixed(),
+              r: new BigNumber(sig.r, 16).toFixed(),
+              v: sig.v! + 4,
+            },
+          ];
+
+          return Object.assign(
+            {
+              safeTxGas: safeTxGas.toString(),
+              dataGas: baseGas,
+              gasPrice,
+              refundReceiver,
+              nonce,
+              signatures,
+            },
+            relayEstimateRequest
+          );
+        },
+        e => {
+          console.error('Error during message signing:', e);
+          return prevRequest;
+        }
+      );
+
+    return this._currentSignRequest;
   }
 }
