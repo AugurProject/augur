@@ -1657,7 +1657,7 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NBA_TEAMS,
                   },
@@ -1669,7 +1669,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NBA_TEAMS,
                   },
@@ -2114,7 +2114,7 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
@@ -2126,7 +2126,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
@@ -2602,7 +2602,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
@@ -2614,7 +2614,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
@@ -3324,7 +3324,7 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
@@ -3336,7 +3336,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
