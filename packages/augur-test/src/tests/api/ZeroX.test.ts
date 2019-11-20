@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 import { MockMeshServer, SERVER_PORT } from '../../libs/MockMeshServer';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 
-describe.skip('Augur API :: ZeroX :: ', () => {
+describe('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
   let mary: ContractAPI;
   let meshClient: WSClient;
@@ -21,6 +21,8 @@ describe.skip('Augur API :: ZeroX :: ', () => {
   const mock = makeDbMock();
 
   beforeAll(async () => {
+    // TODO use the same chain for the test and for 0x mesh since the mesh
+    //      quite reasonably refuses to accept orders for different chains
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
@@ -48,8 +50,6 @@ describe.skip('Augur API :: ZeroX :: ', () => {
   });
 
   test('State API :: ZeroX :: getOrders', async () => {
-    await john.approveCentralAuthority();
-
     // Create a market
     const market = await john.createReasonableMarket([
       stringTo32ByteHex('A'),

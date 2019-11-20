@@ -234,11 +234,17 @@ export class ZeroX {
       exchangeAddress: NULL_ADDRESS,
       orderHash
     };
+
+    let validation;
     if (this.browserMesh) {
-      await this.browserMesh.addOrdersAsync([zeroXOrder]);
+      validation = await this.browserMesh.addOrdersAsync([zeroXOrder]);
     } else {
-      await this.meshClient.addOrdersAsync([zeroXOrder]);
+      validation = await this.meshClient.addOrdersAsync([zeroXOrder]);
     }
+    if (validation.rejected.length > 0) {
+      throw Error(`0x add order validation failure: ${JSON.stringify(validation.rejected[0])}`)
+    }
+
     return orderHash;
   }
 

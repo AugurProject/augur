@@ -955,11 +955,9 @@ export function addScripts(flash: FlashSession) {
         '-e', 'BLOCK_POLLING_INTERVAL=1s',
         '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
         '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
-        '-e', 'VERBOSITY=6', // 6=trace
-        // TODO make sure `0x` works here. `0.0.0.0` for sure does but is insecure
-        '-e', 'RPC_ADDR=0x:60557', // port defaults to random so we set it here
-        'albrow/mesh:fix-log-hook-segfault', // TODO use until 6.0.2-beta releases
-        // '0xorg/mesh:6.0.2-beta'
+        '-e', 'VERBOSITY=4', // 5=debug 6=trace
+        '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
+        '0xorg/mesh:6.1.0-beta'
       ]);
 
       mesh.on('error', console.error);
