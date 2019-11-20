@@ -203,7 +203,6 @@ export const Transactions: React.FC<TransactionsProps> = props => {
 
   const cyclePriceSort = (e: Event) => {
     let updatedPriceSort = NEUTRAL;
-    console.log('cyclePriceSort', e, priceSort, filteredTransactions);
     switch (priceSort) {
       case ASCENDING:
         // if ascending cycle to descending
