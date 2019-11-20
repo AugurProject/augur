@@ -244,7 +244,7 @@ function isDependencyOutcomesCorrect(
 ) {
   let result = false;
   const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
-  console.log(testOutcomes);
+
   if (validationDep.length > 0) {
     validationDep.forEach(v => {
       const input = inputs.find(i => i.id === v.inputSourceId);
