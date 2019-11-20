@@ -151,6 +151,7 @@ input[type='button'],
   display: flex;
   justify-content: space-around;
   align-items: center;
+  height: 100%;
   max-height: $controls-height-desktop;
   min-height: $controls-height-desktop;
   padding: 0.1875rem; // 3px
