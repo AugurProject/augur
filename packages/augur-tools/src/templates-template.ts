@@ -105,11 +105,18 @@ export interface Categories {
   tertiary: string;
 }
 
+export interface DropdownDependencies {
+  inputSourceId: number;
+  values: {
+    [key: string]: string[];
+  };
+}
 export interface TemplateValidation {
   [hash: string]: {
     templateValidation: string;
     templateValidationResRules: string;
     requiredOutcomes: string[];
+    outcomeDependencies: DropdownDependencies;
   }
 }
 export interface Template {
@@ -184,6 +191,7 @@ export interface ExtraInfo {
 export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
   [ValidationType.WHOLE_NUMBER]: `[0-9]*`,
+  [ValidationType.NUMBER]: `[0-9]+\.*[0-9]*`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]*`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
@@ -252,6 +260,8 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     if (new Set(outcomeValue).size !== outcomeValue.length) return result;
 
     // reg ex to verify market question dropdown values and inputs
+    console.log(validation.templateValidation);
+    console.log(checkMarketTitle);
     result = isValidTemplateMarket(validation.templateValidation, checkMarketTitle);
 
     // check that required outcomes exist

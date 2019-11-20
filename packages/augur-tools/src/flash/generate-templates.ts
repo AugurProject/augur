@@ -8,6 +8,7 @@ import {
   CategoryTemplate,
   TemplateValidation,
   generateResolutionRulesHash,
+  DropdownDependencies,
 } from '../templates-template';
 import { TEMPLATES } from '../templates-source';
 
@@ -43,7 +44,7 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
       const hashValue = generateTemplateHash(t);
       t.hash = hashValue;
       const question = t.question;
-      let regexMarketTitle = t.question;
+      let regexMarketTitle = `^${escapeSpecialCharacters(question)}$`;
       t.inputs.map((i: TemplateInput) => {
         if (question.indexOf(`[${i.id}]`) > -1) {
           const reg = getValidationValues(i);
@@ -54,6 +55,7 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
         templateValidation: regexMarketTitle,
         templateValidationResRules: generateResolutionRulesHash(t.resolutionRules),
         requiredOutcomes: getRequiredOutcomes(t.inputs),
+        outcomeDependencies: getDropdownDependencies(t.inputs),
       };
     });
   }
@@ -67,8 +69,29 @@ function generateTemplateHash(template: Template): string {
   const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
   return ethers.utils.sha256(value);
 }
+
 function getRequiredOutcomes(inputs: TemplateInput[]) {
   return inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME).map(i => i.placeholder);
+}
+
+function listToRegEx(values: object[], property: string) {
+  return `(${values.map(v => escapeSpecialCharacters(v[property])).join('|')})`;
+}
+
+function getDropdownDependencies(inputs: TemplateInput[]): DropdownDependencies {
+  let listValues = null;
+  const hasDepend = inputs.filter(i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP);
+  if (hasDepend && hasDepend.length > 0) {
+    listValues = hasDepend.map(i => {
+      const values = Object.keys(i.values).reduce((p, key) => {
+        const list = listToRegEx(i.values[key], 'value');
+        p[key] = list;
+        return p;
+      }, {});
+      return { inputSourceId: i.inputSourceId, values };
+    });
+  }
+  return listValues;
 }
 
 function getValidationValues(input: TemplateInput) {
@@ -83,7 +106,7 @@ function getValidationValues(input: TemplateInput) {
     case TemplateInputType.DENOMINATION_DROPDOWN:
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
     case TemplateInputType.DROPDOWN:
-      const validations = `(${input.values.map(o => escapeSpecialCharacters(o.label)).join('|')})`;
+      const validations = listToRegEx(input.values, 'label');
       return validations;
     default:
       return ValidationTemplateInputType[type];
