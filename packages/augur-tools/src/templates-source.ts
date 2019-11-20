@@ -43,7 +43,6 @@ import {
   HOCKEY_EVENT_DEP_TEAMS,
   BASEBALL_EVENT_DEP_TEAMS,
   FOOTBALL_EVENT_DEP_TEAMS,
-  NCAA_FOOTBALL_EVENT_DEP_TEAMS,
   NCAA_BASKETBALL_CONF_DEP_TEAMS,
 } from './templates-lists';
 
@@ -1167,6 +1166,49 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
+                question: `Men's Soccer: [0] to win by more than [1].5 goals over [2]?`,
+                example: `Men's Soccer: Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
                 question: `Men's Soccer: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
                 example: `Men's Soccer: Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
@@ -1193,21 +1235,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
-                  },
-                  {
-                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
                   {
-                    id: 7,
+                    id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Unofficial game/Cancelled`,
                   },
@@ -1215,8 +1252,11 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`
+                    }
                   ],
                 },
               },
@@ -1271,6 +1311,49 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
+                question: `Women's Soccer: [0] to win by more than [1].5 goals over [2]?`,
+                example: `Women's Soccer: Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
                 question: `Women's Soccer: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
                 example: `Women's Soccer: Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
@@ -1296,11 +1379,6 @@ export const TEMPLATES = {
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
-                  },
-                  {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
@@ -1319,8 +1397,11 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out. If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`
+                    }
                   ],
                 },
               },

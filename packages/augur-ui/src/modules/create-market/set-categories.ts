@@ -31,9 +31,13 @@ export const setCategories: SortedGroup[] = [
             label: 'English League Championship',
           },
           { value: 'Major League Soccer', label: 'Major League Soccer' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: "Mens", label: "Mens" },
+          { value: "Womens", label: "Womens" },
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
+          { value: "Mens", label: "Mens" },
+          { value: "Womens", label: "Womens" },
           {
             value: 'Spanish Primera Division',
             label: 'Spanish Primera Division',
@@ -334,7 +338,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'College Baseball', label: 'College Baseball' },
           { value: 'Minor League', label: 'Minor League' },
           { value: 'World Baseball Classic', label: 'World Baseball Classic' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
           { value: 'Nippon', label: 'Nippon' },
@@ -352,7 +356,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'NCAA', label: 'NCAA' },
           { value: 'CFL', label: 'CFL' },
           { value: 'AFL', label: 'AFL' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
@@ -364,7 +368,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'WNBA', label: 'WNBA' },
           { value: 'Olympics', label: 'Olympics' },
           { value: 'World Cup', label: 'World Cup' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
           { value: 'International Friendly', label: 'International Friendly' },
@@ -402,7 +406,7 @@ export const setCategories: SortedGroup[] = [
         subGroup: [
           { value: 'NHL', label: 'NHL' },
           { value: 'Olympics', label: 'Olympics' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
@@ -412,7 +416,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'PGA', label: 'PGA' },
           { value: 'LPGA', label: 'LPGA' },
           { value: 'Euro Tour', label: 'Euro Tour' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
           {
@@ -432,16 +436,16 @@ export const setCategories: SortedGroup[] = [
             label: 'ISPS Handa Vic Open',
           },
           {
-            value: 'ISPS Handa Women\'s Australian Open',
-            label: 'ISPS Handa Women\'s Australian Open',
+            value: "ISPS Handa Women's Australian Open",
+            label: "ISPS Handa Women's Australian Open",
           },
           {
             value: 'Honda LPGA Thailand',
             label: 'Honda LPGA Thailand',
           },
           {
-            value: 'HSBC Women\'s World Championship',
-            label: 'HSBC Women\'s World Championship',
+            value: "HSBC Women's World Championship",
+            label: "HSBC Women's World Championship",
           },
           {
             value: 'Bank Of Hope Founders Cup',
@@ -472,8 +476,8 @@ export const setCategories: SortedGroup[] = [
             label: 'Pure Silk Championship',
           },
           {
-            value: 'U.S. Women\'s Open',
-            label: 'U.S. Women\'s Open',
+            value: "U.S. Women's Open",
+            label: "U.S. Women's Open",
           },
           {
             value: 'ShopRite LPGA Classic Presented by Acer',
@@ -484,8 +488,8 @@ export const setCategories: SortedGroup[] = [
             label: 'Meijer LPGA Classic For Simply Give',
           },
           {
-            value: 'KPMG Women\'s PGA Championship',
-            label: 'KPMG Women\'s PGA Championship',
+            value: "KPMG Women's PGA Championship",
+            label: "KPMG Women's PGA Championship",
           },
           {
             value: 'Walmart NW Arkansas Championship Presented by P&G',
@@ -508,16 +512,16 @@ export const setCategories: SortedGroup[] = [
             label: 'The Evian Championship',
           },
           {
-            value: 'AIG Women\'s British Open',
-            label: 'AIG Women\'s British Open',
+            value: "AIG Women's British Open",
+            label: "AIG Women's British Open",
           },
           {
             value: 'Aberdeen Standard Investments Ladies Scottish Open',
             label: 'Aberdeen Standard Investments Ladies Scottish Open',
           },
           {
-            value: 'CP Women\'s Open',
-            label: 'CP Women\'s Open',
+            value: "CP Women's Open",
+            label: "CP Women's Open",
           },
           {
             value: 'Cambia Portland Classic',
@@ -928,8 +932,8 @@ export const setCategories: SortedGroup[] = [
             label: '3M Open',
           },
           {
-            value: 'Olympic Men\'s Golf Competition',
-            label: 'Olympic Men\'s Golf Competition',
+            value: "Olympic Men's Golf Competition",
+            label: "Olympic Men's Golf Competition",
           },
           {
             value: 'Wyndham Championship',
@@ -961,7 +965,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'Womens', label: 'Womens' },
           { value: 'Doubles', label: 'Doubles' },
           { value: 'Singles', label: 'Singles' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
           { value: 'Brisbane International', label: 'Brisbane International' },
@@ -1073,7 +1077,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'Swiss Indoors Basel', label: 'Swiss Indoors Basel' },
           { value: 'Rolex Paris Masters', label: 'Rolex Paris Masters' },
           { value: 'Doubles', label: 'Doubles' },
-          { value: 'Singles', label: 'Singles' }
+          { value: 'Singles', label: 'Singles' },
         ],
       },
       {
@@ -1084,7 +1088,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'Preakness', label: 'Preakness' },
           { value: 'Belmont', label: 'Belmont' },
           { value: 'Triple Crown', label: 'Triple Crown' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
@@ -1118,10 +1122,7 @@ export const setCategories: SortedGroup[] = [
           {
             value: 'Car Racing',
             label: 'Car Racing',
-            autoCompleteList: [
-              { value: 'Formula 1', label: 'Formula 1' },
-              { value: 'Nascar', label: 'Nascar' },
-            ],
+            autoCompleteList: [{ value: 'Formula 1', label: 'Formula 1' }, { value: 'Nascar', label: 'Nascar' }],
           },
           { value: 'Motorbikes', label: 'Motorbikes' },
           {
@@ -1132,9 +1133,7 @@ export const setCategories: SortedGroup[] = [
           {
             value: 'Cycling',
             label: 'Cycling',
-            autoCompleteList: [
-              { value: 'Tour de France', label: 'Tour de France' },
-            ],
+            autoCompleteList: [{ value: 'Tour de France', label: 'Tour de France' }],
           },
           { value: 'Aussie Rules Football', label: 'Aussie Rules Football' },
           { value: 'Snooker', label: 'Snooker' },
@@ -1181,13 +1180,13 @@ export const setCategories: SortedGroup[] = [
           { value: 'Primary', label: 'Primary' },
           { value: 'Republican', label: 'Republican' },
           { value: 'Democratic', label: 'Democratic' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
-          { value: "House", label: "House" },
-          { value: "Senate", label: "Senate" },
-          { value: "Polling", label: "Polling" }
-        ]
+          { value: 'House', label: 'House' },
+          { value: 'Senate', label: 'Senate' },
+          { value: 'Polling', label: 'Polling' },
+        ],
       },
       {
         value: 'US Politics',
@@ -1198,7 +1197,7 @@ export const setCategories: SortedGroup[] = [
           { value: 'House', label: 'House' },
           { value: 'Senate', label: 'Senate' },
           { value: 'Congress', label: 'Congress' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
@@ -1212,10 +1211,10 @@ export const setCategories: SortedGroup[] = [
           { value: 'Russia', label: 'Russia' },
           { value: 'China', label: 'China' },
           { value: 'Iran', label: 'Iran' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
-      { value: CUSTOM, label: CUSTOM }
+      { value: CUSTOM, label: CUSTOM },
     ],
   },
   {
@@ -1266,7 +1265,7 @@ export const setCategories: SortedGroup[] = [
             value: 'MSFT',
             label: 'MSFT',
           },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
@@ -1297,42 +1296,42 @@ export const setCategories: SortedGroup[] = [
             value: 'Nikkei 255 Index',
             label: 'Nikkei 255 Index',
           },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
-          { value: "S&P Asia 50 Index", label: "S&P Asia 50 Index" },
-          { value: "Dow Jones Asian Titan 50 Index", label: "Dow Jones Asian Titan 50 Index" },
-          { value: "FTSE ASEAN 40 Index", label: "FTSE ASEAN 40 Index" },
-          { value: "Euro Stoxx 50 Index", label: "Euro Stoxx 50 Index" },
-          { value: "FTSE Euro 100 Index", label: "FTSE Euro 100 Index" },
-          { value: "S&P Europe 350 Index", label: "S&P Europe 350 Index" },
-          { value: "S&P Latin America 40 Index", label: "S&P Latin America 40 Index" },
-          { value: "SSE Composite Index", label: "SSE Composite Index" },
-          { value: "SZSE Component Index", label: "SZSE Component Index" },
-          { value: "CSI 300 Index", label: "CSI 300 Index" },
-          { value: "MSCI World Index", label: "MSCI World Index" },
-          { value: "Topic Index", label: "Topic Index" },
-          { value: "JPX-Nikkei 400 Index", label: "JPX-Nikkei 400 Index" },
-          { value: "TecDAX Index", label: "TecDAX Index" },
-          { value: "MDAX Index", label: "MDAX Index" },
-          { value: "FTSE All-Share Index", label: "FTSE All-Share Index" },
-          { value: "FTSE techMark Index", label: "FTSE techMark Index" },
-          { value: "CAC 40 Index", label: "CAC 40 Index" },
-          { value: "CAC Next 20 Index", label: "CAC Next 20 Index" },
-          { value: "CAC Mid 60 Index", label: "CAC Mid 60 Index" },
-          { value: "Bovespa Stock Index", label: "Bovespa Stock Index" },
-          { value: "IBrX Stock Index", label: "IBrX Stock Index" },
-          { value: "ITEL Stock Index", label: "ITEL Stock Index" },
-          { value: "S&P TSX 60 Index", label: "S&P TSX 60 Index" },
-          { value: "S&P TSX Composite Index", label: "S&P TSX Composite Index" },
-          { value: "S&P TSX Venture Composite Index", label: "S&P TSX Venture Composite Index" },
-          { value: "KOSPI Index", label: "KOSPI Index" },
-          { value: "KOSDAQ Index", label: "KOSDAQ Index" },
-          { value: "NIFTY 50", label: "NIFTY 50" },
-          { value: "Nasdaq 100", label: "Nasdaq 100" },
-          { value: "VIX", label: "VIX" },
-          { value: "Wilshire 5000", label: "Wilshire 5000" },
-        ]
+          { value: 'S&P Asia 50 Index', label: 'S&P Asia 50 Index' },
+          { value: 'Dow Jones Asian Titan 50 Index', label: 'Dow Jones Asian Titan 50 Index' },
+          { value: 'FTSE ASEAN 40 Index', label: 'FTSE ASEAN 40 Index' },
+          { value: 'Euro Stoxx 50 Index', label: 'Euro Stoxx 50 Index' },
+          { value: 'FTSE Euro 100 Index', label: 'FTSE Euro 100 Index' },
+          { value: 'S&P Europe 350 Index', label: 'S&P Europe 350 Index' },
+          { value: 'S&P Latin America 40 Index', label: 'S&P Latin America 40 Index' },
+          { value: 'SSE Composite Index', label: 'SSE Composite Index' },
+          { value: 'SZSE Component Index', label: 'SZSE Component Index' },
+          { value: 'CSI 300 Index', label: 'CSI 300 Index' },
+          { value: 'MSCI World Index', label: 'MSCI World Index' },
+          { value: 'Topic Index', label: 'Topic Index' },
+          { value: 'JPX-Nikkei 400 Index', label: 'JPX-Nikkei 400 Index' },
+          { value: 'TecDAX Index', label: 'TecDAX Index' },
+          { value: 'MDAX Index', label: 'MDAX Index' },
+          { value: 'FTSE All-Share Index', label: 'FTSE All-Share Index' },
+          { value: 'FTSE techMark Index', label: 'FTSE techMark Index' },
+          { value: 'CAC 40 Index', label: 'CAC 40 Index' },
+          { value: 'CAC Next 20 Index', label: 'CAC Next 20 Index' },
+          { value: 'CAC Mid 60 Index', label: 'CAC Mid 60 Index' },
+          { value: 'Bovespa Stock Index', label: 'Bovespa Stock Index' },
+          { value: 'IBrX Stock Index', label: 'IBrX Stock Index' },
+          { value: 'ITEL Stock Index', label: 'ITEL Stock Index' },
+          { value: 'S&P TSX 60 Index', label: 'S&P TSX 60 Index' },
+          { value: 'S&P TSX Composite Index', label: 'S&P TSX Composite Index' },
+          { value: 'S&P TSX Venture Composite Index', label: 'S&P TSX Venture Composite Index' },
+          { value: 'KOSPI Index', label: 'KOSPI Index' },
+          { value: 'KOSDAQ Index', label: 'KOSDAQ Index' },
+          { value: 'NIFTY 50', label: 'NIFTY 50' },
+          { value: 'Nasdaq 100', label: 'Nasdaq 100' },
+          { value: 'VIX', label: 'VIX' },
+          { value: 'Wilshire 5000', label: 'Wilshire 5000' },
+        ],
       },
       {
         value: 'ETF',
@@ -1342,7 +1341,7 @@ export const setCategories: SortedGroup[] = [
         value: 'Bonds',
         label: 'Bonds',
       },
-      { value: CUSTOM, label: CUSTOM }
+      { value: CUSTOM, label: CUSTOM },
     ],
   },
   {
@@ -1369,14 +1368,17 @@ export const setCategories: SortedGroup[] = [
             value: 'Golden Globe Awards',
             label: 'Golden Globe Awards',
           },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
-          { value: "BRIT Awards", label: "BRIT Awards" },
+          { value: 'BRIT Awards', label: 'BRIT Awards' },
           { value: "MTV VMA's", label: "MTV VMA's" },
-          { value: "British Academy of film and Television Arts (BAFTA)", label: "British Academy of film and Television Arts (BAFTA)" },
-          { value: "Billboard Music Awards", label: "Billboard Music Awards" }
-        ]
+          {
+            value: 'British Academy of film and Television Arts (BAFTA)',
+            label: 'British Academy of film and Television Arts (BAFTA)',
+          },
+          { value: 'Billboard Music Awards', label: 'Billboard Music Awards' },
+        ],
       },
       {
         value: 'Movies',
@@ -1410,10 +1412,10 @@ export const setCategories: SortedGroup[] = [
             value: 'Dancing with the Stars',
             label: 'Dancing with the Stars',
           },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
-      { value: CUSTOM, label: CUSTOM }
+      { value: CUSTOM, label: CUSTOM },
     ],
   },
   {
@@ -1423,23 +1425,39 @@ export const setCategories: SortedGroup[] = [
       {
         value: BITCOIN,
         label: BITCOIN,
-        subGroup: [{ value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
+        subGroup: [
+          { value: USD, label: USD },
+          { value: USDT, label: USDT },
+          { value: EUR, label: EUR },
+          { value: CUSTOM, label: CUSTOM },
+        ],
       },
       {
         value: ETHEREUM,
         label: ETHEREUM,
-        subGroup: [{ value: 'ICO', label: 'ICO' }, { value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
+        subGroup: [
+          { value: 'ICO', label: 'ICO' },
+          { value: USD, label: USD },
+          { value: USDT, label: USDT },
+          { value: EUR, label: EUR },
+          { value: CUSTOM, label: CUSTOM },
+        ],
       },
       {
         value: LITECOIN,
         label: LITECOIN,
-        subGroup: [{ value: USD, label: USD }, { value: USDT, label: USDT }, { value: EUR, label: EUR }, { value: CUSTOM, label: CUSTOM }],
+        subGroup: [
+          { value: USD, label: USD },
+          { value: USDT, label: USDT },
+          { value: EUR, label: EUR },
+          { value: CUSTOM, label: CUSTOM },
+        ],
       },
       {
         value: 'REP',
         label: 'REP',
       },
-      { value: CUSTOM, label: CUSTOM }
+      { value: CUSTOM, label: CUSTOM },
     ],
   },
   {
@@ -1462,7 +1480,7 @@ export const setCategories: SortedGroup[] = [
             value: 'Tornadoes',
             label: 'Tornadoes',
           },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
@@ -1471,14 +1489,14 @@ export const setCategories: SortedGroup[] = [
         subGroup: [
           { value: 'Snow Fall', label: 'Snow Fall' },
           { value: 'Rain Fall', label: 'Rain Fall' },
-          { value: CUSTOM, label: CUSTOM }
+          { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
         value: 'Tempature',
         label: 'Tempature',
       },
-      { value: CUSTOM, label: CUSTOM }
+      { value: CUSTOM, label: CUSTOM },
     ],
   },
   {
@@ -1501,8 +1519,8 @@ export const setCategories: SortedGroup[] = [
         value: 'SpaceX',
         label: 'SpaceX',
       },
-      { value: CUSTOM, label: CUSTOM }
+      { value: CUSTOM, label: CUSTOM },
     ],
   },
-  { value: CUSTOM, label: CUSTOM }
+  { value: CUSTOM, label: CUSTOM },
 ];
