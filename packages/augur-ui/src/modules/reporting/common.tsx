@@ -45,7 +45,7 @@ export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
 
 export interface DismissableNoticeProps {
   title: string;
-  description: string;
+  description?: string;
   buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES;
   buttonText?: string;
   buttonAction?: Function;
@@ -336,6 +336,7 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
+  Gnosis_ENABLED: boolean;
 }
 
 interface DisputingBondsViewState {
@@ -451,7 +452,8 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
       reportAction,
-      id
+      id,
+      Gnosis_ENABLED
     } = this.props;
 
     const { disabled, scalarError, stakeError, isScalar } = this.state;
@@ -498,11 +500,16 @@ export class DisputingBondsView extends Component<
           label={tentativeWinning ? "Contribute to Next Round" : "Dispute Round Stake"}
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
-        <LinearPropertyLabel
+        {Gnosis_ENABLED && <LinearPropertyLabel
+          key="estimatedGasFee"
+          label="Estimated Gas Fee"
+          value={'0.00 DAI'}
+        />}
+        {!Gnosis_ENABLED && <LinearPropertyLabel
           key="estimatedGasFee"
           label="Estimated Gas Fee"
           value={'0.0000 ETH'}
-        />
+        />}
         <PrimaryButton
           text="Confirm"
           action={reportAction}

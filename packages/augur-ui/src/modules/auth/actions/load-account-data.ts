@@ -10,6 +10,7 @@ import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
+import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 
 export const loadAccountData = (
   callback: NodeStyleCallback = logError
@@ -34,4 +35,5 @@ export const loadAccountData = (
   dispatch(updateAssets());
   dispatch(loadUniverseDetails(universe.id, address));
   dispatch(loadGasPriceInfo());
+  dispatch(getEthToDaiRate());
 };

@@ -74,8 +74,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     assert market.finalize()
 
     # Claim proceeds
-    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[1], nullAddress)
-    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[2], nullAddress)
+    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[1], longTo32Bytes(11))
+    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[2], longTo32Bytes(11))
 
     assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[1], YES) == 0
     assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[1], YES) == 0
@@ -367,7 +367,7 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
 
     assert cash.faucet(fillerCost, sender = contractsFixture.accounts[2])
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=1):
-        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[2])
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], outcome) == cost
 
@@ -389,7 +389,7 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
 
     assert cash.faucet(fillerCost)
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=2):
-        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), nullAddress)
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), longTo32Bytes(11))
 
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], newOutcome) == 0
 
@@ -423,7 +423,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
 
         assert cash.faucet(fillerCost, sender = contractsFixture.accounts[2])
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = 0 if direction == BID else 1):
-            fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[2])
+            fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
         assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[2], trade['outcome']) == trade['position']
         assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], trade['outcome']) == avgPrice

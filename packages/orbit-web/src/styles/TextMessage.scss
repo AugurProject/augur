@@ -1,3 +1,5 @@
+@import 'AugurColors';
+
 .TextMessage {
   display: flex;
   flex: 1 0;
@@ -6,7 +8,8 @@
   word-wrap: break-word;
   white-space: pre-wrap;
   hyphens: auto;
-  color: rgb(196, 196, 190);
+  color: $orbit-color-primary-text;
+  font-size: 0.75rem; // 12px
 
   div {
     width: 100%;

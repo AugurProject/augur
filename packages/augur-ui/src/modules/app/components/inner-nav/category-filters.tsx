@@ -1,6 +1,6 @@
 import React from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
-import { MenuChevron } from 'modules/common/icons';
+import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
 import getValue from 'utils/get-value';
 import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
@@ -113,7 +113,7 @@ export default class CategoryFilters extends React.Component<
   }
 
   renderPopularCategories() {
-    const renderPopular = this.props.popularCategories.map((item, idx) => {
+    let renderPopular = this.props.popularCategories.map((item, idx) => {
       if (this.props.isSearching) {
         // No meta data yet
         return (
@@ -139,6 +139,14 @@ export default class CategoryFilters extends React.Component<
         </div>
       );
     });
+
+    if (this.props.popularCategories.length === 0) {
+      renderPopular = (
+        <span>
+          {SearchIcon} No categories found
+        </span>
+      );
+    }
 
     return (
       <div className={Styles.CategoriesGroup}>

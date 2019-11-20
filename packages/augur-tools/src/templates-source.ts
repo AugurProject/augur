@@ -37,11 +37,19 @@ import {
   DOUBLES,
   WNBA,
 } from './templates-template';
-import { LIST_VALUES } from './templates-lists';
+import {
+  LIST_VALUES,
+  BASKETBALL_EVENT_DEP_TEAMS,
+  HOCKEY_EVENT_DEP_TEAMS,
+  BASEBALL_EVENT_DEP_TEAMS,
+  FOOTBALL_EVENT_DEP_TEAMS,
+  NCAA_FOOTBALL_EVENT_DEP_TEAMS,
+  NCAA_BASKETBALL_CONF_DEP_TEAMS,
+} from './templates-lists';
 
 const YES_NO = 'YesNo';
-const CATEGORICAL = 'Categorical'
-const SCALAR = 'Scalar'
+const CATEGORICAL = 'Categorical';
+const SCALAR = 'Scalar';
 
 export const TEMPLATES = {
   [SPORTS]: {
@@ -52,8 +60,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                question: `PGA: Will [0] win the [1] [2]?`,
+                example: `PGA: Will Tiger Woods win the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -83,14 +91,14 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
-                    }
+                    },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                question: `PGA: Will [0] make the cut at the [1] [2]?`,
+                example: `PGA: Will Tiger Woods make the cut at the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -120,14 +128,14 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    }
+                    },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                question: `PGA: Which golfer will win the [0] [1]?`,
+                example: `PGA: Which golfer will win the 2020 PGA Championship?`,
                 inputs: [
                   {
                     id: 0,
@@ -159,8 +167,8 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    }
-                  ]
+                    },
+                  ],
                 },
               },
             ],
@@ -169,8 +177,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                question: `Euro Tour: Will [0] win the [1] [2]?`,
+                example: `Euro Tour: Will Rory Mcllroy win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -200,14 +208,14 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
-                    }
+                    },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                question: `Euro Tour: Will [0] make the cut at the [1] [2]?`,
+                example: `Euro Tour: Will Rory Mcllroy make the cut at the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -237,14 +245,14 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    }
+                    },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                question: `Euro Tour: Which golfer will win the [0] [1]?`,
+                example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
                 inputs: [
                   {
                     id: 0,
@@ -276,8 +284,8 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    }
-                  ]
+                    },
+                  ],
                 },
               },
             ],
@@ -286,8 +294,8 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2]?`,
-                example: `Will Tiger Woods win the 2020 PGA Championship?`,
+                question: `LPGA: Will [0] win the [1] [2]?`,
+                example: `LPGA: Will Lexi Thompson win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -317,14 +325,14 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
-                    }
+                    },
                   ],
                 },
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] make the cut at the [1] [2]?`,
-                example: `Will Tiger Woods make the cut at the 2020 PGA Championship?`,
+                question: `LPGA: Will [0] make the cut at the [1] [2]?`,
+                example: `LPGA: Will Lexi Thompson make the cut at the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -354,14 +362,14 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
-                    }
+                    },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which golfer will win the [0] [1]?`,
-                example: `Which golfer will win the 2020 PGA Championship?`,
+                question: `LPGA: Which golfer will win the [0] [1]?`,
+                example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
                 inputs: [
                   {
                     id: 0,
@@ -393,13 +401,13 @@ export const TEMPLATES = {
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
-                    }
-                  ]
+                    },
+                  ],
                 },
               },
             ],
-          }
-        }
+          },
+        },
       },
       [HOCKEY]: {
         templates: [
@@ -410,13 +418,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -427,9 +437,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Includes any Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.`
-                }
-              ]
+                  text: `Includes any Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.`,
+                },
+              ],
             },
           },
           {
@@ -439,13 +449,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -475,8 +487,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
@@ -486,9 +499,11 @@ export const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [REQUIRED]: {
-                text: `Includes all regulation, overtime and shootouts.`
-              }
+              [REQUIRED]: [
+                {
+                  text: `Includes all regulation, overtime and shootouts.`,
+                },
+              ],
             },
           },
           {
@@ -498,13 +513,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -535,13 +552,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
@@ -576,8 +595,8 @@ export const TEMPLATES = {
                   text: `If the game is not played or is NOT completed for any reason, the market should resolve as "No Winner".`,
                 },
                 {
-                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`
-                }
+                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`,
+                },
               ],
             },
           },
@@ -597,10 +616,18 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.HOCKEY_EVENT,
-              },              {
+              },
+              {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                inputSourceId: 1,
+                placeholder: `Select Team`,
+                values: HOCKEY_EVENT_DEP_TEAMS,
               },
             ],
             resolutionRules: {},
@@ -629,9 +656,11 @@ export const TEMPLATES = {
               },
             ],
             resolutionRules: {
-              [REQUIRED]: {
-                text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`
-              }
+              [REQUIRED]: [
+                {
+                  text: `Include Regulation, overtime and any shoot-outs. The game must go 55 minutes or more to be considered official. If it does not "No winner" should be deemed the winning outcome.`,
+                },
+              ],
             },
           },
           {
@@ -643,8 +672,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
@@ -727,18 +757,18 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning horse is not one of the possible outcomes listed, Other (Field) should resolve the winner.`
+                  text: `If the winning horse is not one of the possible outcomes listed, Other (Field) should resolve the winner.`,
                 },
                 {
-                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event Resolution time for this market starts, "No Winner" should be the winning outcome.`
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event Resolution time for this market starts, "No Winner" should be the winning outcome.`,
                 },
                 {
-                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's Event Expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's Event Expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`,
                 },
                 {
-                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs after the market's Event Expiration, the disqualified horse will still be named the winner of the market.`
-                }
-              ]
+                  text: `If a horse is disqualified after being determined the winner: If the disqualification occurs after the market's Event Expiration, the disqualified horse will still be named the winner of the market.`,
+                },
+              ],
             },
           },
         ],
@@ -1006,8 +1036,8 @@ export const TEMPLATES = {
                 },
               },
             ],
-          }
-        }
+          },
+        },
       },
       [SOCCER]: {
         children: {
@@ -1218,8 +1248,8 @@ export const TEMPLATES = {
                 },
               },
             ],
-          }
-        }
+          },
+        },
       },
       [BASKETBALL]: {
         children: {
@@ -1388,9 +1418,9 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`
-                    }
-                  ]
+                      text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
+                    },
+                  ],
                 },
               },
               {
@@ -1454,11 +1484,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -1488,6 +1523,13 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: BASKETBALL_EVENT_DEP_TEAMS,
                   },
                 ],
                 resolutionRules: {
@@ -1520,8 +1562,8 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`
-                    }
+                      text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
+                    },
                   ],
                 },
               },
@@ -1551,20 +1593,20 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `Results are determined to the first decimal place, meaning a player averaging 10.6 rebounds per game is higher than a player averaging 10.0.`
+                      text: `Results are determined to the first decimal place, meaning a player averaging 10.6 rebounds per game is higher than a player averaging 10.0.`,
                     },
                     {
-                      text: `In the event of a tie between two players these rules will be used to determine the winner: For points scored, field goal % should be used as the tie breaker.`
+                      text: `In the event of a tie between two players these rules will be used to determine the winner: For points scored, field goal % should be used as the tie breaker.`,
                     },
                     {
-                      text: `For the most rebounds, the player with the total most offensive rebounds, should be used as a tie breaker.`
+                      text: `For the most rebounds, the player with the total most offensive rebounds, should be used as a tie breaker.`,
                     },
                     {
-                      text: `For most total Assists, The player with the "Least" amount of turnovers should be used as the tie breaker.`
+                      text: `For most total Assists, The player with the "Least" amount of turnovers should be used as the tie breaker.`,
                     },
                     {
-                      text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`
-                    }
+                      text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
+                    },
                   ],
                 },
               },
@@ -1589,7 +1631,11 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`}]
+                  [REQUIRED]: [
+                    {
+                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                  ],
                 },
               },
             ],
@@ -1599,7 +1645,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will the [0] win vs the [1]?`,
-                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                example: `WNBA: Will the Los Angeles Sparks win vs the New York Liberty?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1634,7 +1680,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will the [0] win vs the [1] by [2] or more points?`,
-                example: `WNBA: Will the Los Angeles Lakers win vs the Golden State Warriors by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                example: `WNBA: Will the Los Angeles Sparks win vs the New York Liberty by 5 or more points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1675,7 +1721,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will the [0] & [1] score [2] or more combined points?`,
-                example: `WNBA: Will the Los Angeles Lakers & the Golden State Warriors score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
+                example: `WNBA: Will the Los Angeles Sparks & the New York Liberty score 172 or more combined points?\nEstimated schedule start time: Sept 19, 2019 9:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1736,7 +1782,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `WNBA: Will [0] win the [1] [2] award?`,
-                example: `WNBA: Will Steph Curry win the 2019-20 NBA Most Valuable Player award?`,
+                example: `WNBA: Will Maya Moore win the 2019-20 WNBA Most Valuable Player award?`,
                 inputs: [
                   {
                     id: 0,
@@ -1759,15 +1805,15 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`
-                    }
-                  ]
+                      text: `In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as "Yes".`,
+                    },
+                  ],
                 },
               },
               {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which team will win: [0] vs [1]?`,
-                example: `WNBA: Which Team will win: Brooklyn Nets vs NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                example: `WNBA: Which Team will win: Phoenix Mercury vs Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1798,7 +1844,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `WNBA: [0] vs [1]: Total Points scored; Over/Under [2].5?`,
-                example: `WNBA: Brooklyn Nets vs NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `WNBA: Phoenix Mercury vs Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1825,11 +1871,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -1874,7 +1925,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Award`,
-                    values: LIST_VALUES.NBA_BASKETBALL_AWARD,
+                    values: LIST_VALUES.WNBA_BASKETBALL_AWARD,
                   },
                   {
                     id: 2,
@@ -1885,8 +1936,8 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`
-                    }
+                      text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
+                    },
                   ],
                 },
               },
@@ -1916,27 +1967,27 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `Results are determined to the first decimal place, meaning a player averaging 10.6 rebounds per game is higher than a player averaging 10.0.`
+                      text: `Results are determined to the first decimal place, meaning a player averaging 10.6 rebounds per game is higher than a player averaging 10.0.`,
                     },
                     {
-                      text: `In the event of a tie between two players these rules will be used to determine the winner: For points scored, field goal % should be used as the tie breaker.`
+                      text: `In the event of a tie between two players these rules will be used to determine the winner: For points scored, field goal % should be used as the tie breaker.`,
                     },
                     {
-                      text: `For the most rebounds, the player with the total most offensive rebounds, should be used as a tie breaker.`
+                      text: `For the most rebounds, the player with the total most offensive rebounds, should be used as a tie breaker.`,
                     },
                     {
-                      text: `For most total Assists, The player with the "Least" amount of turnovers should be used as the tie breaker.`
+                      text: `For most total Assists, The player with the "Least" amount of turnovers should be used as the tie breaker.`,
                     },
                     {
-                      text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`
-                    }
+                      text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
+                    },
                   ],
                 },
               },
               {
                 marketType: SCALAR,
                 question: `WNBA: Total number of wins [0] will finish [1] regular season with?`,
-                example: `WNBA: Total number of wins NY Knicks will finish 2019-20 regular season with?`,
+                example: `WNBA: Total number of wins New York Liberty will finish 2019-20 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
                 inputs: [
@@ -1954,7 +2005,11 @@ export const TEMPLATES = {
                   },
                 ],
                 resolutionRules: {
-                  [REQUIRED]: [{ text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`}]
+                  [REQUIRED]: [
+                    {
+                      text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games`,
+                    },
+                  ],
                 },
               },
             ],
@@ -1968,13 +2023,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2007,13 +2064,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2052,13 +2111,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2094,8 +2155,9 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
@@ -2119,8 +2181,9 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
@@ -2150,13 +2213,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2191,13 +2256,15 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 3,
@@ -2212,11 +2279,16 @@ export const TEMPLATES = {
                   },
                   {
                     id: 5,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Winner`,
+                  },
+                  {
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [2].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [2].5`,
                   },
@@ -2257,11 +2329,60 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 2,
+                    placeholder: `Select Team`,
+                    values: NCAA_BASKETBALL_CONF_DEP_TEAMS,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `NCAA BB: Which college basketball team will win the [0] [1] D1 National Championship?`,
+                example: `NCAA BB: Which college basketball team will win the Men's 2020 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    placeholder: `Date time`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and Overtime`,
                     },
                   ],
                 },
@@ -2279,8 +2400,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
@@ -2304,13 +2426,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team A`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team B`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 2,
@@ -2354,6 +2478,13 @@ export const TEMPLATES = {
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                inputSourceId: 1,
+                placeholder: `Select Team`,
+                values: BASEBALL_EVENT_DEP_TEAMS,
+              },
             ],
             resolutionRules: {},
           },
@@ -2364,13 +2495,15 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 2,
@@ -2444,8 +2577,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
+                values: LIST_VALUES.MLB_TEAMS,
               },
               {
                 id: 1,
@@ -2457,9 +2591,9 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  test: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`
-                }
-              ]
+                  test: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`,
+                },
+              ],
             },
           },
         ],
@@ -2536,9 +2670,6 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                    {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
@@ -2576,9 +2707,6 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
-                    {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
@@ -2620,7 +2748,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will the [0] win SuperBowl [1]?`,
-                example: `NFL: Will the NY Giants win Superbowl LIV?`,
+                example: `NFL: Will the NY Giants win Superbowl LIV (54th)?`,
                 inputs: [
                   {
                     id: 0,
@@ -2630,16 +2758,17 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Numeral`,
+                    values: LIST_VALUES.NFL_SUPER_BOWL,
                   },
                 ],
                 resolutionRules: {},
               },
               {
                 marketType: YES_NO,
-                question: `Will [0] win the [1] [2] award?`,
-                example: `Will Patrick Mahomes win the 2019-20 MVP award?`,
+                question: `NFL: Will [0] win the [1] [2] award?`,
+                example: `NFL: Will Patrick Mahomes win the 2019-20 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -2693,18 +2822,15 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                    {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which NFL Team will win: [0] vs [1]?`,
-                example: `Which NFL Team will win: Seattle Seahawks vs Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL: Will [0] win by more than [1].5 points over [2]?`,
+                example: `NFL: Will Seattle Seahawks win by more than 10.5 over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2714,36 +2840,39 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Winner`,
+                    placeholder: `No Winner`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs team B`,
-                    },
-                    {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: [0] vs [1]: Total goals scored; Over/Under [2].5?`,
+                question: `NFL: [0] vs [1]: Total points scored; Over/Under [2].5?`,
                 example: `NFL: NY Giants vs Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
@@ -2789,7 +2918,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
                     },
                   ],
                 },
@@ -2816,6 +2945,13 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: FOOTBALL_EVENT_DEP_TEAMS,
+                  },
                 ],
                 resolutionRules: {},
               },
@@ -2836,6 +2972,11 @@ export const TEMPLATES = {
                     placeholder: `Award`,
                     values: LIST_VALUES.FOOTBALL_AWARDS,
                   },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
                 ],
                 resolutionRules: {},
               },
@@ -2845,6 +2986,8 @@ export const TEMPLATES = {
                 example: `Total number of wins NY Giants will finish 2019 regular season with?`,
                 denomination: 'wins',
                 tickSize: 1,
+                minPrice: 0,
+                maxPrice: 16,
                 inputs: [
                   {
                     id: 0,
@@ -2878,13 +3021,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2911,13 +3056,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2950,13 +3097,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -2985,17 +3134,19 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which College Football Team will win: [0] vs [1]?`,
-                example: `Which College Football Team will win:  Alabama vs Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `Which College Football Team will win: Alabama vs Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -3027,13 +3178,15 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
@@ -3092,13 +3245,15 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 4,
@@ -3120,7 +3275,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Which college football team will win [0] National Championship?`,
+                question: `Which college football team will win [0] [1] Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
                 inputs: [
                   {
@@ -3131,8 +3286,21 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_EVENT,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: NCAA_FOOTBALL_EVENT_DEP_TEAMS,
                   },
                 ],
                 resolutionRules: {},
@@ -3175,8 +3343,9 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team`,
+                    values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 1,
@@ -3307,15 +3476,15 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other`,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If any party, other than ones listed in the outcomes, wins the state, the market should resolve as "Other".`
-                }
-              ]
+                  text: `If any party, other than ones listed in the outcomes, wins the state, the market should resolve as "Other".`,
+                },
+              ],
             },
           },
           {
@@ -3341,6 +3510,11 @@ export const TEMPLATES = {
                 placeholder: `Office`,
                 values: LIST_VALUES.PRES_OFFICES,
               },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
             ],
             resolutionRules: {},
           },
@@ -3360,6 +3534,11 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
               },
             ],
             resolutionRules: {},
@@ -3720,8 +3899,7 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text:
-                'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
             },
           ],
         },

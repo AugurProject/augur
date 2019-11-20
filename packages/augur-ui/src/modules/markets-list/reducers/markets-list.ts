@@ -3,6 +3,7 @@ import {
   SET_LOAD_MARKETS_PENDING,
   UPDATE_SELECTED_CATEGORIES,
   UPDATE_CARD_FORMAT,
+  SET_SEARCH_IN_PLACE
 } from 'modules/markets-list/actions/update-markets-list';
 import { BaseAction, MarketsList } from 'modules/types';
 
@@ -11,6 +12,7 @@ const DEFAULT_STATE: MarketsList = {
   meta: null,
   selectedCategories: [],
   marketCardFormat: 'classic',
+  isSearchInPlace: false
 };
 
 export default function(
@@ -33,11 +35,16 @@ export default function(
         ...marketsList,
         selectedCategories: data.categories,
       };
-      case UPDATE_CARD_FORMAT:
-        return {
-          ...marketsList,
-          marketCardFormat: data.format,
-        };
+    case UPDATE_CARD_FORMAT:
+      return {
+        ...marketsList,
+        marketCardFormat: data.format,
+      };
+    case SET_SEARCH_IN_PLACE:
+      return {
+        ...marketsList,
+        isSearchInPlace: data.isSearchInPlace,
+      };
     default:
       return marketsList;
   }

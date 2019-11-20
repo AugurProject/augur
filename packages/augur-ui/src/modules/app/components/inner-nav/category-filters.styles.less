@@ -44,6 +44,24 @@
       .text-14-bold;
     }
   }
+
+  > span:not(:first-of-type) {
+    .text-12;
+
+    color: @color-primary-text;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      height: @size-9;
+      margin-right: @size-6;
+
+      > g > path {
+        fill: @color-primary-text;
+      }
+    }
+  }
 }
 
 .ShowAll {
@@ -57,7 +75,6 @@
     .mono-14;
   }
 }
-
 
 .AllCategories {
   .text-11;

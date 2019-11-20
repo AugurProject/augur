@@ -812,6 +812,15 @@ div.ButtonsRow:last-of-type {
         cursor: pointer;
       }
     }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+      cursor: pointer;
+      text-align: center;
+      width: 45px;
+    }
   }
 
   > div:nth-of-type(2) {
@@ -2831,21 +2840,19 @@ div.ButtonsRow:last-of-type {
     // Header section
     > div:first-of-type {
       align-items: center;
+      background-color: @color-dark-grey;
       border-bottom: 1px solid @color-dark-grey;
       display: flex;
       flex-direction: row;
-      padding: @size-8 @size-8;
+      padding: @size-14 @size-16;
 
       > span {
         color: @color-primary-text;
-        margin: 0 0;
         text-transform: uppercase;
       }
 
       > span:first-of-type {
-        .mono-11;
-
-        margin: 0 @size-8 0 0;
+        .mono-12-bold;
       }
 
       > span:nth-of-type(2) {
@@ -2870,8 +2877,8 @@ div.ButtonsRow:last-of-type {
     }
 
     iframe {
-      border: 0px;
-      height: calc(100% - 37px);
+      border: 0;
+      height: calc(100% - 48px);
       width: 100%;
     }
   }

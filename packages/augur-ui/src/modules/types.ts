@@ -14,6 +14,7 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -297,7 +298,7 @@ export interface NewMarketPropertiesValidations {
   hour?: string;
   minute?: string;
   meridiem?: string;
-  outcomes?: string[];
+  outcomes?: string | string[];
   settlementFee?: string;
   affiliateFee?: number;
   inputs?: NewMarketPropertiesValidations[];
@@ -308,6 +309,7 @@ export interface NewMarketPropertyValidations {
   scalarDenomination?: string;
   affiliateFee?: number;
   inputs?: NewMarketPropertiesValidations[];
+  outcomes?: string | string[];
 }
 export interface NewMarket {
   uniqueId: number;
@@ -406,6 +408,7 @@ export interface MarketsList {
   };
   selectedCategories: string[];
   marketCardFormat: string;
+  isSearchInPlace: boolean;
 }
 
 export interface DefaultOrderProperties {
@@ -459,7 +462,7 @@ export interface FilterSortOptions {
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
-  hasOrders: boolean;
+  templateFilter: string;
 }
 
 export interface Favorite {
@@ -518,6 +521,9 @@ export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
+  ethToDaiRate: BigNumber;
+  gnosisEnabled: boolean;
+  gnosisStatus: GnosisSafeState;
 }
 
 export interface AuthStatus {
@@ -582,6 +588,7 @@ export interface LoginAccount {
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
+  totalRealizedPL?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;

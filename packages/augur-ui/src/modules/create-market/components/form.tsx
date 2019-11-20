@@ -92,6 +92,8 @@ import {
   TEMPLATE_CONTENT_PAGES,
   NO_CAT_TEMPLATE_CONTENT_PAGES,
 } from 'modules/create-market/template-navigation';
+import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -459,7 +461,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
-      checkUserInputFilled ? checkForUserInputFilled(value) : '',
+      checkUserInputFilled ? checkForUserInputFilled(value, newMarket.endTimeFormatted) : '',
     ];
 
     if (label === END_TIME) {
@@ -677,7 +679,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           if (typeof val === 'string') {
             return val === '' || !val;
           } else {
-            return Object.values(val).map(val => val === '');
+            return Object.values(val).filter(v => v === '').length > 0;
           }
         });
       } else {
@@ -704,8 +706,14 @@ export default class Form extends React.Component<FormProps, FormState> {
             <span>Your market preview</span>
             <PrimaryButton text="Close preview" action={this.preview} />
             <MarketView
-              market={{
+                sortedOutcomes={selectSortedMarketOutcomes(
+                  newMarket.marketType,
+                  newMarket.outcomesFormatted
+                )}
+                market={{
                 ...newMarket,
+                maxPriceBigNumber: createBigNumber(newMarket.maxPrice),
+                minPriceBigNumber: createBigNumber(newMarket.minPrice),
                 details: isTemplate
                   ? buildResolutionDetails(
                       newMarket.detailsText,

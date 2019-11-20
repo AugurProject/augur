@@ -1,9 +1,8 @@
 import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
-import { ExtraInfoTemplate } from '@augurproject/sdk/src/state/logs/types';
 import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { TemplateInput, TemplateInputType } from '@augurproject/artifacts';
+import { TemplateInput, TemplateInputType, ExtraInfoTemplate } from '@augurproject/artifacts';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 
 interface MarketTitleProps {

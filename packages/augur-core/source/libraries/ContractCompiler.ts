@@ -184,6 +184,8 @@ export class ContractCompiler {
                 "UniswapV2Factory",
                 "ERC1820Registry",
                 "OICash",
+                "Affiliates",
+                "AffiliateValidator",
                 // utility
                 "BuyParticipationTokens",
                 "Formulas",

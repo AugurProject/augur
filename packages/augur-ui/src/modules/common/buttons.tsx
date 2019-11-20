@@ -330,7 +330,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     title={props.title || 'REP Faucet'}
   >
     {RepLogoIcon}
-    <span>REP Faucet</span>
+    <span>{props.title ? props.title : "REP Faucet"}</span>
   </button>
 );
 

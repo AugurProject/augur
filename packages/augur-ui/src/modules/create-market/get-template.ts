@@ -259,7 +259,13 @@ export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
 };
 
 export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
-  return inputs
+  const requiredOutcomes = inputs.filter(
+    i => i.type === TemplateInputType.ADDED_OUTCOME
+  );
+  const otherOutcomes = inputs.filter(
+    i => i.type !== TemplateInputType.ADDED_OUTCOME
+  );
+  return [...otherOutcomes, ...requiredOutcomes]
     .filter(
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||

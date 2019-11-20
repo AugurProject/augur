@@ -28,6 +28,8 @@ export class Contracts {
   gnosisSafeRegistry: ContractInterfaces.GnosisSafeRegistry;
   hotLoading: ContractInterfaces.HotLoading;
   zeroXExchange: ContractInterfaces.Exchange;
+  affiliates: ContractInterfaces.Affiliates;
+  affiliateValidator: ContractInterfaces.AffiliateValidator;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -56,6 +58,8 @@ export class Contracts {
     this.gnosisSafeRegistry = new ContractInterfaces.GnosisSafeRegistry(dependencies, addresses.GnosisSafeRegistry);
     this.hotLoading = new ContractInterfaces.HotLoading(dependencies, addresses.HotLoading);
     this.zeroXExchange = new ContractInterfaces.Exchange(dependencies, addresses.Exchange);
+    this.affiliates = new ContractInterfaces.Affiliates(dependencies, addresses.Affiliates);
+    this.affiliateValidator = new ContractInterfaces.AffiliateValidator(dependencies, addresses.AffiliateValidator);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);

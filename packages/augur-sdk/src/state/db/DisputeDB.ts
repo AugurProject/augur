@@ -1,3 +1,4 @@
+import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { DerivedDB } from './DerivedDB';
 import { ParsedLog } from '@augurproject/types';
@@ -11,9 +12,10 @@ export class DisputeDatabase extends DerivedDB {
     networkId: number,
     name: string,
     mergeEventNames: string[],
-    idFields: string[]
+    idFields: string[],
+    augur: Augur
   ) {
-    super(db, networkId, name, mergeEventNames, idFields);
+    super(db, networkId, name, mergeEventNames, idFields, augur);
 
     this.requiresOrder = true;
 

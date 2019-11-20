@@ -20,7 +20,7 @@ export interface DropdownProps {
   onChange: any;
   className?: string;
   defaultValue?: string | number;
-  options: Array<NameValuePair>;
+  options: NameValuePair[];
   large?: boolean;
   staticLabel?: string;
   staticMenuLabel?: string;
@@ -32,11 +32,16 @@ export interface DropdownProps {
   activeClassName?: string;
   showColor?: boolean;
   disabled?: boolean;
+  sort?: boolean;
 }
 
 interface DropdownState {
   selected: NameValuePair;
   showList: boolean;
+  sortedList: NameValuePair[];
+  scrollWidth?: number;
+  clientWidth?: number;
+  isDisabled?: boolean;
 }
 
 interface SelectionOption {
@@ -45,7 +50,7 @@ interface SelectionOption {
 }
 
 interface PillSelectionProps {
-  options: Array<SelectionOption>;
+  options: SelectionOption[];
   onChange(value: number): void;
   defaultSelection: number;
 }
@@ -71,7 +76,12 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     scrollWidth: null,
     clientWidth: null,
     isDisabled: true,
+    sortedList:
+      this.props.sort && this.props.options
+        ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+        : this.props.options,
   };
+  labelRef: any;
 
   componentDidMount() {
     this.measure();
@@ -82,22 +92,36 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
 
-  componentDidUpdate(nextProps) {
+  componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
     this.measure();
-    if (nextProps.defaultValue !== this.props.defaultValue) {
+    if (prevProps.defaultValue !== this.props.defaultValue) {
       this.setState({
-        selected: this.props.options.find(o => o.value === this.props.defaultValue)
-      })
+        selected: this.props.options.find(
+          o => o.value === this.props.defaultValue
+        ),
+      });
+    }
+    if (
+      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options)
+    ) {
+      const sortedList =
+        prevProps.sort && prevProps.options
+          ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+          : prevProps.options;
+      this.setState({
+        sortedList,
+      });
     }
   }
 
-  shouldComponentUpdate(nextProps: any, nextState: any) {
+  shouldComponentUpdate(nextProps: DropdownProps, nextState: DropdownState) {
     if (
       nextState.selected !== this.state.selected ||
       nextState.showList !== this.state.showList ||
       this.props.disabled !== nextProps.disabled ||
       this.props.staticLabel !== nextProps.staticLabel ||
-      this.props.defaultValue !== nextProps.defaultValue
+      this.props.defaultValue !== nextProps.defaultValue ||
+      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
     ) {
       return true;
     }
@@ -160,7 +184,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       showColor,
       disabled,
     } = this.props;
-    const { selected, showList, isDisabled } = this.state;
+    const { selected, showList, isDisabled, sortedList } = this.state;
 
     return (
       <div
@@ -201,7 +225,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             [`${Styles.active}`]: showList,
           })}
         >
-          {options.map(option => (
+          {sortedList.map(option => (
             <button
               key={`${option.value}${option.label}`}
               value={option.value}
@@ -218,7 +242,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             }}
             value={selected.value}
           >
-            {options.map(option => (
+            {sortedList.map(option => (
               <option
                 key={`${option.value}${option.label}`}
                 value={option.value}

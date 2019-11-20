@@ -1,5 +1,4 @@
 import logError from 'utils/log-error';
-import { updateTopBarPL } from 'modules/positions/actions/update-top-bar-pl';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppState } from 'store';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
@@ -59,6 +58,7 @@ export const loadAccountPositionsTotals = (
   dispatch(
     updateLoginAccount({
       totalFrozenFunds: positions[30].frozenFunds,
+      totalRealizedPL: positions[30].realized,
       tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })
   );
@@ -163,6 +163,5 @@ export const userPositionProcessing = (
     };
     dispatch(updateAccountPositionsData(positionData));
   });
-  dispatch(updateTopBarPL());
   if (callback) callback(null, positions);
 };

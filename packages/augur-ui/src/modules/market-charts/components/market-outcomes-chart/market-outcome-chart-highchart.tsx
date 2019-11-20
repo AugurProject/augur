@@ -8,7 +8,6 @@ NoDataToDisplay(Highcharts);
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
-const NUM_DAYS_TO_USE_DAY_TIMEFRAME = 2;
 
 interface MarketOutcomeChartsHighchartsProps {
   maxPrice: number;
@@ -18,7 +17,6 @@ interface MarketOutcomeChartsHighchartsProps {
   scalarDenomination: string;
   selectedOutcomeId: number;
   pricePrecision: number;
-  daysPassed: number;
   isTradingTutorial?: boolean;
 }
 
@@ -32,7 +30,6 @@ export default class MarketOutcomesChartHighchart extends Component<
 > {
   static defaultProps = {
     isScalar: false,
-    daysPassed: 0,
     scalarDenomination: '',
   };
 
@@ -86,11 +83,14 @@ export default class MarketOutcomesChartHighchart extends Component<
           gridLineWidth: 1,
           gridLineColor: null,
           labels: {
-            style: { fontSize: '9px' },
+            style: null,
           },
           crosshair: {
+            snap: true,
             label: {
               enabled: true,
+              shape: 'square',
+              padding: 2,
               format: '{value:%b %d %H:%M}',
             },
           },
@@ -133,13 +133,11 @@ export default class MarketOutcomesChartHighchart extends Component<
     const {
       bucketedPriceTimeSeries,
       selectedOutcomeId,
-      daysPassed,
       isTradingTutorial,
     } = this.props;
 
     if (!isTradingTutorial) {
       this.buidOptions(
-        daysPassed,
         bucketedPriceTimeSeries,
         selectedOutcomeId
       );
@@ -149,17 +147,14 @@ export default class MarketOutcomesChartHighchart extends Component<
   UNSAFE_componentWillUpdate(nextProps) {
     const {
       bucketedPriceTimeSeries,
-      daysPassed,
       selectedOutcomeId,
     } = this.props;
     if (
+      selectedOutcomeId !== nextProps.selectedOutcomeId ||
       JSON.stringify(bucketedPriceTimeSeries) !==
-        JSON.stringify(nextProps.bucketedPriceTimeSeries) ||
-      daysPassed !== nextProps.daysPassed ||
-      selectedOutcomeId !== nextProps.selectedOutcomeId
+        JSON.stringify(nextProps.bucketedPriceTimeSeries)
     ) {
       this.buidOptions(
-        nextProps.daysPassed,
         nextProps.bucketedPriceTimeSeries,
         nextProps.selectedOutcomeId
       );
@@ -173,34 +168,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     }
   }
 
-  getxAxisProperties = (daysPassed, useTickInterval) => {
-    const hours = '{value:%H:%M}';
-    const days = '{value:%b %d}';
-    const mmSecondsInHour = createBigNumber(3600 * 1000);
-    const mmSecondsInDay = createBigNumber(24).times(mmSecondsInHour);
-    const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay);
-    let interval = daysPassed <= 7 ? mmSecondsInHour : mmSecondsInDay;
-    interval = daysPassed >= 60 ? mmSecondsInWeek : interval;
-
-    return {
-      labels: {
-        // format: interval.isEqualTo(mmSecondsInHour) ? hours : days,
-        style: null,
-      },
-      crosshair: {
-        snap: true,
-        label: {
-          enabled: true,
-          shape: 'square',
-          padding: 4,
-          format: '{value:%b %d %H:%M}',
-        },
-      },
-    };
-  };
-
   buidOptions(
-    daysPassed,
     bucketedPriceTimeSeries,
     selectedOutcomeId,
   ) {
@@ -213,18 +181,6 @@ export default class MarketOutcomesChartHighchart extends Component<
         priceTimeSeries[id].length > p ? priceTimeSeries[id].length : p,
       0
     );
-    const timeIncrement =
-      daysPassed > NUM_DAYS_TO_USE_DAY_TIMEFRAME ? 'day' : 'hour';
-
-    const xAxisProperties = this.getxAxisProperties(
-      daysPassed,
-      highestLength > 1 // don't use tickInterval if there is only 1 data point
-    );
-    if (Array.isArray(options.xAxis)) {
-      options.xAxis = Object.assign(options.xAxis[0], xAxisProperties);
-    } else {
-      options.xAxis = Object.assign(options.xAxis, xAxisProperties);
-    }
 
     options.chart = {
       ...options.chart,
@@ -283,7 +239,7 @@ export default class MarketOutcomesChartHighchart extends Component<
     options.plotOptions.line.dataGrouping = {
       ...options.plotOptions.line.dataGrouping,
       forced: true,
-      units: [[timeIncrement, [1]]],
+      units: [['minute', [1]]],
     };
 
     const newOptions = Object.assign(options, { series });

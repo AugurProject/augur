@@ -14,17 +14,17 @@ interface OutstandingRequest {
 
 // Generator function for creating request IDs
 function* infiniteSequence() {
-    let i = 0;
-    while(true) {
-        yield i++;
-    }
+  let i = 0;
+  while (true) {
+    yield i++;
+  }
 }
 const iterator = infiniteSequence();
 
 export class WebWorkerConnector extends Connectors.BaseConnector {
   private outstandingRequests: OutstandingRequest[] = [];
   private worker: any;
-  subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
+  subscriptions: { [event: string]: { id: string; callback: Callback } } = {};
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.worker = new Worker('./Sync.worker.ts', { type: 'module' });
@@ -41,19 +41,22 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
         const eventData: JsonRpcResponse = JSON.parse(event.data);
 
         // Handle response for outstanding request
-        this.outstandingRequests.filter((r) => r.id === eventData.id).forEach((r) => {
-          if (eventData.error) {
-            r.reject(new Error(eventData.error.message));
-          } else {
-            r.resolve(eventData.result);
-          }
-        });
+        this.outstandingRequests
+          .filter(r => r.id === eventData.id)
+          .forEach(r => {
+            if (eventData.error) {
+              r.reject(new Error(eventData.error.message));
+            } else {
+              r.resolve(eventData.result);
+            }
+          });
         _.remove(this.outstandingRequests, function(r) {
           return r.id === eventData.id;
         });
 
         if (eventData.result && eventData.result.subscribed) {
-          this.subscriptions[eventData.result.subscribed].id = eventData.result.subscription;
+          this.subscriptions[eventData.result.subscribed].id =
+            eventData.result.subscription;
         } else {
           this.messageReceived(eventData);
         }
@@ -95,7 +98,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
-      return new Promise<R>((resolve, reject)=>{
+      return new Promise<R>((resolve, reject) => {
         const id = iterator.next().value;
         this.outstandingRequests.push({
           id,

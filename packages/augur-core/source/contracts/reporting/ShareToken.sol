@@ -193,7 +193,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
      */
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
-        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, msg.sender, _amount, address(0));
+        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, msg.sender, _amount, msg.sender, bytes32(0));
 
         require(cash.transfer(msg.sender, _payout));
 
@@ -210,12 +210,12 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      * @param _holder The holder of the complete sets
      * @param _recipient The recipient of funds from the sale
      * @param _amount The number of complete sets to sell
-     * @param _affiliateAddress The affiliate address for the trade if one exists
+     * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
      * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
      */
-    function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, address _affiliateAddress) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+    function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
-        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _affiliateAddress);
+        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
 
         require(cash.transfer(_recipient, _payout));
 
@@ -234,15 +234,15 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      * @param _longRecipient The account which should receive the remaining payout for providing the matching shares to the short recipients shares
      * @param _shortRecipient The account which should recieve the (price * shares provided) payout for selling their side of the sale
      * @param _price The price of the trade being done. This determines how much each recipient recieves from the sale proceeds
-     * @param _affiliateAddress The affiliate address for the trade if one exists
+     * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
      * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
      */
-    function sellCompleteSetsForTrade(IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _affiliateAddress) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+    function sellCompleteSetsForTrade(IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(isApprovedForAll(_shortParticipant, msg.sender) == true, "ERC1155: need operator approval to burn short account shares");
         require(isApprovedForAll(_longParticipant, msg.sender) == true, "ERC1155: need operator approval to burn long account shares");
 
         _internalTransferFrom(_shortParticipant, _longParticipant, getTokenId(_market, _outcome), _amount, bytes(""), false);
-        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount,  _affiliateAddress);
+        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
 
         uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
         require(cash.transfer(_longRecipient, _longPayout));
@@ -252,7 +252,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         return (_creatorFee, _reportingFee);
     }
 
-    function burnCompleteSets(IMarket _market, address _account, uint256 _amount, address _affiliateAddress) private returns (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) {
+    function burnCompleteSets(IMarket _market, address _account, uint256 _amount, address _sourceAccount, bytes32 _fingerprint) private returns (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) {
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
         uint256 _numTicks = markets[address(_market)].numTicks;
 
@@ -285,7 +285,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         _payout = _payout.sub(_creatorFee).sub(_reportingFee);
 
         if (_creatorFee != 0) {
-            _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
+            _market.recordMarketCreatorFees(_creatorFee, _sourceAccount, _fingerprint);
         }
 
         _universe.withdraw(address(this), _payout.add(_reportingFee), address(_market));
@@ -301,14 +301,14 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      * @notice Claims winnings for a market and for a particular shareholder
      * @param _market The market to claim winnings for
      * @param _shareHolder The account to claim winnings for
-     * @param _affiliateAddress An affiliate address to share market creator fees with
+     * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
      * @return Bool True
      */
-    function claimTradingProceeds(IMarket _market, address _shareHolder, address _affiliateAddress) external nonReentrant returns (uint256[] memory _outcomeFees) {
-        return claimTradingProceedsInternal(_market, _shareHolder, _affiliateAddress);
+    function claimTradingProceeds(IMarket _market, address _shareHolder, bytes32 _fingerprint) external nonReentrant returns (uint256[] memory _outcomeFees) {
+        return claimTradingProceedsInternal(_market, _shareHolder, _fingerprint);
     }
 
-    function claimTradingProceedsInternal(IMarket _market, address _shareHolder, address _affiliateAddress) internal returns (uint256[] memory _outcomeFees) {
+    function claimTradingProceedsInternal(IMarket _market, address _shareHolder, bytes32 _fingerprint) internal returns (uint256[] memory _outcomeFees) {
         require(augur.isKnownMarket(_market));
         if (!_market.isFinalized()) {
             _market.finalize();
@@ -331,7 +331,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
 
                 if (_proceeds > 0) {
                     _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));
-                    distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare, _affiliateAddress);
+                    distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare, _fingerprint);
                 }
                 _outcomeFees[_outcome] = _creatorShare.add(_reporterShare);
             }
@@ -341,12 +341,12 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
         return _outcomeFees;
     }
 
-    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare, address _affiliateAddress) private {
+    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare, bytes32 _fingerprint) private {
         if (_shareHolderShare > 0) {
             require(cash.transfer(_shareHolder, _shareHolderShare));
         }
         if (_creatorShare > 0) {
-            _market.recordMarketCreatorFees(_creatorShare, _affiliateAddress);
+            _market.recordMarketCreatorFees(_creatorShare, _shareHolder, _fingerprint);
         }
         if (_reporterShare > 0) {
             require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));

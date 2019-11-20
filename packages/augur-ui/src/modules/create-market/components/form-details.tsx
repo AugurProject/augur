@@ -33,6 +33,7 @@ import {
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
+  MARKET_COPY_LIST,
 } from 'modules/create-market/constants';
 import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
@@ -132,6 +133,7 @@ export default class FormDetails extends React.Component<
               <Subheaders
                 header="Market type"
                 link
+                copyType={MARKET_COPY_LIST.MARKET_TYPE}
                 subheader="Market types vary based on the amount of possible outcomes."
               />
               <RadioCardGroup
@@ -187,6 +189,7 @@ export default class FormDetails extends React.Component<
 
               <InputHeading
                 name={'question'}
+                copyType={MARKET_COPY_LIST.MARKET_QUESTION}
                 heading={'Market question'}
                 subHeading={'What do you want people to predict?'}
                 listItems={[
@@ -216,7 +219,6 @@ export default class FormDetails extends React.Component<
               <Subheaders
                 header="Outcomes"
                 subheader="List the outcomes people can choose from."
-                link
               />
               <NumberedList
                 initialList={outcomes.map(outcome => {
@@ -228,7 +230,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={'Enter outcome'}
-                updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
+                updateList={(value: string[]) => onChange(OUTCOMES, value)}
                 errorMessage={validations.outcomes}
               />
             </>
@@ -238,6 +240,7 @@ export default class FormDetails extends React.Component<
             <>
               <Subheaders
                 header="Unit of measurement"
+                copyType={MARKET_COPY_LIST.UNIT_OF_MEASURMENT}
                 subheader="Choose a denomination for the range."
                 link
               />
@@ -252,6 +255,7 @@ export default class FormDetails extends React.Component<
               />
               <Subheaders
                 header="Numeric range"
+                copyType={MARKET_COPY_LIST.NUMERIC_RANGE}
                 subheader="Choose the min and max values of the range."
                 link
               />
@@ -289,6 +293,7 @@ export default class FormDetails extends React.Component<
               </section>
               <Subheaders
                 header="Precision"
+                copyType={MARKET_COPY_LIST.PRECISION}
                 subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”."
                 link
               />
@@ -360,6 +365,7 @@ export default class FormDetails extends React.Component<
               <InputHeading
                 name={'resolution'}
                 heading={'Resolution details'}
+                copyType={MARKET_COPY_LIST.RESOLUTION_DETAILS}
                 subHeading={'Describe what users need to know to determine the outcome of the event.'}
                 listItems={[
                   'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
@@ -380,6 +386,7 @@ export default class FormDetails extends React.Component<
             header="Designated reporter"
             subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)."
             link
+            copyType={MARKET_COPY_LIST.DESIGNATED_REPORTER}
           />
           <RadioBarGroup
             radioButtons={[

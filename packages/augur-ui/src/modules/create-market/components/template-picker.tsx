@@ -33,7 +33,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   const [tertiary, setTertiary] = useState(
     tertiaryOptions.length === 0 ? { value: '', label: '' } : tertiaryOptions[0]
   );
-
+  const [defaultValue, setDefaultValue] = useState(null);
   const categoriesFormatted = {
     primary: categories[0],
     secondary: categories[1],
@@ -70,14 +70,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
               })}
               onClick={() => {
                 setTertiary(option);
-                updateNewMarket({
-                  ...newMarket,
-                  categories: [
-                    newMarket.categories[0],
-                    newMarket.categories[1],
-                    option.label,
-                  ],
-                });
+                setDefaultValue(null);
               }}
             >
               {option.label}
@@ -87,33 +80,37 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
       )}
       <section>
         <RadioTwoLineBarGroup
+          defaultSelected={defaultValue}
           radioButtons={templateOptions}
           onChange={value => {
+            setDefaultValue(value);
+            if (!value) return;
+            const template = templates[value];
             updateNewMarket({
               ...deepClone<NewMarket>(EMPTY_STATE),
               description: buildMarketDescription(
-                templates[value].question,
-                templates[value].inputs
+                template.question,
+                template.inputs
               ),
               outcomes:
                 newMarket.marketType === CATEGORICAL
-                  ? createTemplateOutcomes(templates[value].inputs)
+                  ? createTemplateOutcomes(template.inputs)
                   : ['', ''],
               currentStep: newMarket.currentStep,
               tickSize:
-                newMarket.marketType === SCALAR && templates[value].tickSize
-                  ? templates[value].tickSize
+                newMarket.marketType === SCALAR && template.tickSize
+                  ? template.tickSize
                   : DEFAULT_TICK_SIZE,
               scalarDenomination:
                 newMarket.marketType === SCALAR &&
-                templates[value].denomination,
+                template.denomination,
               minPrice:
-                newMarket.marketType === SCALAR && templates[value].minPrice
-                  ? templates[value].minPrice
+                newMarket.marketType === SCALAR && template.minPrice
+                  ? template.minPrice
                   : newMarket.minPrice,
               maxPrice:
-                newMarket.marketType === SCALAR && templates[value].maxPrice
-                  ? templates[value].maxPrice
+                newMarket.marketType === SCALAR && template.maxPrice
+                  ? template.maxPrice
                   : newMarket.maxPrice,
               marketType: newMarket.marketType,
               categories: [
@@ -121,7 +118,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                 newMarket.categories[1],
                 tertiary.label,
               ],
-              template: templates[value],
+              template,
             });
           }}
         />

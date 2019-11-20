@@ -70,7 +70,7 @@ library Trade {
         uint256[] shortOutcomes;
         address longFundsAccount;
         address shortFundsAccount;
-        address affiliateAddress;
+        bytes32 fingerprint;
     }
 
     struct OrderData {
@@ -89,13 +89,13 @@ library Trade {
     // Constructor
     //
 
-    function create(StoredContracts memory _storedContracts, bytes32 _orderId, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
+    function create(StoredContracts memory _storedContracts, bytes32 _orderId, address _fillerAddress, uint256 _fillerSize, bytes32 _fingerprint) internal view returns (Data memory) {
         OrderData memory _orderData = createOrderDataWithOrderId(_storedContracts, _orderId);
 
-        return createWithData(_storedContracts, _orderData, _fillerAddress, _fillerSize, _affiliateAddress);
+        return createWithData(_storedContracts, _orderData, _fillerAddress, _fillerSize, _fingerprint);
     }
 
-    function createWithData(StoredContracts memory _storedContracts, OrderData memory _orderData, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
+    function createWithData(StoredContracts memory _storedContracts, OrderData memory _orderData, address _fillerAddress, uint256 _fillerSize, bytes32 _fingerprint) internal view returns (Data memory) {
         Contracts memory _contracts = getContracts(_storedContracts, _orderData.market, _orderData.outcome);
         FilledOrder memory _order = getOrder(_contracts, _orderData.outcome, _orderData.kycToken, _orderData.price, _orderData.orderId);
         Participant memory _creator = getMaker(_orderData.sharesEscrowed, _orderData.amount, _orderData.creator, _orderData.orderType);
@@ -114,7 +114,7 @@ library Trade {
             shortOutcomes: _shortOutcomes,
             longFundsAccount: _creator.direction == Direction.Long ? _creatorFundsSource : _filler.participantAddress,
             shortFundsAccount: _creator.direction == Direction.Short ? _creatorFundsSource : _filler.participantAddress,
-            affiliateAddress: _affiliateAddress
+            fingerprint: _fingerprint
         });
     }
 
@@ -177,18 +177,16 @@ library Trade {
     // "public" functions
     //
 
-    function tradeMakerSharesForFillerShares(Data memory _data) internal returns (uint256, uint256) {
+    function tradeMakerSharesForFillerShares(Data memory _data) internal returns (uint256 _marketCreatorFees, uint256 _reporterFees) {
         uint256 _numberOfCompleteSets = _data.creator.sharesToSell.min(_data.filler.sharesToSell);
         if (_numberOfCompleteSets == 0) {
             return (0, 0);
         }
 
         // transfer shares and sell complete sets distributing payouts based on the price
-        uint256 _marketCreatorFees;
-        uint256 _reporterFees;
 
         // Sell both account shares
-        (_marketCreatorFees, _reporterFees) = _data.contracts.shareToken.sellCompleteSetsForTrade(_data.contracts.market, _data.longOutcome, _numberOfCompleteSets, _data.shortFundsAccount, _data.longFundsAccount, getShortShareSellerDestination(_data), getLongShareSellerDestination(_data), _data.order.sharePriceLong, _data.affiliateAddress);
+        (_marketCreatorFees, _reporterFees) = _data.contracts.shareToken.sellCompleteSetsForTrade(_data.contracts.market, _data.longOutcome, _numberOfCompleteSets, _data.shortFundsAccount, _data.longFundsAccount, getShortShareSellerDestination(_data), getLongShareSellerDestination(_data), _data.order.sharePriceLong, _data.filler.participantAddress, _data.fingerprint);
 
         // update available shares for creator and filler
         _data.creator.sharesToSell -= _numberOfCompleteSets;
@@ -474,27 +472,27 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
      * @param _orderId The id of the order to fill
      * @param _amountFillerWants The number of attoShares desired
      * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
-     * @param _affiliateAddress Address of an affiliate to receive a portion of settlement fees from this trade should settlement occur
+     * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
      * @return The amount remaining the filler wants
      */
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
         address _filler = msg.sender;
-        Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _affiliateAddress);
+        Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         uint256 _result = fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
-        //_tradeData.contracts.market.assertBalances();
-        return 0;//_result;
+        _tradeData.contracts.market.assertBalances();
+        return _result;
     }
 
-    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
+    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bytes32 _fingerprint) external returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
-        Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _affiliateAddress);
+        Trade.Data memory _tradeData = Trade.create(storedContracts, _orderId, _filler, _amountFillerWants, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
     }
 
-    function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) external returns (uint256) {
+    function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, bytes32 _fingerprint, address _filler) external returns (uint256) {
         require(msg.sender == zeroXTrade);
         Trade.OrderData memory _orderData = Trade.createOrderData(storedContracts.shareToken, _market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
-        Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _affiliateAddress);
+        Trade.Data memory _tradeData = Trade.createWithData(storedContracts, _orderData, _filler, _amount, _fingerprint);
         return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
 
@@ -546,11 +544,11 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _creatorCompleteSets = _tradeData.contracts.shareToken.lowestBalanceOfMarketOutcomes(_market, _outcomes, _creator);
 
         if (_fillerCompleteSets > 0) {
-            _tradeData.contracts.shareToken.sellCompleteSets(_market, _filler, _filler, _fillerCompleteSets, _tradeData.affiliateAddress);
+            _tradeData.contracts.shareToken.sellCompleteSets(_market, _filler, _filler, _fillerCompleteSets, _tradeData.fingerprint);
         }
 
         if (_creatorCompleteSets > 0) {
-            _tradeData.contracts.shareToken.sellCompleteSets(_market, _creator, _creator, _creatorCompleteSets, _tradeData.affiliateAddress);
+            _tradeData.contracts.shareToken.sellCompleteSets(_market, _creator, _creator, _creatorCompleteSets, _tradeData.fingerprint);
         }
 
         return true;

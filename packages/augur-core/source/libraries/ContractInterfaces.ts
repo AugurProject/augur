@@ -21,6 +21,8 @@ export class ZRXToken extends c.ZRXToken<BigNumber> {
 }
 export class Exchange extends c.Exchange<BigNumber> {
 }
+export class AffiliateValidator extends c.AffiliateValidator<BigNumber> {
+}
 export class Augur extends c.Augur<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {
@@ -66,6 +68,8 @@ export class ReputationTokenFactory extends c.ReputationTokenFactory<BigNumber> 
 export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFactory<BigNumber> {
 }
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
+}
+export class Affiliates extends c.Affiliates<BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }

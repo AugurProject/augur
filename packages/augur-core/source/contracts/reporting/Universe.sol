@@ -14,6 +14,7 @@ import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IOICash.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
@@ -594,13 +595,14 @@ contract Universe is IUniverse {
      * @notice Create a Yes / No Market
      * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateValidator Optional contract which validate the referrer for any attempt at distributing affiliate fees
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
         augur.logYesNoMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
         return _newMarket;
     }
@@ -609,14 +611,15 @@ contract Universe is IUniverse {
      * @notice Create a Categorical Market
      * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateValidator Optional contract which validate the referrer for any attempt at distributing affiliate fees
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _outcomes Array of outcome labels / descriptions
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
         augur.logCategoricalMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
         return _newMarket;
     }
@@ -625,6 +628,7 @@ contract Universe is IUniverse {
      * @notice Create a Scalar Market
      * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateValidator Optional contract which validate the referrer for any attempt at distributing affiliate fees
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _prices 2 element Array comprising a min price and max price in atto units in order to support decimal values. For example if the display range should be between .1 and .5 the prices should be 10**17 and 5 * 10 ** 17 respectively
@@ -632,15 +636,15 @@ contract Universe is IUniverse {
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
         augur.logScalarMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
         return _newMarket;
     }
 
-    function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
+    function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
         getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
-        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
         shareToken.initializeMarket(_newMarket, _numOutcomes + 1, _numTicks); // To account for Invalid
         return _newMarket;

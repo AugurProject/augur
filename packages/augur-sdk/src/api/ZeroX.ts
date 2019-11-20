@@ -174,7 +174,7 @@ export class ZeroX {
 
     result = await this.augur.contracts.ZeroXTrade.trade(
       params.amount,
-      params.affiliateAddress,
+      params.fingerprint,
       params.tradeGroupId,
       orders,
       signatures,

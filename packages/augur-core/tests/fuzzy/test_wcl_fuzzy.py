@@ -82,7 +82,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Fill order
     fixture.contracts['Cash'].faucet(fillerTokens, sender=fillerKey)
-    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), "0x0000000000000000000000000000000000000000", sender = fillerKey)
+    remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), longTo32Bytes(11), sender = fillerKey)
     assert not remaining
 
     # Move time and sweep interest
@@ -109,8 +109,8 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     assert market.finalize()
 
     shareToken= fixture.contracts['ShareToken']
-    assert shareToken.claimTradingProceeds(market.address, account1, nullAddress)
-    assert shareToken.claimTradingProceeds(market.address, account2, nullAddress)
+    assert shareToken.claimTradingProceeds(market.address, account1, longTo32Bytes(11))
+    assert shareToken.claimTradingProceeds(market.address, account2, longTo32Bytes(11))
 
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):

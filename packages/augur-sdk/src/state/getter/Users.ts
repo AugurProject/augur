@@ -248,6 +248,7 @@ export class Users {
       if (positions && Object.keys(positions).length > 0) {
         userPositionTotals = {
           totalFrozenFunds: positions[30].frozenFunds,
+          totalRealizedPL: positions[30].realized,
           tradingPositionsTotal: {
             unrealizedRevenue24hChangePercent: positions[1].unrealizedPercent,
           },

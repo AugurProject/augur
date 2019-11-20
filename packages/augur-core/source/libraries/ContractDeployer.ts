@@ -579,6 +579,8 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
+        mapping['Affiliates'] = this.contracts.get('Affiliates').address!;
+        mapping['AffiliateValidator'] = this.contracts.get('AffiliateValidator').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;

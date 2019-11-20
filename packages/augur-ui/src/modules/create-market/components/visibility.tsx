@@ -20,6 +20,7 @@ import {
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
+import { MARKET_COPY_LIST } from 'modules/create-market/constants';
 
 export interface VisibilityProps {
   newMarket: NewMarket;
@@ -252,6 +253,7 @@ export default class Visibility extends Component<
         >
           <LargeSubheaders
             link
+            copyType={MARKET_COPY_LIST.VISIBILITY}
             header="Market visibility"
             subheader="To ensure your market is visible to users you must pass the spread filter check. To improve the ranking or visiblity of your market, ensure you add good liquidity to each outcome."
           />

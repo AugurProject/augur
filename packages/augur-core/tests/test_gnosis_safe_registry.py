@@ -2,13 +2,14 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
-from utils import nullAddress
+from utils import nullAddress, longTo32Bytes
 
 
 def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSafeRegistry, gnosisSafeMaster, proxyFactory):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     shareToken = contractsFixture.contracts["ShareToken"]
+    affiliates = contractsFixture.contracts["Affiliates"]
     account = contractsFixture.accounts[0]
 
     assert gnosisSafeRegistry.getSafe(account) == nullAddress
@@ -19,7 +20,7 @@ def test_gnosis_safe_registry(contractsFixture, augur, universe, cash, gnosisSaf
 
     saltNonce = 42
 
-    gnosisSafeRegistryData = gnosisSafeRegistry.callRegister_encode(gnosisSafeRegistry.address, augur.address, createOrder.address, fillOrder.address, cash.address, shareToken.address)
+    gnosisSafeRegistryData = gnosisSafeRegistry.callRegister_encode(gnosisSafeRegistry.address, augur.address, createOrder.address, fillOrder.address, cash.address, shareToken.address, affiliates.address, longTo32Bytes(11), nullAddress)
 
     gnosisSafeData = gnosisSafeMaster.setup_encode([account], 1, gnosisSafeRegistry.address, gnosisSafeRegistryData, nullAddress, nullAddress, 0, nullAddress)
     gnosisSafeAddress = proxyFactory.createProxyWithNonce(gnosisSafeMaster.address, gnosisSafeData, saltNonce)

@@ -1,3 +1,5 @@
+@import 'AugurColors';
+
 $text-color: rgba(228, 228, 228, 0.9);
 
 .LoginView {
@@ -56,33 +58,34 @@ $text-color: rgba(228, 228, 228, 0.9);
     font-size: 1.125rem; // 18px
     text-transform: none;
     font-weight: bold;
-    color: rgba(240, 240, 240, 0.8);
+    color: $orbit-color-primary-text;
     z-index: 1;
-    margin: 0 0 0.75rem; // 12px
+    margin: 0 0 0.5rem; // 8px
     padding: 0;
   }
 
   p {
-    color: #AFA7C1;
-    font-size: 0.625rem; // 10px
-    line-height: 0.9375rem; // 15px
-    margin: 0;
+    color: $orbit-color-secondary-text;
+    font-size: 0.75rem; // 12px
+    font-weight: 400;
+    line-height: 1rem; // 16px
+    margin: 0 1.5rem 0.5rem; // 24px 8px
     text-align: center;
-  }
 
-  p:last-of-type {
-    margin-bottom: 1.125rem; // 18px
+    > span {
+      color: $orbit-color-primary-text;
+    }
   }
 
   form {
     margin: 0;
     z-index: 1; // for electron
     display: flex;
-    align-self: flex-start;
+    align-self: center;
     width: 100%;
     flex-direction: column;
     justify-content: center;
-    max-width: 32.5em;
+    max-width: 100%;
 
     .usernameRow {
       display: flex;
@@ -94,7 +97,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     }
 
     .connectButtonRow {
-      margin-top: 0.75rem; // 12px
+      margin-top: 0.5rem; // 8px
       display: flex;
       flex-direction: row;
       flex: 0 1 15%;
@@ -163,7 +166,7 @@ $text-color: rgba(228, 228, 228, 0.9);
 
     .nicknameLength {
       margin-top: 0.5em;
-      padding: 0em 0.5em;
+      padding: 0 0.5em;
       font-size: 0.8em;
       display: flex;
       align-self: center;
@@ -181,15 +184,18 @@ $text-color: rgba(228, 228, 228, 0.9);
       background-color: #0E0E0F;
       border-bottom: 1px solid #252429;
       border-radius: 0.1875rem; // 3px
-      margin-bottom: 0;
-      width: 70%;
+      margin: 0 1.5rem; // 24px
+      width: 100%;
+      height: 2.5rem; // 40px
       text-align: center;
       font-weight: normal;
       font-style: normal;
+      font-size: 0.875rem; // 14px
+      box-sizing: border-box;
     }
 
     input[type='text']::placeholder {
-      color: #848294;
+      color: $orbit-color-secondary-text;
       opacity: 1;
       font-weight: normal;
       font-style: normal;

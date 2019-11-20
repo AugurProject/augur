@@ -3,14 +3,16 @@ import { API } from '../state/getter/API';
 import { BaseConnector } from './baseConnector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { Callback, augurEmitter } from '../events';
+import { Callback } from '../events';
 
 export class SingleThreadConnector extends BaseConnector {
   protected api: Promise<API>;
-  protected events = new Subscriptions(augurEmitter);
+  protected events;
 
-  connect = (ethNodeUrl: string, account?: string): Promise<any> => {
+  connect = async (ethNodeUrl: string, account?: string): Promise<any> => {
     this.api = Sync.start(ethNodeUrl, account, true, {});
+    const api = (await this.api)
+    this.events = new Subscriptions(api.augur.getAugurEventEmitter())
     return this.api;
   }
 
