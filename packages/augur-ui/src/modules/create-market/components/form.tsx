@@ -521,6 +521,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           id: 0,
           description: 'Invalid',
         });
+        removeAllOrdersFromNewMarket();
       } else if (newMarket.marketType === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
         outcomesFormatted[1].description =
