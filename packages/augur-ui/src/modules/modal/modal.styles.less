@@ -2219,12 +2219,12 @@ div.ButtonsRow:last-of-type {
     .TransactionsTable;
     .text-12;
 
-    background: @color-module-background;
+    background: @color-table-header;
     border-bottom: 0;
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     margin: @size-24 0 0;
-    min-height: @size-40;
-    overflow: auto;
+    min-height: @size-32;
+    text-transform: uppercase;
 
     @media @breakpoint-mobile {
       margin: 0;
@@ -2260,10 +2260,12 @@ div.ButtonsRow:last-of-type {
     border-top: 0;
     color: @color-primary-text;
     max-height: 650px;
-    overflow: auto;
+    overflow: overlay;
+    margin-bottom: @size-32;
 
     @media @breakpoint-mobile {
       max-height: 600px;
+      margin-bottom: @size-16;
     }
 
     > span {
@@ -2323,10 +2325,6 @@ div.ButtonsRow:last-of-type {
     grid-template-columns: 130px 1fr 130px;
     grid-template-rows: @size-24;
     margin: auto 0 0;
-
-    > div:last-of-type {
-      display: none;
-    }
 
     > div:first-of-type {
       grid-column: 2 / span 1;
