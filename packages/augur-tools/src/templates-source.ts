@@ -602,6 +602,16 @@ export const TEMPLATES = {
               },
               {
                 id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] to win by more than [1].5`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] to lose by less than [1].5`,
+              },
+              {
+                id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `No Winner`,
               },
@@ -1191,6 +1201,16 @@ export const TEMPLATES = {
                     placeholder: `Date time`,
                   },
                   {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
+                  },
+                  {
                     id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Unofficial game/Cancelled`,
@@ -1334,6 +1354,16 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
                   },
                   {
                     id: 6,
@@ -1647,6 +1677,16 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
                   },
                   {
                     id: 4,
@@ -2079,26 +2119,36 @@ export const TEMPLATES = {
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 1,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 1,
+                    id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
                   {
-                    id: 2,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
                   },
                 ],
                 resolutionRules: {
@@ -2569,14 +2619,24 @@ export const TEMPLATES = {
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
                   },
                 ],
                 resolutionRules: {
@@ -2877,6 +2937,16 @@ export const TEMPLATES = {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `No Winner`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] to win by more than [1].5`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] to lose by less than [1].5`,
               },
             ],
             resolutionRules: {
@@ -3280,6 +3350,16 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
                   },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -3623,6 +3703,16 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Winner`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[0] to win by more than [1].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2] to lose by less than [1].5`,
                   },
                 ],
                 resolutionRules: {

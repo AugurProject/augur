@@ -285,22 +285,7 @@ export const substituteUserOutcome = (
   input: TemplateInput,
   inputs: TemplateInput[]
 ) => {
-  let matches = input.placeholder.match(/\[(.*?)\]/);
-  let submatch = '0';
-  if (matches) {
-    submatch = String(matches[1]);
-  }
-
-  let text = input.placeholder.replace(
-    `[${submatch}]`,
-    `${
-      inputs[submatch].userInput
-        ? inputs[submatch].userInput
-        : `[${inputs[submatch].placeholder}]`
-    }`
-  );
-
-  return text;
+  return buildMarketDescription(input.placeholder, inputs);
 };
 
 export const buildResolutionDetails = (
