@@ -67,7 +67,8 @@ $text-color: rgba(228, 228, 228, 0.9);
   p {
     color: $orbit-color-secondary-text;
     font-size: 0.75rem; // 12px
-    line-height: 0.875rem; // 14px
+    font-weight: 400;
+    line-height: 1rem; // 16px
     margin: 0 1.5rem 0.5rem; // 24px 8px
     text-align: center;
 
@@ -80,11 +81,11 @@ $text-color: rgba(228, 228, 228, 0.9);
     margin: 0;
     z-index: 1; // for electron
     display: flex;
-    align-self: flex-start;
+    align-self: center;
     width: 100%;
     flex-direction: column;
     justify-content: center;
-    max-width: 32.5em;
+    max-width: 100%;
 
     .usernameRow {
       display: flex;

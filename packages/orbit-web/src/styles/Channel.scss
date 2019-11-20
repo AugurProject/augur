@@ -2,7 +2,10 @@
 @import 'Colors';
 @import 'AugurColors';
 
-$controls-height: 2.8em;
+$controls-height-desktop: 2.8rem;
+$controls-height-mobile: 5rem;
+// Breakpoints should use height instead of width because it's based on the iframe's window instead of browser's window
+$breakpoint-mobile: "all and (min-height: 16.01rem)";
 
 .ChannelView {
   width: 100%;
@@ -17,7 +20,7 @@ $controls-height: 2.8em;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: rgb(32, 32, 32);
+  background-color: $orbit-page-background;
 
   display: flex;
   flex-flow: column nowrap;
@@ -148,10 +151,15 @@ input[type='button'],
   display: flex;
   justify-content: space-around;
   align-items: center;
-  max-height: $controls-height;
-  min-height: $controls-height;
+  max-height: $controls-height-desktop;
+  min-height: $controls-height-desktop;
   padding: 0.1875rem; // 3px
   color: rgb(128, 128, 128);
+
+  @media #{$breakpoint-mobile} {
+    max-height: $controls-height-mobile;
+    min-height: $controls-height-mobile;
+  }
 
   .replyto {
     min-width: 5vw;
@@ -194,7 +202,7 @@ input[type='button'],
 
   overflow: hidden;
 
-  background-color: #201E22;
+  background-color: $orbit-page-background;
 
   flex: 1 1 auto;
 
