@@ -2008,10 +2008,12 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   max-width: 95vw;
-  overflow-y: auto;
-  padding: 0 @size-24 @size-24;
+  min-height: 500px;
+  overflow: hidden;
+  padding: 0 @size-20 @size-20;
 
   > header {
+    border-bottom: 1px solid @color-secondary-action-outline;
     margin: 0 -@size-24 @size-24;
 
     @media @breakpoint-mobile {
@@ -2026,14 +2028,14 @@ div.ButtonsRow:last-of-type {
 
   > section:first-of-type {
     display: grid;
-    grid-gap: 0.25rem 0.5rem;
-    grid-template-columns: 108px 108px 205px 108px 200px 1fr;
-    grid-template-rows: 1fr 2fr;
+    grid-gap: @size-4;
+    grid-template-columns: repeat(4, 135px) 130px 1fr;
+    grid-template-rows: @size-14 @size-32;
 
     @media @breakpoint-mobile {
-      grid-gap: @size-8 @size-12;
+      grid-gap: @size-8 @size-4;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
+      grid-template-rows: @size-32 @size-24 @size-32 @size-24 @size-32 @size-32;
       height: auto;
       margin-bottom: @size-8;
 
@@ -2065,8 +2067,8 @@ div.ButtonsRow:last-of-type {
       }
 
       > div[class*='FormDropdown'] > div[class*='Normal'] {
-        min-width: min-content;
-        max-width: min-content;
+        min-width: 100%;
+        max-width: 100%;
       }
 
       > div:nth-of-type(2) {
@@ -2107,10 +2109,14 @@ div.ButtonsRow:last-of-type {
     }
 
     > span {
-      .mono-10;
+      .mono-10-bold;
 
       color: @color-inactive-text;
       text-transform: uppercase;
+
+      @media @breakpoint-mobile {
+        margin-top: auto;
+      }
     }
 
     > span:last-of-type {
@@ -2119,6 +2125,64 @@ div.ButtonsRow:last-of-type {
       @media @breakpoint-mobile {
         grid-column: span 1;
         order: 7;
+      }
+    }
+
+    > div[class*='FormDropdown'] {
+      > div {
+        border: 1px solid @color-secondary-action-outline;
+        max-height: @size-32;
+        min-height: @size-32;
+        min-width: 0;
+        width: 100%;
+
+        @media @breakpoint-mobile {
+          max-height: none;
+          max-width: none;
+          min-height: 100%;
+          min-width: 100%;
+        }
+
+        > button {
+          > span {
+            .text-14;
+
+            padding: @size-3 0;
+            text-align: left;
+          }
+
+          > svg {
+            height: @size-6;
+            width: @size-10;
+
+            > path {
+              fill: @color-secondary-text;
+              stroke: @color-secondary-text;
+            }
+          }
+        }
+      }
+    }
+
+    > div[class*='DatePicker'] {
+      :global {
+        .DateInput_input_1,
+        .DateInput_input__focused,
+        .DateInput_input__focused_2 {
+          min-height: @size-32;
+          max-height: @size-32;
+          min-width: 0;
+    
+          @media @breakpoint-mobile {
+            min-width: 0;
+          }
+        }
+
+        .SingleDatePickerInput_calendarIcon,.SingleDatePickerInput_calendarIcon_1 {
+          padding: 0;
+          margin-top: @size-6;
+          margin-bottom: @size-3;
+        }
       }
     }
 
@@ -2156,12 +2220,12 @@ div.ButtonsRow:last-of-type {
     .TransactionsTable;
     .text-12;
 
-    background: @color-module-background;
+    background: @color-table-header;
     border-bottom: 0;
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     margin: @size-24 0 0;
-    min-height: @size-40;
-    overflow: auto;
+    min-height: @size-32;
+    text-transform: uppercase;
 
     @media @breakpoint-mobile {
       margin: 0;
@@ -2197,10 +2261,12 @@ div.ButtonsRow:last-of-type {
     border-top: 0;
     color: @color-primary-text;
     max-height: 650px;
-    overflow: auto;
+    overflow: overlay;
+    margin-bottom: @size-32;
 
     @media @breakpoint-mobile {
       max-height: 600px;
+      margin-bottom: @size-16;
     }
 
     > span {
@@ -2256,35 +2322,58 @@ div.ButtonsRow:last-of-type {
   > div:last-of-type {
     align-items: center;
     display: grid;
-    grid-gap: @size-8;
-    grid-template-columns: 95px 30px 1fr 30px 95px;
-    margin: @size-32 0 0;
+    grid-gap: @size-16;
+    grid-template-columns: 130px 1fr 130px;
+    grid-template-rows: @size-24;
+    margin: auto 0 0;
 
-    @media @breakpoint-mobile {
-      display: flex;
-      flex-flow: row nowrap;
-      margin: @size-16 0 0;
+    > div:first-of-type {
+      grid-column: 2 / span 1;
+      margin: 0 auto;
 
-      > div:first-of-type {
+      @media @breakpoint-mobile {
+        grid-column: 1 / span 3;
         margin: 0;
         width: 100%;
       }
 
-      > span,
-      > div:last-of-type {
-        display: none;
+      > section > button {
+        height: @size-24;
+        width: @size-24;
+        padding: 0;
       }
     }
 
-    > div:first-of-type {
-      grid-column: 3 / span 1;
-      margin: 0 auto;
-    }
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        display: none;
+      }
 
-    > span {
-      .text-12;
+      > div {
+        border: 1px solid @color-secondary-action-outline;
+        min-height: @size-24;
+        max-height: @size-24;
+        min-width: 0;
 
-      color: @color-inactive-text;
+        > button {
+          > span {
+            .mono-9;
+
+            padding: @size-3 0;
+            text-align: left;
+          }
+
+          > svg {
+            height: @size-6;
+            width: @size-10;
+
+            > path {
+              fill: @color-secondary-text;
+              stroke: @color-secondary-text;
+            }
+          }
+        }
+      }
     }
   }
 }
