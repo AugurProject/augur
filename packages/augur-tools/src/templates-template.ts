@@ -117,7 +117,7 @@ export interface TemplateValidation {
     templateValidationResRules: string;
     requiredOutcomes: string[];
     outcomeDependencies: DropdownDependencies;
-  }
+  };
 }
 export interface Template {
   hash: string;
@@ -177,7 +177,7 @@ export interface ExtraInfoTemplateInput {
 export interface ExtraInfoTemplate {
   hash: string;
   question: string;
-  inputs: ExtraInfoTemplateInput[]
+  inputs: ExtraInfoTemplateInput[];
 }
 
 export interface ExtraInfo {
@@ -195,7 +195,7 @@ export const ValidationTemplateInputType = {
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]*`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
-  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`
+  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`,
 };
 
 export let TEMPLATE_VALIDATIONS = {};
@@ -210,7 +210,7 @@ export function generateResolutionRulesHash(rules: ResolutionRules) {
   try {
     const details = rules[REQUIRED].map(r => r.text).join('\n');
     hash = hashResolutionRules(details);
-  } catch(e) {
+  } catch (e) {
     console.log(rules, rules[REQUIRED]);
   }
   return hash;
@@ -231,53 +231,78 @@ function convertOutcomes(outcomes: string[]) {
   if (!outcomes) return [];
   return outcomes.map(o => {
     const outcomeDescription = o.replace('0x', '');
-    return Buffer.from(outcomeDescription, 'hex').toString()
-  })
+    return Buffer.from(outcomeDescription, 'hex').toString();
+  });
+}
+
+function isDependencyOutcomesCorrect(
+  validationDep: DropdownDependencies[],
+  requiredOutcomes: string[],
+  inputs: ExtraInfoTemplateInput[],
+  outcomes: string[]
+) {
+  let result = false;
+  const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
+  if (validationDep.length > 0) {
+    validationDep.forEach(v => {
+      const input = inputs.find(i => i.id === v.inputSourceId);
+      if (!input) result = false;
+      const correctValues = v.values[input.value];
+      result = testOutcomes.filter(o => correctValues.includes(o)).length === testOutcomes.length;
+    });
+  }
+  return result;
 }
 
 export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string) => {
-  let result = false;
-  if (!template || !template.hash || !template.question || template.inputs.length === 0) return result;
+  if (!template || !template.hash || !template.question || template.inputs.length === 0) return false;
 
   try {
-
     const validation = TEMPLATE_VALIDATIONS[template.hash];
-    if (!!!validation) return result;
+    if (!!!validation) return false;
 
     // check market title/question matches built template question
     let checkMarketTitle = template.question;
     template.inputs.map((i: ExtraInfoTemplateInput) => {
       checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
     });
-    if (checkMarketTitle !== title) return result;
+    if (checkMarketTitle !== title) return false;
 
     // check for input duplicates
     const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
-    if (new Set(values).size !== values.length) return result;
+    if (new Set(values).size !== values.length) return false;
 
     // check for outcome duplicates
     const outcomeValue = convertOutcomes(outcomes);
-    if (new Set(outcomeValue).size !== outcomeValue.length) return result;
+    if (new Set(outcomeValue).size !== outcomeValue.length) return false;
 
     // reg ex to verify market question dropdown values and inputs
-    console.log(validation.templateValidation);
-    console.log(checkMarketTitle);
-    result = isValidTemplateMarket(validation.templateValidation, checkMarketTitle);
+    if (!isValidTemplateMarket(validation.templateValidation, checkMarketTitle)) return false;
 
     // check that required outcomes exist
-    if (hasRequiredOutcomes(validation.requiredOutcomes, outcomeValue)) return result;
+    if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomeValue)) return false;
+
+    if (validation.outcomeDependencies !== null) {
+      if (
+        !isDependencyOutcomesCorrect(
+          validation.outcomeDependencies,
+          validation.requiredOutcomes,
+          template.inputs,
+          outcomes
+        )
+      )
+        return false;
+    }
 
     // verify resolution rules
     const marketResolutionRules = hashResolutionRules(longDescription);
-    if (marketResolutionRules !== validation.templateValidationResRules) return result;
-
+    if (marketResolutionRules !== validation.templateValidationResRules) return false;
   } catch (e) {
     console.error(e);
   }
-  return result;
+  return true;
 };
 
 //##TEMPLATES##
-
 
 //##TEMPLATE_VALIDATIONS##

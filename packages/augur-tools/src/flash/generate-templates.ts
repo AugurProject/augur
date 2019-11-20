@@ -84,8 +84,7 @@ function getDropdownDependencies(inputs: TemplateInput[]): DropdownDependencies 
   if (hasDepend && hasDepend.length > 0) {
     listValues = hasDepend.map(i => {
       const values = Object.keys(i.values).reduce((p, key) => {
-        const list = listToRegEx(i.values[key], 'value');
-        p[key] = list;
+        p[key] = values;
         return p;
       }, {});
       return { inputSourceId: i.inputSourceId, values };
