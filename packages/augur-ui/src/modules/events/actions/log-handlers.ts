@@ -170,7 +170,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   );
   // update assets each block
   if (getState().authStatus.isLogged) {
-    dispatch(updateAssets(true));
+    dispatch(updateAssets());
     dispatch(checkAccountAllowance());
   }
 

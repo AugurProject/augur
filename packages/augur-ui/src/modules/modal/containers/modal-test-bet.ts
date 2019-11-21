@@ -23,6 +23,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  track: (eventName, payload) => dispatch(track(eventName, payload));
   setOnboardingSeen: () => {
     if (windowRef && windowRef.localStorage.setItem) {
       windowRef.localStorage.setItem(ONBOARDING_SEEN_KEY, 'true');
@@ -32,7 +33,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: TestBet,
-  analyticsEvent: DO_A_TEST_BET,
+  analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
   largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
   currentStep: 4,
   linkContent: [
@@ -54,7 +55,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
             [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
           }),
         });
-        !sP.isTablet && track(START_TEST_TRADE, {});
+        !sP.isTablet && dP.track(START_TEST_TRADE, {});
         dP.setOnboardingSeen();
         dP.closeModal();
       },
@@ -62,7 +63,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: 'Finish',
       action: () => {
-        !sP.isTablet && track(SKIPPED_TEST_TRADE, {});
+        !sP.isTablet && dP.track(SKIPPED_TEST_TRADE, {});
         dP.setOnboardingSeen();
         dP.closeModal();
       },

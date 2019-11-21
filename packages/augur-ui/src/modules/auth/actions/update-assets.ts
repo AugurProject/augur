@@ -11,8 +11,7 @@ import { AppState } from 'store';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';
-import { track, ADDED_DAI } from 'services/analytics/helpers';
-import { createBigNumber } from 'utils/create-big-number';
+import { addedDaiEvent } from 'services/analytics/helpers';
 
 export const updateAssets = (
   possibleDaiIncrease = false,
@@ -26,8 +25,6 @@ export const updateAssets = (
   return updateBalances(
     universe.id,
     address,
-    possibleDaiIncrease,
-    loginAccount.balances.dai,
     dispatch,
     callback
   );
@@ -36,8 +33,6 @@ export const updateAssets = (
 function updateBalances(
   universe: string,
   address: string,
-  possibleDaiIncrease: boolean,
-  previousDaiBalance: Number,
   dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
@@ -53,12 +48,7 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const dai = amounts[1];
     const eth = amounts[2];
-    if (
-      possibleDaiIncrease &&
-      createBigNumber(dai).gt(createBigNumber(previousDaiBalance))
-    ) {
-      track(ADDED_DAI, {});
-    }
+    dispatch(addedDaiEvent(dai)); 
     dispatch(updateLoginAccount({ balances: { attoRep, rep, dai, eth, legacyAttoRep, legacyRep } }));
     return callback(null, { rep, dai, eth });
   });
