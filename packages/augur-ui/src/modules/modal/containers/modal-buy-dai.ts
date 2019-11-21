@@ -9,6 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_ADD_FUNDS, MODAL_TEST_BET } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
+import { BUY_DAI, track } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -17,12 +18,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   addFunds: callback =>
     dispatch(updateModal({ type: MODAL_ADD_FUNDS, cb: callback })),
   testBet: () => dispatch(updateModal({ type: MODAL_TEST_BET })),
+  track: (eventName, payload) => dispatch(track(eventName, payload))
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingPaymentIcon,
   largeHeader: 'Add DAI to your account',
   currentStep: 3,
+  analyticsEvent: () => dP.track(BUY_DAI, {}),
   linkContent: [
     {
       content:
