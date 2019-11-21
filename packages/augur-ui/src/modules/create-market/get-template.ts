@@ -310,7 +310,8 @@ export const hasNoTemplateCategoryChildren = category => {
 };
 
 export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
-  if (!category || !subcategory || !TEMPLATES[category] || !TEMPLATES[category].children) return false;
+  if (!category || !subcategory || !TEMPLATES[category] || !TEMPLATES[category].children) return true;
+  if (!TEMPLATES[category].children[subcategory] || !TEMPLATES[category].children[subcategory].children) return true;
   if (TEMPLATES[category].children[subcategory] || TEMPLATES[category].children[subcategory].children) return false;
   return true;
 };
