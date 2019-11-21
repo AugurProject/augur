@@ -23,7 +23,7 @@ export const FilterNotice = (props: FilterNoticeProps) => {
     <div className={Styles.filterNotice}>
       {showNotice() ? (
         <div>
-          <span className={props.color === 'red' ? Styles.red : Styles.grey}>
+          <span className={props.color === 'invalid' ? Styles.invalid : Styles.primary}>
             {ExclamationCircle}
           </span>
           {props.content}
