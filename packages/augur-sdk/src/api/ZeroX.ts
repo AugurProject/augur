@@ -114,11 +114,15 @@ export class ZeroX {
   private readonly browserMesh: BrowserMesh;
   private readonly providerEngine: Web3ProviderEngine;
 
-  constructor(augur: Augur, browserMesh: BrowserMesh, meshClient?: WSClient) {
+  constructor(augur: Augur, browserMesh?: BrowserMesh, meshClient?: WSClient) {
+    if (!(browserMesh || meshClient)) {
+      throw Error('ZeroX instance mush have browserMesh, meshClient, or both.')
+    }
+
     this.augur = augur;
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
-    this.browserMesh.startAsync();
+    this.browserMesh!.startAsync();
     this.providerEngine = new Web3ProviderEngine();
     this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
     this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
@@ -134,6 +138,9 @@ export class ZeroX {
   }
 
   async getOrders(): Promise<OrderInfo[]> {
+    if (!this.meshClient) {
+      throw Error('getOrders is not supported on browser mesh')
+    }
     return this.meshClient.getOrdersAsync();
     // TODO when browser mesh supports this back out to using it if meshClient not provided
   }

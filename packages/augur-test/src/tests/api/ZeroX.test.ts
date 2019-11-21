@@ -9,7 +9,6 @@ import { stringTo32ByteHex } from '../../libs/Utils';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import * as _ from 'lodash';
-import { MockMeshServer, SERVER_PORT } from '../../libs/MockMeshServer';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 
 describe('Augur API :: ZeroX :: ', () => {
@@ -26,10 +25,8 @@ describe('Augur API :: ZeroX :: ', () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
-    // await MockMeshServer.create();
     // meshClient = new WSClient(`ws://localhost:${SERVER_PORT}`);
     meshClient = new WSClient('ws://localhost:60557');
-    // meshClient = new WSClient('ws://localhost:60559');
     const meshBrowser = new MockBrowserMesh(meshClient);
 
     const connector = new Connectors.DirectConnector();
@@ -46,7 +43,6 @@ describe('Augur API :: ZeroX :: ', () => {
 
   afterAll(() => {
     meshClient.destroy();
-    // stopServer();
   });
 
   test('State API :: ZeroX :: getOrders', async () => {

@@ -104,7 +104,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     this.hotLoading = new HotLoading(this);
-    this.zeroX = browserMesh ? new ZeroX(this, browserMesh, meshClient) : undefined;
+    this.zeroX = browserMesh || meshClient ? new ZeroX(this, browserMesh, meshClient) : undefined;
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();
     }
