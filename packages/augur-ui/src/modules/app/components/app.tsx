@@ -77,6 +77,8 @@ interface AppProps {
   isConnectionTrayOpen: boolean;
   showGlobalChat: Function;
   updateHelpMenuState: Function;
+  migrateV1Rep: Function;
+  showMigrateRepButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -326,6 +328,8 @@ export default class AppView extends Component<AppProps> {
       toasts,
       isConnectionTrayOpen,
       updateConnectionTray,
+      migrateV1Rep,
+      showMigrateRepButton,
     } = this.props;
 
     const currentPath = parsePath(location.pathname)[0];
@@ -399,6 +403,8 @@ export default class AppView extends Component<AppProps> {
                 isConnectionTrayOpen={isConnectionTrayOpen}
                 logout={() => this.props.logout()}
                 showGlobalChat={() => this.props.showGlobalChat()}
+                migrateV1Rep={migrateV1Rep}
+                showMigrateRepButton={showMigrateRepButton}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -406,6 +412,8 @@ export default class AppView extends Component<AppProps> {
                 isLogged={isLogged || restoredAccount}
                 menuData={this.sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
+                migrateV1Rep={migrateV1Rep}
+                showMigrateRepButton={showMigrateRepButton}
               />
             </section>
             <AlertsContainer

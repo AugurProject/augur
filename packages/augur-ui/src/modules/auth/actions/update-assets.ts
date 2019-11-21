@@ -9,6 +9,7 @@ import {
   getEthBalance,
   getDaiBalance,
   getRepBalance,
+  getLegacyRepBalance,
 } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'store';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
@@ -36,12 +37,15 @@ function updateBalances(
     getRepBalance(universe, address),
     getDaiBalance(address),
     getEthBalance(address),
+    getLegacyRepBalance(address),
   ]).then(amounts => {
     const attoRep = amounts[0].toString();
+    const legacyAttoRep = amounts[3].toString();
     const rep = formatAttoRep(attoRep).value;
+    const legacyRep = formatAttoRep(legacyAttoRep).value;
     const dai = amounts[1];
     const eth = amounts[2];
-    dispatch(updateLoginAccount({ balances: { attoRep, rep, dai, eth } }));
+    dispatch(updateLoginAccount({ balances: { attoRep, rep, dai, eth, legacyAttoRep, legacyRep } }));
     return callback(null, { rep, dai, eth });
   });
 }

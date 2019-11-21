@@ -93,8 +93,24 @@ export async function checkIsKnownUniverse(universeId: string) {
   return result;
 }
 
+
+export async function convertV1ToV2Approve() {
+  const { contracts } = augurSdk.get();
+
+  const allowance = createBigNumber(99999999999999999999).times(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+
+  const getReputationToken = await contracts.universe.getReputationToken_();
+  const response = contracts.legacyReputationToken.approve(getReputationToken, allowance);
+  return response;
+}
+
 export async function convertV1ToV2() {
-  return null;
+  const { contracts } = augurSdk.get();
+
+  const response = await contracts.reputationToken.migrateFromLegacyReputationToken();
+  return response;
 }
 
 export async function getCurrentBlock() {
@@ -123,6 +139,19 @@ export async function getRepBalance(
     .balanceOf_(address);
   return balance;
 }
+
+export async function getLegacyRepBalance(
+  address: string
+): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  const lagacyRep = contracts.legacyReputationToken.address;
+  const networkId = getNetworkId();
+  const balance = await contracts
+    .reputationTokenFromAddress(lagacyRep, networkId)
+    .balanceOf_(address);
+  return balance;
+}
+
 
 export async function getEthBalance(address: string): Promise<number> {
   const Augur = augurSdk.get();
