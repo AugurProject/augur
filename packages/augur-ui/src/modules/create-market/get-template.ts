@@ -233,15 +233,10 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
-export const buildMarketDescription = (
-  question: string,
-  inputs: TemplateInput[]
-) => {
+export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
   inputs.forEach((input: TemplateInput) => {
-    question = question.replace(
-      `[${input.id}]`,
-      `${input.userInput || `[${input.placeholder}]`}`
-    );
+    let value = (input.userInput && input.userInput.trim()) || `[${input.placeholder.trim()}]`;
+    question = question.replace(`[${input.id}]`, `${value}`);
   });
 
   return question;
@@ -314,12 +309,9 @@ export const hasNoTemplateCategoryChildren = category => {
   return true;
 };
 
-export const hasNoTemplateCategoryTertiaryChildren = (
-  category,
-  subcategory
-) => {
-  if (!category || !subcategory) return false;
-  if (TEMPLATES[category].children[subcategory].children) return false;
+export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
+  if (!category || !subcategory || !TEMPLATES[category] || !TEMPLATES[category].children) return false;
+  if (TEMPLATES[category].children[subcategory] || TEMPLATES[category].children[subcategory].children) return false;
   return true;
 };
 

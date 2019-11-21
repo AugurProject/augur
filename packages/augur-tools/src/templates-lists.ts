@@ -2347,8 +2347,8 @@ export const LIST_VALUES = {
       label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
+      value: 'Bitfinex (bitfinex.com)',
+      label: 'Bitfinex (bitfinex.com)',
     },
     {
       value: 'Bittrex (bittrex.com)',
@@ -2359,10 +2359,6 @@ export const LIST_VALUES = {
     {
       value: 'Coinbase Pro (pro.coinbase.com)',
       label: 'Coinbase Pro (pro.coinbase.com)',
-    },
-    {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
     },
     {
       value: 'Kraken (kraken.com)',
@@ -2393,8 +2389,8 @@ export const LIST_VALUES = {
       label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
+      value: 'Bitfinex (bitfinex.com)',
+      label: 'Bitfinex (bitfinex.com)',
     },
     {
       value: 'Kraken (kraken.com)',
