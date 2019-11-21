@@ -131,7 +131,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.zeroX =
-      meshClient && browserMesh
+      meshClient || browserMesh
         ? new ZeroX(this, meshClient, browserMesh)
         : undefined;
     if (enableFlexSearch && !this.syncableFlexSearch) {
