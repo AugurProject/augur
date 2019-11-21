@@ -7,6 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_BUY_DAI } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon } from 'modules/common/icons';
+import { AUGUR_USES_DAI } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -18,6 +19,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingDollarDaiIcon,
   largeHeader: 'Augur uses DAI',
   currentStep: 2,
+  analyticsEvent: AUGUR_USES_DAI,
   linkContent: [
     {
       content:

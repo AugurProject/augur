@@ -9,6 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_ADD_FUNDS, MODAL_TEST_BET } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
+import { BUY_DAI } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -23,6 +24,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingPaymentIcon,
   largeHeader: 'Add DAI to your account',
   currentStep: 3,
+  analyticsEvent: BUY_DAI,
   linkContent: [
     {
       content:

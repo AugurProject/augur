@@ -7,6 +7,7 @@ import { Action } from 'redux';
 import { MODAL_AUGUR_USES_DAI } from 'modules/common/constants';
 import { updateModal } from '../actions/update-modal';
 import { OnboardingCheckIcon } from 'modules/common/icons';
+import { ACCOUNT_CREATED } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -16,6 +17,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingCheckIcon,
+  analyticsEvent: ACCOUNT_CREATED,
   largeHeader: 'Account created ',
   smallHeader: 'You’re almost ready to start betting!',
   currentStep: 1,

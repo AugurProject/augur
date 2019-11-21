@@ -6,6 +6,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import getValue from 'utils/get-value';
+import { ADD_FUNDS } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -21,6 +22,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP, dP, oP) => {
   return {
     fundType: sP.modal.fundType,
+    analyticsEvent: ADD_FUNDS,
     closeAction: () => {
       if (sP.modal.cb) {
         sP.modal.cb();
