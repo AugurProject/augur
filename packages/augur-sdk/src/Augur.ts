@@ -384,9 +384,13 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Markets.getMarketPriceCandlesticks> => {
     return this.bindTo(Markets.getMarketPriceCandlesticks)(params);
   };
-  getMarketLiquidityRanking = this.bindTo(
-    LiquidityGetter.getMarketLiquidityRanking
-  );
+
+  getMarketLiquidityRanking = (
+    params: Parameters<typeof LiquidityGetter.getMarketLiquidityRanking>[2]
+  ): ReturnType<typeof LiquidityGetter.getMarketLiquidityRanking> => {
+    return this.bindTo(LiquidityGetter.getMarketLiquidityRanking)(params);
+  };
+
   getUserTradingPositions = (
     params: Parameters<typeof Users.getUserTradingPositions>[2]
   ): ReturnType<typeof Users.getUserTradingPositions> => {
