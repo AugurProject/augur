@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  track: (eventName, payload) => dispatch(track(eventName, payload));
+  track: (eventName, payload) => dispatch(track(eventName, payload)),
 });
 
 const mergeProps = (sP, dP, oP) => {
