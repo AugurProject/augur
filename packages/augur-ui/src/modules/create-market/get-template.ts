@@ -308,6 +308,8 @@ export const buildResolutionDetails = (
   return details;
 };
 
+// return false if template has category children
+// return true if template doesn't have category children
 export const hasNoTemplateCategoryChildren = category => {
   if (!category) return false;
   if (!TEMPLATES[category]) return true;
