@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   augurUsesDaiModal: () => dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
-  track: (eventName, payload) => dispatch(track(eventName, payload));
+  track: (eventName, payload) => dispatch(track(eventName, payload)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
