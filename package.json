@@ -30,6 +30,7 @@
     "docker:geth:pop-normal-time": "yarn workspace @augurproject/tools docker:geth:pop-normal-time",
     "docker:geth": "yarn workspace @augurproject/tools docker:geth",
     "docker:gnosis": "yarn workspace @augurproject/gnosis-relay-api run-relay",
+    "docker:all": "./scripts/one-docker-to-rule-them-all.sh",
     "sdk": "yarn workspace @augurproject/sdk",
     "tools": "yarn workspace @augurproject/tools",
     "an": "yarn workspace @augurproject/node",
