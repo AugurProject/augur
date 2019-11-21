@@ -16,6 +16,10 @@ export const LIST_VALUES = {
       value: '2022',
       label: '2022',
     },
+    {
+      value: '2023',
+      label: '2023',
+    },
   ],
   YEAR_RANGE: [
     {
@@ -439,6 +443,40 @@ export const LIST_VALUES = {
     {
       value: 'NBA Championship',
       label: 'NBA Championship',
+    },
+  ],
+  BASEBALL_AWARDS: [
+    {
+      value: 'NL Rookie of the Year',
+      label: 'NL Rookie of the Year',
+    },
+    {
+      value: 'AL Rookie of the Year',
+      label: 'AL Rookie of the Year',
+    },
+    {
+      value: 'NL Manager of the Year',
+      label: 'NL Manager of the Year',
+    },
+    {
+      value: 'AL Manager of the Year',
+      label: 'AL Manager of the Year',
+    },
+    {
+      value: 'NL Cy Young',
+      label: 'NL Cy Young',
+    },
+    {
+      value: 'AL Cy Young',
+      label: 'AL Cy Young',
+    },
+    {
+      value: 'NL MVP',
+      label: 'NL MVP',
+    },
+    {
+      value: 'AL MVP',
+      label: 'AL MVP',
     },
   ],
   NBA_BASKETBALL_AWARD: [

@@ -5,11 +5,12 @@ import { AppState } from 'store';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { convertV1ToV2 } from 'modules/contracts/actions/contractCalls';
+import convertV1ToV2 from 'modules/account/actions/convert-v1-rep-to-v2';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   loginAccount: state.loginAccount,
+  Gnosis_ENABLED: state.appStatus.gnosisEnabled,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -20,6 +21,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   ...dP,
   loginAccount: sP.loginAccount,
+  Gnosis_ENABLED: sP.Gnosis_ENABLED,
   closeAction: () => dP.closeModal(),
 });
 

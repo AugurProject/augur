@@ -1150,7 +1150,23 @@ export const DISPUTING_GUIDE = {
 
 export const REPORTING_GUIDE = {
   title: 'REPORTING QUICK GUIDE',
-  content: [],
+  content: [{
+    header: 'Upcoming Designated Reporting',
+    paragraphs: [
+      'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting'
+    ]
+  }, {
+    header: 'Designated Reporting',
+    paragraphs: [
+      'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
+      'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.'
+    ]
+  }, {
+    header: 'Open Reporting',
+    paragraphs: [
+      'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.'
+    ]
+  }],
   learnMoreButtonText: 'Learn more about reporting',
   closeButtonText: 'Close'
 };
