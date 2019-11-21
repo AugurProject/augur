@@ -14,7 +14,6 @@ import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
 
 export const updateAssets = (
-  possibleDaiIncrease = false,
   callback: NodeStyleCallback = logError
 ): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
