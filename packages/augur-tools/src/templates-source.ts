@@ -574,8 +574,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL (Point Spread): [0] to win by more than [1].5 goals over the [2]?`,
-            example: `NHL (Point Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `NHL (Goal Spread): [0] to win by more than [1].5 goals over the [2]?`,
+            example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -2809,7 +2809,8 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
-                values: LIST_VALUES.MLB_TEAMS,
+                defaultLabel: `Select Event First`,
+                values: [],
               },
               {
                 id: 1,
@@ -2819,9 +2820,11 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DROPDOWN,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Event`,
+                inputDestId: 0,
                 values: LIST_VALUES.BASEBALL_EVENT,
+                inputDestValues: BASEBALL_EVENT_DEP_TEAMS,
               },
             ],
             resolutionRules: {},
@@ -2907,8 +2910,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB (Point Spread): [0] to win by more than [1].5 runs over the [2]?`,
-            example: `MLB (Point Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `MLB (Run Spread): [0] to win by more than [1].5 runs over the [2]?`,
+            example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,

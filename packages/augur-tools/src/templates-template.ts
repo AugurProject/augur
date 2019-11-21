@@ -144,7 +144,12 @@ export interface TemplateInput {
   validationType?: ValidationType;
   values?: ValueLabelPair[];
   sublabel?: string;
-  inputSourceId?: number;
+  inputSourceId?: number; // input id as source of text to get list values
+  defaultLabel?: string; // dropdown default label shown
+  inputDestId?: number; // target input to set list values
+  inputDestValues: { // dropdown source data structure to use to set target input list values
+    [key: string]: ValueLabelPair[];
+  }
 }
 
 export enum ValidationType {
@@ -165,6 +170,7 @@ export enum TemplateInputType {
   USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME', // dropdown in market question that is added as categorical market outcome
   USER_DROPDOWN_OUTCOME = 'USER_DROPDOWN_OUTCOME', // dropdown for categorical market outcome, doesn't interact with market question.
   USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP = 'USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP', // dropdown for categorical market outcome, the list of values is determined by dropdown in market question.
+  DROPDOWN_QUESTION_DEP = 'DROPDOWN_QUESTION_DEP', // market question dropdown list of values is determined by other dropdown in market question.
 }
 
 export interface ExtraInfoTemplateInput {

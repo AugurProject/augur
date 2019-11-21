@@ -749,6 +749,7 @@ interface InputFactoryProps {
   onChange: Function;
   newMarket: NewMarket;
   currentTimestamp: number;
+  inputs: TemplateInput[];
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
@@ -840,13 +841,15 @@ export const InputFactory = (props: InputFactoryProps) => {
   } else if (
     input.type === TemplateInputType.DROPDOWN ||
     input.type === TemplateInputType.DENOMINATION_DROPDOWN ||
-    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+    input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
   ) {
     return (
       <FormDropdown
         options={input.values}
         defaultValue={input.userInput}
-        staticLabel={input.placeholder}
+        disabled={input.values.length === 0}
+        staticLabel={input.values.length === 0 ? input.defaultLabel : input.placeholder}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
@@ -857,6 +860,17 @@ export const InputFactory = (props: InputFactoryProps) => {
             let newOutcomes = outcomes;
             newOutcomes[inputIndex] = value;
             onChange('outcomes', newOutcomes);
+          } else if (
+            input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
+          ) {
+            if (value) {
+              const list = input.inputDestValues[value];
+              const target = props.inputs.find(i => i.id === input.inputDestId);
+              if (target && list && list.length > 0) {
+                target.userInput = '';
+                target.values = list;
+              }
+            }
           }
           updateData(value);
         }}
@@ -1142,6 +1156,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                     onChange={onChange}
                     newMarket={newMarket}
                     currentTimestamp={currentTimestamp}
+                    inputs={inputs}
                   />
                   {trailing !== '' && <span>{trailing}</span>}
                 </React.Fragment>
