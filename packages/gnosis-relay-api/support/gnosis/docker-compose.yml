@@ -14,10 +14,14 @@ services:
       - nginx-shared:/nginx
     depends_on:
       - web
+    networks:
+      - augur
   db:
     image: postgres:10-alpine
     ports:
       - "5432:5432"
+    networks:
+      - augur
   web:
     image: augurproject/safe-relay-service_web:latest
     env_file:
@@ -25,18 +29,21 @@ services:
     depends_on:
       - db
       - redis
-      - geth
     working_dir: /app
     ports:
       - "8888:8888"
     volumes:
       - nginx-shared:/nginx
     command: docker/web/run_web.sh
+    networks:
+      - augur
 
   redis:
     image: redis:4-alpine
     ports:
       - "6379:6379"
+    networks:
+      - augur
 
   worker: &worker
     image: augurproject/safe-relay-service_web:latest
@@ -45,15 +52,32 @@ services:
     depends_on:
       - db
       - redis
-      - geth
     command: docker/web/celery/worker/run.sh
+    networks:
+      - augur
 
   scheduler:
     <<: *worker
     command: docker/web/celery/scheduler/run.sh
+    networks:
+      - augur
 
-  geth:
-    image: augurproject/dev-pop-geth-v2:6e9aed144bf4d54674d91ae169ce5c18
+  0x-mesh:
+    image: 0xorg/mesh:latest
+    hostname: 0x
     ports:
-      - "8545:8545"
+      - 60557:60557
+      - 60558:60558
+      - 60559:60559
+    environment:
+      - ETHEREUM_NETWORK_ID=42
+      - ETHEREUM_RPC_URL=http://geth:8545
+      - USE_BOOTSTRAP_LIST=false
+      - BLOCK_POLLING_INTERVAL=1s
+      - VERBOSITY=6
+    networks:
+      - augur
 
+networks:
+  augur:
+    name: augur
