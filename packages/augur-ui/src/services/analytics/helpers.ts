@@ -1,10 +1,14 @@
 import { analytics } from './analytics';
 
 export function track(eventName, payload) {
-  analytics.track(eventName, {
-    userAgent: window.navigator.userAgent,
-    ...payload,
-  });
+  try {
+    analytics.track(eventName, {
+      userAgent: window.navigator.userAgent,
+      ...payload,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 // Onboarding event names
