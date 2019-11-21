@@ -294,7 +294,6 @@ export default class MarketsView extends Component<
           }
         />
         <FilterNotice
-          color="red"
           show={this.props.includeInvalidMarkets === 'show'}
           showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
@@ -314,7 +313,6 @@ export default class MarketsView extends Component<
         />
 
         <FilterNotice
-          color="red"
           show={!displayFee || !displayLiquiditySpread}
           showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
