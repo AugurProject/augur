@@ -260,7 +260,7 @@ export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
   const otherOutcomes = inputs.filter(
     i => i.type !== TemplateInputType.ADDED_OUTCOME
   );
-  return [...otherOutcomes, ...requiredOutcomes]
+  const outcomes = [...otherOutcomes, ...requiredOutcomes]
     .filter(
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
@@ -274,6 +274,7 @@ export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
       }
       return input.userInput || input.placeholder;
     });
+  return outcomes;
 };
 
 export const substituteUserOutcome = (

@@ -44,6 +44,7 @@ import {
   BASEBALL_EVENT_DEP_TEAMS,
   FOOTBALL_EVENT_DEP_TEAMS,
   NCAA_BASKETBALL_CONF_DEP_TEAMS,
+  TENNIS_SINGLES_EVENTS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -870,9 +871,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
+                    inputDestId: 3,
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -888,8 +891,9 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                 ],
                 resolutionRules: {
@@ -907,9 +911,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
+                    inputDestId: 2,
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -920,8 +926,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -944,9 +951,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
+                    inputDestId: 2,
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -957,8 +966,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -1001,9 +1011,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1019,8 +1031,9 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                 ],
                 resolutionRules: {
@@ -1038,9 +1051,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1051,8 +1066,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -1075,9 +1091,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1088,8 +1106,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -4269,6 +4288,51 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] [1] [2] primary for U.S. Presidential election?`,
+            example: `Who will win the 2020 South Carolina Democratic primary for U.S Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `State`,
+                values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No winner/Event cancelled`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the primary does not take place the market should resolve as "No winner/Event cancelled"`,
+                },
+                {
+                  text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
               ],
             },

@@ -6495,7 +6495,7 @@ export const LIST_VALUES = {
       value: 'UT-Pan American',
     },
   ],
-  TENNIS_MENS_SINGLES_TOURNEMENT: [
+  TENNIS_MENS_SINGLES_TOURNAMENTS: [
     {
       label: 'Qatar Exxon Mobil Open',
       value: 'Qatar Exxon Mobil Open',
@@ -6773,7 +6773,7 @@ export const LIST_VALUES = {
       value: 'Laver Cup',
     },
   ],
-  TENNIS_MENS_DOUBLES_TOURNEMENT: [
+  TENNIS_MENS_DOUBLES_TOURNAMENTS: [
     {
       label: 'Qatar Exxon Mobil Open',
       value: 'Qatar Exxon Mobil Open',
@@ -7039,7 +7039,7 @@ export const LIST_VALUES = {
       value: 'Nitto ATP Finals',
     },
   ],
-  TENNIS_WOMENS_SINGLES: [
+  TENNIS_WOMENS_SINGLES_TOURNAMENTS: [
     {
       label: 'Brisbane International',
       value: 'Brisbane International',
@@ -7285,7 +7285,7 @@ export const LIST_VALUES = {
       value: 'WTA Finals',
     },
   ],
-  TENNIS_WOMENS_DOUBLES: [
+  TENNIS_WOMENS_DOUBLES_TOURNAMENTS: [
     {
       label: 'Brisbane International',
       value: 'Brisbane International',
@@ -7515,6 +7515,17 @@ export const LIST_VALUES = {
       value: 'WTA Finals',
     },
   ],
+};
+
+export const TENNIS_SINGLES_EVENTS = {
+  "Men's": LIST_VALUES.TENNIS_MENS_SINGLES_TOURNAMENTS,
+  "Women's": LIST_VALUES.TENNIS_WOMENS_SINGLES_TOURNAMENTS,
+  'Mixed': LIST_VALUES.TENNIS_EVENT,
+};
+
+export const TENNIS_DOUBLES_EVENTS = {
+  "Men's": LIST_VALUES.TENNIS_MENS_DOUBLES_TOURNAMENTS,
+  "Women's": LIST_VALUES.TENNIS_WOMENS_DOUBLES_TOURNAMENTS,
 };
 
 export const BASKETBALL_EVENT_DEP_TEAMS = {
