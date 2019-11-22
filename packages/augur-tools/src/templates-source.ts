@@ -3319,8 +3319,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: Will [0] to win by more than [1].5 points over [2]?`,
-                example: `NFL: Will Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL: [0] to win by more than [1].5 points over [2]?`,
+                example: `NFL: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
