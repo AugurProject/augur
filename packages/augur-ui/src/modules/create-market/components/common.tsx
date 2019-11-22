@@ -1305,6 +1305,7 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 export const CategoricalTemplateTextInputs = (
   props: CategoricalTemplateTextInputsProps
 ) => {
+  const [initialized, setInitialized] = useState(false);
   const { onChange, newMarket } = props;
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
@@ -1344,8 +1345,12 @@ export const CategoricalTemplateTextInputs = (
 
   const min = initialList.length >  2 ? initialList.length : 2;
   const list = initialList.map(o => o.value);
-  if (String(outcomes) !== String(list)) {
+  if (
+    String(outcomes) !== String(list) ||
+    (!initialized && String(outcomes) === String(list))
+  ) {
     onChange('outcomes', list);
+    setInitialized(true);
   }
 
   return (

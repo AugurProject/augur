@@ -3084,7 +3084,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  test: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`,
+                  text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`,
                 },
               ],
             },
@@ -3954,8 +3954,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] presidential election?`,
-            example: `Will Donald Trump win the 2020 Presidential election?`,
+            question: `Will [0] win the [1] U.S. Presidential election?`,
+            example: `Will Donald Trump win the 2020 U.S. Presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -3969,12 +3969,18 @@ export const TEMPLATES = {
                 values: LIST_VALUES.YEARS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                },
+              ],
+            },
           },
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2] presidential nomination?`,
-            example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination?`,
+            question: `Will [0] win the [1] [2] U.S. Presidential nomination?`,
+            example: `Will Elizabeth Warren win the 2020 Democratic U.S. Presidential nomination?`,
             inputs: [
               {
                 id: 0,
@@ -3994,12 +4000,18 @@ export const TEMPLATES = {
                 values: LIST_VALUES.POL_PARTY,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
+                },
+              ],
+            },
           },
           {
             marketType: YES_NO,
             question: `Will [0] run for [1] by [2]?`,
-            example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
+            example: `Will Oprah Winfrey run for U.S. President by December 31, 2019 1 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -4020,7 +4032,48 @@ export const TEMPLATES = {
                 sublabel: `Specify date time for event`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `House, Senate and presidential candidates must register a Statement of Candidacy for the specific office and electioin cycle with the Federal Election Commission`,
+                },
+                {
+                  text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`
+                }
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will a woman be elected [0] in the [1] Presidential election?`,
+            example: `Will a woman be elected U.S. President in the 2020 Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.PRES_OFFICES,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                },
+                {
+                  text: `U.S. Vice President is elected with President as thier running mate`,
+                },
+                {
+                  text: 'The candidate elected president/vice president shall be female.'
+                }
+              ]
+            },
           },
           {
             marketType: YES_NO,
@@ -4040,12 +4093,56 @@ export const TEMPLATES = {
                 sublabel: `Specify date time for event`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The U.S. House of Representatives shall, by simple majority vote, approve or pass one or more articles of impeachment.`,
+                },
+                {
+                  text: `The Senate's judgment or decision, whether to be convicted, acquitted or removed from office does not change market results.`
+                }
+              ],
+            },
           },
           {
             marketType: CATEGORICAL,
-            question: `Who will win the [0] US presidential election?`,
-            example: `Who will win the 2020 US presidential election?`,
+            question: `Which party will win the [0] U.S. Presidential election?`,
+            example: `Which party will win the 2020 U.S. Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Democratic Party`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Republican Party`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning party will win the majority of 270 electoral votes.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] U.S. Presidential election?`,
+            example: `Who will win the 2020 U.S. Presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -4062,27 +4159,27 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If any party, other than ones listed in the outcomes, wins the state, the market should resolve as "Other".`,
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
               ],
             },
           },
           {
             marketType: CATEGORICAL,
-            question: `Who will be the [0] [1] [2] nominee?`,
-            example: `Who will be the 2020 Republican Vice President nominee?`,
+            question: `Who will be the [0] nominee for [1] [2]?`,
+            example: `Who will be the Republican nominee for 2020 U.S. Vice-President?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `Party`,
-                values: LIST_VALUES.POL_PARTY,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
               },
               {
                 id: 2,
@@ -4096,12 +4193,18 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
+                },
+              ],
+            },
           },
           {
             marketType: CATEGORICAL,
-            question: `Which party will win [0] in the [1] Presidential election?`,
-            example: `Which party will win Michigan in the 2020 Presidential election?`,
+            question: `Which party will win [0] in the [1] U.S. Presidential election?`,
+            example: `Which party will win Michigan in the 2020 U.S. Presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -4121,7 +4224,13 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning party will win the majority of state's electoral votes.`,
+                },
+              ],
+            },
           },
         ],
       },

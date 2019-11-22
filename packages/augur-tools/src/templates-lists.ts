@@ -177,30 +177,30 @@ export const LIST_VALUES = {
   ],
   PRES_OFFICES: [
     {
-      value: 'President',
-      label: 'President',
+      value: 'U.S. President',
+      label: 'U.S. President',
     },
     {
-      value: 'Vice-President',
-      label: 'Vice-President',
+      value: 'U.S. Vice-President',
+      label: 'U.S. Vice-President',
     },
   ],
   OFFICES: [
     {
-      value: 'President',
-      label: 'President',
+      value: 'U.S. President',
+      label: 'U.S. President',
     },
     {
-      value: 'Vice-President',
-      label: 'Vice-President',
+      value: 'U.S. Vice-President',
+      label: 'U.S. Vice-President',
     },
     {
-      value: 'Senator',
-      label: 'Senator',
+      value: 'U.S. Senator',
+      label: 'U.S. Senator',
     },
     {
-      value: 'Congress',
-      label: 'Congress',
+      value: 'U.S. Congress',
+      label: 'U.S. Congress',
     },
   ],
   POL_POSITION: [
