@@ -188,6 +188,7 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
         input.type === TemplateInputType.DROPDOWN ||
+        input.type === TemplateInputType.DROPDOWN_QUESTION_DEP ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
       (!input.userInput || input.userInput === '')
     ) {
@@ -218,14 +219,14 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         let validations: NewMarketPropertiesValidations = {};
         if (input.userInputObject.hour === null) {
           validations.hour = 'Choose a time';
-        } 
+        }
 
         if (input.userInputObject.endTime === null) {
           validations.setEndTime = 'Choose a date';
         } else if (endTimeFormatted.timestamp && input.userInputObject.endTime > endTimeFormatted.timestamp) {
           validations.setEndTime = 'Date must be before event expiration time';
         }
-        
+
         return validations;
       } else {
         return '';
