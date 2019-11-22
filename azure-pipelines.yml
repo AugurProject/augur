@@ -655,7 +655,7 @@ jobs:
       - task: GitHubRelease@1
         displayName: 'GitHub release (create)'
         inputs:
-          gitHubConnection: 'github connection release pipeline'
+          gitHubConnection: 'AugurProject'
           tagPattern: 'v*'
           title: Augur
           releaseNotesSource: inline
