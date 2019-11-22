@@ -587,11 +587,7 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          startsWith(variables['build.sourceBranch'], 'refs/tags/v'),
-          startsWith(variables['build.sourceBranch'], 'refs/heads/release')
-        )
+        startsWith(variables['build.sourceBranch'], 'refs/heads/release')
       )
     pool:
       vmImage: 'Ubuntu-16.04'
@@ -651,7 +647,6 @@ jobs:
           #flattenFolders: false # Optional
           #preserveTimestamp: false # Optional
 
-# use below for github release (not test yet
       - task: GitHubRelease@1
         displayName: 'GitHub release (create)'
         inputs:
