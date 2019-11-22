@@ -1,11 +1,11 @@
 import React from 'react';
 import { PERIODS, VOLUME_DAI_SHARES, DAI } from 'modules/common/constants';
 import { SquareDropdown, StaticLabelDropdown } from 'modules/common/selection';
-import Styles from 'modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles.less';
-import MarketOutcomeChartsCandlestickHighchart from 'modules/market-charts/containers/market-candlestick';
-import { CandlestickOchl } from 'modules/market-charts/components/market-outcome-charts--candlestick/candlestick-ochl';
+import Styles from 'modules/market-charts/components/candlestick/outcome-candlestick.styles.less';
+import CandlestickHighchart from 'modules/market-charts/containers/candlestick-highchart';
+import { CandlestickOchl } from 'modules/market-charts/components/candlestick/candlestick-ochl';
 
-interface MarketOutcomeCandlestickProps {
+interface OutcomeCandlestickProps {
   fixedPrecision: number;
   marketMax: BigNumber;
   marketMin: BigNumber;
@@ -15,14 +15,14 @@ interface MarketOutcomeCandlestickProps {
   pricePrecision: number;
 }
 
-interface MarketOutcomeCandlestickState {
+interface OutcomeCandlestickState {
   hoveredPeriod: any;
   volumeType: string;
   defaultCandlePeriod: any;
 }
-class MarketOutcomeCandlestick extends React.PureComponent<
-  MarketOutcomeCandlestickProps,
-  MarketOutcomeCandlestickState
+class OutcomeCandlestick extends React.PureComponent<
+  OutcomeCandlestickProps,
+  OutcomeCandlestickState
 > {
   drawContainer: any;
 
@@ -69,7 +69,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
       : staticMenuLabel;
 
     return (
-      <section className={Styles.MarketOutcomeCandlestick}>
+      <section className={Styles.OutcomeCandlestick}>
         <div className={Styles.TopSection}>
           <SquareDropdown
             defaultValue={defaultCandlePeriod}
@@ -95,7 +95,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
           }}
           className={Styles.ChartContainer}
         >
-          <MarketOutcomeChartsCandlestickHighchart
+          <CandlestickHighchart
             priceTimeSeries={priceTimeSeries}
             selectedPeriod={selectedPeriod}
             pricePrecision={pricePrecision}
@@ -110,4 +110,4 @@ class MarketOutcomeCandlestick extends React.PureComponent<
   }
 }
 
-export default MarketOutcomeCandlestick;
+export default OutcomeCandlestick;
