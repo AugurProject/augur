@@ -2,7 +2,6 @@ import { loadAccountDataFromLocalStorage } from 'modules/auth/actions/load-accou
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
-import { updateAssets } from 'modules/auth/actions/update-assets';
 import { windowRef } from 'utils/window-ref';
 import logError from 'utils/log-error';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
@@ -32,7 +31,6 @@ export const loadAccountData = (
   dispatch(loadAccountDataFromLocalStorage(address));
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
-  dispatch(updateAssets());
   dispatch(loadUniverseDetails(universe.id, address));
   dispatch(loadGasPriceInfo());
   dispatch(getEthToDaiRate());

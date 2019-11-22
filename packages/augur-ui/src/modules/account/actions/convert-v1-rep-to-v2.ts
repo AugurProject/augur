@@ -1,4 +1,3 @@
-import { updateAssets } from 'modules/auth/actions/update-assets';
 import logError from 'utils/log-error';
 import {
   convertV1ToV2Approve,
@@ -16,7 +15,5 @@ export default function(callback: NodeStyleCallback = logError) {
       logError(new Error('convertV1ToV2'));
     });
     callback(null);
-
-    dispatch(updateAssets());
   };
 }
