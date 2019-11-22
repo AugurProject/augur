@@ -3,7 +3,7 @@ import React from 'react';
 import { loadCandleStickData } from 'modules/markets/actions/load-candlestick-data';
 import logError from 'utils/log-error';
 import { checkPropsChange } from 'utils/check-props-change';
-import MarketOutcomeCandlestick from 'modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick';
+import OutcomeCandlestick from 'modules/market-charts/components/candlestick/outcome-candlestick';
 import { BigNumber } from 'bignumber.js';
 import {
   DEFAULT_SHORT_PERIODS_VALUE,
@@ -95,7 +95,7 @@ export class Candlestick extends React.Component<
     const { priceTimeSeries, selectedPeriod } = this.state;
 
     return (
-      <MarketOutcomeCandlestick
+      <OutcomeCandlestick
         priceTimeSeries={priceTimeSeries}
         fixedPrecision={2}
         pricePrecision={2}
