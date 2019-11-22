@@ -13,7 +13,6 @@
       {"name": ["it", "only"]},
       {"name": ["it", "async", "only"]},
       {"name": ["describe", "only"]},
-      {"name": "parseInt", "message": "tsstyle#type-coercion"},
       {"name": "parseFloat", "message": "tsstyle#type-coercion"},
       {"name": "Array", "message": "tsstyle#array-constructor"},
       {"name": ["*", "innerText"], "message": "Use .textContent instead. tsstyle#browser-oddities"}
