@@ -3166,7 +3166,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if game is not played or if less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                     {
                       text: `If the game is not played market should resolve as "No"`,
@@ -3324,7 +3324,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "Tie/No Winner"`,
                     },
                   ],
                 },
@@ -3377,7 +3380,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No Winner"`,
                     },
                   ],
                 },
@@ -3430,7 +3436,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No Winner"`,
                     },
                   ],
                 },
@@ -3556,7 +3565,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
