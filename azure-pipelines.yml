@@ -656,7 +656,8 @@ jobs:
         displayName: 'GitHub release (create)'
         inputs:
           gitHubConnection: 'GitHub OAuth'
-          userSpecifiedTag: $(Build.SourceBranchName)
+          tagSource: userSpecifiedTag
+          tag: $(Build.SourceBranchName)
           title: Augur
           releaseNotesSource: inline
           assets: '$(Build.ArtifactStagingDirectory)/*'
