@@ -3966,7 +3966,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
             ],
             resolutionRules: {
@@ -3991,7 +3991,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
               {
                 id: 2,
@@ -4058,7 +4058,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
             ],
             resolutionRules: {
@@ -4113,7 +4113,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
               {
                 id: 1,
@@ -4121,12 +4121,12 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
               {
-                id: 5,
+                id: 2,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Democratic Party`,
               },
               {
-                id: 6,
+                id: 3,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Republican Party`,
               },
@@ -4148,7 +4148,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
               {
                 id: 1,
@@ -4216,7 +4216,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
               {
                 id: 2,
@@ -4228,6 +4228,47 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `The winning party will win the majority of state's electoral votes.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Which party will control the [0] after the [1] election?`,
+            example: `Which party will control the U.S House of Representatives after the 2020 election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.POL_HOUSE_SENATE_OFFICE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Democratic Party`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Republican Party`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
                 },
               ],
             },
