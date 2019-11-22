@@ -580,8 +580,8 @@ jobs:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
 
-  - job: tag_build
-    displayName: build tag
+  - job: github_release
+    displayName: github release
     dependsOn: PreFlightCheck
     condition: |
       and
