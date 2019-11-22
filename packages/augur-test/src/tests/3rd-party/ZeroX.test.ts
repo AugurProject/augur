@@ -52,7 +52,6 @@ describe('3rd Party :: ZeroX :: ', () => {
     meshClientMary.destroy();
   });
 
-
   test('State API :: ZeroX :: getOrders', async () => {
     // Create a market
     const market = await john.createReasonableMarket([
@@ -100,8 +99,9 @@ describe('3rd Party :: ZeroX :: ', () => {
     await expect(order.price).toEqual('0.22');
     await expect(order.amount).toEqual('1');
     await expect(order.kycToken).toEqual(kycToken);
-    await expect(order.expirationTimeSeconds).toEqual(expirationTime.toString());
-  }, 60000);
+    await expect(order.expirationTimeSeconds).
+      toEqual(expirationTime.toString());
+  });
 
   test('ZeroX Trade :: placeTrade', async () => {
     // Give John enough cash to pay for the 0x order.

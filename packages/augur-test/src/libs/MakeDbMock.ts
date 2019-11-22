@@ -2,7 +2,7 @@ import Dexie from 'dexie';
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
 import { Account } from "@augurproject/tools";
-import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { BlockAndLogStreamerListenerInterface } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import * as _ from "lodash";
 import * as fs from "fs";
 import uuid = require("uuid");
@@ -27,7 +27,7 @@ export function makeDbMock(prefix:string = uuid.v4()) {
     }));
   }
 
-  function makeBlockAndLogStreamerListener(): IBlockAndLogStreamerListener {
+  function makeBlockAndLogStreamerListener(): BlockAndLogStreamerListenerInterface {
     return {
       listenForBlockRemoved: jest.fn(),
       listenForBlockAdded: jest.fn(),

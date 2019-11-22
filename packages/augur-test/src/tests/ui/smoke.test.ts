@@ -77,13 +77,17 @@ describe.skip('Browser testing', () => {
 
     await page.goto(`http://localhost:${port}/#!/markets`);
 
-    await expect(page.title()).resolves.toMatch('Markets | Augur', { timeout: 20000 });
-    await expect(page.$('.paginator_v1-styles_location')).resolves.toBeDefined();
+    await expect(page.title()).
+      resolves.
+      toMatch('Markets | Augur', { timeout: 20000 });
+    await expect(page.$('.paginator_v1-styles_location')).
+      resolves.
+      toBeDefined();
     await expect(page.waitForSelector(
       '.market-common-styles_MarketCommon__container',
       {
         visible: true,
         timeout: 20000,
       })).resolves.toBeDefined();
-  }, 60000);
+  });
 })

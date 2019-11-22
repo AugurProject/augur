@@ -7,7 +7,7 @@ export interface Log {
   transactionLogIndex: number;
   address: string;
   data: string;
-  topics: Array<string>;
+  topics: string[];
   transactionHash: string;
   logIndex: number;
 }
@@ -25,13 +25,14 @@ export interface ParsedLog {
   transactionLogIndex: number;
   transactionHash: string;
   logIndex: number;
-  topics?: Array<string | Array<string>>;
+  topics?: Array<string | string[]>;
   [paramName: string]: any;
 }
 
 export interface Filter {
+  blockhash?: string;
   fromBlock?: number | string;
   toBlock?: number | string;
   address?: string;
-  topics?: Array<string | Array<string>>;
+  topics?: Array<string | string[]>;
 }

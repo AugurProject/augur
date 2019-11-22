@@ -28,7 +28,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
-  }, 120000);
+  });
 
   test('getPlatformActivityStats', async () => {
     // Create markets with multiple users
@@ -84,7 +84,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     expect(stats.amountStaked.toString()).toEqual('4650537188053131103515648');
     expect(stats.openInterest.toString()).toEqual('2040000000000000');
     expect(stats.volume.toString()).toEqual('0.006093');
-  }, 200000);
+  });
 });
 
 async function getPlatformActivityStats(

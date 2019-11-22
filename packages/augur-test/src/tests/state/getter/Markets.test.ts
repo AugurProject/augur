@@ -1419,7 +1419,8 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should return a complete orderbook for john', async () => {
-      const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
+      const yesNoMarket = john.augur.contracts.marketFromAddress(
+        markets['yesNoMarket']);
       await (await db).sync(john.augur, CHUNK_SIZE, 0);
       const orderBook = (await api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
@@ -1492,7 +1493,7 @@ describe('State API :: Markets :: ', () => {
           },
         },
       });
-    }, 200000);
+    });
 
     test('should return mysize of zero for mary', async () => {
       const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
