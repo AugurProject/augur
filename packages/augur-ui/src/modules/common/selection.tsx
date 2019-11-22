@@ -173,7 +173,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   render() {
     const {
       sortByStyles,
-      options,
       large,
       stretchOutOnMobile,
       openTop,

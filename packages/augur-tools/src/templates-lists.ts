@@ -1567,8 +1567,8 @@ export const LIST_VALUES = {
       label: 'Kansas City Royals',
     },
     {
-      value: 'Las Angeles Angels',
-      label: 'Las Angeles Angels',
+      value: 'Los Angeles Angels',
+      label: 'Los Angeles Angels',
     },
     {
       value: 'Minnesota Twins',
@@ -1621,8 +1621,8 @@ export const LIST_VALUES = {
       label: 'Colorado Rockies',
     },
     {
-      value: 'Las Angeles Dodgers',
-      label: 'Las Angeles Dodgers',
+      value: 'Los Angeles Dodgers',
+      label: 'Los Angeles Dodgers',
     },
     {
       value: 'Miami Marlins',
@@ -1711,12 +1711,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Royals',
     },
     {
-      value: 'Las Angeles Angels',
-      label: 'Las Angeles Angels',
+      value: 'Los Angeles Angels',
+      label: 'Los Angeles Angels',
     },
     {
-      value: 'Las Angeles Dodgers',
-      label: 'Las Angeles Dodgers',
+      value: 'Los Angeles Dodgers',
+      label: 'Los Angeles Dodgers',
     },
     {
       value: 'Miami Marlins',
@@ -1981,12 +1981,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Chiefs',
     },
     {
-      value: 'Las Angeles Chargers',
-      label: 'Las Angeles Chargers',
+      value: 'Los Angeles Chargers',
+      label: 'Los Angeles Chargers',
     },
     {
-      value: 'Las Angeles Rams',
-      label: 'Las Angeles Rams',
+      value: 'Los Angeles Rams',
+      label: 'Los Angeles Rams',
     },
     {
       value: 'Miami Dolphins',
@@ -2347,8 +2347,8 @@ export const LIST_VALUES = {
       label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
+      value: 'Bitfinex (bitfinex.com)',
+      label: 'Bitfinex (bitfinex.com)',
     },
     {
       value: 'Bittrex (bittrex.com)',
@@ -2359,10 +2359,6 @@ export const LIST_VALUES = {
     {
       value: 'Coinbase Pro (pro.coinbase.com)',
       label: 'Coinbase Pro (pro.coinbase.com)',
-    },
-    {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
     },
     {
       value: 'Kraken (kraken.com)',
@@ -2393,8 +2389,8 @@ export const LIST_VALUES = {
       label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
+      value: 'Bitfinex (bitfinex.com)',
+      label: 'Bitfinex (bitfinex.com)',
     },
     {
       value: 'Kraken (kraken.com)',
