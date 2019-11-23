@@ -749,6 +749,7 @@ interface InputFactoryProps {
   onChange: Function;
   newMarket: NewMarket;
   currentTimestamp: number;
+  inputs: TemplateInput[];
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
@@ -805,9 +806,8 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
-          let newOutcomes = outcomes;
-          newOutcomes[inputIndex] = value;
-          updateData(value);
+          const newInputs = updateData(value);
+          const newOutcomes = createTemplateOutcomes(newInputs);
           onChange('outcomes', newOutcomes);
         }}
         value={input.userInput}
@@ -840,13 +840,15 @@ export const InputFactory = (props: InputFactoryProps) => {
   } else if (
     input.type === TemplateInputType.DROPDOWN ||
     input.type === TemplateInputType.DENOMINATION_DROPDOWN ||
-    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+    input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
   ) {
     return (
       <FormDropdown
         options={input.values}
         defaultValue={input.userInput}
-        staticLabel={input.placeholder}
+        disabled={input.values.length === 0}
+        staticLabel={input.values.length === 0 ? input.defaultLabel : input.placeholder}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
@@ -857,6 +859,17 @@ export const InputFactory = (props: InputFactoryProps) => {
             let newOutcomes = outcomes;
             newOutcomes[inputIndex] = value;
             onChange('outcomes', newOutcomes);
+          } else if (
+            input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
+          ) {
+            if (value) {
+              const list = input.inputDestValues[value];
+              const target = props.inputs.find(i => i.id === input.inputDestId);
+              if (target && list && list.length > 0) {
+                target.userInput = '';
+                target.values = list;
+              }
+            }
           }
           updateData(value);
         }}
@@ -1100,7 +1113,7 @@ export interface QuestionBuilderProps {
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const { onChange, newMarket, currentTimestamp } = props;
-  const { template, outcomes, marketType, validations } = newMarket;
+  const { template, marketType } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
 
@@ -1142,6 +1155,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
                     onChange={onChange}
                     newMarket={newMarket}
                     currentTimestamp={currentTimestamp}
+                    inputs={inputs}
                   />
                   {trailing !== '' && <span>{trailing}</span>}
                 </React.Fragment>
@@ -1290,6 +1304,7 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 export const CategoricalTemplateTextInputs = (
   props: CategoricalTemplateTextInputsProps
 ) => {
+  const [initialized, setInitialized] = useState(false);
   const { onChange, newMarket } = props;
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
@@ -1329,8 +1344,12 @@ export const CategoricalTemplateTextInputs = (
 
   const min = initialList.length >  2 ? initialList.length : 2;
   const list = initialList.map(o => o.value);
-  if (String(outcomes) !== String(list)) {
+  if (
+    String(outcomes) !== String(list) ||
+    (!initialized && String(outcomes) === String(list))
+  ) {
     onChange('outcomes', list);
+    setInitialized(true);
   }
 
   return (

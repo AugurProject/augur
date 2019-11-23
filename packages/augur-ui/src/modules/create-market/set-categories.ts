@@ -1192,6 +1192,7 @@ export const setCategories: SortedGroup[] = [
         value: 'US Politics',
         label: 'US Politics',
         subGroup: [
+          { value: 'Presidential', label: 'Presidential' },
           { value: 'Impeachment', label: 'Impeachment' },
           { value: 'Supreme Court', label: 'Supreme Court' },
           { value: 'House', label: 'House' },

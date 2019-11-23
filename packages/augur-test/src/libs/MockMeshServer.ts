@@ -101,6 +101,14 @@ export class MockMeshServer {
         });
     }
 
+    unsubscribe(id: number): string {
+      return JSON.stringify({
+        id,
+        jsonrpc: '2.0',
+        result: '0xab1a3e8af590364c09d0fa6a12103ada'
+      });
+    }
+
     getOrders(id: number, params: any[]): string {
         const page = params[0];
         const response = {

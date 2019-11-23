@@ -1,5 +1,5 @@
 import React from "react";
-import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles.less";
+import Styles from "modules/market-charts/components/candlestick/outcome-candlestick.styles.less";
 
 interface CandlestickOchlProps {
   hoveredPeriod?: {

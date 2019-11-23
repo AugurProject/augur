@@ -44,6 +44,7 @@ import {
   BASEBALL_EVENT_DEP_TEAMS,
   FOOTBALL_EVENT_DEP_TEAMS,
   NCAA_BASKETBALL_CONF_DEP_TEAMS,
+  TENNIS_SINGLES_EVENTS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -574,8 +575,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL: [0] to win by more than [1].5 goals over the [2]?`,
-            example: `NHL: St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `NHL (Goal Spread): [0] to win by more than [1].5 goals over the [2]?`,
+            example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -603,12 +604,12 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] to win by more than [1].5`,
+                placeholder: `[0] -[1].5`,
               },
               {
                 id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] to lose by less than [1].5`,
+                placeholder: `[2] +[1].5`,
               },
               {
                 id: 6,
@@ -633,8 +634,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `NHL: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-            example: `NHL: St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `NHL (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+            example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -870,9 +871,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
+                    inputDestId: 3,
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -888,8 +891,9 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                 ],
                 resolutionRules: {
@@ -907,9 +911,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
+                    inputDestId: 2,
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -920,8 +926,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -944,9 +951,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
+                    inputDestId: 2,
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -957,8 +966,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -1001,9 +1011,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1019,8 +1031,9 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                 ],
                 resolutionRules: {
@@ -1038,9 +1051,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1051,8 +1066,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -1075,9 +1091,11 @@ export const TEMPLATES = {
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
+                    inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1088,8 +1106,9 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    values: LIST_VALUES.TENNIS_EVENT,
+                    values: [],
                   },
                   {
                     id: 3,
@@ -1176,8 +1195,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: [0] to win by more than [1].5 goals over [2]?`,
-                example: `Men's Soccer: Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's Soccer (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
+                example: `Men's Soccer (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1203,12 +1222,12 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                   {
                     id: 6,
@@ -1229,8 +1248,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Soccer: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Men's Soccer: Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's Soccer (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+                example: `Men's Soccer (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1331,8 +1350,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: [0] to win by more than [1].5 goals over [2]?`,
-                example: `Women's Soccer: Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Women's Soccer (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
+                example: `Women's Soccer (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1358,12 +1377,12 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                   {
                     id: 6,
@@ -1384,8 +1403,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Women's Soccer: [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Women's Soccer: Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Women's Soccer (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
+                example: `Women's Soccer (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1652,8 +1671,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: Will the [0] to win by more than [1].5 points over the [2]?`,
-                example: `NBA: Will the Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NBA (Point Spread): Will the [0] to win by more than [1].5 points over the [2]?`,
+                example: `NBA (Point Spread): Will the Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -1681,12 +1700,12 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                   {
                     id: 4,
@@ -1707,8 +1726,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NBA: [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
-                example: `NBA: Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
+                example: `NBA (O/U): Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2109,8 +2128,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: [0] to win by more than [1].5 points over the [1]?`,
-                example: `WNBA: Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [1]?`,
+                example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2143,12 +2162,12 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                 ],
                 resolutionRules: {
@@ -2164,8 +2183,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `WNBA: [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
-                example: `WNBA: Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `WNBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
+                example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2591,8 +2610,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA [0] BB: [1] to win by more than [2].5 points over [3]?`,
-                example: `NCAA Men's BB: Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `NCAA [0] BB (Point Spread): [1] to win by more than [2].5 points over [3]?`,
+                example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2631,12 +2650,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                 ],
                 resolutionRules: {
@@ -2655,8 +2674,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA [0] BB: [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
-                example: `NCAA Men's BB: Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA [0] BB (O/U): [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
+                example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2809,7 +2828,8 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Team`,
-                values: LIST_VALUES.MLB_TEAMS,
+                defaultLabel: `Select Event First`,
+                values: [],
               },
               {
                 id: 1,
@@ -2819,9 +2839,11 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DROPDOWN,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Event`,
+                inputDestId: 0,
                 values: LIST_VALUES.BASEBALL_EVENT,
+                inputDestValues: BASEBALL_EVENT_DEP_TEAMS,
               },
             ],
             resolutionRules: {},
@@ -2907,8 +2929,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: [0] to win by more than [1].5 runs over the [2]?`,
-            example: `MLB: NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `MLB (Run Spread): [0] to win by more than [1].5 runs over the [2]?`,
+            example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -2941,12 +2963,12 @@ export const TEMPLATES = {
               {
                 id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] to win by more than [1].5`,
+                placeholder: `[0] -[1].5`,
               },
               {
                 id: 6,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] to lose by less than [1].5`,
+                placeholder: `[2] +[1].5`,
               },
             ],
             resolutionRules: {
@@ -2970,8 +2992,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
-            example: `NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            question: `MLB (O/U): [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
+            example: `MLB (O/U): NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -3081,7 +3103,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  test: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`,
+                  text: `Regular Season win totals are for regular season games ONLY and will not include any play-in, playoffs, or championship games.`,
                 },
               ],
             },
@@ -3122,7 +3144,10 @@ export const TEMPLATES = {
                       text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No"`,
                     },
                   ],
                 },
@@ -3160,7 +3185,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No"`,
                     },
                   ],
                 },
@@ -3199,6 +3227,9 @@ export const TEMPLATES = {
                     { text: `Include Regulation and Overtime` },
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No"`,
                     },
                   ],
                 },
@@ -3283,7 +3314,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NFL Team will win: [0] vs. [1]?`,
-                example: `Which NFL Team will win: NY GIants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                example: `Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3312,15 +3343,19 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "Tie/No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: Will [0] to win by more than [1].5 points over [2]?`,
-                example: `NFL: Will Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL (Point Spread): [0] to win by more than [1].5 points over [2]?`,
+                example: `NFL (Point Spread): Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+
                 inputs: [
                   {
                     id: 0,
@@ -3353,27 +3388,30 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No Winner"`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `NFL: [0] vs. [1]: Total points scored; Over/Under [2].5?`,
-                example: `NFL: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NFL (O/U): [0] vs. [1]: Total points scored; Over/Under [2].5?`,
+                example: `NFL (O/U): NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3418,7 +3456,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If the game is not played or less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                    },
+                    {
+                      text: `If the game is not played market should resolve as "No Winner"`,
                     },
                   ],
                 },
@@ -3544,7 +3585,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
                   ],
                 },
@@ -3673,8 +3714,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB: [0] to win by more than [1].5 points over [1]?`,
-                example: `NCAA FB: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA (Point Spread) FB: [0] to win by more than [1].5 points over [1]?`,
+                example: `NCAA (Point Spread) FB: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3707,12 +3748,12 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] to win by more than [1].5`,
+                    placeholder: `[0] -[1].5`,
                   },
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] to lose by less than [1].5`,
+                    placeholder: `[2] +[1].5`,
                   },
                 ],
                 resolutionRules: {
@@ -3729,8 +3770,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA FB: [0] vs. [1]: Total points scored; Over/Under [2].5?`,
-                example: `NCAA FB: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB (O/U): [0] vs. [1]: Total points scored; Over/Under [2].5?`,
+                example: `NCAA FB (O/U): Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -3932,8 +3973,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] presidential election?`,
-            example: `Will Donald Trump win the 2020 Presidential election?`,
+            question: `Will [0] win the [1] U.S. Presidential election?`,
+            example: `Will Donald Trump win the 2020 U.S. Presidential election?`,
             inputs: [
               {
                 id: 0,
@@ -3944,15 +3985,21 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                },
+              ],
+            },
           },
           {
             marketType: YES_NO,
-            question: `Will [0] win the [1] [2] presidential nomination?`,
-            example: `Will Elizabeth Warren win the 2020 Democratic Presidential nomination?`,
+            question: `Will [0] win the [1] [2] U.S. Presidential nomination?`,
+            example: `Will Elizabeth Warren win the 2020 Democratic U.S. Presidential nomination?`,
             inputs: [
               {
                 id: 0,
@@ -3963,7 +4010,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
               },
               {
                 id: 2,
@@ -3972,12 +4019,18 @@ export const TEMPLATES = {
                 values: LIST_VALUES.POL_PARTY,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
+                },
+              ],
+            },
           },
           {
             marketType: YES_NO,
             question: `Will [0] run for [1] by [2]?`,
-            example: `Will Oprah Winfrey run for President by December 31, 2019 1 pm EST`,
+            example: `Will Oprah Winfrey run for U.S. President by December 31, 2019 1 pm EST`,
             inputs: [
               {
                 id: 0,
@@ -3998,7 +4051,48 @@ export const TEMPLATES = {
                 sublabel: `Specify date time for event`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `House, Senate and presidential candidates must register a Statement of Candidacy for the specific office and electioin cycle with the Federal Election Commission`,
+                },
+                {
+                  text: `Vice-President nomination is selected by the political party, replacement of nomination will not change market results, because person had been nominated. Declining nomination is not considered nominated`
+                }
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will a woman be elected [0] in the [1] Presidential election?`,
+            example: `Will a woman be elected U.S. President in the 2020 Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.PRES_OFFICES,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                },
+                {
+                  text: `U.S. Vice President is elected with President as thier running mate`,
+                },
+                {
+                  text: 'The candidate elected president/vice president shall be female.'
+                }
+              ]
+            },
           },
           {
             marketType: YES_NO,
@@ -4018,18 +4112,62 @@ export const TEMPLATES = {
                 sublabel: `Specify date time for event`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The U.S. House of Representatives shall, by simple majority vote, approve or pass one or more articles of impeachment.`,
+                },
+                {
+                  text: `The Senate's judgment or decision, whether to be convicted, acquitted or removed from office does not change market results.`
+                }
+              ],
+            },
           },
           {
             marketType: CATEGORICAL,
-            question: `Who will win the [0] US presidential election?`,
-            example: `Who will win the 2020 US presidential election?`,
+            question: `Which party will win the [0] U.S. Presidential election?`,
+            example: `Which party will win the 2020 U.S. Presidential election?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Democratic Party`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Republican Party`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning party will win the majority of 270 electoral votes.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] U.S. Presidential election?`,
+            example: `Who will win the 2020 U.S. Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
               },
               {
                 id: 1,
@@ -4040,27 +4178,27 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If any party, other than ones listed in the outcomes, wins the state, the market should resolve as "Other".`,
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
               ],
             },
           },
           {
             marketType: CATEGORICAL,
-            question: `Who will be the [0] [1] [2] nominee?`,
-            example: `Who will be the 2020 Republican Vice President nominee?`,
+            question: `Who will be the [0] nominee for [1] [2]?`,
+            example: `Who will be the Republican nominee for 2020 U.S. Vice-President?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `Party`,
-                values: LIST_VALUES.POL_PARTY,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
               },
               {
                 id: 2,
@@ -4074,18 +4212,55 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
+                },
+              ],
+            },
           },
           {
             marketType: CATEGORICAL,
-            question: `Which party will win [0] in the [1] Presidential election?`,
-            example: `Which party will win Michigan in the 2020 Presidential election?`,
+            question: `Which party will win [0] in the [1] U.S. Presidential election?`,
+            example: `Which party will win Michigan in the 2020 U.S. Presidential election?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
                 values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning party will win the majority of state's electoral votes.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Which party will control the [0] after the [1] election?`,
+            example: `Which party will control the U.S House of Representatives after the 2020 election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Office`,
+                values: LIST_VALUES.POL_HOUSE_SENATE_OFFICE,
               },
               {
                 id: 1,
@@ -4098,8 +4273,69 @@ export const TEMPLATES = {
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Democratic Party`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Republican Party`,
+              },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win the [0] [1] [2] primary for U.S. Presidential election?`,
+            example: `Who will win the 2020 South Carolina Democratic primary for U.S Presidential election?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.PRES_YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `State`,
+                values: LIST_VALUES.US_STATES,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Party`,
+                values: LIST_VALUES.POL_PARTY,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No winner/Event cancelled`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the primary does not take place the market should resolve as "No winner/Event cancelled"`,
+                },
+                {
+                  text: `The winner of the primary is the candidate recognized and/or announced by the state`,
+                },
+              ],
+            },
           },
         ],
       },
@@ -4361,7 +4597,13 @@ export const TEMPLATES = {
           [REQUIRED]: [
             {
               text:
-                'If more than one person hosts the event, and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
+                'If more than one person hosts the event and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
+            },
+            {
+              text: `Person has to officially host the event in order for the market solve as "Yes", not just named as host`,
+            },
+            {
+              text: `If event does not occur the market should resolve as "No"`,
             },
           ],
         },
@@ -4394,7 +4636,14 @@ export const TEMPLATES = {
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
           },
         ],
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text:
+                'If more than one person wins the award and the person named in the market is one of the named, the market should resolve as "Yes"',
+            },
+          ],
+        },
       },
       {
         marketType: YES_NO,
@@ -4424,7 +4673,14 @@ export const TEMPLATES = {
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
           },
         ],
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text:
+                'If more than one movie wins the award and the movie named in the market is one of the named, the market should resolve as "Yes"',
+            },
+          ],
+        },
       },
       {
         marketType: YES_NO,
@@ -4530,7 +4786,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC close on or above [0] USD on [1] on [2]?`,
-                example: `Will the price of BTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
+                example: `Will the price of BTC close on or above $8000 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4555,7 +4811,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4609,7 +4865,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC close on or above [0] USDT on [1] on [2]?`,
-                example: `Will the price of BTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019?`,
+                example: `Will the price of BTC close on or above $8000 USDT on Binance (binance.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4634,7 +4890,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4688,7 +4944,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC close on or above [0] EUR on [1] on [2]?`,
-                example: `Will the price of BTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
+                example: `Will the price of BTC close on or above 8000 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4713,7 +4969,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4796,7 +5052,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4850,7 +5106,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH close on or above [0] USDT on [1] on [2]?`,
-                example: `Will the price of ETH close on or above $200 USDT on Binance (binance.com) on December 31, 2019?`,
+                example: `Will the price of ETH close on or above 200 USDT on Binance (binance.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4875,7 +5131,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4929,7 +5185,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH close on or above [0] EUR on [1] on [2]?`,
-                example: `Will the price of ETH close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
+                example: `Will the price of ETH close on or above 200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -4954,7 +5210,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5012,7 +5268,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC close on or above [0] USD on [1] on [2]?`,
-                example: `Will the price of LTC close on or above $200 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
+                example: `Will the price of LTC close on or above $100 USD on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5037,7 +5293,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $40 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5091,7 +5347,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC close on or above [0] USDT on [1] on [2]?`,
-                example: `Will the price of LTC close on or above $200 USDT on Binance (binance.com) on December 31, 2019?`,
+                example: `Will the price of LTC close on or above 100 USDT on Binance (binance.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5116,7 +5372,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $40 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5170,7 +5426,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC close on or above [0] EUR on [1] on [2]?`,
-                example: `Will the price of LTC close on or above $200 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
+                example: `Will the price of LTC close on or above 100 EUR on Coinbase Pro (pro.coinbase.com) on December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,

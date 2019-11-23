@@ -1,9 +1,5 @@
-import {
-  NodeStyleCallback,
-} from 'modules/types';
-import {
-  updateLoginAccount,
-} from 'modules/account/actions/login-account';
+import { NodeStyleCallback } from 'modules/types';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
 import {
   getEthBalance,
@@ -15,6 +11,7 @@ import { AppState } from 'store';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';
+import { addedDaiEvent } from 'services/analytics/helpers';
 
 export const updateAssets = (
   callback: NodeStyleCallback = logError
@@ -24,7 +21,12 @@ export const updateAssets = (
 ) => {
   const { loginAccount, universe } = getState();
   const { address } = loginAccount;
-  return updateBalances(universe.id, address, dispatch, callback);
+  return updateBalances(
+    universe.id,
+    address,
+    dispatch,
+    callback
+  );
 };
 
 function updateBalances(
@@ -45,6 +47,7 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const dai = amounts[1];
     const eth = amounts[2];
+    dispatch(addedDaiEvent(dai)); 
     dispatch(updateLoginAccount({ balances: { attoRep, rep, dai, eth, legacyAttoRep, legacyRep } }));
     return callback(null, { rep, dai, eth });
   });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
-import Styles from 'modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles.less';
+import Styles from 'modules/market-charts/components/candlestick/candlestick.styles.less';
 import { PERIOD_RANGES, DAI } from 'modules/common/constants';
 import { PriceTimeSeriesData } from 'modules/types';
 
@@ -28,7 +28,7 @@ const GROUPING_UNITS = [
   ['year', [1]],
 ];
 
-export default class MarketOutcomeChartsCandlestickHighchart extends Component<
+export default class CandlestickHighchart extends Component<
   HighChartsWrapperProps,
   {}
 > {
@@ -80,9 +80,14 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
     e.preventDefault();
     const spinAmount = Math.ceil(e.wheelDelta / 100);
     const changeRate = spinAmount * this.chart.xAxis[0].minRange;
+    const { dataMax } = this.chart.xAxis[0].getExtremes();
     const newMin = this.xMinCurrent + changeRate;
+    const maxMin = dataMax - this.chart.xAxis[0].minRange;
     this.xMinCurrent = newMin < this.xMin ? this.xMin : newMin;
-    this.chart.xAxis[0].setExtremes(this.xMinCurrent, this.xMax, false);
+    if (isNaN(newMin)) this.xMinCurrent = this.xMin;
+    if (this.xMinCurrent > maxMin) this.xMinCurrent = maxMin;
+
+    this.chart.xAxis[0].setExtremes(this.xMinCurrent, dataMax, false);
     this.chart.yAxis[0].setExtremes(this.chart.yAxis[0].dataMin * 0.95, this.chart.yAxis[0].dataMax * 1.05);
   }
 

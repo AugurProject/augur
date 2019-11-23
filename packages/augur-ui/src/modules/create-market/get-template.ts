@@ -233,15 +233,10 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
-export const buildMarketDescription = (
-  question: string,
-  inputs: TemplateInput[]
-) => {
+export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
   inputs.forEach((input: TemplateInput) => {
-    question = question.replace(
-      `[${input.id}]`,
-      `${input.userInput || `[${input.placeholder}]`}`
-    );
+    let value = (input.userInput && input.userInput.trim()) || `[${input.placeholder.trim()}]`;
+    question = question.replace(`[${input.id}]`, `${value}`);
   });
 
   return question;
@@ -308,18 +303,19 @@ export const buildResolutionDetails = (
   return details;
 };
 
+// return false if template has category children
+// return true if template doesn't have category children
 export const hasNoTemplateCategoryChildren = category => {
   if (!category) return false;
+  if (!TEMPLATES[category]) return true;
   if (TEMPLATES[category].children) return false;
   return true;
 };
 
-export const hasNoTemplateCategoryTertiaryChildren = (
-  category,
-  subcategory
-) => {
-  if (!category || !subcategory) return false;
-  if (TEMPLATES[category].children[subcategory].children) return false;
+export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
+  if (!category || !subcategory || !TEMPLATES[category] || !TEMPLATES[category].children) return true;
+  if (!TEMPLATES[category].children[subcategory] || !TEMPLATES[category].children[subcategory].children) return true;
+  if (TEMPLATES[category].children[subcategory] || TEMPLATES[category].children[subcategory].children) return false;
   return true;
 };
 

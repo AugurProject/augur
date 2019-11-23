@@ -138,7 +138,7 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     # First we'll create a signed order
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(BID, fix(2), 60, market.address, YES, nullAddress, expirationTime, zeroXExchange.address, salt)
     signature = signOrder(orderHash, contractsFixture.privateKeys[0])
-    
+
     assert zeroXExchange.isValidSignature(rawZeroXOrderData, orderHash, signature)
 
     # Validate the signed order state
@@ -254,7 +254,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
             with TokenDelta(cash, -fix(2, 60), sender, "Creator cash not taken"):
                 with TokenDelta(cash, -fix(2, 40), contractsFixture.accounts[2], "Taker cash not taken"):
                     assert ZeroXTrade.trade(fix(2), longTo32Bytes(11), tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
-        
+
         assert shareToken.balanceOfMarketOutcome(market.address, YES, sender) == fix(2)
         assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(2)
     else:
@@ -723,3 +723,33 @@ def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[2]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == 0
+
+def test_devutils_GetOrderRelevantStates(contractsFixture, cash, market, universe):
+    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
+    zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
+    devUtils = contractsFixture.contracts['DevUtils']
+
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    salt = 5
+
+    signedOrder, orderHash = ZeroXTrade.createZeroXOrder(
+        ASK,
+        fix(1),
+        60,
+        market.address,
+        YES,
+        nullAddress,
+        expirationTime,
+        zeroXExchange.address,
+        salt,
+        sender=contractsFixture.accounts[1])
+
+    signature = signOrder(orderHash, contractsFixture.privateKeys[1])
+    orders = [signedOrder]
+    signatures = [signature]
+
+    ordersInfo, fillableTakerAssetAmounts, isValidSignature = devUtils.getOrderRelevantStates(orders, signatures)
+    orderStatus, orderHash, orderTakerAssetFilledAmount = ordersInfo[0]
+
+    assert orderStatus == 3, 'order status must be 3 (FILLABLE) not {}'.format(orderStatus)
+    assert isValidSignature[0], 'signature must be valid'
