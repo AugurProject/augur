@@ -806,9 +806,8 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
-          let newOutcomes = outcomes;
-          newOutcomes[inputIndex] = value;
-          updateData(value);
+          const newInputs = updateData(value);
+          const newOutcomes = createTemplateOutcomes(newInputs);
           onChange('outcomes', newOutcomes);
         }}
         value={input.userInput}
@@ -1114,7 +1113,7 @@ export interface QuestionBuilderProps {
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const { onChange, newMarket, currentTimestamp } = props;
-  const { template, outcomes, marketType, validations } = newMarket;
+  const { template, marketType } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
 
@@ -1305,6 +1304,7 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 export const CategoricalTemplateTextInputs = (
   props: CategoricalTemplateTextInputsProps
 ) => {
+  const [initialized, setInitialized] = useState(false);
   const { onChange, newMarket } = props;
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
@@ -1344,8 +1344,12 @@ export const CategoricalTemplateTextInputs = (
 
   const min = initialList.length >  2 ? initialList.length : 2;
   const list = initialList.map(o => o.value);
-  if (String(outcomes) !== String(list)) {
+  if (
+    String(outcomes) !== String(list) ||
+    (!initialized && String(outcomes) === String(list))
+  ) {
     onChange('outcomes', list);
+    setInitialized(true);
   }
 
   return (
