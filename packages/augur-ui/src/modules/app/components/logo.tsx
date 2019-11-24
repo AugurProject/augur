@@ -16,7 +16,7 @@ class LoadingLogo extends Component<LogoProps, LogoState> {
     loading: this.props.isLoading
   }
 
-  UNSAFE_componentWillReceiveProps({ isLoading: loading }: LogoProps) {
+  componentDidUpdate({ isLoading: loading }: LogoProps) {
     if (loading) {
       this.setState({
         loading
