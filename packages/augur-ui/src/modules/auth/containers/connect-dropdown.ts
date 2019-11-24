@@ -2,18 +2,23 @@ import { connect } from 'react-redux';
 import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
 import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
+import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
 import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
-import getValue from 'utils/get-value';
 
 const mapStateToProps = state => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
 
   const userDefined = userDefinedGasPrice || average || 0;
   let gasPriceSpeed = GAS_SPEED_LABELS.STANDARD;
-  if (userDefined > fast && fast !== 0) {
+  let gasPriceTime = GAS_TIME_LEFT_LABELS.STANDARD
+  if (userDefined >=  fast && fast !== 0) {
     gasPriceSpeed = GAS_SPEED_LABELS.FAST;
+    gasPriceTime = GAS_TIME_LEFT_LABELS.FAST;
+  } else if (userDefined < average && userDefined >= safeLow && safeLow !== 0) {
+    gasPriceSpeed = GAS_SPEED_LABELS.SLOW;
+    gasPriceTime = GAS_TIME_LEFT_LABELS.SAFELOW;
   } else if (userDefined < safeLow && safeLow !== 0) {
+    gasPriceTime = GAS_TIME_LEFT_LABELS.SLOW;
     gasPriceSpeed = GAS_SPEED_LABELS.SLOW;
   }
 
@@ -25,13 +30,15 @@ const mapStateToProps = state => {
     averageGasPrice: average,
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
+    gasPriceTime,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
     accountMeta:
       state.loginAccount &&
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
-    Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 

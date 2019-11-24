@@ -219,6 +219,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async updateGnosisSafe(payload: GnosisSafeStatusPayload): Promise<void> {}
 
+  setGasPrice(gasPrice: BigNumber): void {
+    this.dependencies.setGasPrice(gasPrice);
+  }
+
   setGnosisSafeAddress(safeAddress: string): void {
     this.dependencies.setSafeAddress(safeAddress);
   }

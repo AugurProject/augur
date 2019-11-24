@@ -446,8 +446,7 @@ export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
-  userDefinedGasPrice: string;
-  blockNumber: string;
+  userDefinedGasPrice: number;
 }
 
 export enum INVALID_OPTIONS {
