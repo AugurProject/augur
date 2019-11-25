@@ -146,6 +146,10 @@ export const LIST_VALUES = {
       value: 'Golden Globe Awards',
       label: 'Golden Globe Awards',
     },
+    {
+      value: 'Razzies Awards',
+      label: 'Razzies Awards',
+    }
   ],
   CURRENCY: [
     {

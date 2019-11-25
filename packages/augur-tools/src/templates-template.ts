@@ -117,6 +117,7 @@ export interface TemplateValidation {
     templateValidationResRules: string;
     requiredOutcomes: string[];
     outcomeDependencies: DropdownDependencies;
+    substituteDepenencies: string[];
   };
 }
 export interface Template {

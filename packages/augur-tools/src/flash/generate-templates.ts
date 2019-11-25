@@ -56,6 +56,7 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
         templateValidationResRules: generateResolutionRulesHash(t.resolutionRules),
         requiredOutcomes: getRequiredOutcomes(t.inputs),
         outcomeDependencies: getDropdownDependencies(t.inputs),
+        substituteDepenencies: getSubstituteOutcomeDependencies(t.inputs),
       };
     });
   }
@@ -91,6 +92,12 @@ function getDropdownDependencies(inputs: TemplateInput[]): DropdownDependencies 
     });
   }
   return listValues;
+}
+
+function getSubstituteOutcomeDependencies(inputs: TemplateInput[]): string[] {
+  return inputs
+    .filter(i => i.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME)
+    .map(i => i.placeholder);
 }
 
 function getValidationValues(input: TemplateInput) {

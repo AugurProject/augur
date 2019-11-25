@@ -4809,7 +4809,7 @@ export const TEMPLATES = {
           {
             id: 0,
             type: TemplateInputType.TEXT,
-            placeholder: `Person Name`,
+            placeholder: `Person/Movie`,
           },
           {
             id: 1,
@@ -4835,55 +4835,21 @@ export const TEMPLATES = {
               text:
                 'If more than one person wins the award and the person named in the market is one of the named, the market should resolve as "Yes"',
             },
-          ],
-        },
-      },
-      {
-        marketType: YES_NO,
-        question: `Will [0] win an award for [1] at the [2] [3]?`,
-        example: `Will Spotlight win an award for Best Picture at the 2016 Academy Awards?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: `Movie Name`,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.TEXT,
-            placeholder: `Award`,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Year`,
-            values: LIST_VALUES.YEARS,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Event`,
-            values: LIST_VALUES.ENTERTAINMENT_EVENT,
-          },
-        ],
-        resolutionRules: {
-          [REQUIRED]: [
             {
-              text:
-                'If more than one movie wins the award and the movie named in the market is one of the named, the market should resolve as "Yes"',
+              text: `If event does not occur the market should resolve as "No"`,
             },
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross [1] [2] or more, in it's opening weekend [3]?`,
+        question: `Will [0] gross $[1] USD or more, in it's opening weekend [2]?`,
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
             type: TemplateInputType.TEXT,
-            placeholder: `Movie Name`,
+            placeholder: `Movie`,
           },
           {
             id: 1,
@@ -4893,11 +4859,35 @@ export const TEMPLATES = {
           {
             id: 2,
             type: TemplateInputType.DROPDOWN,
-            placeholder: `Currency`,
-            values: LIST_VALUES.CURRENCY,
+            placeholder: `US / Worldwide`,
+            values: LIST_VALUES.REGION,
+          },
+        ],
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+            },
+          ],
+        },
+      },
+      {
+        marketType: YES_NO,
+        question: `Head-to-Head, Will [0] gross more than [1] on it's opening weekend [2]?`,
+        example: `Head-to-Head, Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            placeholder: `Opening Movie`,
           },
           {
-            id: 3,
+            id: 1,
+            type: TemplateInputType.TEXT,
+            placeholder: `Past Movie`,
+          },
+          {
+            id: 2,
             type: TemplateInputType.DROPDOWN,
             placeholder: `US / Worldwide`,
             values: LIST_VALUES.REGION,
@@ -4933,6 +4923,11 @@ export const TEMPLATES = {
             type: TemplateInputType.ADDED_OUTCOME,
             placeholder: `Multiple Hosts`,
           },
+          {
+            id: 3,
+            type: TemplateInputType.ADDED_OUTCOME,
+            placeholder: `Other (Field)`,
+          },
         ],
         resolutionRules: {
           [REQUIRED]: [
@@ -4940,6 +4935,9 @@ export const TEMPLATES = {
               text:
                 'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
             },
+            {
+              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+            }
           ],
         },
       },
@@ -4965,8 +4963,19 @@ export const TEMPLATES = {
             placeholder: `Event`,
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
           },
+          {
+            id: 3,
+            type: TemplateInputType.ADDED_OUTCOME,
+            placeholder: `Other (Field)`,
+          },
         ],
-        resolutionRules: {},
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+            }
+          ]
+        },
       },
     ],
   },
