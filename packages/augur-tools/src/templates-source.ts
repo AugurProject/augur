@@ -45,6 +45,7 @@ import {
   FOOTBALL_EVENT_DEP_TEAMS,
   NCAA_BASKETBALL_CONF_DEP_TEAMS,
   TENNIS_SINGLES_EVENTS,
+  TENNIS_DOUBLES_EVENTS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -174,6 +175,9 @@ export const TEMPLATES = {
                     {
                       text: 'Includes regulation, any play-offs and sudden death',
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -297,6 +301,9 @@ export const TEMPLATES = {
                     {
                       text: 'Includes regulation, any play-offs and sudden death',
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -420,6 +427,9 @@ export const TEMPLATES = {
                     {
                       text: 'Includes regulation, any play-offs and sudden death',
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -721,7 +731,13 @@ export const TEMPLATES = {
                 values: HOCKEY_EVENT_DEP_TEAMS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
+              ]
+            },
           },
           {
             marketType: CATEGORICAL,
@@ -746,7 +762,13 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
+              ]
+            },
           },
           {
             marketType: SCALAR,
@@ -941,6 +963,9 @@ export const TEMPLATES = {
                     {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -1015,7 +1040,7 @@ export const TEMPLATES = {
                     placeholder: `Men's/Women's/Mixed`,
                     inputDestId: 3,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
-                    inputDestValues: TENNIS_SINGLES_EVENTS,
+                    inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1053,9 +1078,9 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
-                    inputDestId: 3,
+                    inputDestId: 2,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
-                    inputDestValues: TENNIS_SINGLES_EVENTS,
+                    inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1081,6 +1106,9 @@ export const TEMPLATES = {
                     {
                       text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -1093,9 +1121,9 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
-                    inputDestId: 3,
+                    inputDestId: 2,
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
-                    inputDestValues: TENNIS_SINGLES_EVENTS,
+                    inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
                   {
                     id: 1,
@@ -1809,7 +1837,13 @@ export const TEMPLATES = {
                     values: BASKETBALL_EVENT_DEP_TEAMS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
+                  ]
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -1839,6 +1873,9 @@ export const TEMPLATES = {
                     {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -1882,6 +1919,9 @@ export const TEMPLATES = {
                     {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -2257,7 +2297,13 @@ export const TEMPLATES = {
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
+                  ]
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -2287,6 +2333,9 @@ export const TEMPLATES = {
                     {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -2330,6 +2379,9 @@ export const TEMPLATES = {
                     {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -2774,6 +2826,9 @@ export const TEMPLATES = {
                     {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -2811,7 +2866,13 @@ export const TEMPLATES = {
                     placeholder: `Date time`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -2925,7 +2986,13 @@ export const TEMPLATES = {
                 values: BASEBALL_EVENT_DEP_TEAMS,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
+              ]
+            },
           },
           {
             marketType: CATEGORICAL,
@@ -3076,7 +3143,13 @@ export const TEMPLATES = {
                 placeholder: `Other (Field)`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
+              ]
+            },
           },
           {
             marketType: SCALAR,
@@ -3494,7 +3567,13 @@ export const TEMPLATES = {
                     values: FOOTBALL_EVENT_DEP_TEAMS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
+                  ]
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3519,7 +3598,13 @@ export const TEMPLATES = {
                     placeholder: `Other (Field)`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -3902,7 +3987,13 @@ export const TEMPLATES = {
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
+                  ]
+                },
               },
               {
                 marketType: CATEGORICAL,
@@ -3930,6 +4021,9 @@ export const TEMPLATES = {
                     {
                       text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
                     },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                    }
                   ],
                 },
               },
@@ -4155,6 +4249,9 @@ export const TEMPLATES = {
                 {
                   text: `The winning party will win the majority of 270 electoral votes.`,
                 },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
               ],
             },
           },
@@ -4180,6 +4277,9 @@ export const TEMPLATES = {
                 {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
               ],
             },
           },
@@ -4217,6 +4317,9 @@ export const TEMPLATES = {
                 {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
               ],
             },
           },
@@ -4248,6 +4351,9 @@ export const TEMPLATES = {
                 {
                   text: `The winning party will win the majority of state's electoral votes.`,
                 },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
               ],
             },
           },
@@ -4289,6 +4395,9 @@ export const TEMPLATES = {
                 {
                   text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
                 },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
               ],
             },
           },
@@ -4334,6 +4443,9 @@ export const TEMPLATES = {
                 {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
               ],
             },
           },
@@ -4370,7 +4482,13 @@ export const TEMPLATES = {
                 sublabel: `Specify date time for event`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If location/country does not have the stated position in market, market should resolve as "No"`,
+                },
+              ],
+            },
           },
           {
             marketType: YES_NO,
@@ -4390,7 +4508,82 @@ export const TEMPLATES = {
                 sublabel: `Specify date time for event`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: "Rules of impeachment is dictated by the person's location/country government",
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will Pope [0] vacate papacy by [1]?`,
+            example: `Will Pope Francis vacate papacy by be December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Person`,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATETIME,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: "If person mentioned in question shall cease to hold the office of papacy for any reason",
+                },
+                {
+                  text: "Announcement of future resignation does not count as leaving the office, until actual resignation takes effect",
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will be [0] of [1] by [2]?`,
+            example: `Who be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Position`,
+                values: LIST_VALUES.POL_POSITION,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Location`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATETIME,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If location/country does not have the stated position in market, market should resolve as "Invalid"`,
+                },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
+                }
+              ],
+            },
           },
         ],
       },

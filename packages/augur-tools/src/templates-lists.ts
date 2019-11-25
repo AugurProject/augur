@@ -249,8 +249,12 @@ export const LIST_VALUES = {
       label: 'Supreme Leader',
     },
     {
-      value: 'Crown Prince',
-      label: 'Crown Prince',
+      value: 'King',
+      label: 'King',
+    },
+    {
+      value: 'Prince',
+      label: 'Prince',
     },
     {
       value: 'Chancellor',
@@ -7520,12 +7524,12 @@ export const LIST_VALUES = {
 export const TENNIS_SINGLES_EVENTS = {
   "Men's": LIST_VALUES.TENNIS_MENS_SINGLES_TOURNAMENTS,
   "Women's": LIST_VALUES.TENNIS_WOMENS_SINGLES_TOURNAMENTS,
-  'Mixed': LIST_VALUES.TENNIS_EVENT,
 };
 
 export const TENNIS_DOUBLES_EVENTS = {
   "Men's": LIST_VALUES.TENNIS_MENS_DOUBLES_TOURNAMENTS,
   "Women's": LIST_VALUES.TENNIS_WOMENS_DOUBLES_TOURNAMENTS,
+  'Mixed': LIST_VALUES.TENNIS_EVENT,
 };
 
 export const BASKETBALL_EVENT_DEP_TEAMS = {
