@@ -20,8 +20,9 @@ import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
-import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
-import { Trading } from "./state/getter/Trading";
+import { OnChainTrade } from "./api/OnChainTrade";
+import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from "./api/Trade";
+import { OnChainTrading } from "./state/getter/OnChainTrading";
 import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
@@ -53,10 +54,12 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly events: Events;
   readonly addresses: ContractAddresses;
   readonly contracts: Contracts;
+  readonly onChainTrade: OnChainTrade;
+  readonly zeroX: ZeroX;
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
-  readonly zeroX: ZeroX;
+
   readonly universe: Universe;
   syncableFlexSearch: SyncableFlexSearch;
   connector: BaseConnector;
@@ -124,16 +127,17 @@ export class Augur<TProvider extends Provider = Provider> {
     // API
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
-    this.trade = new Trade(this);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur, this.addresses.AugurTrading, this.addresses.ShareToken);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
+    this.onChainTrade = new OnChainTrade(this);
     this.zeroX =
       meshClient || browserMesh
         ? new ZeroX(this, meshClient, browserMesh)
         : undefined;
+    this.trade = new Trade(this);
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
@@ -359,19 +363,19 @@ export class Augur<TProvider extends Provider = Provider> {
   };
 
   getTradingHistory = (
-    params: Parameters<typeof Trading.getTradingHistory>[2]
-  ): ReturnType<typeof Trading.getTradingHistory> => {
-    return this.bindTo(Trading.getTradingHistory)(params);
+    params: Parameters<typeof OnChainTrading.getTradingHistory>[2]
+  ): ReturnType<typeof OnChainTrading.getTradingHistory> => {
+    return this.bindTo(OnChainTrading.getTradingHistory)(params);
   };
   getAllOrders = (
-    params: Parameters<typeof Trading.getAllOrders>[2]
-  ): ReturnType<typeof Trading.getAllOrders> => {
-    return this.bindTo(Trading.getAllOrders)(params);
+    params: Parameters<typeof OnChainTrading.getAllOrders>[2]
+  ): ReturnType<typeof OnChainTrading.getAllOrders> => {
+    return this.bindTo(OnChainTrading.getAllOrders)(params);
   };
   getTradingOrders = (
-    params: Parameters<typeof Trading.getOrders>[2]
-  ): ReturnType<typeof Trading.getOrders> => {
-    return this.bindTo(Trading.getOrders)(params);
+    params: Parameters<typeof OnChainTrading.getOrders>[2]
+  ): ReturnType<typeof OnChainTrading.getOrders> => {
+    return this.bindTo(OnChainTrading.getOrders)(params);
   };
   getMarketOrderBook = (
     params: Parameters<typeof Markets.getMarketOrderBook>[2]

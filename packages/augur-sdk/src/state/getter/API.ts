@@ -5,7 +5,7 @@ import { Router } from './Router';
 // Getters are evaluated by importing these files in this manner
 import './Markets';
 import './Ping';
-import './Trading';
+import './OnChainTrading';
 import './Users';
 import './Accounts';
 import './Universe';

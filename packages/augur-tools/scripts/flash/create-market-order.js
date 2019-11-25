@@ -59,7 +59,7 @@ function createMarketOrder(augur, args, auth, callback) {
         chalk.green(useShares ? true : false)
       );
 
-      augur.trading.placeTrade({
+      augur.trading.placeNativeTrade({
         meta: auth,
         amount: amount,
         limitPrice: price,

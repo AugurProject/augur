@@ -3,7 +3,7 @@ import { SearchResults } from "flexsearch";
 import { DB } from "../db/DB";
 import { MarketFields } from "../db/SyncableFlexSearch";
 import { Getter } from "./Router";
-import { Order, Orders, OrderState, OutcomeParam, Trading } from "./Trading";
+import { Order, Orders, OrderState, OutcomeParam, OnChainTrading } from "./OnChainTrading";
 import {
   Address,
   DisputeDoc,
@@ -629,7 +629,7 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
     const account = await augur.getAccount();
-    const orders = await Trading.getOrders(augur, db, {
+    const orders = await OnChainTrading.getOrders(augur, db, {
       ...params,
       orderState: OrderState.OPEN,
     });
