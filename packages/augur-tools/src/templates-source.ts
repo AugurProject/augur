@@ -4601,7 +4601,7 @@ export const TEMPLATES = {
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: `Stock`,
+                placeholder: `Stock or ETF TICKER`,
               },
               {
                 id: 1,
@@ -4636,7 +4636,7 @@ export const TEMPLATES = {
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: `Stock`,
+                placeholder: `Stock or ETF TICKER`,
               },
               {
                 id: 1,
@@ -4677,7 +4677,7 @@ export const TEMPLATES = {
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: `Stock`,
+                placeholder: `Stock or ETF TICKER`,
               },
               {
                 id: 1,

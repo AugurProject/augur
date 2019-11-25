@@ -129,28 +129,6 @@ export const LIST_VALUES = {
       label: 'World Series',
     },
   ],
-  ENTERTAINMENT_EVENT: [
-    {
-      value: 'Academy Awards',
-      label: 'Academy Awards',
-    },
-    {
-      value: 'Emmy Awards',
-      label: 'Emmy Awards',
-    },
-    {
-      value: 'Grammy Awards',
-      label: 'Grammy Awards',
-    },
-    {
-      value: 'Golden Globe Awards',
-      label: 'Golden Globe Awards',
-    },
-    {
-      value: 'Razzies Awards',
-      label: 'Razzies Awards',
-    }
-  ],
   CURRENCY: [
     {
       value: 'US dollar (USD)',
@@ -7523,6 +7501,416 @@ export const LIST_VALUES = {
       value: 'WTA Finals',
     },
   ],
+  ENTERTAINMENT_EVENT: [
+    {
+      value: 'Academy Awards',
+      label: 'Academy Awards',
+    },
+    {
+      value: 'Emmy Awards',
+      label: 'Emmy Awards',
+    },
+    {
+      value: 'Grammy Awards',
+      label: 'Grammy Awards',
+    },
+    {
+      value: 'Golden Globe Awards',
+      label: 'Golden Globe Awards',
+    },
+    {
+      value: 'Razzies Awards',
+      label: 'Razzies Awards',
+    },
+    {
+      value: 'BAFTA Awards',
+      label: 'BAFTA Awards',
+    },
+    {
+      value: 'MTV Video Music Awards',
+      label: 'MTV Video Music Awards',
+    },
+    {
+      value: 'American Music Awards',
+      label: 'American Music Awards',
+    },
+    {
+      value: 'Brit Awards',
+      label: 'Brit Awards',
+    },
+  ],
+  ENT_ACAD_AWARDS: [
+    {
+      label: 'Best Picture',
+      value: 'Best Picture',
+    },
+    {
+      label: 'Best Actor',
+      value: 'Best Actor',
+    },
+    {
+      label: 'Best Actress',
+      value: 'Best Actress',
+    },
+    {
+      label: 'Best Director',
+      value: 'Best Director',
+    },
+    {
+      label: 'Best Supporting Actor',
+      value: 'Best Supporting Actor',
+    },
+    {
+      label: 'Best Supporting Actress',
+      value: 'Best Supporting Actress',
+    },
+    {
+      label: 'Best Original Screenplay',
+      value: 'Best Original Screenplay',
+    },
+    {
+      label: 'Best Adapted Screenplay',
+      value: 'Best Adapted Screenplay',
+    },
+  ],
+  ENT_EMMY_AWARDS: [
+    {
+      label: 'Outstanding Comedy Series',
+      value: 'Outstanding Comedy Series',
+    },
+    {
+      label: 'Outstanding Lead Actor In A Comedy Series',
+      value: 'Outstanding Lead Actor In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Lead Actress In A Comedy Series',
+      value: 'Outstanding Lead Actress In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Supporting Actor In A Comedy Series',
+      value: 'Outstanding Supporting Actor In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Supporting Actress In A Comedy Series',
+      value: 'Outstanding Supporting Actress In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Drama Series',
+      value: 'Outstanding Drama Series',
+    },
+    {
+      label: 'Outstanding Lead Actor In A Drama Series',
+      value: 'Outstanding Lead Actor In A Drama Series',
+    },
+    {
+      label: 'Outstanding Lead Actress In A Drama Series',
+      value: 'Outstanding Lead Actress In A Drama Series',
+    },
+    {
+      label: 'Outstanding Supporting Actor In A Drama Series',
+      value: 'Outstanding Supporting Actor In A Drama Series',
+    },
+    {
+      label: 'Outstanding Supporting Actress In A Drama Series',
+      value: 'Outstanding Supporting Actress In A Drama Series',
+    },
+    {
+      label: 'Outstanding Limited Series',
+      value: 'Outstanding Limited Series',
+    },
+    {
+      label: 'Outstanding Television Movie',
+      value: 'Outstanding Television Movie',
+    },
+  ],
+  ENT_GRAMMY_AWARDS: [
+    {
+      label: 'Album Of The Year',
+      value: 'Album Of The Year',
+    },
+    {
+      label: 'Record Of The Year',
+      value: 'Record Of The Year',
+    },
+    {
+      label: 'Song Of The Year',
+      value: 'Song Of The Year',
+    },
+    {
+      label: 'Best New Artist',
+      value: 'Best New Artist',
+    },
+  ],
+  ENT_GOLDEN_GLOBE_AWARDS: [
+    {
+      label: 'Best Motion Picture - Drama',
+      value: 'Best Motion Picture - Drama',
+    },
+    {
+      label: 'Best Motion Picture - Musical or Comedy',
+      value: 'Best Motion Picture - Musical or Comedy',
+    },
+    {
+      label: 'Best Performance by an Actress in a Motion Picture - Drama',
+      value: 'Best Performance by an Actress in a Motion Picture - Drama',
+    },
+    {
+      label: 'Best Performance by an Actor in a Motion Picture - Drama',
+      value: 'Best Performance by an Actor in a Motion Picture - Drama',
+    },
+    {
+      label:
+        'Best Performance by an Actress in a Motion Picture - Musical or Comedy',
+      value:
+        'Best Performance by an Actress in a Motion Picture - Musical or Comedy',
+    },
+    {
+      label:
+        'Best Performance by an Actor in a Motion Picture - Musical or Comedy',
+      value:
+        'Best Performance by an Actor in a Motion Picture - Musical or Comedy',
+    },
+    {
+      label: 'Best Director - Motion Picture',
+      value: 'Best Director - Motion Picture',
+    },
+    {
+      label: 'Best Screenplay - Motion Picture',
+      value: 'Best Screenplay - Motion Picture',
+    },
+    {
+      label: 'Best Motion Picture - Animated',
+      value: 'Best Motion Picture - Animated',
+    },
+    {
+      label: 'Best Motion Picture - Foreign Language',
+      value: 'Best Motion Picture - Foreign Language',
+    },
+    {
+      label: 'Best Original Song - Motion Picture',
+      value: 'Best Original Song - Motion Picture',
+    },
+    {
+      label: 'Best Television Series - Drama',
+      value: 'Best Television Series - Drama',
+    },
+    {
+      label: 'Best Television Series - Musical or Comedy',
+      value: 'Best Television Series - Musical or Comedy',
+    },
+    {
+      label:
+        'Best Television Limited Series or Motion Picture Made for Television',
+      value:
+        'Best Television Limited Series or Motion Picture Made for Television',
+    },
+  ],
+  ENT_RAZZIE_AWARDS: [
+    {
+      label: 'Worst Picture',
+      value: 'Worst Picture',
+    },
+    {
+      label: 'Worst Actor',
+      value: 'Worst Actor',
+    },
+    {
+      label: 'Worst Actress',
+      value: 'Worst Actress',
+    },
+  ],
+  ENT_BAFTA_AWARDS: [
+    {
+      label: 'Best Film',
+      value: 'Best Film',
+    },
+    {
+      label: 'Best Animated Film',
+      value: 'Best Animated Film',
+    },
+    {
+      label: 'Best Director',
+      value: 'Best Director',
+    },
+    {
+      label: 'Best Actor',
+      value: 'Best Actor',
+    },
+    {
+      label: 'Best Actress',
+      value: 'Best Actress',
+    },
+    {
+      label: 'Best Supporting Actor',
+      value: 'Best Supporting Actor',
+    },
+    {
+      label: 'Best Supporting Actress',
+      value: 'Best Supporting Actress',
+    },
+  ],
+  ENT_MTV_AWARDS: [
+    {
+      label: 'Artist of the Year',
+      value: 'Artist of the Year',
+    },
+    {
+      label: 'Song of the year',
+      value: 'Song of the year',
+    },
+    {
+      label: 'Best new artist',
+      value: 'Best new artist',
+    },
+    {
+      label: 'Best pop',
+      value: 'Best pop',
+    },
+    {
+      label: 'Best hip-hop',
+      value: 'Best hip-hop',
+    },
+    {
+      label: 'Best r&b',
+      value: 'Best r&b',
+    },
+    {
+      label: 'Best dance',
+      value: 'Best dance',
+    },
+    {
+      label: 'Best rock',
+      value: 'Best rock',
+    },
+  ],
+  ENT_AMER_MUSIC: [
+    {
+      label: 'Artist of the Year',
+      value: 'Artist of the Year',
+    },
+    {
+      label: 'New Artist of the Year',
+      value: 'New Artist of the Year',
+    },
+    {
+      label: 'Tour of the Year',
+      value: 'Tour of the Year',
+    },
+    {
+      label: 'Favorite Music Video',
+      value: 'Favorite Music Video',
+    },
+    {
+      label: 'Favorite Male Artist - Pop/Rock',
+      value: 'Favorite Male Artist - Pop/Rock',
+    },
+    {
+      label: 'Favorite Female Artist - Pop/Rock',
+      value: 'Favorite Female Artist - Pop/Rock',
+    },
+    {
+      label: 'Favorite Album - Pop/Rock',
+      value: 'Favorite Album - Pop/Rock',
+    },
+    {
+      label: 'Favorite Song - Pop/Rock',
+      value: 'Favorite Song - Pop/Rock',
+    },
+    {
+      label: 'Favorite Male Artist - Country',
+      value: 'Favorite Male Artist - Country',
+    },
+    {
+      label: 'Favorite Female Artist - Country',
+      value: 'Favorite Female Artist - Country',
+    },
+    {
+      label: 'Favorite Album - Country',
+      value: 'Favorite Album - Country',
+    },
+    {
+      label: 'Favorite Song - Country',
+      value: 'Favorite Song - Country',
+    },
+    {
+      label: 'Favorite Artist - Rap/Hip-Hop',
+      value: 'Favorite Artist - Rap/Hip-Hop',
+    },
+    {
+      label: 'Favorite Album - Rap/Hip-Hop',
+      value: 'Favorite Album - Rap/Hip-Hop',
+    },
+    {
+      label: 'Favorite Song - Rap/Hip-Hop',
+      value: 'Favorite Song - Rap/Hip-Hop',
+    },
+    {
+      label: 'Favorite Male Artist - Soul/R&B',
+      value: 'Favorite Male Artist - Soul/R&B',
+    },
+    {
+      label: 'Favorite Female Artist - Soul/R&B',
+      value: 'Favorite Female Artist - Soul/R&B',
+    },
+    {
+      label: 'Favorite Album - Soul/R&B',
+      value: 'Favorite Album - Soul/R&B',
+    },
+    {
+      label: 'Favorite Song - Soul/R&B',
+      value: 'Favorite Song - Soul/R&B',
+    },
+    {
+      label: 'Favorite Soundtrack',
+      value: 'Favorite Soundtrack',
+    },
+  ],
+  ENT_BRIT_AWARDS: [
+    {
+      label: 'British album of the year',
+      value: 'British album of the year',
+    },
+    {
+      label: 'British female solo artist',
+      value: 'British female solo artist',
+    },
+    {
+      label: 'British male solo artist',
+      value: 'British male solo artist',
+    },
+    {
+      label: 'British group',
+      value: 'British group',
+    },
+    {
+      label: 'British single',
+      value: 'British single',
+    },
+    {
+      label: 'International male solo artist',
+      value: 'International male solo artist',
+    },
+    {
+      label: 'International female solo artist',
+      value: 'International female solo artist',
+    },
+    {
+      label: 'International group',
+      value: 'International group',
+    },
+  ],
+};
+
+export const ENTERTAINMENT_EVENT_DEP_TEAMS = {
+  'Academy Awards': LIST_VALUES.ENT_ACAD_AWARDS,
+  'Emmy Awards': LIST_VALUES.ENT_EMMY_AWARDS,
+  'Grammy Awards': LIST_VALUES.ENT_GRAMMY_AWARDS,
+  'Golden Globe Awards': LIST_VALUES.ENT_GOLDEN_GLOBE_AWARDS,
+  'Razzies Awards': LIST_VALUES.ENT_RAZZIE_AWARDS,
+  'BAFTA Awards': LIST_VALUES.ENT_BAFTA_AWARDS,
+  'MTV Video Music Awards': LIST_VALUES.ENT_MTV_AWARDS,
+  'American Music Awards': LIST_VALUES.ENT_AMER_MUSIC,
+  'Brit Awards': LIST_VALUES.ENT_BRIT_AWARDS,
 };
 
 export const TENNIS_SINGLES_EVENTS = {
@@ -7533,7 +7921,7 @@ export const TENNIS_SINGLES_EVENTS = {
 export const TENNIS_DOUBLES_EVENTS = {
   "Men's": LIST_VALUES.TENNIS_MENS_DOUBLES_TOURNAMENTS,
   "Women's": LIST_VALUES.TENNIS_WOMENS_DOUBLES_TOURNAMENTS,
-  'Mixed': LIST_VALUES.TENNIS_EVENT,
+  Mixed: LIST_VALUES.TENNIS_EVENT,
 };
 
 export const BASKETBALL_EVENT_DEP_TEAMS = {
