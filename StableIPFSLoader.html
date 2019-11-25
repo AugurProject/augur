@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="fragment" content="!">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Decentralized Prediction Markets | Augur</title>
+    <meta name="description"
+        content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
+    <script>
+        (async function () {
+            const baseUrl = "http://localhost:8080/ipfs/QmcJhPthfu9DCFZ6vgbmcookC9x2KaF5pSobLkcibjUfiC/";
+            const data = await fetch(baseUrl);
+            let dataText = await data.text();
+
+            const regex = new RegExp(/url\('\.\.\/\.\.\/(.+)'\)/gm)
+            dataText = dataText.replace(regex, "url('" + baseUrl + "/$1')");
+
+            const el = document.createElement('html');
+            el.innerHTML = dataText;
+            window.resEl = el;
+
+            document.head.innerHTML += el.querySelector('head').innerHTML;
+            document.body.innerHTML = el.querySelector('body').innerHTML;
+            el.querySelectorAll('script').forEach((s) => {
+                const ns = document.createElement('script');
+                ns.src = s.src;
+                document.head.appendChild(ns);
+            });
+            el.querySelectorAll('script').forEach((s) => {
+                const ns = document.createElement('script');
+                ns.src = s.src;
+                document.body.appendChild(ns);
+            });
+
+        })().then(res => { });
+    </script>
+    <base href="http://localhost:8080/ipfs/QmcJhPthfu9DCFZ6vgbmcookC9x2KaF5pSobLkcibjUfiC/">
+</head>
+
+<body>Loading Augur</body>
+
+</html>
