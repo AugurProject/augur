@@ -4246,7 +4246,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning party will win the majority of state's electoral votes.`,
+                  text: `The winning outcome is the party which controls the majority of seats, according to the results of the election, not determined by the current controlling party at event expiration.`,
                 },
               ],
             },
