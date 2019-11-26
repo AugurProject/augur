@@ -779,7 +779,6 @@ export const InputFactory = (props: InputFactoryProps) => {
     onChange('validations', validations);
     onChange('description', question);
     onChange('template', newTemplate);
-    console.log('updateData', value);
     return newInputs;
   };
 
