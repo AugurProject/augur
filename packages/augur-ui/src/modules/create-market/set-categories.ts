@@ -1223,8 +1223,8 @@ export const setCategories: SortedGroup[] = [
     label: 'Finance',
     subGroup: [
       {
-        value: 'Stocks',
-        label: 'Stocks',
+        value: 'Stocks/ETFs',
+        label: 'Stocks/ETFs',
         subGroup: [
           {
             value: 'APPL',

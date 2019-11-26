@@ -512,8 +512,13 @@ export const VALIDATION_ATTRIBUTES = {
 export const TemplateBannerText = {
   indexes:
     'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
+  'stocks/etfs':
+    'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
   stocks:
     'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
+  etfs:
+    'Enter stock ticker symbol to ensure the market resolves as valid, i.e. SPY',
+
 };
 
 export const SelectEventNoticeText =
