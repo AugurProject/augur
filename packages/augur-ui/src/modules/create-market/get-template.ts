@@ -248,7 +248,8 @@ export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
       input =>
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
     ).length > 0
   );
 };

@@ -99,7 +99,7 @@ export default class FormDetails extends React.Component<
 
     const tickSize =
       isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
-
+    console.log('newMarket outcomes', newMarket.outcomes);
     return (
       <div
         className={classNames(Styles.FormDetails, {

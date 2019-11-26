@@ -754,9 +754,7 @@ interface InputFactoryProps {
 
 export const InputFactory = (props: InputFactoryProps) => {
   const { input, inputIndex, onChange, newMarket, currentTimestamp } = props;
-
   const { template, outcomes, marketType, validations } = newMarket;
-
   const { inputs } = template;
 
   const updateData = value => {
@@ -765,21 +763,23 @@ export const InputFactory = (props: InputFactoryProps) => {
       inputValidations = [];
     }
     inputValidations[inputIndex] = '';
-    onChange('validations', {
+    const validations = {
       ...newMarket.validations,
       inputs: inputValidations,
-    });
+    };
 
     let newInputs = inputs;
     newInputs[inputIndex].userInput = value;
-    onChange('template', {
+    const newTemplate = {
       ...template,
       inputs: newInputs,
-    });
-
+    }
     const question = buildMarketDescription(template.question, newInputs);
-    onChange('description', question);
 
+    onChange('validations', validations);
+    onChange('description', question);
+    onChange('template', newTemplate);
+    console.log('updateData', value);
     return newInputs;
   };
 
@@ -871,6 +871,7 @@ export const InputFactory = (props: InputFactoryProps) => {
               }
             }
           }
+          console.log('FormDropdown', value);
           updateData(value);
         }}
         sort
@@ -880,11 +881,6 @@ export const InputFactory = (props: InputFactoryProps) => {
     return null;
   }
 };
-
-interface SimpleTimeSelectorProps {
-  currentTime: number;
-  onChange: Function;
-}
 
 export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
   const { currentTime, onChange } = props;
@@ -1309,54 +1305,51 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 export const CategoricalTemplateTextInputs = (
   props: CategoricalTemplateTextInputsProps
 ) => {
-  const [initialized, setInitialized] = useState(false);
+  const [outcomeList, setOutcomeList] = useState([]);
   const { onChange, newMarket } = props;
-  const { template, outcomes, validations } = newMarket;
-  const inputs = template.inputs;
+  const { validations } = newMarket;
+  const [requiredOutcomes] = useState(props.newMarket.template.inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME));
 
-  const requiredOutcomes = inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME);
-  const otherOutcomes = inputs.filter(i => i.type !== TemplateInputType.ADDED_OUTCOME);
-  let initialList = [...otherOutcomes, ...requiredOutcomes]
-    .filter(
-      input =>
-        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
-        input.type === TemplateInputType.ADDED_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
-    )
-    .map(input => {
-      if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
-        return {
-          value: substituteUserOutcome(input, inputs),
-          editable: false,
-        };
-      } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
-        return {
-          value: input.placeholder,
-          editable: false,
-        };
-      } else if (
-        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
-      ) {
-        return {
-          value: input.userInput || input.placeholder,
-          editable: false,
-        };
+  useEffect(() => {
+    const { template } = newMarket;
+    const otherOutcomes = template.inputs.filter((i: TemplateInput) => i.type !== TemplateInputType.ADDED_OUTCOME);
+    const initialList = [...otherOutcomes, ...requiredOutcomes]
+      .filter(
+        input =>
+          input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+          input.type === TemplateInputType.ADDED_OUTCOME ||
+          input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+          input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+      )
+      .map(input => {
+        if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
+          return {
+            value: substituteUserOutcome(input, template.inputs),
+            editable: false,
+          };
+        } else if (input.type === TemplateInputType.ADDED_OUTCOME) {
+          return {
+            value: input.placeholder,
+            editable: false,
+          };
+        } else if (
+          input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+          input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+        ) {
+          return {
+            value: input.userInput || input.placeholder,
+            editable: false,
+          };
+        }
+        return null;
+      });
+      if (String(outcomeList.map(o => o.value)) !== String(initialList.map(o => o.value))) {
+        setOutcomeList(initialList);
+        onChange('outcomes', initialList.map(o => o.value));
       }
-      return null;
-    });
+  })
 
-  const min = initialList.length >  2 ? initialList.length : 2;
-  const list = initialList.map(o => o.value);
-  if (
-    String(outcomes) !== String(list) ||
-    (!initialized && String(outcomes) === String(list))
-  ) {
-    onChange('outcomes', list);
-    setInitialized(true);
-  }
-
+  const min = outcomeList.length >  2 ? outcomeList.length : 2;
   return (
     <>
       <Subheaders
@@ -1364,7 +1357,7 @@ export const CategoricalTemplateTextInputs = (
         subheader="List the outcomes people can choose from."
       />
       <NumberedList
-        initialList={initialList}
+        initialList={outcomeList}
         minShown={min}
         maxList={7}
         placeholder={''}
