@@ -61,6 +61,7 @@ import {
   GNOSIS_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
+import { loadAnalytics } from 'modules/app/actions/analytics-management';
 
 const handleAlert = (
   log: any,
@@ -172,9 +173,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
+    dispatch(loadAnalytics(getState().analytics));
   }
 
-  if (
+  if (  
     getState().appStatus.gnosisEnabled &&
     getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {

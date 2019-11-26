@@ -122,9 +122,9 @@ export class SDK {
     if (this.sdk) {
       if (signer) this.sdk.signer = signer;
       this.signerNetworkId = signerNetworkId;
-      //if (!isLocalHost()) {
+      if (!isLocalHost()) {
         analytics.identify(address, { address, signerNetworkId });
-      //}
+      }
 
       if (useGnosis) {
         const safeAddress = await this.getOrCreateGnosisSafe(address) as string;

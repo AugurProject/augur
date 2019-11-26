@@ -32,12 +32,13 @@ export const sendAnalytic = (
   getState: () => AppState
 ) => {
   try {
-    //if (!isLocalHost()) {
-    analytics.track(analytic.eventName, {
-      userAgent: window.navigator.userAgent,
-      ...analytic.payload,
-    });
-    //}
+    if (!isLocalHost()) {
+      // todo: need to also have page here
+      analytics.track(analytic.eventName, {
+        userAgent: window.navigator.userAgent,
+        ...analytic.payload,
+      });
+    }
   } catch (err) {
     console.log(err);
   }

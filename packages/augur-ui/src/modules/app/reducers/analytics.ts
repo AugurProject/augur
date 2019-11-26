@@ -23,7 +23,7 @@ export default function(
         [data.id]: data.analytic,
       };
     case REMOVE_ANALYTIC: {
-      delete analytics[data.id];
+      if (analytics[data.id]) delete analytics[data.id];
       return {
         ...analytics,
       };
