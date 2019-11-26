@@ -57,6 +57,7 @@ export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
 export const DEFAULT_TICK_SIZE = 0.01;
+export const OUTCOME_MAX_LENGTH = 32;
 
 export const EMPTY_STATE: NewMarket = {
   isValid: false,

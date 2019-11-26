@@ -1,4 +1,4 @@
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
@@ -147,6 +147,11 @@ export function checkOutcomesArray(value) {
           "Can't enter a duplicate outcome";
       }
     });
+    value.forEach((v, i) => {
+      if (v.length > OUTCOME_MAX_LENGTH && !errors[i]) {
+        errors[i] = ['Outcome can not be more than 32 characters'];
+      }
+    })
     if (errors.filter(error => error !== '').length > 0) return errors;
     return '';
   }
