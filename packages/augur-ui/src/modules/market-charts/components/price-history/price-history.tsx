@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
-import Styles from 'modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles.less';
+import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 
 NoDataToDisplay(Highcharts);
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
 
-interface MarketOutcomeChartsHighchartsProps {
+interface PriceHistoryProps {
   maxPrice: number;
   minPrice: number;
   bucketedPriceTimeSeries: object;
@@ -20,13 +20,13 @@ interface MarketOutcomeChartsHighchartsProps {
   isTradingTutorial?: boolean;
 }
 
-interface MarketOutcomeChartsHighchartsState {
+interface PriceHistoryState {
   options: any;
 }
 
-export default class MarketOutcomesChartHighchart extends Component<
-  MarketOutcomeChartsHighchartsProps,
-  MarketOutcomeChartsHighchartsState
+export default class PriceHistory extends Component<
+  PriceHistoryProps,
+  PriceHistoryState
 > {
   static defaultProps = {
     isScalar: false,
@@ -262,7 +262,7 @@ export default class MarketOutcomesChartHighchart extends Component<
   render() {
     return (
       <div
-        className={Styles.MarketOutcomeChartsHighcharts}
+        className={Styles.PriceHistory}
         ref={container => {
           this.container = container;
         }}
