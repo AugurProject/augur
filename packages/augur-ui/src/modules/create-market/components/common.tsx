@@ -763,24 +763,24 @@ export const InputFactory = (props: InputFactoryProps) => {
       inputValidations = [];
     }
     inputValidations[inputIndex] = '';
-    const validations = {
+    onChange('validations', {
       ...newMarket.validations,
       inputs: inputValidations,
-    };
+    });
 
     let newInputs = inputs;
     newInputs[inputIndex].userInput = value;
-    const newTemplate = {
+    onChange('template', {
       ...template,
       inputs: newInputs,
-    }
-    const question = buildMarketDescription(template.question, newInputs);
+    });
 
-    onChange('validations', validations);
+    const question = buildMarketDescription(template.question, newInputs);
     onChange('description', question);
-    onChange('template', newTemplate);
+
     return newInputs;
   };
+
 
   if (input.type === TemplateInputType.TEXT) {
     return (
