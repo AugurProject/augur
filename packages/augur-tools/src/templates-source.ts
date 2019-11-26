@@ -46,6 +46,7 @@ import {
   NCAA_BASKETBALL_CONF_DEP_TEAMS,
   TENNIS_SINGLES_EVENTS,
   TENNIS_DOUBLES_EVENTS,
+  ENTERTAINMENT_EVENT_DEP_TEAMS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -4595,8 +4596,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of [0] close on or above [1] [2] on the [3] on [4]?`,
-            example: `Will the price of AAPL close on or above $200 USD on the Nasdaq on September 1, 2020?`,
+            question: `Will [0] close on or above [1] [2] on the [3] on [4]?`,
+            example: `Will AAPL close on or above 200 on Nasdaq (traded in USD) on September 1, 2020?`,
             inputs: [
               {
                 id: 0,
@@ -4626,12 +4627,21 @@ export const TEMPLATES = {
                 placeholder: `Day of Year`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Closing date is determine by the location of the exchange, where the stock is traded`
+                },
+                {
+                  text: `Trading denomination is determined by the exchange the stock is traded on`
+                }
+              ]
+            },
           },
           {
             marketType: YES_NO,
-            question: `Will the price of [0], exceed [1] [2] on the [3], anytime between the opening on [4] and the close on [5]?`,
-            example: `Will the price of AAPL exceed $250 USD on the Nasdaq anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
+            question: `Will [0] exceed [1] on the [2], anytime between the opening on [3] and the close on [4]?`,
+            example: `Will AAPL exceed 250 on the Nasdaq (traded in USD) anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
             inputs: [
               {
                 id: 0,
@@ -4646,33 +4656,35 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
                 type: TemplateInputType.TEXT,
                 placeholder: `Exchange`,
               },
               {
-                id: 4,
+                id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Start Day of Year`,
               },
               {
-                id: 5,
+                id: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Trading dates are determine by the location of the exchange, where the stock is traded`
+                },
+                {
+                  text: `Trading denomination is determined by the exchange the stock is traded on`
+                }
+              ]
+            },
           },
           {
             marketType: SCALAR,
-            question: `What price will [0] close at in [1] on the [2] on [3]?`,
-            example: `What price will AAPL close at in USD on the Nasdaq on December 31, 2019?`,
-            denomination: '[Denomination]',
+            question: `What will [0] close at on the [1] on [2]?`,
+            example: `What will AAPL close at on the Nasdaq (traded in USD) on December 31, 2019?`,
             inputs: [
               {
                 id: 0,
@@ -4681,22 +4693,25 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DENOMINATION_DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 2,
                 type: TemplateInputType.TEXT,
                 placeholder: `Exchange`,
               },
               {
-                id: 3,
+                id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Closing date is determine by the location of the exchange, where the stock is traded`
+                },
+                {
+                  text: `Trading denomination is determined by the exchange the stock is traded on`
+                },
+              ]
+            },
           },
         ],
       },
@@ -4704,8 +4719,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the [0] close on or above [1] [2] on [3]?`,
-            example: `Will the Dow Jones Industrial Average close on or above $27,100.00 USD on September 20, 2019?`,
+            question: `Will the [0] close on or above [1] on [2]?`,
+            example: `Will the Dow Jones Industrial Average close on or above 28,000.00 on September 20, 2019?`,
             inputs: [
               {
                 id: 0,
@@ -4720,23 +4735,23 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
-                id: 3,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`
+                },
+              ]
+            },
           },
           {
             marketType: SCALAR,
-            question: `What price will the [0] close at in [1] on [2]?`,
-            example: `What Price will the S&P 500 close at in USD on December 31, 2019?`,
-            denomination: '[Denomination]',
+            question: `What will the [0] close at on [2]?`,
+            example: `What will the S&P 500 close at on December 31, 2019?`,
+            denomination: 'value',
             inputs: [
               {
                 id: 0,
@@ -4744,18 +4759,18 @@ export const TEMPLATES = {
                 placeholder: `Index`,
               },
               {
-                id: 1,
-                type: TemplateInputType.DENOMINATION_DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
-              },
-              {
                 id: 2,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
             ],
-            resolutionRules: {},
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Closing date is determine by the location of the exchange, where the underlying stocks for the index are traded`
+                },
+              ]
+            },
           },
         ],
       },
@@ -4813,8 +4828,10 @@ export const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.TEXT,
+            type: TemplateInputType.DROPDOWN,
+            defaultLabel: `Select Event First`,
             placeholder: `Award`,
+            values: []
           },
           {
             id: 2,
@@ -4824,9 +4841,11 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DROPDOWN,
+            type: TemplateInputType.DROPDOWN_QUESTION_DEP,
             placeholder: `Event`,
+            inputDestId: 1,
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
+            inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
           },
         ],
         resolutionRules: {
@@ -5008,7 +5027,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5038,7 +5063,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5058,7 +5089,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5087,7 +5124,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5117,7 +5160,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5137,7 +5186,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5166,7 +5221,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5196,7 +5257,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5216,7 +5283,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5249,7 +5322,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5279,7 +5358,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5299,7 +5384,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5328,7 +5419,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5358,7 +5455,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5378,7 +5481,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5407,7 +5516,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5437,7 +5552,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5457,7 +5578,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5490,7 +5617,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5520,7 +5653,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5540,7 +5679,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5569,7 +5714,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5599,7 +5750,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5619,7 +5776,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
@@ -5648,7 +5811,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: YES_NO,
@@ -5678,7 +5847,13 @@ export const TEMPLATES = {
                     placeholder: `Close, Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
               {
                 marketType: SCALAR,
@@ -5698,7 +5873,13 @@ export const TEMPLATES = {
                     placeholder: `Day of Year`,
                   },
                 ],
-                resolutionRules: {},
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    }
+                  ]
+                },
               },
             ],
           },
