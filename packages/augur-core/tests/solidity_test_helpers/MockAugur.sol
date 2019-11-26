@@ -6,7 +6,7 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReputationToken.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/trading/Order.sol';
 
 

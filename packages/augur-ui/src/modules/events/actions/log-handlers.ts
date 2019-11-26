@@ -56,6 +56,11 @@ import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-mar
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
+import {
+  updateAppStatus,
+  GNOSIS_STATUS,
+} from 'modules/app/actions/update-app-status';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 
 const handleAlert = (
   log: any,
@@ -119,6 +124,13 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleGnosisStateUpdate = (response) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  // TODO This isn't getting hit
+  console.log('handleGnosisStateUpdate', response);
+};
+
 export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
@@ -161,17 +173,33 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
   }
+
+  if (
+    getState().appStatus.gnosisEnabled &&
+    getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
+  ) {
+    const status = augurSdk.sdk.gnosis.augur.getGnosisStatus();
+    if (status) {
+      dispatch(updateAppStatus(GNOSIS_STATUS, status));
+    }
+  }
 };
 
 export const handleMarketsUpdatedLog = (
-    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[]}
+    {marketsInfo = []}: {marketsInfo:Getters.Markets.MarketInfo[] | Getters.Markets.MarketInfo}
   ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   console.log('handleMarketsUpdatedChangedLog');
 
-  const marketsDataById = marketsInfo.reduce((acc, marketData) => ({
+  let marketsDataById = {}
+  if (Array.isArray(marketsInfo)) {
+    marketsDataById = marketsInfo.reduce((acc, marketData) => ({
       [marketData.id]: marketData,
       ...acc,
     }), {} as MarketInfos);
+  } else {
+    const market = marketsInfo as Getters.Markets.MarketInfo;
+    marketsDataById[market.id] = market;
+  }
 
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage());

@@ -6,21 +6,30 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
+import { TRADING_TUTORIAL } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   let openOrders = getUserOpenOrders(market.id) || [];
 
-  const filledOrders = market.id
+  let filledOrders = market.id
     ? selectUserFilledOrders(state, market.id)
     : [];
   const hasPending = Boolean(openOrders.find(order => order.pending));
 
-  if (ownProps.preview) {
+  if (ownProps.preview && !ownProps.tradingTutorial) {
     openOrders = [];
     Object.values(market.orderBook).map(outcome => {
       openOrders = openOrders.concat(outcome);
     });
+  }
+
+  if (ownProps.tradingTutorial && ownProps.orders) {
+    openOrders = ownProps.orders;
+  }
+
+  if (ownProps.tradingTutorial && ownProps.fills) {
+    filledOrders = ownProps.fills;
   }
 
   return {

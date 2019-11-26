@@ -14,12 +14,24 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { TemplateInputType, REQUIRED, CHOICE } from 'modules/create-market/constants';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 
 export enum SizeTypes {
   SMALL = 'small',
   NORMAL = 'normal',
   LARGE = 'large',
+}
+
+export interface TextLink {
+  text: string;
+  link?: string;
+  linkText?: string;
+  lighten?: boolean;
+}
+
+export interface TextObject {
+  title: string;
+  subheader: TextLink[];
 }
 
 export interface Alert {
@@ -115,6 +127,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
   outcomesFormatted: OutcomeFormatted[];
+  isTemplate: boolean;
 }
 
 export interface ForkingInfo {
@@ -281,12 +294,11 @@ export interface NewMarketPropertiesValidations {
   type?: string;
   designatedReporterType?: string;
   designatedReporterAddress?: string;
-  expirySourceType?: string;
   setEndTime?: string;
   hour?: string;
   minute?: string;
   meridiem?: string;
-  outcomes?: string[];
+  outcomes?: string | string[];
   settlementFee?: string;
   affiliateFee?: number;
   inputs?: NewMarketPropertiesValidations[];
@@ -297,6 +309,7 @@ export interface NewMarketPropertyValidations {
   scalarDenomination?: string;
   affiliateFee?: number;
   inputs?: NewMarketPropertiesValidations[];
+  outcomes?: string | string[];
 }
 export interface NewMarket {
   uniqueId: number;
@@ -304,7 +317,6 @@ export interface NewMarket {
   validations:
     | NewMarketPropertiesValidations
     | NewMarketPropertyValidations;
-  backupSource: string;
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -312,8 +324,6 @@ export interface NewMarket {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -363,8 +373,6 @@ export interface Draft {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -400,6 +408,7 @@ export interface MarketsList {
   };
   selectedCategories: string[];
   marketCardFormat: string;
+  isSearchInPlace: boolean;
 }
 
 export interface DefaultOrderProperties {
@@ -453,7 +462,7 @@ export interface FilterSortOptions {
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
-  hasOrders: boolean;
+  templateFilter: string;
 }
 
 export interface Favorite {
@@ -490,6 +499,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isReconnectionPaused: boolean;
+  canHotload: boolean;
 }
 
 export interface Category {
@@ -511,6 +521,9 @@ export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
+  ethToDaiRate: BigNumber;
+  gnosisEnabled: boolean;
+  gnosisStatus: GnosisSafeState;
 }
 
 export interface AuthStatus {
@@ -552,7 +565,9 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  legacyRep: number;
   attoRep: string;
+  legacyAttoRep: string;
 }
 
 export interface LoginAccountMeta {
@@ -575,6 +590,7 @@ export interface LoginAccount {
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
+  totalRealizedPL?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
@@ -733,32 +749,6 @@ export interface SortedGroup {
   autoCompleteList?: Array<SortedGroup>;
 }
 
-
-export interface UserInputText {
-  value: string;
-}
-
-export interface UserInputDateYear extends UserInputText {}
-export interface UserInputDateTime {
-  endTime: number;
-  hour?: number;
-  minute?: number;
-  meridiem: string;
-  timezone: string;
-  offset: number;
-  offsetName: string;
-  endTimeFormatted: TimezoneDateObject;
-}
-export interface UserInputDropdown extends UserInputText {}
-export interface UserInputUserOutcome extends UserInputText {}
-
-export type UserInputtedType =
-  | UserInputText
-  | UserInputDateYear
-  | UserInputDateTime
-  | UserInputDropdown
-  | UserInputUserOutcome;
-
 export interface CategoryList {
   [category: string]: [
     {
@@ -769,51 +759,4 @@ export interface CategoryList {
       ];
     }
   ];
-}
-export interface TemplateChildren {
-  [category: string]: CategoryTemplate;
-}
-
-export interface CategoryTemplate {
-  templates: Template[];
-  children: TemplateChildren;
-}
-
-export interface ResolutionRule {
-  text: string;
-  isSelected?: boolean;
-}
-
-export interface ResolutionRules {
-  [REQUIRED]?: ResolutionRule[];
-  [CHOICE]?: ResolutionRule[];
-}
-
-export interface Template {
-  categories: Categories;
-  marketType: string;
-  question: string;
-  example: string;
-  inputs: TemplateInput[];
-  resolutionRules: ResolutionRules;
-  denomination?: string;
-  tickSize?: number;
-}
-
-export interface TemplateInput {
-  id: number;
-  type: TemplateInputType;
-  placeholder: string;
-  label?: string;
-  tooltip?: string;
-  userInput?: string;
-  userInputObject?: UserInputtedType;
-  values?: ValueLabelPair[];
-  sublabel?: string;
-}
-
-export interface Categories {
-  primary: string;
-  secondary: string;
-  tertiary: string;
 }

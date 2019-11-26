@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
+import { Augur } from '../../Augur';
 import { AbstractDB, BaseDocument } from './AbstractDB';
 import { SyncStatus } from './SyncStatus';
 import { Log, ParsedLog } from '@augurproject/types';
 import { DB } from './DB';
 import { sleep } from '../utils/utils';
-import { augurEmitter } from '../../events';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -27,14 +27,18 @@ export class DerivedDB extends AbstractDB {
   protected locks: {[name: string]: boolean} = {};
   protected readonly HANDLE_MERGE_EVENT_LOCK = 'handleMergeEvent';
 
+  protected augur;
+
   constructor(
     db: DB,
     networkId: number,
     name: string,
     mergeEventNames: string[],
-    idFields: string[]
+    idFields: string[],
+    augur: Augur
   ) {
     super(networkId, db.getDatabaseName(name), db.pouchDBFactory);
+    this.augur = augur;
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
     this.mergeEventNames = mergeEventNames;
@@ -172,7 +176,7 @@ export class DerivedDB extends AbstractDB {
           syncing
         );
         this.updatingHighestSyncBlock = false;
-        augurEmitter.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
+        this.augur.getAugurEventEmitter().emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
       }
     } else {
       throw new Error(`Unable to add new block`);

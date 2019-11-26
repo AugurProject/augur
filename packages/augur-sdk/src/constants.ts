@@ -37,6 +37,7 @@ export enum SubscriptionEventName {
   ProfitLossChanged = "ProfitLossChanged",
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
   SDKReady = "SDKReady",
+  GnosisSafeStatus = "GnosisSafeStatus",
   TimestampSet = "TimestampSet",
   TokenBalanceChanged = "TokenBalanceChanged",
   TokensBurned = "TokensBurned",
@@ -149,6 +150,18 @@ export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
 
 export const GENESIS = 'Genesis';
+
+export enum MarketReportingStateByNum {
+  'PreReporting',
+  'DesignatedReporting',
+  'OpenReporting',
+  'CrowdsourcingDispute',
+  'AwaitingNextWindow',
+  'AwaitingFinalization',
+  'Finalized',
+  'Forking',
+  'AwaitingForkMigration'
+}
 
 export enum MarketReportingState {
   PreReporting = 'PreReporting',

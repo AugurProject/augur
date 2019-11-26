@@ -8,14 +8,18 @@ import {
   MARKET_SHOW_INVALID,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
+import { TEMPLATE_FILTER } from 'modules/common/constants';
+import { Getters } from '@augurproject/sdk';
+import { AppState } from 'store';
 
-const mapStateToProps = (state) => {
-  const { maxFee, maxLiquiditySpread, includeInvalidMarkets } = state.filterSortOptions;
+const mapStateToProps = (state: AppState) => {
+  const { maxFee, maxLiquiditySpread, includeInvalidMarkets, templateFilter } = state.filterSortOptions;
   return {
     maxFee,
     maxLiquiditySpread,
     includeInvalidMarkets,
     isSearching: state.marketsList.isSearching,
+    allTemplateFilter: templateFilter,
   };
 };
 
@@ -26,6 +30,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, maxLiquiditySpread)),
   updateShowInvalid: showInvalid =>
     dispatch(updateFilterSortOptions(MARKET_SHOW_INVALID, showInvalid)),
+  updateTemplateFilter: templateFilter =>
+    dispatch(updateFilterSortOptions(TEMPLATE_FILTER, templateFilter)),
 });
 
 const MarketsListFiltersContainer = withRouter(

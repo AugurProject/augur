@@ -14,7 +14,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]
-    claimTradingProceeds = contractsFixture.contracts['ClaimTradingProceeds']
+    shareToken = contractsFixture.contracts['ShareToken']
+    augurTrading = contractsFixture.contracts['AugurTrading']
     test_data = [
         {
             "direction": SHORT,
@@ -73,8 +74,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     assert market.finalize()
 
     # Claim proceeds
-    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[1], nullAddress)
-    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[2], nullAddress)
+    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[1], longTo32Bytes(11))
+    augurTrading.claimTradingProceeds(market.address, contractsFixture.accounts[2], longTo32Bytes(11))
 
     assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[1], YES) == 0
     assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[1], YES) == 0
@@ -366,7 +367,7 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
 
     assert cash.faucet(fillerCost, sender = contractsFixture.accounts[2])
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=1):
-        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[2])
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], outcome) == cost
 
@@ -388,47 +389,9 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
 
     assert cash.faucet(fillerCost)
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=2):
-        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), nullAddress)
+        fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), longTo32Bytes(11))
 
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], newOutcome) == 0
-
-def test_share_transfer(contractsFixture, cash, market, universe):
-    createOrder = contractsFixture.contracts["CreateOrder"]
-    fillOrder = contractsFixture.contracts["FillOrder"]
-    profitLoss = contractsFixture.contracts["ProfitLoss"]
-
-    # Buy shares for .5
-    amount = fix(1)
-    price = 50
-    cost = amount * price
-    assert cash.faucet(cost)
-    orderID = createOrder.publicCreateOrder(BID, amount, price, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress)
-    assert cash.faucet(cost, sender = contractsFixture.accounts[1])
-    fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[1])
-
-    yesShares = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    assert yesShares.balanceOf(contractsFixture.accounts[0]) == fix(1)
-
-    # Transfer shares and confirm its as if sender sold for 0 and receiver bought for 0
-    profitLossChangedLogSender = {
-        "account": contractsFixture.accounts[0],
-        "outcome": YES,
-        "netPosition": fix(1) - 100,
-        "avgPrice": 50,
-        "realizedProfit": -5000,
-    }
-
-    profitLossChangedLogReceiver = {
-        "account": contractsFixture.accounts[2],
-        "outcome": YES,
-        "netPosition": 100,
-        "avgPrice": 0,
-        "realizedProfit": 0,
-    }
-
-    with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLogSender):
-        with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLogReceiver, skip=1):
-            assert yesShares.transfer(contractsFixture.accounts[2], 100)
 
 def process_trades(contractsFixture, trade_data, cash, market, createOrder, fillOrder, profitLoss, minPrice = 0, displayRange = 1):
     for trade in trade_data:
@@ -460,7 +423,7 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
 
         assert cash.faucet(fillerCost, sender = contractsFixture.accounts[2])
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = 0 if direction == BID else 1):
-            fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[2])
+            fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
         assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[2], trade['outcome']) == trade['position']
         assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], trade['outcome']) == avgPrice

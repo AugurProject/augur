@@ -49,7 +49,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert numFills == 0
 
     cash.faucet(cost)
-    assert trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 6, nullAddress, kycToken)
+    assert trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 6, longTo32Bytes(11), kycToken)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, kycToken, fillOnly, sender=account1)
 
@@ -62,7 +62,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert numFills == 1
 
     cash.faucet(cost, sender=account1)
-    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, nullAddress, kycToken, sender=account1)
+    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, longTo32Bytes(11), kycToken, sender=account1)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, kycToken, fillOnly)
 
@@ -72,7 +72,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert settlementFees == 0
     assert numFills == 0
 
-    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, nullAddress, kycToken)
+    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, longTo32Bytes(11), kycToken)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(LONG, market.address, outcome, amount, price, kycToken, fillOnly, sender=account1)
     assert simulateTrade.getNumberOfAvaialableShares(LONG, market.address, outcome, account1) == fix(1)
@@ -184,30 +184,30 @@ def test_use_shares_multiple(contractsFixture, cash, market, universe):
 def simulate_then_trade(contractsFixture, direction, market, outcome, amount, price, kycToken, fillOnly, sender=None, expectedFees=0):
     trade = contractsFixture.contracts["Trade"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    shareToken = contractsFixture.contracts["ShareToken"]
     cash = contractsFixture.contracts["Cash"]
     sender = sender if sender is not None else contractsFixture.accounts[0]
     shareTokenOutcome = outcome if direction == SHORT else ((outcome + 1) % 3)
-    shareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(shareTokenOutcome))
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, kycToken, fillOnly, sender=sender)
 
     cash.faucet(tokensDepleted, sender=sender)
     initialCashBalance = cash.balanceOf(sender)
-    initialShareBalance = shareToken.balanceOf(sender)
+    initialShareBalance = shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, sender)
 
     if fillOnly:
-        orderId = trade.publicFillBestOrder(direction, market.address, outcome, amount, price, "42", 10, nullAddress, kycToken, sender=sender)
+        orderId = trade.publicFillBestOrder(direction, market.address, outcome, amount, price, "42", 10, longTo32Bytes(11), kycToken, sender=sender)
     else:
-        orderId = trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 10, nullAddress, kycToken, sender=sender)
+        orderId = trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 10, longTo32Bytes(11), kycToken, sender=sender)
 
     if (tokensDepleted > 0):
         assert tokensDepleted == initialCashBalance - cash.balanceOf(sender)
     if (sharesDepleted > 0):
-        assert sharesDepleted == initialShareBalance - shareToken.balanceOf(sender)
+        assert sharesDepleted == initialShareBalance - shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, sender)
 
     expectedSharesFilled = 0
     expectedNumFills = 0
-    orderEventLogs = contractsFixture.contracts["Augur"].getLogs("OrderEvent")
+    orderEventLogs = contractsFixture.contracts["AugurTrading"].getLogs("OrderEvent")
     for log in orderEventLogs:
         if log.args.eventType == 2: # Fill Event
             expectedSharesFilled += log.args.uint256Data[6]

@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
-import {
-  LogoutIcon,
-  DaiLogoIcon,
-  RepLogoIcon,
-  EthIcon,
-  Pencil,
-  Open,
-  helpIcon,
-} from 'modules/common/icons';
+import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, RepLogoIcon, } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatRep, formatEther, formatDai } from 'utils/format-number';
+import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AccountBalances } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import classNames from 'classnames';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { getGasCostInDai } from 'modules/modal/gas';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -29,6 +23,7 @@ interface ConnectDropdownProps {
   };
   balances: AccountBalances;
   gasModal: Function;
+  averageGasPrice: string;
   userDefinedGasPrice: string;
   gasPriceSpeed: number;
   showAddFundsModal: Function;
@@ -36,12 +31,14 @@ interface ConnectDropdownProps {
   universeOutcomeName: string;
   parentUniverseId: string;
   universeHasChildren: boolean;
+  Gnosis_ENABLED: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
   const {
     isLogged,
     restoredAccount,
+    averageGasPrice,
     userDefinedGasPrice,
     accountMeta,
     gasPriceSpeed,
@@ -52,6 +49,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     universeOutcomeName,
     parentUniverseId,
     universeHasChildren,
+    Gnosis_ENABLED,
   } = props;
 
   if (!isLogged && !restoredAccount) return null;
@@ -71,6 +69,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       name: 'DAI',
       logo: DaiLogoIcon,
+      disabled: false,
     },
     {
       value: formatEther(balances.eth, {
@@ -79,6 +78,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       name: 'ETH',
       logo: EthIcon,
+      disabled: Gnosis_ENABLED ? balances.eth === 0 : false,
     },
     {
       name: 'REP',
@@ -87,6 +87,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formattedValue,
+      disabled: Gnosis_ENABLED ? balances.rep === 0 : false,
     },
   ];
 
@@ -109,25 +110,24 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     {
       accountType: ACCOUNT_TYPES.WEB3WALLET,
       action: () => setShowMetaMaskHelper(true),
-      disabled: false,
     },
   ];
 
-  const renderToolTip = (text: string) => (
+  const renderToolTip = (id: string, text: string) => (
     <span>
       <label
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
-        data-for="tooltip--walleProvider"
+        data-for={id}
       >
         {helpIcon}
       </label>
       <ReactTooltip
-        id="tooltip--walleProvider"
+        id={id}
         className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
+        effect='solid'
+        place='top'
+        type='light'
       >
         <p>{text}</p>
       </ReactTooltip>
@@ -142,10 +142,12 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       <div className={Styles.AccountInfo}>
         <div className={Styles.AddFunds}>
           <div>Your account</div>
-          <PrimaryButton action={() => showAddFundsModal()} text="Add Funds" />
+          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
-        {accountFunds.map((fundType, idx) => (
+        {accountFunds
+          .filter(fundType => !fundType.disabled)
+          .map((fundType, idx) => (
           <div key={idx} className={Styles.AccountFunds}>
             <div>
               {fundType.logo} {fundType.name}
@@ -157,7 +159,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         ))}
 
         <div className={Styles.MobileAddFunds}>
-          <PrimaryButton action={() => showAddFundsModal()} text="Add Funds" />
+          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
         {walletProviders
@@ -174,7 +176,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 <div>
                   <div>
                     Wallet provider
-                    {renderToolTip('...')}
+                    {renderToolTip('tooltip--walleProvider', 'Your wallet provider allows you to create a private and secure account for accessing and using Augur.')}
                   </div>
                   <div>
                     {wallet.accountType}{' '}
@@ -183,7 +185,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 </div>
                 <SecondaryButton
                   action={() => wallet.action()}
-                  text="OPEN"
+                  text='OPEN'
                   icon={Open}
                   disabled={wallet.disabled}
                 />
@@ -194,16 +196,18 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <div className={Styles.GasEdit}>
           <div>
             <div>
-              Gas price
-              {renderToolTip('...')}
+              Transaction Fee
+              {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
+              <span>Average (${getGasCostInDai(createBigNumber(averageGasPrice).toNumber())})</span>
             </div>
             <div>
-              {userDefinedGasPrice} GWEI ({gasPriceSpeed})
+              <div><span>{gasPriceSpeed}</span><span> &lt; 30 minutes</span></div>
+              <div><span>${getGasCostInDai(createBigNumber(userDefinedGasPrice).toNumber())}</span><span> / Trade</span></div>
             </div>
           </div>
           <SecondaryButton
             action={() => gasModal()}
-            text="EDIT"
+            text='EDIT'
             icon={Pencil}
           />
         </div>
@@ -216,7 +220,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             </div>
             <SecondaryButton
               action={() => universeSelectorModal()}
-              text="CHANGE UNIVERSE"
+              text='CHANGE UNIVERSE'
             />
           </div>
         )}

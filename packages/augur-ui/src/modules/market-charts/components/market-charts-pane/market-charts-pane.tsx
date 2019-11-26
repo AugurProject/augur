@@ -22,6 +22,7 @@ interface MarketChartsPaneProps {
   preview?: Boolean;
   market?: MarketData;
   toggle: Function;
+  tradingTutorial?: boolean;
 }
 
 interface MarketChartsPaneState {
@@ -73,6 +74,7 @@ export default class MarketChartsPane extends Component<
       preview,
       market,
       toggle,
+      tradingTutorial
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
     const shared = { marketId, selectedOutcomeId };
@@ -90,7 +92,6 @@ export default class MarketChartsPane extends Component<
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                     daysPassed={daysPassed}
-                    isMobile
                   />
                 )}
               </ModulePane>
@@ -113,6 +114,7 @@ export default class MarketChartsPane extends Component<
                 {!preview && (
                   <MarketOutcomesChart
                     {...shared}
+                    daysPassed={daysPassed}
                   />
                 )}
               </ModulePane>

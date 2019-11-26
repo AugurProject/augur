@@ -7,16 +7,17 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
-import 'ROOT/trading/ICash.sol';
-import 'ROOT/trading/IShareToken.sol';
-import 'ROOT/factories/ShareTokenFactory.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/factories/InitialReporterFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
+import 'ROOT/libraries/token/IERC1155.sol';
 
 
 /**
@@ -37,6 +38,9 @@ contract Market is Initializable, Ownable, IMarket {
     ICash private cash;
     IAugur public augur;
     IWarpSync public warpSync;
+    IShareToken public shareToken;
+    IAffiliateValidator affiliateValidator;
+    IAffiliates affiliates;
 
     // Attributes
     uint256 private numTicks;
@@ -60,10 +64,9 @@ contract Market is Initializable, Ownable, IMarket {
     mapping(bytes32 => address) private crowdsourcers;
     uint256 private crowdsourcerGeneration;
 
-    IShareToken[] private shareTokens;
     mapping (address => uint256) public affiliateFeesAttoCash;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
         require(msg.sender == _augur.lookup("MarketFactory"));
@@ -71,6 +74,8 @@ contract Market is Initializable, Ownable, IMarket {
         universe = _universe;
         cash = ICash(_augur.lookup("Cash"));
         warpSync = IWarpSync(augur.lookup("WarpSync"));
+        affiliateValidator = _affiliateValidator;
+        affiliates = IAffiliates(augur.lookup("Affiliates"));
         owner = _creator;
         repBondOwner = owner;
         cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
@@ -80,12 +85,9 @@ contract Market is Initializable, Ownable, IMarket {
         numTicks = _numTicks;
         feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
-        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(_augur.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(_augur, _designatedReporterAddress));
-        for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
-            shareTokens.push(createShareToken(_outcome));
-        }
-        approveSpenders();
+        InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
+        participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
+        shareToken = IShareToken(augur.lookup("ShareToken"));
     }
 
     function assessFees() private {
@@ -108,21 +110,6 @@ contract Market is Initializable, Ownable, IMarket {
         cash.transferFrom(msg.sender, address(this), _attoCash);
         universe.deposit(address(this), _attoCash, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCash);
-        return true;
-    }
-
-    function createShareToken(uint256 _outcome) private returns (IShareToken) {
-        return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, _outcome);
-    }
-
-    function approveSpenders() public returns (bool) {
-        bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
-        for (uint256 i = 0; i < _names.length; i++) {
-            require(cash.approve(augur.lookup(_names[i]), MAX_APPROVAL_AMOUNT));
-        }
-        for (uint256 j = 0; j < numOutcomes; j++) {
-            require(shareTokens[j].approve(augur.lookup("FillOrder"), MAX_APPROVAL_AMOUNT));
-        }
         return true;
     }
 
@@ -347,15 +334,28 @@ contract Market is Initializable, Ownable, IMarket {
         return feeDivisor == 0 ? 0 : _amount / feeDivisor;
     }
 
-    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool) {
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint) public returns (bool) {
         require(augur.isKnownFeeSender(msg.sender));
+
+        address _affiliateAddress = affiliates.getAndValidateReferrer(_sourceAccount, affiliateValidator);
+        bytes32 _affiliateFingerprint = affiliates.getAccountFingerprint(_affiliateAddress);
+        if (_fingerprint == _affiliateFingerprint) {
+            // don't let affiliates refer themselves
+            _affiliateAddress = address(0);
+        }
+
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
-            uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
+            uint256 _totalAffiliateFees = _marketCreatorFees / affiliateFeeDivisor;
+            uint256 _sourceCut = _totalAffiliateFees / Reporting.getAffiliateSourceCutDivisor();
+            uint256 _affiliateFees = _totalAffiliateFees.sub(_sourceCut);
+            universe.withdraw(_sourceAccount, _sourceCut, address(this));
             affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
-            _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
+            _marketCreatorFees = _marketCreatorFees.sub(_totalAffiliateFees);
             totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
+
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
+
         if (isFinalized()) {
             distributeMarketCreatorAndAffiliateFees(_affiliateAddress);
         }
@@ -450,9 +450,6 @@ contract Market is Initializable, Ownable, IMarket {
         universe.migrateMarketOut(_destinationUniverse);
         universe = _destinationUniverse;
         uint256 _numOutcomes = numOutcomes;
-        for (uint256 i = 0; i < _numOutcomes; i++) {
-            shareTokens[i].setUniverse(_destinationUniverse);
-        }
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();
@@ -684,15 +681,10 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     /**
-     * @param _outcome The outcome to get the associated Share Token for
-     * @return The Share Token associated with the provided outcome
+     * @return The affiliate fee divisor which will be used to split fees from the market creator to an affiliate for trades specifying one
      */
-    function getShareToken(uint256 _outcome) public view returns (IShareToken) {
-        return shareTokens[_outcome];
-    }
-
-    function getShareTokens() public view returns (IShareToken[] memory) {
-        return shareTokens;
+    function getAffiliateFeeDivisor() public view returns (uint256) {
+        return affiliateFeeDivisor;
     }
 
     /**
@@ -731,10 +723,6 @@ contract Market is Initializable, Ownable, IMarket {
         return augur.derivePayoutDistributionHash(_payoutNumerators, numTicks, numOutcomes);
     }
 
-    function isContainerForShareToken(IShareToken _shadyShareToken) public view returns (bool) {
-        return getShareToken(_shadyShareToken.getOutcome()) == _shadyShareToken;
-    }
-
     function isContainerForReportingParticipant(IReportingParticipant _shadyReportingParticipant) public view returns (bool) {
         require(_shadyReportingParticipant != IReportingParticipant(0));
         if (address(preemptiveDisputeCrowdsourcer) == address(_shadyReportingParticipant)) {
@@ -768,21 +756,14 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function assertBalances() public view returns (bool) {
-        return assertBalances(augur.lookup("Orders"));
-    }
-
-    function assertBalances(address _orders) public view returns (bool) {
-        // Escrowed funds for open orders
-        uint256 _expectedBalance = IOrders(_orders).getTotalEscrowed(this);
+        uint256 _expectedBalance = 0;
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (isFinalized()) {
-            IShareToken[] memory _shareTokens = shareTokens;
-            uint256 _numOutcomes = _shareTokens.length;
-            for (uint256 i = 0; i < _numOutcomes; i++) {
-                _expectedBalance = _expectedBalance.add(_shareTokens[i].totalSupply().mul(getWinningPayoutNumerator(i)));
+            for (uint8 i = 0; i < numOutcomes; i++) {
+                _expectedBalance = _expectedBalance.add(shareToken.totalSupplyForMarketOutcome(this, i).mul(getWinningPayoutNumerator(i)));
             }
         } else {
-            _expectedBalance = _expectedBalance.add(shareTokens[0].totalSupply().mul(numTicks));
+            _expectedBalance = shareToken.totalSupplyForMarketOutcome(this, 0).mul(numTicks);
         }
 
         assert(universe.marketBalance(address(this)) >= _expectedBalance);
@@ -801,6 +782,6 @@ contract Market is Initializable, Ownable, IMarket {
         if (isFinalized()) {
             return 0;
         }
-        return shareTokens[0].totalSupply().mul(numTicks);
+        return shareToken.totalSupplyForMarketOutcome(this, 0).mul(numTicks);
     }
 }

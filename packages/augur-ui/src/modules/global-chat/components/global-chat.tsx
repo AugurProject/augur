@@ -4,6 +4,7 @@ import { SecondaryButton } from 'modules/common/buttons';
 import { Chevron, Close } from 'modules/common/icons';
 
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
+import classNames = require('classnames');
 
 export interface GlobalChatProps {
   show: boolean;
@@ -21,17 +22,17 @@ export const GlobalChat = (props: GlobalChatProps) => {
           icon={Chevron}
         />
       }
-      {show &&
+      <div className={classNames({
+        [Styles.ShowGlobalChat]: show
+      })}>
         <div>
-          <div>
-            <span>Global Chat</span>
-            <button onClick={() => setShow(!show)}>
-              {Close}
-            </button>
-          </div>
-          <iframe src='./chat/index.html#/channel/augur' />
+          <span>Global Chat</span>
+          <button onClick={() => setShow(!show)}>
+            {Close}
+          </button>
         </div>
-      }
+        <iframe src='./chat/index.html#/channel/augur' />
+      </div>
     </div>
   );
 };

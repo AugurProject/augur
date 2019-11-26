@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { TextInput } from 'modules/common/form';
 import Styles from 'modules/modal/components/common/common.styles.less';
-import { formatRep, formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
+import { formatRep, formatGasCostToEther, formatEtherEstimate, formatDai } from 'utils/format-number';
 import { BUY_PARTICIPATION_TOKENS_GAS_LIMIT } from 'modules/common/constants';
 import ModalActions from './common/modal-actions';
 import {
@@ -21,6 +21,8 @@ interface ModalParticipateProps {
   purchaseParticipationTokens: Function;
   messages: AlertMessageProps[];
   title: string;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
 }
 
 interface ModalParticipateState {
@@ -124,7 +126,7 @@ export default class ModalParticipate extends Component<
   }
 
   render() {
-    const { closeModal, gasPrice, messages, title } = this.props;
+    const { closeModal, gasPrice, messages, title, Gnosis_ENABLED, ethToDaiRate } = this.props;
     const { errors, isValid, quantity, gasEstimate } = this.state;
     const formattedQuantity = formatRep(quantity || 0);
     const formattedGas = formatEtherEstimate(
@@ -134,6 +136,12 @@ export default class ModalParticipate extends Component<
         gasPrice
       )
     );
+
+    let formattedGasDai = null;
+    if (Gnosis_ENABLED && ethToDaiRate) {
+      formattedGasDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(formattedGas.formattedValue)));
+    }
+
     const items = [
       {
         label: 'quantity',
@@ -148,8 +156,8 @@ export default class ModalParticipate extends Component<
       },
       {
         label: 'gas',
-        value: formattedGas,
-        denomination: 'ETH',
+        value: Gnosis_ENABLED ? formattedGasDai : formattedGas,
+        denomination: Gnosis_ENABLED ? 'DAI' : 'ETH',
         showDenomination: true,
       },
     ];

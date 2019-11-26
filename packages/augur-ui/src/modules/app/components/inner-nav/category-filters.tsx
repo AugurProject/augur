@@ -1,6 +1,6 @@
 import React from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
-import { MenuChevron } from 'modules/common/icons';
+import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
 import getValue from 'utils/get-value';
 import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
@@ -9,6 +9,7 @@ import makeQuery from 'modules/routes/helpers/make-query';
 
 interface CategoryInterface {
   category: string;
+  icon? :React.ReactNode;
   count: number;
   children: object;
 }
@@ -112,13 +113,14 @@ export default class CategoryFilters extends React.Component<
   }
 
   renderPopularCategories() {
-    const renderPopular = this.props.popularCategories.map((item, idx) => {
+    let renderPopular = this.props.popularCategories.map((item, idx) => {
       if (this.props.isSearching) {
         // No meta data yet
         return (
           <div key={idx}>
             <CategoryRow
               category={item.category}
+              icon={item.icon}
               loading={true}
               count={null} />;
           </div>
@@ -129,6 +131,7 @@ export default class CategoryFilters extends React.Component<
         <div key={idx}>
           <CategoryRow
             category={item.category}
+            icon={item.icon}
             count={item.count}
             hasChildren={item.count > 0}
             handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
@@ -136,6 +139,14 @@ export default class CategoryFilters extends React.Component<
         </div>
       );
     });
+
+    if (this.props.popularCategories.length === 0) {
+      renderPopular = (
+        <span>
+          {SearchIcon} No categories found
+        </span>
+      );
+    }
 
     return (
       <div className={Styles.CategoriesGroup}>

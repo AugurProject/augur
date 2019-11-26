@@ -129,7 +129,6 @@ export interface MarketReviewProps {
   description: string;
   details: string;
   endTime: any;
-  resolutionSource: string;
 }
 
 export interface MarketReviewState {
@@ -393,10 +392,8 @@ export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps)
   </div>
 );
 
-export const TestBet = () => (
-  <div className={Styles.TestBet}>
-    <img src='images/test-bet-placeholder.png' />
-  </div>
+export const TestBet = (
+  <img height='141px' src='images/test-bet.png' />
 );
 
 export const AlertMessage = (props: AlertMessageProps) => (
@@ -574,7 +571,7 @@ interface FundsHelpProps {
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy {fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
+    <span>Learn how to buy {fundType === DAI ? `${DAI} ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
     <ExternalLinkButton label='Learn More' />
   </div>
 );
@@ -589,7 +586,7 @@ export class MarketReview extends Component<
   };
 
   render() {
-    const { description, details, endTime, resolutionSource } = this.props;
+    const { description, details, endTime } = this.props;
     const { readMore } = this.state;
 
     const showReadMore = details && details.length > 126;
@@ -624,11 +621,6 @@ export class MarketReview extends Component<
             <div>{endTime.formattedTimezone}</div>
           </div>
         )}
-
-        <div>
-          <p>Resolution source</p>
-          {resolutionSource || 'General knowledge'}
-        </div>
       </section>
     );
   }

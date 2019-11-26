@@ -2,12 +2,10 @@
 
 .MarketOutcomeChartsHighcharts {
   display: flex;
-  flex: 1 100%;
-  flex-direction: column;
   max-height: @charts-max-height;
   height: @charts-max-height;
   min-height: @charts-max-height;
-  position: relative;
+  width: 100%;
 
   svg {
     :global {
@@ -43,15 +41,22 @@
         }
       }
 
-      .highcharts-tick,
-      .highcharts-axis-line {
+      .highcharts-tick {
         stroke: @color-secondary-action-outline;
       }
 
-      .highcharts-xaxis-grid,
+      .highcharts-axis-line {
+        stroke: @color-secondary-action-outline;
+        transform: scaleX(1.15);
+      }
+
       g.highcharts-yaxis-grid path.highcharts-grid-line:nth-child(1),
       g.highcharts-yaxis path.highcharts-axis-line {
         display: none;
+      }
+
+      .highcharts-xaxis-grid > .highcharts-grid-line {
+        stroke: fade(@color-secondary-action-outline, 25);
       }
 
       .highcharts-yaxis-grid {
@@ -59,6 +64,7 @@
 
         .highcharts-grid-line {
           stroke: @color-secondary-action-outline;
+          transform: scaleX(1.15);
         }
       }
 
@@ -76,6 +82,28 @@
         color: @color-primary-text;
         font-size: @size-10;
         z-index: @above-all-content;
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateX(38px);
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-10;
+
+        fill: @color-primary-text;
+        transform: translateX(38px);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateY(4px);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-9;
+
+        fill: @color-primary-text;
+        transform: translateY(4px);
       }
 
       .highcharts-crosshair {

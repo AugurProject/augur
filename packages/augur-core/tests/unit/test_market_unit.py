@@ -178,8 +178,8 @@ def test_approve_spenders(localFixture, initializedMarket, mockCash, mockShareTo
     assert mockCash.getApproveValueFor(cancelOrder.address) == approvalAmount
     CompleteSets = localFixture.contracts['CompleteSets']
     assert mockCash.getApproveValueFor(CompleteSets.address) == approvalAmount
-    ClaimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
-    assert mockCash.getApproveValueFor(ClaimTradingProceeds.address) == approvalAmount
+    shareToken= localFixture.contracts['ShareToken']
+    assert mockCash.getApproveValueFor(shareToken.address) == approvalAmount
 
     FillOrder = localFixture.contracts['FillOrder']
     assert mockCash.getApproveValueFor(FillOrder.address) == approvalAmount

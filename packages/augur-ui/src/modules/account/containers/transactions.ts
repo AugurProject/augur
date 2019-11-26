@@ -9,17 +9,26 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_TRANSACTIONS,
   MODAL_ACCOUNT_APPROVAL,
-  REP,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls'
+import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
+import getValue from 'utils/get-value';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
 const mapStateToProps = (state: AppState) => {
   const networkId = getNetworkId();
+  const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
+  const gnosisStatus = getValue(state, 'appStatus.gnosisStatus');
+
+  const showFaucets = Gnosis_ENABLED
+    ? networkId !== NETWORK_IDS.Mainnet && gnosisStatus === GnosisSafeState.AVAILABLE
+    : networkId !== NETWORK_IDS.Mainnet;
+
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
+    showFaucets,
   };
 };
 
@@ -30,6 +39,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdraw: () => dispatch(updateModal({ type: MODAL_WITHDRAW })),
   transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
   approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
+  legacyRepFaucet: () => getLegacyRep(),
 });
 
 const TransactionsContainer = connect(

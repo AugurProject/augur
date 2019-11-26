@@ -2,7 +2,7 @@ import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Web3Provider } from 'ethers/providers';
+import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Portis, { INetwork } from '@portis/web3';
 import Web3 from 'web3';
 import {
@@ -43,7 +43,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
       });
 
       const web3 = new Web3(portis.provider);
-      const provider = new Web3Provider(portis.provider);
+      const provider = new PersonalSigningWeb3Provider(portis.provider);
 
       windowRef.portis = portis;
 

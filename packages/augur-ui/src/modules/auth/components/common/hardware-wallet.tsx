@@ -51,9 +51,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       .toFixed();
   }
 
-  private advanced: React.RefObject<HTMLInputElement>;
-  private hardwareContent: React.RefObject<HTMLInputElement>;
-
   constructor(props: HardwareWalletProps) {
     super(props);
 
@@ -66,8 +63,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       cachedAddresses: false,
     };
 
-    this.advanced = React.createRef();
-    this.hardwareContent = React.createRef();
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this);
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
@@ -79,7 +74,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     this.getWalletAddressesWithBalance = this.getWalletAddressesWithBalance.bind(this);
   }
 
-  public componentDidMount() {
+  componentDidMount() {
     const { validation, setIsLoading } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
@@ -87,11 +82,11 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  public getSnapshotBeforeUpdate(prevProps: HardwareWalletProps, prevState: HardwareWalletState) {
+  componentDidUpdate(prevProps: HardwareWalletProps, prevState: HardwareWalletState) {
     const { isLoading, isClicked, showAdvanced } = prevProps;
     if (
-      this.state.walletAddresses !== this.state.walletAddresses &&
-      !this.state.walletAddresses.every((element: number) => !element)
+      this.state.walletAddresses !== prevState.walletAddresses &&
+      !this.state.walletAddresses.every(element => !element)
     ) {
       this.props.setShowAdvancedButton(true);
     }
@@ -105,7 +100,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       } else if (
         !this.props.isLoading &&
         isLoading &&
-        !this.state.walletAddresses.every((element: number) => !element)
+        !this.state.walletAddresses.every(element => !element)
       ) {
         // if it is not loading and before it was loading and addresses have been loaded
         this.showHardwareWallet();
@@ -123,10 +118,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
 
     if (showAdvanced !== this.props.showAdvanced) {
       this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1).catch(logError);
-    }
-
-    if (this.state.displayInstructions !== this.state.displayInstructions) {
-      this.updateDisplayInstructions(this.state.displayInstructions);
     }
   }
 
@@ -325,9 +316,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
     return (
       <div
-        ref={(hardwareContent: React.RefObject<HTMLInputElement>) => {
-          this.hardwareContent = hardwareContent;
-        }}
         className={classNames(
           StylesDropdown.ConnectDropdown__hardwareContent,
           ToggleHeightStyles.target,
@@ -338,9 +326,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       >
         <div>
           <div
-            ref={(advanced: React.RefObject<HTMLInputElement>) => {
-              this.advanced = advanced;
-            }}
             className={classNames(
               StylesDropdown.ConnectDropdown__advancedContent,
               ToggleHeightStyles.target,

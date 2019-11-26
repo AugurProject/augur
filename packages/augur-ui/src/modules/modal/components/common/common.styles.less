@@ -1,5 +1,15 @@
 @import (reference) "~assets/styles/shared";
 
+.DefaultModalBorder {
+  border: @size-3 solid @color-secondary-action-outline;
+  border-radius: @border-radius-extra-rounded;
+
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+  }
+}
+
 .ModalView {
   background-color: fade(@color-page-background, 80%);
   height: 100vh;
@@ -15,6 +25,11 @@
     justify-content: center;
     width: 100%;
 
+    @media @breakpoint-mobile-small {
+      width: initial;
+      margin: 0 @size-8;
+    }
+
     & > section {
       align-items: center;
       color: @color-primary-text;
@@ -25,9 +40,9 @@
 }
 
 .ModalContainer {
+  .DefaultModalBorder;
+
   background: @color-module-background;
-  border: @size-1 solid @color-dark-grey;
-  border-radius: @size-5;
   color: @color-primary-text;
   max-width: 35rem;
   padding: @size-24 0;
@@ -362,7 +377,7 @@ div.ErrorField:focus {
 
 .ModalDisclaimer {
   background: @color-module-background;
-  border: @size-1 solid @color-dark-grey;
+  border: @size-3 solid @color-secondary-action-outline;
   border-radius: @size-8;
   flex-flow: row nowrap;
   max-width: 35rem;
@@ -372,11 +387,19 @@ div.ErrorField:focus {
   text-align: center;
   width: 100%;
 
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+  }
+
   > h1 {
-    .text-24;
+    .text-24-bold;
 
     color: @color-primary-text;
     margin: @size-32 0;
+
+    @media @breakpoint-mobile-new {
+      .text-18-bold;
+    }
   }
 
   > div:first-of-type {
@@ -390,12 +413,22 @@ div.ErrorField:focus {
     text-align: left;
     width: auto;
 
+    @media @breakpoint-mobile-new {
+      margin: 0 @size-8 4rem @size-8;
+      padding: @size-16;
+    }
+
     > p {
       .text-14;
 
       color: @color-secondary-text;
       font-size: @size-14;
       margin: 0 0 @size-24;
+      line-height: 140%;
+
+      @media @breakpoint-mobile-new {
+        .text-12;
+      }
     }
 
     > div:first-of-type {
@@ -417,7 +450,23 @@ div.ErrorField:focus {
         width: 100%;
 
         > div {
+          margin-bottom: @size-2;
           margin-right: @size-24;
+
+          > span {
+            background: @color-secondary-action;
+            border: @size-2 solid @color-secondary-action-outline;
+
+            > svg  {
+              height: @size-6;
+              left: @size-1;
+              top: @size-3;
+
+              > path {
+                stroke-width: @size-2;
+              }
+            }
+          }
         }
       }
     }
@@ -452,6 +501,10 @@ div.ErrorField:focus {
       height: 40px;
       position: absolute;
       width: 40px;
+
+      @media @breakpoint-mobile-new {
+        bottom: @size-44;
+      }
 
       > svg {
         fill: @color-dark-grey;

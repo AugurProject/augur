@@ -3,6 +3,8 @@ export * from "./api/Trade";
 export * from "./api/ZeroX";
 export * from "./api/Market";
 export * from "./api/Contracts";
+export * from "./api/HotLoading";
+export * from "./api/Gnosis";
 export * from "@augurproject/types";
 export { Provider } from "./ethereum/Provider";
 export * from "./utils";

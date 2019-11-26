@@ -4,6 +4,7 @@ export const Addresses: AllContractAddresses = require('./addresses.json');
 export const Contracts = require('./contracts.json');
 export const UploadBlockNumbers: UploadBlockNumbers = require('./upload-block-numbers.json');
 export const Networks = require('./networks.json');
+export * from './templates';
 export { ContractEvents } from './events';
 
 import { exists, readFile, writeFile } from 'async-file';
@@ -38,16 +39,15 @@ export interface UploadBlockNumbers {[networkId: string]: number}
 export interface ContractAddresses {
     Universe: string;
     Augur: string;
+    AugurTrading: string;
     LegacyReputationToken: string;
     CancelOrder: string;
     Cash: string;
-    ClaimTradingProceeds: string;
-    CompleteSets: string;
+    ShareToken: string;
     CreateOrder: string;
     FillOrder: string;
     Order: string;
     Orders: string;
-    ShareToken: string;
     Trade: string;
     SimulateTrade: string;
     Controller?: string;
@@ -58,12 +58,24 @@ export interface ContractAddresses {
     TimeControlled?: string;
     GnosisSafe?: string;
     ProxyFactory?: string;
-    ZeroXTrade?: string;
-    ZeroXExchange?: string;
     BuyParticipationTokens?: string;
     RedeemStake?: string;
     CashFaucet?: string;
     GnosisSafeRegistry?: string;
+    HotLoading?: string;
+    ZeroXTrade?: string;
+    Affiliates?: string;
+    AffiliateValidator?: string;
+    // 0x
+    //   The 0x contract names must be what 0x mesh expects.
+    ERC20Proxy?: string;
+    ERC721Proxy?: string;
+    ERC1155Proxy?: string;
+    Exchange?: string; // ZeroXExchange
+    Coordinator?: string; // ZeroXCoordinator
+    DevUtils?: string;
+    WETH9?: string;
+    ZRXToken?: string;
 }
 
 export interface AllContractAddresses {[networkId: string]: ContractAddresses}

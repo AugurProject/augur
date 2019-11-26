@@ -6,9 +6,11 @@
   flex: 1 100%;
   flex-direction: column;
   max-height: @charts-max-height;
-  min-height: @charts-min-height;
+  height: @charts-max-height;
+  min-height: @charts-max-height;
   padding: @size-8 0 0;
   position: relative;
+  overflow: visible;
 
   @media @breakpoint-mobile {
     padding-bottom: 0;
@@ -66,7 +68,7 @@
   & > div {
     display: flex;
     flex: 1 100%;
-    max-height: @charts-max-height;
+    max-height: @charts-min-height;
     height: @charts-min-height;
     min-height: @charts-min-height;
   }

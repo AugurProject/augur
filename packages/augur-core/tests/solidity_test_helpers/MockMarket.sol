@@ -389,10 +389,6 @@ contract MockMarket is IMarket {
         return true;
     }
 
-    function assertBalances(address _orders) public view returns (bool) {
-        return true;
-    }
-
     function finalize() public returns (bool) {
         return true;
     }

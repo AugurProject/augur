@@ -21,6 +21,11 @@ import {
   NETWORK_NAMES,
   MODAL_LOADING,
   MODA_WALLET_ERROR,
+  MODAL_ACCOUNT_CREATED,
+  MODAL_AUGUR_USES_DAI,
+  MODAL_BUY_DAI,
+  MODAL_TEST_BET,
+  MODAL_TUTORIAL_INTRO,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -40,6 +45,7 @@ import {
   RESTORED_ACCOUNT,
 } from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
+import { updateCanHotload } from 'modules/app/actions/update-connection';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -54,7 +60,7 @@ function pollForAccount(
   let intervalId = null;
 
   async function attemptLogin() {
-    const { connection } = getState();
+    const { connection, modal } = getState();
     if (attemptedLogin) {
       clearInterval(intervalId);
     }
@@ -68,14 +74,26 @@ function pollForAccount(
       );
 
       const showModal = accountType => {
-        dispatch(
-          updateModal({
-            type: MODAL_LOADING,
-            callback: () => setTimeout(() => dispatch(closeModal())),
-            message: `Syncing 📡 ${accountType} account...`,
-            showCloseAfterDelay: true,
-          })
-        );
+        const onboardingShown = [
+          MODAL_ACCOUNT_CREATED,
+          MODAL_AUGUR_USES_DAI,
+          MODAL_BUY_DAI,
+          MODAL_TEST_BET,
+          MODAL_TUTORIAL_INTRO,
+        ].includes(modal.type);
+        if (!onboardingShown) {
+          dispatch(
+            updateModal({
+              type: MODAL_LOADING,
+              callback: () =>
+                setTimeout(() => {
+                  dispatch(closeModal());
+                }),
+              message: `Syncing ${accountType} account...`,
+              showCloseAfterDelay: true,
+            })
+          );
+        }
       };
 
       const errorModal = () => {
@@ -241,6 +259,7 @@ export function connectAugur(
         }
         // wire up start up events for sdk
         dispatch(listenForStartUpEvents(sdk));
+        dispatch(updateCanHotload(true));
       }
     );
   };
@@ -249,12 +268,18 @@ export function connectAugur(
 interface initAugurParams {
   ethereumNodeHttp: string | null;
   ethereumNodeWs: string | null;
+  sdkEndpoint: string | null;
   useWeb3Transport: boolean;
 }
 
 export function initAugur(
   history: History,
-  { ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
+  {
+    ethereumNodeHttp,
+    ethereumNodeWs,
+    sdkEndpoint,
+    useWeb3Transport,
+  }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) {
   return (
@@ -270,6 +295,7 @@ export function initAugur(
     const defaultWS = isEmpty(ethereumNodeHttp) ? env['ethereum-node'].ws : '';
     // If only the http param is provided we need to prevent this "default from taking precedence.
     env['ethereum-node'].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
+    env['sdkEndpoint'] = sdkEndpoint;
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

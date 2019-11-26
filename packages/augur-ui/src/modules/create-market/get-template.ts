@@ -3,22 +3,23 @@ import {
   MARKET_SUB_TEMPLATES,
   MARKET_TYPE_TEMPLATES,
   MarketCardTemplate,
-  TemplateInputType,
-  CHOICE,
-  REQUIRED,
 } from 'modules/create-market/constants';
-import {
-  CategoryTemplate,
-  Categories,
-  Template,
-  TemplateInput,
-} from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
-import { convertUnixToFormattedDate } from 'utils/format-date';
 import { NameValuePair } from 'modules/portfolio/types';
-import { TEMPLATES } from 'modules/create-market/templates';
+import {
+  TEMPLATES,
+  TEMPLATE_VALIDATIONS,
+  Categories,
+  Template,
+  TemplateInput,
+  ResolutionRules,
+  CategoryTemplate,
+  TemplateInputType,
+  REQUIRED,
+  CHOICE,
+} from '@augurproject/artifacts';
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
@@ -102,16 +103,16 @@ export const addCategoryStats = (
 
 export const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
-  if (!categories || !categories.primary) return Object.keys(TEMPLATES);
+  if (!categories || !categories.primary) return Object.keys(TEMPLATES).sort();
   const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary)
-    return primaryCat.children ? Object.keys(primaryCat.children) : [];
+    return primaryCat.children ? Object.keys(primaryCat.children).sort() : [];
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  return secondaryCat.children ? Object.keys(secondaryCat.children) : [];
+  return secondaryCat.children ? Object.keys(secondaryCat.children).sort() : [];
 };
 
 export const getTemplateCategoriesByMarketType = (
@@ -237,14 +238,9 @@ export const buildMarketDescription = (
   inputs: TemplateInput[]
 ) => {
   inputs.forEach((input: TemplateInput) => {
-    const userInputFormatted =
-      input.type === TemplateInputType.DATEYEAR
-        ? convertUnixToFormattedDate(Number(input.userInput))
-            .formattedSimpleData
-        : input.userInput;
     question = question.replace(
       `[${input.id}]`,
-      `${input.userInput ? userInputFormatted : `[${input.placeholder}]`}`
+      `${input.userInput || `[${input.placeholder}]`}`
     );
   });
 
@@ -263,7 +259,13 @@ export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
 };
 
 export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
-  return inputs
+  const requiredOutcomes = inputs.filter(
+    i => i.type === TemplateInputType.ADDED_OUTCOME
+  );
+  const otherOutcomes = inputs.filter(
+    i => i.type !== TemplateInputType.ADDED_OUTCOME
+  );
+  return [...otherOutcomes, ...requiredOutcomes]
     .filter(
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
@@ -283,22 +285,7 @@ export const substituteUserOutcome = (
   input: TemplateInput,
   inputs: TemplateInput[]
 ) => {
-  let matches = input.placeholder.match(/\[(.*?)\]/);
-  let submatch = '0';
-  if (matches) {
-    submatch = String(matches[1]);
-  }
-
-  let text = input.placeholder.replace(
-    `[${submatch}]`,
-    `${
-      inputs[submatch].userInput
-        ? inputs[submatch].userInput
-        : `[${inputs[submatch].placeholder}]`
-    }`
-  );
-
-  return text;
+  return buildMarketDescription(input.placeholder, inputs);
 };
 
 export const buildResolutionDetails = (
@@ -334,4 +321,10 @@ export const hasNoTemplateCategoryTertiaryChildren = (
   if (!category || !subcategory) return false;
   if (TEMPLATES[category].children[subcategory].children) return false;
   return true;
+};
+
+export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
+  const validation = TEMPLATE_VALIDATIONS[hash];
+  if (!validation || !validation.templateValidation) return false;
+  return !!marketTitle.match(validation.templateValidation);
 };

@@ -73,6 +73,12 @@
       padding: @size-13 @size-16;
       background: @color-table-header;
       border-top: 1px solid @color-dark-grey;
+
+      &.hideOnTablet {
+        @media @breakpoint-smallish-desktop {
+          display: none;
+        }
+      }
     }
 
     > span:last-of-type {

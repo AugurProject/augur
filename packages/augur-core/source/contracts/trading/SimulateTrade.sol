@@ -15,6 +15,7 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 import "ROOT/external/IExchange.sol";
 import "ROOT/trading/IZeroXTrade.sol";
+import 'ROOT/trading/IAugurTrading.sol';
 
 
 /**
@@ -45,16 +46,19 @@ contract SimulateTrade is Initializable {
 
     IAugur public augur;
     IOrders public orders;
-    IZeroXTrade ZeroXTrade;
+    IZeroXTrade public zeroXTrade;
+    IShareToken public shareToken;
 
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant GAS_BUFFER = 50000;
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
         augur = _augur;
-        orders = IOrders(augur.lookup("Orders"));
-        ZeroXTrade = IZeroXTrade(augur.lookup("ZeroXTrade"));
+        shareToken = IShareToken(augur.lookup("ShareToken"));
+
+        orders = IOrders(_augurTrading.lookup("Orders"));
+        zeroXTrade = IZeroXTrade(_augurTrading.lookup("ZeroXTrade"));
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
@@ -82,7 +86,7 @@ contract SimulateTrade is Initializable {
     }
 
     function createFromSignedOrders(IExchange.Order memory _order, uint256 _amount, address _sender) internal view returns (SimulationData memory) {
-        IZeroXTrade.AugurOrderData memory _augurOrderData = ZeroXTrade.parseOrderData(_order);
+        IZeroXTrade.AugurOrderData memory _augurOrderData = zeroXTrade.parseOrderData(_order);
         Order.Types _type = Order.Types(_augurOrderData.orderType);
         Order.TradeDirections _direction = _type == Order.Types.Bid ? Order.TradeDirections.Short : Order.TradeDirections.Long;
         IMarket _market = IMarket(_augurOrderData.marketAddress);
@@ -177,7 +181,7 @@ contract SimulateTrade is Initializable {
             if (_orderIndex >= _orders.length) {
                 break;
             }
-            IZeroXTrade.AugurOrderData memory _augurOrderData = ZeroXTrade.parseOrderData(_orders[_orderIndex]);
+            IZeroXTrade.AugurOrderData memory _augurOrderData = zeroXTrade.parseOrderData(_orders[_orderIndex]);
             _simulationData.orderAmount = _orders[_orderIndex].makerAssetAmount;
             _simulationData.orderPrice = _augurOrderData.price;
             _simulationData.orderCreator = _orders[_orderIndex].makerAddress;
@@ -206,16 +210,19 @@ contract SimulateTrade is Initializable {
 
     function getNumberOfAvaialableShares(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, address _sender) public view returns (uint256) {
         if (_direction == Order.TradeDirections.Short) {
-            return _market.getShareToken(_outcome).balanceOf(_sender);
+            return shareToken.balanceOfMarketOutcome(_market, _outcome, _sender);
         } else {
-            uint256 _sharesAvailable = SafeMathUint256.getUint256Max();
-            for (uint256 _shortOutcome = 0; _shortOutcome < _market.getNumberOfOutcomes(); ++_shortOutcome) {
-                if (_shortOutcome == _outcome) {
-                    continue;
+            uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
+            uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+            uint256 _indexOutcome = 0;
+            for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+                if (_i == _outcome) {
+                    _indexOutcome++;
                 }
-                _sharesAvailable = _market.getShareToken(_shortOutcome).balanceOf(_sender).min(_sharesAvailable);
+                _shortOutcomes[_i] = _indexOutcome;
+                _indexOutcome++;
             }
-            return _sharesAvailable;
+            return shareToken.lowestBalanceOfMarketOutcomes(_market, _shortOutcomes, _sender);
         }
     }
 

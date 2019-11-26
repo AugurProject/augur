@@ -13,7 +13,8 @@
     "build:source": "tsc -b",
     "build:contracts": "node -r ts-node/register source/deployment/compileContracts.ts && npm run build:documentation",
     "build:interfaces": "node -r ts-node/register source/tools/generateContractInterfaces.ts",
-    "build": "npm run build:source && npm run lint && npm run build:contracts && npm run build:interfaces && npm run build:source && npm run build:artifacts",
+    "build:with-lint": "npm run build:source && npm run lint && npm run build:contracts && npm run build:interfaces && npm run build:source && npm run build:artifacts",
+    "build": "npm run build:source && npm run build:contracts && npm run build:interfaces && npm run build:source && npm run build:artifacts",
     "build:debug": "npm run build:source && npm run lint && cross-env ENABLE_SOLIDITY_DEBUG=true npm run build:interfaces && npm run build:source",
     "build:artifacts": "cross-env OUTPUT_PATH='../augur-artifacts/src' npm run build:contracts",
     "build:documentation": "yarn solidity-docgen -s ./output/contracts/contracts_full.json -o ../../docs/v2/docs/contracts",
@@ -65,6 +66,7 @@
     "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
   },
   "dependencies": {
+    "@0x/migrations": "4.3.2",
     "@augurproject/artifacts": "2.0.0-alpha.1",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "@types/get-port": "4.0.1",
@@ -87,7 +89,7 @@
     "solidity-coverage": "0.6.7"
   },
   "devDependencies": {
-    "@augurproject/solidity-typescript-generator": "1.1.6",
+    "@augurproject/solidity-typescript-generator": "1.1.8",
     "@types/chai": "4.2.3",
     "@types/jest": "24.0.18",
     "@types/node": "10.14.18",

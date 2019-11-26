@@ -3,7 +3,6 @@ import {
   SCALAR,
   CATEGORICAL,
   YES_NO_OUTCOMES,
-  EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
   SETTLEMENT_FEE_DEFAULT,
   AFFILIATE_FEE_DEFAULT,
@@ -13,7 +12,30 @@ import {
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
 import { Popcorn } from 'modules/common/icons';
-
+import {
+  SPORTS,
+  POLITICS,
+  FINANCE,
+  ENTERTAINMENT,
+  CRYPTO,
+  SOCCER,
+  AMERICAN_FOOTBALL,
+  BASEBALL,
+  GOLF,
+  BASKETBALL,
+  TENNIS,
+  HOCKEY,
+  HORSE_RACING,
+  NFL,
+  NCAA,
+  US_POLITICS,
+  WORLD,
+  STOCKS,
+  INDEXES,
+  BITCOIN,
+  ETHEREUM,
+  LITECOIN,
+} from '@augurproject/artifacts';
 
 export const INVALID_OUTCOME = 'Market is Invalid';
 
@@ -34,7 +56,6 @@ export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
-
 export const DEFAULT_TICK_SIZE = 0.01;
 
 export const EMPTY_STATE: NewMarket = {
@@ -43,7 +64,6 @@ export const EMPTY_STATE: NewMarket = {
     description: null,
     categories: ['', '', ''],
     designatedReporterAddress: null,
-    expirySourceType: null,
     setEndTime: null,
     hour: null,
     minute: null,
@@ -61,9 +81,6 @@ export const EMPTY_STATE: NewMarket = {
   scalarBigNum: '',
   scalarDenomination: '',
   description: '',
-  expirySourceType: EXPIRY_SOURCE_GENERIC,
-  expirySource: '',
-  backupSource: '',
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: '',
   endTime: null,
@@ -89,18 +106,30 @@ export const EMPTY_STATE: NewMarket = {
   initialLiquidityGas: ZERO,
 };
 
-const EventDetailsContent = {
+export const EventDetailsContentTemplate = `template`;
+export const EventDetailsContent = (type = `custom`) => ({
   title: 'Event details',
-  largeHeader: 'Create a custom market',
-  explainerBlockTitle: 'A note on choosing a market',
+  largeHeader: `Create a ${type} market`,
+  explainerBlockTitle: 'A market is invalid if:',
   explainerBlockSubtexts: [
-    "Create markets that will have an objective outcome by the events end time. Avoid creating markets that have subjective or ambiguous outcomes. If you're not sure that the market's outcome will be known beyond a reasonable doubt by the reporting start time, you should not create the market.",
+    'The market question is subjective in nature.',
+    'The result of the event was known at market creation time.',
+    'The outcome was not known at event expiration time.',
+    'The title, details and outcomes are in direct conflict with each other.',
+    'There are strong arguments for the market resolving as multiple outcomes, unless it is explicitly stated how the market should be resolved in resolution details.',
+    "If using a resolution source (a source is a noun that reports on or decides the result of a market), the source's URL or full name is NOT in the Market Question, regardless of it being in the resolution details.",
+    'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name',
+    'If it’s a stock, currency or cryptocurrency and its ticker is not used in the market question.',
+    'If it’s an index and the indexes full name is not in the market question.',
     'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
+    'For any sports market that lists a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
   ],
-  mainContent: FORM_DETAILS,
+  mainContent:
+    type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
   firstButton: BACK,
   secondButton: NEXT,
-};
+  useBullets: true,
+});
 
 export const LiquidityContent = {
   title: 'Fees & liquidity',
@@ -125,7 +154,7 @@ export const ReviewContent = {
 };
 
 export const CUSTOM_CONTENT_PAGES = [
-  EventDetailsContent,
+  EventDetailsContent(),
   LiquidityContent,
   ReviewContent,
 ];
@@ -142,47 +171,12 @@ export const MARKET_TYPE_NAME = {
   [CATEGORICAL]: 'Categorical',
 };
 
-export const REQUIRED = 'REQUIRED';
-export const CHOICE = 'CHOICE';
-// Market templates
-export const SPORTS = 'Sports';
-export const POLITICS = 'Politics';
-export const FINANCE = 'Finance';
-export const ENTERTAINMENT = 'Entertainment';
-export const CRYPTO = 'Crypto';
-export const USD = 'USD';
-export const USDT = 'USDT';
-export const EUR = 'EUR';
-
 // Market Subtemplates
-export const SOCCER = 'Soccer';
-export const AMERICAN_FOOTBALL = 'American Football';
-export const BASEBALL = 'Baseball';
-export const GOLF = 'Golf';
-export const BASKETBALL = 'Basketball';
-export const TENNIS = 'Tennis';
-export const HOCKEY = 'Hockey';
-export const HORSE_RACING = 'Horse Racing';
-export const US_ELECTIONS = 'US Elections';
-export const US_POLITICS = 'US Politics';
-export const WORLD = 'World';
-export const STOCKS = 'Stocks';
-export const COMMONDITIES = 'Commondities';
-export const INDEXES = 'Indexes';
 export const AWARDS = 'Awards';
 export const MOVIES = 'Movies';
 export const MUSIC = 'Music';
 export const TV = 'TV';
-export const BITCOIN = 'Bitcoin';
-export const ETHEREUM = 'Ethereum';
-export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
-export const BTC = 'BTC';
-export const ETH = 'ETH';
-export const LTC = 'LTC';
-export const NBA = 'NBA';
-export const NCAA = 'NCAA';
-export const NFL = 'NFL';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -292,12 +286,6 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [POLITICS]: [
     {
-      value: US_ELECTIONS,
-      header: US_ELECTIONS,
-      description: defaultDescription,
-      icon: icons.USElections,
-    },
-    {
       value: US_POLITICS,
       header: US_POLITICS,
       description: defaultDescription,
@@ -316,12 +304,6 @@ export const MARKET_SUB_TEMPLATES = {
       header: STOCKS,
       description: defaultDescription,
       icon: icons.Stocks,
-    },
-    {
-      value: COMMONDITIES,
-      header: COMMONDITIES,
-      description: defaultDescription,
-      icon: icons.Commodities,
     },
     {
       value: INDEXES,
@@ -422,7 +404,6 @@ export const END_TIME = 'setEndTime';
 export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';
-export const EXPIRY_SOURCE = 'expirySource';
 
 export const OUTCOMES = 'outcomes';
 
@@ -468,12 +449,6 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledString: true,
     checkFilledStringMessage: 'Enter a wallet address',
     checkForAddress: true,
-  },
-  [EXPIRY_SOURCE]: {
-    label: EXPIRY_SOURCE,
-    readableName: 'website',
-    checkFilledString: true,
-    checkFilledStringMessage: 'Enter a website',
   },
   [OUTCOMES]: {
     label: OUTCOMES,
@@ -534,19 +509,141 @@ export const VALIDATION_ATTRIBUTES = {
   },
 };
 
-export enum TemplateInputType {
-  TEXT = 'TEXT',
-  DATEYEAR = 'DATEYEAR',
-  DATETIME = 'DATETIME',
-  DROPDOWN = 'DROPDOWN',
-  DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN',
-  ADDED_OUTCOME = 'ADDED_OUTCOME',
-  USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_TEXT',
-  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME',
-  USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME',
+export const TemplateBannerText = {
+  indexes:
+    'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
+  stocks:
+    'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
+};
+
+export const SelectEventNoticeText =
+  'Choose an event in the market question in order to select outcomes.';
+
+export enum MARKET_COPY_LIST {
+  USE_A_TEMPLATE = 'USE_A_TEMPLATE',
+  DONT_SEE_CAT = 'DONT_SEE_CAT',
+  FROM_SCRATCH = 'FROM_SCRATCH',
+  MARKET_TYPE = 'MARKET_TYPE',
+  EVENT_EXPIRATION = 'EVENT_EXPIRATION',
+  MARKET_QUESTION = 'MARKET_QUESTION',
+  RESOLUTION_DETAILS = 'RESOLUTION_DETAILS',
+  DESIGNATED_REPORTER = 'DESIGNATED_REPORTER',
+  CREATOR_FEE = 'CREATOR_FEE',
+  AFFILIATE_FEE = 'AFFILIATE_FEE',
+  INITIAL_LIQUIDITY = 'INITIAL_LIQUIDITY',
+  VISIBILITY = 'VISIBILITY',
+  VALIDITY_BOND = 'VALIDITY_BOND',
+  NO_SHOW_BOND = 'NO_SHOW_BOND',
+  UNIT_OF_MEASURMENT = 'UNIT_OF_MEASURMENT',
+  NUMERIC_RANGE = 'UNIT_OF_MEASURMENT',
+  PRECISION = 'PRECISION',
 }
 
-export enum ValidationType {
-  WHOLE_NUMBER = 'WHOLE_NUMBER',
-  NUMBER = 'NUMBER',
-}
+export const MARKET_CREATION_COPY = {
+  [MARKET_COPY_LIST.USE_A_TEMPLATE]: {
+    subheader: [
+      'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets by reducing the number of decisions and possible errors users can make. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
+      'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.',
+    ],
+  },
+  [MARKET_COPY_LIST.DONT_SEE_CAT]: {
+    subheader: [
+      'Market templates are currently only available for the categories shown. If you want to create a market with a different category, you will need to create a custom market in the “Start from scratch” section.',
+    ],
+  },
+  [MARKET_COPY_LIST.FROM_SCRATCH]: {
+    subheader: [
+      'Creating a custom market allows for maximum flexibility in the market creation process. It is recommended for advanced users only because there is a higher risk of error that can lead to an invalid market.',
+    ],
+  },
+  [MARKET_COPY_LIST.MARKET_TYPE]: {
+    subheader: [
+      'A Yes/No market has two possible outcomes, as well as invalid. For example, Will Donald Trump win the 2020 presidential election? If he wins, the outcome “yes” will settle at 100%. If he loses, the outcome “yes” will settle at 0%.',
+      'A multiple choice market, e.g., who will win the Super Bowl, has at least two and up to seven possible outcomes, as well as invalid. The winning outcome will settle at 100%. The losing outcomes will settle at 0%.',
+      'A scalar market is measured on a numerical outcome along a scale. Scalar markets are good for situations where you want to trade on a direction and you don’t want to expose yourself to winner take all risk. For example: How much will Google settle at on 21 August, 2019? With a range between 500$-1500$.',
+      'If you purchase at 1100$ and Google settles at 1250$. You win 150$ per share. If you purchase at 1100$ and Google settles at 1050$. You lose 50$ per share. If you sold at 1100$ and Google settles at 1250$. You lose 150$ per share. If you sold at 1100$ and Google settles at 1050$. You win 50$ per share.',
+      'If an event resolves outside of the range, the market will resolve at the closest bound.',
+    ],
+  },
+  [MARKET_COPY_LIST.EVENT_EXPIRATION]: {
+    subheader: [
+      'This is the time at which Augur users can start reporting on the outcome of the market. Since Augur does not have any centralized operator, it uses a system of incentivized communal reporting (the Augur oracle) to deem what outcome occurred.',
+      'Event Expiration date and time should be set an appropriate time at which the outcome of the market question will be known. If the outcome is not known by this time, then the market will almost certainly resolve Invalid.',
+      'Provide a sufficient cushion of time between the event in question and Event Expiration to help ensure that the outcome will be known by this point. For example, if creating a market on the outcome of a sporting event, set Event Expiration to at least several hours after the game will most likely end to accommodate for potential delays due to weather and other factors.',
+    ],
+  },
+  [MARKET_COPY_LIST.MARKET_QUESTION]: {
+    subheader: [
+      'Your market question should be about a future occurrence that will take place between the time of market creation and the start of market reporting. It should concern an outcome that is objective, verifiable, and unambiguous. A market that is subjective, unverifiable, or ambiguous will most likely be sparsely traded in and almost certainly resolve Invalid.',
+      'At Event Expiration (described below), there must be one and only one clear outcome. If none of the listed outcomes or more than one of the listed outcomes occurred, the market will most likely resolve Invalid.',
+      'If the market question contains a date and time, make sure that the date and time are before Reporting Start Time, and ideally, specify the time in UTC+0.',
+    ],
+  },
+  [MARKET_COPY_LIST.RESOLUTION_DETAILS]: {
+    subheader: [
+      'Specify any further details that will help reporters resolve the outcome. To minimize the risk of Invalid resolution, remove as much potential ambiguity as possible and specify what will happen under different potential circumstances.',
+      'Consider possible circumstances that could render the outcome ambiguous and account for such circumstances by doing one or more of the following: 1) make the market question more specific 2) add more outcomes (if a Multiple Choice market) or 3) address specific circumstances here.',
+      'For example, if creating a market about the number of Twitter followers a public figure will have on a future date, you may specify here that if the individual changes their Twitter handle, the market shall resolve based on the following for the new handle.',
+      'If you cite a website that has more than one data set, specify which data set will be used, as in a specific chart, table, or section of the website.',
+    ],
+  },
+  [MARKET_COPY_LIST.DESIGNATED_REPORTER]: {
+    subheader: [
+      'The Designated Reporter is the Ethereum address selected to initially report on the market’s outcome. The Designated Reporter is most often set to the market creator, but it may be set to any Ethereum address.',
+      'The Designated Reporter will have 24 hours after Reporting Start Time to submit a report (select a winning outcome). If a report is not submitted by this time, the market will enter Open Reporting, at which time anyone can report on it. If the Designated Reporter does not report within 24 hours of Reporting Start Time, then they will not receive back the no-show bond. Once the designated or open reporter submit a report, other Augur users will have the option of disputing it before the market resolves.',
+    ],
+  },
+  [MARKET_COPY_LIST.CREATOR_FEE]: {
+    subheader: [
+      'The Market Creator Fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution.',
+      'Set fees to under 2% in order for your market to show up to traders, by default. If you set your fees to zero or near zero, that may provide less incentive for affiliates to promote your market. However, if you set fees too high, that may dissuade traders. Markets currently average around 1% fees.',
+    ],
+  },
+  [MARKET_COPY_LIST.AFFILIATE_FEE]: {
+    subheader: [
+      'This is the percentage of the Market Creator Fee that Affiliates collect. The Affiliate Allocation helps markets get promoted and acquire more traders. Affiliate marketers share links to Augur and then collect a portion of fees whenever someone follows that link and trades in a market. So the Affiliate Allocation incentivizes marketers to spread your market.',
+    ],
+  },
+  [MARKET_COPY_LIST.INITIAL_LIQUIDITY]: {
+    subheader: [
+      'It is essential to add liquidity to your market for users to see it. The tighter the spread and more liquidity you add, the higher your market will rank and the more people will see it.',
+      'Markets that do not have a 10% or smaller spread (for at least one outcome, if a multiple choice market), between the highest bid and the lowest offer, will not show up to traders, by default.',
+      'For instance, a Yes/No market with a .56 bid and .65 offer would have a 9% spread, so it will show up. A market with a .55 bid and .71 offer would have a 16% spread, so it will not show up.',
+    ],
+  },
+  [MARKET_COPY_LIST.VISIBILITY]: {
+    subheader: [
+      'Markets are sorted based on their liquidity, and more liquid markets rank higher and are more visible to traders. To increase the rank and visibility of your market, add Buy and Sell offers in a tight spread with sizable volume on each side.',
+      'A market must have a spread of 15% or smaller, inclusive of the Market Creator Fee, in order to be visible to traders in the default sort. If it’s a multiple choice market, it must have at least one outcome that satisfies these criteria.',
+      'For instance, a Yes/No market with a .55 bid and .65 offer would have a 10% spread, so it will show up. A market with a .55 bid and .71 offer would have a 16% spread, so it will not show up. This calculation accounts for fees. For instance, if a market has a .30 bid and a .44 offer, it will not show up if fees are over 1%.',
+    ],
+  },
+  [MARKET_COPY_LIST.VALIDITY_BOND]: {
+    subheader: [
+      'You must put up a “Validity Bond” denominated in Dai that will be returned upon market resolution if and only if the market does not resolve Invalid. A market may resolve Invalid if its outcome is ambiguous, subjective, unverifiable, or if the market’s listed outcomes do not include the actual outcome that occurred.',
+      'If the market resolves Invalid, the Validity Bond is forfeited to reporters. The Validity Bond is set dynamically based on the recent rate of Invalid markets.'
+    ],
+  },
+  [MARKET_COPY_LIST.NO_SHOW_BOND]: {
+    subheader: [
+      'You must put up a No-Show bond, denominated in REP that will be returned upon market resolution if and only if the Designated Reporter submits a report within 24 hours of the market’s Reporting Start Time. If the Designated Reporter does not submit a report within 24 hours, the bond is forfeited to the first person to report the outcome in open reporting.'
+    ],
+  },
+  [MARKET_COPY_LIST.UNIT_OF_MEASURMENT]: {
+    subheader: [
+      'The unit of measurement is the denomination by which a Scalar market’s outcome is quantified. For example, the USD or Euro could be the unit of measurement in a market on “What will the price of Bitcoin be on March 31st.” Each Scalar market must have one and only one unit of measurement.',
+      'Markets can be denominated in any quantifiable and measurable unit such as USD, degrees Fahrenheit, inches of rainfall, or points. If using a generic currency symbol, such as $, make sure to specify which type e.g., USD, CAD, HKD, etc.'
+    ],
+  },
+  [MARKET_COPY_LIST.NUMERIC_RANGE]: {
+    subheader: [
+      'The Numeric Range spans from the minimum to maximum price at which traders can buy or sell shares and determines how the end payout for long and short shares is calculated. Unlike other types of markets, Scalar markets are not winner takes all. The payout for long and short shares is the difference between the purchase price and settlement price.',
+      'For instance, let’s say there’s a market on how many points will be scored in a basketball game with a range from 80 to 120 points. If 1 share is purchased at 90 and 100 points are scored in the game, 10 Dai is earned per share purchased. If 1 share is sold at 90 and the final score is 100 points, 10 Dai is lost per share purchased.'
+    ],
+  },
+  [MARKET_COPY_LIST.PRECISION]: {
+    subheader: [
+      'The Precision is the smallest increment in which traders can price shares. For example, consider a market on the number of inches of rainfall in Chicago in April. If the Denomination is inches, the range is 0 to 3, and the precision is set to 1, then traders can buy or sell shares at 0, 1, 2, or 3. If the precision is set to .1, traders can buy or sell shares at 0, .1, .2 … 9.8, 9.9, 10.'
+    ],
+  },
+};

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { augurSdk } from 'services/augursdk';
 import TradingForm from 'modules/market/components/trading-form/trading-form';
 import { createBigNumber } from 'utils/create-big-number';
 import { windowRef } from 'utils/window-ref';
@@ -28,6 +28,8 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import getValue from 'utils/get-value';
+import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 
 const getMarketPath = id => {
   return {
@@ -41,14 +43,18 @@ const getMarketPath = id => {
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
 
-  const hasFunds =
-    !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
+  const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
+  const ethToDaiRate = getValue(state, 'appStatus.ethToDaiRate');
+  const gnosisStatus = getValue(state, 'appStatus.gnosisStatus');
+  const hasFunds = Gnosis_ENABLED
+    ? !!state.loginAccount.balances.dai
+    : !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
 
   const selectedOutcomeId =
     ownProps.selectedOutcomeId !== undefined &&
     ownProps.selectedOutcomeId !== null
       ? ownProps.selectedOutcomeId
-      : market.defaultSelectedOutcomeId;
+      : ownProps.market.defaultSelectedOutcomeId;
   let outcomeOrderBook = {};
   if (ownProps.initialLiquidity) {
     outcomeOrderBook = formatOrderBook(
@@ -63,6 +69,7 @@ const mapStateToProps = (state, ownProps) => {
     availableEth: createBigNumber(state.loginAccount.balances.eth),
     availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
+    currentTimestamp: state.blockchain.currentAugurTimestamp,
     orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
@@ -71,6 +78,9 @@ const mapStateToProps = (state, ownProps) => {
       ownProps.market.marketType,
       ownProps.market.outcomesFormatted
     ),
+    Gnosis_ENABLED,
+    ethToDaiRate,
+    gnosisStatus,
   };
 };
 
@@ -90,6 +100,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
   addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  addPendingOrder: (order, marketId) => dispatch(addPendingOrder(order, marketId)),
   loginModal: () =>
     dispatch(
       updateModal({

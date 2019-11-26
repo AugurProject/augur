@@ -2,17 +2,14 @@ import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCost } from "utils/format-number";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
-import {
-  getNetworkId,
-  getGasPrice
-} from "modules/contracts/actions/contractCalls";
+import { getGasPrice, getNetworkId } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
-import { NodeStyleCallback, DataCallback } from "modules/types";
-import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { DataCallback, NodeStyleCallback } from "modules/types";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { GWEI_CONVERSION } from 'modules/common/constants';
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
-const GWEI_CONVERSION = 1000000000;
 const MAINNET_ID = "1";
 
 export function loadGasPriceInfo(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {

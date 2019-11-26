@@ -21,7 +21,9 @@
     "docker:geth:pop-15": "./docker-builder/run.sh augurproject/dev-pop-geth-15-v2",
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
+    "docker:0x": "yarn flash run 0x-docker",
     "deploy": "ts-node ./src/flash/cli run deploy",
+    "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
     "blockstream-console": "ts-node ./src/blockstream-console.ts"
   },
@@ -47,7 +49,6 @@
     "ethjs-provider-http": "0.1.6",
     "ethjs-query": "0.3.8",
     "ethjs-signer": "0.1.1",
-    "ethrpc": "6.1.5",
     "lodash": "4.17.15",
     "options-parser": "0.4.0",
     "tsyringe": "^3.2.0"

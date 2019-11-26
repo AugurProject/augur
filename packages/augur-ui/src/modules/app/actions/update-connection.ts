@@ -1,10 +1,7 @@
 export const UPDATE_CONNECTION_STATUS = "UPDATE_CONNECTION_STATUS";
 export const UPDATE_IS_RECONNECTION_PAUSED = "UPDATE_IS_RECONNECTION_PAUSED";
+export const UPDATE_HOTLOADING_STATUS = 'UPDATE_HOTLOADING_STATUS';
 
-/**
- * @param {Boolean} isConnected
- * @return {{type: string, isConnected: *}} returns action
- */
 export function updateConnectionStatus(isConnected: boolean) {
   return {
     type: UPDATE_CONNECTION_STATUS,
@@ -12,13 +9,17 @@ export function updateConnectionStatus(isConnected: boolean) {
   };
 }
 
-/**
- * @param {Boolean} isReconnectionPaused
- * @return {{type: string, isReconnectionPaused: *}} returns action
- */
 export function updateIsReconnectionPaused(isReconnectionPaused: boolean) {
   return {
     type: UPDATE_IS_RECONNECTION_PAUSED,
     data: { isReconnectionPaused }
   };
 }
+
+export function updateCanHotload(canHotload: boolean) {
+  return {
+    type: UPDATE_HOTLOADING_STATUS,
+    data: { canHotload }
+  };
+}
+

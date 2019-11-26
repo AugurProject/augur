@@ -36,7 +36,8 @@
     "contract-dependencies-ethers": "2.0.0-alpha.1",
     "ethers": "4.0.37",
     "levelup": "4.2.0",
-    "memdown": "4.1.0"
+    "memdown": "4.1.0",
+    "ethereumjs-util": "6.1.0"
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",

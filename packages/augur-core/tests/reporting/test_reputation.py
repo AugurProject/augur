@@ -1,16 +1,56 @@
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises
 from utils import AssertLog
+from reporting_utils import proceedToFork, finalize
 
 def test_init(contractsFixture, universe):
-    reputationTokenFactory = contractsFixture.contracts['ReputationTokenFactory']
-    assert reputationTokenFactory
-    reputationTokenAddress = reputationTokenFactory.createReputationToken(contractsFixture.contracts['Augur'].address, universe.address, "0x0000000000000000000000000000000000000000")
-    reputationToken = contractsFixture.applySignature('ReputationToken', reputationTokenAddress)
+    reputationToken = contractsFixture.applySignature('ReputationToken', universe.getReputationToken())
 
     assert reputationToken.name() == "Reputation"
     assert reputationToken.decimals() == 18
-    assert reputationToken.symbol() == "REP"
+    assert reputationToken.symbol() == "REPv2"
+
+def test_forked_symbol(contractsFixture, universe, market, scalarMarket):
+    account0 = contractsFixture.accounts[0]
+    endTime = contractsFixture.contracts["Time"].getTimestamp() + 1000
+    categoricalMarket = contractsFixture.createCategoricalMarket(universe, 3, endTime, 0, 0, account0, ["Trump", "Warren", "Yang"])
+
+    # proceed to forking
+    proceedToFork(contractsFixture, market, universe)
+
+    # finalize the fork
+    finalize(contractsFixture, market, universe)
+
+    # Migrate the markets
+    assert scalarMarket.migrateThroughOneFork([0, 0, scalarMarket.getNumTicks()], "")
+    assert categoricalMarket.migrateThroughOneFork([0, 0, 0, categoricalMarket.getNumTicks()], "")
+    newUniverse = contractsFixture.applySignature("Universe", scalarMarket.getUniverse())
+    fork1ReputationToken = contractsFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
+
+    assert fork1ReputationToken.symbol() == "REPv2_NO_1"
+
+    # Fork the scalar market
+    proceedToFork(contractsFixture, scalarMarket, newUniverse)
+
+    # finalize the fork
+    finalize(contractsFixture, scalarMarket, newUniverse)
+
+    # Migrate the cat market
+    assert categoricalMarket.migrateThroughOneFork([0, 0, 0, categoricalMarket.getNumTicks()], "")
+    newUniverse = contractsFixture.applySignature("Universe", categoricalMarket.getUniverse())
+    fork2ReputationToken = contractsFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
+
+    assert fork2ReputationToken.symbol() == "REPv2_0_2"
+
+    # Fork the categorical market
+    proceedToFork(contractsFixture, categoricalMarket, newUniverse)
+
+    # Create a child universe and check its REP symbol:
+    newUniverse = contractsFixture.applySignature("Universe", newUniverse.createChildUniverse([0, 100, 0, 0]))
+    fork3ReputationToken = contractsFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
+
+    assert fork3ReputationToken.symbol() == "REPv2_Trump_3"
+
 
 def test_reputation_token_logging(contractsFixture, universe):
     reputationToken = contractsFixture.applySignature("ReputationToken", universe.getReputationToken())

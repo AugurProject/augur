@@ -39,8 +39,6 @@ const yesNoOrderBook: OrderBook = {
 
 export interface ExtraInfo {
   categories: string[];
-  resolutionSource?: string;
-  backupSource?: string;
   description: string;
   tags: string[];
   longDescription?: string;
@@ -77,8 +75,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
         thisYear +
-        "?",
-      resolutionSource: "http://www.spacex.com",
+        " according to http://www.spacex.com?",
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
     },
@@ -93,8 +90,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
         inOneMonths.toDateString() +
-        "?",
-      resolutionSource: "http://www.spacex.com",
+        " according to http://www.spacex.com?",
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
     },
@@ -109,8 +105,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
         inTwoMonths.toDateString() +
-        "?",
-      resolutionSource: "http://www.spacex.com",
+        " according to http://www.spacex.com?",
       tags: ["SpaceX", "spaceflight"],
       longDescription: "",
     },
@@ -126,7 +121,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         "Will California secede from the United States before, " +
         inTwoMonths.toDateString() +
         "?",
-      resolutionSource: "",
       tags: ["California", "Calexit"],
       longDescription:
         "In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org",
@@ -142,8 +136,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will the Dow Jones Industrial Average close at a higher price on " +
         closingBellTomorrow.toDateString() +
-        " than it closed at the previous day?",
-      resolutionSource: "https://www.google.com/finance?q=INDEXDJX:.DJI",
+        " than it closed at the previous day according to https://www.google.com/finance?q=INDEXDJX:.DJI?",
       tags: ["stocks", "Dow Jones"],
       longDescription:
         "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
@@ -159,8 +152,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will Augur's live release happen by " +
         inThreeMonths.toDateString() +
-        "?",
-      resolutionSource: "https://augur.net",
+        " according to https://augur.net?",
       tags: ["release date", "Ethereum"],
       longDescription: "",
     },
@@ -176,7 +168,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
         inThreeMonths.toDateString() +
         "?",
-      resolutionSource: "",
       tags: ["elections", "Brazil"],
       longDescription: "",
     },
@@ -191,8 +182,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will Ethereum trade at $2000 or higher at any time before the end of " +
         inFourMonths.toDateString() +
-        "?",
-      resolutionSource: "https://api.coinmarketcap.com/v1/ticker/ethereum",
+        " according to https://api.coinmarketcap.com/v1/ticker/ethereum?",
       tags: ["Ethereum", "trading"],
       longDescription: "http://coinmarketcap.com/currencies/ethereum",
     },
@@ -208,7 +198,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         "Will the Larsen B ice shelf collapse by " +
         inFourMonths.toDateString() +
         "?",
-      resolutionSource: "",
       tags: ["Antarctica", "warming"],
     },
     orderBook: yesNoOrderBook,
@@ -222,8 +211,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Will the Golden State Warriors win the Championship on " +
         inFiveMonths.toDateString() +
-        "?",
-      resolutionSource: "ESPN",
+        " according to ESPN.com?",
       tags: ["basketball", "Warriors"],
       longDescription: "",
     },
@@ -255,10 +243,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     extraInfo: {
       categories: ["temperature"],
       description:
-        `High temperature (in degrees Fahrenheit) on ${today.toDateString()} at the San Francisco International Airport, as reported by Weather Underground`,
-      resolutionSource:
-        "https://www.wunderground.com/history/airport/KSFO/" +
-        [
+        `High temperature (in degrees Fahrenheit) on ${today.toDateString()} at the San Francisco International Airport, as reported by Weather Underground (https://www.wunderground.com/history/airport/KSFO/) `
+         + [
           today.getUTCFullYear(),
           today.getUTCMonth() + 1,
           today.getUTCDate(),
@@ -294,8 +280,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       categories: ["science"],
       description:
         "Average tropospheric methane concentration (in parts-per-billion) on " +
-      inFiveMonths.toDateString(),
-      resolutionSource: "https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
+      inFiveMonths.toDateString() + " according to https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4",
       tags: ["climate", "atmosphere"],
       longDescription:
         'Vast quantities of methane are normally locked into the Earth\'s crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller "burps" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide. References: https://en.wikipedia.org/wiki/Anoxic_event, https://en.wikipedia.org/wiki/Atmospheric_methane, https://en.wikipedia.org/wiki/Clathrate_gun_hypothesis',
@@ -313,9 +298,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     extraInfo: {
       categories: ["medicine"],
       description:
-        "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
-      resolutionSource:
-        "https://www.centerwatch.com/drug-information/fda-approved-drugs/year/" +
+        "New antibiotics approved by the FDA on " + inSixMonths.toDateString() +
+        " according to https://www.centerwatch.com/drug-information/fda-approved-drugs/year/" +
         thisYear,
       tags: ["science", "antibiotics"],
       longDescription:
@@ -348,9 +332,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Millions of Tether tokens issued on " +
         today.toDateString() +
-        " (round down)",
-      resolutionSource:
-        "http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
+        " (round down) according to http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
       tags: ["Tether", "trading"],
       longDescription:
         "The curious tale of Tethers: https://hackernoon.com/the-curious-tale-of-tethers-6b0031eead87",
@@ -381,8 +363,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Who will win the University of Georgia vs. University of Florida football game on " +
         midnightTomorrow.toDateString() +
-        "?",
-      resolutionSource: "http://www.mcubed.net/ncaaf/series/fla/ga.shtml",
+        " according to http://www.mcubed.net/ncaaf/series/fla/ga.shtml?",
       tags: ["college football", "football"],
       longDescription:
         "The Florida–Georgia football rivalry is an American college football rivalry game played annually by the University of Florida Gators and the University of Georgia Bulldogs. https://en.wikipedia.org/wiki/Florida%E2%80%93Georgia_football_rivalry",
@@ -413,7 +394,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         "What will be the status of the U.S. electoral college on " +
         midnightTomorrow.toDateString() +
         "?",
-      resolutionSource: "",
       tags: ["elections", "US politics"],
       longDescription:
         "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia). http://www.nationalpopularvote.com",
@@ -437,8 +417,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "What will be the number one killer in the United States by " +
         inOneMonths.toDateString() +
-        "?",
-      resolutionSource: "https://www.cdc.gov/nchs/nvss/deaths.htm",
+        " according to https://www.cdc.gov/nchs/nvss/deaths.htm?",
       tags: ["mortality", "United States"],
     },
     orderBook: {
@@ -486,8 +465,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Which city will have the lowest median single-family home price on " +
         inOneMonths.toDateString() +
-        "?",
-      resolutionSource: "http://www.demographia.com",
+        " according to http://www.demographia.com?",
       tags: ["economy", "bubble"],
     },
     orderBook: {
@@ -539,8 +517,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       description:
         "Which city will have the highest median single-family home price on " +
         inTwoMonths.toDateString() +
-        "?",
-      resolutionSource: "http://www.demographia.com",
+        " according to http://www.demographia.com?",
       tags: ["economy", "bubble"],
     },
     orderBook: {

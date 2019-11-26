@@ -116,6 +116,8 @@ class PrintGasUsed():
         else:
             print("GAS USED WITH %s : %i" % (self.action, gasUsed))
 
+TRADE_EVENTS = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged']
+
 class AssertLog():
 
     def __init__(self, fixture, eventName, data, skip=0, contract=None):
@@ -125,7 +127,10 @@ class AssertLog():
         self.skip = skip
         self.contract = contract
         if not self.contract:
-            self.contract = fixture.contracts['Augur']
+            if eventName in TRADE_EVENTS:
+                self.contract = fixture.contracts['AugurTrading']
+            else:
+                self.contract = fixture.contracts['Augur']
 
     def __enter__(self):
         pass

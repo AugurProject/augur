@@ -6,10 +6,16 @@ import {
   MetaMask,
   Portis,
   Trezor,
+  CategorySports,
+  CategoryPolitics,
+  CategoryEntertainment,
+  CategoryFinance,
+  CategoryCrypto,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatShares, formatDai } from 'utils/format-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -18,6 +24,8 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 export const ETH = 'ETH';
 export const REP = 'REP';
 export const DAI = 'DAI';
+
+export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
@@ -92,10 +100,14 @@ export const WALLET_TYPE = {
 };
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
-export const SIGNIN_LOADING_TEXT_PORTIS = 'Follow instructions in the Portis window.';
-export const SIGNIN_LOADING_TEXT_FORTMATIC = 'Follow instructions in the Fortmatic window.';
-export const SIGNIN_LOADING_TEXT_TORUS = 'Follow instructions in the Tor.us window.';
-export const SIGNIN_SIGN_WALLET = 'Your wallet will ask you to digitally sign in to link it with Augur';
+export const SIGNIN_LOADING_TEXT_PORTIS =
+  'Follow instructions in the Portis window.';
+export const SIGNIN_LOADING_TEXT_FORTMATIC =
+  'Follow instructions in the Fortmatic window.';
+export const SIGNIN_LOADING_TEXT_TORUS =
+  'Follow instructions in the Tor.us window.';
+export const SIGNIN_SIGN_WALLET =
+  'Your wallet will ask you to digitally sign in to link it with Augur';
 
 export const ERROR_TYPES = {
   UNABLE_TO_CONNECT: {
@@ -150,6 +162,13 @@ export const feeFilters = [
   { header: '0-5%', value: MAX_FEE_05_PERCENT },
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
+
+export const TEMPLATE_FILTER_ALL = Getters.Markets.TemplateFilters.all;
+export const templateFilterValues = [
+  { header: 'All', value: TEMPLATE_FILTER_ALL},
+  { header: 'Augur templates', value: Getters.Markets.TemplateFilters.templateOnly},
+  { header: 'Custom markets', value: Getters.Markets.TemplateFilters.customOnly},
+]
 
 // # Valid Market Liquidity Spreads
 export const MAX_SPREAD_ALL_SPREADS =
@@ -286,6 +305,7 @@ export const CATEGORY_PARAM_NAME = 'category';
 export const MAXFEE_PARAM_NAME = 'maxFee';
 export const SPREAD_PARAM_NAME = 'spread';
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
+export const TEMPLATE_FILTER = 'templateFilter';
 
 // # Close Dialog Status
 export const CLOSE_DIALOG_CLOSING = 'CLOSE_DIALOG_CLOSING';
@@ -340,8 +360,6 @@ export const TAGS_MAX_LENGTH = 25;
 export const TAGS_MAX_NUM = 2;
 export const RESOURCES_MAX_NUM = 5;
 export const RESOURCES_MAX_LENGTH = 1250;
-export const EXPIRY_SOURCE_GENERIC = 'EXPIRY_SOURCE_GENERIC';
-export const EXPIRY_SOURCE_SPECIFIC = 'EXPIRY_SOURCE_SPECIFIC';
 export const DESIGNATED_REPORTER_SELF = 'DESIGNATED_REPORTER_SELF';
 export const DESIGNATED_REPORTER_SPECIFIC = 'DESIGNATED_REPORTER_SPECIFIC';
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
@@ -487,6 +505,9 @@ export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
 export const MODAL_TEST_BET = 'MODAL_TEST_BET';
 export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
+export const MODAL_AUGUR_USES_DAI = 'MODAL_AUGUR_USES_DAI';
+export const MODAL_TUTORIAL_OUTRO = 'MODAL_TUTORIAL_OUTRO';
+export const MODAL_TUTORIAL_INTRO = 'MODAL_TUTORIAL_INTRO';
 
 // export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
@@ -883,6 +904,15 @@ export const POPULAR_CATEGORIES = [
   'finance',
   'crypto',
 ];
+
+export const POPULAR_CATEGORIES_ICONS = [
+  CategorySports,
+  CategoryPolitics,
+  CategoryEntertainment,
+  CategoryFinance,
+  CategoryCrypto,
+];
+
 export const CATEGORIES_MAX = 5;
 
 export enum PAGINATION_VIEW_OPTIONS {
@@ -891,3 +921,327 @@ export enum PAGINATION_VIEW_OPTIONS {
   FIFTY = '50',
   HUNDRED = '100',
 }
+
+export enum TRADING_TUTORIAL_STEPS {
+  INTRO_MODAL = 0,
+  MARKET_DETAILS = 1,
+  MARKET_DATA = 2,
+  BUYING_SHARES = 3,
+  SELECT_OUTCOME = 4,
+  QUANTITY = 5,
+  LIMIT_PRICE = 6,
+  ORDER_VALUE = 7,
+  ORDER_BOOK = 8,
+  PLACE_ORDER = 9,
+  OPEN_ORDERS = 10,
+  MY_FILLS = 11,
+  POSITIONS = 12,
+  OUTRO_MODAL = 13,
+}
+
+export const TRADING_TUTORIAL_COPY = {
+  [TRADING_TUTORIAL_STEPS.MARKET_DETAILS]: {
+    title: 'Market Details',
+    subheader: [
+      {
+        text:
+          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
+        linkText: 'community guidelines.',
+        link: 'https://www.docs.augur.net',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.MARKET_DATA]: {
+    title: 'Market Data',
+    subheader: [
+      {
+        text:
+          "Here you can get an idea of the market's trading volume (how much has changed hands) and open interest (sum of trades matched). Make sure that the event expiration leaves time for the outcome to be made known and that you're comfortable with the market's fees.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.BUYING_SHARES]: {
+    title: 'Buying Shares',
+    subheader: [
+      {
+        text:
+          "Let's practice buying shares, or going 'long' on an outcome. First, make sure the 'buy shares' tab is selected.",
+      },
+      {
+        text: "To learn more about selling shares, or going 'short,' see our",
+        linkText: 'guide.',
+        link: 'https://www.docs.augur.net',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.SELECT_OUTCOME]: {
+    title: 'Select Outcome',
+    subheader: [
+      {
+        text: "Select the outcome you believe will be correct or appreciate in price.",
+      },
+      {
+        text: "To learn why invalid is an outcome, see our",
+        linkText: "guide.",
+        link: 'https://www.docs.augur.net'
+      },
+    ],
+  },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
+    title: 'Quantity',
+    subheader: [
+      {
+        text: 'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99'
+      },
+      {
+        text: 'Please enter a quantity of 100.',
+        lighten: true
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.LIMIT_PRICE]: {
+    title: 'Limit Price',
+    subheader: [
+      {
+        text: 'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.'
+      },
+      {
+        text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
+      },
+      {
+        text: 'Enter a limit price of $0.40.',
+        lighten: true
+      }
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.ORDER_VALUE]: {
+    title: 'Total Order Value',
+    subheader: [
+      {
+        text: "This shows the amount of money required to make this trade.",
+      },
+      {
+        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.PLACE_ORDER]: {
+    title: 'Place your order',
+    subheader: [
+      {
+        text: "Review your order and make sure everything looks correct.",
+      },
+      {
+        text: "Now go ahead and press the 'Place Buy Order' button or click next.",
+        lighten: true,
+      }
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {
+    title: 'Order Book',
+    subheader: [
+      {
+        text:
+          'In edition you can select an available order from the order book to automatically fill into your order ticket.',
+      },
+      {
+        text:
+          'The orders in red are sell orders (offers); the quantities shown are available to buy at the listed prices. The orders in green (bids) are orders from users who wish to buy shares. The quantities show how much you can sell to them at the listed prices.',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.OPEN_ORDERS]: {
+    title: 'Open Orders',
+    subheader: [
+      {
+        text:
+          "Once you order is confirmed, you'll get a notification in the top right and you'll see your funds update in the top bar.",
+      },
+      {
+        text:
+          'If you place an order and it doesn’t fill immediately, your order will remain on the order book as an open order until it’s traded with or cancelled.',
+      },
+      {
+        text: 'You can view your open orders for the market in this tab.',
+      },
+      {
+        text:
+          'As you can see our order just disappeared from open orders because it was filled. Click next to see it in my fills.',
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.MY_FILLS]: {
+    title: 'My Fills',
+    subheader: [
+      {
+        text:
+          "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
+      },
+    ],
+  },
+  [TRADING_TUTORIAL_STEPS.POSITIONS]: {
+    title: 'Positions',
+    subheader: [
+      {
+        text:
+          'Tracks your overall exposure in the current market. This includes your overall position, the average price you put on that position, potential profit and loss (unrealized P/L) and any realized gains or losses (realized P/L).',
+      },
+    ],
+  },
+};
+
+export const GWEI_CONVERSION = 1000000000;
+
+export const EVENT_EXPIRATION_TOOLTIP = {
+  header: 'Event expiration',
+  content: 'This date time indicates when the settlement process begins.',
+};
+
+export const TUTORIAL_QUANTITY = 100;
+export const TUTORIAL_PRICE = 0.4;
+export const TRADING_TUTORIAL_OUTCOMES = [
+  {
+    id: 0,
+    description: 'Invalid',
+    isTradeable: true,
+  },
+  {
+    id: 1,
+    description: 'Los Angeles Rams',
+    isTradeable: true,
+  },
+  {
+    id: 2,
+    description: 'New England Patriots',
+    isTradeable: true,
+  },
+  {
+    id: 3,
+    description: 'Tie/No Winner',
+    isTradeable: true,
+  },
+];
+
+export const DISPUTING_GUIDE = {
+  title: 'DISPUTING QUICK GUIDE',
+  content: [{
+    header: 'Disputing',
+    paragraphs: [
+      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
+    ]
+  }, {
+    header: 'How to dispute an outcome',
+    paragraphs: [
+      'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.'
+    ]
+  }, {
+    header: 'How a market resolves',
+    paragraphs: [
+      'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.'
+    ]
+  }, {
+    header: 'The benefits of reporting',
+    paragraphs: [
+      'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
+    ]
+  }],
+  learnMoreButtonText: 'Learn more about disputing',
+  closeButtonText: 'Close'
+};
+
+export const REPORTING_GUIDE = {
+  title: 'REPORTING QUICK GUIDE',
+  content: [{
+    header: 'Upcoming Designated Reporting',
+    paragraphs: [
+      'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting'
+    ]
+  }, {
+    header: 'Designated Reporting',
+    paragraphs: [
+      'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
+      'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.'
+    ]
+  }, {
+    header: 'Open Reporting',
+    paragraphs: [
+      'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.'
+    ]
+  }],
+  learnMoreButtonText: 'Learn more about reporting',
+  closeButtonText: 'Close'
+};
+
+function createOrder(disappear, price, quantity, id, outcomeId, type) {
+  return {
+    disappear,
+    avgPrice: formatDai(price),
+    cumulativeShares: quantity.toString(),
+    id,
+    mySize: '0',
+    orderEstimate: createBigNumber(price),
+    outcomeId,
+    outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
+    price: price.toString(),
+    quantity: quantity.toString(),
+    shares: quantity.toString(),
+    sharesEscrowed: formatShares(quantity),
+    tokensEscrowed: formatDai(price),
+    type,
+    unmatchedShares: formatShares(quantity),
+  };
+}
+
+function createOutcomeOrders(outcomeId) {
+  return [
+    createOrder(true, TUTORIAL_PRICE, TUTORIAL_QUANTITY, 0, outcomeId, SELL),
+    createOrder(false, .5, 150, 1, outcomeId, SELL),
+    createOrder(false, .6, 200, 2, outcomeId, SELL),
+    createOrder(false, .3, 100, 3, outcomeId, BUY),
+    createOrder(false, .2, 150, 4, outcomeId, BUY),
+    createOrder(false, .1, 200, 5, outcomeId, BUY),
+  ]
+}
+
+export const TUTORIAL_ORDER_BOOK = {
+  0: createOutcomeOrders(0),
+  1: createOutcomeOrders(1),
+  2: createOutcomeOrders(2),
+  3: createOutcomeOrders(3),
+};
+
+function createTrade(date, amount, key, price, time, type) {
+  return {
+    date,
+    amount: createBigNumber(amount),
+    key,
+    price: createBigNumber(price),
+    time,
+    type,
+  };
+}
+
+export const TUTORIAL_TRADING_HISTORY = {
+  '21Nov 2019': [
+    createTrade('21Nov 2019', 100, '1', 0.5, '19:56:22', BUY),
+    createTrade('21Nov 2019', 81, '2', 0.4, '19:55:21', BUY),
+    createTrade('20Nov 2019', 56, '3', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 16, '4', 0.24, '11:45:11', SELL),
+  ],
+  '22Nov 2019': [
+    createTrade('22Nov 2019', 40, '1', 0.5, '13:50:32', BUY),
+    createTrade('22Nov 2019', 88, '2', 0.4, '02:11:01', SELL),
+    createTrade('20Nov 2019', 78, '3', 0.12, '01:35:21', SELL),
+  ],
+  '25Nov 2019': [
+    createTrade('25Nov 2019', 22, '1', 0.5, '11:50:18', SELL),
+    createTrade('25Nov 2019', 35, '2', 0.4, '06:44:05', BUY),
+    createTrade('20Nov 2019', 44, '3', 0.3, '01:35:21', BUY),
+  ],
+  '20Nov 2019': [
+    createTrade('20Nov 2019', 102, '1', 0.1, '16:50:22', SELL),
+    createTrade('20Nov 2019', 56, '2', 0.2, '12:35:21', SELL),
+    createTrade('20Nov 2019', 44, '3', 0.3, '12:34:21', BUY),
+    createTrade('20Nov 2019', 12, '4', 0.45, '02:35:21', SELL),
+    createTrade('20Nov 2019', 78, '6', 0.12, '02:23:21', SELL),
+  ],
+};

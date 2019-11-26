@@ -1,7 +1,7 @@
 pragma solidity 0.5.10;
 
 
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IMarket.sol';

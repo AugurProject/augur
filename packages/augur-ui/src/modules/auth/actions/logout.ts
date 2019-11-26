@@ -4,6 +4,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
+import { analytics } from 'services/analytics';
+import { isLocalHost } from 'utils/is-localhost';
+import { augurSdk } from 'services/augursdk';
+import { updateAppStatus, GNOSIS_ENABLED, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -33,6 +37,17 @@ export function logout() {
 
     if (windowRef.fm) {
       await windowRef.fm.user.logout();
+    }
+
+    // Gnosis cleanup
+    augurSdk.sdk.setUseGnosisSafe(false);
+    augurSdk.sdk.gnosis.augur.setGnosisStatus(null);
+    dispatch(updateAppStatus(GNOSIS_ENABLED, false));
+    dispatch(updateAppStatus(GNOSIS_STATUS, null));
+
+
+    if (!isLocalHost()) {
+      analytics.reset();
     }
   };
 }

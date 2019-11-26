@@ -1,13 +1,13 @@
-import React, { ReactNode } from "react";
-import classNames from "classnames";
+import React, { ReactNode } from 'react';
+import classNames from 'classnames';
 
-import ToggleRow from "modules/common/toggle-row";
-import { MarketStatusLabel } from "modules/common/labels";
-import MarketLink from "modules/market/components/market-link/market-link";
+import ToggleRow from 'modules/common/toggle-row';
+import { MarketStatusLabel } from 'modules/common/labels';
+import MarketTitle from 'modules/market/containers/market-title';
 import { TXEventName } from '@augurproject/sdk';
-import { SubmitTextButton } from "modules/common/buttons";
+import { SubmitTextButton } from 'modules/common/buttons';
 
-import Styles from "modules/portfolio/components/common/market-row.styles.less";
+import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 
 export interface TimeObject {
   formattedShortDate: string;
@@ -47,10 +47,12 @@ const MarketRow = (props: MarketRowProps) => {
       <div
         className={classNames({
           [Styles.Show]: props.showState,
-          [Styles.Pending]: props.market.pending || (props.showPending && props.market.hasPendingLiquidityOrders)
+          [Styles.Pending]:
+            props.market.pending ||
+            (props.showPending && props.market.hasPendingLiquidityOrders),
         })}
       >
-        {props.showState && !props.market.pending &&
+        {props.showState && !props.market.pending && (
           <div>
             <MarketStatusLabel
               reportingState={props.market.reportingState}
@@ -58,24 +60,26 @@ const MarketRow = (props: MarketRowProps) => {
               mini
             />
           </div>
-        }
-        {!props.market.pending &&
-          <MarketLink id={props.market.id}>
-            {props.market.description}
-          </MarketLink>
-        }
+        )}
+        {!props.market.pending && <MarketTitle id={props.market.id} />}
+        {props.market.pending && <span>{props.market.description}</span>}
         {props.market.pending &&
-          <span>{props.market.description}</span>
-        }
-        {props.market.pending && props.market.status === TXEventName.Pending &&
-          <span>When the market is confirmed you can submit initial liquidity</span>
-        }
-        {!props.market.pending && props.showPending && props.market.hasPendingLiquidityOrders &&
-          <span>
-            You have pending initial liquidity.
-            <SubmitTextButton action={() => props.unsignedOrdersModal(props.market.marketId)} text="View orders"/>
-          </span>
-        }
+          props.market.status === TXEventName.Pending && (
+            <span>
+              When the market is confirmed you can submit initial liquidity
+            </span>
+          )}
+        {!props.market.pending &&
+          props.showPending &&
+          props.market.hasPendingLiquidityOrders && (
+            <span>
+              You have pending initial liquidity.
+              <SubmitTextButton
+                action={() => props.unsignedOrdersModal(props.market.marketId)}
+                text="View orders"
+              />
+            </span>
+          )}
       </div>
       <span
         className={classNames({

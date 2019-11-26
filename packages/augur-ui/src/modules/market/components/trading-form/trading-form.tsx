@@ -9,6 +9,7 @@ import Styles from 'modules/market/components/trading-form/trading-form.styles.l
 import { PrimaryButton } from 'modules/common/buttons';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { BigNumber } from 'utils/create-big-number';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build';
 
 interface TradingFormProps {
   availableEth: BigNumber;
@@ -16,7 +17,6 @@ interface TradingFormProps {
   hasFunds: boolean;
   isLogged: boolean;
   allowanceBigNumber: BigNumber;
-  isConnectionTrayOpen: boolean;
   market: MarketData;
   disclaimerSeen: boolean;
   disclaimerModal: Function;
@@ -29,7 +29,6 @@ interface TradingFormProps {
   updateSelectedOutcome: Function;
   updateTradeCost: Function;
   updateTradeShares: Function;
-  toggleConnectionTray: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
   initialLiquidity?: boolean;
@@ -37,6 +36,13 @@ interface TradingFormProps {
   addFundsModal: Function;
   loginModal: Function;
   signupModal: Function;
+  currentTimestamp: Number;
+  tradingTutorial?: boolean;
+  addPendingOrder: Function;
+  tutorialNext?: Function;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
+  gnosisStatus: GnosisSafeState;
 }
 
 interface TradingFormState {
@@ -59,19 +65,19 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       ),
   };
 
-  getDerivedStateFromProps(nextProps: TradingFormProps) {
-    const { selectedOutcomeId } = this.props;
-    const { market } = nextProps;
+  componentDidUpdate(prevProps: TradingFormProps) {
+    const { selectedOutcomeId } = prevProps;
+    const { market } = this.props;
     if (
-      selectedOutcomeId !== nextProps.selectedOutcomeId ||
-      market.outcomes !== this.props.market.outcomes
+      selectedOutcomeId !== this.props.selectedOutcomeId ||
+      market.outcomes !== prevProps.market.outcomes
     ) {
-      if (nextProps.selectedOutcomeId !== null) {
+      if (this.props.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
           market.outcomesFormatted &&
           market.outcomesFormatted.find(
-            outcome => outcome.id === nextProps.selectedOutcomeId
+            outcome => outcome.id === this.props.selectedOutcomeId
           );
         this.setState({ selectedOutcome });
       }
@@ -89,7 +95,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       availableEth,
       availableDai,
       isLogged,
-      isConnectionTrayOpen,
       market,
       selectedOrderProperties,
       gasPrice,
@@ -97,7 +102,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       updateSelectedOutcome,
       updateTradeCost,
       updateTradeShares,
-      toggleConnectionTray,
       onSubmitPlaceTrade,
       disclaimerSeen,
       disclaimerModal,
@@ -108,6 +112,13 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       addFundsModal,
       loginModal,
       signupModal,
+      currentTimestamp,
+      tradingTutorial,
+      addPendingOrder,
+      tutorialNext,
+      Gnosis_ENABLED,
+      ethToDaiRate,
+      gnosisStatus,
     } = this.props;
     const s = this.state;
 
@@ -116,11 +127,14 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     let initialMessage: string | boolean = '';
 
     switch (true) {
-      case !isLogged:
+      case !isLogged && !tradingTutorial:
         initialMessage = 'Login or Signup to place an order.';
         break;
-      case isLogged && !hasFunds:
+      case isLogged && !hasFunds && !tradingTutorial:
         initialMessage = 'Add funds to begin trading.';
+        break;
+      case Gnosis_ENABLED && isLogged && hasFunds && gnosisStatus !== GnosisSafeState.AVAILABLE:
+        initialMessage = 'Please hold on while we create your Augur wallet';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:
         initialMessage = 'Select an outcome to begin placing an order.';
@@ -133,12 +147,15 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}
+          currentTimestamp={currentTimestamp}
           allowanceBigNumber={allowanceBigNumber}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
           sortedOutcomes={sortedOutcomes}
           availableEth={availableEth}
           availableDai={availableDai}
+          Gnosis_ENABLED={Gnosis_ENABLED}
+          ethToDaiRate={ethToDaiRate}
           updateSelectedOrderProperties={
             this.props.updateSelectedOrderProperties
           }
@@ -153,6 +170,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
           orderBook={orderBook}
+          tradingTutorial={tradingTutorial}
+          addPendingOrder={addPendingOrder}
+          tutorialNext={tutorialNext}
         />
         {initialMessage && (
           <div>

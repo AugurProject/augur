@@ -2,8 +2,7 @@ export const buildSearchString = (keywords, tags) => {
   const MIN_KEYWORDS_LENGTH = 1;
   const propertyTranslation = [
     { find: "title:", replace: "shortDescription:" },
-    { find: "details:", replace: "longDescription:" },
-    { find: "source:", replace: "resolutionSource:" }
+    { find: "details:", replace: "longDescription:" }
   ];
 
   let keywordSearch =

@@ -10,7 +10,7 @@ from json import dump as json_dump, load as json_load, dumps as json_dumps
 from os import path, walk, makedirs, remove as remove_file
 from re import findall
 from contract import Contract
-from utils import stringToBytes, BuyWithCash, PrintGasUsed
+from utils import stringToBytes, BuyWithCash, PrintGasUsed, nullAddress
 
 from web3 import (
     EthereumTesterProvider,
@@ -203,6 +203,8 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade']
+
 class ContractsFixture:
     signatures = {}
     compiledCode = {}
@@ -354,6 +356,8 @@ class ContractsFixture:
             if "TEST" in dependencyPath:
                 dependencyPath = path.join(BASE_PATH, self.relativeTestContractsPath, match).replace("TEST/", "")
             if not path.isfile(dependencyPath):
+                print("BAD DEPS for", filePath)
+                print("BAD DEPS is", dependencyPath)
                 raise Exception("Could not resolve dependency file path: %s" % dependencyPath)
             if not dependencyPath in knownDependencies:
                 self.getAllDependencies(dependencyPath, knownDependencies)
@@ -364,7 +368,10 @@ class ContractsFixture:
         #with PrintGasUsed(self, "UPLOAD CONTRACT %s" % lookupKey, 0):
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
-        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
+        if lookupKey in TRADING_CONTRACTS:
+            self.contracts['AugurTrading'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
+        else:
+            self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
         return(contract)
 
     def generateAndStoreSignature(self, relativePath):
@@ -435,11 +442,20 @@ class ContractsFixture:
             contract = snapshot['contracts'][contractName]
             self.contracts[contractName] = self.applySignature(None, contract['address'], contract['signature'])
 
+    def getBlockNumber(self):
+        return self.eth_tester.backend.chain.header.block_number
+
+    def mineBlocks(self, numBlocks):
+        for i in range(int(numBlocks)):
+            self.eth_tester.backend.chain.mine_block()
+
     def uploadAllContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.relativeContractsPath)):
             # skip the legacy reputation directory since it is unnecessary and we don't support uploads of contracts with constructors yet
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
+            if '0x' in directory: continue # uploaded separately
+            if 'uniswap' in directory: continue
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -476,32 +492,79 @@ class ContractsFixture:
         self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
+    def upload0xContracts(self):
+        chainId = 123456
+        contractSetups = [
+            ("ERC20Proxy", "asset-proxy/contracts/src/ERC20Proxy", []),
+            ("ERC721Proxy", "asset-proxy/contracts/src/ERC721Proxy", []),
+            ("ERC1155Proxy", "asset-proxy/contracts/src/ERC1155Proxy", []),
+            ("ZeroXExchange", "exchange/contracts/src/Exchange", [chainId]),
+            ("ZeroXCoordinator", "coordinator/contracts/src/Coordinator", ["EXCHANGE", chainId]),
+            ("CoordinatorRegistry", "coordinator/contracts/src/registry/CoordinatorRegistry", []),
+            ("DevUtils", "dev-utils/contracts/src/DevUtils", ["EXCHANGE"]),
+            ("WETH9", "erc20/contracts/src/WETH9", []),
+            ("ZRXToken", "erc20/contracts/src/ZRXToken", []),
+        ]
+        zeroXContracts = dict()
+        for alias, filename, constructorArgs in contractSetups:
+            if constructorArgs and constructorArgs[0] == "EXCHANGE":
+                constructorArgs[0] = zeroXContracts["ZeroXExchange"]
+            contract = self.upload("../source/contracts/0x/{}.sol".format(filename), constructorArgs=constructorArgs)
+            zeroXContracts[alias] = contract.address
+            self.contracts[alias] = contract
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC1155Proxy"])
+        self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC20Proxy"])
+        self.contracts["ERC1155Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
+        return zeroXContracts
+
+    def uploadUniswapContracts(self):
+        resolvedUniswapPath = resolveRelativePath("../source/contracts/uniswap/UniswapV2.sol")
+        self.signatures["UniswapV2"] = self.generateSignature(resolvedUniswapPath)
+        self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=["", 1])
+
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTrade','GnosisSafeRegistry','WarpSync']
-        for contractName in contractsToInitialize:
+        coreContractsToInitialize = ['Time','LegacyReputationToken','GnosisSafeRegistry','ShareToken','WarpSync','RepPriceOracle']
+        for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
             elif getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
+        for contractName in TRADING_CONTRACTS:
+            self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address)
 
     ####
     #### Helpers
     ####
 
     def approveCentralAuthority(self):
-        authority = self.contracts['Augur']
+        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder']
         contractsToApprove = ['Cash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
             for contractName in contractsToApprove:
-                self.contracts[contractName].approve(authority.address, 2**254, sender=testerKey)
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].approve(self.contracts[authorityName].address, 2**254, sender=testerKey)
+        contractsToSetApproval = ['ShareToken']
+        for testerKey in testersGivingApproval:
+            for contractName in contractsToSetApproval:
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].setApprovalForAll(self.contracts[authorityName].address, True, sender=testerKey)
+
 
     def uploadAugur(self):
         # We have to upload Augur first
         with PrintGasUsed(self, "AUGUR CREATION", 0):
             return self.upload("../source/contracts/Augur.sol")
+
+    def uploadAugurTrading(self):
+        # We have to upload Augur Trading before trading contracts
+        return self.upload("../source/contracts/trading/AugurTrading.sol", constructorArgs=[self.contracts["Augur"].address])
+
+    def doAugurTradingApprovals(self):
+        self.contracts["AugurTrading"].doApprovals()
 
     def createUniverse(self):
         augur = self.contracts['Augur']
@@ -521,69 +584,74 @@ class ContractsFixture:
         reputationToken.migrateFromLegacyReputationToken()
 
     def getLogValue(self, eventName, argName):
-        augur = self.contracts['Augur']
+        tradeEvents = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged']
+        augur = self.contracts['AugurTrading'] if eventName in tradeEvents else self.contracts['Augur']
         logs = augur.getLogs(eventName)
         log = logs[0]
         return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\"]}", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\"]}", validityBond=0, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         marketCreationFee = validityBond or universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\"]}"):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes = None, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\"]}", affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
-        outcomes = [" "] * numOutcomes
+        if outcomes is None:
+            outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}"):
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheValidityBond(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
+    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: \"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
             universe = universe,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
+            affiliateValidator = affiliateValidator,
             affiliateFeeDivisor = 4,
             designatedReporterAddress = designatedReporter,
             sender = sender,
             extraInfo= extraInfo,
             validityBond= validityBond)
 
-    def createReasonableCategoricalMarket(self, universe, numOutcomes, sender=None):
+    def createReasonableCategoricalMarket(self, universe, numOutcomes, sender=None, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         return self.createCategoricalMarket(
             universe = universe,
             numOutcomes = numOutcomes,
+            affiliateValidator = affiliateValidator,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             designatedReporterAddress = sender,
             sender = sender)
 
-    def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=None):
+    def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=None, affiliateValidator=nullAddress):
         sender = sender or self.accounts[0]
         return self.createScalarMarket(
             universe = universe,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
+            affiliateValidator = affiliateValidator,
             affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
             minPrice= minPrice,
@@ -607,9 +675,13 @@ def baseSnapshot(fixture):
 def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
+    fixture.uploadAugurTrading()
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
+    fixture.upload0xContracts()
+    fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
+    fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()
     return fixture.createSnapshot()
 

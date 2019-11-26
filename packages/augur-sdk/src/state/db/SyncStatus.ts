@@ -1,5 +1,4 @@
 import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
-import Upsert from "pouchdb-upsert";
 
 interface SyncDocument {
   _id?: string;

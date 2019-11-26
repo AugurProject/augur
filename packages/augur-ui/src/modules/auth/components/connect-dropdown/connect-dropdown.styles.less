@@ -72,7 +72,7 @@
       fill: @color-primary-text;
       height: @size-16;
       margin-right: @size-8;
-      width: @size-22;
+      width: @size-16;
     }
   }
 
@@ -99,9 +99,12 @@
         height: @size-12;
         margin-left: @size-4;
         width: @size-12;
+
+        > path {
+          fill: @color-secondary-text;
+        }
       }
     }
-
   }
 
   > div > div:last-of-type {
@@ -123,6 +126,66 @@
     > svg {
       height: @size-9;
       margin-left: @size-5;
+    }
+  }
+}
+
+.GasEdit {
+  align-items: flex-end;
+  border: none;
+  height: 84px;
+  padding: @size-12 @size-16;
+
+  > div > div:first-of-type > span:last-of-type {
+    .text-10;
+
+    color: @color-primary-text;
+    margin-left: @size-10;
+    text-transform: none;
+  }
+
+  > div > div:last-of-type {
+    display: block;
+    background-color: @color-secondary-action;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: @color-primary-text;
+    border-radius: @size-3;
+    border: @size-1 solid @color-secondary-action-outline;
+    width: 8.5rem;
+    width: -moz-fit-content;
+    width: fit-content;
+
+    > div:first-of-type {
+      font-weight: @weight-bold;
+
+      > span:first-of-type {
+        color: @color-secondary-text;
+        font-family: @roboto-mono;
+        font-size: @size-11;
+        text-transform: uppercase;
+      }
+
+      > span:nth-of-type(2) {
+        color: @color-dark-text;
+        font-family: @roboto;
+        font-size: @size-10;
+        font-weight: @weight-normal;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      font-size: @size-10;
+
+      > span:first-of-type {
+        color: @color-secondary-text;
+        font-family: @roboto-mono;
+      }
+
+      > span:nth-of-type(2) {
+        color: @color-dark-text;
+        font-family: @roboto;
+      }
     }
   }
 }

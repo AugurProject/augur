@@ -45,6 +45,9 @@ import ModalTestBet from 'modules/modal/containers/modal-test-bet';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
 import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
+import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
+import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
+import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -87,7 +90,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
-      return <ModalCreationHelp />;
+      return <ModalCreationHelp {...modal} />;
     case TYPES.MODAL_DEPOSIT:
       return <ModalDeposit />;
     case TYPES.MODAL_WITHDRAW:
@@ -149,10 +152,16 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
+    case TYPES.MODAL_TUTORIAL_OUTRO:
+      return <ModalTutorialOutro {...modal} />;
+    case TYPES.MODAL_TUTORIAL_INTRO:
+      return <ModalTutorialIntro {...modal} />;
     case TYPES.MODAL_GLOBAL_CHAT:
       return <ModalGlobalChat />;
     case TYPES.MODAL_ACCOUNT_CREATED:
       return <ModalAccountCreated />
+    case TYPES.MODAL_AUGUR_USES_DAI:
+      return <ModalAugurUsesDai />
     case TYPES.MODA_WALLET_ERROR:
       return <ModalWalletError />
     default:

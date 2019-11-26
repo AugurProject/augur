@@ -156,7 +156,6 @@ export class Accounts<TBigNumber> {
       }
     }
 
-
     // Note: we could created a derived DB to do the four lines below in one query. Its unlikely we'll need that though (at least anytime soon) since a single users reports wont scale too high
     const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs(request);
     const initialReportRedeemedLogs = await db.findInitialReporterRedeemedLogs(request);
@@ -167,7 +166,7 @@ export class Accounts<TBigNumber> {
     const disputeCrowdsourcerTokens = await db.findTokenBalanceChangedLogs(params.account, {
       selector: {
         universe: params.universe,
-        tokenType: 2,
+        tokenType: 1,
         balance: { $gt: '0x00' },
       }
     });
@@ -240,7 +239,7 @@ export class Accounts<TBigNumber> {
     const participationTokens = await db.findTokenBalanceChangedLogs(params.account, {
       selector: {
         universe: params.universe,
-        tokenType: 5,
+        tokenType: 2,
         balance: { $gt: '0x00' },
       }
     });

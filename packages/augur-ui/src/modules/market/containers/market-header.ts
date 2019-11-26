@@ -4,12 +4,10 @@ import { withRouter } from 'react-router-dom';
 import MarketHeader from 'modules/market/components/market-header/market-header';
 import {
   ZERO,
-  EXPIRY_SOURCE_GENERIC,
   REPORTING_STATE,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
-import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -36,11 +34,6 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice: market.maxPriceBigNumber || ZERO,
     minPrice: market.minPriceBigNumber || ZERO,
     scalarDenomination: market.scalarDenomination,
-    resolutionSource: market.resolutionSource
-      ? market.resolutionSource
-      : (market.expirySourceType === EXPIRY_SOURCE_GENERIC &&
-          'General knowledge') ||
-        market.expirySource,
     currentTime: (state.blockchain || {}).currentAugurTimestamp,
     isLogged: state.authStatus.isLogged,
     isForking: state.universe.forkingInfo,

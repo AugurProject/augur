@@ -17,11 +17,13 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
+import LandingHero from 'modules/markets-list/containers/landing-hero';
 
 const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   markets: MarketData[];
   location: object;
   history: History;
@@ -51,6 +53,8 @@ interface MarketsViewProps {
   updateLoginAccountSettings: Function;
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
+  templateFilter: string;
+  setMarketsListSearchInPlace: Function;
 }
 
 interface MarketsViewState {
@@ -106,6 +110,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
       isConnected,
       isLogged,
+      templateFilter,
     } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
@@ -116,6 +121,7 @@ export default class MarketsView extends Component<
         marketFilter !== prevProps.marketFilter ||
         marketSort !== prevProps.marketSort ||
         maxFee !== prevProps.maxFee ||
+        templateFilter !== prevProps.templateFilter ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
 
@@ -155,6 +161,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
       marketFilter,
       marketSort,
+      templateFilter,
     } = this.props;
 
     const { limit, offset } = this.state;
@@ -162,6 +169,8 @@ export default class MarketsView extends Component<
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
+    this.props.setMarketsListSearchInPlace(Boolean(search));
+    
     this.props.loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
@@ -173,6 +182,7 @@ export default class MarketsView extends Component<
         offset,
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
+        templateFilter,
       },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
@@ -213,6 +223,8 @@ export default class MarketsView extends Component<
       isSearching,
       showInvalidMarketsBannerFeesOrLiquiditySpread,
       showInvalidMarketsBannerHideOrShow,
+      isLogged,
+      restoredAccount,
     } = this.props;
     const {
       filterSortedMarkets,
@@ -242,6 +254,7 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
+        {(!isLogged && !restoredAccount) && <LandingHero/>}
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearching}

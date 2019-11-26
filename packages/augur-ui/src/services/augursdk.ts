@@ -1,20 +1,27 @@
-import { Augur, Provider } from '@augurproject/sdk';
-import {
-  SEOConnector,
-  SingleThreadConnector,
-} from '@augurproject/sdk/build/connector';
-import {
-  ContractDependenciesEthers,
-  EthersSigner,
-} from 'contract-dependencies-ethers';
-import { WebWorkerConnector } from './ww-connector';
+import { Addresses } from '@augurproject/artifacts';
 
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import {
+  Augur,
+  CalculateGnosisSafeAddressParams,
+  Connectors,
+  Provider,
+} from '@augurproject/sdk';
+import { EthersSigner } from 'contract-dependencies-ethers';
+
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { JsonRpcProvider } from 'ethers/providers';
-import { Addresses } from '@augurproject/artifacts';
+import {
+  listenToUpdates,
+  unListenToEvents,
+} from 'modules/events/actions/listen-to-updates';
 import { EnvObject } from 'modules/types';
-import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
+import { isEmpty } from 'utils/is-empty';
 import { isMobileSafari } from 'utils/is-safari';
+import { analytics } from './analytics';
+import { WebWorkerConnector } from './ww-connector';
+import { isLocalHost } from 'utils/is-localhost';
 
 export class SDK {
   sdk: Augur<Provider> | null = null;
@@ -31,26 +38,33 @@ export class SDK {
     signer: EthersSigner,
     env: EnvObject,
     signerNetworkId?: string,
-    isWeb3 = false
-  ):Promise<Augur<Provider>> {
+    isWeb3 = false,
+    gnosisRelayEndpoint: string | undefined = undefined,
+  ): Promise<Augur<Provider>> {
     this.isWeb3Transport = isWeb3;
     this.env = env;
     this.account = account;
     this.signerNetworkId = signerNetworkId;
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     this.networkId = await ethersProvider.getNetworkId();
-    const contractDependencies = new ContractDependenciesEthers(
+
+    const gnosisRelay = gnosisRelayEndpoint ?
+      new GnosisRelayAPI(gnosisRelayEndpoint) :
+      undefined;
+    const contractDependencies = new ContractDependenciesGnosis(
       ethersProvider,
+      gnosisRelay,
       signer,
-      account
+      Addresses[this.networkId].Cash,
     );
 
-    const connector = (isMobileSafari() ? new SEOConnector(): new WebWorkerConnector());
+    const connector = this.pickConnector(env['sdkEndpoint']);
+
     connector.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http
         : 'http://localhost:8545',
-      account
+      account,
     );
 
     this.sdk = await Augur.create<Provider>(
@@ -58,18 +72,76 @@ export class SDK {
       contractDependencies,
       Addresses[this.networkId],
       connector,
+      gnosisRelay,
     );
+
+    if (!isEmpty(account)) {
+      await this.getOrCreateGnosisSafe(account);
+    }
 
     window.AugurSDK = this.sdk;
 
     return this.sdk;
   }
 
-  async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string) {
+  /**
+   * @name getOrCreateGnosisSafe
+   * @description - Kick off the Gnosis safe creation process for a given wallet address.
+   * @param {string} walletAddress - Wallet address
+   * @returns {Promise<void>}
+   */
+  async getOrCreateGnosisSafe(walletAddress: string):Promise<void | string> {
     if (this.sdk) {
-      this.sdk.syncUserData(address);
-      if (signer) this.sdk.setSigner(signer);
+      const networkId = await this.sdk.provider.getNetworkId();
+      const gnosisLocalstorageItemKey = `gnosis-relay-request-${networkId}-${walletAddress}`;
+
+      // Up to UI side to check the localstorage wallet matches the wallet address.
+      const calculateGnosisSafeAddressParamsString = localStorage.getItem(gnosisLocalstorageItemKey);
+      if (calculateGnosisSafeAddressParamsString) {
+        const calculateGnosisSafeAddressParams = JSON.parse(calculateGnosisSafeAddressParamsString) as CalculateGnosisSafeAddressParams;
+        const result = await this.sdk.gnosis.getOrCreateGnosisSafe({ ...calculateGnosisSafeAddressParams, owner: walletAddress });
+        if (typeof result === 'string') {
+          return result;
+        }
+        return result.safe;
+      } else {
+        const result = await this.sdk.gnosis.getOrCreateGnosisSafe(walletAddress);
+
+        if (typeof result === 'string') {
+          return result;
+        }
+
+        // Write response to localstorage.
+        localStorage.setItem(gnosisLocalstorageItemKey, JSON.stringify(result));
+        return result.safe;
+      }
+    }
+  }
+
+  async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string, useGnosis: boolean, updateUser?: Function) {
+    if (this.sdk) {
+      if (signer) this.sdk.signer = signer;
       this.signerNetworkId = signerNetworkId;
+      if (!isLocalHost()) {
+        analytics.identify(address, { address, signerNetworkId });
+      }
+
+      if (useGnosis) {
+        const safeAddress = await this.getOrCreateGnosisSafe(address) as string;
+
+        this.sdk.setUseGnosisSafe(true);
+        this.sdk.setUseGnosisRelay(true);
+        this.sdk.setGnosisSafeAddress(safeAddress);
+
+        console.log('SYNC [safe] USER data', safeAddress);
+        this.sdk.syncUserData(safeAddress);
+        updateUser(safeAddress);
+      }
+      else {
+        console.log('SYNC [non-safe] USER data', address);
+        this.sdk.syncUserData(address);
+      }
+
     }
   }
 
@@ -78,6 +150,16 @@ export class SDK {
     this.isSubscribed = false;
     if (this.sdk) this.sdk.disconnect();
     this.sdk = null;
+  }
+
+  pickConnector(sdkEndpoint: string) {
+    if (sdkEndpoint) {
+      return new Connectors.WebsocketConnector(sdkEndpoint);
+    } else if (isMobileSafari()) {
+      return new Connectors.SEOConnector()
+    } else {
+      return new WebWorkerConnector();
+    }
   }
 
   get(): Augur<Provider> {

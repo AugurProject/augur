@@ -7,7 +7,6 @@ import { CandlestickOchl } from 'modules/market-charts/components/market-outcome
 
 interface MarketOutcomeCandlestickProps {
   fixedPrecision: number;
-  isMobile: boolean;
   marketMax: BigNumber;
   marketMin: BigNumber;
   priceTimeSeries: Array<any>;
@@ -17,8 +16,6 @@ interface MarketOutcomeCandlestickProps {
 }
 
 interface MarketOutcomeCandlestickState {
-  containerWidth: number;
-  containerHeight: number;
   hoveredPeriod: any;
   volumeType: string;
   defaultCandlePeriod: any;
@@ -27,51 +24,25 @@ class MarketOutcomeCandlestick extends React.PureComponent<
   MarketOutcomeCandlestickProps,
   MarketOutcomeCandlestickState
 > {
-  static defaultProps = {
-    isMobile: false,
-  };
   drawContainer: any;
 
   constructor(props) {
     super(props);
 
     this.state = {
-      containerWidth: 0,
-      containerHeight: 0,
       hoveredPeriod: {},
       volumeType: DAI,
       defaultCandlePeriod: props.selectedPeriod,
     };
 
-    this.getContainerWidths = this.getContainerWidths.bind(this);
-    this.updateContainerWidths = this.updateContainerWidths.bind(this);
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this);
     this.updateVolumeType = this.updateVolumeType.bind(this);
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const containerWidths = this.getContainerWidths();
-
-    this.setState({
-      ...containerWidths,
-    });
-  }
-
-  getContainerWidths() {
-    return {
-      containerWidth: this.drawContainer.clientWidth,
-      containerHeight: this.drawContainer.clientHeight,
-    };
   }
 
   updateVolumeType(value) {
     this.setState({
       volumeType: value,
     });
-  }
-
-  updateContainerWidths() {
-    this.setState(this.getContainerWidths());
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -84,7 +55,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
     const {
       fixedPrecision,
       pricePrecision,
-      isMobile,
       priceTimeSeries,
       selectedPeriod,
       updateSelectedPeriod,
@@ -92,17 +62,11 @@ class MarketOutcomeCandlestick extends React.PureComponent<
       marketMax,
     } = this.props;
 
-    const {
-      hoveredPeriod,
-      volumeType,
-      containerHeight,
-      defaultCandlePeriod,
-    } = this.state;
+    const { hoveredPeriod, volumeType, defaultCandlePeriod } = this.state;
+    const staticMenuLabel = 'Show Volume in';
     const staticLabel = hoveredPeriod.volume
-    ? `V: ${hoveredPeriod.volume
-        .toFixed(fixedPrecision)
-        .toString()}`
-    : 'Show Volume in';
+      ? `V: ${hoveredPeriod.volume.toFixed(fixedPrecision).toString()}`
+      : staticMenuLabel;
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
@@ -120,6 +84,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             defaultValue={DAI}
             options={VOLUME_DAI_SHARES}
             staticLabel={staticLabel}
+            staticMenuLabel={staticMenuLabel}
             onChange={this.updateVolumeType}
             highlight={!!hoveredPeriod.volume}
           />
@@ -138,8 +103,6 @@ class MarketOutcomeCandlestick extends React.PureComponent<
             marketMin={marketMin}
             marketMax={marketMax}
             volumeType={volumeType}
-            containerHeight={containerHeight}
-            isMobile={isMobile}
           />
         </div>
       </section>
