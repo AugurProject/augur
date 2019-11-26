@@ -870,7 +870,6 @@ export const InputFactory = (props: InputFactoryProps) => {
               }
             }
           }
-          console.log('FormDropdown', value);
           updateData(value);
         }}
         sort
