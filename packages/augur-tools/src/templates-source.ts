@@ -4596,13 +4596,13 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will [0] close on or above [1] [2] on the [3] on [4]?`,
-            example: `Will AAPL close on or above 200 on Nasdaq (traded in USD) on September 1, 2020?`,
+            question: `Will [0] close on or above [1] on the [2] on [3]?`,
+            example: `Will AAPL close on or above 200 on then Nasdaq (traded in USD) on September 1, 2020?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: `Stock or ETF TICKER`,
+                placeholder: `Stock or ETF Ticker`,
               },
               {
                 id: 1,
@@ -4613,16 +4613,11 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
-                placeholder: `Currency`,
-                values: LIST_VALUES.CURRENCY,
+                placeholder: `Exchange`,
+                values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
                 id: 3,
-                type: TemplateInputType.TEXT,
-                placeholder: `Exchange`,
-              },
-              {
-                id: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
@@ -4646,7 +4641,7 @@ export const TEMPLATES = {
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: `Stock or ETF TICKER`,
+                placeholder: `Stock or ETF Ticker`,
               },
               {
                 id: 1,
@@ -4656,8 +4651,9 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
+                values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
                 id: 3,
@@ -4689,12 +4685,13 @@ export const TEMPLATES = {
               {
                 id: 0,
                 type: TemplateInputType.TEXT,
-                placeholder: `Stock or ETF TICKER`,
+                placeholder: `Stock or ETF Ticker`,
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
+                values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
                 id: 2,
@@ -4724,8 +4721,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Index`,
+                values: LIST_VALUES.FIN_INDEXES,
               },
               {
                 id: 1,
@@ -4755,8 +4753,9 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Index`,
+                values: LIST_VALUES.FIN_INDEXES,
               },
               {
                 id: 2,
@@ -4967,8 +4966,10 @@ export const TEMPLATES = {
         inputs: [
           {
             id: 0,
-            type: TemplateInputType.TEXT,
+            type: TemplateInputType.DROPDOWN,
+            defaultLabel: `Select Event First`,
             placeholder: `Award`,
+            values: []
           },
           {
             id: 1,
@@ -4978,9 +4979,11 @@ export const TEMPLATES = {
           },
           {
             id: 2,
-            type: TemplateInputType.DROPDOWN,
+            type: TemplateInputType.DROPDOWN_QUESTION_DEP,
             placeholder: `Event`,
+            inputDestId: 0,
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
+            inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
           },
           {
             id: 3,

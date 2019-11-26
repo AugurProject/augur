@@ -7899,6 +7899,134 @@ export const LIST_VALUES = {
       value: 'International group',
     },
   ],
+  FIN_INDEXES: [
+    {
+      label: 'S&P 500 Index',
+      value: 'S&P 500 Index',
+    },
+    {
+      label: 'Dow Jones Industrial Average',
+      value: 'Dow Jones Industrial Average',
+    },
+    {
+      label: 'Nasdaq Composite',
+      value: 'Nasdaq Composite',
+    },
+    {
+      label: 'Wilshire 5000',
+      value: 'Wilshire 5000',
+    },
+    {
+      label: 'Russell 1000',
+      value: 'Russell 1000',
+    },
+    {
+      label: 'NYSE Composite',
+      value: 'NYSE Composite',
+    },
+    {
+      label: 'MSCI World Index',
+      value: 'MSCI World Index',
+    },
+    {
+      label: 'FTSE All-World Index',
+      value: 'FTSE All-World Index',
+    },
+    {
+      label: 'Dow Jones Global Titans 50',
+      value: 'Dow Jones Global Titans 50',
+    },
+    {
+      label: 'S&P Global 100 Index',
+      value: 'S&P Global 100 Index',
+    },
+    {
+      label: 'FTSE 100',
+      value: 'FTSE 100',
+    },
+    {
+      label: 'DAX',
+      value: 'DAX',
+    },
+    {
+      label: 'Shanghai SE Composite',
+      value: 'Shanghai SE Composite',
+    },
+    {
+      label: 'Hang Seng',
+      value: 'Hang Seng',
+    },
+    {
+      label: 'Nikkei 225',
+      value: 'Nikkei 225',
+    },
+    {
+      label: 'S&P/TSX Composite',
+      value: 'S&P/TSX Composite',
+    },
+    {
+      label: 'CAC 40',
+      value: 'CAC 40',
+    },
+    {
+      label: 'All Ordinaries',
+      value: 'All Ordinaries',
+    },
+    {
+      label: 'BSE Sensex 30',
+      value: 'BSE Sensex 30',
+    },
+    {
+      label: 'KOSPI Index',
+      value: 'KOSPI Index',
+    },
+    {
+      label: 'VIX',
+      value: 'VIX',
+    },
+  ],
+  FIN_STOCK_EXCHANGES: [
+    {
+      label: 'New York Stock Exchange (traded in USD)',
+      value: 'New York Stock Exchange (traded in USD)',
+    },
+    {
+      label: 'Nasdaq (traded in USD)',
+      value: 'Nasdaq (traded in USD)',
+    },
+    {
+      label: 'American Stock Exchange (traded in USD)',
+      value: 'American Stock Exchange (traded in USD)',
+    },
+    {
+      label: 'Tokyo Stock Exchange (traded in Japanese Yen)',
+      value: 'Tokyo Stock Exchange (traded in Japanese Yen)',
+    },
+    {
+      label: 'London Stock Exchange (traded in Pound Sterling)',
+      value: 'London Stock Exchange (traded in Pound Sterling)',
+    },
+    {
+      label: 'Shanghai Stock Exchange (A shares traded in Yuan)',
+      value: 'Shanghai Stock Exchange (A shares traded in Yuan)',
+    },
+    {
+      label: 'Shanghai Stock Exchange (B shares traded in USD)',
+      value: 'Shanghai Stock Exchange (B shares traded in USD)',
+    },
+    {
+      label: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
+      value: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
+    },
+    {
+      label: 'Toronto Stock Exchange (traded in Canadian Dollar)',
+      value: 'Toronto Stock Exchange (traded in Canadian Dollar)',
+    },
+    {
+      label: 'Euronext NV (traded in Euro)',
+      value: 'Euronext NV (traded in Euro)',
+    },
+  ],
 };
 
 export const ENTERTAINMENT_EVENT_DEP_TEAMS = {

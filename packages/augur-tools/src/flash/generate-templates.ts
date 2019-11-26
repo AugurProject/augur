@@ -111,8 +111,13 @@ function getValidationValues(input: TemplateInput) {
       return reg;
     case TemplateInputType.DENOMINATION_DROPDOWN:
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
+    case TemplateInputType.DROPDOWN_QUESTION_DEP:
     case TemplateInputType.DROPDOWN:
-      const validations = listToRegEx(input.values, 'label');
+      let validations = listToRegEx(input.values, 'label');
+      if (input.defaultLabel) {
+        // list of values is unknown at this point, treat as text
+        validations = ValidationTemplateInputType[TemplateInputType.TEXT]
+      }
       return validations;
     default:
       return ValidationTemplateInputType[type];
