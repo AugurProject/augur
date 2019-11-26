@@ -12,14 +12,16 @@ export const track = (eventName, payload): ThunkAction<any, any, any, any> => (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  addAnalytic(
-    {
-      eventName,
-      payload,
-      addedTimestamp: blockchain.currentAugurTimestamp,
-      type: ANALYTIC_EVENT_TYPES.TRACK,
-    },
-    `${eventName}-${blockchain.currentAugurTimestamp}`
+  dispatch(
+    addAnalytic(
+      {
+        eventName,
+        payload,
+        addedTimestamp: blockchain.currentAugurTimestamp,
+        type: ANALYTIC_EVENT_TYPES.TRACK,
+      },
+      `${eventName}-${blockchain.currentAugurTimestamp}`
+    )
   );
 };
 

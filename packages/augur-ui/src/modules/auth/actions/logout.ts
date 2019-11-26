@@ -46,8 +46,8 @@ export function logout() {
     dispatch(updateAppStatus(GNOSIS_STATUS, null));
 
 
-    if (!isLocalHost()) {
+    //if (!isLocalHost()) {
       analytics.reset();
-    }
+    //}
   };
 }

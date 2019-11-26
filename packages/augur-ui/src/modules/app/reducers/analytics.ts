@@ -15,12 +15,12 @@ export default function(
     case UPDATE_ANALYTIC:
       return {
         ...analytics,
-        [data.id]: data.draft,
+        [data.id]: data.analytic,
       };
     case ADD_ANALYTIC:
       return {
         ...analytics,
-        [data.id]: data.draft,
+        [data.id]: data.analytic,
       };
     case REMOVE_ANALYTIC: {
       delete analytics[data.id];

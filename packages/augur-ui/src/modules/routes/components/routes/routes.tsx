@@ -59,4 +59,4 @@ const Routes = p => {
   );
 };
 
-export default isLocalHost() ? withRouter(Routes) : withRouter(withPageAnalytic(Routes));
+export default withRouter(withPageAnalytic(Routes));
