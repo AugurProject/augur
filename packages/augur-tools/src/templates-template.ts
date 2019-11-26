@@ -107,18 +107,22 @@ export interface Categories {
 
 export interface DropdownDependencies {
   inputSourceId: number;
+  inputDestId?: number;
   values: {
     [key: string]: string[];
   };
 }
 export interface TemplateValidation {
-  [hash: string]: {
-    templateValidation: string;
-    templateValidationResRules: string;
-    requiredOutcomes: string[];
-    outcomeDependencies: DropdownDependencies;
-    substituteDepenencies: string[];
-  };
+  templateValidation: string;
+  templateValidationResRules: string;
+  requiredOutcomes: string[];
+  outcomeDependencies: DropdownDependencies;
+  substituteDependencies: string[];
+  marketQuestionDependencies: DropdownDependencies;
+}
+
+export interface TemplateValidationHash {
+  [hash: string]: TemplateValidation;
 }
 export interface Template {
   hash: string;
@@ -209,19 +213,19 @@ export let TEMPLATE_VALIDATIONS = {};
 
 function hasSubstituteOutcomes(
   inputs: ExtraInfoTemplateInput[],
-  substituteDepenencies: string[],
+  substituteDependencies: string[],
   outcomeValues: string[]
 ): boolean {
   if (
     !outcomeValues ||
     outcomeValues.length === 0 ||
-    !substituteDepenencies ||
-    substituteDepenencies.length === 0
+    !substituteDependencies ||
+    substituteDependencies.length === 0
   ) {
     return true; // nothing to validate
   }
   let result = true;
-  substituteDepenencies.forEach((outcomeTemplate: string) => {
+  substituteDependencies.forEach((outcomeTemplate: string) => {
     if (!result) return;
     const outcomeValue = inputs.reduce(
       (p, input: ExtraInfoTemplateInput) =>
@@ -269,8 +273,18 @@ function convertOutcomes(outcomes: string[]) {
   });
 }
 
+function hasMarketQuestionDependencies(validationDep: DropdownDependencies, inputs: ExtraInfoTemplateInput[]) {
+  if (!validationDep) return true;
+    const input = inputs.find(i => i.id === validationDep.inputSourceId);
+    if (!input) return false;
+    const correctValues = validationDep.values[input.value] || [];
+    const testValue = inputs.find(i => i.id === validationDep.inputDestId);
+    if (!testValue) return false;
+    return correctValues.includes(testValue.value);
+}
+
 function isDependencyOutcomesCorrect(
-  validationDep: DropdownDependencies[],
+  validationDep: DropdownDependencies,
   requiredOutcomes: string[],
   inputs: ExtraInfoTemplateInput[],
   outcomes: string[]
@@ -278,13 +292,11 @@ function isDependencyOutcomesCorrect(
   let result = false;
   const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
 
-  if (validationDep.length > 0) {
-    validationDep.forEach(v => {
-      const input = inputs.find(i => i.id === v.inputSourceId);
+  if (validationDep) {
+      const input = inputs.find(i => i.id === validationDep.inputSourceId);
       if (!input) result = false;
-      const correctValues = v.values[input.value] || [];
+      const correctValues = validationDep.values[input.value] || [];
       result = testOutcomes.filter(o => correctValues.includes(o)).length === testOutcomes.length;
-    });
   }
   return result;
 }
@@ -293,7 +305,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
   if (!template || !template.hash || !template.question || template.inputs.length === 0) return false;
 
   try {
-    const validation = TEMPLATE_VALIDATIONS[template.hash];
+    const validation = TEMPLATE_VALIDATIONS[template.hash] as TemplateValidation;
     if (!!!validation) return false;
 
     // check market title/question matches built template question
@@ -317,6 +329,9 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
     // check that required outcomes exist
     if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomeValues)) return false;
 
+    // check that dropdown dep values are correct
+    if (!hasMarketQuestionDependencies(validation.marketQuestionDependencies, template.inputs)) return false;
+
     if (validation.outcomeDependencies !== null) {
       if (
         !isDependencyOutcomesCorrect(
@@ -329,7 +344,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
         return false;
     }
 
-    if (!hasSubstituteOutcomes(template.inputs, validation.substituteDepenencies, outcomeValues)) return false;
+    if (!hasSubstituteOutcomes(template.inputs, validation.substituteDependencies, outcomeValues)) return false;
     // verify resolution rules
     const marketResolutionRules = hashResolutionRules(longDescription);
     if (marketResolutionRules !== validation.templateValidationResRules) return false;
