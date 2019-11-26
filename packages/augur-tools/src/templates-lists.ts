@@ -2393,10 +2393,6 @@ export const LIST_VALUES = {
       label: 'Bittrex (bittrex.com)',
     },
     {
-      value: 'Binance (binance.com)',
-      label: 'Binance (binance.com)',
-    },
-    {
       value: 'Huobi Global (hbg.com)',
       label: 'Huobi Global (hbg.com)',
     },

@@ -1270,8 +1270,8 @@ export const setCategories: SortedGroup[] = [
         ],
       },
       {
-        value: 'Indexes',
-        label: 'Indexes',
+        value: 'Index',
+        label: 'Index',
         subGroup: [
           {
             value: 'NASDAQ Composite',
@@ -1333,6 +1333,10 @@ export const setCategories: SortedGroup[] = [
           { value: 'VIX', label: 'VIX' },
           { value: 'Wilshire 5000', label: 'Wilshire 5000' },
         ],
+      },
+      {
+        value: 'Indexes',
+        label: 'Indexes'
       },
       {
         value: 'ETF',

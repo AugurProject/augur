@@ -5034,6 +5034,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5070,6 +5076,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, BitBittrex (bittrex.com)trex should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5096,6 +5108,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5131,6 +5149,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5167,6 +5191,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5193,6 +5223,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5228,6 +5264,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5264,6 +5306,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5290,6 +5338,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5329,6 +5383,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5365,6 +5425,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5391,6 +5457,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5426,6 +5498,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5462,6 +5540,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5488,6 +5572,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5523,6 +5613,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5559,6 +5655,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5585,6 +5687,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5624,6 +5732,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5660,6 +5774,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5686,6 +5806,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5721,6 +5847,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5757,6 +5889,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5783,6 +5921,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If Bittrex is exchange in market question and not available by the end of designated reporting timeframe, Huobi Global (hbg.com) should be used.`
+                    },
+                    {
+                      text: `If Bittrex is not the exchange in market question, Bittrex (bittrex.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5818,6 +5962,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5854,6 +6004,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
@@ -5880,6 +6036,12 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
+                    },
+                    {
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                    },
+                    {
+                      text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
                     }
                   ]
                 },
