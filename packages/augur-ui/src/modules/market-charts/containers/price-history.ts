@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import MarketOutcomesChartHighchart from "modules/market-charts/components/market-outcomes-chart/market-outcome-chart-highchart";
+import PriceHistory from "modules/market-charts/components/price-history/price-history";
 
 import { selectMarket } from "modules/markets/selectors/market";
 import selectBucketedPriceTimeSeries from "modules/markets/selectors/select-bucketed-price-time-series";
@@ -33,4 +33,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(MarketOutcomesChartHighchart);
+export default connect(mapStateToProps)(PriceHistory);

@@ -32,7 +32,7 @@ import {
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import MarketOutcomesChart from 'modules/market-charts/containers/market-outcomes-chart';
+import PriceHistory from 'modules/market-charts/containers/price-history';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
 import { TEMP_TABLET } from 'modules/common/constants';
@@ -586,7 +586,7 @@ export default class MarketView extends Component<
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
                         <h3>Price History</h3>
-                        {!preview && <MarketOutcomesChart
+                        {!preview && <PriceHistory
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}
