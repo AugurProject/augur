@@ -22,7 +22,7 @@ export const HOCKEY = 'Hockey';
 export const HORSE_RACING = 'Horse Racing';
 export const US_POLITICS = 'US Politics';
 export const WORLD = 'World';
-export const STOCKS = 'Stocks';
+export const STOCKS = 'Stocks/ETFs';
 export const INDEXES = 'Indexes';
 export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
@@ -117,6 +117,7 @@ export interface TemplateValidation {
     templateValidationResRules: string;
     requiredOutcomes: string[];
     outcomeDependencies: DropdownDependencies;
+    substituteDepenencies: string[];
   };
 }
 export interface Template {
@@ -205,6 +206,32 @@ export const ValidationTemplateInputType = {
 };
 
 export let TEMPLATE_VALIDATIONS = {};
+
+function hasSubstituteOutcomes(
+  inputs: ExtraInfoTemplateInput[],
+  substituteDepenencies: string[],
+  outcomeValues: string[]
+): boolean {
+  if (
+    !outcomeValues ||
+    outcomeValues.length === 0 ||
+    !substituteDepenencies ||
+    substituteDepenencies.length === 0
+  ) {
+    return true; // nothing to validate
+  }
+  let result = true;
+  substituteDepenencies.forEach((outcomeTemplate: string) => {
+    if (!result) return;
+    const outcomeValue = inputs.reduce(
+      (p, input: ExtraInfoTemplateInput) =>
+        p.replace(`[${input.id}]`, `${input.value}`),
+      outcomeTemplate
+    );
+    result = outcomeValues.includes(outcomeValue);
+  });
+  return result;
+}
 
 function hasRequiredOutcomes(requiredOutcomes: string[], outcomes: string[]) {
   return requiredOutcomes.filter(r => outcomes.includes(r)).length === requiredOutcomes.length;
@@ -302,6 +329,7 @@ export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: s
         return false;
     }
 
+    if (!hasSubstituteOutcomes(template.inputs, validation.substituteDepenencies, outcomeValues)) return false;
     // verify resolution rules
     const marketResolutionRules = hashResolutionRules(longDescription);
     if (marketResolutionRules !== validation.templateValidationResRules) return false;

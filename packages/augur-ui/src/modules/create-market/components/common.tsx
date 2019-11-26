@@ -1142,6 +1142,10 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
               findInput => findInput.id.toString() === id
             );
             let trailing = '';
+            let prePend = '';
+            if (bracketPos !== 0) {
+              prePend = word.substring(0, bracketPos);
+            }
             if (bracketPos2 < word.length) {
               trailing = word.substring(bracketPos2 + 1, word.length);
             }
@@ -1149,6 +1153,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
               const input = inputs[inputIndex];
               return (
                 <React.Fragment key={inputIndex}>
+                  {prePend !== '' && <span>{prePend}</span>}
                   <InputFactory
                     input={input}
                     inputIndex={inputIndex}

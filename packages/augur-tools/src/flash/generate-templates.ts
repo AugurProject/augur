@@ -56,6 +56,7 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
         templateValidationResRules: generateResolutionRulesHash(t.resolutionRules),
         requiredOutcomes: getRequiredOutcomes(t.inputs),
         outcomeDependencies: getDropdownDependencies(t.inputs),
+        substituteDepenencies: getSubstituteOutcomeDependencies(t.inputs),
       };
     });
   }
@@ -93,6 +94,12 @@ function getDropdownDependencies(inputs: TemplateInput[]): DropdownDependencies 
   return listValues;
 }
 
+function getSubstituteOutcomeDependencies(inputs: TemplateInput[]): string[] {
+  return inputs
+    .filter(i => i.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME)
+    .map(i => i.placeholder);
+}
+
 function getValidationValues(input: TemplateInput) {
   const { type } = input;
   switch (type) {
@@ -104,8 +111,13 @@ function getValidationValues(input: TemplateInput) {
       return reg;
     case TemplateInputType.DENOMINATION_DROPDOWN:
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
+    case TemplateInputType.DROPDOWN_QUESTION_DEP:
     case TemplateInputType.DROPDOWN:
-      const validations = listToRegEx(input.values, 'label');
+      let validations = listToRegEx(input.values, 'label');
+      if (input.defaultLabel) {
+        // list of values is unknown at this point, treat as text
+        validations = ValidationTemplateInputType[TemplateInputType.TEXT]
+      }
       return validations;
     default:
       return ValidationTemplateInputType[type];
