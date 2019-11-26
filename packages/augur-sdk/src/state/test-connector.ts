@@ -2,6 +2,7 @@
 //
 //
 import { Addresses } from "@augurproject/artifacts";
+import { NetworkConfiguration, NETID_TO_NETWORK } from "@augurproject/core";
 import { Augur } from "../Augur";
 import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -18,12 +19,14 @@ console.log("Starting web worker");
 
 (async function() {
   try {
+    const networkId = 42;
+    const network = NetworkConfiguration.create(NETID_TO_NETWORK[networkId], false);
     const connector = new SEOConnector();
-    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
+    const ethersProvider = new EthersProvider(new JsonRpcProvider(network.http), 10, 0, 40);
     const gnosisRelay = new GnosisRelayAPI("http://localhost:8000");
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector, undefined, true);
-    await augur.connect("");
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId], connector, undefined, true);
+    await augur.connect(network.http);
 
     connector.on(
       SubscriptionEventName.MarketCreated,
@@ -39,7 +42,7 @@ console.log("Starting web worker");
       });
 
     const markets = await augur.getMarkets({
-      universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
+      universe: Addresses[networkId].Universe,
     });
 
     console.log(markets);
@@ -48,3 +51,4 @@ console.log("Starting web worker");
     console.log(e);
   }
 })();
+
