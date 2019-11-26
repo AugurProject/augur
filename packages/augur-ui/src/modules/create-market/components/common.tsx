@@ -34,7 +34,6 @@ import {
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
   buildMarketDescription,
-  tellIfEditableOutcomes,
   createTemplateOutcomes,
   substituteUserOutcome,
 } from 'modules/create-market/get-template';
@@ -790,7 +789,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         onChange={value => {
           let newOutcomes = outcomes;
           const newInputs = updateData(value);
-          if (marketType === CATEGORICAL && tellIfEditableOutcomes(newInputs)) {
+          if (marketType === CATEGORICAL) {
             // this is done because we need to see if any other inputs, like SUBSTITUTE_USER_OUTCOME, rely on this input and then update them
             newOutcomes = createTemplateOutcomes(newInputs);
           }

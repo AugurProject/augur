@@ -242,18 +242,6 @@ export const buildMarketDescription = (question: string, inputs: TemplateInput[]
   return question;
 };
 
-export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
-  return (
-    inputs.filter(
-      input =>
-        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
-    ).length > 0
-  );
-};
-
 export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
   const requiredOutcomes = inputs.filter(
     i => i.type === TemplateInputType.ADDED_OUTCOME
@@ -267,7 +255,8 @@ export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
         input.type === TemplateInputType.ADDED_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
     )
     .map((input: TemplateInput) => {
       if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
