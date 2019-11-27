@@ -1059,23 +1059,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-  flash.addScript({
-    name: 'get-all-contract-addresses',
-    options: [
-      {
-        name: 'ugly',
-        abbr: 'u',
-        description: 'print the addresses json as a blob instead of nicely formatted',
-        flag: true,
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const ugly = args.ugly as boolean;
-      if (this.noProvider()) return;
-
-      const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
-      console.log(result);
-  }});
     flash.addScript({
     name: 'get-all-contract-addresses',
     options: [
