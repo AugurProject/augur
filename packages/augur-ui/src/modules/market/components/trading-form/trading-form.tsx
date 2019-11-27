@@ -65,19 +65,19 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       ),
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: TradingFormProps) {
-    const { selectedOutcomeId } = this.props;
-    const { market } = nextProps;
+  componentDidUpdate(prevProps: TradingFormProps) {
+    const { selectedOutcomeId } = prevProps;
+    const { market } = this.props;
     if (
-      selectedOutcomeId !== nextProps.selectedOutcomeId ||
-      market.outcomes !== this.props.market.outcomes
+      selectedOutcomeId !== this.props.selectedOutcomeId ||
+      market.outcomes !== prevProps.market.outcomes
     ) {
-      if (nextProps.selectedOutcomeId !== null) {
+      if (this.props.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
           market.outcomesFormatted &&
           market.outcomesFormatted.find(
-            outcome => outcome.id === nextProps.selectedOutcomeId
+            outcome => outcome.id === this.props.selectedOutcomeId
           );
         this.setState({ selectedOutcome });
       }

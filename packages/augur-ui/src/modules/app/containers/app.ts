@@ -27,10 +27,13 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
-import { MODAL_GLOBAL_CHAT } from 'modules/common/constants';
+import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP } from 'modules/common/constants';
 
 const mapStateToProps = state => {
   const { alerts } = selectInfoAlertsAndSeenCount(state);
+
+  const v1RepBalance = state.loginAccount.balances;
+  const showMigrateRepButton = v1RepBalance.legacyAttoRep > 0;
 
   return {
     blockchain: state.blockchain,
@@ -49,6 +52,7 @@ const mapStateToProps = state => {
     useWeb3Transport: isGlobalWeb3(),
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
+    showMigrateRepButton,
   }
 };
 
@@ -71,6 +75,7 @@ const mapDispatchToProps = dispatch => ({
   dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   updateHelpMenuState: (isHelpMenuOpen) => dispatch(updateAppStatus(IS_HELP_MENU_OPEN, isHelpMenuOpen)),
+  migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
 });
 
 const AppContainer = compose(

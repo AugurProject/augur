@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/test",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "description": "Augur Test",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -28,16 +28,16 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "2.0.0-alpha.1",
-    "@augurproject/core": "2.0.0-alpha.1",
-    "@augurproject/ethersjs-provider": "2.0.0-alpha.1",
-    "@augurproject/sdk": "2.0.0-alpha.1",
-    "@augurproject/tools": "2.0.0-alpha.1",
-    "contract-dependencies-ethers": "2.0.0-alpha.1",
+    "@augurproject/artifacts": "2.0.0-alpha.2",
+    "@augurproject/core": "2.0.0-alpha.2",
+    "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
+    "@augurproject/sdk": "2.0.0-alpha.2",
+    "@augurproject/tools": "2.0.0-alpha.2",
+    "contract-dependencies-ethers": "2.0.0-alpha.2",
+    "ethereumjs-util": "6.1.0",
     "ethers": "4.0.37",
     "levelup": "4.2.0",
-    "memdown": "4.1.0",
-    "ethereumjs-util": "6.1.0"
+    "memdown": "4.1.0"
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",

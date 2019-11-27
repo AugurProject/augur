@@ -38,6 +38,7 @@
   textarea {
     font-family: "Roboto";
     font-weight: 400;
+    font-size: 0.75rem; // 12px
 
     color: $orbit-color-primary-text;
     background-color: #0E0E0F;
@@ -59,7 +60,7 @@
   }
 
   textarea::placeholder {
-    color: transparentize($orbit-color-secondary-text, 0.75);
+    color: $orbit-color-secondary-text;
     opacity: 1;
   }
 

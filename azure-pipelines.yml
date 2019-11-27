@@ -13,6 +13,7 @@ trigger:
     include:
     - master
     - demo
+    - release/*
     - azure/*
 
 jobs:
@@ -35,7 +36,7 @@ jobs:
           for f in $(eval "$GIT_COMMAND");
             do
               echo "$f"
-              if [[ $f == packages/* ]] && [[ $f != packages/augur-ui/* ]]
+              if [[ $f == packages/* ]] && [[ ! $f =~ .*packages/augur-ui/* ]] && [[ ! $f =~ .*packages/augur-artifacts/* ]] && [[ ! $f =~ .*packages/augur-tools/* ]]
               then
                 echo "found a non-ui change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_TEST;isOutput=true]true"
@@ -44,18 +45,15 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
-                echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
-              if [[ $f =~ .*augur-artifacts/.* ]]
+              if [[ $f =~ .*augur-artifacts/src/.* ]]
               then
                 echo "found an artifacts change: $f"
-                echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-tools/docker-builder/* ]]
               then
                 echo "found a docker-builder change: $f"
-                echo "##vso[task.setvariable variable=JOB_TRIGGER_DOCKER_BUILDER;isOutput=true]true"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_POP_GETH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
@@ -363,86 +361,86 @@ jobs:
           fi
         displayName: integration tests
 
-# - job: Docker_populated_geth_images
-#   dependsOn:
-#   - PreFlightCheck
-#   - TestAugurCore
-#   - TestAndLint
-#   - ContractSanityCheck
-#   condition: |
-#     and
-#     (
-#       eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
-#       in(dependencies.PreFlightCheck.result, 'Succeeded'),
-#       in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
-#       in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
-#       in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
-#       not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
-#       not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
-#       not(eq(variables['Build.sourceBranch'], 'refs/tags'))
-#     )
-#   pool:
-#     vmImage: 'Ubuntu 16.04'
-#   timeoutInMinutes: 240
-#   strategy:
-#     matrix:
-#       dev-pop-geth-v2:
-#         IMAGE_NAME: dev-pop-geth-v2
-#         NETWORK_ID: 102
-#         NORMAL_TIME: false
-#       dev-pop-normtime-geth-v2:
-#         IMAGE_NAME: dev-pop-normtime-geth-v2
-#         NETWORK_ID: 103
-#         NORMAL_TIME: true
-#       dev-pop-geth-15-v2:
-#         IMAGE_NAME: dev-pop-geth-15-v2
-#         NETWORK_ID: 104
-#         NORMAL_TIME: false
-#   variables:
-#     YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
-#   steps:
-#     - checkout: self
-#     - task: NodeTool@0
-#       inputs:
-#         versionSpec: $(PRIMARY_NODE_VERSION)
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - script: |
-#         yarn install --frozen-lockfile
-#         yarn build
-#       displayName: Install Dependencies
-#     - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-#       inputs:
-#         keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-#         targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-#         vstsFeed: npmPackages
-#     - script: |
-#         set -exuo pipefail
-#         export DOCKER_BUILDKIT=1
-#         docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
-#       displayName: 'build $(IMAGE_NAME) image'
-#     - task: Docker@1
-#       displayName: docker login
-#       inputs:
-#         command: login
-#         containerRegistryType: Container Registry
-#         dockerRegistryEndpoint: dockerhub-augurproject
-#     - bash: |
-#         set -exuo pipefail
-#         CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
-#         docker images
-#         docker tag $(IMAGE_NAME) augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
-#         docker push augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
-#       displayName: Push Docker Images to hub
-#     - task: Docker@1
-#       displayName: docker logout
-#       inputs:
-#         command: logout
-#         containerRegistryType: Container Registry
-#         dockerRegistryEndpoint: dockerhub-augurproject
+  - job: Docker_populated_geth_images
+    dependsOn:
+    - PreFlightCheck
+    - TestAugurCore
+    - TestAndLint
+    - ContractSanityCheck
+    condition: |
+      and
+      (
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
+        in(dependencies.PreFlightCheck.result, 'Succeeded'),
+        in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
+        in(dependencies.TestAndLint.result, 'Succeeded', 'Skipped'),
+        in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
+        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    timeoutInMinutes: 240
+    strategy:
+      matrix:
+        dev-pop-geth-v2:
+          IMAGE_NAME: dev-pop-geth-v2
+          NETWORK_ID: 102
+          NORMAL_TIME: false
+        dev-pop-normtime-geth-v2:
+          IMAGE_NAME: dev-pop-normtime-geth-v2
+          NETWORK_ID: 103
+          NORMAL_TIME: true
+        dev-pop-geth-15-v2:
+          IMAGE_NAME: dev-pop-geth-15-v2
+          NETWORK_ID: 104
+          NORMAL_TIME: false
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+          yarn build
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          set -exuo pipefail
+          export DOCKER_BUILDKIT=1
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+        displayName: 'build $(IMAGE_NAME) image'
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - bash: |
+          set -exuo pipefail
+          CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
+          docker images
+          docker tag $(IMAGE_NAME) augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
+          docker push augurproject/$(IMAGE_NAME):"${CONTRACT_SHA}"
+        displayName: Push Docker Images to hub
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: publish_augur_ui_docker_image
     condition: |
@@ -582,14 +580,14 @@ jobs:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
 
-  - job: tag_build
-    displayName: build tag
+  - job: github_release
+    displayName: github release
     dependsOn: PreFlightCheck
     condition: |
       and
       (
         succeeded(),
-        startsWith(variables['build.sourceBranch'], 'refs/tags/v')
+        startsWith(variables['build.sourceBranch'], 'refs/heads/release')
       )
     pool:
       vmImage: 'Ubuntu-16.04'
@@ -617,7 +615,10 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
+          export ETHEREUM_NETWORK=kovan
+          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          #yarn workspace @augurproject/ui build
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
         displayName: ui build
         env:
@@ -633,27 +634,29 @@ jobs:
           set -euo pipefail
           ipfs init > /dev/null 2>&1
           ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
+          IPFS_HASH=$(cat augur_ipfs_hash.txt)
+          mv augur_ipfs_hash.txt $IPFS_HASH.ipfs
         displayName: ipfs hash of build dir
       - task: CopyFiles@2
         inputs:
           #sourceFolder: # Optional
           contents: |
             augur.zip
-            augur_ipfs_hash.txt
+            *.ipfs
           targetFolder: $(Build.ArtifactStagingDirectory)
           cleanTargetFolder: true
           #overWrite: false # Optional
           #flattenFolders: false # Optional
           #preserveTimestamp: false # Optional
 
-# use below for github release (not test yet
-#     - task: GitHubRelease@1
-#       displayName: 'GitHub release (create)'
-#       inputs:
-#         gitHubConnection: 'github connection release pipeline'
-#         tagPattern: 'v*'
-#         title: Augur
-#         releaseNotesSource: inline
-#         assets: '$(Build.ArtifactStagingDirectory)/*'
-#         isDraft: true
-#         isPreRelease: true
+      - task: GitHubRelease@1
+        displayName: 'GitHub release (create)'
+        inputs:
+          gitHubConnection: 'GitHub OAuth'
+          tagSource: userSpecifiedTag
+          tag: $(Build.SourceBranchName)
+          title: Augur
+          releaseNotesSource: inline
+          assets: '$(Build.ArtifactStagingDirectory)/*'
+          isDraft: true
+          isPreRelease: true

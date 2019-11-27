@@ -41,7 +41,7 @@ const getHeaderTitleFromProps = (
     return selectedCategory[selectedCategory.length - 1];
   }
 
-  return MARKETS;
+  return "Popular markets";
 };
 
 const MarketsHeader: React.FC<MarketsHeaderProps> = props => {

@@ -12,7 +12,7 @@ import {
   OrderType,
   ParsedOrderEventLog,
 } from "../logs/types";
-import { ExtraInfoTemplate, isTemplateMarket } from '@augurproject/artifacts';
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
 import { MarketReportingState } from "../../constants";
 import {
@@ -1092,9 +1092,7 @@ async function getMarketsInfo(
       marketData.feePerCashInAttoCash
     ).dividedBy(QUINTILLION);
 
-    const reportingFeeRate = new BigNumber(
-      reportingFeeDivisor
-    ).dividedBy(QUINTILLION);
+    const reportingFeeRate = new BigNumber(1).div(reportingFeeDivisor);
     const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
     const noShowBondAmount = new BigNumber(marketData.noShowBond).toFixed();
 

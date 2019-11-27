@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { DefaultButtonProps } from 'modules/common/buttons';
 import {
@@ -24,6 +24,7 @@ interface OnboardingProps {
   currentStep?: number;
   icon: React.ReactNode;
   condensed?: boolean;
+  analyticsEvent?: Function;
 }
 
 export const Onboarding = ({
@@ -34,19 +35,25 @@ export const Onboarding = ({
   linkContent,
   currentStep,
   icon,
-  condensed
-}: OnboardingProps) => (
-  <div className={classNames(Styles.Onboarding, {[Styles.Condensed]: condensed})}>
-    <main>
-      {icon && <div>{icon}</div>}
-      {largeHeader && <LargeSubheader text={largeHeader} />}
-      {smallHeader && <SmallSubheader text={smallHeader} />}
-      {mediumHeader && <MediumSubheader text={mediumHeader} />}
-      {linkContent && <LinkContentSection linkContent={linkContent} />}
-    </main>
-    <div>
-      {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-      {currentStep && <Stepper currentStep={currentStep} maxSteps={4} /> }
+  condensed,
+  analyticsEvent
+}: OnboardingProps) => {
+  useEffect(() => {
+    analyticsEvent && analyticsEvent();
+  });
+  return (
+    <div className={classNames(Styles.Onboarding, {[Styles.Condensed]: condensed})}>
+      <main>
+        {icon && <div>{icon}</div>}
+        {largeHeader && <LargeSubheader text={largeHeader} />}
+        {smallHeader && <SmallSubheader text={smallHeader} />}
+        {mediumHeader && <MediumSubheader text={mediumHeader} />}
+        {linkContent && <LinkContentSection linkContent={linkContent} />}
+      </main>
+      <div>
+        {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
+        {currentStep && <Stepper currentStep={currentStep} maxSteps={4} /> }
+      </div>
     </div>
-  </div>
-);
+  );  
+}

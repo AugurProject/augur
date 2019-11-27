@@ -565,7 +565,9 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  legacyRep: number;
   attoRep: string;
+  legacyAttoRep: string;
 }
 
 export interface LoginAccountMeta {

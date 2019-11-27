@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -21,7 +22,7 @@ export const HOCKEY = 'Hockey';
 export const HORSE_RACING = 'Horse Racing';
 export const US_POLITICS = 'US Politics';
 export const WORLD = 'World';
-export const STOCKS = 'Stocks';
+export const STOCKS = 'Stocks/ETFs';
 export const INDEXES = 'Indexes';
 export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
@@ -104,10 +105,24 @@ export interface Categories {
   tertiary: string;
 }
 
+export interface DropdownDependencies {
+  inputSourceId: number;
+  inputDestId?: number;
+  values: {
+    [key: string]: string[];
+  };
+}
 export interface TemplateValidation {
-  [hash: string]: {
-    templateValidation: string;
-  }
+  templateValidation: string;
+  templateValidationResRules: string;
+  requiredOutcomes: string[];
+  outcomeDependencies: DropdownDependencies;
+  substituteDependencies: string[];
+  marketQuestionDependencies: DropdownDependencies;
+}
+
+export interface TemplateValidationHash {
+  [hash: string]: TemplateValidation;
 }
 export interface Template {
   hash: string;
@@ -131,9 +146,15 @@ export interface TemplateInput {
   tooltip?: string;
   userInput?: string;
   userInputObject?: UserInputtedType;
+  validationType?: ValidationType;
   values?: ValueLabelPair[];
   sublabel?: string;
-  inputSourceId?: number;
+  inputSourceId?: number; // input id as source of text to get list values
+  defaultLabel?: string; // dropdown default label shown
+  inputDestId?: number; // target input to set list values
+  inputDestValues: { // dropdown source data structure to use to set target input list values
+    [key: string]: ValueLabelPair[];
+  }
 }
 
 export enum ValidationType {
@@ -150,10 +171,11 @@ export enum TemplateInputType {
   DENOMINATION_DROPDOWN = 'DENOMINATION_DROPDOWN', // list of denomination values for scalar market
   ADDED_OUTCOME = 'ADDED_OUTCOME', // required outcome that is added to categorical market template
   USER_DESCRIPTION_OUTCOME = 'USER_DESCRIPTION_OUTCOME', // simple text input that is in question and added to categorical market outcomes
-  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME', // subsitites market question value in outcome for categorical market template
+  SUBSTITUTE_USER_OUTCOME = 'SUBSTITUTE_USER_OUTCOME', // subsitites market question values in outcome for categorical market template
   USER_DESCRIPTION_DROPDOWN_OUTCOME = 'USER_DESCRIPTION_DROPDOWN_OUTCOME', // dropdown in market question that is added as categorical market outcome
   USER_DROPDOWN_OUTCOME = 'USER_DROPDOWN_OUTCOME', // dropdown for categorical market outcome, doesn't interact with market question.
   USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP = 'USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP', // dropdown for categorical market outcome, the list of values is determined by dropdown in market question.
+  DROPDOWN_QUESTION_DEP = 'DROPDOWN_QUESTION_DEP', // market question dropdown list of values is determined by other dropdown in market question.
 }
 
 export interface ExtraInfoTemplateInput {
@@ -166,7 +188,7 @@ export interface ExtraInfoTemplateInput {
 export interface ExtraInfoTemplate {
   hash: string;
   question: string;
-  inputs: ExtraInfoTemplateInput[]
+  inputs: ExtraInfoTemplateInput[];
 }
 
 export interface ExtraInfo {
@@ -179,44 +201,159 @@ export interface ExtraInfo {
 
 export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
+  [ValidationType.WHOLE_NUMBER]: `[0-9]*`,
+  [ValidationType.NUMBER]: `[0-9]+\.*[0-9]*`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
+  [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]*`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2}) \d\d:\d\d (AM|PM) \\(UTC 0\\)`,
-  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`
+  [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})`,
 };
 
 export let TEMPLATE_VALIDATIONS = {};
 
-export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
-  const validation = TEMPLATE_VALIDATIONS[hash];
-  if (!validation || !validation.templateValidation) return false;
-  return !!marketTitle.match(validation.templateValidation);
+function hasSubstituteOutcomes(
+  inputs: ExtraInfoTemplateInput[],
+  substituteDependencies: string[],
+  outcomeValues: string[]
+): boolean {
+  if (
+    !outcomeValues ||
+    outcomeValues.length === 0 ||
+    !substituteDependencies ||
+    substituteDependencies.length === 0
+  ) {
+    return true; // nothing to validate
+  }
+  let result = true;
+  substituteDependencies.forEach((outcomeTemplate: string) => {
+    if (!result) return;
+    const outcomeValue = inputs.reduce(
+      (p, input: ExtraInfoTemplateInput) =>
+        p.replace(`[${input.id}]`, `${input.value}`),
+      outcomeTemplate
+    );
+    result = outcomeValues.includes(outcomeValue);
+  });
+  return result;
+}
+
+function hasRequiredOutcomes(requiredOutcomes: string[], outcomes: string[]) {
+  return requiredOutcomes.filter(r => outcomes.includes(r)).length === requiredOutcomes.length;
+}
+
+export function generateResolutionRulesHash(rules: ResolutionRules) {
+  let hash = null;
+  if (!rules || !rules[REQUIRED]) return hash;
+  try {
+    const details = rules[REQUIRED].map(r => r.text).join('\n');
+    hash = hashResolutionRules(details);
+  } catch (e) {
+    console.log(rules, rules[REQUIRED]);
+  }
+  return hash;
+}
+
+function hashResolutionRules(details) {
+  if (!details) return null;
+  const value = `0x${Buffer.from(details, 'utf8').toString('hex')}`;
+  return ethers.utils.sha256(value);
+}
+
+export const isValidTemplateMarket = (templateValidation: string, marketTitle: string) => {
+  if (!templateValidation || !templateValidation) return false;
+  return !!marketTitle.match(templateValidation);
 };
 
-export const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
-  let result = false;
-  if (
-    !template ||
-    !template.hash ||
-    !template.question ||
-    template.inputs.length === 0
-  )
-    return result;
-
-  let checkMarketTitle = template.question;
-  template.inputs.map((i: ExtraInfoTemplateInput) => {
-    checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
+function convertOutcomes(outcomes: string[]) {
+  if (!outcomes) return [];
+  return outcomes.map(o => {
+    const outcomeDescription = o.replace('0x', '');
+    const value = Buffer.from(outcomeDescription, 'hex').toString();
+    return [...value].reduce((p, i) => i.charCodeAt(0) !== 0 ? [...p,i] : p, []).join('')
   });
+}
 
-  if (checkMarketTitle !== title) return result;
+function hasMarketQuestionDependencies(validationDep: DropdownDependencies, inputs: ExtraInfoTemplateInput[]) {
+  if (!validationDep) return true;
+    const input = inputs.find(i => i.id === validationDep.inputSourceId);
+    if (!input) return false;
+    const correctValues = validationDep.values[input.value] || [];
+    const testValue = inputs.find(i => i.id === validationDep.inputDestId);
+    if (!testValue) return false;
+    return correctValues.includes(testValue.value);
+}
+
+function isDependencyOutcomesCorrect(
+  validationDep: DropdownDependencies,
+  requiredOutcomes: string[],
+  inputs: ExtraInfoTemplateInput[],
+  outcomes: string[]
+) {
+  let result = false;
+  const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
+
+  if (validationDep) {
+      const input = inputs.find(i => i.id === validationDep.inputSourceId);
+      if (!input) result = false;
+      const correctValues = validationDep.values[input.value] || [];
+      result = testOutcomes.filter(o => correctValues.includes(o)).length === testOutcomes.length;
+  }
+  return result;
+}
+
+export const isTemplateMarket = (title, template: ExtraInfoTemplate, outcomes: string[], longDescription: string) => {
+  if (!template || !template.hash || !template.question || template.inputs.length === 0) return false;
+
   try {
-    result = isValidTemplateMarket(template.hash, checkMarketTitle);
+    const validation = TEMPLATE_VALIDATIONS[template.hash] as TemplateValidation;
+    if (!!!validation) return false;
+
+    // check market title/question matches built template question
+    let checkMarketTitle = template.question;
+    template.inputs.map((i: ExtraInfoTemplateInput) => {
+      checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
+    });
+    if (checkMarketTitle !== title) return false;
+
+    // check for input duplicates
+    const values = template.inputs.map((i: ExtraInfoTemplateInput) => i.value);
+    if (new Set(values).size !== values.length) return false;
+
+    // check for outcome duplicates
+    const outcomeValues = convertOutcomes(outcomes);
+    if (new Set(outcomeValues).size !== outcomeValues.length) return false;
+
+    // reg ex to verify market question dropdown values and inputs
+    if (!isValidTemplateMarket(validation.templateValidation, checkMarketTitle)) return false;
+
+    // check that required outcomes exist
+    if (!hasRequiredOutcomes(validation.requiredOutcomes, outcomeValues)) return false;
+
+    // check that dropdown dep values are correct
+    if (!hasMarketQuestionDependencies(validation.marketQuestionDependencies, template.inputs)) return false;
+
+    if (validation.outcomeDependencies !== null) {
+      if (
+        !isDependencyOutcomesCorrect(
+          validation.outcomeDependencies,
+          validation.requiredOutcomes,
+          template.inputs,
+          outcomeValues
+        )
+      )
+        return false;
+    }
+
+    if (!hasSubstituteOutcomes(template.inputs, validation.substituteDependencies, outcomeValues)) return false;
+    // verify resolution rules
+    const marketResolutionRules = hashResolutionRules(longDescription);
+    if (marketResolutionRules !== validation.templateValidationResRules) return false;
   } catch (e) {
     console.error(e);
   }
-  return result;
+  return true;
 };
 
 //##TEMPLATES##
-
 
 //##TEMPLATE_VALIDATIONS##
