@@ -107,16 +107,6 @@ export default class AppView extends Component<AppProps> {
       requireLogin: true,
     },
     {
-      title: 'Disputing',
-      route: DISPUTING,
-      requireLogin: false,
-    },
-    {
-      title: 'Reporting',
-      route: REPORTING,
-      requireLogin: false,
-    },
-    {
       title: 'Create',
       route: CREATE_MARKET,
       requireLogin: true,
