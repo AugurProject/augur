@@ -63,7 +63,7 @@ services:
       - augur
 
   0x-mesh:
-    image: 0xorg/mesh:latest
+    image: 0xorg/mesh:0xV3
     hostname: 0x
     ports:
       - 60557:60557
@@ -74,6 +74,7 @@ services:
       - ETHEREUM_RPC_URL=http://geth:8545
       - USE_BOOTSTRAP_LIST=false
       - BLOCK_POLLING_INTERVAL=1s
+      - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120
       - VERBOSITY=6
     networks:
       - augur
