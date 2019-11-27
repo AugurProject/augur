@@ -341,7 +341,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
-      s.Trade,
+      s.trade,
       s.doNotCreateOrders,
       (err, result) => {
         // onSent/onFailed CB
