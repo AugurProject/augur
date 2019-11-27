@@ -983,7 +983,6 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession): Promise<string> {
       if (this.noProvider()) return null;
       const networkId = await this.provider.getNetworkId();
-      console.log(await this.provider.getNetwork())
       console.log(networkId);
       return networkId;
     },
