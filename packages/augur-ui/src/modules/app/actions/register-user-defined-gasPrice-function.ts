@@ -1,17 +1,14 @@
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { DataCallback } from "modules/types";
-import { AppState } from "store";
+import { augurSdk } from 'services/augursdk';
+import { createBigNumber } from 'utils/create-big-number';
 
-export const registerUserDefinedGasPriceFunction = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+export const registerUserDefinedGasPriceFunction = (
+  userDefinedGasPrice: number,
+  average: number,
 ) => {
-  // TODO: how to set gasPrice in ethers
-  /*
-  augur.getGasPrice = (callback: DataCallback) => {
-    callback(getGasPrice(getState()));
-  };
-  */
+  const Augur = augurSdk.get();
+
+  if (userDefinedGasPrice === null || isNaN(userDefinedGasPrice)) {
+    return Augur.setGasPrice(createBigNumber(average));
+  }
+  return Augur.setGasPrice(createBigNumber(userDefinedGasPrice));
 };

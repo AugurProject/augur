@@ -598,6 +598,10 @@ export class ContractAPI {
     this.augur.setGnosisSafeAddress(safeAddress);
   }
 
+  setGasPrice(gasPrice: BigNumber): void {
+    this.augur.setGasPrice(gasPrice);
+  }
+
   setUseGnosisSafe(useSafe: boolean): void {
     this.augur.setUseGnosisSafe(useSafe);
   }

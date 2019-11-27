@@ -54,6 +54,15 @@ export interface SafeResponse {
   gasPriceEstimated: string;
 }
 
+export interface GasStationResponse {
+  lastUpdate: string;
+  lowest: string;
+  safeLow: string;
+  standard: string;
+  fast: string;
+  fastest: string;
+}
+
 export interface CheckSafeResponse {
   data: {
     blockNumber: number;
@@ -100,6 +109,7 @@ export interface IGnosisRelayAPI {
   estimateTransaction(
     relayTxEstimateData: RelayTxEstimateData
   ): Promise<RelayTxEstimateResponse>;
+  gasStation(): Promise<GasStationResponse>
 }
 
 export class GnosisRelayAPI implements IGnosisRelayAPI {
@@ -152,6 +162,17 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
           status: GnosisSafeState.UNAVAILABLE,
         };
       }
+    }
+  }
+
+  async gasStation(): Promise<GasStationResponse> {
+    const url = `${this.relayURL}v1/gas-station/`;
+
+    try {
+      const result = await axios.get(url);
+      return result.data
+    } catch (error) {
+      throw error;
     }
   }
 
