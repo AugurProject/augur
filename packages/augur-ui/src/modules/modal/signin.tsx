@@ -83,19 +83,6 @@ export const SignIn = (props: LoginProps) => {
       </header>
 
       {parimaryButtonsToShow}
-
-      <div>OR</div>
-
-      {secondaryButtonsToShow}
-
-      <footer>
-        <div>
-          Want to use a different wallet?{' '}
-          <span onClick={() => connectModal(isLogin ? 'login' : 'signup')}>
-            Connect
-          </span>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -119,7 +119,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       icon: GoogleLogin,
       text: `${LOGIN_OR_SIGNUP} with Google`,
       subText: `Powered by ${ACCOUNT_TYPES.TORUS}`,
-      hidden: false,
+      hidden: true,
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => redirect());
         try {
@@ -134,7 +134,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       icon: PhoneLogin,
       text: `${LOGIN_OR_SIGNUP} with Phone Number`,
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
-      hidden: false,
+      hidden: true,
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => redirect());
         try {
@@ -149,8 +149,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       icon: MetaMaskLogin,
       text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
       subText: '',
-      disabled: false,
-      hidden: !isMetaMaskPresent(),
+      disabled: true,
+      hidden: true,
       action: async () => {
         const accounts =
           windowRef.ethereum && windowRef.ethereum.selectedAddress;
