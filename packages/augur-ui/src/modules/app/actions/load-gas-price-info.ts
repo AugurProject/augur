@@ -1,29 +1,27 @@
-import logError from "utils/log-error";
-import { createBigNumber } from "utils/create-big-number";
-import { formatGasCost } from "utils/format-number";
-import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
-import { getGasPrice, getNetworkId } from "modules/contracts/actions/contractCalls";
-import { AppState } from "store";
-import { DataCallback, NodeStyleCallback } from "modules/types";
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { GWEI_CONVERSION } from 'modules/common/constants';
+import logError from 'utils/log-error';
+import { createBigNumber } from 'utils/create-big-number';
+import { formatGasCost } from 'utils/format-number';
+import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
+import { getGasPrice, getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { AppState } from 'store';
+import { DataCallback, NodeStyleCallback } from 'modules/types';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { GWEI_CONVERSION, NETWORK_IDS, GAS_PRICE_API_ENDPOINT } from 'modules/common/constants';
+import { augurSdk } from 'services/augursdk';
 
-const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
-const MAINNET_ID = "1";
 
 export function loadGasPriceInfo(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { loginAccount, blockchain } = getState();
+    const { loginAccount } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = getNetworkId();
 
-    if (networkId === MAINNET_ID) {
-      getGasPriceRanges((result: any) => {
+    if (networkId === NETWORK_IDS.Mainnet || networkId === NETWORK_IDS.Kovan) {
+      getGasPriceRanges((result) => {
         dispatch(
           updateGasPriceInfo({
             ...result,
-            blockNumber: blockchain.currentBlockNumber
           })
         );
       });
@@ -31,9 +29,39 @@ export function loadGasPriceInfo(callback: NodeStyleCallback = logError): ThunkA
   };
 }
 
-function getGasPriceRanges(callback: DataCallback) {
+async function getGasPriceRanges(callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
-  getGasPriceValues(defaultGasPrice, (result: any) => callback(result));
+
+  try {
+    const relayerGasStation = await augurSdk.sdk.gnosis.gasStation();
+    const relayerGasStationResults = {
+      average: formatGasCost(
+        createBigNumber(relayerGasStation.standard).dividedBy(
+          createBigNumber(GWEI_CONVERSION)
+        ),
+        {}
+      ).value,
+      fast: formatGasCost(
+        createBigNumber(relayerGasStation.fast).dividedBy(
+          createBigNumber(GWEI_CONVERSION)
+        ),
+        {}
+      ).value,
+      safeLow: formatGasCost(
+        createBigNumber(relayerGasStation.safeLow).dividedBy(
+          createBigNumber(GWEI_CONVERSION)
+        ),
+        {}
+      ).value,
+    };
+    callback(relayerGasStationResults);
+  } catch (error) {
+    console.error("Couldn't get gas: Using fallback", error);
+
+    getGasPriceValues(defaultGasPrice, async (result) => {
+      callback(result);
+    });
+  }
 }
 
 function getGasPriceValues(defaultGasPrice: any, callback: DataCallback) {
@@ -45,10 +73,10 @@ function getGasPriceValues(defaultGasPrice: any, callback: DataCallback) {
     )
     .then(json => {
       const average = json.average
-        ? formatGasCost(json.average / 10).value
+        ? formatGasCost(json.average / 10, {}).value
         : defaultGasPrice.average;
-      const fast = json.fast ? formatGasCost(json.fast / 10).value : 0;
-      const safeLow = json.safeLow ? formatGasCost(json.safeLow / 10).value : 0;
+      const fast = json.fast ? formatGasCost(json.fast / 10, {}).value : 0;
+      const safeLow = json.safeLow ? formatGasCost(json.safeLow / 10, {}).value : 0;
       callback({
         average,
         fast,
@@ -67,7 +95,7 @@ function getGasPriceValues(defaultGasPrice: any, callback: DataCallback) {
 async function setDefaultGasInfo() {
   const gasPrice = await getGasPrice();
   const inGwei = gasPrice.dividedBy(createBigNumber(GWEI_CONVERSION));
-  const gasPriceValue = formatGasCost(inGwei).value;
+  const gasPriceValue = formatGasCost(inGwei, {}).value;
 
   return {
     average: gasPriceValue,

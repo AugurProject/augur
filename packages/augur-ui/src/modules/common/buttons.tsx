@@ -364,8 +364,8 @@ export const ExportButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Export Complete History'}
   >
-    {DownloadIcon}
     Export Complete History
+    {DownloadIcon}
   </button>
 );
 

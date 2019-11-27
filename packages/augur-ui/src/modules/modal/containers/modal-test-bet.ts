@@ -15,6 +15,7 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { TestBet } from 'modules/modal/common';
+import { track, START_TEST_TRADE, DO_A_TEST_BET, SKIPPED_TEST_TRADE } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({
   isTablet: window.innerWidth <= 1280
@@ -22,6 +23,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  track: (eventName, payload) => dispatch(track(eventName, payload)),
   setOnboardingSeen: () => {
     if (windowRef && windowRef.localStorage.setItem) {
       windowRef.localStorage.setItem(ONBOARDING_SEEN_KEY, 'true');
@@ -31,6 +33,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: TestBet,
+  analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
   largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
   currentStep: 4,
   linkContent: [
@@ -52,6 +55,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
             [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
           }),
         });
+        !sP.isTablet && dP.track(START_TEST_TRADE, {});
         dP.setOnboardingSeen();
         dP.closeModal();
       },
@@ -59,6 +63,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: 'Finish',
       action: () => {
+        !sP.isTablet && dP.track(SKIPPED_TEST_TRADE, {});
         dP.setOnboardingSeen();
         dP.closeModal();
       },

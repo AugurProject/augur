@@ -38,6 +38,7 @@ export const NETWORK_NAMES = {
   42: 'Kovan',
   123456: 'Private',
 };
+
 // network name to id map
 export const NETWORK_IDS = {
   Mainnet: '1',
@@ -50,11 +51,22 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
+export const GAS_PRICE_API_ENDPOINT = 'https://ethgasstation.info/json/ethgasAPI.json';
+
 export const GAS_SPEED_LABELS = {
   STANDARD: 'Standard',
   FAST: 'Fast',
   SLOW: 'Slow',
 };
+
+export const GAS_TIME_LEFT_LABELS = {
+  STANDARD: '< 5 min',
+  FAST: '< 2 min',
+  SAFELOW: '< 30 min',
+  SLOW: '30 min or more',
+};
+
+
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
 // ethereumNodeWs
@@ -655,7 +667,7 @@ export const TWO = createBigNumber(2, 10);
 export const TEN = createBigNumber(10, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
-export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(675334);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
@@ -1150,7 +1162,23 @@ export const DISPUTING_GUIDE = {
 
 export const REPORTING_GUIDE = {
   title: 'REPORTING QUICK GUIDE',
-  content: [],
+  content: [{
+    header: 'Upcoming Designated Reporting',
+    paragraphs: [
+      'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting'
+    ]
+  }, {
+    header: 'Designated Reporting',
+    paragraphs: [
+      'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
+      'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.'
+    ]
+  }, {
+    header: 'Open Reporting',
+    paragraphs: [
+      'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.'
+    ]
+  }],
   learnMoreButtonText: 'Learn more about reporting',
   closeButtonText: 'Close'
 };

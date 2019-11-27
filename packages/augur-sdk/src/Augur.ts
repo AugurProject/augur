@@ -131,7 +131,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this, this.dependencies);
     this.hotLoading = new HotLoading(this);
     this.zeroX =
-      meshClient && browserMesh
+      meshClient || browserMesh
         ? new ZeroX(this, meshClient, browserMesh)
         : undefined;
     if (enableFlexSearch && !this.syncableFlexSearch) {
@@ -218,6 +218,10 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async updateGnosisSafe(payload: GnosisSafeStatusPayload): Promise<void> {}
+
+  setGasPrice(gasPrice: BigNumber): void {
+    this.dependencies.setGasPrice(gasPrice);
+  }
 
   setGnosisSafeAddress(safeAddress: string): void {
     this.dependencies.setSafeAddress(safeAddress);
@@ -384,9 +388,13 @@ export class Augur<TProvider extends Provider = Provider> {
   ): ReturnType<typeof Markets.getMarketPriceCandlesticks> => {
     return this.bindTo(Markets.getMarketPriceCandlesticks)(params);
   };
-  getMarketLiquidityRanking = this.bindTo(
-    LiquidityGetter.getMarketLiquidityRanking
-  );
+
+  getMarketLiquidityRanking = (
+    params: Parameters<typeof LiquidityGetter.getMarketLiquidityRanking>[2]
+  ): ReturnType<typeof LiquidityGetter.getMarketLiquidityRanking> => {
+    return this.bindTo(LiquidityGetter.getMarketLiquidityRanking)(params);
+  };
+
   getUserTradingPositions = (
     params: Parameters<typeof Users.getUserTradingPositions>[2]
   ): ReturnType<typeof Users.getUserTradingPositions> => {

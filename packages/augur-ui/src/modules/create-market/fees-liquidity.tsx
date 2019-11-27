@@ -13,7 +13,7 @@ import {
 } from "modules/common/constants";
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
-import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
+import DepthChart from "modules/market-charts/containers/depth";
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import Visibility from "modules/create-market/containers/visibility";
 
@@ -203,7 +203,7 @@ export default class FeesLiquidity extends React.Component<
           noBorders
           normalOnMobile
           content={
-            <MarketDepth
+            <DepthChart
               market={newMarket}
               initialLiquidity
               selectedOutcomeId={s.selectedOutcome}

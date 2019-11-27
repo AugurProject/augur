@@ -74,7 +74,7 @@ test('SEOConnector :: Should route correctly and handle events, extraInfo', asyn
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
-  await connector.on(
+  connector.on(
     SubscriptionEventName.MarketCreated,
     async (arg: MarketCreated): Promise<void> => {
       expect(arg).toHaveProperty(
@@ -107,9 +107,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
-  await connector.connect('');
-
-  await connector.on(
+  connector.on(
     SubscriptionEventName.NewBlock,
     async (arg: NewBlock): Promise<void> => {
       expect(arg).toEqual(

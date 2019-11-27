@@ -57,6 +57,7 @@ export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
 export const DEFAULT_TICK_SIZE = 0.01;
+export const OUTCOME_MAX_LENGTH = 32;
 
 export const EMPTY_STATE: NewMarket = {
   isValid: false,
@@ -510,10 +511,15 @@ export const VALIDATION_ATTRIBUTES = {
 };
 
 export const TemplateBannerText = {
-  indexes:
+  index:
     'Enter the full name of the index to ensure the market resolves as valid, i.e. S & P 500 Index',
+  'stocks/etfs':
+    'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
   stocks:
     'Enter stock ticker symbol to ensure the market resolves as valid, i.e. AAPL',
+  etfs:
+    'Enter stock ticker symbol to ensure the market resolves as valid, i.e. SPY',
+
 };
 
 export const SelectEventNoticeText =

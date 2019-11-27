@@ -4,6 +4,7 @@ import {
   GnosisSafeStateReponse,
   IGnosisRelayAPI,
   SafeResponse,
+  GasStationResponse,
 } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
@@ -330,6 +331,10 @@ export class Gnosis {
       this.augur.setGnosisStatus(GnosisSafeState.WAITING_FOR_FUNDS);
       throw ethUtil.toChecksumAddress(restoreAddress);
     }
+  }
+
+  async gasStation(): Promise<GasStationResponse> {
+    return this.gnosisRelay.gasStation();
   }
 
   async getGnosisSafeDeploymentStatusViaRelay(

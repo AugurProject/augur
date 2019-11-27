@@ -233,29 +233,13 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
-export const buildMarketDescription = (
-  question: string,
-  inputs: TemplateInput[]
-) => {
+export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
   inputs.forEach((input: TemplateInput) => {
-    question = question.replace(
-      `[${input.id}]`,
-      `${input.userInput || `[${input.placeholder}]`}`
-    );
+    let value = (input.userInput && input.userInput.trim()) || `[${input.placeholder.trim()}]`;
+    question = question.replace(`[${input.id}]`, `${value}`);
   });
 
   return question;
-};
-
-export const tellIfEditableOutcomes = (inputs: TemplateInput[]) => {
-  return (
-    inputs.filter(
-      input =>
-        input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
-    ).length > 0
-  );
 };
 
 export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
@@ -271,7 +255,8 @@ export const createTemplateOutcomes = (inputs: TemplateInput[]) => {
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
         input.type === TemplateInputType.ADDED_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
-        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
     )
     .map((input: TemplateInput) => {
       if (input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) {
@@ -285,22 +270,7 @@ export const substituteUserOutcome = (
   input: TemplateInput,
   inputs: TemplateInput[]
 ) => {
-  let matches = input.placeholder.match(/\[(.*?)\]/);
-  let submatch = '0';
-  if (matches) {
-    submatch = String(matches[1]);
-  }
-
-  let text = input.placeholder.replace(
-    `[${submatch}]`,
-    `${
-      inputs[submatch].userInput
-        ? inputs[submatch].userInput
-        : `[${inputs[submatch].placeholder}]`
-    }`
-  );
-
-  return text;
+  return buildMarketDescription(input.placeholder, inputs);
 };
 
 export const buildResolutionDetails = (
@@ -323,18 +293,19 @@ export const buildResolutionDetails = (
   return details;
 };
 
+// return false if template has category children
+// return true if template doesn't have category children
 export const hasNoTemplateCategoryChildren = category => {
   if (!category) return false;
+  if (!TEMPLATES[category]) return true;
   if (TEMPLATES[category].children) return false;
   return true;
 };
 
-export const hasNoTemplateCategoryTertiaryChildren = (
-  category,
-  subcategory
-) => {
-  if (!category || !subcategory) return false;
-  if (TEMPLATES[category].children[subcategory].children) return false;
+export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
+  if (!category || !subcategory || !TEMPLATES[category] || !TEMPLATES[category].children) return true;
+  if (!TEMPLATES[category].children[subcategory] || !TEMPLATES[category].children[subcategory].children) return true;
+  if (TEMPLATES[category].children[subcategory] || TEMPLATES[category].children[subcategory].children) return false;
   return true;
 };
 

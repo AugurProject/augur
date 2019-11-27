@@ -446,8 +446,7 @@ export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
-  userDefinedGasPrice: string;
-  blockNumber: string;
+  userDefinedGasPrice: number;
 }
 
 export enum INVALID_OPTIONS {
@@ -565,7 +564,9 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  legacyRep: number;
   attoRep: string;
+  legacyAttoRep: string;
 }
 
 export interface LoginAccountMeta {

@@ -1,4 +1,4 @@
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import { INVALID_OUTCOME, OUTCOME_MAX_LENGTH } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
@@ -147,6 +147,11 @@ export function checkOutcomesArray(value) {
           "Can't enter a duplicate outcome";
       }
     });
+    value.forEach((v, i) => {
+      if (v.length > OUTCOME_MAX_LENGTH && !errors[i]) {
+        errors[i] = ['Outcome can not be more than 32 characters'];
+      }
+    })
     if (errors.filter(error => error !== '').length > 0) return errors;
     return '';
   }
@@ -188,6 +193,7 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
         input.type === TemplateInputType.DATEYEAR ||
         input.type === TemplateInputType.DROPDOWN ||
+        input.type === TemplateInputType.DROPDOWN_QUESTION_DEP ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
       (!input.userInput || input.userInput === '')
     ) {
@@ -218,14 +224,14 @@ export function checkForUserInputFilled(inputs, endTimeFormatted) {
         let validations: NewMarketPropertiesValidations = {};
         if (input.userInputObject.hour === null) {
           validations.hour = 'Choose a time';
-        } 
+        }
 
         if (input.userInputObject.endTime === null) {
           validations.setEndTime = 'Choose a date';
         } else if (endTimeFormatted.timestamp && input.userInputObject.endTime > endTimeFormatted.timestamp) {
           validations.setEndTime = 'Date must be before event expiration time';
         }
-        
+
         return validations;
       } else {
         return '';

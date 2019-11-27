@@ -248,12 +248,12 @@ export class ContractAPI {
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, formatBytes32String(""));
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""), NULL_ADDRESS);
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, formatBytes32String(""));
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""), NULL_ADDRESS);
   }
 
   async cancelOrder(orderID: string): Promise<void> {
@@ -596,6 +596,10 @@ export class ContractAPI {
 
   setGnosisSafeAddress(safeAddress: string): void {
     this.augur.setGnosisSafeAddress(safeAddress);
+  }
+
+  setGasPrice(gasPrice: BigNumber): void {
+    this.augur.setGasPrice(gasPrice);
   }
 
   setUseGnosisSafe(useSafe: boolean): void {
