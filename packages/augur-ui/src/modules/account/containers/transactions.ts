@@ -22,13 +22,18 @@ const mapStateToProps = (state: AppState) => {
   const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
   const gnosisStatus = getValue(state, 'appStatus.gnosisStatus');
 
-  const showFaucets = Gnosis_ENABLED
+  const showFaucets = false;
+  /*Gnosis_ENABLED
     ? networkId !== NETWORK_IDS.Mainnet && gnosisStatus === GnosisSafeState.AVAILABLE
     : networkId !== NETWORK_IDS.Mainnet;
-
+  */
+  const showDeposit = false;
+  const showWithdraw = false;
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
     showFaucets,
+    showDeposit,
+    showWithdraw,
   };
 };
 

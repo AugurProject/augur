@@ -7,12 +7,13 @@ import {
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
-  ApprovalButton,
 } from 'modules/common/buttons';
 import Styles from 'modules/account/components/transactions.styles.less';
 
 interface TransactionsProps {
   showFaucets: boolean;
+  showDeposit: boolean;
+  showWithdraw: boolean;
   repFaucet: Function;
   daiFaucet: Function;
   deposit: Function;
@@ -31,6 +32,8 @@ export const Transactions = ({
   repFaucet,
   daiFaucet,
   legacyRepFaucet,
+  showDeposit,
+  showWithdraw,
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"
@@ -38,9 +41,15 @@ export const Transactions = ({
       <div className={Styles.Content}>
         <p>Your transactions history</p>
         <ViewTransactionsButton action={transactions} />
-        <p>Your account</p>
-        <DepositButton action={addFunds} />
-        <WithdrawButton action={withdraw} />
+        {showDeposit || showWithdraw &&
+          <p>Your account</p>
+        }
+        {showDeposit &&
+          <DepositButton action={addFunds} />
+        }
+        {showWithdraw &&
+          <WithdrawButton action={withdraw} />
+        }
         {showFaucets && (
           <div>
             <p>REP for test net</p>
