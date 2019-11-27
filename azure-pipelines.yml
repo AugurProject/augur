@@ -655,7 +655,7 @@ jobs:
           gitHubConnection: 'GitHub OAuth'
           tagSource: userSpecifiedTag
           tag: $(Build.SourceBranchName)
-          title: Augur
+          title: Augur v$(Build.SourceBranchName)
           releaseNotesSource: inline
           assets: '$(Build.ArtifactStagingDirectory)/*'
           isDraft: true
