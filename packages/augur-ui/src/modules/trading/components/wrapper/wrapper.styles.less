@@ -31,6 +31,10 @@
   &.active {
     color: @color-positive;
 
+    > button {
+      border-bottom: 1px solid @color-positive;
+    }
+
     &:hover {
       color: @color-positive;
     }
@@ -40,6 +44,11 @@
 .Sell > li {
   &.active {
     color: @color-negative;
+
+    > button {
+      border-bottom: 1px solid @color-negative;
+    }
+
     &:hover {
       color: @color-negative;
     }
@@ -51,6 +60,8 @@
   background-color: @color-dark-grey;
   color: @color-inactive-text;
   display: flex;
+  min-height: @size-32;
+  max-height: @size-32;
 
   > li {
     color: @color-secondary-text;
@@ -60,27 +71,21 @@
       color: @color-primary-text;
     }
 
-    > div {
-      padding: @size-20 0;
-      width: 100%;
-    }
-
     > button {
-      .mono-11-bold;
+      .mono-12-bold;
 
       align-items: center;
       display: flex;
       flex-direction: column;
-      padding: @size-8 0;
+      padding: @size-8 0 @size-7;
       position: relative;
       text-transform: uppercase;
+      width: 100%;
     }
 
     &:first-of-type {
-      > button {
-        margin-left: @size-16;
-        margin-right: @size-24;
-      }
+      margin-left: @size-16;
+      margin-right: @size-18;
     }
   }
 }
@@ -99,9 +104,5 @@
   .Buy,
   .Sell {
     justify-content: center;
-
-    > li > button {
-      padding: @size-12 0;
-    }
   }
 }
