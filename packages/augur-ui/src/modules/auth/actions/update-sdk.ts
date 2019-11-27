@@ -15,7 +15,7 @@ export const updateSdk = (
   if (!augurSdk.sdk) return;
 
   try {
-    const useGnosis = window.localStorage.getItem('isGnosis');
+    const useGnosis = true;
 
     if (useGnosis) {
       const updateUserAccount = safeAddress => {
