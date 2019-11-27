@@ -160,6 +160,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { blockchain } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -173,7 +174,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
-    dispatch(loadAnalytics(getState().analytics));
+    dispatch(loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp));
   }
 
   if (  

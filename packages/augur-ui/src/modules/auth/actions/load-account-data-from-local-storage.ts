@@ -95,7 +95,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         analytics
       ) {
         dispatch(
-          loadAnalytics(analytics)
+          loadAnalytics(analytics, 0)
         );
       }
       if (

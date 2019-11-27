@@ -5,24 +5,30 @@ import { AppState } from 'store';
 import { createBigNumber } from 'utils/create-big-number';
 import { Analytic } from 'modules/types';
 import { isLocalHost } from 'utils/is-localhost';
-import { addAnalytic } from 'modules/app/actions/analytics-management';
+import {
+  addAnalytic,
+  removeAnalytic,
+  SEND_DELAY_SECONDS,
+} from 'modules/app/actions/analytics-management';
 
 export const track = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  dispatch(
-    addAnalytic(
-      {
-        eventName,
-        payload,
-        addedTimestamp: blockchain.currentAugurTimestamp,
-        type: ANALYTIC_EVENT_TYPES.TRACK,
-      },
-      `${eventName}-${blockchain.currentAugurTimestamp}`
-    )
-  );
+  const analyticId = `${eventName}-${blockchain.currentAugurTimestamp}`;
+  const analytic = {
+    eventName,
+    payload,
+    addedTimestamp: blockchain.currentAugurTimestamp,
+    type: ANALYTIC_EVENT_TYPES.TRACK,
+  };
+  dispatch(addAnalytic(analytic, analyticId));
+
+  setTimeout(() => {
+    dispatch(sendAnalytic(analytic));
+    dispatch(removeAnalytic(analyticId));
+  }, SEND_DELAY_SECONDS * 1000);
 };
 
 export const sendAnalytic = (
