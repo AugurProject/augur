@@ -70,7 +70,7 @@ services:
       - 60558:60558
       - 60559:60559
     environment:
-      - ETHEREUM_NETWORK_ID=42
+      - ETHEREUM_CHAIN_ID=12346
       - ETHEREUM_RPC_URL=http://geth:8545
       - USE_BOOTSTRAP_LIST=false
       - BLOCK_POLLING_INTERVAL=1s

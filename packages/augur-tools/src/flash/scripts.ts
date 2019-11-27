@@ -979,6 +979,17 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'network-id',
+    async call(this: FlashSession): Promise<string> {
+      if (this.noProvider()) return null;
+      const networkId = await this.provider.getNetworkId();
+      console.log(await this.provider.getNetwork())
+      console.log(networkId);
+      return networkId;
+    },
+  });
+
+  flash.addScript({
     name: 'check-safe-registration',
     options: [
       {
