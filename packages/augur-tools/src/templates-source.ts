@@ -4181,7 +4181,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `U.S. Vice President is elected with President as thier running mate`,
+                  text: `U.S. Vice President is elected with President as their running mate`,
                 },
                 {
                   text: 'The candidate elected president/vice president shall be female.'
