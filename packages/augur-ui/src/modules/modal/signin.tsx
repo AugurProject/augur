@@ -95,27 +95,6 @@ export const SignIn = (props: LoginProps) => {
       </header>
 
       {parimaryButtonsToShow}
-
-      <div>OR</div>
-
-      {secondaryButtonsToShow}
-
-      <footer>
-        <div>
-          Want to use a different wallet?{' '}
-          <span onClick={() => connectModal(isLogin ? 'login' : 'signup')}>
-            Connect
-          </span>
-        </div>
-
-        <div
-          title='Gnosis safe is under development'
-          onClick={() => setIsGnosis(!isGnosis)}
-        >
-          Use Gnosis Safe ⚠️
-          <input type='checkbox' readOnly checked={isGnosis ? true : false} />
-        </div>
-      </footer>
     </div>
   );
 };
