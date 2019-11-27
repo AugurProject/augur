@@ -227,7 +227,6 @@ class Form extends Component<FromProps, FormState> {
     value,
     errors: object,
     isOrderValid: boolean,
-    nextProps,
     fromExternal
   ): TestResults {
     let errorCount = 0;
@@ -274,7 +273,6 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       selectedNav,
       orderBook,
-      selectedOutcome,
     } = props;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
@@ -833,9 +831,7 @@ class Form extends Component<FromProps, FormState> {
             <label className={initialLiquidity ? Styles.Liquidity : Styles.smallLabel}>
               {ExclamationCircle}
               <span>
-                Max cost of{' '}
-                <span>{orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ </span>{' '}
-                will be escrowed
+                {`Max cost of ${orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ will be escrowed`}
               </span>
             </label>
           </li>

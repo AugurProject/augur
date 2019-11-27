@@ -39,18 +39,6 @@ export const SignIn = (props: LoginProps) => {
 
   const LOGIN_OR_SIGNUP = isLogin ? 'Login' : 'Signup';
 
-  const [isGnosis, setIsGnosis] = useState(
-    Boolean(window.localStorage.getItem('isGnosis'))
-  );
-
-  useEffect(() => {
-    if (isGnosis) {
-      window.localStorage.setItem('isGnosis', 'true');
-    } else {
-      window.localStorage.removeItem('isGnosis');
-    }
-  }, [isGnosis]);
-
   const parimaryButtonsToShow = connectMethods
     .filter(method => !method.hidden)
     .filter(method => method.primary)

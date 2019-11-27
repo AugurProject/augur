@@ -479,12 +479,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   })
                 }
               >
-                <div>Buy Shares</div>
-                <span
-                  className={classNames({
-                    [`${Styles.notActive}`]: selectedNav === SELL,
-                  })}
-                />
+                Buy Shares
               </button>
             </li>
             <li
@@ -500,12 +495,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   })
                 }
               >
-                <div>Sell Shares</div>
-                <span
-                  className={classNames({
-                    [`${Styles.notActive}`]: selectedNav === BUY,
-                  })}
-                />
+                Sell Shares
               </button>
             </li>
           </ul>
