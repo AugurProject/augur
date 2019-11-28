@@ -10,6 +10,7 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
+  ViewIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -336,13 +337,13 @@ interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
-export const LinkContentSection = (props: LinkContentSectionProps) => (
+export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map((content, idx) => (
+    {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
-            {content.content}
+            <ExternalLinkButton label={content.content} />
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
