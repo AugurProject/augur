@@ -522,6 +522,7 @@ export interface AppStatus {
   isHelpMenuOpen: boolean;
   ethToDaiRate: BigNumber;
   gnosisEnabled: boolean;
+  zeroXEnabled: boolean;
   gnosisStatus: GnosisSafeState;
 }
 

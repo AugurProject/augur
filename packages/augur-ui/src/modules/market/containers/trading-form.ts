@@ -28,7 +28,6 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
-import getValue from 'utils/get-value';
 import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
 
 const getMarketPath = id => {
@@ -42,10 +41,10 @@ const getMarketPath = id => {
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
-
-  const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
-  const ethToDaiRate = getValue(state, 'appStatus.ethToDaiRate');
-  const gnosisStatus = getValue(state, 'appStatus.gnosisStatus');
+  const Ox_ENABLED = state.appStatus.zeroXEnabled;
+  const Gnosis_ENABLED = state.appStatus.gnosisEnabled;
+  const ethToDaiRate = state.appStatus.ethToDaiRate;
+  const gnosisStatus = state.appStatus.gnosisStatus;
   const hasFunds = Gnosis_ENABLED
     ? !!state.loginAccount.balances.dai
     : !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
@@ -79,6 +78,7 @@ const mapStateToProps = (state, ownProps) => {
       ownProps.market.outcomesFormatted
     ),
     Gnosis_ENABLED,
+    Ox_ENABLED,
     ethToDaiRate,
     gnosisStatus,
   };
