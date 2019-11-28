@@ -7,7 +7,7 @@ import { Augur } from '../../Augur';
 import { BigNumber } from 'bignumber.js';
 import { MaxLiquiditySpread, getLiquidityOrderBook } from '../../state/getter/Markets';
 import { Doc, MarketType } from '../logs/types';
-import { OrderState, Trading } from '../getter/Trading';
+import { OrderState, OnChainTrading } from '../getter/OnChainTrading';
 import * as _ from 'lodash';
 
 export interface LiquidityLastUpdated {
@@ -131,7 +131,7 @@ export class LiquidityDB extends AbstractDB {
   async getMarketsLiquidityParams(db: DB, augur: Augur): Promise<MarketsLiquidityParams> {
     const liquidityParams = {};
     // TODO Filter markets with open order better by filtering by market reporting state
-    const marketsWithOpenOrders = await Trading.getOrders(
+    const marketsWithOpenOrders = await OnChainTrading.getOrders(
       augur,
       db,
       {
