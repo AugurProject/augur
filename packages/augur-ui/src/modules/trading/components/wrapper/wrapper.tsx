@@ -33,7 +33,7 @@ function pick(object, keys) {
   }, {});
 }
 
-interface SelectedOrderProperties {
+export interface SelectedOrderProperties {
   orderPrice: string,
   orderQuantity: string,
   selectedNav: string
@@ -64,6 +64,7 @@ interface WrapperProps {
   addPendingOrder: Function;
   tutorialNext?: Function;
   Gnosis_ENABLED: boolean;
+  Ox_ENABLED: boolean;
   ethToDaiRate: BigNumber;
 }
 
@@ -429,6 +430,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       tradingTutorial,
       tutorialNext,
       Gnosis_ENABLED,
+      Ox_ENABLED,
       ethToDaiRate,
     } = this.props;
     let {
@@ -527,7 +529,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
               availableDai={availableDai}
-              Ox_ENABLED={true}
+              Ox_ENABLED={Ox_ENABLED}
             />
           )}
         </div>
