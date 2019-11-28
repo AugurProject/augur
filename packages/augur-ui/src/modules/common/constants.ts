@@ -1032,7 +1032,7 @@ export const TRADING_TUTORIAL_COPY = {
         text: "This shows the amount of money required to make this trade.",
       },
       {
-        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value.",
+        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.",
       },
     ],
   },
