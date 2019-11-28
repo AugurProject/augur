@@ -36,7 +36,7 @@ export const loginWithTorus = () => async (
         showTorusButton: false,
       });
 
-      await torus.login();
+      await torus.login({verifier: 'google'});
 
       const web3 = new Web3(torus.provider);
       const provider = new PersonalSigningWeb3Provider(torus.provider);
