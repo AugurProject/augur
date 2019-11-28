@@ -18,13 +18,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingDollarDaiIcon,
-  largeHeader: 'Augur uses DAI',
+  largeHeader: 'Augur uses Dai for betting',
   currentStep: 2,
   analyticsEvent: () => dP.track(AUGUR_USES_DAI, {}),
   linkContent: [
     {
       content:
-        'DAI is a pegged currency that mirrors the value of the US dollar. This means that 1 DAI is equivalent to 1 USD. For ease of use we refer to DAI using the $ symbol.',
+        'Dai is a pegged currency that mirrors the value of the US dollar. This means that ‘1 DAI’ is equivalent to ‘1 USD’. For ease of use we refer to Dai using the $ symbol.',
     },
     {
       content: 'Learn more about DAI',

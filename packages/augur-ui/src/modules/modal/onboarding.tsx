@@ -55,5 +55,5 @@ export const Onboarding = ({
         {currentStep && <Stepper currentStep={currentStep} maxSteps={4} /> }
       </div>
     </div>
-  );  
+  );
 }

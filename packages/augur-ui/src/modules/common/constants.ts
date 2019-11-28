@@ -98,7 +98,7 @@ export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
   PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
-  TORUS: 'Torus',
+  TORUS: 'Tor.us',
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',

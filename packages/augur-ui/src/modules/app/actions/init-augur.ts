@@ -89,7 +89,8 @@ function pollForAccount(
                 setTimeout(() => {
                   dispatch(closeModal());
                 }),
-              message: `Syncing ${accountType} account...`,
+              message: `Connecting to our partners at ${accountType} to create your secure account.`,
+              showLearnMore: true,
               showCloseAfterDelay: true,
             })
           );
