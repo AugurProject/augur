@@ -266,6 +266,10 @@ export interface UIOrder {
   minPrice: string;
 }
 
+export interface CreateLiquidityOrders {
+  marketId: string;
+  chunkOrders: boolean;
+}
 export interface LiquidityOrders {
   [txParamHash: string]: {
     [outcome: number]: LiquidityOrder[];

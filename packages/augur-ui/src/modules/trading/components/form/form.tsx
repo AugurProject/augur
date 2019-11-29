@@ -78,6 +78,7 @@ interface FromProps {
   currentTimestamp: number;
   Ox_ENABLED: boolean;
   tradingTutorial?: boolean;
+  gasCostEst: string;
 }
 
 interface TestResults {
