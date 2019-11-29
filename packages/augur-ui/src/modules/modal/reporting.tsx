@@ -223,6 +223,9 @@ export default class ModalReporting extends Component<
       if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
         contributeToTentativeWinner = true;
       }
+      if (tentativeWinningStake.outcome === report.outcomeId) {
+        contributeToTentativeWinner = true;
+      }
       if (marketType === SCALAR) {
         const selectedOutcome = disputeInfo.stakes.find(
           s => s.outcome === selectedRadio.id
