@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   submitNewMarket: (data, cb) => dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
-    dispatch(estimateSubmitNewMarket(data, callback)),
+    estimateSubmitNewMarket(data, callback),
 });
 
 const ReviewContainer = withRouter(

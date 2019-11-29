@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
@@ -7,6 +7,7 @@ import {
   ALL_TIME_PROFIT_AND_LOSS_REP,
   REPORTING_STATE,
   SCALAR,
+  DISPUTE_GAS_COST,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -29,7 +30,7 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
-import { formatRep, formatAttoRep } from 'utils/format-number';
+import { formatRep, formatAttoRep, formatGasCostToEther } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -44,6 +45,7 @@ import {
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -363,7 +365,10 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
+  reportActionGasEstimate: Function;
   Gnosis_ENABLED: boolean;
+  gasPrice: number;
+  ethToDaiRate: BigNumber;
 }
 
 interface DisputingBondsViewState {
@@ -371,6 +376,7 @@ interface DisputingBondsViewState {
   scalarError: string;
   stakeError: string;
   isScalar: boolean;
+  gasLimit: BigNumber;
 }
 
 export class DisputingBondsView extends Component<
@@ -382,6 +388,7 @@ export class DisputingBondsView extends Component<
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
+    gasLimit: DISPUTE_GAS_COST,
   };
 
   updateScalarOutcome = (range: string) => {
@@ -474,6 +481,15 @@ export class DisputingBondsView extends Component<
     updateInputtedStake({ inputStakeValue, inputToAttoRep });
   };
 
+  async componentDidMount() {
+    if (this.props.Gnosis_ENABLED) {
+      const gasLimit = await this.props.reportAction(true);
+      this.setState({
+        gasLimit
+      });
+    }
+  }
+
   render() {
     const {
       market,
@@ -484,6 +500,8 @@ export class DisputingBondsView extends Component<
       reportAction,
       id,
       Gnosis_ENABLED,
+      gasPrice,
+      ethToDaiRate,
     } = this.props;
 
     const { disabled, scalarError, stakeError, isScalar } = this.state;
@@ -493,6 +511,13 @@ export class DisputingBondsView extends Component<
     const remaining = convertAttoValueToDisplayValue(
       createBigNumber(stakeRemaining)
     );
+
+    const gasEstimate = formatGasCostToEther(
+      this.state.gasLimit,
+      { decimalsRounded: 4 },
+      gasPrice,
+    );
+
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div className={classNames(Styles.DisputingBondsView)}>
@@ -540,19 +565,19 @@ export class DisputingBondsView extends Component<
           <LinearPropertyLabel
             key="estimatedGasFee"
             label="Estimated Gas Fee"
-            value={'0.00 DAI'}
+            value={displayGasInDai(gasEstimate, ethToDaiRate)}
           />
         )}
         {!Gnosis_ENABLED && (
           <LinearPropertyLabel
             key="estimatedGasFee"
             label="Estimated Gas Fee"
-            value={'0.0000 ETH'}
+            value={gasEstimate}
           />
         )}
         <PrimaryButton
           text="Confirm"
-          action={reportAction}
+          action={() => reportAction(false)}
           disabled={disabled}
         />
       </div>

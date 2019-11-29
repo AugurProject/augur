@@ -27,6 +27,7 @@ import {
   MarketData,
 } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 const mapStateToProps = (state: AppState) => {
   const gasCost = formatGasCostToEther(
@@ -34,6 +35,7 @@ const mapStateToProps = (state: AppState) => {
     { decimalsRounded: 4 },
     getGasPrice(state)
   );
+
   const pendingQueue = state.pendingQueue || [];
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
@@ -85,7 +87,9 @@ const mapStateToProps = (state: AppState) => {
     totalUnclaimedProfit:
       accountMarketClaimablePositions.totals.totalUnclaimedProfit,
     totalUnclaimedProceeds:
-      accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
+    accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 
@@ -107,6 +111,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const totalGas = formatEther(
     createBigNumber(sP.gasCost).times(claimableMarkets.length)
   );
+
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
   const totalUnclaimedProfitFormatted = formatDai(sP.totalUnclaimedProfit);
@@ -135,8 +140,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         value: totalUnclaimedProfitFormatted.formatted,
       },
       {
-        label: 'Estimated Gas',
-        value: totalGas.full,
+        label: 'Transaction Fee',
+        value: sP.Gnosis_ENABLED ? displayGasInDai(totalGas.value, sP.ethToDaiRate) : totalGas.formattedValue,
       },
     ],
     closeAction: () => {
@@ -148,7 +153,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     buttons: [
       {
         text: `${multiMarket ? 'Claim All' : 'Claim Proceeds'}`,
-        // @ts-ignore
         disabled: claimableMarkets.find(market => market.status === 'pending'),
         action: () => {
           dP.closeModal();

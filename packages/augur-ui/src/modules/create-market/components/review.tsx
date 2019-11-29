@@ -31,11 +31,13 @@ import {
   formatGasCostToEther,
   formatDai,
   formatEther,
+  formatDaiEstimate,
 } from 'utils/format-number';
 import { NewMarket, FormattedNumber } from 'modules/types';
 
 import Styles from 'modules/create-market/components/review.styles.less';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -179,7 +181,7 @@ export default class Review extends React.Component<
   }
 
   async calculateMarketCreationCosts() {
-    const { newMarket, gasPrice } = this.props;
+    const { newMarket, gasPrice, Gnosis_ENABLED } = this.props;
 
     const marketCreationCostBreakdown = await getCreateMarketBreakdown();
     this.setState(
@@ -200,15 +202,24 @@ export default class Review extends React.Component<
           newMarket,
           (err, gasEstimateValue) => {
             if (err) console.error(err);
+            const gasCost = Gnosis_ENABLED
+            ? formatDaiEstimate(formatGasCostToEther(
+                gasEstimateValue,
+                { decimalsRounded: 4 },
+                gasPrice,
+              )
+            )
+            : formatEtherEstimate(formatGasCostToEther(
+                gasEstimateValue,
+                { decimalsRounded: 4 },
+                gasPrice,
+              )
+            );
+
+
             this.setState(
               {
-                gasCost: formatEtherEstimate(
-                  formatGasCostToEther(
-                    gasEstimateValue || '0',
-                    { decimalsRounded: 4 },
-                    gasPrice
-                  )
-                ),
+                gasCost,
               },
               () => {
                 this.updateFunds(this.getInsufficientFundsAmounts(true));
@@ -251,18 +262,16 @@ export default class Review extends React.Component<
     } = newMarket;
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
-
-    // Total Gas in ETH
-    const totalEth = formatEther(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
-
-    // Total Gas in DAI
-    const totalGasInDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(totalEth.value)));
+    const initialLiquidity = s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0;
 
     // Initial liquidity Gas in DAI
-    const initialLiquidityGasInDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(s.formattedInitialLiquidityGas.value)));
+    const initialLiquidityGasInDai = displayGasInDai(createBigNumber(initialLiquidity), ethToDaiRate);
 
-    // IF Gnosis safe include gas fees in total DAI
-    const totalGasDai = formatDai(totalGasInDai.value);
+    // Total Gas in ETH
+    const totalEth = formatEther(createBigNumber(initialLiquidity).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
+
+    // Total Gas in DAI
+    const totalGasInDai = displayGasInDai(totalEth.value, ethToDaiRate);
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
@@ -327,21 +336,21 @@ export default class Review extends React.Component<
             />
           </span>
 
-          <Subheaders header="Initial liquidity" subheader={"The total of the initial batch of orders you added on the previous step."} />
-          <span>
+          { s.formattedInitialLiquidityDai.value > 0 && <Subheaders header="Initial liquidity" subheader={"The total of the initial batch of orders you added on the previous step."} /> }
+          { s.formattedInitialLiquidityDai.value > 0 && <span>
             <LinearPropertyLabel
               label={"Initial Liquidity"}
               value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
             />
             {Gnosis_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
-              label={'Estimated Gas Cost'}
-              value={initialLiquidityGasInDai.formattedValue + ' DAI'}
+              label={'Estimated Transaction fee'}
+              value={initialLiquidityGasInDai + ' DAI'}
             />}
             {!Gnosis_ENABLED && <LinearPropertyLabelTooltip
-              label={'Estimated Gas Cost'}
+              label={'Estimated Transaction fee'}
               value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
             />}
-          </span>
+          </span> }
 
           <Subheaders header="Totals" subheader={Gnosis_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
           <span>
@@ -350,8 +359,8 @@ export default class Review extends React.Component<
               value={totalDai.formattedValue + " DAI"}
             />
             {Gnosis_ENABLED && <LinearPropertyLabel
-              label={"Gas Costs"}
-              value={totalGasDai.formattedValue + " DAI"}
+              label={"Transaction fee"}
+              value={totalGasInDai + " DAI"}
             />}
             {!Gnosis_ENABLED && <LinearPropertyLabel
               label={"Total ETH"}

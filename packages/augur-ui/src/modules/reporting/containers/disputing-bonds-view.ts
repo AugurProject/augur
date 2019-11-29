@@ -1,11 +1,13 @@
 import { connect } from 'react-redux';
 import { DisputingBondsView } from 'modules/reporting/common';
-import getValue from 'utils/get-value';
+import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = state => {
   return {
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
-    Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
+    gasPrice: getGasPrice(state),
   };
 };
 
