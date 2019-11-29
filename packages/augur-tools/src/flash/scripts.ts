@@ -153,6 +153,49 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'transfer',
+    description: 'Transfer tokens to account',
+    options: [
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'Quantity',
+        required: true,
+      },
+      {
+        name: 'token',
+        abbr: 'k',
+        description: 'REP, ETH, DAI',
+        required: true,
+      },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+
+      const target = String(args.target);
+      const amount = Number(args.amount);
+      const token = String(args.token);
+      const atto = new BigNumber(amount).times(_1_ETH);
+
+      switch(token) {
+        case 'REP':
+          return await user.augur.contracts.getReputationToken().transfer(target, atto);
+        case 'ETH':
+          return await user.augur.sendETH(target, atto);
+        default:
+          return await user.augur.contracts.cash.transfer(target, atto);
+      }
+    },
+  });
+
+  flash.addScript({
     name: 'rep-faucet',
     description: 'Mints REP tokens for user.',
     options: [
