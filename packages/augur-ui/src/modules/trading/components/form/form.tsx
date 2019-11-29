@@ -699,7 +699,7 @@ class Form extends Component<FromProps, FormState> {
                 }
                 placeholder="0.00"
                 value={quantityValue}
-                tabIndex={tradingTutorial ? "-1" : '1'}
+                tabIndex={tradingTutorial ? -1 : 1}
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
@@ -734,11 +734,9 @@ class Form extends Component<FromProps, FormState> {
                 max={max}
                 min={min}
                 placeholder="0.00"
-                tabIndex={tradingTutorial ? "-1" : '2'}
+                tabIndex={tradingTutorial ? -1 : 2}
                 value={
                   s[this.INPUT_TYPES.PRICE]
-                    ? createBigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
-                    : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
