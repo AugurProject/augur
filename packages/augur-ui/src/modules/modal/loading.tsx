@@ -56,7 +56,7 @@ export const Loading = ({
       {LoadingEllipse}
       <div>
         {message}
-        { showLearnMore && <ExternalLinkButton label={'Learn More'} /> }
+        { showLearnMore && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn More'} /> }
       </div>
 
       { showAbandon && <CloseButton action={() => closeModal()} />}
