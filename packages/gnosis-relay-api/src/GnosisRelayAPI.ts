@@ -185,7 +185,7 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
       const result = await axios.post(url, relayTxEstimateData);
       return result.data;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(JSON.stringify(error.response.data));
     }
   }
 
@@ -196,7 +196,7 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
       const result = await axios.post(url, relayTx);
       return result.data.txHash;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(JSON.stringify(error.response.data));
     }
   }
 }

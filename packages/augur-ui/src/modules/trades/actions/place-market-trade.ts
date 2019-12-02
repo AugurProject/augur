@@ -52,6 +52,6 @@ export const placeMarketTrade = ({
     displayAmount,
     displayPrice,
     userShares
-  ).then(() => callback(null, null)
-    .catch((err) => callback(err, null)));
+  ).then(() => callback(null, null))
+    .catch((err) => callback(err, null));
 };
