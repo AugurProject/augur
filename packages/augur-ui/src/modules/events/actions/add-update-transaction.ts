@@ -53,6 +53,7 @@ import {
   deleteLiquidityOrder,
 } from 'modules/events/actions/liquidity-transactions';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
+import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -64,10 +65,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const { blockchain, alerts } = getState();
 
     if (eventName === TXEventName.Failure) {
+      const genHash = hash ? hash : generateTxParameterId(transaction.params);
       dispatch(
         addAlert({
-          id: hash ? hash : generateTxParameterId(transaction.params),
-          uniqueId: hash ? hash : generateTxParameterId(transaction.params),
+          id: genHash,
+          uniqueId: genHash,
           params: transaction.params,
           status: eventName,
           timestamp: blockchain.currentAugurTimestamp * 1000,
@@ -152,7 +154,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
-        const id = generateTxParameterId(transaction.params);
+        const id = getDeconstructedMarketId(transaction.params);
         const data = createMarketData(
           transaction.params,
           id,

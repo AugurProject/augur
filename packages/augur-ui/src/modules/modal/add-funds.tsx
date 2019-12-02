@@ -72,7 +72,7 @@ export const AddFunds = ({
   }
 
   const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelection : null);
-  const fundTypeLabel = fundType === DAI ? 'DAI ($)' : 'REP';
+  const fundTypeLabel = fundType === DAI ? 'Dai ($)' : 'REP';
 
   const FUND_OTPIONS = [
     // TODO build uniswap component
@@ -87,12 +87,12 @@ export const AddFunds = ({
     },
     {
       header: 'Coinbase',
-      description: 'Add funds using a Coinbase account',
+      description: 'Send funds from a Coinbase account',
       value: '2',
     },
     {
       header: 'Transfer',
-      description: 'Transfer funds to your account address',
+      description: 'Send funds to your Augur account address',
       value: '3',
     },
   ];
@@ -152,7 +152,7 @@ export const AddFunds = ({
               <TextInput
                 placeholder='0'
                 onChange={noop}
-                innerLabel={'DAI'}
+                innerLabel={'USD'}
               />
 
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -169,20 +169,9 @@ export const AddFunds = ({
                   text={`Buy with ${accountMeta.accountType}`}
                 />
               )}
-              {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-                <h4>
-                  You will be taken to Portis’ website to finalise the purchase
-                  process. The funds will appear in your Augur account address
-                  when complete.
-                </h4>
-              )}
-
-              {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-                <h4>
-                  Open the Tor.us wallet to start the purchase process. The
-                  funds will appear in your Augur account address when complete.
-                </h4>
-              )}
+              <h4>
+                Buy Dai ($) with our secure payments partner, {accountMeta.accountType}. Funds will appear in your Augur account when payment finalizes.
+              </h4>
             </>
           )}
           {selectedOption === '2' && (
@@ -200,17 +189,18 @@ export const AddFunds = ({
                   </a>
                 </li>
                 <li>Buy the cryptocurrency {fundTypeLabel}</li>
-                <li>Send the {fundTypeLabel} to your account address</li>
+                <li>Send the {fundTypeLabel} to your augur account address</li>
               </ol>
-              <h3>Your Account Address</h3>
+              <h3>Augur account address</h3>
               <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
+              <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
             </>
           )}
           {selectedOption === '3' && (
             <>
               <h1>Transfer</h1>
               <h2>
-                Send funds to your account address from any external service
+                Send funds to your Augur account address
               </h2>
               <ol>
                 <li>
@@ -222,15 +212,13 @@ export const AddFunds = ({
                   ) : (
                     fundTypeLabel
                   )}{' '}
-                  using any external service
+                   using an app or exchange (see our list of <a target='blank' href='https://docs.augur.net/'>popular ways to buy {fundTypeLabel})</a>
                 </li>
-                <li>Transfer the {fundTypeLabel} to your account address</li>
+                <li>Transfer the {fundTypeLabel} to your Augur account address</li>
               </ol>
-              <h3>Your Account Address</h3>
+              <h3>Augur account address</h3>
               <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
-              <ExternalLinkButton
-                label={`popular services for buying ${fundTypeLabel}`}
-              />
+              <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
             </>
           )}
         </div>

@@ -5,7 +5,7 @@ import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { updateAppStatus, GNOSIS_ENABLED } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, GNOSIS_ENABLED, Ox_ENABLED } from 'modules/app/actions/update-app-status';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -15,6 +15,14 @@ export const updateSdk = (
   if (!augurSdk.sdk) return;
 
   try {
+    const zeroXEnabled = augurSdk.sdk.zeroX;
+
+    if (zeroXEnabled === undefined) {
+      dispatch(updateAppStatus(Ox_ENABLED, false))
+    } else {
+      dispatch(updateAppStatus(Ox_ENABLED, true))
+    }
+
     const useGnosis = window.localStorage.getItem('isGnosis');
 
     if (useGnosis) {

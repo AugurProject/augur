@@ -32,7 +32,7 @@ import {
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import MarketOutcomesChart from 'modules/market-charts/containers/market-outcomes-chart';
+import PriceHistory from 'modules/market-charts/containers/price-history';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
 import { TEMP_TABLET } from 'modules/common/constants';
@@ -148,9 +148,8 @@ export default class MarketView extends Component<
     );
     this.showMarketDisclaimer = this.showMarketDisclaimer.bind(this);
     this.toggleMiddleColumn = this.toggleMiddleColumn.bind(this);
-  }
+    this.tradingTutorialWidthCheck = this.tradingTutorialWidthCheck.bind(this);
 
-  UNSAFE_componentWillMount() {
     const {
       isConnected,
       loadFullMarket,
@@ -158,6 +157,7 @@ export default class MarketView extends Component<
       loadMarketTradingHistory,
       tradingTutorial,
     } = this.props;
+
     this.tradingTutorialWidthCheck();
 
     if (isConnected && !!marketId && !tradingTutorial) {
@@ -179,7 +179,7 @@ export default class MarketView extends Component<
     }
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps: MarketViewProps) {
     const {
       isConnected,
       marketId,
@@ -187,12 +187,11 @@ export default class MarketView extends Component<
       closeMarketLoadingModal,
       tradingTutorial,
       updateModal,
-    } = this.props;
-    this.tradingTutorialWidthCheck();
+    } = prevProps;
 
     if (tradingTutorial) {
       if (
-        !nextProps.isMarketLoading &&
+        !isMarketLoading &&
         !this.state.introShowing &&
         this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
@@ -206,15 +205,15 @@ export default class MarketView extends Component<
     }
 
     if (
-      isConnected !== nextProps.isConnected &&
-      (nextProps.isConnected &&
-        !!nextProps.marketId &&
-        (nextProps.marketId !== marketId || nextProps.marketType === undefined))
+      isConnected !== this.props.isConnected &&
+      (this.props.isConnected &&
+        !!this.props.marketId &&
+        (this.props.marketId !== marketId || this.props.marketType === undefined))
     ) {
-      nextProps.loadFullMarket(nextProps.marketId);
-      nextProps.loadMarketTradingHistory(marketId);
+      this.props.loadFullMarket(this.props.marketId);
+      this.props.loadMarketTradingHistory(marketId);
     }
-    if (isMarketLoading !== nextProps.isMarketLoading) {
+    if (isMarketLoading !== this.props.isMarketLoading) {
       closeMarketLoadingModal();
       this.showMarketDisclaimer();
     }
@@ -345,6 +344,11 @@ export default class MarketView extends Component<
   };
 
   next = () => {
+    if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK) {
+      // Scroll to bottom since next tutorial card will be below the fold.
+      document.querySelector('#mainContent').scrollTo(0, document.body.scrollHeight);
+    }
+
     if (!this.checkTutorialErrors(this.state.selectedOrderProperties)) {
       this.setState({ tutorialStep: this.state.tutorialStep + 1 });
     }
@@ -586,7 +590,7 @@ export default class MarketView extends Component<
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
                         <h3>Price History</h3>
-                        {!preview && <MarketOutcomesChart
+                        {!preview && <PriceHistory
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'utils/is-empty';
 
 import { createBigNumber } from 'utils/create-big-number';
-import MarketOutcomeChartsDepth from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth';
+import DepthChart from 'modules/market-charts/components/depth/depth';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth';
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
@@ -58,4 +58,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(MarketOutcomeChartsDepth);
+export default connect(mapStateToProps)(DepthChart);

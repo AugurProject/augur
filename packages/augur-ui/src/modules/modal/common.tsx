@@ -10,6 +10,7 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
+  ViewIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -336,13 +337,13 @@ interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
-export const LinkContentSection = (props: LinkContentSectionProps) => (
+export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map((content, idx) => (
+    {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
-            {content.content}
+            <ExternalLinkButton label={content.content} />
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
@@ -571,8 +572,8 @@ interface FundsHelpProps {
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy {fundType === DAI ? `${DAI} ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
-    <ExternalLinkButton label='Learn More' />
+    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
   </div>
 );
 

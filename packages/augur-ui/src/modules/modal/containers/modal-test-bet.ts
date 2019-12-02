@@ -41,7 +41,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       content:
         sP.isTablet
           ? 'Watch our quick start video to learn how to place a bet using our trading app.'
-          : 'Learn how betting works on Augur by placing a quick test bet. Get guidance and tips and start betting for real today.',
+          : 'Learn how betting works on Augur by placing a pretend bet. Get tips and guidance and start betting for real today.',
     },
   ],
   buttons: [

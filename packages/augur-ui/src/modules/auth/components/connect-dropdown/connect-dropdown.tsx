@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { getGasCostInDai } from 'modules/modal/gas';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -23,15 +23,17 @@ interface ConnectDropdownProps {
   };
   balances: AccountBalances;
   gasModal: Function;
-  averageGasPrice: string;
-  userDefinedGasPrice: string;
+  averageGasPrice: number;
+  userDefinedGasPrice: number;
   gasPriceSpeed: number;
+  gasPriceTime: string;
   showAddFundsModal: Function;
   universeSelectorModal: Function;
   universeOutcomeName: string;
   parentUniverseId: string;
   universeHasChildren: boolean;
   Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -42,6 +44,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     userDefinedGasPrice,
     accountMeta,
     gasPriceSpeed,
+    gasPriceTime,
     gasModal,
     balances,
     showAddFundsModal,
@@ -50,6 +53,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     parentUniverseId,
     universeHasChildren,
     Gnosis_ENABLED,
+    ethToDaiRate,
   } = props;
 
   if (!isLogged && !restoredAccount) return null;
@@ -198,11 +202,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             <div>
               Transaction Fee
               {renderToolTip('tooltip--gasEdit', 'The fee for processing your transactions.')}
-              <span>Average (${getGasCostInDai(createBigNumber(averageGasPrice).toNumber())})</span>
+              <span>Average (${getGasCostInDai(ethToDaiRate, createBigNumber(averageGasPrice).toNumber())})</span>
             </div>
             <div>
-              <div><span>{gasPriceSpeed}</span><span> &lt; 30 minutes</span></div>
-              <div><span>${getGasCostInDai(createBigNumber(userDefinedGasPrice).toNumber())}</span><span> / Trade</span></div>
+              <div><span>{gasPriceSpeed}</span><span> {gasPriceTime}</span></div>
+              <div><span>${getGasCostInDai(ethToDaiRate, createBigNumber(userDefinedGasPrice).toNumber())}</span><span> / Trade</span></div>
             </div>
           </div>
           <SecondaryButton

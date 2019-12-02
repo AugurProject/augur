@@ -80,7 +80,7 @@ function fillMarketOrder(augur, args, auth, callback) {
                 chalk.yellow(order.fullPrecisionAmount)
               );
 
-              augur.trading.placeTrade({
+              augur.trading.placeNativeTrade({
                 meta: auth,
                 amount: order.fullPrecisionAmount,
                 limitPrice: order.fullPrecisionPrice,

@@ -78,6 +78,7 @@ interface FromProps {
   currentTimestamp: number;
   Ox_ENABLED: boolean;
   tradingTutorial?: boolean;
+  gasCostEst: string;
 }
 
 interface TestResults {
@@ -227,7 +228,6 @@ class Form extends Component<FromProps, FormState> {
     value,
     errors: object,
     isOrderValid: boolean,
-    nextProps,
     fromExternal
   ): TestResults {
     let errorCount = 0;
@@ -274,7 +274,6 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       selectedNav,
       orderBook,
-      selectedOutcome,
     } = props;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
@@ -701,7 +700,7 @@ class Form extends Component<FromProps, FormState> {
                 }
                 placeholder="0.00"
                 value={quantityValue}
-                tabIndex={tradingTutorial ? "-1" : '1'}
+                tabIndex={tradingTutorial ? -1 : 1}
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
@@ -736,11 +735,9 @@ class Form extends Component<FromProps, FormState> {
                 max={max}
                 min={min}
                 placeholder="0.00"
-                tabIndex={tradingTutorial ? "-1" : '2'}
+                tabIndex={tradingTutorial ? -1 : 2}
                 value={
                   s[this.INPUT_TYPES.PRICE]
-                    ? createBigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
-                    : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
@@ -833,9 +830,7 @@ class Form extends Component<FromProps, FormState> {
             <label className={initialLiquidity ? Styles.Liquidity : Styles.smallLabel}>
               {ExclamationCircle}
               <span>
-                Max cost of{' '}
-                <span>{orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ </span>{' '}
-                will be escrowed
+                {`Max cost of ${orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ will be escrowed`}
               </span>
             </label>
           </li>

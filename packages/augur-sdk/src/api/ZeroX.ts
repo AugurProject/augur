@@ -1,18 +1,35 @@
-import { BigNumber } from "bignumber.js";
-import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, convertOnChainAmountToDisplayAmount, QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '../utils';
-import * as _ from "lodash";
-import { NULL_ADDRESS } from '../constants';
-import * as constants from '../constants';
-import { Augur } from './../Augur';
-import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
-import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
-import { OrderInfo, WSClient, OrderEvent, ValidationResults } from '@0x/mesh-rpc-client';
-import { SignedOrder } from '@0x/types';
+import {
+  OrderEvent,
+  OrderInfo,
+  ValidationResults,
+  WSClient,
+} from '@0x/mesh-rpc-client';
 import { signatureUtils } from '@0x/order-utils';
 import { Web3ProviderEngine } from '@0x/subproviders';
-import { SignerSubprovider } from "../zeroX/SignerSubprovider";
-import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
+import { SignatureType, SignedOrder } from '@0x/types';
+import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { BigNumber } from 'bignumber.js';
+import * as _ from 'lodash';
+import * as constants from '../constants';
+import { NULL_ADDRESS } from '../constants';
+import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+  convertOnChainAmountToDisplayAmount,
+  numTicksToTickSizeWithDisplayPrices,
+  QUINTILLION,
+} from '../utils';
+import { ProviderSubprovider } from '../zeroX/ProviderSubprovider';
+import { SignerSubprovider } from '../zeroX/SignerSubprovider';
+import { Augur } from './../Augur';
+import {
+  NativePlaceTradeDisplayParams,
+  NativePlaceTradeChainParams,
+  TradeTransactionLimits,
+  NativePlaceTradeParams
+} from './OnChainTrade';
+
 
 export enum Verbosity {
   Panic = 0,
@@ -42,11 +59,11 @@ export interface BrowserMesh {
   addOrdersAsync(orders: SignedOrder[]): Promise<ValidationResults>;
 }
 
-export interface ZeroXPlaceTradeDisplayParams extends PlaceTradeDisplayParams {
+export interface ZeroXPlaceTradeDisplayParams extends NativePlaceTradeDisplayParams {
   expirationTime: BigNumber;
 }
 
-export interface ZeroXPlaceTradeParams extends PlaceTradeChainParams {
+export interface ZeroXPlaceTradeParams extends NativePlaceTradeChainParams {
   expirationTime: BigNumber;
 }
 
@@ -108,7 +125,7 @@ export class ZeroX {
 
   constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
     if (!(browserMesh || meshClient)) {
-      throw Error('ZeroX instance mush have browserMesh, meshClient, or both')
+      throw Error('ZeroX instance mush have browserMesh, meshClient, or both');
     }
 
     this.augur = augur;
@@ -120,11 +137,15 @@ export class ZeroX {
 
     this.providerEngine = new Web3ProviderEngine();
     this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
-    this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
+    this.providerEngine.addProvider(
+      new ProviderSubprovider(this.augur.provider)
+    );
     this.providerEngine.start();
   }
 
-  async subscribeToMeshEvents(callback: (orderEvents: OrderEvent[]) => void): Promise<void> {
+  async subscribeToMeshEvents(
+    callback: (orderEvents: OrderEvent[]) => void
+  ): Promise<void> {
     if (this.browserMesh) {
       await this.browserMesh.onOrderEvents(callback);
     } else {
@@ -135,7 +156,7 @@ export class ZeroX {
   async getOrders(): Promise<OrderInfo[]> {
     // TODO when browser mesh supports this back out to using it if meshClient not provided
     if (!this.meshClient) {
-      throw Error('getOrders is not supported on browser mesh')
+      throw Error('getOrders is not supported on browser mesh');
     }
     return this.meshClient.getOrdersAsync();
   }
@@ -145,11 +166,27 @@ export class ZeroX {
     return this.placeOnChainTrade(onChainTradeParams);
   }
 
-  getOnChainTradeParams(params: ZeroXPlaceTradeDisplayParams): ZeroXPlaceTradeParams {
-    const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
-    const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
-    const onChainShares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
+  getOnChainTradeParams(
+    params: ZeroXPlaceTradeDisplayParams
+  ): ZeroXPlaceTradeParams {
+    const tickSize = numTicksToTickSizeWithDisplayPrices(
+      params.numTicks,
+      params.displayMinPrice,
+      params.displayMaxPrice
+    );
+    const onChainAmount = convertDisplayAmountToOnChainAmount(
+      params.displayAmount,
+      tickSize
+    );
+    const onChainPrice = convertDisplayPriceToOnChainPrice(
+      params.displayPrice,
+      params.displayMinPrice,
+      tickSize
+    );
+    const onChainShares = convertDisplayAmountToOnChainAmount(
+      params.displayShares,
+      tickSize
+    );
     return Object.assign(params, {
       amount: onChainAmount,
       price: onChainPrice,
@@ -157,11 +194,17 @@ export class ZeroX {
     });
   }
 
-  async placeOnChainTrade(params: ZeroXPlaceTradeParams, ignoreOrders?: string[]): Promise<void> {
+  async placeOnChainTrade(
+    params: ZeroXPlaceTradeParams,
+    ignoreOrders?: string[]
+  ): Promise<void> {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-    const { orders, signatures, orderIds } = await this.getMatchingOrders(params, ignoreOrders);
+    const { orders, signatures, orderIds } = await this.getMatchingOrders(
+      params,
+      ignoreOrders
+    );
 
     const numOrders = _.size(orders);
 
@@ -185,7 +228,8 @@ export class ZeroX {
       params.tradeGroupId,
       orders,
       signatures,
-      { attachedEth: protocolFee });
+      { attachedEth: protocolFee }
+    );
 
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
     if (amountRemaining.gt(0)) {
@@ -197,7 +241,7 @@ export class ZeroX {
 
   async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    return await this.placeOnChainOrder(onChainTradeParams);
+    return this.placeOnChainOrder(onChainTradeParams);
   }
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
@@ -213,7 +257,7 @@ export class ZeroX {
       this.augur.addresses.Exchange,
       salt
     );
-    const signedOrder: any[] = result[0];
+    const signedOrder = result[0];
     const orderHash: string = result[1];
     const makerAddress: string = signedOrder[0];
     const signature = await this.signOrderHash(orderHash, makerAddress);
@@ -245,20 +289,36 @@ export class ZeroX {
     }
     if (validation.rejected.length > 0) {
       console.log(JSON.stringify(validation.rejected, null, 2));
-      throw Error(`0x add order validation failure: ${JSON.stringify(validation.rejected[0])}`)
+      throw Error(
+        `0x add order validation failure: ${JSON.stringify(
+          validation.rejected[0]
+        )}`
+      );
     }
 
     return orderHash;
   }
 
   async signOrderHash(orderHash: string, maker: string): Promise<string> {
-    const signature = await signatureUtils.ecSignHashAsync(this.providerEngine, orderHash, maker);
-    return signature;
+    const signature = await signatureUtils.ecSignHashAsync(
+      this.providerEngine,
+      orderHash,
+      maker
+    );
+    return signatureUtils.convertToSignatureWithType(
+      signature,
+      SignatureType.Wallet
+    );
   }
 
-  async simulateTrade(params: ZeroXPlaceTradeDisplayParams): Promise<ZeroXSimulateTradeData> {
+  async simulateTrade(
+    params: ZeroXPlaceTradeDisplayParams
+  ): Promise<ZeroXSimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    const { orders, signatures, orderIds } = await this.getMatchingOrders(onChainTradeParams, []);
+    const { orders, signatures, orderIds } = await this.getMatchingOrders(
+      onChainTradeParams,
+      []
+    );
     let simulationData: BigNumber[];
     if (orders.length < 1 && !params.doNotCreateOrders) {
       simulationData = await this.simulateMakeOrder(onChainTradeParams);
@@ -269,13 +329,27 @@ export class ZeroX {
         sharesDepleted: new BigNumber(0),
         settlementFees: new BigNumber(0),
         numFills: new BigNumber(0),
-      }
+      };
     } else {
-      simulationData = await this.augur.contracts.simulateTrade.simulateZeroXTrade_(orders, onChainTradeParams.amount, params.doNotCreateOrders) as unknown as BigNumber[];
+      simulationData = ((await this.augur.contracts.simulateTrade.simulateZeroXTrade_(
+        orders,
+        onChainTradeParams.amount,
+        params.doNotCreateOrders
+      )) as unknown) as BigNumber[];
     }
-    const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    const displaySharesFilled = convertOnChainAmountToDisplayAmount(simulationData[0], tickSize);
-    const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
+    const tickSize = numTicksToTickSizeWithDisplayPrices(
+      params.numTicks,
+      params.displayMinPrice,
+      params.displayMaxPrice
+    );
+    const displaySharesFilled = convertOnChainAmountToDisplayAmount(
+      simulationData[0],
+      tickSize
+    );
+    const displaySharesDepleted = convertOnChainAmountToDisplayAmount(
+      simulationData[2],
+      tickSize
+    );
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
     const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
     const numFills = simulationData[4];
@@ -290,45 +364,58 @@ export class ZeroX {
 
   simulateMakeOrder(params: ZeroXPlaceTradeParams): BigNumber[] {
     const sharesDepleted = BigNumber.min(params.shares, params.amount);
-    const price = params.direction == 0 ? params.price : params.numTicks.minus(params.price);
-    const tokensDepleted = params.amount.minus(sharesDepleted).multipliedBy(price);
+    const price =
+      params.direction == 0
+        ? params.price
+        : params.numTicks.minus(params.price);
+    const tokensDepleted = params.amount
+      .minus(sharesDepleted)
+      .multipliedBy(price);
     return [
       new BigNumber(0),
       tokensDepleted,
       sharesDepleted,
       new BigNumber(0),
       new BigNumber(0),
-    ]
+    ];
   }
 
   // TODO a more specific getter for this that does a lot of the processing below would likely be more appropriate
-  async getMatchingOrders(params: ZeroXPlaceTradeParams, ignoreOrders?: string[]): Promise<MatchingOrders> {
-    const orderType = params.direction == 0 ? "1" : "0";
+  async getMatchingOrders(
+    params: ZeroXPlaceTradeParams,
+    ignoreOrders?: string[]
+  ): Promise<MatchingOrders> {
+    const orderType = params.direction == 0 ? '1' : '0';
     const outcome = params.outcome.toString();
-    let zeroXOrders = await this.augur.getZeroXOrders({
+    const zeroXOrders = await this.augur.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16).padStart(60, "0")}`,
-      ignoreOrders
+      matchPrice: `0x${params.price.toString(16).padStart(60, '0')}`,
+      ignoreOrders,
     });
 
     if (_.size(zeroXOrders) < 1) {
-      return { orders: [], signatures: [], orderIds: []};
+      return { orders: [], signatures: [], orderIds: [] };
     }
 
     const ordersMap = zeroXOrders[params.market][outcome][orderType];
-    let sortedOrders = _.sortBy(_.values(ordersMap), (order) =>{ return order.price });
+    const sortedOrders = _.sortBy(_.values(ordersMap), order => {
+      return order.price;
+    });
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
 
-    const ordersData = params.direction == 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
+    const ordersData =
+      params.direction == 0
+        ? _.take(sortedOrders, loopLimit.toNumber())
+        : _.takeRight(sortedOrders, loopLimit.toNumber());
 
-    let orderIds = _.map(ordersData, (orderData) => {
+    const orderIds = _.map(ordersData, orderData => {
       return orderData.orderId;
     });
 
-    const orders: ZeroXTradeOrder[] = _.map(ordersData, (orderData) => {
+    const orders: ZeroXTradeOrder[] = _.map(ordersData, orderData => {
       return {
         makerAddress: orderData.owner,
         takerAddress: NULL_ADDRESS,
@@ -342,47 +429,71 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
-        makerFeeAssetData: "0x",
-        takerFeeAssetData: "0x",
+        makerFeeAssetData: '0x',
+        takerFeeAssetData: '0x',
       };
-    })
+    });
 
-    const signatures = _.map(ordersData, (orderData) => {
+    const signatures = _.map(ordersData, orderData => {
       return orderData.signature;
     });
 
     return { orders, signatures, orderIds };
   }
 
-  async checkIfTradeValid(params: ZeroXPlaceTradeParams): Promise<string | null> {
-    if (params.outcome >= params.numOutcomes) return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
-    if (params.price.lte(0) || params.price.gte(params.numTicks)) return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
+  async checkIfTradeValid(
+    params: ZeroXPlaceTradeParams
+  ): Promise<string | null> {
+    if (params.outcome >= params.numOutcomes) {
+      return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
+    }
+    if (params.price.lte(0) || params.price.gte(params.numTicks)) {
+      return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
+    }
 
     const amountNotCoveredByShares = params.amount.minus(params.shares);
-    const cost = params.direction == 0 ? params.price.multipliedBy(amountNotCoveredByShares) : params.numTicks.minus(params.price).multipliedBy(amountNotCoveredByShares);
+    const cost =
+      params.direction == 0
+        ? params.price.multipliedBy(amountNotCoveredByShares)
+        : params.numTicks
+            .minus(params.price)
+            .multipliedBy(amountNotCoveredByShares);
 
     if (cost.gt(0)) {
       const account = await this.augur.getAccount();
       if (!account) return null;
-      const cashAllowance = await this.augur.contracts.cash.allowance_(account, this.augur.contracts.augur.address);
-      if (cashAllowance.lt(cost)) return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;
+      const cashAllowance = await this.augur.contracts.cash.allowance_(
+        account,
+        this.augur.contracts.augur.address
+      );
+      if (cashAllowance.lt(cost)) {
+        return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;
+      }
 
       const cashBalance = await this.augur.contracts.cash.balanceOf_(account);
-      if (cashBalance.lt(cost)) return `Cash balance: ${cashBalance.toString()} will not cover trade cost: ${cost.toString()}`;
+      if (cashBalance.lt(cost)) {
+        return `Cash balance: ${cashBalance.toString()} will not cover trade cost: ${cost.toString()}`;
+      }
     }
 
     return null;
   }
 
-  private getTradeAmountRemaining(tradeOnChainAmountRemaining: BigNumber, events: Event[]): BigNumber {
+  private getTradeAmountRemaining(
+    tradeOnChainAmountRemaining: BigNumber,
+    events: Event[]
+  ): BigNumber {
     let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
-      if (event.name === "OrderEvent") {
+      if (event.name === 'OrderEvent') {
         const eventParams = event.parameters as OrderEventLog;
-        if (eventParams.eventType === 0) { // Create
+        if (eventParams.eventType === 0) {
+          // Create
           return new BigNumber(0);
-        } else if (eventParams.eventType === 2) {// Fill
-          const onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
+        } else if (eventParams.eventType === 2) {
+          // Fill
+          const onChainAmountFilled =
+            eventParams.uint256Data[OrderEventUint256Value.amountFilled];
           amountRemaining = amountRemaining.minus(onChainAmountFilled);
         }
       }
@@ -390,12 +501,25 @@ export class ZeroX {
     return amountRemaining;
   }
 
-  getTradeTransactionLimits(params: PlaceTradeChainParams): TradeTransactionLimits {
+  getTradeTransactionLimits(
+    params: NativePlaceTradeChainParams
+  ): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
-    const placeOrderGas = params.shares.gt(0) ? constants.PLACE_ORDER_WITH_SHARES[params.numOutcomes] : constants.PLACE_ORDER_NO_SHARES[params.numOutcomes];
-    const orderCreationCost = params.doNotCreateOrders ? new BigNumber(0) : placeOrderGas;
-    let gasLimit = orderCreationCost.plus(constants.WORST_CASE_FILL[params.numOutcomes]);
-    while (gasLimit.plus(constants.WORST_CASE_FILL[params.numOutcomes]).lt(constants.MAX_GAS_LIMIT_FOR_TRADE) && loopLimit.lt(constants.MAX_FILLS_PER_TX)) {
+    const placeOrderGas = params.shares.gt(0)
+      ? constants.PLACE_ORDER_WITH_SHARES[params.numOutcomes]
+      : constants.PLACE_ORDER_NO_SHARES[params.numOutcomes];
+    const orderCreationCost = params.doNotCreateOrders
+      ? new BigNumber(0)
+      : placeOrderGas;
+    let gasLimit = orderCreationCost.plus(
+      constants.WORST_CASE_FILL[params.numOutcomes]
+    );
+    while (
+      gasLimit
+        .plus(constants.WORST_CASE_FILL[params.numOutcomes])
+        .lt(constants.MAX_GAS_LIMIT_FOR_TRADE) &&
+      loopLimit.lt(constants.MAX_FILLS_PER_TX)
+    ) {
       loopLimit = loopLimit.plus(1);
       gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[params.numOutcomes]);
     }
@@ -404,5 +528,11 @@ export class ZeroX {
       loopLimit,
       gasLimit,
     };
+  }
+
+  async simulateTradeGasLimit(params: ZeroXPlaceTradeDisplayParams): Promise<BigNumber> {
+    const onChainTradeParams = this.getOnChainTradeParams(params);
+    const { gasLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
+    return gasLimit;
   }
 }
