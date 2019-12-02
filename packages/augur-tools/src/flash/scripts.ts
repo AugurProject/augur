@@ -1060,13 +1060,17 @@ export function addScripts(flash: FlashSession) {
         name: 'name',
         abbr: 'n',
         description: 'Name of contract',
+        required: true,
       },
     ],
     async call(
       this: FlashSession,
       args: FlashArguments
-    ): Promise<void> {
-      console.log(this.contractAddresses[args['name'] as string]);
+    ): Promise<string> {
+      const name = args.name as string;
+      const address = this.contractAddresses[name];
+      console.log(address);
+      return address;
     },
   });
 
