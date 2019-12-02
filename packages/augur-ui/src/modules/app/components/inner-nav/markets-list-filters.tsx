@@ -43,7 +43,6 @@ const MarketsListFilters = (props: MarketsListFiltersProps) => {
   );
   const [templateFilter, setTemplateFilter] = useState(props.allTemplateFilter);
 
-
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(props.location.search);
     if (
