@@ -72,7 +72,6 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     mapping(address => bool) private markets;
     mapping(address => bool) private universes;
     mapping(address => bool) private crowdsourcers;
-    mapping(address => bool) private shareTokens;
     mapping(address => bool) private trustedSender;
 
     mapping(address => MarketCreationData) private marketCreationData;
