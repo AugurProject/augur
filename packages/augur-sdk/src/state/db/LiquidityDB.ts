@@ -1,4 +1,5 @@
-import { AbstractDB } from './AbstractDB';
+/*
+import { AbstractTable } from './AbstractDB';
 import { SyncStatus } from './SyncStatus';
 import { DB } from './DB';
 import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR } from '../../constants';
@@ -26,7 +27,7 @@ interface MarketsLiquidityParams {
   [marketId: string]: GetLiquidityParams;
 }
 
-export class LiquidityDB extends AbstractDB {
+export class LiquidityDB extends AbstractTable {
   private readonly augur: Augur;
   protected syncStatus: SyncStatus;
   protected stateDB: DB;
@@ -41,12 +42,12 @@ export class LiquidityDB extends AbstractDB {
     super(networkId, db.getDatabaseName(name), db.pouchDBFactory);
     this.augur = augur;
     this.stateDB = db;
-    this.db.createIndex({
+    this.table.createIndex({
       index: {
         fields: ['market'],
       },
     });
-    this.db.createIndex({
+    this.table.createIndex({
       index: {
         fields: ['timestamp'],
       },
@@ -100,12 +101,6 @@ export class LiquidityDB extends AbstractDB {
     }
   }
 
-  /**
-   * Deletes hourly liquidity data older than 24 hours.
-   *
-   * @param liquidityDB
-   * @param mostRecentOnTheHourTimestamp
-   */
   private async deleteOldLiquidityData(liquidityDB: LiquidityDB, mostRecentOnTheHourTimestamp: BigNumber): Promise<void> {
     const oldLiquidityDocs = await liquidityDB.find({
       selector: {
@@ -122,12 +117,6 @@ export class LiquidityDB extends AbstractDB {
     await liquidityDB.bulkUpsertUnorderedDocuments(oldLiquidityDocs.docs);
   }
 
-  /**
-   * Returns the MarketsLiquidityParams for all markets with orders in the CurrentOrders DB.
-   *
-   * @param {DB} db Database object to use for fetching MarketsLiquidityParams
-   * @param {Augur} augur Augur object to use for fetching MarketsLiquidityParams
-   */
   async getMarketsLiquidityParams(db: DB, augur: Augur): Promise<MarketsLiquidityParams> {
     const liquidityParams = {};
     // TODO Filter markets with open order better by filtering by market reporting state
@@ -165,3 +154,4 @@ export class LiquidityDB extends AbstractDB {
     return liquidityParams;
   }
 }
+*/

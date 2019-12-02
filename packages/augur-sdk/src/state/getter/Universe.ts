@@ -187,14 +187,11 @@ async function getMigrationOutcomes(
 }
 
 async function getUserRep(db: DB, universe: ContractInterfaces.Universe, account: string): Promise<BigNumber> {
-  const tokenChangedLogs = await db.findTokenBalanceChangedLogs(account, {
-    selector: {
-      universe: universe.address,
-      owner: account,
-      tokenType: TokenType.ReputationToken,
-    },
-    fields: [ 'balance' ],
-  });
+  const tokenChangedLogs = await db.TokenBalanceChanged.where('[universe+owner+tokenType]').equals([
+    universe.address,
+    account,
+    TokenType.ReputationToken
+  ]).toArray();
   if (tokenChangedLogs.length === 0) {
     return new BigNumber(0);
   } else {
@@ -210,34 +207,15 @@ async function getRepSupply(augur: Augur, universe: ContractInterfaces.Universe)
 }
 
 async function getMarket(db: DB, address: string): Promise<MarketData|null> {
-  const marketCreatedLogs = await db.findMarkets({
-    selector: {
-      market: address,
-    },
-  });
-
-  if (marketCreatedLogs.length === 0) {
-    return null; // no such market
-  }
-
-  return marketCreatedLogs[0];
+  return await db.Markets.get(address);
 }
 
 async function getMarketsForUniverse(db: DB, address: string): Promise<MarketData[]> {
-  return db.findMarkets({
-    selector: {
-      universe: address,
-    },
-  });
-
+  return db.Markets.where("universe").equals(address).toArray();
 }
 
 async function getUniverseCreationLog(db: DB, address: string): Promise<UniverseCreatedLog|null> {
-  const universeCreatedLogs = await db.findUniverseCreatedLogs({
-    selector: {
-      childUniverse: address,
-    },
-  });
+  const universeCreatedLogs = await db.UniverseCreated.where("childUniverse").equals(address).toArray();
 
   if (universeCreatedLogs.length === 0) {
     return null; // no such universe
@@ -247,11 +225,7 @@ async function getUniverseCreationLog(db: DB, address: string): Promise<Universe
 }
 
 async function getUniverseForkedLog(db: DB, address: string): Promise<UniverseForkedLog|null> {
-  const universeForkedLogs = await db.findUniverseForkedLogs({
-    selector: {
-      universe: address,
-    },
-  });
+  const universeForkedLogs = await db.UniverseForked.where("universe").equals(address).toArray();
 
   if (universeForkedLogs.length === 0) {
     return null; // universe doesn't exist or hasn't forked
@@ -261,9 +235,5 @@ async function getUniverseForkedLog(db: DB, address: string): Promise<UniverseFo
 }
 
 async function getUniverseChildrenCreationLogs(db: DB, address: string): Promise<UniverseCreatedLog[]> {
-  return db.findUniverseCreatedLogs({
-    selector: {
-      parentUniverse: address,
-    },
-  });
+  return db.UniverseCreated.where("parentUniverse").equals(address).toArray();
 }

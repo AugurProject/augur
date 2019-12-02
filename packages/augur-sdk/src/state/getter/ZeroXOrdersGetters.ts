@@ -45,7 +45,7 @@ export const ZeroXOrdersParams = t.partial({
 });
 
 export class ZeroXOrdersGetters {
-  static GetZeroXOrdersParams = t.intersection([sortOptions, ZeroXOrdersParams]);
+  static GetZeroXOrdersParams = ZeroXOrdersParams;
 
   // TODO: Split this into a getter for orderbooks and a getter to get matching orders
   // TODO: When getting an orderbook for a specific market if the Database has not finished syncing we should just pull the orderbook from mesh directly
@@ -61,18 +61,12 @@ export class ZeroXOrdersGetters {
 
     const outcome = params.outcome ? `0x0${params.outcome.toString()}` : undefined;
     const orderType = params.orderType ? `0x0${params.orderType}` : undefined;
-    const request = {
-      selector: {
-        market: params.marketId,
-        outcome,
-        orderType,
-      },
-      sort: params.sortBy ? [params.sortBy] : undefined,
-      limit: params.limit,
-      skip: params.offset,
-    };
 
-    let currentOrdersResponse = await db.findZeroXOrderLogs(request);
+    let currentOrdersResponse = await db.ZeroXOrders.where('[market+outcome+orderType]').equals([
+      params.marketId,
+      outcome,
+      orderType
+    ]).toArray();
 
     if (params.matchPrice) {
       if (!params.orderType) throw new Error("Cannot specify match price without order type");
@@ -84,9 +78,8 @@ export class ZeroXOrdersGetters {
       });
     }
 
-    const marketResults = await db.findMarkets({ selector: { market: params.marketId }});
-    if (marketResults.length < 1) return {};
-    const marketDoc = marketResults[0];
+    const marketDoc = await (await db).Markets.get(params.marketId);
+    if (!marketDoc) return {};
 
     return currentOrdersResponse.reduce(
       (orders: ZeroXOrders, order: StoredOrder) => {
