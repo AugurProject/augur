@@ -21,6 +21,11 @@ import {
   NETWORK_NAMES,
   MODAL_LOADING,
   MODA_WALLET_ERROR,
+  MODAL_ACCOUNT_CREATED,
+  MODAL_AUGUR_USES_DAI,
+  MODAL_BUY_DAI,
+  MODAL_TEST_BET,
+  MODAL_TUTORIAL_INTRO,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'store';
@@ -70,10 +75,11 @@ function pollForAccount(
 
       const showModal = accountType => {
         const onboardingShown = [
-          'MODAL_ACCOUNT_CREATED',
-          'MODAL_AUGUR_USES_DAI',
-          'MODAL_BUY_DAI',
-          'MODAL_TEST_BET',
+          MODAL_ACCOUNT_CREATED,
+          MODAL_AUGUR_USES_DAI,
+          MODAL_BUY_DAI,
+          MODAL_TEST_BET,
+          MODAL_TUTORIAL_INTRO,
         ].includes(modal.type);
         if (!onboardingShown) {
           dispatch(

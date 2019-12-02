@@ -77,7 +77,6 @@ export function convertMarketInfoToMarketData(
       marketInfo.disputeInfo,
       marketInfo.outcomes
     ),
-    isTemplate: isTemplateMarket(marketInfo.description, marketInfo.template),
   };
 
   return marketData;
@@ -234,28 +233,4 @@ export const keyMarketInfoCollectionByMarketId = (
   marketInfos: Getters.Markets.MarketInfo[]
 ) => {
   return keyBy(marketInfos, 'id');
-};
-
-const isTemplateMarket = (title, template: ExtraInfoTemplate) => {
-  let result = false;
-  if (
-    !template ||
-    !template.hash ||
-    !template.question ||
-    template.inputs.length === 0
-  )
-    return result;
-
-  let checkMarketTitle = template.question;
-  template.inputs.map((i: ExtraInfoTemplateInput) => {
-    checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value);
-  });
-
-  if (checkMarketTitle !== title) return result;
-  try {
-    result = isValidTemplateMarket(template.hash, checkMarketTitle);
-  } catch (e) {
-    console.error(e);
-  }
-  return result;
 };

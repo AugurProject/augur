@@ -41,21 +41,15 @@ export interface TransactionMetadata {
 }
 
 export class ContractDependenciesEthers implements Dependencies<BigNumber> {
-  public readonly provider: EthersProvider;
-  public signer?: EthersSigner;
-  public readonly address?: string;
-
-  protected readonly abiCoder: ethers.utils.AbiCoder;
+  protected readonly abiCoder: ethers.utils.AbiCoder = new ethers.utils.AbiCoder();
 
   protected transactionDataMetaData: { [data: string]: TransactionMetadata } = {};
   protected transactionStatusCallbacks: { [key: string]: TransactionStatusCallback } = {};
 
-  public constructor(provider: EthersProvider, signer?: EthersSigner, address?: string) {
-    this.provider = provider;
-    if (this.signer && this.address) throw new Error("Must provide only one of signer or address")
-    this.signer = signer;
-    this.address = address;
-    this.abiCoder = new ethers.utils.AbiCoder();
+  public constructor(
+    public readonly provider: EthersProvider,
+    public signer?: EthersSigner,
+    public readonly address?: string) {
   }
 
   public setSigner(signer: EthersSigner) {
@@ -186,9 +180,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   public async sendTransaction(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<ethers.providers.TransactionReceipt> {
-    const estimatedGasLimit = await this.provider.estimateGas(tx);
-    const increasedEstimatedGasLimit = estimatedGasLimit.add(estimatedGasLimit.div(10));
-    const gasLimit = new ethers.utils.BigNumber(Math.min(increasedEstimatedGasLimit.toNumber(), 7500000));
+    const gasLimit = await this.provider.estimateGas(tx);
 
     // @BODY https://github.com/ethers-io/ethers.js/issues/321
     // the 'from field is required to estimate gas but will fail if present when the transaction is sent.

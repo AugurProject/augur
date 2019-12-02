@@ -89,7 +89,7 @@ export const loadUserFilledOrders = (
       account: loginAccount.address,
       universe: universe.id,
       orderState: FILLED,
-      ignoreReportingStates: [REPORTING_STATE.FINALIZED]
+      filterFinalized: true
     },
     options
   );

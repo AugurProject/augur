@@ -2,21 +2,14 @@ import React from 'react';
 import Styles from 'modules/market/components/common/tutorial-pop-up.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import classNames from 'classnames';
-
-interface TextLink {
-  text: string;
-  link?: string;
-  linkText?: string;
-}
-
-interface TextObject {
-  title: string;
-  subheader: TextLink[];
-}
+import {
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+  DismissableNotice,
+} from 'modules/reporting/common';
+import { TextObject } from 'modules/types';
 
 export interface TutorialPopUpProps {
   next: Function;
-  back: Function;
   left?: boolean;
   right?: boolean;
   top?: boolean;
@@ -24,6 +17,8 @@ export interface TutorialPopUpProps {
   step: number;
   totalSteps: number;
   text: TextObject;
+  leftBottom?: boolean;
+  error?: string;
 }
 
 export const TutorialPopUp = (props: TutorialPopUpProps) => (
@@ -33,18 +28,32 @@ export const TutorialPopUp = (props: TutorialPopUpProps) => (
       [Styles.Top]: props.top,
       [Styles.Bottom]: props.bottom,
       [Styles.Right]: props.right,
+      [Styles.LeftBottom]: props.leftBottom,
     })}
+    key={props.step}
   >
     <div>
       <h1>{props.text.title}</h1>
-      {props.text.subheader.map((subheader, idx) =>
-        <span key={idx}>
+      {props.text.subheader.map((subheader, idx) => (
+        <span className={classNames({[Styles.Lighten]: subheader.lighten})} key={idx}>
           {subheader.text}
-          {subheader.linkText && <a href={subheader.link} target="blank">{subheader.linkText}</a>}
+          {subheader.linkText && (
+            <a href={subheader.link} target="blank">
+              {subheader.linkText}
+            </a>
+          )}
         </span>
+      ))}
+
+      {props.error && (
+        <DismissableNotice
+          show
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+          title={props.error}
+        />
       )}
+
       <div>
-        <SecondaryButton text="Back" action={() => props.back()} />
         <span>
           <span>{props.step}</span>/ {props.totalSteps}
         </span>

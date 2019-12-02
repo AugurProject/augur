@@ -13,6 +13,10 @@
 
   > div.ShowGlobalChat {
     display: block;
+    line-height: 0; // This removes the iframe's extra padding
+    border: @size-1 solid @color-secondary-action-outline;
+    border-radius: @size-3;
+    overflow: hidden;
   }
 
   // Closed global chat window
@@ -38,15 +42,15 @@
   // Open global chat window
   > div {
     background-color: @color-module-background;
-    border: 1px solid @color-dark-grey;
 
     // Header section
     > div:first-of-type {
       align-items: center;
+      background-color: @color-dark-grey;
       border-bottom: 1px solid @color-dark-grey;
       display: flex;
       flex-direction: row;
-      padding: @size-8 @size-8;
+      padding: @size-7 @size-8;
 
       > span {
         color: @color-primary-text;
@@ -55,7 +59,7 @@
       }
 
       > span:first-of-type {
-        .mono-11;
+        .mono-12;
 
         margin: 0 @size-8 0 0;
         font-weight: @weight-bold;
@@ -86,7 +90,7 @@
 
     iframe {
       border: 0px;
-      height: 21rem;
+      height: 16rem;
       width: 18.75rem;
     }
   }

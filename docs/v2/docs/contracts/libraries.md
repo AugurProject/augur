@@ -6,6 +6,22 @@ title: Libraries
 
 ## Contracts
 
+### `BytesToString`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BytesToString.bytes32ToString(bytes32)"><code class="function-signature">bytes32ToString(bytes32 _bytes32)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="BytesToString.bytes32ToString(bytes32)"></a><code class="function-signature">bytes32ToString(bytes32 _bytes32) <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
 ### `CloneFactory`
 
 

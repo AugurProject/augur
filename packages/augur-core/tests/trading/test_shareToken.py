@@ -2,7 +2,7 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises
-from utils import fix, AssertLog, stringToBytes, BuyWithCash, nullAddress
+from utils import fix, AssertLog, stringToBytes, BuyWithCash, nullAddress, longTo32Bytes
 from constants import YES, NO
 
 def test_init(contractsFixture, market):
@@ -137,7 +137,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokens
 
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
         with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
-            result = shareToken.publicSellCompleteSets(market.address, 9, nullAddress)
+            result = shareToken.publicSellCompleteSets(market.address, 9, longTo32Bytes(11))
 
     tokensFail.setFail(False)
     assert universe.getOpenInterestInAttoCash() == 1 * market.getNumTicks()
@@ -161,7 +161,7 @@ def test_sellCompleteSets_failure(contractsFixture, universe, cash, market):
 
     # sellCompleteSets exceptions
     with raises(TransactionFailed):
-        shareToken.sellCompleteSets(market.address, account, account, 10 + 1, nullAddress, account)
+        shareToken.sellCompleteSets(market.address, account, account, 10 + 1, longTo32Bytes(11), account)
 
 def test_maliciousMarket(contractsFixture, universe, cash, market):
     shareToken = contractsFixture.contracts["ShareToken"]

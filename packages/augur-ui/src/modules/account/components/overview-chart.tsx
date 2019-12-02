@@ -1,6 +1,7 @@
 import React from 'react';
 import * as constants from 'modules/common/constants';
 import logError from 'utils/log-error';
+import { PulseLoader } from 'react-spinners';
 import { DaiLogoIcon } from 'modules/common/icons';
 import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
@@ -37,6 +38,7 @@ interface OverviewChartState {
   profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
+  isLoading: boolean;
 }
 
 const BEGINNING_START_TIME = 1530366577;
@@ -61,7 +63,11 @@ export default class OverviewChart extends React.Component<
   };
 
   componentDidUpdate = (prevProps: OverviewChartProps) => {
-    if (prevProps.timeframe !== this.props.timeframe) {
+    if (
+      prevProps.timeframe !== this.props.timeframe ||
+      (prevProps.currentAugurTimestamp === 0 &&
+        prevProps.currentAugurTimestamp !== this.props.currentAugurTimestamp)
+    ) {
       const timeRangeDataConfig =
         constants.TIMEFRAME_OPTIONS[this.props.timeframe];
       this.getChartData(timeRangeDataConfig);
@@ -149,12 +155,22 @@ export default class OverviewChart extends React.Component<
       noTrades,
     } = this.state;
     let content: any = null;
+    const { currentAugurTimestamp } = this.props;
+    const isLoading = currentAugurTimestamp === 0;
 
     if (noTrades) {
       content = (
         <>
           <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
-          <span>No Trading Activity</span>
+          {isLoading && (
+            <PulseLoader
+              color="#AFA7C1"
+              sizeUnit="px"
+              size={6}
+              loading={isLoading}
+            />
+          )}
+          {!isLoading && <span>No Trading Activity</span>}
         </>
       );
     } else {
@@ -174,11 +190,21 @@ export default class OverviewChart extends React.Component<
               ? `$${profitLossValue}`
               : `-$${Math.abs(profitLossValue)}`}
           </h4>
-          <ProfitLossChart
-            data={profitLossData}
-            // @ts-ignore
-            width={this.container.clientWidth}
-          />
+          {isLoading && (
+            <PulseLoader
+              color="#AFA7C1"
+              sizeUnit="px"
+              size={6}
+              loading={isLoading}
+            />
+          )}
+          {!isLoading && (
+            <ProfitLossChart
+              data={profitLossData}
+              // @ts-ignore
+              width={this.container.clientWidth}
+            />
+          )}
         </>
       );
     }

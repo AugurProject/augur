@@ -45,6 +45,7 @@ contract IUniverse {
     function isOpenInterestCash(address) public view returns (bool);
     function isForkingMarket() public view returns (bool);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);
+    function getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial) public view returns (uint256, uint256);
     function isParentOf(IUniverse _shadyChild) public view returns (bool);
     function updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash) public returns (bool);
     function isContainerForDisputeWindow(IDisputeWindow _shadyTarget) public view returns (bool);
@@ -59,5 +60,5 @@ contract IUniverse {
     function isForking() public view returns (bool);
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool);
     function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool);
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket);
 }

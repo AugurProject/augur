@@ -18,7 +18,7 @@ export interface PlaceTradeParams {
   numOutcomes: 3 | 4 | 5 | 6 | 7 | 8;
   outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   tradeGroupId: string;
-  affiliateAddress: string;
+  fingerprint: string;
   kycToken: string;
   doNotCreateOrders: boolean;
 }
@@ -112,11 +112,11 @@ export class Trade {
 
     // @TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
     if (params.doNotCreateOrders) {
-      result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.affiliateAddress, params.kycToken);
+      result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.fingerprint, params.kycToken);
     } else {
       // @TODO: Use the state provided better worse orders
       const nullOrderId = stringTo32ByteHex("");
-      result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.affiliateAddress, params.kycToken);
+      result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.fingerprint, params.kycToken);
     }
 
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);

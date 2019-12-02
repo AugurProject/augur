@@ -15,10 +15,12 @@ import './status';
 import './Platform';
 
 export class API {
+  augur: Augur;
   db: Promise<DB>;
   private readonly router: Router;
 
   constructor(augur: Augur, db: Promise<DB>) {
+    this.augur = augur;
     this.db = db;
     this.router = new Router(augur, db);
   }

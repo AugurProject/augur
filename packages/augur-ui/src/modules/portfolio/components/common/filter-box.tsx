@@ -76,7 +76,6 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
   // funcs
   const applySearchAndSort = () => {
     let nextFilteredData = data[selectedTab];
-
     // filter markets
     nextFilteredData = nextFilteredData.filter(market =>
       filterComp(search, market)
@@ -140,14 +139,6 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
   // - component did mount
   // - search, sortBy, selectedTab, data did change
   React.useEffect(() => {
-    if (
-      dataRef.current &&
-      JSON.stringify(data[selectedTab]) ===
-        JSON.stringify(dataRef.current[selectedTab])
-    ) {
-      return;
-    }
-
     applySearchAndSort();
   }, [search, sortBy, selectedTab, data]);
 
@@ -169,10 +160,10 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
       title={title}
       switchHeaders={true}
       showFilterSearch={true}
-      onSearchChange={setSearch}
+      onSearchChange={(search) => setSearch(search)}
       sortByOptions={sortByOptions}
       sortByStyles={sortByStyles}
-      updateDropdown={setSortBy}
+      updateDropdown={(sortBy) => setSortBy(sortBy)}
       bottomRightBarContent={bottomRightContent && bottomRightContent}
       toggle={toggle}
       hide={hide}
@@ -181,7 +172,9 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
         <SwitchLabelsGroup
           tabs={tabs}
           selectedTab={selectedTab}
-          selectTab={setSelectedTab}
+          selectTab={(tab) => {
+            setSelectedTab(tab)
+          }}
         />
       }
       content={

@@ -139,11 +139,11 @@
 
     > button {
       display: flex;
-      margin-left: 44px;
+      margin-left: @size-44;
 
       > svg {
-        height: @size-16;
-        width: @size-16;
+        height: @size-10;
+        width: @size-10;
         margin-right: @size-8;
 
         > path {
@@ -184,7 +184,7 @@
   }
 
   > button {
-    margin: @size-16;
+    margin-left: @size-44;
 
     svg {
       height: @size-10;
@@ -354,8 +354,8 @@
 
 .LineBreak {
   border-bottom: 1px solid @color-dark-grey;
-  margin-bottom: @size-48;
-  padding-bottom: @size-48;
+  margin-bottom: @size-24;
+  padding-bottom: @size-24;
 }
 
 .HasError {
@@ -389,11 +389,17 @@
     padding: @size-20;
     margin-top: @size-24;
 
+    @media @breakpoint-mobile-mid {
+      flex-direction: column;
+      min-width: unset;
+      padding: 0;
+    }
+
     > div {
       display: flex;
       flex-direction: column;
       min-width: 280px;
-	  margin-right: @size-22;
+	    margin-right: @size-22;
 
       > span:first-of-type {
         .text-14-medium;
@@ -406,6 +412,7 @@
 
         color: @color-positive;
         margin-top: @size-4;
+
       }
     }
 
@@ -451,6 +458,12 @@
 
     > div {
       margin: @size-12 @size-8 0;
+
+      > div {
+        > input {
+          min-width: 150px;
+        }
+      }
     }
   }
 }
@@ -514,6 +527,60 @@
 
       &:last-of-type {
         margin-bottom: @size-12;
+      }
+    }
+  }
+}
+
+.AddResolutionRules {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  > div {
+    .text-14;
+
+    align-items: center;
+    background: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+    margin-bottom: @size-8;
+    padding: @size-16;
+  }
+}
+
+.OutcomeDropdownInput {
+  > div {
+    display: flex;
+    flex-flow: row nowrap;
+
+    > span {
+      .text-14;
+
+      color: @color-primary-text;
+      flex: 0 0 auto;
+      padding: @size-16;
+    }
+
+    > div {
+      margin-bottom: @size-24;
+      max-width: 260px;
+    }
+  }
+
+  > Button {
+    display: flex;
+    width: 70px;
+    height: @size-40;
+    margin-left: @size-44;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      margin-right: @size-8;
+
+      > path {
+        fill: @color-primary-text;
       }
     }
   }

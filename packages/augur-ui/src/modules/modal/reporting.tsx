@@ -37,6 +37,7 @@ interface ModalReportingProps {
   migrateRep: boolean;
   migrateMarket: boolean;
   isDisputing: boolean;
+  getRepModal: Function;
 }
 
 interface ModalReportingState {
@@ -245,7 +246,7 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, migrateRep, isDisputing, migrateMarket } = this.props;
+    const { closeAction, title, market, rep, migrateRep, isDisputing, getRepModal } = this.props;
     const {
       checked,
       inputScalarOutcome,
@@ -292,7 +293,7 @@ export default class ModalReporting extends Component<
           {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
-              <SecondaryButton text="Get REP" action={null} />
+              <SecondaryButton text="Get REP" action={() => getRepModal()} />
             </div>
           )}
           <ReleasableRepNotice />

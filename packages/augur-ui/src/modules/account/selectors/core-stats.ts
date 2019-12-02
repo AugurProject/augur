@@ -25,7 +25,7 @@ export const selectCoreStats = createSelector(
       },
       realizedPL: {
         label: "Realized P/L",
-        value: "0", // need to get realized PnL from contract log emitted
+        value: formatDai(accountFunds.totalRealizedPL).formatted,
       },
     }),
 );

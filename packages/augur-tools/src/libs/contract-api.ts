@@ -1,29 +1,33 @@
+import { WSClient } from '@0x/mesh-rpc-client';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractInterfaces } from '@augurproject/core';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import {
+  GnosisSafeStateReponse,
+  IGnosisRelayAPI,
+  SafeResponse,
+} from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   Connectors,
+  CreateCategoricalMarketParams,
+  CreateScalarMarketParams,
+  CreateYesNoMarketParams,
   Getters,
   PlaceTradeDisplayParams,
   SimulateTradeData,
-  CreateScalarMarketParams,
-  CreateYesNoMarketParams,
-  CreateCategoricalMarketParams,
   ZeroXPlaceTradeDisplayParams,
   ZeroXSimulateTradeData,
   BrowserMesh,
   EmptyConnector,
-  HotLoadMarketInfo
+  HotLoadMarketInfo,
+  DisputeWindow
 } from '@augurproject/sdk';
-import { ContractInterfaces } from '@augurproject/core';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
-import { Account } from '../constants';
-import { ContractAddresses } from '@augurproject/artifacts';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
-import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
-import { WSClient } from '@0x/mesh-rpc-client';
-import { BaseConnector } from '@augurproject/sdk/build/connector';
+import { formatBytes32String } from 'ethers/utils';
+import { Account } from '../constants';
+import { makeGnosisDependencies, makeSigner } from './blockchain';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -33,13 +37,13 @@ export class ContractAPI {
     account: Account,
     provider: EthersProvider,
     addresses: ContractAddresses,
-    connector: BaseConnector = new EmptyConnector(),
+    connector: Connectors.BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
+    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
 
     return new ContractAPI(augur, provider, dependencies, account);
@@ -81,7 +85,7 @@ export class ContractAPI {
   }
 
   async getRepBond(): Promise<BigNumber> {
-    return await this.augur.contracts.universe.getOrCacheMarketRepBond_();
+    return this.augur.contracts.universe.getOrCacheMarketRepBond_();
   }
 
   async marketFauceting() {
@@ -206,7 +210,7 @@ export class ContractAPI {
     if (cost) {
       await this.faucet(cost);
     }
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), NULL_ADDRESS);
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(""));
   }
 
   async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
@@ -229,7 +233,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -244,12 +248,12 @@ export class ContractAPI {
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, formatBytes32String(""));
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, formatBytes32String(""));
   }
 
   async cancelOrder(orderID: string): Promise<void> {
@@ -279,7 +283,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -298,7 +302,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -318,7 +322,7 @@ export class ContractAPI {
       outcome,
       tradeGroupId: formatBytes32String('42'),
       expirationTime: new BigNumber(Date.now() + 10000000),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders,
       displayMinPrice: new BigNumber(0),
@@ -329,8 +333,8 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
-    await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, affiliateAddress);
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, fingerprint = formatBytes32String('11')): Promise<void> {
+    await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {
@@ -627,20 +631,57 @@ export class ContractAPI {
     return this.augur.gnosis.getGnosisSafeAddress(account);
   }
 
-  async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {
+  async createGnosisSafeViaRelay(paymentToken: string): Promise<SafeResponse> {
     const params = {
       paymentToken,
-      payment,
       owner: this.account.publicKey,
     };
     return this.augur.gnosis.createGnosisSafeViaRelay(params);
   }
 
-  async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
-    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
+  async getGnosisSafeDeploymentStatusViaRelay(owner: string, safe: string): Promise<GnosisSafeStateReponse> {
+    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay({
+      owner,
+      safe,
+    });
   }
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
     return await this.augur.hotLoading.getMarketDataParams({market});
   }
+
+  async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
+    return await this.augur.hotLoading.getCurrentDisputeWindowData({
+      augur: this.augur.contracts.augur.address,
+      universe: this.augur.contracts.universe.address,
+    });
+  }
+
+  async mineBlock(): Promise<void> {
+    await this.provider.sendAsync({
+      id: 42,
+      method: 'evm_mine',
+      params: [],
+      jsonrpc: '2.0'
+    });
+  }
+
+  async startMining(): Promise<void> {
+    await this.provider.sendAsync({
+      id: 42,
+      method: 'miner_start',
+      params: [],
+      jsonrpc: '2.0'
+    });
+  }
+
+  async stopMining(): Promise<void> {
+    await this.provider.sendAsync({
+      id: 42,
+      method: 'miner_stop',
+      params: [],
+      jsonrpc: '2.0'
+    });
+  }
+
 }

@@ -57,6 +57,8 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         "uint256 salt,",
         "bytes makerAssetData,",
         "bytes takerAssetData",
+        "bytes makerFeeAssetData,",
+        "bytes takerFeeAssetData",
         ")"
     ));
 
@@ -180,7 +182,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
      * Perform Augur Trades using 0x signed orders
      *
      * @param  _requestedFillAmount  Share amount to fill
-     * @param  _affiliateAddress     Address of affiliate to be paid fees if any
+     * @param  _fingerprint          Fingerprint of the user to restrict affiliate fees
      * @param  _tradeGroupId         Random id to correlate these fills as one trade action
      * @param  _orders               Array of encoded Order struct data
      * @param  _signatures           Array of signature data
@@ -188,7 +190,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
      */
     function trade(
         uint256 _requestedFillAmount,
-        address _affiliateAddress,
+        bytes32 _fingerprint,
         bytes32 _tradeGroupId,
         IExchange.Order[] memory _orders,
         bytes[] memory _signatures
@@ -210,7 +212,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
             IExchange _exchange = getExchangeFromAssetData(_order.makerAssetData);
 
             // Update 0x and pay protocol fee. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = _exchange.fillOrderNoThrow.value(_protocolFee)(
+            IExchange.FillResults memory totalFillResults = _exchange.fillOrder.value(_protocolFee)(
                 _order,
                 _fillAmountRemaining,
                 _signatures[i]
@@ -220,7 +222,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
                 continue;
             }
 
-            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _affiliateAddress, _tradeGroupId, msg.sender);
+            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _fingerprint, _tradeGroupId, msg.sender);
 
             _fillAmountRemaining = _fillAmountRemaining.sub(_amountTraded);
         }
@@ -242,7 +244,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(_zeroXTradeToken == this);
     }
 
-    function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
+    function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
         // parseOrderData will validate that the token being traded is the leigitmate one for the market
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
         // If the signed order creator doesnt have enough funds we still want to continue and take their order out of the list
@@ -254,7 +256,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         if (_order.makerAddress == _taker) {
             return 0;
         }
-        fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _affiliateAddress, _taker);
+        fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _fingerprint, _taker);
         return _amount;
     }
 
@@ -397,17 +399,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, IExchange _exchange, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken), _exchange);
         _zeroXOrder.makerAddress = msg.sender;
-        _zeroXOrder.takerAddress = address(0);
-        _zeroXOrder.feeRecipientAddress = address(0);
-        _zeroXOrder.senderAddress = address(0);
         _zeroXOrder.makerAssetAmount = _attoshares;
         _zeroXOrder.takerAssetAmount = _attoshares;
-        _zeroXOrder.makerFee = 0;
-        _zeroXOrder.takerFee = 0;
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
         _zeroXOrder.salt = _salt;
         _zeroXOrder.makerAssetData = _assetData;
         _zeroXOrder.takerAssetData = _assetData;
         _orderHash = _exchange.getOrderInfo(_zeroXOrder).orderHash;
     }
+
+    function () external payable {}
 }

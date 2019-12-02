@@ -1,6 +1,6 @@
 import React from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
-import { MenuChevron } from 'modules/common/icons';
+import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
 import getValue from 'utils/get-value';
 import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
@@ -56,18 +56,18 @@ export default class CategoryFilters extends React.Component<
 
   componentDidUpdate(prevProps: CategoryFiltersProps) {
     if (JSON.stringify(prevProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
-      if (prevProps.categoryMetaData && prevProps.categoryMetaData.categories) {
-        const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, prevProps.categoryMetaData.categories);
+      if (this.props.categoryMetaData && this.props.categoryMetaData.categories) {
+        const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, this.props.categoryMetaData.categories);
         this.setState({
           currentCategories: newCategory ? newCategory.children : null,
         });
       }
     }
 
-    const selectedCategory = parseQuery(prevProps.location.search)[
+    const selectedCategory = parseQuery(this.props.location.search)[
       CATEGORY_PARAM_NAME
     ];
-    const oldSelectedCategory = parseQuery(this.props.location.search)[
+    const oldSelectedCategory = parseQuery(prevProps.location.search)[
       CATEGORY_PARAM_NAME
     ];
 
@@ -77,7 +77,7 @@ export default class CategoryFilters extends React.Component<
     const toSelect = selected[selected.length - 1];
     const allOthers = selected.length === 1 ? [] : selected.slice(0, selected.length - 1);
 
-    if ((!prevProps.isSearching && !this.state.selectedCategory && prevProps.categoryMetaData && selectedCategory) ||
+    if ((!this.props.isSearching && !this.state.selectedCategory && this.props.categoryMetaData && selectedCategory) ||
        (selectedCategory && selectedCategory !== oldSelectedCategory)) {
       this.getChildrenCategories(toSelect, allOthers, false);
     }
@@ -113,7 +113,7 @@ export default class CategoryFilters extends React.Component<
   }
 
   renderPopularCategories() {
-    const renderPopular = this.props.popularCategories.map((item, idx) => {
+    let renderPopular = this.props.popularCategories.map((item, idx) => {
       if (this.props.isSearching) {
         // No meta data yet
         return (
@@ -139,6 +139,14 @@ export default class CategoryFilters extends React.Component<
         </div>
       );
     });
+
+    if (this.props.popularCategories.length === 0) {
+      renderPopular = (
+        <span>
+          {SearchIcon} No categories found
+        </span>
+      );
+    }
 
     return (
       <div className={Styles.CategoriesGroup}>

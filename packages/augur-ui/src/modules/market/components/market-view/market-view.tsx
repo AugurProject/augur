@@ -18,7 +18,6 @@ import MarketComments from 'modules/market/containers/market-comments';
 import {
   CATEGORICAL,
   BUY,
-  YES_NO_YES_OUTCOME_NAME,
   PUBLICFILLORDER,
   LONG,
   YES_NO_YES_ID,
@@ -27,6 +26,9 @@ import {
   TRADING_TUTORIAL_COPY,
   MODAL_TUTORIAL_OUTRO,
   MODAL_TUTORIAL_INTRO,
+  TUTORIAL_QUANTITY,
+  TUTORIAL_PRICE,
+  TRADING_TUTORIAL_OUTCOMES,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -47,6 +49,8 @@ import { formatShares, formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
 import { TXEventName } from '@augurproject/sdk/src';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKETS } from 'modules/routes/constants/views';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -72,7 +76,6 @@ interface MarketViewProps {
   hotloadMarket: Function;
   canHotload: boolean;
   removeAlert: Function;
-  daysPassed?: number;
 }
 
 interface DefaultOrderPropertiesMap {
@@ -89,10 +92,8 @@ interface MarketViewState {
   selectedOutcomeProperties: DefaultOrderPropertiesMap;
   tutorialStep: number;
   introShowing: boolean;
+  tutorialError: string;
 }
-
-const TUTORIAL_QUANTITY = 100;
-const TUTORIAL_PRICE = 0.4;
 
 export default class MarketView extends Component<
   MarketViewProps,
@@ -128,6 +129,7 @@ export default class MarketView extends Component<
         ? props.market.defaultSelectedOutcomeId
         : undefined,
       fixedPrecision: 4,
+      tutorialError: '',
       selectedOutcomeProperties: {
         1: {
           ...this.DEFAULT_ORDER_PROPERTIES,
@@ -156,6 +158,8 @@ export default class MarketView extends Component<
       loadMarketTradingHistory,
       tradingTutorial,
     } = this.props;
+    this.tradingTutorialWidthCheck();
+
     if (isConnected && !!marketId && !tradingTutorial) {
       loadFullMarket(marketId);
       loadMarketTradingHistory(marketId);
@@ -184,17 +188,19 @@ export default class MarketView extends Component<
       tradingTutorial,
       updateModal,
     } = this.props;
+    this.tradingTutorialWidthCheck();
 
     if (tradingTutorial) {
       if (
-        !nextProps.isMarketLoading && !this.state.introShowing &&
+        !nextProps.isMarketLoading &&
+        !this.state.introShowing &&
         this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
         updateModal({
           type: MODAL_TUTORIAL_INTRO,
           next: this.next,
         });
-        this.setState({introShowing: true});
+        this.setState({ introShowing: true });
       }
       return;
     }
@@ -211,6 +217,15 @@ export default class MarketView extends Component<
     if (isMarketLoading !== nextProps.isMarketLoading) {
       closeMarketLoadingModal();
       this.showMarketDisclaimer();
+    }
+  }
+
+  tradingTutorialWidthCheck() {
+    if (this.props.tradingTutorial && window.innerWidth <= 1280) {
+      // TEMP_TABLET
+      // Don't show tradingTutorial on mobile,
+      // redirect to markets when we enter tablet breakpoints
+      this.props.history.push({ pathname: makePath(MARKETS) });
     }
   }
 
@@ -285,9 +300,40 @@ export default class MarketView extends Component<
   }
 
   updateSelectedOrderProperties(selectedOrderProperties) {
+    this.checkTutorialErrors(selectedOrderProperties);
+
     this.setState({
       selectedOrderProperties,
     });
+  }
+
+  checkTutorialErrors(selectedOrderProperties) {
+    if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY) {
+      const invalidQuantity = parseFloat(selectedOrderProperties.orderQuantity) !== TUTORIAL_QUANTITY;
+      this.setState({
+        tutorialError:
+          parseFloat(selectedOrderProperties.orderQuantity) !==
+          TUTORIAL_QUANTITY
+            ? 'Please enter a quantity of 100 for this order to be filled on the test market'
+            : '',
+      });
+
+      return invalidQuantity;
+    }
+
+    if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE) {
+      const invalidPrice = parseFloat(selectedOrderProperties.orderPrice) !== TUTORIAL_PRICE;
+      this.setState({
+        tutorialError:
+         invalidPrice
+            ? 'Enter a limit price of $.40 for this order to be filled on the test market'
+            : '',
+      });
+
+      return invalidPrice;
+    }
+
+    return false;
   }
 
   toggleMiddleColumn(show: string) {
@@ -299,10 +345,17 @@ export default class MarketView extends Component<
   };
 
   next = () => {
-    this.setState({ tutorialStep: this.state.tutorialStep + 1 });
+    if (!this.checkTutorialErrors(this.state.selectedOrderProperties)) {
+      this.setState({ tutorialStep: this.state.tutorialStep + 1 });
+    }
     const { market, updateModal, removeAlert } = this.props;
 
     if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
+      const { selectedOutcomeId } = this.state;
+      let outcomeId =
+      selectedOutcomeId === null || selectedOutcomeId === undefined
+        ? market.defaultSelectedOutcomeId
+        : selectedOutcomeId;
       this.props.addAlert({
         name: PUBLICFILLORDER,
         toast: true,
@@ -312,7 +365,7 @@ export default class MarketView extends Component<
         params: {
           market: TRADING_TUTORIAL,
           amountFilled: TUTORIAL_QUANTITY,
-          outcome: YES_NO_YES_OUTCOME_NAME,
+          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           orderCreator: '0x1',
           price: TUTORIAL_PRICE,
           amount: TUTORIAL_QUANTITY,
@@ -354,7 +407,6 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
-      daysPassed,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -364,6 +416,7 @@ export default class MarketView extends Component<
       extendOutcomesList,
       extendOrders,
       tutorialStep,
+      tutorialError,
     } = this.state;
     if (isMarketLoading) {
       if (canHotload && !tradingTutorial) hotloadMarket(marketId);
@@ -376,17 +429,17 @@ export default class MarketView extends Component<
         />
       );
     }
+
     let outcomeId =
       selectedOutcomeId === null || selectedOutcomeId === undefined
         ? market.defaultSelectedOutcomeId
         : selectedOutcomeId;
-    if (preview) {
+    if (preview && !tradingTutorial) {
       outcomeId = getDefaultOutcomeSelected(market.marketType);
     }
     const outcome = outcomes.find(
       outcomeValue => outcomeValue.id === outcomeId
     );
-    const selectedOutcomeName: string = outcome ? outcome.description : '';
 
     const networkId = getNetworkId();
 
@@ -404,7 +457,7 @@ export default class MarketView extends Component<
           id: 'trading-tutorial-pending-order',
           type: BUY,
           avgPrice: formatDai(TUTORIAL_PRICE),
-          outcomeName: YES_NO_YES_OUTCOME_NAME,
+          outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
           tokensEscrowed: formatShares(0),
           sharesEscrowed: formatShares(0),
@@ -425,7 +478,7 @@ export default class MarketView extends Component<
           id: 'trading-tutorial-pending-order',
           type: BUY,
           price: createBigNumber(TUTORIAL_PRICE),
-          outcome: YES_NO_YES_OUTCOME_NAME,
+          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           timestamp: convertUnixToFormattedDate(currentTimestamp),
           trades: [
             {
@@ -435,7 +488,7 @@ export default class MarketView extends Component<
               marketId: market.id,
               type: BUY,
               price: createBigNumber(TUTORIAL_PRICE),
-              outcome: YES_NO_YES_OUTCOME_NAME,
+              outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
               timestamp: convertUnixToFormattedDate(currentTimestamp),
               transactionHash: '0xerjejfsdk',
             },
@@ -449,10 +502,10 @@ export default class MarketView extends Component<
       positions = [
         {
           type: LONG,
-          outcomeName: YES_NO_YES_OUTCOME_NAME,
+          outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           quantity: formatShares(TUTORIAL_QUANTITY),
           id: TRADING_TUTORIAL,
-          outcomeId: YES_NO_YES_ID,
+          outcomeId: outcomeId,
           totalValue: formatDai(TUTORIAL_QUANTITY),
           totalReturns: formatDai(TUTORIAL_QUANTITY),
           unrealizedNet: formatDai(TUTORIAL_QUANTITY),
@@ -468,6 +521,19 @@ export default class MarketView extends Component<
     }
     if (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) {
       selected = 2;
+    }
+
+    const totalSteps = Object.keys(TRADING_TUTORIAL_STEPS).length / 2 - 2;
+
+    let orderBookMarket = market;
+
+    if (tradingTutorial && (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS || tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS)) {
+      let orderBook = market.orderBook;
+      orderBook[outcomeId] = orderBook[selectedOutcomeId].filter(order => !order.disappear);
+      orderBookMarket = {
+        ...market,
+        orderBook
+      }
     }
 
     return (
@@ -520,12 +586,11 @@ export default class MarketView extends Component<
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
                         <h3>Price History</h3>
-                        <MarketOutcomesChart
+                        {!preview && <MarketOutcomesChart
                           marketId={marketId}
                           market={preview && market}
                           selectedOutcomeId={outcomeId}
-                          daysPassed={daysPassed}
-                        />
+                        />}
                       </div>
                     </div>
                   </ModulePane>
@@ -597,7 +662,7 @@ export default class MarketView extends Component<
 
                       <TradingForm
                         market={market}
-                        initialLiquidity={preview && !initialLiquidity}
+                        initialLiquidity={preview && !tradingTutorial}
                         tradingTutorial={tradingTutorial}
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeId}
@@ -644,7 +709,7 @@ export default class MarketView extends Component<
               </>
             ) : (
               <>
-                <div className={Styles.MarketView__parent}>
+                <div className={classNames(Styles.MarketView__parent, {[Styles.Tutorial]: tradingTutorial})}>
                   <section className={Styles.MarketView__body}>
                     <div
                       className={classNames({
@@ -659,7 +724,13 @@ export default class MarketView extends Component<
                         market={preview && market}
                         preview={preview}
                         next={this.next}
-                        back={this.back}
+                        showTutorialData={tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA}
+                        step={tutorialStep}
+                        totalSteps={totalSteps}
+                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                        showTutorialDetails={tradingTutorial &&
+                          tutorialStep ===
+                            TRADING_TUTORIAL_STEPS.MARKET_DETAILS}
                       />
                       {tradingTutorial &&
                         tutorialStep ===
@@ -667,12 +738,9 @@ export default class MarketView extends Component<
                           <TutorialPopUp
                             top
                             step={tutorialStep}
-                            totalSteps={
-                              Object.keys(TRADING_TUTORIAL_STEPS).length / 2
-                            }
+                            totalSteps={totalSteps}
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                             next={this.next}
-                            back={this.back}
                           />
                         )}
                     </div>
@@ -683,8 +751,35 @@ export default class MarketView extends Component<
                           className={classNames(Styles.MarketView__component, {
                             [Styles.TradingFormTutorial]:
                               tradingTutorial &&
+                              ((tutorialStep >=
+                                TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                                tutorialStep <=
+                                  TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                                tutorialStep ===
+                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER),
+                            [Styles.PlaceOrderTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.PLACE_ORDER,
+                            [Styles.SelectOutcomeTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
+                            [Styles.BuyingSharesTutorial]:
+                              tradingTutorial &&
                               tutorialStep ===
                                 TRADING_TUTORIAL_STEPS.BUYING_SHARES,
+                            [Styles.QuantityTutorial]:
+                              tradingTutorial &&
+                              tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
+                            [Styles.LimitPriceTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
+                            [Styles.OrderValueTutorial]:
+                              tradingTutorial &&
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.ORDER_VALUE,
                           })}
                         >
                           <TradingForm
@@ -697,19 +792,39 @@ export default class MarketView extends Component<
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
+                            tutorialNext={this.next}
                           />
                           {tradingTutorial &&
-                            tutorialStep ===
-                              TRADING_TUTORIAL_STEPS.BUYING_SHARES && (
+                            ((tutorialStep >=
+                              TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                              tutorialStep <=
+                                TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                              tutorialStep ===
+                                TRADING_TUTORIAL_STEPS.PLACE_ORDER) && (
                               <TutorialPopUp
-                                left
-                                next={this.next}
-                                back={this.back}
-                                step={tutorialStep}
-                                totalSteps={
-                                  Object.keys(TRADING_TUTORIAL_STEPS).length / 2
+                                left={
+                                  tutorialStep !==
+                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER
                                 }
+                                leftBottom={
+                                  tutorialStep ===
+                                  TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                                }
+                                next={() => {
+                                  if (tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER) {
+                                    this.updateSelectedOrderProperties({
+                                      orderQuantity: '',
+                                      orderPrice: '',
+                                    });
+                                  }
+                                  this.next();
+                                }}
+                                step={tutorialStep}
+                                totalSteps={totalSteps}
                                 text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                                error={
+                                  tutorialError !== '' ? tutorialError : null
+                                }
                               />
                             )}
                         </div>
@@ -801,12 +916,8 @@ export default class MarketView extends Component<
                                 <TutorialPopUp
                                   bottom
                                   next={this.next}
-                                  back={this.back}
                                   step={tutorialStep}
-                                  totalSteps={
-                                    Object.keys(TRADING_TUTORIAL_STEPS).length /
-                                    2
-                                  }
+                                  totalSteps={totalSteps}
                                   text={TRADING_TUTORIAL_COPY[tutorialStep]}
                                 />
                               )}
@@ -839,7 +950,7 @@ export default class MarketView extends Component<
                         toggle={this.toggleOrderBook}
                         extend={extendOrderBook}
                         hide={extendTradeHistory}
-                        market={market}
+                        market={orderBookMarket}
                         initialLiquidity={preview}
                       />
                       {tradingTutorial &&
@@ -847,11 +958,8 @@ export default class MarketView extends Component<
                           <TutorialPopUp
                             right
                             next={this.next}
-                            back={this.back}
                             step={tutorialStep}
-                            totalSteps={
-                              Object.keys(TRADING_TUTORIAL_STEPS).length / 2
-                            }
+                            totalSteps={totalSteps}
                             text={TRADING_TUTORIAL_COPY[tutorialStep]}
                           />
                         )}
@@ -874,13 +982,15 @@ export default class MarketView extends Component<
                             toggle={this.toggleTradeHistory}
                             extend={extendTradeHistory}
                             hide={extendOrderBook}
+                            tradingTutorial={tradingTutorial}
+                            groupedTradeHistory={market.groupedTradeHistory}
                           />
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
-                <MarketComments marketId={marketId} networkId={networkId} />
+                {!tradingTutorial && <MarketComments marketId={marketId} networkId={networkId} />}
               </>
             )
           }

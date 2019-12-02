@@ -11,6 +11,7 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/utility/IRepSymbol.sol';
 
 
 /**
@@ -21,7 +22,6 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
     string constant public name = "Reputation";
-    string constant public symbol = "REP";
     IUniverse internal universe;
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
@@ -37,6 +37,10 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+    }
+
+    function symbol() public view returns (string memory) {
+        return IRepSymbol(augur.lookup("RepSymbol")).getRepSymbol(address(augur), address(universe));
     }
 
     /**

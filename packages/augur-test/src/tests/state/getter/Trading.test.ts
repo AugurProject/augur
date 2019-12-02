@@ -109,7 +109,7 @@ describe('State API :: Trading :: ', () => {
     await expect(trades[market1.address]).toHaveLength(2);
     await expect(trades[market2.address]).toBeUndefined();
 
-    // Test `ignoreReportingStates` param
+    // Test `filterFinalized` param
     const newTime = (await market1.getEndTime_()).plus(1);
     await john.setTimestamp(newTime);
 
@@ -128,7 +128,7 @@ describe('State API :: Trading :: ', () => {
 
     trades = await api.route('getTradingHistory', {
       marketIds: [market1.address, market2.address],
-      ignoreReportingStates: [MarketReportingState.Finalized],
+      filterFinalized: true,
     });
 
     await expect(trades[market1.address]).toBeUndefined();
@@ -267,18 +267,12 @@ describe('State API :: Trading :: ', () => {
       newOrderId
     );
 
-    // Test `ignoreReportingStates` param
+    // Test `filterFinalized` param
     orders = await api.route('getOrders', {
       marketId: market.address,
-      ignoreReportingStates: [MarketReportingState.Finalized],
+      filterFinalized: true,
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(2);
-
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      ignoreReportingStates: [MarketReportingState.PreReporting],
-    });
-    await expect(orders).toMatchObject({});
   });
 
   test(':getBetterWorseOrders', async () => {

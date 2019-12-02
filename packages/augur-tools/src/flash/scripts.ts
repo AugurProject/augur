@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH, NULL_ADDRESS } from '../constants';
+import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -25,8 +25,9 @@ import {
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
-import { MarketList } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
+import { spawn } from 'child_process';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -36,12 +37,14 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'account',
         abbr: 'a',
-        description: 'account address to connect with, if no address provided contract owner is used',
+        description:
+          'account address to connect with, if no address provided contract owner is used',
       },
       {
         name: 'network',
         abbr: 'n',
-        description: 'Which network to connect to. Defaults to "environment" aka local node.',
+        description:
+          'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
         name: 'useSdk',
@@ -77,7 +80,8 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'time-controlled',
         abbr: 't',
-        description: 'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
+        description:
+          'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
         flag: true,
       },
       {
@@ -100,7 +104,12 @@ export function addScripts(flash: FlashSession) {
         config['useNormalTime'] = false;
       }
 
-      const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
+      const { addresses } = await deployContracts(
+        this.provider,
+        this.accounts[0],
+        compilerOutput,
+        config
+      );
       flash.contractAddresses = addresses;
 
       if (useSdk) {
@@ -119,15 +128,27 @@ export function addScripts(flash: FlashSession) {
         description: 'Quantity of Cash.',
         required: true,
       },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
+      const target = String(args.target);
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
 
       await user.faucet(atto);
+
+      // if we have a target we transfer from current account to target.
+      if(target) {
+        await user.augur.contracts.cash.transfer(target, atto);
+      }
     },
   });
 
@@ -174,7 +195,9 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
-      const payout = String(args.payoutNumerators).split(',').map(i => new BigNumber(i));
+      const payout = String(args.payoutNumerators)
+        .split(',')
+        .map(i => new BigNumber(i));
       console.log(payout);
       await user.migrateOutByPayoutNumerators(payout, atto);
     },
@@ -261,7 +284,8 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketId',
         abbr: 'm',
-        description: 'ASSUMES: binary or categorical markets, market id to place the order',
+        description:
+          'ASSUMES: binary or categorical markets, market id to place the order',
       },
       {
         name: 'outcome',
@@ -289,10 +313,17 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(null, null, true, address);
       const type =
         String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 0 : 1;
-      const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
-      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(Number(args.price).toFixed(2))), new BigNumber(0), new BigNumber("0.01"));
-      const nullOrderId = stringTo32ByteHex("");
-      const tradegroupId = stringTo32ByteHex("tradegroupId");
+      const onChainShares = convertDisplayAmountToOnChainAmount(
+        new BigNumber(String(args.amount)),
+        new BigNumber(100)
+      );
+      const onChainPrice = convertDisplayPriceToOnChainPrice(
+        new BigNumber(String(Number(args.price).toFixed(2))),
+        new BigNumber(0),
+        new BigNumber('0.01')
+      );
+      const nullOrderId = stringTo32ByteHex('');
+      const tradegroupId = stringTo32ByteHex('tradegroupId');
       const result = await user.placeOrder(
         String(args.marketId),
         new BigNumber(type),
@@ -307,7 +338,6 @@ export function addScripts(flash: FlashSession) {
       this.log(`place order ${result}`);
     },
   });
-
 
   flash.addScript({
     name: 'fill-market-orders',
@@ -346,14 +376,21 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const address = args.userAccount as string;
       const user = await this.ensureUser(null, null, true, address);
-      const adjPrice = Number(args.price).toFixed(2)
+      const adjPrice = Number(args.price).toFixed(2);
       // switch bid/ask order type to take the order
       const type =
         String(args.orderType).toLowerCase() === 'bid' || 'buy' ? 1 : 0;
-      const onChainShares = convertDisplayAmountToOnChainAmount(new BigNumber(String(args.amount)), new BigNumber(100));
-      const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(String(adjPrice)), new BigNumber(0), new BigNumber("0.01"));
-      const tradegroupId = stringTo32ByteHex("tradegroupId");
-      const result = await user.takeBestOrder(
+      const onChainShares = convertDisplayAmountToOnChainAmount(
+        new BigNumber(String(args.amount)),
+        new BigNumber(100)
+      );
+      const onChainPrice = convertDisplayPriceToOnChainPrice(
+        new BigNumber(String(adjPrice)),
+        new BigNumber(0),
+        new BigNumber('0.01')
+      );
+      const tradegroupId = stringTo32ByteHex('tradegroupId');
+      await user.takeBestOrder(
         String(args.marketId),
         new BigNumber(type),
         onChainShares,
@@ -366,11 +403,13 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-
   flash.addScript({
     name: 'fake-all',
     async call(this: FlashSession) {
-      await this.call('deploy', {write_artifacts: true, time_controlled: true});
+      await this.call('deploy', {
+        write_artifacts: true,
+        time_controlled: true,
+      });
       await this.call('create-canned-markets-and-orders', {});
     },
   });
@@ -378,7 +417,10 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'normal-all',
     async call(this: FlashSession) {
-      await this.call('deploy', {write_artifacts: true, time_controlled: false});
+      await this.call('deploy', {
+        write_artifacts: true,
+        time_controlled: false,
+      });
       await this.call('create-canned-markets-and-orders', {});
     },
   });
@@ -389,7 +431,8 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'quiet',
         abbr: 'q',
-        description: 'Do not print anything (just returns). Only useful in interactive mode.',
+        description:
+          'Do not print anything (just returns). Only useful in interactive mode.',
         flag: true,
       },
       {
@@ -414,9 +457,8 @@ export function addScripts(flash: FlashSession) {
       const quiet = args.quiet as boolean;
       const v1 = args.v1 as boolean;
       const fromBlock = Number(args.from || 0);
-      const toBlock = args.to === null || args.to === 'latest'
-        ? 'latest'
-        : Number(args.to);
+      const toBlock =
+        args.to === null || args.to === 'latest' ? 'latest' : Number(args.to);
 
       const logs = await this.provider.getLogs({
         address: user.augur.addresses.Augur,
@@ -440,21 +482,26 @@ export function addScripts(flash: FlashSession) {
 
       // Logs from AugurV1 require additional calls to the blockchain.
       if (v1) {
-        parsedLogs = await Promise.all(parsedLogs.map(async (log) => {
-          if (log.name === 'OrderCreated') {
-            const { shareToken } = log;
-            const shareTokenContract = new ethers.Contract(
-              shareToken,
-              new ethers.utils.Interface(abiV1.ShareToken),
-              this.provider);
-            const market = await shareTokenContract.functions['getMarket']();
-            const outcome = (await shareTokenContract.functions['getOutcome']()).toNumber();
+        parsedLogs = await Promise.all(
+          parsedLogs.map(async log => {
+            if (log.name === 'OrderCreated') {
+              const { shareToken } = log;
+              const shareTokenContract = new ethers.Contract(
+                shareToken,
+                new ethers.utils.Interface(abiV1.ShareToken),
+                this.provider
+              );
+              const market = await shareTokenContract.functions['getMarket']();
+              const outcome = (await shareTokenContract.functions[
+                'getOutcome'
+              ]()).toNumber();
 
-            return Object.assign({}, log, { market, outcome });
-          } else {
-            return log;
-          }
-        }));
+              return Object.assign({}, log, { market, outcome });
+            } else {
+              return log;
+            }
+          })
+        );
       }
 
       if (!quiet) {
@@ -478,7 +525,7 @@ export function addScripts(flash: FlashSession) {
     name: 'generate-templates',
     async call(this: FlashSession) {
       generateTemplateValidations();
-      this.log(`Generated Templates to augur-artifacts\n`);
+      this.log('Generated Templates to augur-artifacts\n');
     },
   });
 
@@ -507,13 +554,15 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'timestamp',
         abbr: 't',
-        description: "Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/",
+        description:
+          "Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/",
         required: true,
       },
       {
         name: 'format',
         abbr: 'f',
-        description: 'Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/',
+        description:
+          'Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -539,7 +588,8 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'count',
         abbr: 'c',
-        description: 'Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.',
+        description:
+          'Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.',
         required: true,
       },
     ],
@@ -729,7 +779,7 @@ export function addScripts(flash: FlashSession) {
         marketInfo.numOutcomes,
         marketInfo.marketType,
         outcome,
-        isInvalid,
+        isInvalid
       );
 
       await user.contribute(market, payoutNumerators, stake, desc);
@@ -809,7 +859,7 @@ export function addScripts(flash: FlashSession) {
         marketInfo.numOutcomes,
         marketInfo.marketType,
         outcome,
-        isInvalid,
+        isInvalid
       );
 
       await user.contributeToTentative(market, payoutNumerators, stake, desc);
@@ -850,7 +900,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser(this.network, true);
-      let marketId = args.marketId as string || null;
+      let marketId = (args.marketId as string) || null;
 
       if (marketId === null) {
         const market = await user.createReasonableYesNoMarket();
@@ -897,7 +947,7 @@ export function addScripts(flash: FlashSession) {
       const slow = args.slow as boolean;
       const rounds = args.rounds ? Number(args.rounds) : 0;
 
-      let marketId = args.marketId as string || null;
+      let marketId = (args.marketId as string) || null;
       if (marketId === null) {
         const market = await user.createReasonableYesNoMarket();
         marketId = market.address;
@@ -915,7 +965,7 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'markets',
-    async call(this: FlashSession): Promise<MarketList|null> {
+    async call(this: FlashSession): Promise<MarketList | null> {
       if (this.noProvider()) return null;
       const user = await this.ensureUser(this.network, true);
 
@@ -927,4 +977,127 @@ export function addScripts(flash: FlashSession) {
       return markets;
     },
   });
+
+  flash.addScript({
+    name: '0x-docker',
+    async call(this: FlashSession) {
+      if (this.noProvider()) return null;
+
+      const networkId = await this.provider.getNetworkId();
+      const ethNode = this.network.http;
+      const addresses = Addresses[networkId];
+
+      // We set --net=host so that 0x mesh docker can talk to the host, where
+      // the ethnode is being run. It might be elsewhere in non-dev deployments.
+      // This is also making the '-p', options unnecessary.
+
+      console.log('Starting 0x mesh');
+      const mesh = spawn('docker', [
+        'run',
+        '--rm',
+        '-p', '60557:60557',
+        '-p', '60558:60558',
+        '-p', '60559:60559',
+        '-e', 'ETHEREUM_NETWORK_ID=42', // doesn't understand atypical network ids
+        '--net=host',
+        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
+        '-e', 'USE_BOOTSTRAP_LIST=false',
+        '-e', 'BLOCK_POLLING_INTERVAL=1s',
+        `-e', 'CUSTOM_CONTRACT_ADDRESSES='${JSON.stringify(addresses)}'`,
+        '-e', 'VERBOSITY=5',
+        '0xorg/mesh:latest',
+      ]);
+
+      mesh.on('error', console.error);
+      mesh.on('exit', (code, signal) => {
+        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
+      });
+      mesh.stdout.on('data', (data) => {
+        console.log(data.toString());
+      });
+      mesh.stderr.on('data', (data) => {
+        console.error(data.toString());
+      });
+    },
+  })
+  flash.addScript({
+    name: 'get-contract-address',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Name of contract',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      console.log(this.contractAddresses[args['name'] as string]);
+    },
+  });
+  flash.addScript({
+    name: 'check-safe-registration',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'address to check registry contract for the safe address.',
+      },
+    ],
+    async call(
+      this: FlashSession,
+      args: FlashArguments
+    ): Promise<void> {
+      if (this.noProvider()) return null;
+      const user = await this.ensureUser(this.network, false);
+
+      const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
+      console.log(result);
+  }});
+
+  flash.addScript({
+    name: '0x-docker',
+    async call(this: FlashSession) {
+      if (this.noProvider()) return null;
+
+      const networkId = await this.provider.getNetworkId();
+      // const ethNode = this.network.http;
+      const ethNode = 'http://geth:8545';
+      const addresses = Addresses[networkId];
+
+      console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
+
+      const mesh = spawn('docker', [
+        'run',
+        '--rm',
+        '--network', 'augur',
+        '--name', '0x',
+        '-p', '60557:60557', // rpc_port_number
+        '-p', '60558:60558', // P2PTCPPort
+        '-p', '60559:60559', // P2PWebSocketsPort
+        '-e', `ETHEREUM_CHAIN_ID=${networkId}`,
+        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
+        '-e', 'USE_BOOTSTRAP_LIST=false',
+        '-e', 'BLOCK_POLLING_INTERVAL=1s',
+        '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
+        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
+        '-e', 'VERBOSITY=4', // 5=debug 6=trace
+        '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
+        '0xorg/mesh:7.1.1-beta-0xv3', // TODO update this until we hit a stable release
+      ]);
+
+      mesh.on('error', console.error);
+      mesh.on('exit', (code, signal) => {
+        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
+      });
+      mesh.stdout.on('data', (data) => {
+        console.log(data.toString());
+      });
+      mesh.stderr.on('data', (data) => {
+        console.error(data.toString());
+      });
+    },
+  })
+
 }

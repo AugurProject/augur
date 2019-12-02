@@ -28,7 +28,6 @@ function ChannelHeader () {
       <div
         className='open-controlpanel icon flaticon-lines18'
         onClick={handleMenuButtonClick}
-        style={{ ...uiStore.theme }}
       >
         {networkStore.unreadEntriesCount > 0 ? (
           <span className='unreadMessages'>{networkStore.unreadEntriesCount}</span>

@@ -13,6 +13,7 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { TestEthersProvider } from '../../../libs/TestEthersProvider';
+import { formatBytes32String } from 'ethers/utils';
 
 const ZERO_BYTES = stringTo32ByteHex('');
 
@@ -358,7 +359,7 @@ describe('State API :: Users :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      '0x0000000000000000000000000000000000000000'
+      formatBytes32String("")
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -711,7 +712,7 @@ describe('State API :: Users :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket2.address,
       john.account.publicKey,
-      '0x0000000000000000000000000000000000000000'
+      formatBytes32String("")
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);

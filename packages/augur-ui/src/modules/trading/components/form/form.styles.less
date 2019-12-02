@@ -64,7 +64,7 @@
           text-transform: uppercase;
           border: none;
           display: flex;
-  
+
           > svg {
             margin-right: @size-6;
           }
@@ -157,6 +157,28 @@
 
           > span > span {
             .mono-9-bold;
+          }
+        }
+
+        &.Liquidity {
+          margin-left: 0;
+
+          > svg {
+            height: @size-12;
+            width: @size-12;
+
+            > circle {
+              opacity: 1;
+              stroke: @color-primary-text;
+            }
+
+            > rect {
+              fill: @color-primary-text;
+            }
+
+            > path {
+              fill: @color-primary-text;
+            }
           }
         }
       }

@@ -23,7 +23,12 @@ def test_rep_oracle(contractsFixture, market, universe):
     addLiquidity(uniswap, cash, reputationToken, cashAmount, repAmount, account)
 
     # The reserves have been modified so we will have new cumulative values which will affect the perceived price weighted by a single block
-    (cashReserves, repReserves) = uniswap.getReservesCumulative()
+    (reserves0, reserves1) = uniswap.getReservesCumulative()
+    if cash.address > reputationToken.address:
+        repReserves, cashReserves = reserves0, reserves1
+    else:
+        cashReserves, repReserves = reserves0, reserves1
+
     assert cashReserves == cashAmount
     assert repReserves == repAmount
 

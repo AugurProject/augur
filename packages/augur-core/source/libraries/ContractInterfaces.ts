@@ -3,13 +3,31 @@ import * as c from "./GenericContractInterfaces";
 export * from "./GenericContractInterfaces";
 export class Contract extends c.Contract<BigNumber> {
 }
+export class ERC1155Proxy extends c.ERC1155Proxy<BigNumber> {
+}
+export class ERC20Proxy extends c.ERC20Proxy<BigNumber> {
+}
+export class ERC721Proxy extends c.ERC721Proxy<BigNumber> {
+}
+export class Coordinator extends c.Coordinator<BigNumber> {
+}
+export class CoordinatorRegistry extends c.CoordinatorRegistry<BigNumber> {
+}
+export class DevUtils extends c.DevUtils<BigNumber> {
+}
+export class WETH9 extends c.WETH9<BigNumber> {
+}
+export class ZRXToken extends c.ZRXToken<BigNumber> {
+}
+export class Exchange extends c.Exchange<BigNumber> {
+}
+export class AffiliateValidator extends c.AffiliateValidator<BigNumber> {
+}
 export class Augur extends c.Augur<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
-}
-export class CashFaucetProxy extends c.CashFaucetProxy<BigNumber> {
 }
 export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
@@ -29,15 +47,11 @@ export class TestNetDaiVat extends c.TestNetDaiVat<BigNumber> {
 }
 export class TestNetReputationToken extends c.TestNetReputationToken<BigNumber> {
 }
-export class TestOrders extends c.TestOrders<BigNumber> {
-}
 export class Time extends c.Time<BigNumber> {
 }
 export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
 export class WarpSync extends c.WarpSync<BigNumber> {
-}
-export class ZeroXExchange extends c.ZeroXExchange<BigNumber> {
 }
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
 }
@@ -55,7 +69,7 @@ export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFacto
 }
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 }
-export class DelegationTarget extends c.DelegationTarget<BigNumber> {
+export class Affiliates extends c.Affiliates<BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }
@@ -93,8 +107,6 @@ export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
 }
-export class UniswapV2 extends c.UniswapV2<BigNumber> {
-}
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
@@ -104,4 +116,6 @@ export class Formulas extends c.Formulas<BigNumber> {
 export class HotLoading extends c.HotLoading<BigNumber> {
 }
 export class RedeemStake extends c.RedeemStake<BigNumber> {
+}
+export class RepSymbol extends c.RepSymbol<BigNumber> {
 }

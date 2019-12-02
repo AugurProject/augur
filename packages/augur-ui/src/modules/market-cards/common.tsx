@@ -222,22 +222,26 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   );
 
   const { inDispute, showOutcomeNumber } = props;
-  let dipsutingOutcomes = sortedStakeOutcomes;
+  let disputingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
 
   if (inDispute) {
     if (!props.expanded) {
-      dipsutingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
+      disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
     if (!props.expanded && props.outcomes.length > showOutcomeNumber) {
       outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
+    } else if (props.marketType === YES_NO) {
+      outcomesCopy.reverse().splice(outcomesCopy.length, 0, removedInvalid);
     } else {
       outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
     }
   }
-  const outcomesShow = inDispute ? dipsutingOutcomes : outcomesCopy;
+
+  const outcomesShow = inDispute ? disputingOutcomes : outcomesCopy;
+
   return (
     <div
       className={classNames(Styles.OutcomeGroup, {

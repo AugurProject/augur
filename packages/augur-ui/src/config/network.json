@@ -7,6 +7,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-relay": "http://localhost:8000/api/",
     "universe": null,
     "debug": {
       "connect": true,
@@ -63,6 +64,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-relay": "https://safe-relay.rinkeby.gnosis.pm/",
     "universe": null,
     "debug": {
       "connect": true,
@@ -77,6 +79,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-relay": "https://gnosis.kovan.augur.net/api/",
     "universe": null,
     "debug": {
       "connect": true,
@@ -133,6 +136,7 @@
       "blockRetention": 100,
       "connectionTimeout": 60000
     },
+    "gnosis-relay": "https://safe-relay.gnosis.pm/",
     "universe": null,
     "debug": {
       "connect": true,

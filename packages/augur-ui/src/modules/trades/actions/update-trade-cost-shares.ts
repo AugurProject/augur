@@ -162,7 +162,7 @@ async function runSimulateTrade(
   }
 
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
-  const affiliateAddress = undefined; // TODO: get this from state
+  const fingerprint = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
@@ -173,7 +173,7 @@ async function runSimulateTrade(
     marketId,
     market.numOutcomes,
     outcomeId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     market.numTicks,
@@ -189,7 +189,7 @@ async function runSimulateTrade(
     marketId,
     market.numOutcomes,
     outcomeId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     market.numTicks,

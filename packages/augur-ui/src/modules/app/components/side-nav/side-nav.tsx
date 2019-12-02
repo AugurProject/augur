@@ -9,7 +9,7 @@ import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import HelpResources from 'modules/app/containers/help-resources';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
 import { Chevron } from 'modules/common/icons';
 
 interface SideNavProps {
@@ -21,6 +21,8 @@ interface SideNavProps {
   logout: Function;
   showNav: boolean;
   showGlobalChat: Function;
+  migrateV1Rep: Function;
+  showMigrateRepButton: boolean;
 }
 
 const SideNav = ({
@@ -32,6 +34,8 @@ const SideNav = ({
   currentBasePath,
   showNav,
   showGlobalChat,
+  migrateV1Rep,
+  showMigrateRepButton,
 }: SideNavProps) => {
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
@@ -72,6 +76,13 @@ const SideNav = ({
                 </Link>
               </li>
             ))}
+
+            <div>
+              {showMigrateRepButton && <PrimaryButton
+                text='Migrate V1 to V2 REP'
+                action={() => migrateV1Rep()}
+              />}
+            </div>
           </ul>
 
           <footer>

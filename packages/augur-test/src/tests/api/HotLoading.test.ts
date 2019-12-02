@@ -54,3 +54,14 @@ test('Hot Loading :: Get Market Data', async () => {
     "volume": 0
   });
 });
+
+test('Hot Loading :: Get Dispute Window Data', async () => {
+  let disputeWindowData = await john.getHotLoadingDisputeWindowData();
+
+  await expect(disputeWindowData).toBeDefined();
+
+  await expect(typeof(disputeWindowData.startTime)).toEqual(typeof(0));
+  await expect(typeof(disputeWindowData.endTime)).toEqual(typeof(0));
+  await expect(disputeWindowData.purchased).toEqual("0");
+  await expect(disputeWindowData.fees).toEqual("0");
+});

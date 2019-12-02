@@ -6,7 +6,7 @@ import ModulePane from 'modules/market/components/common/module-tabs/module-pane
 import MarketOutcomesChart from 'modules/market-charts/containers/market-outcomes-chart';
 import { TEMP_TABLET } from 'modules/common/constants';
 
-import { Candlestick } from 'modules/market-charts/components/market-outcome-charts--candlestick/candlestick';
+import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
 import MarketDepth from 'modules/market-charts/containers/market-outcome-chart-depth';
 import { BigNumber } from 'bignumber.js';
 import { MarketData } from 'modules/types';
@@ -92,7 +92,6 @@ export default class MarketChartsPane extends Component<
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                     daysPassed={daysPassed}
-                    isMobile
                   />
                 )}
               </ModulePane>

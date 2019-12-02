@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import 'ROOT/reporting/IMarket.sol';
 
+
 contract IAugurCreationDataGetter {
     struct MarketCreationData {
         string extraInfo;

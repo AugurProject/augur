@@ -1,7 +1,12 @@
 import { createSelector } from 'reselect';
 import { selectMarketsListsState } from 'store/select-state';
-import { POPULAR_CATEGORIES, POPULAR_CATEGORIES_ICONS, REPORTING_STATE } from 'modules/common/constants';
+import {
+  POPULAR_CATEGORIES,
+  POPULAR_CATEGORIES_ICONS,
+  REPORTING_STATE,
+} from 'modules/common/constants';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
+import marketsList from '../reducers/markets-list';
 
 export const selectPopularCategories = createSelector(
   selectMarketsListsState,
@@ -10,6 +15,7 @@ export const selectPopularCategories = createSelector(
       const categories = Object.keys(marketLists.meta.categories).map(
         category => category.toLowerCase()
       );
+
       const mapObject = (category, idx) => {
         const item = Object.keys(marketLists.meta.categories).find(
           c => c.toLowerCase() === category
@@ -26,22 +32,26 @@ export const selectPopularCategories = createSelector(
         .filter(category => POPULAR_CATEGORIES.includes(category))
         .map(mapObject);
 
-      return POPULAR_CATEGORIES.map((category, idx) => {
-        const isCategoryWithResults = popularCategories.find(
-          meta => meta.category === category
-        );
+      return POPULAR_CATEGORIES.filter(category =>
+        marketLists.isSearchInPlace ? categories.includes(category) : true
+      )
+        .map((category, idx) => {
+          const isCategoryWithResults = popularCategories.find(
+            meta => meta.category === category
+          );
 
-        if (isCategoryWithResults) {
-          return isCategoryWithResults;
-        }
+          if (isCategoryWithResults) {
+            return isCategoryWithResults;
+          }
 
-        return {
-          category,
-          icon: POPULAR_CATEGORIES_ICONS[idx],
-          count: 0,
-          children: null,
-        };
-      }).sort((a, b) => (a.count > b.count ? -1 : 1));
+          return {
+            category,
+            icon: POPULAR_CATEGORIES_ICONS[idx],
+            count: 0,
+            children: null,
+          };
+        })
+        .sort((a, b) => (a.count > b.count ? -1 : 1));
     } else {
       return POPULAR_CATEGORIES.map((category, idx) => {
         return {

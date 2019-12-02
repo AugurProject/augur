@@ -2,13 +2,13 @@ import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Web3Provider } from 'ethers/providers';
+import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Torus from '@toruslabs/torus-embed';
 import Web3 from 'web3';
 import { ACCOUNT_TYPES, NETWORK_IDS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
-import { isSafari } from 'utils/is-safari';
+import { LoginAccount } from 'modules/types';
 
 const getTorusNetwork = (networkId): string => {
   if (networkId === NETWORK_IDS.Mainnet) {
@@ -25,10 +25,10 @@ export const loginWithTorus = () => async (
 ) => {
   const networkId = getNetworkId();
   const torusNetwork = getTorusNetwork(networkId);
-  let accountObject = {};
+  let accountObject: Partial<LoginAccount> = {};
 
   if (torusNetwork) {
-    const torus = new Torus({});
+    const torus: any = new Torus({});
 
     try {
       await torus.init({
@@ -39,7 +39,7 @@ export const loginWithTorus = () => async (
       await torus.login();
 
       const web3 = new Web3(torus.provider);
-      const provider = new Web3Provider(torus.provider);
+      const provider = new PersonalSigningWeb3Provider(torus.provider);
       const isWeb3 = true;
       windowRef.torus = torus;
 
@@ -66,25 +66,22 @@ export const loginWithTorus = () => async (
           .querySelector('#torusWidget')
           .setAttribute('style', 'display:none');
       }
-    }
-    catch (error) {
+    } catch (error) {
       document.querySelector('#torusIframe').remove();
       document.querySelector('#torusWidget').remove();
       throw error;
     }
 
-    // Temporary workaround
-    if (isSafari()) {
+    try {
+      const userInfo = await torus.getUserInfo(
+        'Augur would like to use this information to improve your user experience.'
+      );
+      accountObject.meta.email = userInfo.email;
+      accountObject.meta.profileImage = userInfo.profileImage;
       dispatch(updateSdk(accountObject, undefined));
-    } else {
-      try {
-        const userInfo = await torus.getUserInfo();
-        accountObject.meta.email = userInfo.email;
-        accountObject.meta.profileImage = userInfo.profileImage;
-        dispatch(updateSdk(accountObject, undefined));
-      } catch (error) {
-        dispatch(updateSdk(accountObject, undefined));
-      }
+    } catch (error) {
+      // User denied request
+      dispatch(updateSdk(accountObject, undefined));
     }
   } else {
     throw Error('Network currently not supported with Torus');

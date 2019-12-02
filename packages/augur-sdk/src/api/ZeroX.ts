@@ -90,6 +90,8 @@ export interface ZeroXTradeOrder {
   salt: BigNumber;
   makerAssetData: string;
   takerAssetData: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
 }
 
 export interface MatchingOrders {
@@ -104,13 +106,18 @@ export class ZeroX {
   private readonly browserMesh: BrowserMesh;
   private readonly providerEngine: Web3ProviderEngine;
 
-  constructor(augur: Augur, meshClient: WSClient, browserMesh?: BrowserMesh) {
+  constructor(augur: Augur, meshClient?: WSClient, browserMesh?: BrowserMesh) {
+    if (!(browserMesh || meshClient)) {
+      throw Error('ZeroX instance mush have browserMesh, meshClient, or both')
+    }
+
     this.augur = augur;
     this.meshClient = meshClient;
     this.browserMesh = browserMesh;
     if (this.browserMesh) {
       this.browserMesh.startAsync();
     }
+
     this.providerEngine = new Web3ProviderEngine();
     this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
     this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
@@ -126,8 +133,11 @@ export class ZeroX {
   }
 
   async getOrders(): Promise<OrderInfo[]> {
-    return await this.meshClient.getOrdersAsync();
     // TODO when browser mesh supports this back out to using it if meshClient not provided
+    if (!this.meshClient) {
+      throw Error('getOrders is not supported on browser mesh')
+    }
+    return this.meshClient.getOrdersAsync();
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -171,7 +181,7 @@ export class ZeroX {
 
     result = await this.augur.contracts.ZeroXTrade.trade(
       params.amount,
-      params.affiliateAddress,
+      params.fingerprint,
       params.tradeGroupId,
       orders,
       signatures,
@@ -200,7 +210,7 @@ export class ZeroX {
       new BigNumber(params.outcome),
       params.kycToken,
       params.expirationTime,
-      this.augur.addresses.ZeroXExchange,
+      this.augur.addresses.Exchange,
       salt
     );
     const signedOrder: any[] = result[0];
@@ -208,27 +218,36 @@ export class ZeroX {
     const makerAddress: string = signedOrder[0];
     const signature = await this.signOrderHash(orderHash, makerAddress);
     const zeroXOrder = {
+      chainId: Number(this.augur.networkId),
+      exchangeAddress: this.augur.addresses.Exchange,
       makerAddress,
-      takerAddress: signedOrder[1],
-      feeRecipientAddress: signedOrder[2],
-      senderAddress: signedOrder[3],
+      makerAssetData: signedOrder[10],
+      makerFeeAssetData: signedOrder[12],
       makerAssetAmount: new BigNumber(signedOrder[4]._hex),
-      takerAssetAmount: new BigNumber(signedOrder[5]._hex),
       makerFee: new BigNumber(signedOrder[6]._hex),
+      takerAddress: signedOrder[1],
+      takerAssetData: signedOrder[11],
+      takerFeeAssetData: signedOrder[13],
+      takerAssetAmount: new BigNumber(signedOrder[5]._hex),
       takerFee: new BigNumber(signedOrder[7]._hex),
+      senderAddress: signedOrder[3],
+      feeRecipientAddress: signedOrder[2],
       expirationTimeSeconds: new BigNumber(signedOrder[8]._hex),
       salt: new BigNumber(signedOrder[9]._hex),
-      makerAssetData: signedOrder[10],
-      takerAssetData: signedOrder[11],
       signature,
-      exchangeAddress: NULL_ADDRESS,
-      orderHash
-    }
+    };
+
+    let validation;
     if (this.browserMesh) {
-      await this.browserMesh.addOrdersAsync([zeroXOrder]);
+      validation = await this.browserMesh.addOrdersAsync([zeroXOrder]);
     } else {
-      await this.meshClient.addOrdersAsync([zeroXOrder]);
+      validation = await this.meshClient.addOrdersAsync([zeroXOrder]);
     }
+    if (validation.rejected.length > 0) {
+      console.log(JSON.stringify(validation.rejected, null, 2));
+      throw Error(`0x add order validation failure: ${JSON.stringify(validation.rejected[0])}`)
+    }
+
     return orderHash;
   }
 
@@ -323,6 +342,8 @@ export class ZeroX {
         salt: orderData.salt,
         makerAssetData: orderData.makerAssetData,
         takerAssetData: orderData.takerAssetData,
+        makerFeeAssetData: "0x",
+        takerFeeAssetData: "0x",
       };
     })
 

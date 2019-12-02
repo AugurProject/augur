@@ -72,7 +72,6 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
     function buyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         require(universe.isContainerForMarket(_market), "Market does not belong to universe");
         uint256 _cost = _amount.mul(_market.getNumTicks());
-        feesPaid = feesPaid.add(_cost / universe.getOrCacheReportingFeeDivisor());
         burn(msg.sender, _cost);
         universe.withdraw(address(this), _cost, address(0));
         shareToken.buyCompleteSets(_market, msg.sender, _amount);

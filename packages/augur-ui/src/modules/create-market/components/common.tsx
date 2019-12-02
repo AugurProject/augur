@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useReducer } from 'react';
 import classNames from 'classnames';
 
 import { SecondaryButton, ExternalLinkButton } from 'modules/common/buttons';
@@ -9,7 +9,6 @@ import {
   TimezoneDropdown,
   FormDropdown,
   RadioBarGroup,
-  MultiSelectRadioBarGroup,
 } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
@@ -47,8 +46,16 @@ import {
   CHOICE,
   REQUIRED,
 } from '@augurproject/artifacts';
-import { TemplateBannerText } from 'modules/create-market/constants';
-import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import {
+  TemplateBannerText,
+  SelectEventNoticeText,
+  MARKET_COPY_LIST,
+} from 'modules/create-market/constants';
+import {
+  DismissableNotice,
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+} from 'modules/reporting/common';
+import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 
 export interface HeaderProps {
   text: string;
@@ -82,6 +89,7 @@ export interface SubheadersProps {
   ownLine?: Boolean;
   smallSubheader?: Boolean;
   renderMarkdown?: Boolean;
+  copyType?: string;
 }
 
 export interface DateTimeHeadersProps extends SubheadersProps {
@@ -99,6 +107,7 @@ export const Subheaders = (props: SubheadersProps) => (
           href={props.href}
           underline={props.underline}
           ownLine={props.ownLine}
+          copyType={props.copyType}
         />
       )}
     </p>
@@ -125,6 +134,7 @@ export interface HeaderLinkProps {
   ownLine?: Boolean;
   underline?: Boolean;
   smallSubheader?: Boolean;
+  copyType?: string;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
@@ -139,6 +149,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
         href={props.href}
         underline={props.underline}
         ownLine={props.ownLine}
+        copyType={props.copyType}
       />
     )}
   </p>
@@ -158,6 +169,7 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       ownLine={props.ownLine}
       link={props.link}
       smallSubheader={props.smallSubheader}
+      copyType={props.copyType}
     />
   </div>
 );
@@ -175,6 +187,16 @@ export const SmallSubheaders = (props: SubheadersProps) => (
     <h1>{props.header}</h1>
     {props.renderMarkdown && <MarkdownRenderer text={props.subheader} />}
     {!props.renderMarkdown && <span>{props.subheader}</span>}
+  </div>
+);
+
+interface PreviewMarketTitleHeaderProps {
+  market: NewMarket;
+}
+export const PreviewMarketTitleHeader = (props: PreviewMarketTitleHeaderProps) => (
+  <div className={Styles.SmallSubheaders}>
+    <h1>Market Question</h1>
+    <PreviewMarketTitle market={props.market} />
   </div>
 );
 
@@ -335,6 +357,7 @@ interface DatePickerSelectorProps {
   errrorMessage?: string;
   placeholder?: string;
   errorMessage?: string;
+  condensedStyle?: boolean;
 }
 
 export const DatePickerSelector = (props: DatePickerSelectorProps) => {
@@ -407,6 +430,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
       {!condensedStyle && (
         <Subheaders
           header={header ? header : 'Event Expiration date and time'}
+          copyType={MARKET_COPY_LIST.EVENT_EXPIRATION}
           subheader={
             subheader
               ? subheader
@@ -522,6 +546,7 @@ export interface NumberedListProps {
   updateList: Function;
   errorMessage?: string;
   hideAdd?: boolean;
+  onRemoved?: Function;
 }
 
 export interface NumberedListState {
@@ -559,6 +584,7 @@ export const NumberedInput = ({
         {errorMessage && errorMessage !== '' && errorMessage.length > 0 && (
           <span>{errorMessage}</span>
         )}
+        {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
       </>
     )}
   </li>
@@ -574,15 +600,17 @@ export class NumberedList extends Component<
     isMin: this.props.initialList.length === this.props.minShown,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(props, state) {
     if (
-      JSON.stringify(this.props.initialList) !==
-      JSON.stringify(nextProps.initialList)
+      JSON.stringify(props.initialList) !==
+      JSON.stringify(state.list)
     ) {
-      this.setState({
-        list: nextProps.initialList,
-      });
-    }
+      return {
+        list: props.initialList
+      };
+    };
+
+    return null;
   }
 
   onChange = (value, index) => {
@@ -612,7 +640,7 @@ export class NumberedList extends Component<
 
   removeItem = index => {
     const { isMin, list } = this.state;
-    const { minShown, maxList, updateList } = this.props;
+    const { minShown, maxList, updateList, onRemoved } = this.props;
     if (!isMin) {
       list.splice(index, 1);
       this.setState(
@@ -672,6 +700,7 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
+  Gnosis_ENABLED: boolean;
 }
 export const NoFundsErrors = (props: NoFundsErrorsProps) => {
   const {
@@ -684,11 +713,12 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
     availableEthFormatted,
     availableRepFormatted,
     availableDaiFormatted,
+    Gnosis_ENABLED,
   } = props;
 
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && (
+      {noEth && !Gnosis_ENABLED && (
         <Error
           alternate
           header="Not enough ETH in your wallet"
@@ -718,7 +748,8 @@ interface InputFactoryProps {
   inputIndex: number;
   onChange: Function;
   newMarket: NewMarket;
-  currentTimestamp: string;
+  currentTimestamp: number;
+  inputs: TemplateInput[];
 }
 
 export const InputFactory = (props: InputFactoryProps) => {
@@ -775,9 +806,8 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
-          let newOutcomes = outcomes;
-          newOutcomes[inputIndex] = value;
-          updateData(value);
+          const newInputs = updateData(value);
+          const newOutcomes = createTemplateOutcomes(newInputs);
           onChange('outcomes', newOutcomes);
         }}
         value={input.userInput}
@@ -798,7 +828,10 @@ export const InputFactory = (props: InputFactoryProps) => {
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
-  } else if (input.type === TemplateInputType.DATETIME) {
+  } else if (
+    input.type === TemplateInputType.DATETIME ||
+    input.type === TemplateInputType.ESTDATETIME
+  ) {
     return (
       <span>
         {input.userInput ? input.userInput : `[${input.placeholder}]`}
@@ -807,13 +840,15 @@ export const InputFactory = (props: InputFactoryProps) => {
   } else if (
     input.type === TemplateInputType.DROPDOWN ||
     input.type === TemplateInputType.DENOMINATION_DROPDOWN ||
-    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+    input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+    input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
   ) {
     return (
       <FormDropdown
         options={input.values}
         defaultValue={input.userInput}
-        staticLabel={input.placeholder}
+        disabled={input.values.length === 0}
+        staticLabel={input.values.length === 0 ? input.defaultLabel : input.placeholder}
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
@@ -824,9 +859,21 @@ export const InputFactory = (props: InputFactoryProps) => {
             let newOutcomes = outcomes;
             newOutcomes[inputIndex] = value;
             onChange('outcomes', newOutcomes);
+          } else if (
+            input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
+          ) {
+            if (value) {
+              const list = input.inputDestValues[value];
+              const target = props.inputs.find(i => i.id === input.inputDestId);
+              if (target && list && list.length > 0) {
+                target.userInput = '';
+                target.values = list;
+              }
+            }
           }
           updateData(value);
         }}
+        sort
       />
     );
   } else {
@@ -972,7 +1019,9 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      userInput = endTimeFormatted.formattedUtc;
+      if (input.type === TemplateInputType.DATETIME)
+        userInput = endTimeFormatted.formattedUtc;
+      else userInput = String(endTimeFormatted.timestamp);
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1059,17 +1108,19 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
 export interface QuestionBuilderProps {
   newMarket: NewMarket;
   onChange: Function;
-  currentTime: number;
+  currentTimestamp: number;
 }
 
 export const QuestionBuilder = (props: QuestionBuilderProps) => {
   const { onChange, newMarket, currentTimestamp } = props;
-  const { template, outcomes, marketType, validations } = newMarket;
+  const { template, marketType } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
 
   const dateTimeIndex = inputs.findIndex(
-    input => input.type === TemplateInputType.DATETIME
+    input =>
+      input.type === TemplateInputType.DATETIME ||
+      input.type === TemplateInputType.ESTDATETIME
   );
 
   return (
@@ -1090,17 +1141,24 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
             const inputIndex = inputs.findIndex(
               findInput => findInput.id.toString() === id
             );
+            let trailing = '';
+            if (bracketPos2 < word.length) {
+              trailing = word.substring(bracketPos2 + 1, word.length);
+            }
             if (inputIndex > -1) {
               const input = inputs[inputIndex];
               return (
-                <InputFactory
-                  key={inputIndex}
-                  input={input}
-                  inputIndex={inputIndex}
-                  onChange={onChange}
-                  newMarket={newMarket}
-                  currentTimestamp={currentTimestamp}
-                />
+                <React.Fragment key={inputIndex}>
+                  <InputFactory
+                    input={input}
+                    inputIndex={inputIndex}
+                    onChange={onChange}
+                    newMarket={newMarket}
+                    currentTimestamp={currentTimestamp}
+                    inputs={inputs}
+                  />
+                  {trailing !== '' && <span>{trailing}</span>}
+                </React.Fragment>
               );
             }
           }
@@ -1125,13 +1183,15 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
 };
 
 export interface TemplateBannersProps {
-  categories: string[]
+  categories: string[];
 }
 
 export const TemplateBanners = (props: TemplateBannersProps) => {
   const text = props.categories.reduce(
     (p, c) =>
-      Object.keys(TemplateBannerText).includes(c) ? TemplateBannerText[c] : p,
+      Object.keys(TemplateBannerText).includes(c.toLowerCase())
+        ? TemplateBannerText[c.toLowerCase()]
+        : p,
     null
   );
   if (!text) return null;
@@ -1139,24 +1199,119 @@ export const TemplateBanners = (props: TemplateBannersProps) => {
     <DismissableNotice
       title={text}
       className={Styles.TopBannerMargin}
-      description={''}
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       show
     />
-  )
+  );
 };
 
+const onlySimpleTextInputOutcomes = (inputs: TemplateInput[]) => {
+  return inputs.filter(
+    input =>
+      input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+      input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
+      input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME
+  ).length === 0;
+}
 export interface CategoricalTemplateProps {
   newMarket: NewMarket;
   onChange: Function;
 }
 
 export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
+  const { newMarket } = props;
+  const { template } = newMarket;
+  const inputs = template.inputs;
+  const hasDropdowns = inputs.find(
+    (i: TemplateInput) => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
+    i.type === TemplateInputType.USER_DROPDOWN_OUTCOME
+  );
+
+  if (onlySimpleTextInputOutcomes(inputs) && !hasDropdowns) return <SimpleTextInputOutcomes {...props } />
+
+  return hasDropdowns ? (
+    <CategoricalTemplateDropdowns {...props} />
+  ) : (
+    <CategoricalTemplateTextInputs {...props} />
+  );
+};
+
+export interface CategoricalTemplateTextInputsProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
+  const [marketOutcomes, setMarketOutcomes] = useState(null);
+  const [required] = useState(
+    props.newMarket.template.inputs
+      .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
+      .map(i => ({ value: i.placeholder, editable: false }))
+  );
+  const [showOutcomes, setShowOutcomes] = useState([]);
+
+  useEffect(() => {
+    if (String(marketOutcomes) !== String(props.newMarket.outcomes)) {
+      const requiredOutcomes = required.map(r => r.value);
+      let showOutcomes = [...outcomes]
+        .reduce((p, o) => (requiredOutcomes.includes(o) ? p : [...p, o]), [])
+        .map(i => ({ value: i, editable: true }));
+
+      while (showOutcomes.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
+        showOutcomes.push({
+          value: '',
+          editable: true,
+        });
+      }
+      setShowOutcomes(showOutcomes);
+      setMarketOutcomes(props.newMarket.outcomes);
+    }
+  });
+
+  const { onChange, newMarket } = props;
+  const { outcomes, validations } = newMarket;
+
+  return (
+    <>
+      <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." />
+      <NumberedList
+        initialList={showOutcomes}
+        minShown={2}
+        maxList={7 - required.length}
+        placeholder={'Enter outcome'}
+        updateList={(value: string[]) => {
+          onChange('outcomes', [...value, ...required.map(i=>i.value)])
+        }}
+        errorMessage={validations && validations.outcomes}
+      />
+      <Subheaders header="Required Outcomes" subheader="Required unchangeable additional outcomes" />
+      {required.map((item, index) => (
+        <NumberedInput
+          key={index}
+          value={item.value}
+          placeholder={''}
+          onChange={() => {}}
+          number={index}
+          removable={false}
+          errorMessage={validations && validations.outcomes && validations.outcomes[showOutcomes.length + index]}
+          editable={false}
+        />
+      ))}
+    </>
+  );
+};
+
+export const CategoricalTemplateTextInputs = (
+  props: CategoricalTemplateTextInputsProps
+) => {
+  const [initialized, setInitialized] = useState(false);
   const { onChange, newMarket } = props;
   const { template, outcomes, validations } = newMarket;
   const inputs = template.inputs;
 
-  let initialList = inputs
+  const requiredOutcomes = inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME);
+  const otherOutcomes = inputs.filter(i => i.type !== TemplateInputType.ADDED_OUTCOME);
+  let initialList = [...otherOutcomes, ...requiredOutcomes]
     .filter(
       input =>
         input.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
@@ -1187,44 +1342,302 @@ export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
       return null;
     });
 
-  outcomes.forEach(outcome => {
-    if (initialList.filter(option => option.value === outcome).length === 0) {
-      initialList.push({
-        value: outcome,
-        editable: true,
-      });
-    }
-  });
-
-  while (initialList.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
-    initialList.push({
-      value: '',
-      editable: true,
-    });
+  const min = initialList.length >  2 ? initialList.length : 2;
+  const list = initialList.map(o => o.value);
+  if (
+    String(outcomes) !== String(list) ||
+    (!initialized && String(outcomes) === String(list))
+  ) {
+    onChange('outcomes', list);
+    setInitialized(true);
   }
-
-  const hideAdd = tellIfEditableOutcomes(inputs);
 
   return (
     <>
       <Subheaders
         header="Outcomes"
         subheader="List the outcomes people can choose from."
-        link
       />
       <NumberedList
         initialList={initialList}
-        minShown={2}
+        minShown={min}
         maxList={7}
-        placeholder={'Enter outcome'}
-        updateList={(value: Array<string>) => {
-          onChange('outcomes', value);
-        }}
-        hideAdd={hideAdd}
+        placeholder={''}
+        updateList={() => {}}
+        hideAdd={true}
         errorMessage={validations.outcomes}
       />
     </>
   );
+};
+
+export interface CategoricalTemplateDropdownsProps {
+  newMarket: NewMarket;
+  onChange: Function;
+}
+
+interface CategoricalDropDownItem {
+  value: string;
+  editable: boolean;
+  removable: boolean;
+  current: boolean;
+  error?: string;
+  id?: number;
+}
+
+interface CategoricalDropDownAction {
+  type: string;
+  data: Partial<CategoricalDropDownItem>;
+}
+export const CategoricalTemplateDropdowns = (
+  props: CategoricalTemplateDropdownsProps
+) => {
+  const MAX_ADDED_OUTCOMES = 7;
+  const ACTIONS = {
+    ADD: 'ADD',
+    REMOVE: 'REMOVE',
+    REMOVE_ALL: 'REMOVE_ALL',
+    INIT_ADD: 'INIT_ADD',
+    REPLACE_CURRENT: 'REPLACE_CURRENT',
+    ADD_NEW: 'ADD_NEW',
+    HAS_ERROR: 'HAS_ERROR'
+  };
+  const [outcomeList, dispatch] = useReducer(
+    (state: CategoricalDropDownItem[], action: CategoricalDropDownAction) => {
+      switch (action.type) {
+        case ACTIONS.ADD:
+          const newAddState = OrderOutcomesItems([...state, action.data]);
+          props.onChange('outcomes', newAddState.map(o => o.value));
+          return newAddState;
+        case ACTIONS.REMOVE:
+          const newRemoveState = OrderOutcomesItems(state.filter(s => s.value !== action.data.value))
+          props.onChange('outcomes', newRemoveState.map(o => o.value));
+          return newRemoveState;
+        case ACTIONS.REMOVE_ALL:
+          props.onChange('outcomes', []);
+          return [];
+        case ACTIONS.REPLACE_CURRENT:
+          const removeCurrent = state.filter(s => !s.current);
+          const newUpdatedState = OrderOutcomesItems([...removeCurrent, action.data]);
+          props.onChange('outcomes', newUpdatedState.map(o => o.value));
+          return newUpdatedState;
+        case ACTIONS.ADD_NEW:
+          return state.map(o => ({...o, current: false}));
+        case ACTIONS.INIT_ADD:
+          return OrderOutcomesItems([...state, action.data]);
+        case ACTIONS.HAS_ERROR:
+          const { id, error} = action.data;
+          if (!!state[id]) {
+            state[id].error = error;
+          }
+          return state;
+        default:
+          return state;
+      }
+    },
+    []
+  );
+  const [tooFewOutcomesError, setTooFewOutomesError] = useState(null);
+  const [initialized, setInitialized] = useState(false);
+  const [sourceUserInput, setSourceUserInput] = useState(undefined);
+  const [depDropdownInput] = useState(
+    props.newMarket.template.inputs.find(
+      input =>
+        input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
+        input.type === TemplateInputType.USER_DROPDOWN_OUTCOME
+    )
+  );
+  const [defaultOutcomeItems] = useState(
+    props.newMarket.template.inputs
+      .filter(input => input.type === TemplateInputType.ADDED_OUTCOME)
+      .map(input => ({
+        value: input.placeholder,
+        editable: false,
+        removable: false,
+      }))
+  );
+  const [dropdownList, setdropdownList] = useState([]);
+  const [showBanner, setShowBanner] = useState(true);
+
+  useEffect(() => {
+    const { template } = props.newMarket;
+    const isDepDropdown =
+      depDropdownInput.type ===
+      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP;
+
+    const source = template.inputs.find(
+      (i: TemplateInput) => i.id === depDropdownInput.inputSourceId
+    );
+    setShowBanner(isDepDropdown && !!!source.userInput);
+
+    // in case of re-hyration of market creation form need to set newMarket outcomes
+    if (!initialized) {
+      const { outcomes } = props.newMarket;
+      setInitialized(true);
+      outcomes.map((i: string) => {
+        const defaultItems = defaultOutcomeItems.map(
+          (i: CategoricalDropDownItem) => i.value
+        );
+        const data = {
+          value: i,
+          editable: false,
+          removable: true,
+          current: false,
+        };
+        if (defaultItems.includes(i)) {
+          data.removable = false;
+        }
+        dispatch({
+          type: ACTIONS.INIT_ADD,
+          data,
+        });
+      });
+      setSourceUserInput(source && source.userInput);
+      setdropdownList(
+        isDepDropdown
+          ? depDropdownInput.values[source.userInput]
+          : depDropdownInput.values
+      );
+    } else {
+      if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
+        defaultOutcomeItems.map((i: CategoricalDropDownItem) =>
+          dispatch({ type: ACTIONS.ADD, data: i })
+        );
+      }
+
+      if (isDepDropdown && sourceUserInput !== source.userInput) {
+        dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
+        setdropdownList(
+          isDepDropdown
+            ? depDropdownInput.values[source.userInput]
+            : depDropdownInput.values
+        );
+        setSourceUserInput(source && source.userInput);
+      }
+    }
+    setTooFewOutomesError(null);
+    if (
+      props.newMarket.validations &&
+      props.newMarket.validations.outcomes &&
+      Array.isArray(props.newMarket.validations.outcomes)
+    ) {
+      props.newMarket.validations.outcomes.forEach((error, index) => {
+        if (!!error) {
+          outcomeList.length > index
+            ? dispatch({ type: ACTIONS.HAS_ERROR, data: { error, id: index } })
+            : setTooFewOutomesError(error);
+        }
+      });
+    }
+  });
+
+  const currentValue = outcomeList.find(o => o.current);
+  const canAddMore = outcomeList.length < MAX_ADDED_OUTCOMES && !!currentValue;
+  const allFull = outcomeList.length === MAX_ADDED_OUTCOMES && !!!currentValue;
+  return (
+    <>
+      <Subheaders
+        header="Outcomes"
+        subheader="List the outcomes people can choose from."
+      />
+      {outcomeList
+        .filter(o => !o.current && o.removable)
+        .map((item, index) => (
+          <NumberedInput
+            key={index}
+            value={item.value}
+            placeholder={''}
+            onChange={() => {}}
+            number={index}
+            removable={item.removable}
+            onRemove={index =>
+              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+            }
+            errorMessage={item.error}
+            editable={item.editable}
+          />
+        ))}
+      {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
+      {!showBanner && !allFull && (
+        <OutcomeDropdownInput
+          number={outcomeList.filter(o => !o.current && o.removable).length}
+          list={dropdownList}
+          defaultValue={currentValue && currentValue.value}
+          onChange={value => {
+            dispatch({
+              type: ACTIONS.REPLACE_CURRENT,
+              data: { value, editable: false, removable: true, current: true },
+            });
+          }}
+          errorMessage={tooFewOutcomesError || (currentValue && currentValue.error)}
+          onAdd={() => dispatch({ type: ACTIONS.ADD_NEW, data: {} })}
+          canAddMore={canAddMore}
+        />
+      )}
+      <Subheaders
+        header="Required Outcomes"
+        subheader="Required unchangeable additional outcomes"
+      />
+      {outcomeList
+        .filter(o => !o.current && !o.removable)
+        .map((item, index) => (
+          <NumberedInput
+            key={index}
+            value={item.value}
+            placeholder={''}
+            onChange={() => {}}
+            number={index}
+            removable={item.removable}
+            onRemove={index =>
+              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+            }
+            errorMessage={item.error}
+            editable={item.editable}
+          />
+        ))}
+
+    </>
+  );
+};
+
+const OutcomeDropdownInput = ({ list, onAdd, onChange, defaultValue, number, errorMessage, canAddMore }) =>
+    <div className={Styles.OutcomeDropdownInput}>
+      <div>
+        <span>{`${number + 1}.`}</span>
+        <FormDropdown
+          id={'outcomeDropDown'}
+          defaultValue={defaultValue}
+          staticLabel={'Select Value'}
+          onChange={value => onChange(value)}
+          options={list}
+          errorMessage={errorMessage}
+          sort
+        />
+      </div>
+      <SecondaryButton
+        disabled={!canAddMore}
+        text="Add"
+        action={() => onAdd('')}
+        icon={AddIcon}
+      />
+    </div>
+
+
+const SelectEventNotice = ({ text }) => (
+  <DismissableNotice
+    title={text}
+    className={Styles.TopBannerMargin}
+    buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+    show
+  />
+);
+
+const OrderOutcomesItems = (
+  outcomesValues: Partial<CategoricalDropDownItem>[]
+) => {
+  const isRemovable = outcomesValues.filter(o => o.removable);
+  const nonRemovable = outcomesValues.filter(o => !o.removable);
+  return [...isRemovable, ...nonRemovable];
 };
 
 export interface ResolutionRulesProps {
@@ -1278,17 +1691,11 @@ export const ResolutionRules = (props: ResolutionRulesProps) => {
       {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
         <>
           <span>Added Resolution details:</span>
-          <MultiSelectRadioBarGroup
-            radioButtons={resolutionRules[REQUIRED].map((rule, index) => {
-              return {
-                header: rule.text,
-                value: index.toString(),
-                isSelected: true,
-                disabled: true,
-              };
-            })}
-            onChange={(value: string) => {}}
-          />
+          <div className={Styles.AddResolutionRules}>
+            {resolutionRules[REQUIRED].map((rule, index) => (
+              <div key={index}>{rule.text}</div>
+            ))}
+          </div>
         </>
       )}
     </div>
@@ -1300,6 +1707,7 @@ export interface InputHeadingProps {
   heading: string;
   subHeading: string;
   listItems: string[];
+  copyType?: string;
 }
 
 export const InputHeading = (props: InputHeadingProps) => (
@@ -1307,7 +1715,7 @@ export const InputHeading = (props: InputHeadingProps) => (
     <h1>{props.heading}</h1>
     <span>
       {props.subHeading}
-      <ExternalLinkButton URL={'http://www.augur.net'} label={'Learn more'} />
+      <Link copyType={props.copyType} />
     </span>
     <ul key={props.name}>
       {props.listItems.map((i, ndx) => (

@@ -77,6 +77,8 @@ interface AppProps {
   isConnectionTrayOpen: boolean;
   showGlobalChat: Function;
   updateHelpMenuState: Function;
+  migrateV1Rep: Function;
+  showMigrateRepButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -327,6 +329,8 @@ export default class AppView extends Component<AppProps> {
       toasts,
       isConnectionTrayOpen,
       updateConnectionTray,
+      migrateV1Rep,
+      showMigrateRepButton,
     } = this.props;
 
     const currentPath = parsePath(location.pathname)[0];
@@ -341,7 +345,7 @@ export default class AppView extends Component<AppProps> {
           titleTemplate="%s | Augur"
         />
         {Object.keys(modal).length !== 0 && <Modal />}
-        {toasts.length > 0 && <ToastsContainer toasts={toasts} />}
+        {toasts.length > 0 && <ToastsContainer toasts={toasts} onTradingTutorial={onTradingTutorial}/>}
         <div
           className={classNames({
             [Styles['App--blur']]: Object.keys(modal).length !== 0,
@@ -400,6 +404,8 @@ export default class AppView extends Component<AppProps> {
                 isConnectionTrayOpen={isConnectionTrayOpen}
                 logout={() => this.props.logout()}
                 showGlobalChat={() => this.props.showGlobalChat()}
+                migrateV1Rep={migrateV1Rep}
+                showMigrateRepButton={showMigrateRepButton}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -407,6 +413,8 @@ export default class AppView extends Component<AppProps> {
                 isLogged={isLogged || restoredAccount}
                 menuData={this.sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
+                migrateV1Rep={migrateV1Rep}
+                showMigrateRepButton={showMigrateRepButton}
               />
             </section>
             <AlertsContainer
@@ -438,6 +446,7 @@ export default class AppView extends Component<AppProps> {
               )}
               <section
                 className={classNames(Styles.Main__content, {
+                  [Styles.Tutorial]: onTradingTutorial,
                   [Styles.ModalShowing]: Object.keys(modal).length !== 0,
                   [Styles.SideNavOpen]:
                     sidebarStatus.mobileMenuState ===

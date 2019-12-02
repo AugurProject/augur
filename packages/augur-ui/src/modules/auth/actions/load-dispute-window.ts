@@ -11,6 +11,7 @@ export const loadDisputeWindow = () => async (
   const { universe } = getState();
   const Augur = augurSdk.get();
   const disputeWindow = await Augur.getDisputeWindow({
+    augur: Augur.contracts.augur.address,
     universe: universe.id,
   });
 

@@ -26,6 +26,7 @@ import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import { Getters } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
+import { Link } from 'react-router-dom';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -94,6 +95,7 @@ export interface ExternalLinkButtonProps {
   action?: Function;
   URL?: string;
   light?: boolean;
+  customLink?: any;
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
@@ -266,7 +268,12 @@ export const TextButtonFlip = (props: DefaultButtonProps) => (
     title={props.title}
   >
     {props.text}
-    <ChevronFlip pointDown={props.pointDown} stroke="#BFB8CE" filledInIcon quick />
+    <ChevronFlip
+      pointDown={props.pointDown}
+      stroke="#BFB8CE"
+      filledInIcon
+      quick
+    />
   </button>
 );
 
@@ -288,8 +295,7 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Deposit'}
   >
-    {QRCodeIcon}
-    Receive
+    Add funds
   </button>
 );
 
@@ -300,8 +306,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    {PaperAirplaneIcon}
-    Send
+    Withdraw funds
   </button>
 );
 
@@ -325,7 +330,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     title={props.title || 'REP Faucet'}
   >
     {RepLogoIcon}
-    <span>REP Faucet</span>
+    <span>{props.title ? props.title : "REP Faucet"}</span>
   </button>
 );
 
@@ -359,8 +364,8 @@ export const ExportButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Export Complete History'}
   >
-    {DownloadIcon}
     Export Complete History
+    {DownloadIcon}
   </button>
 );
 
@@ -401,12 +406,19 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
     })}
     onClick={e => props.action && props.action(e)}
   >
-    {props.URL && (
-      <a href={props.URL} target="blank">
-        {props.label}
-      </a>
+    {props.customLink ? (
+      <Link to={props.customLink}>{props.label}</Link>
+    ) : (
+      <>
+        {props.URL && (
+          <a href={props.URL} target="blank">
+            {props.label}
+          </a>
+        )}
+        {!props.URL && <span>{props.label}</span>}
+      </>
     )}
-    {!props.URL && <span>{props.label}</span>}
+
     {!props.showNonLink && ViewIcon}
   </button>
 );

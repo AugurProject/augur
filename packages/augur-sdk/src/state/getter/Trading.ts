@@ -26,7 +26,7 @@ const TradingHistoryParams = t.partial({
   account: t.string,
   marketIds: t.array(t.string),
   outcome: t.number,
-  ignoreReportingStates: t.array(t.string),
+  filterFinalized: t.boolean,
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -57,7 +57,7 @@ export const OrdersParams = t.partial({
   orderType: t.string,
   account: t.string,
   orderState: t.string,
-  ignoreReportingStates: t.array(t.string),
+  filterFinalized: t.boolean,
   makerTaker,
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
@@ -157,7 +157,7 @@ export class Trading {
   ]);
   static GetAllOrdersParams = t.partial({
     account: t.string,
-    ignoreReportingStates: t.array(t.string),
+    filterFinalized: t.boolean,
     makerTaker,
   });
   static GetOrdersParams = t.intersection([sortOptions, OrdersParams]);
@@ -197,10 +197,10 @@ export class Trading {
     const orders = _.keyBy(ordersResponse, 'orderId');
 
     const marketIds = _.map(orderFilledResponse, 'market');
-    const markets = await filterMarketsByReportingState(
+    const markets = await getMarkets(
       marketIds,
       db,
-      params.ignoreReportingStates,
+      params.filterFinalized
     );
 
     return orderFilledResponse.reduce(
@@ -299,10 +299,10 @@ export class Trading {
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
     const marketIds = _.map(currentOrdersResponse, 'market');
-    const markets = await filterMarketsByReportingState(
+    const markets = await getMarkets(
       marketIds,
       db,
-      params.ignoreReportingStates,
+      params.filterFinalized
     );
 
     return currentOrdersResponse.reduce(
@@ -425,10 +425,10 @@ export class Trading {
     const originalOrders = _.keyBy(originalOrdersResponse, 'orderId');
 
     const marketIds = _.map(currentOrdersResponse, 'market');
-    const markets = await filterMarketsByReportingState(
+    const markets = await getMarkets(
       marketIds,
       db,
-      params.ignoreReportingStates,
+      params.filterFinalized
     );
 
     return currentOrdersResponse.reduce(
@@ -584,16 +584,15 @@ export class Trading {
   }
 }
 
-// TODO: Review if we could specify _desired_ reporting states instead. $not cannot make use of indexes
-export async function filterMarketsByReportingState(
+export async function getMarkets(
   marketIds: string[],
   db: DB,
-  ignoreReportingStates: string[],
+  filterFinalized: boolean
 ) {
   let request = { selector: { market: { $in: marketIds }}};
-  if (ignoreReportingStates && ignoreReportingStates.length > 0) {
+  if (filterFinalized) {
     request.selector = Object.assign(request.selector, {
-      $not: { reportingState: { $in: ignoreReportingStates } }
+      finalized: false
     })
   }
   const marketsResponse = await db.findMarkets(request);

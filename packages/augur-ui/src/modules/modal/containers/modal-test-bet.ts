@@ -15,13 +15,15 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { TestBet } from 'modules/modal/common';
+import { track, START_TEST_TRADE, DO_A_TEST_BET, SKIPPED_TEST_TRADE } from 'services/analytics/helpers';
 
 const mapStateToProps = (state: AppState) => ({
-  isMobile: state.appStatus.isMobile,
+  isTablet: window.innerWidth <= 1280
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  track: (eventName, payload) => dispatch(track(eventName, payload)),
   setOnboardingSeen: () => {
     if (windowRef && windowRef.localStorage.setItem) {
       windowRef.localStorage.setItem(ONBOARDING_SEEN_KEY, 'true');
@@ -31,20 +33,21 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: TestBet,
-  largeHeader: sP.isMobile ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
+  analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
+  largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
   currentStep: 4,
   linkContent: [
     {
       content:
-        sP.isMobile
+        sP.isTablet
           ? 'Watch our quick start video to learn how to place a bet using our trading app.'
           : 'Learn how betting works on Augur by placing a quick test bet. Get guidance and tips and start betting for real today.',
     },
   ],
   buttons: [
     {
-      text: sP.isMobile ? 'Watch video' : 'Place test bet',
-      disabled: sP.isMobile,
+      text: sP.isTablet ? 'Watch video' : 'Place test bet',
+      disabled: sP.isTablet,
       action: () => {
         oP.history.push({
           pathname: makePath(MARKET),
@@ -52,6 +55,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
             [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
           }),
         });
+        !sP.isTablet && dP.track(START_TEST_TRADE, {});
         dP.setOnboardingSeen();
         dP.closeModal();
       },
@@ -59,6 +63,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: 'Finish',
       action: () => {
+        !sP.isTablet && dP.track(SKIPPED_TEST_TRADE, {});
         dP.setOnboardingSeen();
         dP.closeModal();
       },

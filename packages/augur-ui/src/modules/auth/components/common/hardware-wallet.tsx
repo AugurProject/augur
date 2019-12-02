@@ -51,9 +51,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       .toFixed();
   }
 
-  private advanced: React.RefObject<HTMLInputElement>;
-  private hardwareContent: React.RefObject<HTMLInputElement>;
-
   constructor(props: HardwareWalletProps) {
     super(props);
 
@@ -66,8 +63,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       cachedAddresses: false,
     };
 
-    this.advanced = React.createRef();
-    this.hardwareContent = React.createRef();
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this);
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
@@ -79,7 +74,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     this.getWalletAddressesWithBalance = this.getWalletAddressesWithBalance.bind(this);
   }
 
-  public componentDidMount() {
+  componentDidMount() {
     const { validation, setIsLoading } = this.props;
     if (!validation()) {
       this.updateDisplayInstructions(true);
@@ -87,46 +82,42 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
   }
 
-  public UNSAFE_componentWillUpdate(nextProps: HardwareWalletProps, nextState: HardwareWalletState) {
-    const { isLoading, isClicked, showAdvanced } = this.props;
+  componentDidUpdate(prevProps: HardwareWalletProps, prevState: HardwareWalletState) {
+    const { isLoading, isClicked, showAdvanced } = prevProps;
     if (
-      nextState.walletAddresses !== this.state.walletAddresses &&
-      !nextState.walletAddresses.every((element: number) => !element)
+      this.state.walletAddresses !== prevState.walletAddresses &&
+      !this.state.walletAddresses.every(element => !element)
     ) {
-      nextProps.setShowAdvancedButton(true);
+      this.props.setShowAdvancedButton(true);
     }
 
-    if (nextProps.isClicked && !this.state.showWallet) {
+    if (this.props.isClicked && !prevState.showWallet) {
       // only if connection option was clicked and previously not shown do we want to show it
-      if (!nextProps.isLoading && isLoading && nextState.displayInstructions) {
+      if (!this.props.isLoading && isLoading && this.state.displayInstructions) {
         // if it is not loading and before it was loading and instructions are going to be shown do we show it
         this.showHardwareWallet();
-        nextProps.setShowAdvancedButton(false);
+        this.props.setShowAdvancedButton(false);
       } else if (
-        !nextProps.isLoading &&
+        !this.props.isLoading &&
         isLoading &&
-        !nextState.walletAddresses.every((element: number) => !element)
+        !this.state.walletAddresses.every(element => !element)
       ) {
         // if it is not loading and before it was loading and addresses have been loaded
         this.showHardwareWallet();
-        nextProps.setShowAdvancedButton(true);
+        this.props.setShowAdvancedButton(true);
       }
-    } else if (!nextProps.isClicked && this.state.showWallet) {
+    } else if (!this.props.isClicked && prevState.showWallet) {
       // if it has been clicked off and previously it was being shown do we hide
       this.hideHardwareWallet();
     }
 
-    if (isClicked !== nextProps.isClicked && nextProps.isClicked) {
+    if (isClicked !== this.props.isClicked && this.props.isClicked) {
       // this is if the button was clicked, need to reupdate on click
       this.getWalletAddressesWithBalance().catch(logError);
     }
 
-    if (showAdvanced !== nextProps.showAdvanced) {
+    if (showAdvanced !== this.props.showAdvanced) {
       this.getWalletAddresses(DEFAULT_DERIVATION_PATH, 1).catch(logError);
-    }
-
-    if (this.state.displayInstructions !== nextState.displayInstructions) {
-      this.updateDisplayInstructions(nextState.displayInstructions);
     }
   }
 
@@ -325,9 +316,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
     }
     return (
       <div
-        ref={(hardwareContent: React.RefObject<HTMLInputElement>) => {
-          this.hardwareContent = hardwareContent;
-        }}
         className={classNames(
           StylesDropdown.ConnectDropdown__hardwareContent,
           ToggleHeightStyles.target,
@@ -338,9 +326,6 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
       >
         <div>
           <div
-            ref={(advanced: React.RefObject<HTMLInputElement>) => {
-              this.advanced = advanced;
-            }}
             className={classNames(
               StylesDropdown.ConnectDropdown__advancedContent,
               ToggleHeightStyles.target,

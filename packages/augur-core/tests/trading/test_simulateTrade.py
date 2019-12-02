@@ -49,7 +49,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert numFills == 0
 
     cash.faucet(cost)
-    assert trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 6, nullAddress, kycToken)
+    assert trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 6, longTo32Bytes(11), kycToken)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, kycToken, fillOnly, sender=account1)
 
@@ -62,7 +62,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert numFills == 1
 
     cash.faucet(cost, sender=account1)
-    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, nullAddress, kycToken, sender=account1)
+    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, longTo32Bytes(11), kycToken, sender=account1)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, kycToken, fillOnly)
 
@@ -72,7 +72,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert settlementFees == 0
     assert numFills == 0
 
-    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, nullAddress, kycToken)
+    assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, longTo32Bytes(11), kycToken)
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(LONG, market.address, outcome, amount, price, kycToken, fillOnly, sender=account1)
     assert simulateTrade.getNumberOfAvaialableShares(LONG, market.address, outcome, account1) == fix(1)
@@ -196,9 +196,9 @@ def simulate_then_trade(contractsFixture, direction, market, outcome, amount, pr
     initialShareBalance = shareToken.balanceOfMarketOutcome(market.address, shareTokenOutcome, sender)
 
     if fillOnly:
-        orderId = trade.publicFillBestOrder(direction, market.address, outcome, amount, price, "42", 10, nullAddress, kycToken, sender=sender)
+        orderId = trade.publicFillBestOrder(direction, market.address, outcome, amount, price, "42", 10, longTo32Bytes(11), kycToken, sender=sender)
     else:
-        orderId = trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 10, nullAddress, kycToken, sender=sender)
+        orderId = trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 10, longTo32Bytes(11), kycToken, sender=sender)
 
     if (tokensDepleted > 0):
         assert tokensDepleted == initialCashBalance - cash.balanceOf(sender)

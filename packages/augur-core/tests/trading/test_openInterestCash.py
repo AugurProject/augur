@@ -109,4 +109,4 @@ def test_completeSets(contractsFixture, augur, universe, cash, market):
     for i in range(0, 3):
         assert shareToken.balanceOfMarketOutcome(market.address, i, account1) == numCompleteSets
 
-    assert openInterestCash.feesPaid() == initialFeesPaid + (numCompleteSets * market.getNumTicks() / universe.getOrCacheReportingFeeDivisor())
+    assert openInterestCash.feesPaid() == initialFeesPaid

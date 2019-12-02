@@ -57,9 +57,8 @@ function LoginView () {
         <h1 className='loginHeaderAnimation' onClick={focusUsernameInput}>
           Welcome to Augur<br />Global Chat
         </h1>
-        <p>Disclaimer</p>
         <p>
-          The comment section is for entertainment purposes only.
+          <span>Disclaimer:</span> The comment section is for entertainment purposes only.
           Augur does not monitor or assess the accuracy of comments.
           Traders should seek out independent information before making any investment decision.
         </p>

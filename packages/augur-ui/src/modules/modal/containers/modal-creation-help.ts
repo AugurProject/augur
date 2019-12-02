@@ -6,6 +6,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { approveToTrade } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
+import { MARKET_CREATION_COPY } from "modules/create-market/constants";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -18,10 +19,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: "Market Creation Help",
-  description: [
-    `Info about market creation`,
-  ],
+  title: 'Market Creation Help',
+  description: oP.copyType && MARKET_CREATION_COPY[oP.copyType].subheader,
   closeAction: () => {
     dP.closeModal();
   },

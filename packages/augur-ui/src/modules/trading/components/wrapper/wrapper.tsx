@@ -33,13 +33,19 @@ function pick(object, keys) {
   }, {});
 }
 
+interface SelectedOrderProperties {
+  orderPrice: string,
+  orderQuantity: string,
+  selectedNav: string
+}
+
 interface WrapperProps {
   orderBook: OutcomeOrderBook;
   allowanceBigNumber: BigNumber;
   market: MarketData;
   disclaimerSeen: boolean;
   disclaimerModal: Function;
-  selectedOrderProperties: object;
+  selectedOrderProperties: SelectedOrderProperties;
   availableEth: BigNumber;
   availableDai: BigNumber;
   selectedOutcome: OutcomeFormatted;
@@ -52,11 +58,15 @@ interface WrapperProps {
   updateTradeShares: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
-  initialLiquidity?: Boolean;
-  currentTimestamp: Number;
-  tradingTutorial?: Boolean;
+  initialLiquidity?: boolean;
+  currentTimestamp: number;
+  tradingTutorial?: boolean;
   addPendingOrder: Function;
+  tutorialNext?: Function;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
 }
+
 
 interface WrapperState {
   orderPrice: string;
@@ -118,32 +128,32 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps) {
     const { selectedOrderProperties } = this.props;
 
     if (
       JSON.stringify(selectedOrderProperties) !==
-      JSON.stringify(nextProps.selectedOrderProperties)
+      JSON.stringify(prevProps.selectedOrderProperties)
     ) {
       if (
-        nextProps.selectedOrderProperties.orderPrice !==
+        selectedOrderProperties.orderPrice !==
           this.state.orderPrice ||
-        nextProps.selectedOrderProperties.orderQuantity !==
+        selectedOrderProperties.orderQuantity !==
           this.state.orderQuantity ||
-        nextProps.selectedOrderProperties.selectedNav !== this.state.selectedNav
+        selectedOrderProperties.selectedNav !== this.state.selectedNav
       ) {
         if (
-          !nextProps.selectedOrderProperties.orderPrice &&
-          !nextProps.selectedOrderProperties.orderQuantity
+          !selectedOrderProperties.orderPrice &&
+          !selectedOrderProperties.orderQuantity
         ) {
           return this.clearOrderForm();
         }
 
         this.updateTradeTotalCost(
           {
-            ...nextProps.selectedOrderProperties,
+            ...selectedOrderProperties,
             orderQuantity: convertExponentialToDecimal(
-              nextProps.selectedOrderProperties.orderQuantity
+              selectedOrderProperties.orderQuantity
             ),
           },
           true
@@ -255,8 +265,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             totalCost: formatNumber(totalCost),
             numShares: order.orderQuantity,
             shareCost: formatNumber(0),
-            potentialDaiLoss: formatNumber(0),
-            potentialDaiProfit: formatNumber(0),
+            potentialDaiLoss: formatNumber(40),
+            potentialDaiProfit: formatNumber(60),
             side: order.selectedNav,
           };
 
@@ -265,7 +275,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               ...this.state,
               ...order,
               orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-              orderEscrowdDai: '',
+              orderEscrowdDai: totalCost ? formattedValue.roundedValue.toString() : '',
               gasCostEst: '',
               trade: trade,
             },
@@ -417,6 +427,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderBook,
       currentTimestamp,
       tradingTutorial,
+      tutorialNext,
+      Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
     let {
       marketType,
@@ -499,6 +512,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              tradingTutorial={tradingTutorial}
               currentTimestamp={currentTimestamp}
               orderBook={orderBook}
               marketType={marketType}
@@ -545,6 +559,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
+              Gnosis_ENABLED={Gnosis_ENABLED}
+              ethToDaiRate={ethToDaiRate}
             />
           )}
         <div
@@ -564,6 +580,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else if (tradingTutorial) {
+                tutorialNext();
                 this.clearOrderForm();
               } else {
                 if (disclaimerSeen) {

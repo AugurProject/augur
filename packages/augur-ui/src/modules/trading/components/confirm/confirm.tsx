@@ -16,7 +16,7 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm/confirm.styles.less';
 import { XIcon, ExclamationCircle, InfoIcon } from 'modules/common/icons';
-import { formatGasCostToEther, formatShares } from 'utils/format-number';
+import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
@@ -41,6 +41,8 @@ interface ConfirmProps {
   scalarDenomination: string | null;
   numOutcomes: number;
   tradingTutorial?: boolean;
+  ethToDaiRate: BigNumber;
+  Gnosis_ENABLED: boolean;
 }
 
 interface ConfirmState {
@@ -62,15 +64,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     const { trade, gasPrice, availableEth } = this.props;
     if (
-      JSON.stringify(trade) !== JSON.stringify(nextProps.trade) ||
-      gasPrice !== nextProps.gasPrice ||
-      !createBigNumber(availableEth).eq(createBigNumber(nextProps.availableEth))
+      JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
+      gasPrice !== prevProps.gasPrice ||
+      !createBigNumber(availableEth).eq(createBigNumber(availableEth))
     ) {
       this.setState({
-        messages: this.constructMessages(nextProps),
+        messages: this.constructMessages(this.props),
       });
     }
   }
@@ -83,7 +85,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasLimit,
       availableEth,
       availableDai,
-      tradingTutorial
+      tradingTutorial,
+      ethToDaiRate,
+      Gnosis_ENABLED,
     } = props || this.props;
 
     const {
@@ -102,6 +106,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       { decimalsRounded: 4 },
       gasPrice
     );
+
+    let gasCostDai = null;
+
+    if (Gnosis_ENABLED && ethToDaiRate) {
+      gasCostDai = formatDai(ethToDaiRate.multipliedBy(createBigNumber(gasCost))).formattedValue;
+    }
 
     if (
       allowanceBigNumber &&
@@ -134,7 +144,22 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
+    // GAS error in DAI [Gnosis]
     if (
+      Gnosis_ENABLED &&
+      totalCost &&
+      createBigNumber(gasCostDai, 10).gte(createBigNumber(availableDai, 10))
+    ) {
+      messages = {
+        header: 'Insufficient DAI',
+        type: ERROR,
+        message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
+      };
+    }
+
+    // GAS error in ETH
+    if (
+      !Gnosis_ENABLED &&
       totalCost &&
       createBigNumber(gasCost, 10).gte(createBigNumber(availableEth, 10))
     ) {
@@ -149,7 +174,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       totalCost &&
       createBigNumber(potentialDaiLoss.fullPrecision, 10).gt(
         createBigNumber(availableDai, 10)
-      )
+      ) && !tradingTutorial
     ) {
       messages = {
         header: 'Insufficient DAI',

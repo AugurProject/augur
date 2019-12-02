@@ -44,7 +44,8 @@ import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
-import { MarketData, DisputeInputtedValues } from 'modules/types';
+import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 
 interface CheckboxProps {
   id: string;
@@ -209,9 +210,9 @@ export const Error = (props: ErrorProps) => (
 export interface BaseRadioButtonProp {
   id: string;
   checked: boolean;
+  value?: string;
 }
 export interface RadioCardProps extends BaseRadioButtonProp {
-  value: string;
   header: string;
   description: string;
   onChange?: Function;
@@ -245,7 +246,6 @@ export interface RadioGroupState {
 
 export interface RadioBarProps extends BaseRadioButtonProp {
   header: string;
-  value: string;
   onChange?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -260,7 +260,6 @@ export interface RadioBarProps extends BaseRadioButtonProp {
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   market: MarketData;
   header: string;
-  value: string | null;
   updateChecked?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -274,20 +273,20 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
+  Gnosis_ENABLED: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   header: string;
   description: string;
-  value: string;
   onChange: Function;
   error?: boolean;
   hideRadioButton?: boolean;
+  renderMarkdown?: boolean;
 }
 
 interface CheckboxBarProps extends BaseRadioButtonProp {
   header: string;
-  value: string;
   onChange: Function;
   error?: boolean;
 }
@@ -696,12 +695,12 @@ export class CategoryMultiSelect extends Component<
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel="Tertiary Category"
+            staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
             errorMessage={errorMessage && errorMessage[2]}
             value={values[2]}
-            placeholder="Custom Tertiary Category"
+            placeholder="Custom Sub Category"
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
@@ -889,10 +888,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.updateChecked(nextProps.defaultSelected);
+  
+  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState){
+    if (this.props.defaultSelected !== prevProps.defaultSelected){
+      this.updateChecked(this.props.defaultSelected)
     }
   }
 
@@ -922,25 +921,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 }
 
-export const MultiSelectRadioBarGroup = ({
-  radioButtons,
-  onChange,
-}: RadioGroupProps) => (
-  <div className={Styles.RadioBarGroup}>
-    {radioButtons.map(radio => (
-      <RadioBar
-        key={radio.value}
-        {...radio}
-        checked={radio.isSelected}
-        multiSelect
-        onChange={selected => {
-          onChange(selected);
-        }}
-      />
-    ))}
-  </div>
-);
-
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
@@ -959,6 +939,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
+      Gnosis_ENABLED,
     } = this.props;
 
     let { stake } = this.props;
@@ -1051,6 +1032,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  Gnosis_ENABLED={Gnosis_ENABLED}
                 />
               )}
             </>
@@ -1121,9 +1103,9 @@ export class RadioTwoLineBarGroup extends Component<
     selected: this.props.defaultSelected || null,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.updateChecked(nextProps.defaultSelected);
+  componentDidUpdate(prevProps: RadioGroupProps) {
+    if (this.props.defaultSelected !== prevProps.defaultSelected) {
+      this.updateChecked(this.props.defaultSelected);
     }
   }
 
@@ -1162,19 +1144,22 @@ export const RadioTwoLineBar = ({
   error,
   description,
   hideRadioButton,
+  renderMarkdown
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
       [Styles.HideRadioButton]: hideRadioButton,
       [Styles.Checked]: hideRadioButton && checked,
+      [Styles.RenderMarkdown]: !!renderMarkdown,
     })}
     role="button"
     onClick={e => onChange(value)}
   >
     {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
-    <p>{description}</p>
+    {renderMarkdown && <MarkdownRenderer hideLabel noPrewrap text={description} />}
+    {!renderMarkdown && <p>{description}</p>}
   </div>
 );
 
@@ -1270,10 +1255,10 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: TextInputProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState){
+    const { value } = prevProps;
+    if (value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
   }
 
@@ -1527,10 +1512,10 @@ class IndividualTimeSelector extends React.Component<
     value: this.props.value,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: IndividualTimeSelectorProps) {
+    const { value } = prevProps;
+    if (value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
   }
 
@@ -1774,25 +1759,22 @@ export class Input extends Component<InputProps, InputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: InputProps, prevState: InputState) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
-  }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (
-      nextProps.canToggleVisibility &&
-      !nextState.value &&
-      nextState.isHiddenContentVisible
+      this.props.canToggleVisibility &&
+      !this.state.value &&
+      this.state.isHiddenContentVisible
     ) {
       this.updateIsHiddenContentVisible(false);
     }
 
     if (
-      this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible &&
-      nextState.isHiddenContentVisible
+      prevState.isHiddenContentVisible !== this.state.isHiddenContentVisible &&
+      this.state.isHiddenContentVisible
     ) {
       this.timeoutVisibleHiddenContent();
     }

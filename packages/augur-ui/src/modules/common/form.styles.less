@@ -380,8 +380,13 @@
     @media @breakpoint-mobile-mid {
       .text-14;
     }
+
+    &.RenderMarkdown {
+      grid-row: 1;
+    }
   }
 
+  > span,
   > p {
     .text-14;
 
@@ -931,6 +936,10 @@
 
     > button[class*='SelectedLabel'] {
       color: @color-primary-text;
+    }
+
+    > div {
+      right: unset;
     }
 
     &:hover {
@@ -1763,7 +1772,7 @@ div.error > div > div > div > div > input {
     > div > div {
       > input {
         .mono-9;
-  
+
         color: @color-primary-text;
         text-transform: uppercase;
         padding: @size-2 @size-4;

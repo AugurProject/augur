@@ -10,6 +10,9 @@ import {
   MARKET_REVIEW_SEEN,
   MODAL_MARKET_LOADING,
   TRADING_TUTORIAL,
+  CATEGORICAL,
+  TRADING_TUTORIAL_OUTCOMES,
+  TUTORIAL_ORDER_BOOK, TUTORIAL_TRADING_HISTORY
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
@@ -19,12 +22,9 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
-import { formatDai, formatShares } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
-import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
-import { getMarketAgeInDays } from 'utils/format-date';
+import { getMarketAgeInDays, formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
@@ -32,31 +32,19 @@ const mapStateToProps = (state, ownProps) => {
   let market = {};
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   if (tradingTutorial) {
+    // TODO move trading tutorial market state to constants
     market = {
       ...deepClone<NewMarket>(EMPTY_STATE),
       id: TRADING_TUTORIAL,
-      description: 'Which NFL team will win?',
-      numOutcomes: 3,
-      orderBook: {
-        2: [
-          {
-            avgPrice: formatDai(.3),
-            cumulativeShares: "1",
-            id: 1,
-            mySize: "1",
-            orderEstimate: createBigNumber(.3),
-            outcomeId: 2,
-            outcomeName: "Yes",
-            price: "0.3",
-            quantity: "1",
-            shares: "1",
-            sharesEscrowed: formatShares(.3),
-            tokensEscrowed: formatDai(.3),
-            type: "buy",
-            unmatchedShares: formatShares(.3)
-          }
-        ]
-      }
+      description: 'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
+      numOutcomes:  4,
+      defaultSelectedOutcomeId: 1,
+      marketType: CATEGORICAL,
+      endTimeFormatted: convertUnixToFormattedDate(1668452763),
+      creationTimeFormatted: convertUnixToFormattedDate(1573585563),
+      outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
+      groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
+      orderBook: TUTORIAL_ORDER_BOOK
     };
   } else {
     market = ownProps.market || selectMarket(marketId)

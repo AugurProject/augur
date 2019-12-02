@@ -11,8 +11,8 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
-  ExtraInfoTemplate
 } from "../logs/types";
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
 import { MarketReportingState } from "../../constants";
 import {
@@ -49,6 +49,11 @@ const MaxLiquiditySpreadValue  = {
   '0': null,
 }
 
+export enum TemplateFilters {
+  all = 'all',
+  templateOnly = 'templateOnly',
+  customOnly = 'customOnly',
+}
 // Valid market liquidity spreads
 export enum MaxLiquiditySpread {
   OneHundredPercent = '100', // all liquidity spreads
@@ -60,6 +65,7 @@ export enum MaxLiquiditySpread {
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
 export const GetMaxLiquiditySpread = t.keyof(MaxLiquiditySpreadValue);
+export const GetTemplateFilterValue = t.keyof(TemplateFilters);
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -77,6 +83,7 @@ const getMarketsParamsSpecific = t.intersection([
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
     userPortfolioAddress: t.string,
+    templateFilter: GetTemplateFilterValue,
   }),
 ]);
 
@@ -149,6 +156,7 @@ export interface MarketInfo {
   noShowBondAmount: string;
   disavowed: boolean;
   template: ExtraInfoTemplate;
+  isTemplate: boolean;
 }
 
 export interface DisputeInfo {
@@ -479,7 +487,7 @@ export class Markets {
       offset: undefined
     };
 
-    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories);
+    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories, augur);
     const numMarketDocs = marketsFTSResults.length;
 
     if (params.search || params.categories) {
@@ -493,6 +501,18 @@ export class Markets {
       request.selector = Object.assign(request.selector, {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
+    }
+
+    if (params.templateFilter) {
+      if (params.templateFilter === TemplateFilters.templateOnly) {
+        request.selector = Object.assign(request.selector, {
+          isTemplate: { $eq: true },
+        });
+      } else if (params.templateFilter === TemplateFilters.customOnly) {
+        request.selector = Object.assign(request.selector, {
+          isTemplate: { $eq: false },
+        });
+      }
     }
 
     // Filter out markets not related to the specified user
@@ -1072,9 +1092,7 @@ async function getMarketsInfo(
       marketData.feePerCashInAttoCash
     ).dividedBy(QUINTILLION);
 
-    const reportingFeeRate = new BigNumber(
-      reportingFeeDivisor
-    ).dividedBy(QUINTILLION);
+    const reportingFeeRate = new BigNumber(1).div(reportingFeeDivisor);
     const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
     const noShowBondAmount = new BigNumber(marketData.noShowBond).toFixed();
 
@@ -1140,6 +1158,7 @@ async function getMarketsInfo(
       disputeInfo,
       disavowed: marketData.disavowed,
       template,
+      isTemplate: marketData.isTemplate,
     };
   });
 }
@@ -1226,16 +1245,17 @@ function getMarketsCategoriesMeta(
 async function getMarketsSearchResults(
   universe: string,
   query: string,
-  categories: string[]
+  categories: string[],
+  augur: Augur
 ): Promise<Array<SearchResults<MarketFields>>> {
   const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
     whereObj['category' + (i + 1)] = categories[i];
   }
   if (query) {
-    return Augur.syncableFlexSearch.search(query, { where: whereObj });
+    return augur.syncableFlexSearch.search(query, { where: whereObj });
   }
-  return Augur.syncableFlexSearch.where(whereObj);
+  return augur.syncableFlexSearch.where(whereObj);
 }
 
 /**
