@@ -14,7 +14,7 @@ import {
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import Styles from 'modules/trading/components/confirm/confirm.styles.less';
+import Styles from 'modules/trading/components/confirm.styles.less';
 import { XIcon, ExclamationCircle, InfoIcon } from 'modules/common/icons';
 import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -43,6 +43,7 @@ interface ConfirmProps {
   tradingTutorial?: boolean;
   ethToDaiRate: BigNumber;
   Gnosis_ENABLED: boolean;
+  GnosisUnavailable: boolean;
 }
 
 interface ConfirmState {
@@ -88,6 +89,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       tradingTutorial,
       ethToDaiRate,
       Gnosis_ENABLED,
+      GnosisUnavailable,
     } = props || this.props;
 
     const {
@@ -181,6 +183,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         type: ERROR,
         message: 'You do not have enough DAI to place this order',
       };
+    }
+
+    if (GnosisUnavailable) {
+      messages = {
+        header: 'Waiting For Gnosis Safe',
+        type: WARNING,
+        message: 'Please hold on while we create your Augur wallet',
+      }
     }
 
     return messages;
@@ -317,11 +327,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 [Styles.short]: side === SELL,
               })}
             >
-              <span>
-                {side === BUY ? BUYING : SELLING}
-                <span>{newOrderAmount}</span>
-                Shares @<span>{limitPrice}</span>
-              </span>
+                {
+                `${side === BUY ? BUYING : SELLING}
+                ${newOrderAmount}
+                Shares @ ${limitPrice}`
+                }
             </div>
             <LinearPropertyLabel
               label="Max Profit"

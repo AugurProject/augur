@@ -9,7 +9,7 @@ import { FindReact } from 'utils/find-react';
 import MarketHeader from 'modules/market/containers/market-header';
 import MarketOrdersPositionsTable from 'modules/market/containers/market-orders-positions-table';
 import MarketOutcomesList from 'modules/market/containers/market-outcomes-list';
-import TradingForm from 'modules/market/containers/trading-form';
+import TradingForm from 'modules/trading/components/trading-form';
 import OrderBook from 'modules/market-charts/containers/order-book';
 import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
@@ -20,7 +20,6 @@ import {
   BUY,
   PUBLICFILLORDER,
   LONG,
-  YES_NO_YES_ID,
   TRADING_TUTORIAL,
   TRADING_TUTORIAL_STEPS,
   TRADING_TUTORIAL_COPY,

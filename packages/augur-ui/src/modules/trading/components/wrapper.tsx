@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 
-import Form from 'modules/trading/components/form/form';
-import Confirm from 'modules/trading/components/confirm/confirm';
+import Form from 'modules/trading/containers/form';
+import Confirm from 'modules/trading/containers/confirm';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import {
   SCALAR,
@@ -11,8 +11,8 @@ import {
   SELL,
   UPPER_FIXED_PRECISION_BOUND,
 } from 'modules/common/constants';
-import Styles from 'modules/trading/components/wrapper/wrapper.styles.less';
-import { OrderButton } from 'modules/common/buttons';
+import Styles from 'modules/trading/components/wrapper.styles.less';
+import { OrderButton, PrimaryButton } from 'modules/common/buttons';
 import {
   formatShares,
   formatGasCostToEther,
@@ -22,6 +22,7 @@ import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
@@ -34,40 +35,36 @@ function pick(object, keys) {
 }
 
 export interface SelectedOrderProperties {
-  orderPrice: string,
-  orderQuantity: string,
-  selectedNav: string
+  orderPrice: string;
+  orderQuantity: string;
+  selectedNav: string;
 }
 
 interface WrapperProps {
-  orderBook: OutcomeOrderBook;
-  allowanceBigNumber: BigNumber;
+  gnosisStatus: GnosisSafeState;
   market: MarketData;
-  disclaimerSeen: boolean;
-  disclaimerModal: Function;
-  selectedOrderProperties: SelectedOrderProperties;
-  availableEth: BigNumber;
-  availableDai: BigNumber;
   selectedOutcome: OutcomeFormatted;
-  sortedOutcomes: OutcomeFormatted[];
-  updateSelectedOrderProperties: Function;
+  selectedOrderProperties: SelectedOrderProperties;
+  addFundsModal: Function;
+  addPendingOrder: Function;
+  disclaimerModal: Function;
   handleFilledOnly: Function;
-  gasPrice: number;
+  loginModal: Function;
+  onSubmitPlaceTrade: Function;
+  tutorialNext?: Function;
+  updateLiquidity?: Function;
+  updateSelectedOrderProperties: Function;
   updateSelectedOutcome: Function;
   updateTradeCost: Function;
   updateTradeShares: Function;
-  onSubmitPlaceTrade: Function;
-  updateLiquidity?: Function;
-  initialLiquidity?: boolean;
-  currentTimestamp: number;
-  tradingTutorial?: boolean;
-  addPendingOrder: Function;
-  tutorialNext?: Function;
+  disclaimerSeen: boolean;
+  gasPrice: number;
   Gnosis_ENABLED: boolean;
-  Ox_ENABLED: boolean;
-  ethToDaiRate: BigNumber;
+  hasFunds: boolean;
+  isLogged: boolean;
+  initialLiquidity?: boolean;
+  tradingTutorial?: boolean;
 }
-
 
 interface WrapperState {
   orderPrice: string;
@@ -90,15 +87,24 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (!(props.market || {}).marketType || !(props.selectedOutcome || {}).id) {
       return null;
     }
+    const {
+      id,
+      settlementFee,
+      marketType,
+      maxPrice,
+      minPrice,
+      cumulativeScale,
+      makerFee,
+    } = props.market;
     return generateTrade(
       {
-        id: props.market.id,
-        settlementFee: props.market.settlementFee,
-        marketType: props.market.marketType,
-        maxPrice: props.market.maxPrice,
-        minPrice: props.market.minPrice,
-        cumulativeScale: props.market.cumulativeScale,
-        makerFee: props.market.makerFee,
+        id,
+        settlementFee,
+        marketType,
+        maxPrice,
+        minPrice,
+        cumulativeScale,
+        makerFee,
       },
       {}
     );
@@ -131,17 +137,16 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
 
   componentDidUpdate(prevProps) {
     const { selectedOrderProperties } = this.props;
+    const { orderPrice, orderQuantity, selectedNav } = this.state;
 
     if (
       JSON.stringify(selectedOrderProperties) !==
       JSON.stringify(prevProps.selectedOrderProperties)
     ) {
       if (
-        selectedOrderProperties.orderPrice !==
-          this.state.orderPrice ||
-        selectedOrderProperties.orderQuantity !==
-          this.state.orderQuantity ||
-        selectedOrderProperties.selectedNav !== this.state.selectedNav
+        selectedOrderProperties.orderPrice !== orderPrice ||
+        selectedOrderProperties.orderQuantity !== orderQuantity ||
+        selectedOrderProperties.selectedNav !== selectedNav
       ) {
         if (
           !selectedOrderProperties.orderPrice &&
@@ -276,7 +281,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               ...this.state,
               ...order,
               orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-              orderEscrowdDai: totalCost ? formattedValue.roundedValue.toString() : '',
+              orderEscrowdDai: totalCost
+                ? formattedValue.roundedValue.toString()
+                : '',
               gasCostEst: '',
               trade: trade,
             },
@@ -295,7 +302,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             (err, newOrder) => {
               if (err) {
                 // just update properties for form
-                console.log(order);
                 return this.updateState(
                   {
                     ...this.state,
@@ -413,25 +419,22 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
 
   render() {
     const {
-      allowanceBigNumber,
-      availableEth,
-      availableDai,
       market,
       selectedOutcome,
       gasPrice,
       updateSelectedOutcome,
       disclaimerSeen,
       disclaimerModal,
-      sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
-      orderBook,
-      currentTimestamp,
       tradingTutorial,
       tutorialNext,
       Gnosis_ENABLED,
-      Ox_ENABLED,
-      ethToDaiRate,
+      hasFunds,
+      isLogged,
+      loginModal,
+      addFundsModal,
+      gnosisStatus,
     } = this.props;
     let {
       marketType,
@@ -446,7 +449,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (!maxPriceBigNumber) {
       maxPriceBigNumber = createBigNumber(maxPrice);
     }
-    const s = this.state;
     const {
       selectedNav,
       orderPrice,
@@ -456,7 +458,60 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gasCostEst,
       doNotCreateOrders,
       expirationDate,
-    } = s;
+      trade,
+    } = this.state;
+    const GnosisUnavailable = Gnosis_ENABLED &&
+    isLogged &&
+    hasFunds &&
+    gnosisStatus !== GnosisSafeState.AVAILABLE;
+    let actionButton: any = (
+      <OrderButton
+        type={selectedNav}
+        initialLiquidity={initialLiquidity}
+        action={e => {
+          e.preventDefault();
+          if (initialLiquidity) {
+            updateLiquidity(selectedOutcome, this.state);
+            this.clearOrderForm();
+          } else if (tradingTutorial) {
+            tutorialNext();
+            this.clearOrderForm();
+          } else {
+            if (disclaimerSeen) {
+              this.placeMarketTrade(market, selectedOutcome, this.state);
+            } else {
+              disclaimerModal({
+                onApprove: () =>
+                  this.placeMarketTrade(market, selectedOutcome, this.state),
+              });
+            }
+          }
+        }}
+        disabled={!trade || !trade.limitPrice || GnosisUnavailable}
+      />
+    );
+    switch (true) {
+      case !isLogged && !tradingTutorial:
+        actionButton = (
+          <PrimaryButton
+            id="login-button"
+            action={() => loginModal()}
+            text="Login to Place Order"
+          />
+        );
+        break;
+      case isLogged && !hasFunds && !tradingTutorial:
+        actionButton = (
+          <PrimaryButton
+            id="add-funds"
+            action={() => addFundsModal()}
+            text="Add Funds to Place Order"
+          />
+        );
+        break;
+      default:
+        break;
+    }
 
     return (
       <section className={Styles.Wrapper}>
@@ -476,7 +531,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               <button
                 onClick={() =>
                   this.updateTradeTotalCost({
-                    ...s,
+                    ...this.state,
                     selectedNav: BUY,
                   })
                 }
@@ -492,7 +547,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               <button
                 onClick={() =>
                   this.updateTradeTotalCost({
-                    ...s,
+                    ...this.state,
                     selectedNav: SELL,
                   })
                 }
@@ -505,12 +560,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             <Form
               market={market}
               tradingTutorial={tradingTutorial}
-              currentTimestamp={currentTimestamp}
-              orderBook={orderBook}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
               minPrice={minPriceBigNumber}
-              sortedOutcomes={sortedOutcomes}
               selectedNav={selectedNav}
               orderPrice={orderPrice}
               orderQuantity={orderQuantity}
@@ -528,67 +580,30 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateTradeNumShares={this.updateTradeNumShares}
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
-              availableDai={availableDai}
-              Ox_ENABLED={Ox_ENABLED}
             />
           )}
         </div>
         {(!initialLiquidity || tradingTutorial) &&
-          s.trade &&
-          ((s.trade.shareCost && s.trade.shareCost.value !== 0) ||
-            (s.trade.totalCost && s.trade.totalCost.value !== 0)) && (
+          trade &&
+          ((trade.shareCost && trade.shareCost.value !== 0) ||
+            (trade.totalCost && trade.totalCost.value !== 0)) && (
             <Confirm
-              allowanceBigNumber={allowanceBigNumber}
               numOutcomes={market.numOutcomes}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
               minPrice={minPriceBigNumber}
-              trade={s.trade}
+              trade={trade}
               gasPrice={gasPrice}
-              gasLimit={s.trade.gasLimit}
-              availableEth={availableEth}
-              availableDai={availableDai}
+              gasLimit={trade.gasLimit}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
               Gnosis_ENABLED={Gnosis_ENABLED}
-              ethToDaiRate={ethToDaiRate}
+              GnosisUnavailable={GnosisUnavailable}
             />
           )}
-        <div
-          className={classNames({
-            [Styles.Full]:
-              s.trade &&
-              ((s.trade.shareCost && s.trade.shareCost.value !== 0) ||
-                (s.trade.totalCost && s.trade.totalCost.value !== 0)),
-          })}
-        >
-          <OrderButton
-            type={selectedNav}
-            initialLiquidity={initialLiquidity}
-            action={e => {
-              e.preventDefault();
-              if (initialLiquidity) {
-                updateLiquidity(selectedOutcome, s);
-                this.clearOrderForm();
-              } else if (tradingTutorial) {
-                tutorialNext();
-                this.clearOrderForm();
-              } else {
-                if (disclaimerSeen) {
-                  this.placeMarketTrade(market, selectedOutcome, s);
-                }
-                // Show Disclaimer
-                else {
-                  disclaimerModal({
-                    onApprove: () =>
-                      this.placeMarketTrade(market, selectedOutcome, s),
-                  });
-                }
-              }
-            }}
-            disabled={!s.trade || !s.trade.limitPrice}
-          />
+        <div>
+          {actionButton}
         </div>
       </section>
     );

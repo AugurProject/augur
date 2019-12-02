@@ -1,7 +1,5 @@
 import { connect } from 'react-redux';
-import { augurSdk } from 'services/augursdk';
-import TradingForm from 'modules/market/components/trading-form/trading-form';
-import { createBigNumber } from 'utils/create-big-number';
+import Wrapper from 'modules/trading/components/wrapper';
 import { windowRef } from 'utils/window-ref';
 import {
   DISCLAIMER_SEEN,
@@ -17,13 +15,6 @@ import {
   updateTradeShares,
 } from 'modules/trades/actions/update-trade-cost-shares';
 import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
-import {
-  updateAuthStatus,
-  IS_CONNECTION_TRAY_OPEN,
-} from 'modules/auth/actions/auth-status';
-import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
-import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
-import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -40,53 +31,25 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { authStatus, loginAccount } = state;
-  const Ox_ENABLED = state.appStatus.zeroXEnabled;
-  const Gnosis_ENABLED = state.appStatus.gnosisEnabled;
-  const ethToDaiRate = state.appStatus.ethToDaiRate;
-  const gnosisStatus = state.appStatus.gnosisStatus;
+  const { authStatus, loginAccount, appStatus, blockchain } = state;
+  const { 
+    gnosisEnabled: Gnosis_ENABLED,
+    gnosisStatus,
+  } = appStatus;
   const hasFunds = Gnosis_ENABLED
-    ? !!state.loginAccount.balances.dai
-    : !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
-
-  const selectedOutcomeId =
-    ownProps.selectedOutcomeId !== undefined &&
-    ownProps.selectedOutcomeId !== null
-      ? ownProps.selectedOutcomeId
-      : ownProps.market.defaultSelectedOutcomeId;
-  let outcomeOrderBook = {};
-  if (ownProps.initialLiquidity) {
-    outcomeOrderBook = formatOrderBook(
-      ownProps.market.orderBook[selectedOutcomeId]
-    );
-  }
-
-  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);
+    ? !!loginAccount.balances.dai
+    : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
   return {
     gasPrice: getGasPrice(state),
-    availableEth: createBigNumber(state.loginAccount.balances.eth),
-    availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
-    currentTimestamp: state.blockchain.currentAugurTimestamp,
-    orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
-    allowanceBigNumber: loginAccount.allowance,
-    isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
-    sortedOutcomes: selectSortedMarketOutcomes(
-      ownProps.market.marketType,
-      ownProps.market.outcomesFormatted
-    ),
     Gnosis_ENABLED,
-    Ox_ENABLED,
-    ethToDaiRate,
     gnosisStatus,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  toggleConnectionTray: value =>
-    dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   handleFilledOnly: trade => null,
   updateTradeCost: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
@@ -149,10 +112,10 @@ const mergeProps = (sP, dP, oP) => {
   };
 };
 
-const TradingFormContainer = connect(
+const WrapperContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
-)(TradingForm);
+)(Wrapper);
 
-export default TradingFormContainer;
+export default WrapperContainer;

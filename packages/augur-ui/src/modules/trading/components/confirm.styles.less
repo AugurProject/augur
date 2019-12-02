@@ -3,7 +3,6 @@
 .TradingConfirm {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   position: relative;
 }
 
@@ -52,17 +51,11 @@
 }
 
 .TradingConfirm__agg_position {
-  .mono-10;
+  .mono-12-bold;
 
   color: @color-primary-text;
   padding-bottom: @size-4;
   text-transform: uppercase;
-
-  > span > span {
-    .mono-10-bold;
-
-    margin: 0 @size-4;
-  }
 
   &.short {
     color: @color-negative;
