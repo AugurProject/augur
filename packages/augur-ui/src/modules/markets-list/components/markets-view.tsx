@@ -17,11 +17,13 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
+import LandingHero from 'modules/markets-list/containers/landing-hero';
 
 const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   markets: MarketData[];
   location: object;
   history: History;
@@ -49,7 +51,10 @@ interface MarketsViewProps {
   marketCardFormat: string;
   updateMobileMenuState: Function;
   updateLoginAccountSettings: Function;
-  showInvalidMarketsBanner: boolean;
+  showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
+  showInvalidMarketsBannerHideOrShow: boolean;
+  templateFilter: string;
+  setMarketsListSearchInPlace: Function;
 }
 
 interface MarketsViewState {
@@ -105,6 +110,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
       isConnected,
       isLogged,
+      templateFilter,
     } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
@@ -115,6 +121,7 @@ export default class MarketsView extends Component<
         marketFilter !== prevProps.marketFilter ||
         marketSort !== prevProps.marketSort ||
         maxFee !== prevProps.maxFee ||
+        templateFilter !== prevProps.templateFilter ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
 
@@ -154,6 +161,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
       marketFilter,
       marketSort,
+      templateFilter,
     } = this.props;
 
     const { limit, offset } = this.state;
@@ -161,6 +169,8 @@ export default class MarketsView extends Component<
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
+    this.props.setMarketsListSearchInPlace(Boolean(search));
+    
     this.props.loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
@@ -172,6 +182,7 @@ export default class MarketsView extends Component<
         offset,
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
+        templateFilter,
       },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
@@ -195,7 +206,6 @@ export default class MarketsView extends Component<
   render() {
     const {
       history,
-      isLogged,
       isMobile,
       loadMarketsInfoIfNotLoaded,
       location,
@@ -211,7 +221,10 @@ export default class MarketsView extends Component<
       marketFilter,
       marketSort,
       isSearching,
-      showInvalidMarketsBanner,
+      showInvalidMarketsBannerFeesOrLiquiditySpread,
+      showInvalidMarketsBannerHideOrShow,
+      isLogged,
+      restoredAccount,
     } = this.props;
     const {
       filterSortedMarkets,
@@ -241,6 +254,7 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
+        {(!isLogged && !restoredAccount) && <LandingHero/>}
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearching}
@@ -279,10 +293,14 @@ export default class MarketsView extends Component<
             updateQuery(param, value, this.props.location, this.props.history)
           }
         />
-
         <FilterNotice
-          color="red"
           show={this.props.includeInvalidMarkets === 'show'}
+          showDismissButton={true}
+          updateLoginAccountSettings={updateLoginAccountSettings}
+          settings={{
+            propertyName: 'showInvalidMarketsBannerHideOrShow',
+            propertyValue: showInvalidMarketsBannerHideOrShow
+          }}
           content={
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
@@ -295,11 +313,13 @@ export default class MarketsView extends Component<
         />
 
         <FilterNotice
-          color="red"
           show={!displayFee || !displayLiquiditySpread}
-          isInvalidMarketsBanner={true}
+          showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
-          showInvalidMarketsBanner={showInvalidMarketsBanner}
+          settings={{
+            propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
+            propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread
+          }}
           content={
             <span>
               {feesLiquidityMessage}{' '}
@@ -312,7 +332,6 @@ export default class MarketsView extends Component<
 
         <MarketsList
           testid='markets'
-          isLogged={isLogged}
           markets={markets}
           showPagination={showPagination && !isSearching}
           filteredMarkets={filterSortedMarkets}

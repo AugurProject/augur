@@ -13,7 +13,8 @@ import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
 const getOutcomeName = (
   market: MarketData | MarketInfo,
   outcomeId: number,
-  isInvalid: boolean = false
+  isInvalid: boolean = false,
+  showScalarOutcome: boolean = false
 ): string => {
   // default to handle app loading
   if (!market) return YES_NO_YES_OUTCOME_NAME;
@@ -37,7 +38,8 @@ const getOutcomeName = (
       return description || 'N/A';
     }
     default: {
-      return market.scalarDenomination || 'N/A';
+      const denomination = market.scalarDenomination || 'N/A';
+      return showScalarOutcome ? `${outcomeId} ${denomination}` : denomination;
     }
   }
 };
@@ -45,7 +47,8 @@ const getOutcomeName = (
 export const getOutcomeNameWithOutcome = (
   market: MarketData | MarketInfo,
   outcomeId: string,
-  isInvalid: boolean = false
+  isInvalid: boolean = false,
+  showScalarOutcome: boolean = false
 ): string => {
   if (!outcomeId || outcomeId === undefined)
     throw new Error(`${outcomeId} isn't defined`);
@@ -53,5 +56,5 @@ export const getOutcomeNameWithOutcome = (
   if (isNaN(id)) {
     throw new Error(`${id} is not a valid outcome id`);
   }
-  return getOutcomeName(market, id, isInvalid);
+  return getOutcomeName(market, id, isInvalid, showScalarOutcome);
 };

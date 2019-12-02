@@ -6,6 +6,7 @@ import {
   formatGasCostToEther,
   formatAttoRep,
   formatAttoDai,
+  formatDai,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
@@ -23,25 +24,43 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MarketReportClaimableContracts } from 'modules/types';
+import { disavowMarket } from 'modules/contracts/actions/contractCalls';
+import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
+import getValue from 'utils/get-value';
+import { createBigNumber } from 'utils/create-big-number';
 
-const mapStateToProps = (state: AppState, ownProps) => ({
-  modal: state.modal,
-  gasCost: formatGasCostToEther(
-    CLAIM_FEES_GAS_COST,
-    { decimalsRounded: 4 },
-    getGasPrice(state)
-  ),
-  pendingQueue: state.pendingQueue || [],
-  claimReportingFees: ownProps,
-});
+const mapStateToProps = (state: AppState) => {
+  return {
+    modal: state.modal,
+    Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
+    gasCost: formatGasCostToEther(
+      CLAIM_FEES_GAS_COST,
+      { decimalsRounded: 4 },
+      getGasPrice(state)
+    ),
+    ethToDaiRate: state.appStatus.ethToDaiRate,
+    pendingQueue: state.pendingQueue || [],
+    claimReportingFees: selectReportingWinningsByMarket(state),
+    forkingInfo: state.universe.forkingInfo,
+  }
+}
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   redeemStake: (options, callback) => redeemStake(options, callback),
+  disavowMarket: marketId => disavowMarket(marketId),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const isForking = !!sP.forkingInfo;
+  const forkingMarket = isForking ? sP.forkingInfo.forkingMarket : null;
   const { gasCost, pendingQueue } = sP;
+  let gasCostDai = null;
+
+  if (sP.Gnosis_ENABLED && sP.ethToDaiRate) {
+    gasCostDai = formatDai(sP.ethToDaiRate.multipliedBy(createBigNumber(gasCost))).formattedValue;
+  }
+
   const claimReportingFees = sP.claimReportingFees as MarketReportClaimableContracts;
   const modalRows: ActionRowsProps[] = [];
 
@@ -49,25 +68,59 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     (p, c) => [...p, ...c.contracts],
     []
   );
-  const AllRedeemStakeOptions = {
+  const allRedeemStakeOptions = {
     disputeWindows: claimReportingFees.participationContracts.contracts,
     reportingParticipants,
   };
-  const submitAllTxCount = redeemStakeBatches(AllRedeemStakeOptions);
+  const submitAllTxCount = redeemStakeBatches(allRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
   claimableMarkets.marketContracts.map(marketObj => {
     const market = marketObj.marketObject;
     if (market) {
       const marketRep = formatAttoRep(marketObj.totalAmount);
+      const isForkingMarket = market.id === forkingMarket;
 
       const pending =
         pendingQueue[CLAIM_STAKE_FEES] &&
         pendingQueue[CLAIM_STAKE_FEES][marketObj.marketId];
+      const redeemStakeOptions = {
+        disputeWindows: [],
+        reportingParticipants: marketObj.contracts,
+        disavowed: market.disavowed ? true : false,
+        isForkingMarket,
+      };
+      const marketTxCount = redeemStakeBatches(redeemStakeOptions);
+      let notice = undefined;
+      let action = () => dP.redeemStake(redeemStakeOptions);
+      let buttonText = 'Claim Proceeds';
 
+      if (isForking) {
+        if (!market.disavowed) {
+          buttonText = 'Disavow Market REP';
+          notice = 'Disavow Market disputing REP in order to release REP, releasing REP will be in a separate transaction';
+          action = () => dP.disavowMarket(market.id);
+        } else if (market.disavowed && marketTxCount > 1) {
+          notice = `Releasing REP will take ${marketTxCount} Transactions`;
+          buttonText = 'Release REP';
+        }
+
+        if (isForkingMarket) {
+          buttonText = 'Release and Migrate REP';
+          action = () => dP.redeemStake(redeemStakeOptions);
+          notice =
+            marketTxCount > 1
+              ? `Forking market, releasing REP will take ${marketTxCount} Transactions and be sent to corresponding child universe`
+              : 'Forking market, release REP will be sent to corresponding child universe';
+        }
+      }
+
+      if (market.disavowed) buttonText = 'Release REP';
       modalRows.push({
         title: market.description,
-        text: 'Claim Proceeds',
+        text: buttonText,
         status: pending && pending.status,
+        notice,
+        marketTxCount,
         properties: [
           {
             label: 'reporting stake',
@@ -76,16 +129,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: 'est gas cost',
-            value: `${gasCost} ETH`,
+            value: gasCostDai ? `${gasCostDai} DAI` : `${gasCost} ETH`,
           },
         ],
-        action: () => {
-          const RedeemStakeOptions = {
-            disputeWindows: [],
-            reportingParticipants: marketObj.contracts,
-          };
-          dP.redeemStake(RedeemStakeOptions);
-        },
+        action,
       });
     }
   });
@@ -101,7 +148,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       claimReportingFees.participationContracts.unclaimedDai
     );
     modalRows.push({
-      title: 'Reedeem all participation tokens',
+      title: isForking
+        ? 'Release Participation REP'
+        : 'Reedeem all participation tokens',
       text: 'Claim',
       status: disputeWindowsPending,
       properties: [
@@ -116,21 +165,27 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         },
         {
           label: 'Est Gas cost',
-          value: `${gasCost} ETH`,
+          value: gasCostDai ? `${gasCostDai} DAI` : `${gasCost} ETH`,
         },
       ],
       action: () => {
-        const RedeemStakeOptions = {
+        const redeemStakeOptions = {
           disputeWindows: claimReportingFees.participationContracts.contracts,
           reportingParticipants: [],
         };
-        dP.redeemStake(RedeemStakeOptions);
+        dP.redeemStake(redeemStakeOptions);
       },
     });
   }
+
+  if (modalRows.length === 0) {
+    dP.closeModal();
+    return {};
+  }
+
   return {
-    title: 'Claim Stake & Fees',
-    submitAllTxCount,
+    title: isForking ? 'Release REP' : 'Claim Stake & Fees',
+    submitAllTxCount: isForking ? 0 : submitAllTxCount,
     descriptionMessage: [
       {
         preText: 'You have',
@@ -150,29 +205,31 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       }
       dP.closeModal();
     },
-    buttons: [
-      {
-        text: 'Claim All',
-        disabled: modalRows.find(market => market.status === 'pending'),
-        action: () => {
-          dP.redeemStake(AllRedeemStakeOptions, () => {
-            if (sP.modal.cb) {
-              sP.modal.cb();
-            }
-          });
-          dP.closeModal();
-        },
-      },
-      {
-        text: 'Close',
-        action: () => {
-          if (sP.modal.cb) {
-            sP.modal.cb();
-          }
-          dP.closeModal();
-        },
-      },
-    ],
+    buttons: isForking
+      ? []
+      : [
+          {
+            text: 'Claim All',
+            disabled: modalRows.find(market => market.status === 'pending'),
+            action: () => {
+              dP.redeemStake(allRedeemStakeOptions, () => {
+                if (sP.modal.cb) {
+                  sP.modal.cb();
+                }
+              });
+              dP.closeModal();
+            },
+          },
+          {
+            text: 'Close',
+            action: () => {
+              if (sP.modal.cb) {
+                sP.modal.cb();
+              }
+              dP.closeModal();
+            },
+          },
+        ],
   };
 };
 

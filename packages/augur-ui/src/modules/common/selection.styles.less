@@ -87,6 +87,10 @@
   color: @color-primary-text;
 }
 
+.Disabled {
+  pointer-events: none;
+}
+
 .Large {
   .Dropdown;
 
@@ -232,7 +236,7 @@
 }
 
 .openTop {
-  > div {
+  > div:first-of-type {
     bottom: 106%;
     top: unset;
   }

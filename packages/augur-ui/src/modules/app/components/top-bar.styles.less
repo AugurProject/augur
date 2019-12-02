@@ -8,7 +8,6 @@
   height: 100%;
   justify-content: flex-end;
 
-
   // LOGIN/SIGNUP ACCOUNT / ALERTS
   > div:last-of-type {
     align-items: center;
@@ -16,6 +15,18 @@
     flex: 1;
     justify-content: flex-end;
     height: 100%;
+
+    @media @breakpoint-mobile {
+      flex: 0;
+      padding: @size-8 0;
+    }
+
+
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        display: none;
+      }
+    }
 
     > div > div:last-of-type {
       @media @breakpoint-mobile {
@@ -35,10 +46,18 @@
 
   div {
     width: @size-24;
+
+    @media @breakpoint-mobile {
+      width: @size-40;
+    }
   }
 
   @media @breakpoint-mobile {
-    display: none;
+    border: 0;
+    display: flex;
+    flex: 2;
+    margin-left: 2.875rem;
+    padding: 0;
   }
 }
 
@@ -47,20 +66,12 @@
   display: flex;
   height: 100%;
 
-  @media @breakpoint-mobile {
-    display: none;
-  }
-
   > div:first-of-type {
     display: flex;
     flex-direction: column;
     height: 100%;
     padding: @size-6 @size-20;
     width: min-content;
-
-    > span {
-      display: none;
-    }
 
     > div:first-of-type {
       > span:last-of-type {
@@ -72,6 +83,10 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 0;
+
+      @media @breakpoint-mobile {
+        margin-bottom: @size-2;
+      }
 
       > span {
         .mono-9-bold;
@@ -93,6 +108,14 @@
       > span:nth-of-type(2)::before,
         span:last-of-type::before {
         content:'$';
+      }
+    }
+
+    > div:last-of-type {
+      display: none;
+
+      @media @breakpoint-mobile {
+        display: flex;
       }
     }
   }
@@ -121,6 +144,10 @@
     > div {
       justify-content: flex-start;
     }
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
   }
 }
 
@@ -132,6 +159,11 @@
   justify-content: flex-end;
   padding: @size-16 @size-16 @size-16 @size-24;
   width: unset;
+
+  @media @breakpoint-mobile {
+    border-left: 1px solid @color-module-background;
+    padding: 0 0 0 @size-16;
+  }
 
   &:hover {
     background-color: @color-module-background;

@@ -3,15 +3,16 @@ import { SearchResults } from "flexsearch";
 import { DB } from "../db/DB";
 import { MarketFields } from "../db/SyncableFlexSearch";
 import { Getter } from "./Router";
-import { Order, Orders, OrderState, OutcomeParam, Trading } from "./Trading";
+import { Order, Orders, OrderState, OutcomeParam, OnChainTrading } from "./OnChainTrading";
 import {
   Address,
   DisputeDoc,
   MarketData,
   OrderEventType,
   OrderType,
-  ParsedOrderEventLog
+  ParsedOrderEventLog,
 } from "../logs/types";
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { sortOptions } from "./types";
 import { MarketReportingState } from "../../constants";
 import {
@@ -48,6 +49,11 @@ const MaxLiquiditySpreadValue  = {
   '0': null,
 }
 
+export enum TemplateFilters {
+  all = 'all',
+  templateOnly = 'templateOnly',
+  customOnly = 'customOnly',
+}
 // Valid market liquidity spreads
 export enum MaxLiquiditySpread {
   OneHundredPercent = '100', // all liquidity spreads
@@ -59,6 +65,7 @@ export enum MaxLiquiditySpread {
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
 export const GetMaxLiquiditySpread = t.keyof(MaxLiquiditySpreadValue);
+export const GetTemplateFilterValue = t.keyof(TemplateFilters);
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -76,6 +83,7 @@ const getMarketsParamsSpecific = t.intersection([
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
     userPortfolioAddress: t.string,
+    templateFilter: GetTemplateFilterValue,
   }),
 ]);
 
@@ -135,8 +143,6 @@ export interface MarketInfo {
   description: string;
   scalarDenomination: string | null;
   details: string | null;
-  resolutionSource: string | null;
-  backupSource: string | null;
   numTicks: string;
   tickSize: string;
   consensus: PayoutNumeratorValue;
@@ -149,6 +155,8 @@ export interface MarketInfo {
   categories: string[];
   noShowBondAmount: string;
   disavowed: boolean;
+  template: ExtraInfoTemplate;
+  isTemplate: boolean;
 }
 
 export interface DisputeInfo {
@@ -479,7 +487,7 @@ export class Markets {
       offset: undefined
     };
 
-    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories);
+    const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search, params.categories, augur);
     const numMarketDocs = marketsFTSResults.length;
 
     if (params.search || params.categories) {
@@ -493,6 +501,18 @@ export class Markets {
       request.selector = Object.assign(request.selector, {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
+    }
+
+    if (params.templateFilter) {
+      if (params.templateFilter === TemplateFilters.templateOnly) {
+        request.selector = Object.assign(request.selector, {
+          isTemplate: { $eq: true },
+        });
+      } else if (params.templateFilter === TemplateFilters.customOnly) {
+        request.selector = Object.assign(request.selector, {
+          isTemplate: { $eq: false },
+        });
+      }
     }
 
     // Filter out markets not related to the specified user
@@ -609,7 +629,7 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
     const account = await augur.getAccount();
-    const orders = await Trading.getOrders(augur, db, {
+    const orders = await OnChainTrading.getOrders(augur, db, {
       ...params,
       orderState: OrderState.OPEN,
     });
@@ -859,8 +879,6 @@ const extraInfoType = t.intersection([
   }),
   t.partial({
     longDescription: t.string,
-    resolutionSource: t.string,
-    backupSource: t.string,
     _scalarDenomination: t.string,
     categories: t.array(t.string),
     tags: t.array(t.string),
@@ -1017,7 +1035,14 @@ async function getMarketsInfo(
   const orderFilledLogsByMarket = _.groupBy(orderFilledLogs, "market");
 
   return _.map(markets, (marketData) => {
-    const orderFilledLogs = orderFilledLogsByMarket[marketData.market] || [];
+    const orderFilledLogs = (orderFilledLogsByMarket[marketData.market] || []).sort((a, b) => {
+      // Same block, need to sort by logIndex.
+      if(a.blockNumber === b.blockNumber) {
+        return b.logIndex - a.logIndex;
+      }
+
+      return b.blockNumber - a.blockNumber;
+    });
 
     const minPrice = new BigNumber(marketData.prices[0]);
     const maxPrice = new BigNumber(marketData.prices[1]);
@@ -1049,9 +1074,8 @@ async function getMarketsInfo(
     let categories:string[] = [];
     let description = null;
     let details = null;
-    let resolutionSource = null;
-    let backupSource = null;
     let scalarDenomination = null;
+    let template = null;
     if (marketData.extraInfo) {
       const extraInfo = marketData.extraInfo;
       categories = extraInfo.categories ? extraInfo.categories : [];
@@ -1059,21 +1083,16 @@ async function getMarketsInfo(
       details = extraInfo.longDescription
         ? extraInfo.longDescription
         : null;
-      resolutionSource = extraInfo.resolutionSource
-        ? extraInfo.resolutionSource
-        : null;
-      backupSource = extraInfo.backupSource ? extraInfo.backupSource : null;
       scalarDenomination = extraInfo._scalarDenomination
         ? extraInfo._scalarDenomination
         : null;
+      template = extraInfo.template;
     }
     const marketCreatorFeeRate = new BigNumber(
       marketData.feePerCashInAttoCash
     ).dividedBy(QUINTILLION);
 
-    const reportingFeeRate = new BigNumber(
-      reportingFeeDivisor
-    ).dividedBy(QUINTILLION);
+    const reportingFeeRate = new BigNumber(1).div(reportingFeeDivisor);
     const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
     const noShowBondAmount = new BigNumber(marketData.noShowBond).toFixed();
 
@@ -1131,15 +1150,15 @@ async function getMarketsInfo(
       reportingFeeRate: reportingFeeRate.toString(10),
       noShowBondAmount,
       details,
-      resolutionSource,
-      backupSource,
       numTicks: numTicks.toString(10),
       tickSize: tickSize.toString(10),
       consensus,
       transactionHash: marketData.transactionHash,
       outcomes,
       disputeInfo,
-      disavowed: marketData.disavowed
+      disavowed: marketData.disavowed,
+      template,
+      isTemplate: marketData.isTemplate,
     };
   });
 }
@@ -1226,16 +1245,17 @@ function getMarketsCategoriesMeta(
 async function getMarketsSearchResults(
   universe: string,
   query: string,
-  categories: string[]
+  categories: string[],
+  augur: Augur
 ): Promise<Array<SearchResults<MarketFields>>> {
   const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
     whereObj['category' + (i + 1)] = categories[i];
   }
   if (query) {
-    return Augur.syncableFlexSearch.search(query, { where: whereObj });
+    return augur.syncableFlexSearch.search(query, { where: whereObj });
   }
-  return Augur.syncableFlexSearch.where(whereObj);
+  return augur.syncableFlexSearch.where(whereObj);
 }
 
 /**

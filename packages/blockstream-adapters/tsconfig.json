@@ -9,5 +9,7 @@
   ],
   "references": [{
     "path": "../augur-types"
+  }, {
+    "path": "../ethersjs-provider"
   }]
 }

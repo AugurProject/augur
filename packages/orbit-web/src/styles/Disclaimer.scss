@@ -1,0 +1,25 @@
+@import 'Colors';
+
+.Disclaimer {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 100%;
+  padding: 8px;
+
+  .content {
+    background-color: #292929;
+
+    max-width: 400px;
+    padding: 4px 8px;
+    margin: 0 auto;
+    border: 1px solid $input-border-color;
+    border-radius: 4px;
+
+    text-align: justify;
+    text-justify: inter-word;
+    font-weight: bold;
+
+    color: $second-text-color
+  }
+}

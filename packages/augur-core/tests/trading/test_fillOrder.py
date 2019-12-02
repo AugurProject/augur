@@ -11,6 +11,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
+    fingerprint = longTo32Bytes(11)
 
     creatorCost = fix('2', '60')
     fillerCost = fix('2', '40')
@@ -31,7 +32,8 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     marketVolumeChangedLog = {
         "universe": universe.address,
         "market": market.address,
-        "volume": creatorCost + fillerCost
+        "volume": creatorCost + fillerCost,
+        "outcomeVolumes": [0, 0, creatorCost + fillerCost]
     }
 
     profitLossChangedLog = {
@@ -48,7 +50,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
             with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
                 with AssertLog(contractsFixture, "MarketVolumeChanged", marketVolumeChangedLog):
-                    fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[2])
+                    fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[2])
                     assert fillOrderID == 0
 
     assert orders.getAmount(orderID) == 0
@@ -64,6 +66,7 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
+    fingerprint = longTo32Bytes(11)
 
     creatorCost = fix('2', '40')
     fillerCost = fix('2', '60')
@@ -74,7 +77,7 @@ def test_publicFillOrder_ask(contractsFixture, cash, market, universe):
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[2])
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[2])
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -92,6 +95,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
     # We're testing the scalar market because it has a different numTicks than 10**18 as the other do. In particular it's numTicks is 40*18**18
     market = scalarMarket
     tradeGroupID = longTo32Bytes(42)
+    fingerprint = longTo32Bytes(11)
 
     creatorCost = fix('2', '60')
     fillerCost = fix('2', market.getNumTicks()-60)
@@ -102,7 +106,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender=contractsFixture.accounts[2])
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, fingerprint, sender=contractsFixture.accounts[2])
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -117,17 +121,16 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    completeSets = contractsFixture.contracts['CompleteSets']
-    yesShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(YES))
-    noShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(NO))
+    shareToken = contractsFixture.contracts['ShareToken']
+    fingerprint = longTo32Bytes(11)
 
     # buy complete sets for both users
     with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
-    assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[1], fix(1), sender=contractsFixture.accounts[1])
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(1)
     with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1))
-    assert noShareToken.balanceOf(contractsFixture.accounts[0]) == fix(1)
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[0], fix(1))
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[0]) == fix(1)
 
     # create order with shares
     orderID = createOrder.publicCreateOrder(ASK, fix(1), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
@@ -135,10 +138,10 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
 
     # fill order with shares
     tokensFail.setFail(True)
-    assert fillOrder.publicFillOrder(orderID, fix(1), "43", "0x0000000000000000000000000000000000000000") == 0
+    assert fillOrder.publicFillOrder(orderID, fix(1), "43", fingerprint) == 0
 
     tokensFail.setFail(False)
-    assert noShareToken.balanceOf(contractsFixture.accounts[0]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[0]) == 0
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)
@@ -152,20 +155,18 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    completeSets = contractsFixture.contracts['CompleteSets']
-    firstShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
-    secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
-    thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
+    shareToken = contractsFixture.contracts['ShareToken']
+    fingerprint = longTo32Bytes(11)
 
     # buy complete sets for both users
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[1], fix(1), sender=contractsFixture.accounts[1])
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
-    assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == firstShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
-    assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == secondShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
-    assert thirdShareToken.balanceOf(contractsFixture.accounts[1]) == thirdShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[2], fix(1), sender=contractsFixture.accounts[2])
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[2]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[1]) == shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[2]) == fix(1)
 
     # create order with shares
     price = 60
@@ -173,12 +174,12 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
     assert orderID
 
     # fill order with shares
-    assert fillOrder.publicFillOrder(orderID, fix(1), "43", "0x0000000000000000000000000000000000000000", sender=contractsFixture.accounts[2]) == 0
+    assert fillOrder.publicFillOrder(orderID, fix(1), "43", fingerprint, sender=contractsFixture.accounts[2]) == 0
 
     # The second users corresponding shares were used to fulfil this order
-    assert firstShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
-    assert secondShareToken.balanceOf(contractsFixture.accounts[2]) == 0
-    assert thirdShareToken.balanceOf(contractsFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[2]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[2]) == 0
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -193,9 +194,8 @@ def test_fill_buy_order_with_buy_categorical(contractsFixture, cash, categorical
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    firstShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
-    secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
-    thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
+    shareToken = contractsFixture.contracts['ShareToken']
+    fingerprint = longTo32Bytes(11)
 
     # create order with cash
     price = 60
@@ -206,16 +206,16 @@ def test_fill_buy_order_with_buy_categorical(contractsFixture, cash, categorical
 
     # fill order with cash
     with BuyWithCash(cash, fix(1, numTicks - price), contractsFixture.accounts[2], "fill order"):
-        assert fillOrder.publicFillOrder(orderID, fix(1), "43", "0x0000000000000000000000000000000000000000", sender=contractsFixture.accounts[2]) == 0
+        assert fillOrder.publicFillOrder(orderID, fix(1), "43", fingerprint, sender=contractsFixture.accounts[2]) == 0
 
     # A complete set was purchased with the provided cash and the shares were provided to each user
-    assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)
-    assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == 0
-    assert thirdShareToken.balanceOf(contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[1]) == 0
 
-    assert firstShareToken.balanceOf(contractsFixture.accounts[2]) == 0
-    assert secondShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
-    assert thirdShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[2]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[2]) == fix(1)
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -230,22 +230,23 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     augur = contractsFixture.contracts['Augur']
-    completeSets = contractsFixture.contracts['CompleteSets']
-    firstShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
-    secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
-    thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
+    shareToken = contractsFixture.contracts['ShareToken']
+    augurTrading = contractsFixture.contracts['AugurTrading']
 
     maliciousTrader = contractsFixture.upload('solidity_test_helpers/MaliciousTrader.sol', 'maliciousTrader')
-    maliciousTrader.approveAugur(cash.address, augur.address)
+    maliciousTrader.doApprovals(cash.address, augur.address, augurTrading.address)
+
+    account = contractsFixture.accounts[0]
+    fingerprint = longTo32Bytes(11)
 
     # create order with the malicious contract by escrowing shares
     price = 60
     numTicks = market.getNumTicks()
     with BuyWithCash(cash, fix('1', numTicks), contractsFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1))
-    assert firstShareToken.transfer(maliciousTrader.address, fix(1))
-    assert secondShareToken.transfer(maliciousTrader.address, fix(1))
-    assert thirdShareToken.transfer(maliciousTrader.address, fix(1))
+        assert shareToken.buyCompleteSets(market.address, contractsFixture.accounts[0], fix(1))
+    shareToken.unsafeTransferFrom(account, maliciousTrader.address, shareToken.getTokenId(market.address, 0), fix(1))
+    shareToken.unsafeTransferFrom(account, maliciousTrader.address, shareToken.getTokenId(market.address, 1), fix(1))
+    shareToken.unsafeTransferFrom(account, maliciousTrader.address, shareToken.getTokenId(market.address, 2), fix(1))
     orderID = maliciousTrader.makeOrder(createOrder.address, BID, fix(1), price, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), sender=contractsFixture.accounts[1])
     assert orderID
 
@@ -254,7 +255,7 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
 
     # fill order with cash
     with BuyWithCash(cash, fix(1, numTicks - price), contractsFixture.accounts[2], "fill order"):
-        assert fillOrder.publicFillOrder(orderID, fix(1), "43", "0x0000000000000000000000000000000000000000", sender=contractsFixture.accounts[2]) == 0
+        assert fillOrder.publicFillOrder(orderID, fix(1), "43", fingerprint, sender=contractsFixture.accounts[2]) == 0
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -272,9 +273,8 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
-    firstShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(0))
-    secondShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(1))
-    thirdShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(2))
+    shareToken = contractsFixture.contracts['ShareToken']
+    fingerprint = longTo32Bytes(11)
 
     # create non matching orders
     with BuyWithCash(cash, fix('2', '60'), contractsFixture.accounts[1], "create order 1"):
@@ -284,14 +284,14 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
 
     # Have other users fill them
     with BuyWithCash(cash, fix('2', '40'), contractsFixture.accounts[2], "fill order 1"):
-        assert fillOrder.publicFillOrder(orderID1, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[2]) == 0
+        assert fillOrder.publicFillOrder(orderID1, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[2]) == 0
     with BuyWithCash(cash, fix('2', '70'), contractsFixture.accounts[3], "fill order 1"):
-        assert fillOrder.publicFillOrder(orderID2, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[3]) == 0
+        assert fillOrder.publicFillOrder(orderID2, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[3]) == 0
 
     # The first user would have ended up with 2 complete sets at the end of the second fill and we expect those to be automatically sold
-    assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == 0
-    assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == 0
-    assert thirdShareToken.balanceOf(contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, 2, contractsFixture.accounts[1]) == 0
 
     totalPaid = fix('2', '60') + fix('2', '30')
     totalPayout = fix(2) * market.getNumTicks()
@@ -306,6 +306,7 @@ def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputatio
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
+    fingerprint = longTo32Bytes(11)
 
     creatorCost = fix('2', '40')
     fillerCost = fix('2', '60')
@@ -318,13 +319,13 @@ def test_publicFillOrder_kyc(contractsFixture, cash, market, universe, reputatio
         orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, reputationToken.address, sender = contractsFixture.accounts[1])
 
     with raises(TransactionFailed):
-        fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[2])
+        fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[2])
 
     reputationToken.transfer(contractsFixture.accounts[2], 1)
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[2])
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[2])
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -340,6 +341,7 @@ def test_publicFillOrder_withSelf(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
+    fingerprint = longTo32Bytes(11)
 
     creatorCost = fix('2', '60')
     fillerCost = fix('2', '40')
@@ -350,7 +352,7 @@ def test_publicFillOrder_withSelf(contractsFixture, cash, market, universe):
 
     # fill best order
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[1], "filling order"):
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = contractsFixture.accounts[1])
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, fingerprint, sender = contractsFixture.accounts[1])
         assert fillOrderID == 0
 
     assert orders.getAmount(orderID) == 0

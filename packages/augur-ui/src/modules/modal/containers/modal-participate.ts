@@ -7,6 +7,7 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import getValue from "utils/get-value";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -17,6 +18,8 @@ const mapStateToProps = (state: AppState) => ({
     preText: 'Quantity (1 token @ 1 REP)'
   }],
   title: 'Buy Participation Tokens',
+  Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
+  ethToDaiRate: getValue(state, 'appStatus.ethToDaiRate'),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

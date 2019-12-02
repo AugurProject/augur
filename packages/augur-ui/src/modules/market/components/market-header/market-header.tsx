@@ -7,6 +7,7 @@ import {
   TwoArrowsOutline,
   LeftChevron,
   CopyAlternateIcon,
+  TemplateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
@@ -26,8 +27,11 @@ import MarketHeaderReporting from 'modules/market/containers/market-header-repor
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { MarketData, QueryEndpoints } from 'modules/types';
+import { MarketData, QueryEndpoints, TextObject } from 'modules/types';
 import Clipboard from 'clipboard';
+import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
+import MarketTitle from 'modules/market/containers/market-title';
+import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 
 const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
@@ -40,13 +44,18 @@ interface MarketHeaderProps {
   currentTime: number;
   marketType: string;
   scalarDenomination: string;
-  resolutionSource: any;
   isLogged: boolean;
   toggleFavorite: Function;
   isFavorite: boolean;
   history: History;
   preview?: boolean;
   reportingBarShowing: boolean;
+  next: Function;
+  showTutorialData?: boolean;
+  text: TextObject;
+  step: number;
+  totalSteps: number;
+  showTutorialDetails?: boolean;
 }
 
 interface MarketHeaderState {
@@ -60,7 +69,6 @@ export default class MarketHeader extends Component<
 > {
   static defaultProps = {
     scalarDenomination: null,
-    resolutionSource: 'General knowledge',
     marketType: null,
     currentTime: 0,
     isFavorite: false,
@@ -129,7 +137,6 @@ export default class MarketHeader extends Component<
     const {
       description,
       marketType,
-      resolutionSource,
       minPrice,
       maxPrice,
       scalarDenomination,
@@ -141,6 +148,12 @@ export default class MarketHeader extends Component<
       preview,
       reportingBarShowing,
       toggleFavorite,
+      showTutorialData,
+      next,
+      step,
+      totalSteps,
+      text,
+      showTutorialDetails
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -179,8 +192,8 @@ export default class MarketHeader extends Component<
         )}
       >
         {!headerCollapsed && (
-          <>
-            <div>
+          <div>
+            <div className={classNames({[Styles.ShowTutorial]: showTutorialDetails})}>
               <div>
                 <WordTrail items={[...categoriesWithClick]}>
                   <button
@@ -190,8 +203,12 @@ export default class MarketHeader extends Component<
                     {LeftChevron} Back
                   </button>
                   <MarketTypeLabel marketType={marketType} />
+                  {market.isTemplate && <>{TemplateIcon}</>}
                 </WordTrail>
-                <SocialMediaButtons marketAddress={market.id} marketDescription={description} />
+                <SocialMediaButtons
+                  marketAddress={market.id}
+                  marketDescription={description}
+                />
                 <div id="copy_marketId" data-clipboard-text={market.id}>
                   {CopyAlternateIcon}
                 </div>
@@ -206,24 +223,8 @@ export default class MarketHeader extends Component<
                   </div>
                 )}
               </div>
-              <div className={Styles.Properties}>
-                {(market.id || preview) && (
-                  <MarketHeaderBar
-                    marketStatus={market.marketStatus}
-                    reportingState={market.reportingState}
-                    disputeInfo={market.disputeInfo}
-                    endTimeFormatted={market.endTimeFormatted}
-                  />
-                )}
-              </div>
-            </div>
-            <div className={Styles.MainValues}>
               <div>
-                <h1>{description}</h1>
-                <div className={Styles.Details}>
-                  <h4>Resolution Source</h4>
-                  <span>{resolutionSource}</span>
-                </div>
+                {preview ? <PreviewMarketTitle market={market} /> : <MarketTitle id={market.marketId} noLink />}
                 {details.length > 0 && (
                   <div className={Styles.Details}>
                     <h4>Additional Details</h4>
@@ -256,6 +257,8 @@ export default class MarketHeader extends Component<
                   </div>
                 )}
               </div>
+            </div>
+            <div className={classNames({[Styles.ShowTutorial]: showTutorialData})}>
               <div className={Styles.Properties}>
                 {(market.id || preview) && (
                   <MarketHeaderBar
@@ -278,8 +281,17 @@ export default class MarketHeader extends Component<
                   />
                 )}
               </div>
+              {showTutorialData && (
+                <TutorialPopUp
+                  top
+                  step={step}
+                  totalSteps={totalSteps}
+                  text={text}
+                  next={next}
+                />
+              )}
             </div>
-          </>
+          </div>
         )}
         <div
           className={classNames(Styles.Toggle, {

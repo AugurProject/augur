@@ -1,9 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
+.DefaultModalBorder {
+  border: @size-3 solid @color-secondary-action-outline;
+  border-radius: @border-radius-extra-rounded;
+
+  @media @breakpoint-mobile-new {
+    border: @size-2 solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+  }
+}
+
 .Container {
+  .DefaultModalBorder;
+
   background: @color-module-background;
-  border: 1px solid fade(@color-dark-grey, 50%);
-  border-radius: @border-radius-default;
   display: flex;
   flex-flow: column nowrap;
   max-height: 90vh;
@@ -54,11 +64,15 @@
 }
 
 .LargeSubheader {
-  .text-24-bold;
+  .text-22-bold;
 
   color: @color-primary-text;
   justify-content: center;
   display: flex;
+
+  @media @breakpoint-mobile-new {
+    .text-16-bold;
+  }
 }
 
 .SmallSubheader {
@@ -66,6 +80,7 @@
 
   color: @color-secondary-text;
   justify-content: center;
+  line-height: 150%;
   margin-top: @size-4;
   display: flex;
 }
@@ -124,28 +139,24 @@
   }
 }
 
-.TestBet {
-  margin: @size-42 0 @size-36;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 230px;
-    height: 129px;
-  }
-}
-
 .LinkContentSection {
-  .text-12;
+  .text-14;
 
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
-  line-height: 140%;
+  line-height: 150%;
   text-align: center;
 
-  > div > a {
-    color: @color-primary-action;
+  > div {
+    margin-top: @size-4;
+
+    > a {
+      color: @color-primary-action;
+
+      > button {
+        .text-12;
+      }
+    }
   }
 }
 
@@ -153,29 +164,43 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  height: 454px;
+  border: 3px solid @color-secondary-action-outline;
+  min-height: 487px;
   justify-content: center;
-  padding: @size-32 @size-40;
+  padding: @size-32 @size-40 @size-32;
   width: 454px;
 
   @media @breakpoint-mobile-new {
     align-items: center;
+    border: 2px solid @color-secondary-action-outline;
     height: 100%;
     justify-content: center;
+    margin: @size-32 @size-8;
     max-height: 100%;
     max-width: 100%;
-    width: 100%;
   }
 
   > main {
+    align-items: center;
     display: flex;
     flex: 2;
     flex-direction: column;
     justify-content: center;
+    min-height: fit-content;
     padding: 0;
 
-    > div:first-of-type {
+    > div:nth-of-type(1) {
       text-align: center;
+    }
+
+    > div:nth-of-type(2) {
+      text-align: center;
+      margin-top: 56px;
+    }
+
+    > div:nth-of-type(3) {
+      text-align: center;
+      margin-top: @size-12;
     }
 
     @media @breakpoint-mobile-new {
@@ -195,13 +220,36 @@ div.Onboarding {
       display: flex;
       flex-direction: row-reverse;
 
-      > button {
+      > button:last-of-type {
         margin-right: @size-16;
+      }
+
+      > button:only-of-type {
+        margin: 0;
       }
     }
 
     @media @breakpoint-mobile-new {
       flex: 1;
+    }
+  }
+
+  &.Condensed {
+    min-height: 200px;
+    width: 445px;
+    padding: @size-32 @size-24 @size-12;
+
+    > main {
+      > div:nth-of-type(1) {
+        .text-18-bold;
+      }
+
+      > div:nth-of-type(2) {
+        .text-12;
+
+        margin-top: @size-16;
+        line-height: 140%;
+      }
     }
   }
 }
@@ -221,8 +269,11 @@ div.Onboarding {
       background: @color-primary-text;
     }
   }
-}
 
+  > span:last-of-type {
+    margin-right: 0;
+  }
+}
 
 .TitleHeader {
   align-items: center;
@@ -231,11 +282,18 @@ div.Onboarding {
   flex-flow: row nowrap;
   justify-content: space-between;
   padding: @size-24;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
   &.Bright {
     > h1 {
       color: @color-reporting;
     }
+  }
+
+  &.ShortBorder {
+    padding: 0 0 @size-24;
+    margin: @size-24 @size-24 0;
   }
 
   @media @breakpoint-mobile {
@@ -254,7 +312,17 @@ div.Onboarding {
     text-transform: uppercase;
   }
 
+  > h2 {
+    .text-12;
+
+    color: @color-primary-text;
+    margin-top: @size-16;
+    grid-row: 2;
+  }
+
   > button:first-of-type {
+    display: flex;
+    justify-content: flex-end;
     > svg {
       height: @size-12;
       width: @size-12;
@@ -267,7 +335,6 @@ div.Onboarding {
 }
 
 div.ButtonsRow:last-of-type {
-  border-top: 1px solid fade(@color-dark-grey, 50%);
   padding: @size-12 @size-24;
 
   @media @breakpoint-mobile {
@@ -288,11 +355,10 @@ div.ButtonsRow:last-of-type {
   }
 
   > span:nth-of-type(2) {
-    .text-12;
+    .text-10;
 
     color: @color-secondary-text;
     line-height: 140%;
-    margin-bottom: @size-3;
 
     > span {
       width: @size-16;
@@ -303,7 +369,6 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile-new {
     flex-direction: column;
-    flex: 1;
     justify-content: flex-end;
     display: flex;
 
@@ -314,8 +379,6 @@ div.ButtonsRow:last-of-type {
 }
 
 .AddFunds {
-
-
   &.hideOnMobile {
     @media @breakpoint-mobile-new {
       display: none;
@@ -327,6 +390,7 @@ div.ButtonsRow:last-of-type {
 
     @media @breakpoint-mobile-new {
       display: flex;
+      margin: @size-48 0;
     }
   }
 
@@ -334,6 +398,7 @@ div.ButtonsRow:last-of-type {
 
   flex-direction: row;
   max-width: 800px;
+  min-height: @add-funds-height;
 
   > div {
     flex: 1;
@@ -363,6 +428,10 @@ div.ButtonsRow:last-of-type {
         margin: @size-4 0 @size-24;
         color: @color-secondary-text;
       }
+
+      > div:first-of-type {
+        min-height: 242px;
+      }
     }
   }
 
@@ -370,6 +439,11 @@ div.ButtonsRow:last-of-type {
     background: @color-page-background;
     padding: @size-16 @size-16 @size-32 @size-32;
     flex-direction: column;
+    justify-content: space-between;
+
+    @media @breakpoint-mobile-new {
+      justify-content: flex-start;
+    }
 
     > div:first-of-type {
       display: flex;
@@ -380,7 +454,20 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      display: none;
+      align-items: flex-end;
+      display: flex;
+      justify-content: flex-end;
+
+      > button {
+        .text-12-bold;
+
+        align-items: center;
+        border: 1px solid @color-secondary-action-outline;
+        border-radius: @border-radius-default;
+        color: @color-secondary-text;
+        display: flex;
+        padding: @size-9 @size-12;
+      }
     }
 
     > div:nth-of-type(2) {
@@ -396,7 +483,6 @@ div.ButtonsRow:last-of-type {
         .text-12;
 
         color: @color-secondary-text;
-        margin: @size-4 0 @size-24;
       }
 
       > h3 {
@@ -410,7 +496,11 @@ div.ButtonsRow:last-of-type {
       > h4 {
         .text-12;
 
-        color: @color-inactive-text;
+        @media @breakpoint-mobile-new {
+          .text-14;
+        }
+
+        color: @color-dark-text;
         line-height: 140%;
         display: flex;
         margin-top: @size-12;
@@ -418,7 +508,7 @@ div.ButtonsRow:last-of-type {
 
       > div,
       > span {
-        margin-bottom: @size-24;
+        margin-bottom: @size-6;
       }
 
       > ol {
@@ -448,6 +538,18 @@ div.ButtonsRow:last-of-type {
             color: @color-primary-text;
             content: counter(custom-counter) '. ';
           }
+        }
+      }
+    }
+
+    > div:nth-of-type(3) {
+      visibility: hidden;
+
+      @media @breakpoint-mobile-new {
+        visibility: visible;
+
+        > span:first-of-type {
+          margin: @size-24 0 @size-8;
         }
       }
     }
@@ -530,6 +632,30 @@ div.ButtonsRow:last-of-type {
   > label {
     display: inline;
   }
+
+  svg > path {
+    fill: @color-secondary-text;
+  }
+}
+
+.AddFundsCreditDebitCoinbase {
+  > h2 {
+    margin: 0 0 @size-24;
+
+    svg {
+      transform: translateY(@size-4);
+    }
+  }
+}
+
+.AddFundsTransfer {
+  > h2 {
+    margin: @size-4 0 @size-24;
+  }
+
+  > ol svg {
+    transform: translateY(@size-3);
+  }
 }
 
 .DaiEthSelector {
@@ -545,17 +671,18 @@ div.ButtonsRow:last-of-type {
     cursor: pointer;
     color: @color-primary-text;
     display: flex;
-    height: 54px;
+    height: 48px;
     justify-content: center;
-    padding: @size-16 @size-14;
+    padding: @size-14 @size-12 @size-14 @size-4;
+    width: 87px;
 
     &.selected {
       border: 2px solid @color-primary-action;
-      }
+    }
 
     > svg {
-      height: @size-32;
-      width: @size-32;
+      height: @size-28;
+      width: @size-28;
       fill: @color-primary-text;
     }
   }
@@ -564,7 +691,8 @@ div.ButtonsRow:last-of-type {
     margin-left: @size-12;
 
     > svg {
-      height: @size-24;
+      height: @size-21;
+      width: @size-21;
     }
   }
 }
@@ -592,8 +720,6 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   background: @color-module-background;
-  border: none;
-  border-radius: @size-8;
   box-shadow: 0px @size-4 @size-4 rgba(0, 0, 0, 0.25);
   max-width: @login-signup-modal-width;
   padding: 48px 56px;
@@ -626,15 +752,21 @@ div.ButtonsRow:last-of-type {
 
 .SignIn {
   @media @breakpoint-mobile-new {
+    margin: @size-48 0;
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
   > div:first-of-type {
     .CloseButton;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
-    align-items: center;
+    align-items: flex-end;
     display: flex;
     justify-content: space-between;
     margin-bottom: @size-32;
@@ -681,6 +813,15 @@ div.ButtonsRow:last-of-type {
         cursor: pointer;
       }
     }
+
+    > div:last-of-type {
+      .text-12;
+
+      color: @color-secondary-text;
+      cursor: pointer;
+      text-align: center;
+      width: 45px;
+    }
   }
 
   > div:nth-of-type(2) {
@@ -701,11 +842,11 @@ div.ButtonsRow:last-of-type {
     }
 
     &:before {
-      margin: 0 0 0 21px;
+      margin: 0 0 0 @size-21;
     }
 
     &:after {
-      margin: 0 21px 0 0;
+      margin: 0 @size-21 0 0;
     }
   }
 
@@ -721,13 +862,18 @@ div.ButtonsRow:last-of-type {
     background: #0095a3;
   }
 
+  > button:first-of-type:hover {
+    background: lighten(#0095a3, 5%);
+  }
+
   > button:last-of-type {
-    margin: 0 0 32px 0;
+    margin: 0 0 @size-32 0;
   }
 }
 
 .Connect {
   @media @breakpoint-mobile {
+    margin: @size-48 0;
     padding-top: 57px;
   }
 
@@ -749,6 +895,10 @@ div.ButtonsRow:last-of-type {
     .CloseButton;
 
     display: block;
+
+    > svg {
+      fill: @color-secondary-text;
+    }
   }
 
   > header {
@@ -762,9 +912,14 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      .text-12;
+      .text-14;
 
       color: @color-secondary-text;
+      line-height: @size-20;
+
+      @media @breakpoint-mobile {
+        .text-12;
+      }
     }
   }
 
@@ -810,6 +965,14 @@ div.ButtonsRow:last-of-type {
     color: @color-secondary-text;
     text-align: center;
     margin-top: @size-28;
+  }
+
+  > div:last-of-type {
+    flex-direction: column;
+
+    > button {
+      margin-top: @size-8;
+    }
   }
 
   > button {
@@ -1152,14 +1315,225 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.WithdrawForm {
+.MigrateRep {
   .Message;
 
   > main {
-    > p {
-      border-bottom: 1px solid @color-dark-grey;
-      margin-bottom: @size-16;
-      padding-bottom: @size-24;
+    margin: @size-22 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > h1 {
+      .text-16-medium;
+
+      color: @color-primary-text;
+      text-transform: unset;
+      margin: 0;
+    }
+
+    > h2 {
+      .text-14;
+
+      color: @color-secondary-text;
+      margin: @size-6 0 0;
+
+      > button {
+        .text-14;
+
+        margin-left: @size-3;
+        text-transform: unset;
+      }
+    }
+
+    > div:first-of-type {
+      margin: @size-24 0;
+      display: flex;
+
+      > div {
+        padding: @size-12 0;
+        background: @color-secondary-action;
+        border-radius: @size-6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 222px;
+
+        > span:first-of-type {
+          .text-14;
+
+          color: @color-secondary-text;
+          margin-bottom: @size-4;
+          line-height: @size-16;
+        }
+
+        > span:nth-of-type(2) {
+          .mono-24-bold;
+
+          color: @color-primary-text;
+          margin-bottom: @size-4;
+          line-height: @size-28;
+        }
+
+        > span:last-of-type {
+          .mono-14;
+
+          color: @color-secondary-text;
+          line-height: @size-16;
+        }
+
+        &:first-of-type {
+          margin-right: @size-24;
+        }
+      }
+    }
+
+    > div:nth-of-type(2),
+    > div:nth-of-type(3) {
+      width: 330px;
+    }
+
+    > div:nth-of-type(2) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      > label {
+        .mono-10;
+
+        color:@color-secondary-text;
+      }
+
+      > button {
+        .mono-10;
+
+        color: @color-outcome-seven;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      > div {
+        grid-column: 1 / span 2;
+      }
+    }
+
+    > div:nth-of-type(3) {
+      margin-top: @size-34;
+    }
+
+    > div:last-of-type {
+      .text-11;
+
+      color: @color-secondary-text;
+      margin-top: @size-24;
+      display: flex;
+      align-items: center;
+
+      > span {
+        .text-11-bold;
+
+        margin: 0 @size-3;
+      }
+
+      > svg {
+        width: @size-10;
+        height: @size-10;
+        margin-right: @size-3;
+
+        > path {
+          fill: @color-secondary-text;
+        }
+
+        > circle {
+          stroke: @color-secondary-text;
+        }
+      }
+    }
+  }
+}
+
+.WithdrawForm {
+  .Message;
+
+  background: @color-module-background;
+  border-radius: @border-radius-extra-rounded;
+  max-width: 432px;
+
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
+  > header {
+    margin: @size-32 @size-32 0;
+
+    @media @breakpoint-mobile {
+      margin: @size-24 @size-24 0;
+    }
+
+    > div:first-of-type {
+      > button {
+        position: absolute;
+        top: @size-24;
+        right: @size-24;
+      }
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
+
+      > h1 {
+        .text-24-bold;
+
+        color: @color-primary-text;
+        text-transform: none;
+        margin: 0;
+      }
+
+      > h2 {
+        .text-14;
+
+        color: @color-secondary-text;
+        margin-top: @size-4;
+      }
+    }
+  }
+
+  > main {
+    padding: 0 @size-32;
+
+    @media @breakpoint-mobile {
+      padding: 0 @size-24;
+    }
+
+    > div:first-of-type {
+      border: 0;
+      margin: 0;
+
+      > div > label {
+        .mono-11-bold;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+      }
+
+      > div > div > div > input {
+        background: @color-dark-grey;
+        border: 1px solid @color-secondary-action;
+      }
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
+    }
+  }
+
+  > div:last-of-type {
+    padding: 0;
+    margin: @size-24 @size-32 @size-32;
+
+    @media @breakpoint-mobile {
+      margin: @size-24;
     }
   }
 }
@@ -1169,11 +1543,9 @@ div.ButtonsRow:last-of-type {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  margin-bottom: @size-16;
+  margin-bottom: @size-24;
 
   > div {
-    height: 6.25rem;
-
     > span {
       .text-10;
 
@@ -1205,6 +1577,11 @@ div.ButtonsRow:last-of-type {
 
       color: @color-inactive-text;
       margin-bottom: @size-8;
+      text-transform: capitalize;
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
     }
 
     > button {
@@ -1241,10 +1618,31 @@ div.ButtonsRow:last-of-type {
 
   > div:nth-of-type(2) {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
+
+    > div:first-of-type {
+      align-items: flex-end;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: @size-8;
+    }
 
     > div {
-      height: @size-40;
+      > label {
+        .mono-11-bold;
+
+        text-transform: uppercase;
+        color: @color-primary-text;
+        margin-bottom: 0;
+      }
+
+      > span {
+        .mono-9-bold;
+
+        color: @color-dark-text;
+        margin-left: auto;
+        text-transform: uppercase;
+      }
 
       > button {
         padding: @size-10 @size-12;
@@ -1257,29 +1655,22 @@ div.ButtonsRow:last-of-type {
         line-height: @size-16;
       }
     }
-
-    > span {
-      .mono-10;
-
-      color: @color-inactive-text;
-      margin-left: auto;
-      text-transform: uppercase;
-    }
   }
 
   > div:last-of-type {
     align-content: start;
-    align-items: flex-start;
-    display: flex;
-    flex-flow: row wrap;
-
-    > label {
-      height: 1rem;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 
     > button {
-      height: 1rem;
+      .mono-11-bold;
+
+      height: @size-16;
       margin-left: auto;
+    }
+
+    > div {
+      grid-column: 1 / span 2;
     }
   }
 
@@ -1289,7 +1680,12 @@ div.ButtonsRow:last-of-type {
 }
 
 .Gas {
-  .CondensedContainer;
+  .Container;
+
+  max-width: 30rem; // 480px
+  @media @breakpoint-mobile-mid {
+    max-width: 21.5rem; // 340px
+  }
 
   > main {
     > h2 {
@@ -1299,11 +1695,257 @@ div.ButtonsRow:last-of-type {
       margin-top: @size-16;
     }
 
-    > p {
-      .mono-10;
+    > p:first-of-type {
+      .text-12;
 
       color: @color-primary-text;
-      margin: 0 0 @size-16;
+      margin: 0 0 @size-24;
+
+      @media @breakpoint-mobile-mid {
+        margin: 0 0 @size-16;
+      }
+    }
+
+    > p:last-of-type {
+      .text-10;
+
+      color: @color-dark-text;
+      margin-top: @size-12;
+
+      @media @breakpoint-mobile-mid {
+        margin-top: @size-20;
+      }
+    }
+
+    > button {
+      .button;
+
+      background: transparent;
+      border: 1px solid @color-secondary-action-outline;
+      color: @color-primary-text;
+      max-height: @button-height-default;
+      padding: @size-8 @size-12;
+
+      &:disabled {
+        background: @color-inactive-text;
+      }
+
+      &:hover:enabled {
+        background: fade(@color-primary-action, 5%);
+      }
+
+      &:focus:enabled {
+        background: fade(@color-primary-action, 10%);
+      }
+
+      &:active:enabled {
+        background: fade(@color-primary-action, 15%);
+      }
+
+      .mono-10-bold;
+
+      align-items: center;
+      background: @color-secondary-action;
+      color: @color-primary-text;
+      display: flex;
+      text-transform: uppercase;
+      margin-left: auto;
+      min-height: unset;
+      min-width: unset;
+      padding: @size-4;
+
+      > span {
+        > svg {
+          margin-left: @size-4;
+
+          path {
+            stroke: @color-secondary-text;
+          }
+        }
+      }
+    }
+
+    > div:first-of-type {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: @size-12;
+
+      @media @breakpoint-mobile-mid {
+        flex-direction: column;
+        margin-bottom: @size-16;
+      }
+
+      > div {
+        background-color: @color-secondary-action;
+        cursor: pointer;
+        padding: 4px 8px;
+        color: @color-primary-text;
+        border-radius: @size-3;
+        border: @size-1 solid @color-secondary-action-outline;
+        width: 100%;
+
+        > div:first-of-type {
+          font-weight: @weight-bold;
+
+          > span:first-of-type {
+            color: @color-secondary-text;
+            font-family: @roboto-mono;
+            font-size: @size-11;
+            text-transform: uppercase;
+          }
+
+          > span:nth-of-type(2) {
+            color: @color-dark-text;
+            font-family: @roboto;
+            font-size: @size-10;
+            font-weight: @weight-normal;
+          }
+        }
+
+        > div:nth-of-type(2) {
+          font-size: @size-10;
+
+          > span:first-of-type {
+            color: @color-secondary-text;
+            font-family: @roboto-mono;
+          }
+
+          > span:nth-of-type(2) {
+            color: @color-dark-text;
+            font-family: @roboto;
+          }
+        }
+      }
+
+      > div:nth-of-type(2) {
+        margin: 0 @size-5;
+
+        @media @breakpoint-mobile-mid {
+          margin: @size-8 0;
+        }
+      }
+
+      div.GasCheckedButton {
+        background-color: @color-secondary-action;
+        color: @color-primary-text;
+        border: @size-1 solid @color-primary-action;
+
+        > div:first-of-type {
+          > span:first-of-type {
+            color: @color-primary-text;
+            font-family: @roboto-mono;
+            font-size: @size-11;
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+
+    > div:nth-of-type(2) {
+      display: grid;
+      grid-template-columns: 4fr 3fr 3fr;
+      grid-template-rows: auto;
+      grid-gap: @size-16;
+      align-items: flex-end;
+      justify-content: space-between;
+      background-color: @color-table-header;
+      border-radius: @size-3;
+      padding: @size-12;
+      margin-top: @size-12;
+
+      > div {
+        width: 100%;
+      }
+
+      > div:first-of-type {
+        label {
+          .mono-9-bold;
+
+          color: @color-secondary-text;
+          text-transform: uppercase;
+        }
+
+        input[type='number'] {
+          .mono-11;
+
+          border: @size-1 solid @color-secondary-action-outline;
+          color: @color-primary-text;
+          padding: @size-6 @size-16;
+          -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        margin: 0 @size-5;
+        border-right: @size-1 solid @color-secondary-action-outline;
+        padding-left: @size-12;
+
+        > div {
+          > span:first-of-type {
+            .mono-10-bold;
+
+            color: @color-primary-text;
+          }
+
+          > span:last-of-type {
+            .text-10-bold;
+
+            color: @color-dark-text;
+          }
+        }
+
+        > span {
+          .text-10;
+
+          color: @color-dark-text;
+        }
+      }
+
+      > div:nth-of-type(3) {
+        .text-14-bold;
+
+        color: @color-primary-text;
+        padding: 0 0 @size-10 @size-5;
+      }
+
+      @media @breakpoint-mobile-mid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        background-color: transparent;
+        padding: 0;
+
+        > div:first-of-type {
+          grid-row: 1;
+          grid-column: 1 / span 2;
+
+          input[type='number'] {
+            .mono-14;
+
+            padding: @size-13 @size-16;
+          }
+        }
+
+        > div:nth-of-type(2) {
+          grid-row: 2;
+          grid-column: 1;
+          padding-left: @size-30;
+        }
+
+        > div:nth-of-type(3) {
+          grid-row: 2;
+          grid-column: 2;
+        }
+      }
+    }
+
+    > div:nth-of-type(3) {
+      margin-top: @size-12;
     }
   }
 }
@@ -1375,10 +2017,12 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   max-width: 95vw;
-  overflow-y: auto;
-  padding: 0 @size-24 @size-24;
+  min-height: 500px;
+  overflow: hidden;
+  padding: 0 @size-20 @size-20;
 
   > header {
+    border-bottom: 1px solid @color-secondary-action-outline;
     margin: 0 -@size-24 @size-24;
 
     @media @breakpoint-mobile {
@@ -1393,14 +2037,14 @@ div.ButtonsRow:last-of-type {
 
   > section:first-of-type {
     display: grid;
-    grid-gap: 0.25rem 0.5rem;
-    grid-template-columns: 108px 108px 205px 108px 200px 1fr;
-    grid-template-rows: 1fr 2fr;
+    grid-gap: @size-4;
+    grid-template-columns: repeat(4, 135px) 130px 1fr;
+    grid-template-rows: @size-14 @size-32;
 
     @media @breakpoint-mobile {
-      grid-gap: @size-8 @size-12;
+      grid-gap: @size-8 @size-4;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
+      grid-template-rows: @size-32 @size-24 @size-32 @size-24 @size-32 @size-32;
       height: auto;
       margin-bottom: @size-8;
 
@@ -1432,8 +2076,8 @@ div.ButtonsRow:last-of-type {
       }
 
       > div[class*='FormDropdown'] > div[class*='Normal'] {
-        min-width: min-content;
-        max-width: min-content;
+        min-width: 100%;
+        max-width: 100%;
       }
 
       > div:nth-of-type(2) {
@@ -1474,10 +2118,14 @@ div.ButtonsRow:last-of-type {
     }
 
     > span {
-      .mono-10;
+      .mono-10-bold;
 
       color: @color-inactive-text;
       text-transform: uppercase;
+
+      @media @breakpoint-mobile {
+        margin-top: auto;
+      }
     }
 
     > span:last-of-type {
@@ -1486,6 +2134,64 @@ div.ButtonsRow:last-of-type {
       @media @breakpoint-mobile {
         grid-column: span 1;
         order: 7;
+      }
+    }
+
+    > div[class*='FormDropdown'] {
+      > div {
+        border: 1px solid @color-secondary-action-outline;
+        max-height: @size-32;
+        min-height: @size-32;
+        min-width: 0;
+        width: 100%;
+
+        @media @breakpoint-mobile {
+          max-height: none;
+          max-width: none;
+          min-height: 100%;
+          min-width: 100%;
+        }
+
+        > button {
+          > span {
+            .text-14;
+
+            padding: @size-3 0;
+            text-align: left;
+          }
+
+          > svg {
+            height: @size-6;
+            width: @size-10;
+
+            > path {
+              fill: @color-secondary-text;
+              stroke: @color-secondary-text;
+            }
+          }
+        }
+      }
+    }
+
+    > div[class*='DatePicker'] {
+      :global {
+        .DateInput_input_1,
+        .DateInput_input__focused,
+        .DateInput_input__focused_2 {
+          min-height: @size-32;
+          max-height: @size-32;
+          min-width: 0;
+
+          @media @breakpoint-mobile {
+            min-width: 0;
+          }
+        }
+
+        .SingleDatePickerInput_calendarIcon,.SingleDatePickerInput_calendarIcon_1 {
+          padding: 0;
+          margin-top: @size-6;
+          margin-bottom: @size-3;
+        }
       }
     }
 
@@ -1523,12 +2229,12 @@ div.ButtonsRow:last-of-type {
     .TransactionsTable;
     .text-12;
 
-    background: @color-module-background;
+    background: @color-table-header;
     border-bottom: 0;
-    color: @color-inactive-text;
+    color: @color-secondary-text;
     margin: @size-24 0 0;
-    min-height: @size-40;
-    overflow: auto;
+    min-height: @size-32;
+    text-transform: uppercase;
 
     @media @breakpoint-mobile {
       margin: 0;
@@ -1564,10 +2270,12 @@ div.ButtonsRow:last-of-type {
     border-top: 0;
     color: @color-primary-text;
     max-height: 650px;
-    overflow: auto;
+    overflow: overlay;
+    margin-bottom: @size-32;
 
     @media @breakpoint-mobile {
       max-height: 600px;
+      margin-bottom: @size-16;
     }
 
     > span {
@@ -1623,35 +2331,58 @@ div.ButtonsRow:last-of-type {
   > div:last-of-type {
     align-items: center;
     display: grid;
-    grid-gap: @size-8;
-    grid-template-columns: 95px 30px 1fr 30px 95px;
-    margin: @size-32 0 0;
+    grid-gap: @size-16;
+    grid-template-columns: 130px 1fr 130px;
+    grid-template-rows: @size-24;
+    margin: auto 0 0;
 
-    @media @breakpoint-mobile {
-      display: flex;
-      flex-flow: row nowrap;
-      margin: @size-16 0 0;
+    > div:first-of-type {
+      grid-column: 2 / span 1;
+      margin: 0 auto;
 
-      > div:first-of-type {
+      @media @breakpoint-mobile {
+        grid-column: 1 / span 3;
         margin: 0;
         width: 100%;
       }
 
-      > span,
-      > div:last-of-type {
-        display: none;
+      > section > button {
+        height: @size-24;
+        width: @size-24;
+        padding: 0;
       }
     }
 
-    > div:first-of-type {
-      grid-column: 3 / span 1;
-      margin: 0 auto;
-    }
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        display: none;
+      }
 
-    > span {
-      .text-12;
+      > div {
+        border: 1px solid @color-secondary-action-outline;
+        min-height: @size-24;
+        max-height: @size-24;
+        min-width: 0;
 
-      color: @color-inactive-text;
+        > button {
+          > span {
+            .mono-9;
+
+            padding: @size-3 0;
+            text-align: left;
+          }
+
+          > svg {
+            height: @size-6;
+            width: @size-10;
+
+            > path {
+              fill: @color-secondary-text;
+              stroke: @color-secondary-text;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -1722,7 +2453,6 @@ div.ButtonsRow:last-of-type {
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
-  height: @size-40;
   justify-content: space-between;
   line-height: @size-14;
   margin: @size-8 0 @size-18 0;
@@ -1734,7 +2464,7 @@ div.ButtonsRow:last-of-type {
   > div {
     margin-right: @size-12;
     word-break: break-all;
- }
+  }
 
   > button {
     .mono-10;
@@ -1744,7 +2474,7 @@ div.ButtonsRow:last-of-type {
     display: flex;
     margin-left: @size-8;
     margin-right: @size-12;
-    padding: @size-5;
+    padding: @size-6;
     text-transform: uppercase;
     color: @color-primary-text;
     background: @color-secondary-action;
@@ -2142,10 +2872,18 @@ div.ButtonsRow:last-of-type {
     }
   }
 
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
   @media @breakpoint-mobile-mid {
+
     > main {
       > div:first-of-type {
         padding: 0 @size-16;
+        min-height: min-content;
       }
 
       > div:nth-of-type(2) {
@@ -2153,6 +2891,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div:last-of-type {
+        min-height: min-content;
         padding: @size-16;
       }
     }
@@ -2190,7 +2929,7 @@ div.ButtonsRow:last-of-type {
   > div {
     background-color: @color-module-background;
     border: 1px solid @color-dark-grey;
-    height: 100vh;
+    height: 100%;
     left: 0;
     position: fixed;
     top: 0;
@@ -2199,21 +2938,19 @@ div.ButtonsRow:last-of-type {
     // Header section
     > div:first-of-type {
       align-items: center;
+      background-color: @color-dark-grey;
       border-bottom: 1px solid @color-dark-grey;
       display: flex;
       flex-direction: row;
-      padding: @size-8 @size-8;
+      padding: @size-14 @size-16;
 
       > span {
         color: @color-primary-text;
-        margin: 0 0;
         text-transform: uppercase;
       }
 
       > span:first-of-type {
-        .mono-11;
-
-        margin: 0 @size-8 0 0;
+        .mono-12-bold;
       }
 
       > span:nth-of-type(2) {
@@ -2238,8 +2975,8 @@ div.ButtonsRow:last-of-type {
     }
 
     iframe {
-      border: 0px;
-      height: calc(100% - 37px);
+      border: 0;
+      height: calc(100% - 48px);
       width: 100%;
     }
   }

@@ -2,8 +2,7 @@ import { createSelector } from "reselect";
 import { selectGasPriceInfo } from "store/select-state";
 import { createBigNumber } from "utils/create-big-number";
 import store from "store";
-
-const GWEI_CONVERSION = 1000000000;
+import { GWEI_CONVERSION } from 'modules/common/constants';
 
 export default function() {
   return getGasPrice(store.getState());

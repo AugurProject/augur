@@ -4,7 +4,7 @@ import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import {
   MarketReportingState,
 } from '@augurproject/sdk/build/constants';
-import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
+import { AllOrders } from '@augurproject/sdk/build/state/getter/OnChainTrading';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';
@@ -699,10 +699,10 @@ describe('State API :: Accounts :: ', () => {
     await winningReportingParticipant.redeem(john.account.publicKey);
 
     // Claim trading proceeds
-    await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      "0x0000000000000000000000000000000000000000",
+      stringTo32ByteHex(''),
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -802,18 +802,6 @@ describe('State API :: Accounts :: ', () => {
         action: 'CLAIM_TRADING_PROCEEDS',
         coin: 'ETH',
         details: 'Claimed trading proceeds',
-        fee: '-7699000000000',
-        marketDescription: 'description',
-        outcome: 2,
-        outcomeDescription: 'Yes',
-        price: '22',
-        quantity: '100000000000',
-        total: '9899000000000',
-      },
-      {
-        action: 'CLAIM_TRADING_PROCEEDS',
-        coin: 'ETH',
-        details: 'Claimed trading proceeds',
         fee: '2200000000000',
         marketDescription: 'description',
         outcome: 1,
@@ -821,6 +809,18 @@ describe('State API :: Accounts :: ', () => {
         price: '22',
         quantity: '100000000000',
         total: '0',
+      },
+      {
+        action: 'CLAIM_TRADING_PROCEEDS',
+        coin: 'ETH',
+        details: 'Claimed trading proceeds',
+        fee: '-7699000000000',
+        marketDescription: 'description',
+        outcome: 2,
+        outcomeDescription: 'Yes',
+        price: '22',
+        quantity: '100000000000',
+        total: '9899000000000',
       },
     ]);
 
@@ -954,37 +954,7 @@ describe('State API :: Accounts :: ', () => {
 
     allOrders = await api.route('getAllOrders', {
       account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.PreReporting],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.DesignatedReporting],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.OpenReporting],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(3);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.CrowdsourcingDispute],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.AwaitingNextWindow],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.Finalized],
+      filterFinalized: true,
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
   });

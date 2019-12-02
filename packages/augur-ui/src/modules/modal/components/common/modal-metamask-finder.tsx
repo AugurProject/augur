@@ -10,7 +10,7 @@ interface ModalMetaMaskFinderProps {
 const ModalMetaMaskFinder = ({ handleClick }: ModalMetaMaskFinderProps) => (
   <article onClick={() => handleClick()} className={Styles.ModalMetaMaskFinder}>
     <div>
-      <img src="assets/images/metamask-help.png" />
+      <img src="images/metamask-help.png" />
     </div>
     <div>Click the Metamask logo to open your wallet</div>
     <div>{DirectionArrow}</div>

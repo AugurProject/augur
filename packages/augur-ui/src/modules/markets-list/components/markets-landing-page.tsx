@@ -15,6 +15,7 @@ import { CategorySelector } from 'modules/common/selection';
 
 interface MarketsViewProps {
   isLogged: boolean;
+  restoredAccount: boolean;
   markets: MarketData[];
   location: object;
   history: History;
@@ -94,6 +95,7 @@ export default class MarketsView extends Component<
     const {
       history,
       isLogged,
+      restoredAccount,
       isMobile,
       loadMarketsInfoIfNotLoaded,
       location,
@@ -119,7 +121,7 @@ export default class MarketsView extends Component<
           The world’s most accessible, no-limit betting platform.
         </div>
 
-        {!isLogged ? <div>
+        {!isLogged && !restoredAccount ? <div>
           <PrimaryButton
             action={() => signupModal()}
             text='Signup to start betting'
@@ -151,7 +153,6 @@ export default class MarketsView extends Component<
 
         <MarketsList
           testid='markets'
-          isLogged={isLogged}
           markets={markets}
           showPagination={false}
           filteredMarkets={this.state.filterSortedMarkets}

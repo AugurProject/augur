@@ -1,0 +1,14 @@
+{
+  "themeName": { "type": "select", "options": ["default"], "description": null },
+  "language": { "type": "select", "options": ["en"] },
+  "sidePanelPosition": { "type": "select", "options": ["left", "right"] },
+  "colorifyUsernames": { "type": "boolean" },
+  "useEmojis": { "type": "boolean" },
+  "emojiSet": {
+    "type": "select",
+    "options": ["apple", "emojione", "facebook", "google", "messenger", "twitter"]
+  },
+  "useMonospaceFont": { "type": "boolean" },
+  "useLargeMessage": { "type": "boolean" },
+  "messageNotifications": { "type": "select", "options": ["all", "mentions", "none"] }
+}

@@ -1,0 +1,364 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomeDepth {
+  display: flex;
+  flex: 1 100%;
+  flex-direction: column;
+}
+
+.MarketOutcomeDepth__depth-hover-values {
+  display: flex;
+  font-size: @size-12;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: @size-12;
+  text-transform: capitalize;
+}
+
+.MarketOutcomeDepth__hover-depth {
+  display: flex;
+}
+
+.MarketOutcomeDepth__depth-hover-title {
+  color: @color-primary-text;
+  margin-right: @size-5;
+}
+
+.MarketOutcomeDepth__depth-hover-value {
+  color: @color-secondary-text;
+  width: 5em;
+}
+
+.MarketOutcomeDepth__container {
+  background: @color-module-background;
+  cursor: cell;
+  flex: 1;
+  max-height: @charts-max-height;
+  min-height: @charts-min-height;
+  padding-top: @size-8;
+  padding-bottom: @size-4;
+  display: grid;
+  grid-template-columns: auto 24px 50px 24px auto;
+  grid-template-rows: 12px 16px auto;
+  grid-gap: 0 @size-22;
+
+  > button {
+    display: flex;
+    justify-content: center;
+    width: @size-24;
+    height: @size-24;
+    background: @color-secondary-action;
+    border: 1px solid @color-secondary-action-outline;
+    border-radius: @border-radius-default;
+    grid-row: span 2;
+
+    &:first-of-type {
+      grid-column: 2;
+    }
+
+    &:last-of-type {
+      grid-column: 4;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border: 1px solid @color-inactive-text;
+
+      > svg > rect {
+        fill: @color-inactive-text;
+      }
+    }
+
+    > svg {
+      width: @size-12;
+      height: @size-12;
+
+      > rect {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+
+  > span:first-of-type {
+    .mono-9-bold;
+
+    flex: 1 100%;
+    color: @color-secondary-text;
+    text-align: center;
+    text-transform: uppercase;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  > span:last-of-type {
+    .mono-12;
+
+    flex: 1 100%;
+    color: @color-primary-text;
+    text-align: center;
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  > div {
+    grid-column: span 5;
+    grid-row: 3;
+    flex: 1 auto;
+    padding: @size-4 0;
+  }
+
+  :global {
+    .hovered_tooltip_div {
+      background-color: @color-module-background;
+      border: 1px solid @color-primary-text;
+      border-radius: @border-radius-default 0 0 @border-radius-default;
+      border-right-width: 2px;
+      color: @color-primary-text;
+      display: flex;
+      flex: 1 113px;
+      flex-flow: row nowrap;
+      height: 3.5rem;
+      padding: 0 @size-4;
+      justify-content: space-between;
+    }
+
+    .hovered_tooltip_div.flip {
+      border-left-width: 2px;
+      border-radius: 0 @border-radius-default @border-radius-default 0;
+      border-right-width: 1px;
+    }
+
+    .hovered_tooltip_div.bids {
+      border-color: fade(@color-positive, 30%);
+      border-right-color: @color-positive;
+    }
+
+    .hovered_tooltip_div.bids.flip {
+      border-left-color: @color-positive;
+      border-right-color: fade(@color-positive, 30%);
+    }
+
+    .hovered_tooltip_div.asks {
+      border-color: fade(@color-negative, 30%);
+      border-right-color: @color-negative;
+    }
+
+    .hovered_tooltip_div.asks.flip {
+      border-left-color: @color-negative;
+      border-right-color: fade(@color-negative, 30%);
+    }
+
+    .hovered_tooltip_labels {
+      display: flex;
+      flex: 0;
+      flex-flow: column nowrap;
+
+      > div {
+        .mono-9-bold;
+
+        flex: 1;
+        line-height: @size-12;
+        margin-bottom: 0.125rem;
+        text-align: left;
+        text-transform: uppercase;
+      }
+
+      > div#price_label {
+        margin-top: @size-9;
+      }
+
+      > div#cost_label {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .hovered_tooltip_values {
+      display: flex;
+      flex: 0 0 auto;
+      flex-flow: column nowrap;
+      margin-left: 0.5rem;
+
+      > div {
+        .mono-9;
+
+        color: @color-primary-text;
+        flex: 1;
+        font-weight: bold;
+        line-height: @size-12;
+        text-align: right;
+      }
+
+      > div#price_value {
+        line-height: @size-18;
+        margin-top: 0.25rem;
+      }
+
+      > div#cost_value {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .asks {
+      color: @color-negative;
+      stroke: @color-negative;
+    }
+
+    .bids {
+      color: @color-positive;
+      stroke: @color-positive;
+    }
+
+    #depth_range_bounds {
+      .bounding-box {
+        fill: @color-secondary-action-outline;
+      }
+    }
+
+    .bounding-line,
+    .tick-line {
+      stroke: @color-secondary-action-outline;
+    }
+    .tick-line--midpoint {
+      stroke: @color-primary-text;
+    }
+
+    .bounding-line:first-of-type {
+      stroke: none;
+    }
+
+    .vertical-lines {
+      fill: none;
+      stroke: fade(@color-secondary-action-outline, 40%);
+    }
+
+    .horizontal-lines {
+      .dashline-normal;
+
+      fill: none;
+      stroke: fade(@color-secondary-action-outline, 40%);
+    }
+
+    .tick-line--midpoint {
+      .dashline-normal
+    }
+
+    .tick-line {
+      color: @color-secondary-action-outline;
+      stroke-width: 1px;
+    }
+
+    .tick-value {
+      fill: @color-primary-text;
+      font-size: @size-12;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      line-height: @size-10;
+      text-transform: capitalize;
+    }
+
+    .tick > text {
+      fill: @color-primary-text;
+    }
+
+    .depth-line-bids {
+      fill: none;
+      stroke: @color-positive;
+      stroke-width: @size-2;
+    }
+
+    .depth-line-asks {
+      fill: none;
+      stroke: @color-negative;
+      stroke-width: @size-2;
+    }
+
+    .stop-top-bid {
+      stop-color: transparent;
+    }
+
+    .stop-top-ask {
+      stop-color: transparent;
+    }
+
+    .stop-bottom-ask {
+      stop-color: @color-negative;
+    }
+
+    .stop-bottom-bid {
+      stop-color: @color-positive;
+    }
+
+    .filled-subtle-asks {
+      fill: url("#subtleGradientAsk");
+      opacity: 0.25;
+    }
+
+    .filled-subtle-bids {
+      fill: url("#subtleGradientBid");
+      opacity: 0.25;
+    }
+
+    .line .crosshair {
+      .dashline-normal;
+    }
+
+    .line .crosshairDot {
+      fill: @color-primary-text;
+      stroke: @color-primary-text;
+    }
+
+    .line .crosshairDotOutline {
+      fill: none;
+      stroke: @color-primary-text;
+    }
+
+    .line .crosshair-bids {
+      .dashline-normal;
+
+      stroke: @color-positive;
+    }
+
+    .line .crosshair-asks {
+      .dashline-normal;
+
+      stroke: @color-negative;
+    }
+
+    .overlay {
+      fill: none;
+      pointer-events: visible;
+    }
+
+    #depth_y_ticks,
+    #depth-x-axis {
+      path {
+        display: none;
+      }
+
+      text {
+        fill: @color-primary-text;
+      }
+    }
+
+    #depth-x-axis {
+      line {
+        stroke: @color-secondary-action-outline;
+        transform: translateX(-0.03125rem);
+      }
+
+      text {
+        .mono-9;
+      }
+    }
+
+    #depth_y_ticks {
+      line {
+        display: none;
+      }
+
+      text {
+        .mono-10-bold;
+      }
+    }
+  }
+}

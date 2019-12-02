@@ -23,7 +23,6 @@ export interface StoredOrder {
     fillableTakerAssetAmount: string,
 }
 
-// TODO: When there is a browser compatible Mesh Relay we should use that as this is not entirely accurate
 /**
  * Sets up a new test WS server
  * @return A WS server
@@ -100,6 +99,14 @@ export class MockMeshServer {
             jsonrpc: "2.0",
             result: "0xab1a3e8af590364c09d0fa6a12103ada"
         });
+    }
+
+    unsubscribe(id: number): string {
+      return JSON.stringify({
+        id,
+        jsonrpc: '2.0',
+        result: '0xab1a3e8af590364c09d0fa6a12103ada'
+      });
     }
 
     getOrders(id: number, params: any[]): string {

@@ -23,8 +23,10 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { AppState } from 'store';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { addCategoryStats } from 'modules/create-market/get-template';
 import { Getters } from '@augurproject/sdk/src';
+import { addCategoryStats } from 'modules/create-market/get-template';
+import ChevronFlip from 'modules/common/chevron-flip';
+import { Link } from 'react-router-dom';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -36,6 +38,7 @@ export interface DefaultButtonProps {
   small?: boolean;
   noIcon?: boolean;
   subText?: string;
+  pointDown?: boolean;
 }
 
 export interface SortButtonProps {
@@ -92,6 +95,7 @@ export interface ExternalLinkButtonProps {
   action?: Function;
   URL?: string;
   light?: boolean;
+  customLink?: any;
 }
 
 export const PrimaryButton = (props: DefaultButtonProps) => (
@@ -137,13 +141,23 @@ export const PrimarySignInButton = (props: DefaultButtonProps) => (
 );
 
 export const CloseButton = (props: DefaultButtonProps) => (
-  <button className={Styles.CloseButton} onClick={e => props.action(e)} disabled={props.disabled}>
+  <button
+    className={Styles.CloseButton}
+    onClick={e => props.action(e)}
+    disabled={props.disabled}
+  >
     {XIcon}
   </button>
 );
 
 export const BackButton = (props: DefaultButtonProps) => (
-  <button className={Styles.BackButton} onClick={e => props.action(e)} disabled={props.disabled}>{BackIcon} back</button>
+  <button
+    className={Styles.BackButton}
+    onClick={e => props.action(e)}
+    disabled={props.disabled}
+  >
+    {BackIcon} back
+  </button>
 );
 
 export const SecondarySignInButton = (props: DefaultButtonProps) => (
@@ -246,6 +260,23 @@ export const CancelTextButton = (props: DefaultButtonProps) => (
   </button>
 );
 
+export const TextButtonFlip = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CancelTextButton}
+    disabled={props.disabled}
+    title={props.title}
+  >
+    {props.text}
+    <ChevronFlip
+      pointDown={props.pointDown}
+      stroke="#BFB8CE"
+      filledInIcon
+      quick
+    />
+  </button>
+);
+
 export const SubmitTextButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -264,8 +295,7 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Deposit'}
   >
-    {QRCodeIcon}
-    Receive
+    Add funds
   </button>
 );
 
@@ -276,8 +306,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    {PaperAirplaneIcon}
-    Send
+    Withdraw funds
   </button>
 );
 
@@ -301,7 +330,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     title={props.title || 'REP Faucet'}
   >
     {RepLogoIcon}
-    <span>REP Faucet</span>
+    <span>{props.title ? props.title : "REP Faucet"}</span>
   </button>
 );
 
@@ -335,8 +364,8 @@ export const ExportButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Export Complete History'}
   >
-    {DownloadIcon}
     Export Complete History
+    {DownloadIcon}
   </button>
 );
 
@@ -372,15 +401,24 @@ export const ViewTransactionDetailsButton = (
 
 export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
   <button
-    className={classNames(Styles.ExternalLinkButton, {[Styles.LightAlternate]: props.light})}
+    className={classNames(Styles.ExternalLinkButton, {
+      [Styles.LightAlternate]: props.light,
+    })}
     onClick={e => props.action && props.action(e)}
   >
-    {props.URL && (
-      <a href={props.URL} target="blank">
-        {props.label}
-      </a>
+    {props.customLink ? (
+      <Link to={props.customLink}>{props.label}</Link>
+    ) : (
+      <>
+        {props.URL && (
+          <a href={props.URL} target="blank">
+            {props.label}
+          </a>
+        )}
+        {!props.URL && <span>{props.label}</span>}
+      </>
     )}
-    {!props.URL && <span>{props.label}</span>}
+
     {!props.showNonLink && ViewIcon}
   </button>
 );
@@ -416,11 +454,13 @@ export const CategoryButtons = ({
         <div key={idx} onClick={() => action(card.value.toLowerCase())}>
           <div>{item.icon}</div>
           <div>{item.header}</div>
-          <div className={!hasData ? Styles.loading : ''}>{hasData ? card.description : ''}</div>
+          <div className={!hasData ? Styles.loading : ''}>
+            {hasData ? card.description : ''}
+          </div>
         </div>
       );
     })}
-   </div>
+  </div>
 );
 
 export const FilterButton = (props: DefaultActionButtonProps) => (

@@ -123,7 +123,6 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
         </p>
 
         <div
-          className={Styles.ModalDisclaimer__checkbox}
           onClick={e => {
             e.preventDefault();
             setDidCheck(!didCheck);
@@ -158,7 +157,11 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
       </div>
       <div
         onClick={() => {
-          containerText.current.scrollBy(0, 100);
+          containerText.current.scrollBy({
+            left: 0,
+            top: 400,
+            behavior: 'smooth'
+          });
         }}
         className={classNames({ [Styles.hidden]: didScroll })}
       >

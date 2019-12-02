@@ -133,6 +133,7 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         bytes memory signature
     )
         public
+        payable
         returns (FillResults memory fillResults)
     {
         // ABI encode calldata for `fillOrder`
@@ -141,6 +142,9 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
             takerAssetFillAmount,
             signature
         );
+
+        uint256 requiredFee = tx.gasprice * 150000;
+        require(msg.value >= requiredFee, "PROTOCOL FEE NOT SENT");
 
         // Delegate to `fillOrder` and handle any exceptions gracefully
         assembly {
@@ -363,9 +367,13 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         bytes memory signature
     )
         public
+        payable
         nonReentrant
         returns (FillResults memory fillResults)
     {
+        uint256 requiredFee = tx.gasprice * 150000;
+        require(msg.value >= requiredFee, "PROTOCOL FEE NOT SENT");
+
         fillResults = fillOrderInternal(
             order,
             takerAssetFillAmount,
@@ -1481,5 +1489,91 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
             result := and(mload(add(b, index)), 0xffffffffffffffffffffffffffffffffffffffff)
         }
         return result;
+    }
+
+    /// @dev After calling, the order can not be filled anymore.
+    ///      Throws if order is invalid or sender does not have permission to cancel.
+    /// @param order Order to cancel. Order must be OrderStatus.FILLABLE.
+    function cancelOrder(Order memory order)
+        public
+        nonReentrant
+    {
+        cancelOrderInternal(order);
+    }
+
+    /// @dev Synchronously cancels multiple orders in a single transaction.
+    /// @param orders Array of order specifications.
+    function batchCancelOrders(Order[] memory orders)
+        public
+        nonReentrant
+    {
+        uint256 ordersLength = orders.length;
+        for (uint256 i = 0; i != ordersLength; i++) {
+            cancelOrderInternal(orders[i]);
+        }
+    }
+
+    /// @dev After calling, the order can not be filled anymore.
+    ///      Throws if order is invalid or sender does not have permission to cancel.
+    /// @param order Order to cancel. Order must be OrderStatus.FILLABLE.
+    function cancelOrderInternal(Order memory order)
+        internal
+    {
+        // Fetch current order status
+        OrderInfo memory orderInfo = getOrderInfo(order);
+
+        // Validate context
+        assertValidCancel(order, orderInfo);
+
+        // Perform cancel
+        updateCancelledState(order, orderInfo.orderHash);
+    }
+
+    /// @dev Validates context for cancelOrder. Succeeds or throws.
+    /// @param order to be cancelled.
+    /// @param orderInfo OrderStatus, orderHash, and amount already filled of order.
+    function assertValidCancel(
+        Order memory order,
+        OrderInfo memory orderInfo
+    )
+        internal
+        view
+    {
+        // Ensure order is valid
+        // An order can only be cancelled if its status is FILLABLE.
+        require(
+            orderInfo.orderStatus == uint8(OrderStatus.FILLABLE),
+            "ORDER_UNFILLABLE"
+        );
+
+        // Validate sender is allowed to cancel this order
+        if (order.senderAddress != address(0)) {
+            require(
+                order.senderAddress == msg.sender,
+                "INVALID_SENDER"
+            );
+        }
+
+        // Validate transaction signed by maker
+        address makerAddress = getCurrentContextAddress();
+        require(
+            order.makerAddress == makerAddress,
+            "INVALID_MAKER"
+        );
+    }
+
+    /// @dev Updates state with results of cancelling an order.
+    ///      State is only updated if the order is currently fillable.
+    ///      Otherwise, updating state would have no effect.
+    /// @param order that was cancelled.
+    /// @param orderHash Hash of order that was cancelled.
+    function updateCancelledState(
+        Order memory order,
+        bytes32 orderHash
+    )
+        internal
+    {
+        // Perform cancel
+        cancelled[orderHash] = true;
     }
 }

@@ -10,6 +10,7 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
+  ViewIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -25,14 +26,16 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
+import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 
 export interface TitleProps {
   title: string;
   closeAction: Function;
   bright?: boolean;
+  subheader?: string;
 }
 
 export interface DescriptionProps {
@@ -97,13 +100,14 @@ export interface ActionRow {
   text: string;
   label: string;
   value: string;
+  notice?: string;
   action: Function;
   status: typeof PENDING | typeof SUCCESS;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
 }
 
 export interface ActionRowsProps {
-  rows: Array<ActionRow>;
+  rows: ActionRow[];
 }
 
 export interface ReadableAddressProps {
@@ -126,7 +130,6 @@ export interface MarketReviewProps {
   description: string;
   details: string;
   endTime: any;
-  resolutionSource: string;
 }
 
 export interface MarketReviewState {
@@ -254,9 +257,13 @@ export const Title = (props: TitleProps) => (
   <header
     className={classNames(Styles.TitleHeader, {
       [Styles.Bright]: props.bright,
+      [Styles.ShortBorder]: props.subheader
     })}
   >
     <h1>{props.title}</h1>
+    {props.subheader &&
+      <h2>{props.subheader}</h2>
+    }
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
     )}
@@ -330,13 +337,13 @@ interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
-export const LinkContentSection = (props: LinkContentSectionProps) => (
+export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map((content, idx) => (
+    {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
-            {content.content}
+            <ExternalLinkButton label={content.content} />
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
@@ -386,10 +393,8 @@ export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps)
   </div>
 );
 
-export const TestBet = () => (
-  <div className={Styles.TestBet}>
-    <img src='assets/images/test-bet-placeholder.png' />
-  </div>
+export const TestBet = (
+  <img height='141px' src='images/test-bet.png' />
 );
 
 export const AlertMessage = (props: AlertMessageProps) => (
@@ -464,6 +469,7 @@ export const ActionRows = (props: ActionRowsProps) =>
           action={row.action}
         />
       </div>
+      {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
     </section>
   ));
 
@@ -559,11 +565,15 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
   );
 }
 
-export const FundsHelp = () => (
+interface FundsHelpProps {
+  fundType: string;
+}
+
+export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy DAI {generateDaiTooltip()} and transfer it into your account.</span>
-    <ExternalLinkButton label="Learn More" />
+    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
   </div>
 );
 
@@ -577,7 +587,7 @@ export class MarketReview extends Component<
   };
 
   render() {
-    const { description, details, endTime, resolutionSource } = this.props;
+    const { description, details, endTime } = this.props;
     const { readMore } = this.state;
 
     const showReadMore = details && details.length > 126;
@@ -612,11 +622,6 @@ export class MarketReview extends Component<
             <div>{endTime.formattedTimezone}</div>
           </div>
         )}
-
-        <div>
-          <p>Resolution source</p>
-          {resolutionSource || 'General knowledge'}
-        </div>
       </section>
     );
   }

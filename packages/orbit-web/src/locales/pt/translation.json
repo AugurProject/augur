@@ -1,0 +1,96 @@
+{
+  "channel": {
+    "beginningOf": "Inicio do #{{channel}}",
+    "file": {
+      "download": "Baixar",
+      "previewLoading": "$t(carregando)...",
+      "open": "Abrir",
+      "unableToDisplay": "Não é possível abrir o arquivo",
+      "dropzone": {
+        "add": "Adicionar arquivos ao #{{channel}"
+      }
+    },
+    "loadingHistory": "Histórico de carregamento...",
+    "loadMore": "Clique ou role para cima para carregar mensagens antigas",
+    "sendMessagePlaceholder": "Digite uma mensagem",
+    "status": {
+      "users": "Online",
+      "users_plural": "Online"
+    }
+  },
+  "configuration": "Configuração",
+  "controlPanel": {
+    "channels": "Canals",
+    "closeChannel": "Fechar",
+    "startJsIpfs": "Ligar o js-ipfs"
+  },
+  "disclaimer": {
+    "alpha": {
+      "content": "Isso é uma versao alfa do software. As coisas ao quebrar e mudar o que \u2014 As conversas serao perdidas."
+    }
+  },
+  "joinChannel": {
+    "inputPlaceholder": "Junte-se ao canal"
+  },
+  "login": {
+    "nickname": "Digite um nome",
+    "orLoginWith": "Ou entrar como",
+    "pressEnterToLogin": "Pressione ENTER para entrar"
+  },
+  "loading": "Carregando",
+  "settings": {
+    "names": {
+      "themeName": "Tema",
+      "language": "Idioma",
+      "sidePanelPosition": "Posição do painel lateral",
+      "colorifyUsernames": "Colorir apelidos",
+      "useEmojis": "Usar emojis",
+      "emojiSet": "Tema de Emoji",
+      "useMonospaceFont": "Usar fonte monospace",
+      "useLargeMessage": "Usar mensages grande"
+    },
+    "DESCRiptions": {},
+    "options": {
+      "themeName": {
+        "default": "Defeito",
+        "purple1": "Roxo 1",
+        "purple2": "Roxo 2",
+        "magenta": "Magenta",
+        "red": "Vermelho",
+        "orange": "Laranja",
+        "brown": "Marrom",
+        "lime": "Limão",
+        "green": "Verde",
+        "cyan": "Ciano",
+        "blue1": "Azul 1",
+        "blue2": "Azul 2",
+        "grey": "Cinzento"
+      },
+      "language": {
+        "en": "Ingles",
+        "fi": "Finlandês"
+      },
+      "sidePanelPosition": {
+        "left": "Esquerda",
+        "right": "Direita"
+      },
+      "emojiSet": {
+        "apple": "Apple",
+        "emojione": "Emojione",
+        "facebook": "Facebook",
+        "google": "Google",
+        "messenger": "Messenger",
+        "twitter": "Twitter"
+      }
+    }
+  },
+  "userProfile": {
+    "identityType": "Provedor de Identidade",
+    "identityId": "ID de identidade",
+    "identityPublicKey": "Chave pública"
+  },
+  "version": "Versão",
+  "viewNames": {
+    "settings": "Configuração"
+  }
+}

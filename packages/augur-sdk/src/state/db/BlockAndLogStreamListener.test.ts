@@ -74,10 +74,10 @@ describe("BlockstreamListener", () => {
     })));
 
     deps = {
-      address: '0xSomeAddress',
       blockAndLogStreamer,
       listenForNewBlocks: jest.fn(),
       getEventTopics: jest.fn(),
+      getEventContractAddress: jest.fn(),
       getBlockByHash: jest.fn().mockReturnValue(nextBlock),
       parseLogs,
     };

@@ -40,6 +40,7 @@
     padding: @size-12;
 
     @media @breakpoint-mobile {
+      background: @color-module-background;
       padding: @size-16 @size-12;
       border: none;
     }
@@ -60,9 +61,29 @@
         > span {
           display: inline-block;
           margin-top: -@size-8;
+
+          > svg path {
+            stroke: @color-dark-text;
+          }
         }
       }
     }
+  }
+}
+
+.ConnectAccount.selected:before {
+  content: '';
+
+  background: #1B1A1E;
+  bottom: -@size-1;
+  height: @size-3;
+  position: absolute;
+  transform: translateX(@size-1);
+  width: calc(100% - @size-2);
+  z-index: @default-z-index;
+
+  @media @breakpoint-mobile {
+    display: none;
   }
 }
 
@@ -70,6 +91,10 @@
   position: absolute;
   right: 0px;
   top: 56px;
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
 }
 
 .AccountInfo {
@@ -99,6 +124,7 @@
       .text-12;
 
       color: @color-primary-text;
+      margin-top: @size-2;
     }
   }
 }

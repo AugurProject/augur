@@ -6,11 +6,21 @@ import { AppState } from 'store';
 import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { createMarket, approveToTrade } from 'modules/contracts/actions/contractCalls';
-import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { constructMarketParamsReturn } from 'modules/create-market/helpers/construct-market-params';
+import {
+  createMarket,
+  approveToTrade,
+} from 'modules/contracts/actions/contractCalls';
+import {
+  getConstructedMarketId,
+  getDeconstructedMarketId,
+} from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
+import {
+  TemplateInputType,
+  TemplateInput,
+  UserInputDateTime,
+} from '@augurproject/artifacts';
 
 export function submitNewMarket(
   market: NewMarket,
@@ -31,8 +41,7 @@ export function submitNewMarket(
 
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
-    const parameters = constructMarketParamsReturn(market);
-    const txParamHash = generateTxParameterId(parameters);
+    const hashId = getConstructedMarketId(market);
 
     if (loginAccount.allowance.lte(ZERO)) {
       await approveToTrade();
@@ -41,11 +50,41 @@ export function submitNewMarket(
     if (hasOrders) {
       dispatch(
         addMarketLiquidityOrders({
-          txParamHash,
+          txParamHash: hashId,
           liquidityOrders: sortOrderBook,
         })
       );
     }
+    let extraInfoTemplate = null;
+    if (market.template) {
+      const { template } = market;
+
+      const inputs = template.inputs.reduce(
+        (p, i: TemplateInput) =>
+          i.userInput
+            ? [
+                ...p,
+                {
+                  id: i.id,
+                  value: i.userInput,
+                  type: i.type,
+                  timestamp:
+                    i.type === TemplateInputType.DATETIME && !!i.userInputObject
+                      ? (i.userInputObject as UserInputDateTime)
+                          .endTimeFormatted.timestamp
+                      : i.userInput,
+                },
+              ]
+            : p,
+        []
+      );
+      extraInfoTemplate = {
+        hash: template.hash,
+        question: market.template.question,
+        inputs,
+      };
+    }
+
     let err = null;
     try {
       createMarket(
@@ -53,19 +92,23 @@ export function submitNewMarket(
           outcomes: market.outcomes,
           scalarDenomination: market.scalarDenomination,
           description: market.description,
-          expirySource: market.expirySource,
           designatedReporterAddress: market.designatedReporterAddress,
           minPrice: market.minPrice,
           maxPrice: market.maxPrice,
-          backupSource: market.backupSource,
           endTime: market.endTime,
           tickSize: market.tickSize,
           marketType: market.marketType,
-          detailsText: market.template ? buildResolutionDetails(market.detailsText, market.template.resolutionRules) : market.detailsText,
+          detailsText: market.template
+            ? buildResolutionDetails(
+                market.detailsText,
+                market.template.resolutionRules
+              )
+            : market.detailsText,
           categories: market.categories,
           settlementFee: market.settlementFee,
           affiliateFee: market.affiliateFee,
           offsetName: market.offsetName,
+          template: extraInfoTemplate,
         },
         false
       );
@@ -83,7 +126,7 @@ export function retrySubmitMarket(
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
-    const txParamHash = generateTxParameterId(market.txParams);
+    const txParamHash = getDeconstructedMarketId(market.txParams);
 
     if (hasOrders) {
       dispatch(

@@ -2,7 +2,7 @@ import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Web3Provider } from 'ethers/providers';
+import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
 import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS } from 'modules/common/constants';
@@ -19,7 +19,7 @@ const getFormaticNetwork = (networkId: string): false | string   => {
   }
 };
 
-export const loginWithFortmatic = (showConnectingModal: FUnction) => async (
+export const loginWithFortmatic = () => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
 
@@ -30,14 +30,12 @@ export const loginWithFortmatic = (showConnectingModal: FUnction) => async (
     try {
       const fm = new Fortmatic(networkId === NETWORK_IDS.Mainnet ? FORTMATIC_API_KEY : FORTMATIC_API_TEST_KEY, supportedNetworks);
       const web3 = new Web3(fm.getProvider());
-      const provider = new Web3Provider(fm.getProvider());
+      const provider = new PersonalSigningWeb3Provider(fm.getProvider());
 
       windowRef.fm = fm;
 
       const accounts = await web3.currentProvider.enable();
       const account = accounts[0];
-
-      showConnectingModal();
 
       const accountObject = {
         address: account,
@@ -53,7 +51,7 @@ export const loginWithFortmatic = (showConnectingModal: FUnction) => async (
         },
       };
 
-      await dispatch(updateSdk(accountObject, undefined));
+      dispatch(updateSdk(accountObject, undefined));
     }
     catch (error) {
       throw error;

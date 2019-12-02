@@ -24,4 +24,8 @@ yarn workspace @augurproject/tools flash run create-canned-markets-and-orders
 geth version | tee /augur/geth-version.txt
 curl -s -H "Content-Type: application/json" --data '[{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1} ]' localhost:8545 | tee /augur/geth-blockNumber.txt
 
-kill -HUP $(pidof geth)
+PID=$(pidof geth)
+kill -INT $PID
+sleep 10
+tail /geth/geth.log
+echo "geth: $PID has stopped"

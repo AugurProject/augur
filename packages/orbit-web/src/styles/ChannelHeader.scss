@@ -1,0 +1,81 @@
+@import 'Colors';
+
+$channel-name-max-height: 5vmin;
+$channel-name-min-height: 1.6em;
+
+.Header {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  user-select: none;
+  background-color: $bar-background-color;
+
+  font-weight: bold;
+  font-size: 2em;
+  color: rgb(160, 160, 160);
+
+  padding: 0.2em 0.3em;
+
+  .notificationsIcon {
+    position: absolute;
+    font-size: 0.8em;
+    top: 1.1em;
+    right: 1.1em;
+    padding-top: -0.2em;
+  }
+
+  .icon {
+    font-size: 0.7em;
+    cursor: pointer;
+    font-weight: 100;
+  }
+
+  .currentChannel {
+    display: flex;
+    flex: 1 0 33%;
+    justify-content: flex-start;
+
+    font-size: 1em;
+    color: rgb(240, 240, 240);
+
+    margin-left: 0.2em;
+  }
+
+  .unreadMessages {
+    position: absolute;
+    top: 0;
+    left: 2.35em;
+
+    font-weight: bold;
+    font-size: 0.6em;
+
+    color: rgba(240, 240, 240, 0.9);
+    background-color: $main-color;
+    border-radius: 1em;
+
+    display: flex;
+    justify-content: center;
+
+    height: 1.2em;
+    min-width: 1.2em;
+
+    padding: 0.1em;
+  }
+}
+
+.channelHeaderAnimation-enter {
+  animation: slideFromLeft;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+.channelHeaderAnimation-leave {
+  animation: fadeOutRight;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}

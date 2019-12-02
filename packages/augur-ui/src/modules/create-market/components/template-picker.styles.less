@@ -2,11 +2,29 @@
 
 .TemplatePicker {
   > div:first-of-type {
-    margin-bottom: @size-32;
+    margin-bottom: @size-24;
+  }
+
+  > div:nth-of-type(2) {
+    > button {
+      .mono-11-bold;
+
+      color: @color-secondary-text;
+      padding-bottom: @size-10;
+
+      &.Selected {
+        color: @color-primary-text;
+        border-bottom: 1px solid @color-open;
+      }
+
+      &:not(:first-of-type) {
+        margin-left: @size-40;
+      }
+    }
   }
 
   > section:last-of-type {
-    margin-top: @size-32;
+    margin-top: @size-24;
 
     > div {
       margin-bottom: @size-16;

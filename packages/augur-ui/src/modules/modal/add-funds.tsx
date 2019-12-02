@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
   ExternalLinkButton,
   PrimaryButton,
@@ -8,15 +9,13 @@ import {
 import {
   AccountAddressDisplay,
   FundsHelp,
-  DaiEthSelector,
 } from 'modules/modal/common';
 import { RadioTwoLineBarGroup, TextInput } from 'modules/common/form';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
-
-import { ACCOUNT_TYPES } from 'modules/common/constants';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { ACCOUNT_TYPES, DAI, REP } from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
-
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/modal/modal.styles.less';
 import { helpIcon } from 'modules/common/icons';
@@ -26,8 +25,9 @@ interface AddFundsProps {
   closeAction: Function;
   address: string;
   accountMeta: LoginAccount['meta'];
-  isGnosis: boolean;
+  Gnosis_ENABLED: boolean;
   autoSelect?: boolean;
+  fundType: string;
 }
 
 export const generateDaiTooltip = (
@@ -59,39 +59,53 @@ export const AddFunds = ({
   closeAction,
   accountMeta,
   address,
-  isGnosis = false,
+  Gnosis_ENABLED = false,
   autoSelect = false,
+  fundType = DAI,
 }: AddFundsProps) => {
-  const [selectedOption, setSelectedOption] = useState(autoSelect ? [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(accountMeta.accountType) ? '0' : '1' : null);
-  const [daiSelected, setDaiSelected] = useState(true);
+  let autoSelection = '2'; // default Coinbase
 
-  let addFundsOptions = [
-    {
-      header: 'Credit/debit card',
-      description: 'Add Funds instantly using a credit/debit card',
+  if (autoSelect) {
+    if ([ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.PORTIS].includes(accountMeta.accountType) && fundType !== REP) {
+      autoSelection = '1'; // default Credit/Debit Card
+    }
+  }
+
+  const [selectedOption, setSelectedOption] = useState(autoSelect ? autoSelection : null);
+  const fundTypeLabel = fundType === DAI ? 'Dai ($)' : 'REP';
+
+  const FUND_OTPIONS = [
+    // TODO build uniswap component
+    { header: 'Swap',
+      description: 'Swap funds in your account for REP',
       value: '0',
     },
     {
-      header: 'Coinbase',
-      description: 'Add funds using a Coinbase account',
+      header: 'Credit/debit card',
+      description: 'Add Funds instantly using a credit/debit card',
       value: '1',
     },
     {
-      header: 'Transfer',
-      description: 'Transfer funds to your account address',
+      header: 'Coinbase',
+      description: 'Send funds from a Coinbase account',
       value: '2',
+    },
+    {
+      header: 'Transfer',
+      description: 'Send funds to your Augur account address',
+      value: '3',
     },
   ];
 
-  if (
-    accountMeta.accountType !== ACCOUNT_TYPES.TORUS &&
-    accountMeta.accountType !== ACCOUNT_TYPES.PORTIS
-  ) {
-    addFundsOptions = addFundsOptions.slice(1, 3);
+  const addFundsOptions = [FUND_OTPIONS[2], FUND_OTPIONS[3]];
+
+  if (fundType !== REP && (accountMeta.accountType === ACCOUNT_TYPES.TORUS || accountMeta.accountType === ACCOUNT_TYPES.PORTIS)) {
+    addFundsOptions.unshift(FUND_OTPIONS[1]);
   }
 
   return (
     <div
+      onClick={event => event.stopPropagation()}
       className={classNames(Styles.AddFunds, {
         [Styles.ShowSelected]: selectedOption,
         [Styles.hideOnMobile]: autoSelect,
@@ -103,7 +117,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>Add Funds</h1>
+          <h1>{fundType === REP ? 'Get REP' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -113,7 +127,7 @@ export const AddFunds = ({
               setSelectedOption(() => value && value.toString());
             }}
           />
-          <FundsHelp />
+          <FundsHelp fundType={fundType} />
         </div>
       </div>
       <div>
@@ -121,32 +135,24 @@ export const AddFunds = ({
           <BackButton action={() => setSelectedOption(() => null)} />
           <CloseButton action={() => closeAction()} />
         </div>
-        <div>
-          {selectedOption === '0' && (
+        <div className={selectedOption === '3' ? Styles.AddFundsTransfer : Styles.AddFundsCreditDebitCoinbase}>
+          {selectedOption === '1' && (
             <>
               <h1>Credit/debit card</h1>
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
                 <h2>
-                  Add up to $250 worth of DAI {generateDaiTooltip()} instantly
+                  Add up to $250 worth of {fundTypeLabel} {generateDaiTooltip()} instantly
                 </h2>
               )}
               {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-                <h2>Add DAI {generateDaiTooltip()} instantly</h2>
-              )}
-
-              {!isGnosis && <h3>Asset to buy</h3>}
-              {!isGnosis && (
-                <DaiEthSelector
-                  handleClick={isSelected => setDaiSelected(isSelected)}
-                  daiSelected={daiSelected}
-                />
+                <h2>Add {fundTypeLabel} {generateDaiTooltip()} instantly</h2>
               )}
 
               <h3>Amount</h3>
               <TextInput
                 placeholder='0'
                 onChange={noop}
-                innerLabel={daiSelected ? 'DAI' : 'ETH'}
+                innerLabel={'USD'}
               />
 
               {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
@@ -163,27 +169,16 @@ export const AddFunds = ({
                   text={`Buy with ${accountMeta.accountType}`}
                 />
               )}
-              {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-                <h4>
-                  You will be taken to Portis’ website to finalise the purchase
-                  process. The funds will appear in your Augur account address
-                  when complete.
-                </h4>
-              )}
-
-              {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-                <h4>
-                  Open the Tor.us wallet to start the purchase process. The
-                  funds will appear in your Augur account address when complete.
-                </h4>
-              )}
+              <h4>
+                Buy Dai ($) with our secure payments partner, {accountMeta.accountType}. Funds will appear in your Augur account when payment finalizes.
+              </h4>
             </>
           )}
-          {selectedOption === '1' && (
+          {selectedOption === '2' && (
             <>
               <h1>Coinbase</h1>
               <h2>
-                Add up to $25,000 worth of DAI ($) {generateDaiTooltip()} using
+                Add up to $25,000 worth of {fundType === DAI ? <>{fundTypeLabel} {generateDaiTooltip()}</> : fundType} using
                 a Coinbase account
               </h2>
               <ol>
@@ -193,32 +188,44 @@ export const AddFunds = ({
                     www.coinbase.com
                   </a>
                 </li>
-                <li>Buy the cryptocurrency DAI</li>
-                <li>Send the DAI to your account address</li>
+                <li>Buy the cryptocurrency {fundTypeLabel}</li>
+                <li>Send the {fundTypeLabel} to your augur account address</li>
               </ol>
-              <h3>Your Account Address</h3>
-              <AccountAddressDisplay copyable address={address} />
+              <h3>Augur account address</h3>
+              <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
+              <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
             </>
           )}
-          {selectedOption === '2' && (
+          {selectedOption === '3' && (
             <>
               <h1>Transfer</h1>
               <h2>
-                Send funds to your account address from any external service
+                Send funds to your Augur account address
               </h2>
               <ol>
                 <li>
-                  Buy DAI {generateDaiTooltip()} using any external service
+                  Buy{' '}
+                  {fundType === DAI ? (
+                    <>
+                      {fundTypeLabel} {generateDaiTooltip()}
+                    </>
+                  ) : (
+                    fundTypeLabel
+                  )}{' '}
+                   using an app or exchange (see our list of <a target='blank' href='https://docs.augur.net/'>popular ways to buy {fundTypeLabel})</a>
                 </li>
-                <li>Transfer the DAI to your account address</li>
+                <li>Transfer the {fundTypeLabel} to your Augur account address</li>
               </ol>
-              <h3>Your Account Address</h3>
-              <AccountAddressDisplay copyable address={address} />
-              <ExternalLinkButton label='popular services for buying dai' />
+              <h3>Augur account address</h3>
+              <AccountAddressDisplay copyable address={toChecksumAddress(address)} />
+              <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn about your address'} />
             </>
           )}
         </div>
-        <FundsHelp />
+        <FundsHelp fundType={fundType} />
+        <div>
+          <button onClick={() => closeAction()}>Done</button>
+        </div>
       </div>
     </div>
   );

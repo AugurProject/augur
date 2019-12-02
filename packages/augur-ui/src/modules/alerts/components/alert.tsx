@@ -9,6 +9,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 
 interface AlertProps {
   id: string;
+  uniqueId: string;
   title: string;
   description?: string;
   details?: string;

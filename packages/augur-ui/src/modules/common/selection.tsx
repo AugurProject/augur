@@ -5,7 +5,6 @@ import {
   ThickChevron,
   Chevron,
   DotDotDot,
-  TwoArrows,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -21,9 +20,10 @@ export interface DropdownProps {
   onChange: any;
   className?: string;
   defaultValue?: string | number;
-  options: Array<NameValuePair>;
+  options: NameValuePair[];
   large?: boolean;
   staticLabel?: string;
+  staticMenuLabel?: string;
   stretchOutOnMobile?: boolean;
   sortByStyles?: object;
   openTop?: boolean;
@@ -31,11 +31,17 @@ export interface DropdownProps {
   stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
+  disabled?: boolean;
+  sort?: boolean;
 }
 
 interface DropdownState {
   selected: NameValuePair;
   showList: boolean;
+  sortedList: NameValuePair[];
+  scrollWidth?: number;
+  clientWidth?: number;
+  isDisabled?: boolean;
 }
 
 interface SelectionOption {
@@ -44,7 +50,7 @@ interface SelectionOption {
 }
 
 interface PillSelectionProps {
-  options: Array<SelectionOption>;
+  options: SelectionOption[];
   onChange(value: number): void;
   defaultSelection: number;
 }
@@ -70,7 +76,12 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     scrollWidth: null,
     clientWidth: null,
     isDisabled: true,
+    sortedList:
+      this.props.sort && this.props.options
+        ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+        : this.props.options,
   };
+  labelRef: any;
 
   componentDidMount() {
     this.measure();
@@ -81,24 +92,36 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.removeEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.defaultValue !== nextProps.defaultValue) {
+  componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
+    this.measure();
+    if (prevProps.defaultValue !== this.props.defaultValue) {
       this.setState({
-        selected: nextProps.options.find(
-          o => o.value === nextProps.defaultValue
+        selected: this.props.options.find(
+          o => o.value === this.props.defaultValue
         ),
+      });
+    }
+    if (
+      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options)
+    ) {
+      const sortedList =
+        prevProps.sort && prevProps.options
+          ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
+          : prevProps.options;
+      this.setState({
+        sortedList,
       });
     }
   }
 
-  componentDidUpdate() {
-    this.measure();
-  }
-
-  shouldComponentUpdate(nextProps: any, nextState: any) {
+  shouldComponentUpdate(nextProps: DropdownProps, nextState: DropdownState) {
     if (
       nextState.selected !== this.state.selected ||
-      nextState.showList !== this.state.showList
+      nextState.showList !== this.state.showList ||
+      this.props.disabled !== nextProps.disabled ||
+      this.props.staticLabel !== nextProps.staticLabel ||
+      this.props.defaultValue !== nextProps.defaultValue ||
+      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
     ) {
       return true;
     }
@@ -150,7 +173,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   render() {
     const {
       sortByStyles,
-      options,
       large,
       stretchOutOnMobile,
       openTop,
@@ -159,8 +181,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       staticLabel,
       id,
       showColor,
+      disabled,
     } = this.props;
-    const { selected, showList, isDisabled } = this.state;
+    const { selected, showList, isDisabled, sortedList } = this.state;
 
     return (
       <div
@@ -173,6 +196,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
+          [Styles.Disabled]: disabled,
           [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]:
             selected && showColor,
         })}
@@ -200,7 +224,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             [`${Styles.active}`]: showList,
           })}
         >
-          {options.map(option => (
+          {sortedList.map(option => (
             <button
               key={`${option.value}${option.label}`}
               value={option.value}
@@ -217,7 +241,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             }}
             value={selected.value}
           >
-            {options.map(option => (
+            {sortedList.map(option => (
               <option
                 key={`${option.value}${option.label}`}
                 value={option.value}
@@ -249,11 +273,10 @@ export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
 export class StaticLabelDropdown extends Dropdown {
   componentDidMount() {
-    if (this.props.defaultValue) {
+    const { options, defaultValue } = this.props;
+    if (defaultValue) {
       this.setState({
-        selected: this.props.options.find(
-          o => o.value === this.props.defaultValue
-        ),
+        selected: options.find(o => o.value === defaultValue),
       });
     }
   }
@@ -264,13 +287,14 @@ export class StaticLabelDropdown extends Dropdown {
       options,
       large,
       staticLabel,
+      staticMenuLabel,
       highlight,
-      defaultValue,
     } = this.props;
     const { selected, showList } = this.state;
     if (!selected) {
       return null;
     }
+
     return (
       <div
         style={sortByStyles}
@@ -278,7 +302,6 @@ export class StaticLabelDropdown extends Dropdown {
           [Styles.Large]: large,
           [Styles.Normal]: !large,
           [Styles.isOpen]: showList,
-          [Styles.highlight]: highlight,
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
@@ -303,7 +326,7 @@ export class StaticLabelDropdown extends Dropdown {
               value={option.value}
               onClick={() => this.dropdownSelect(option)}
             >
-              {staticLabel}
+              {staticMenuLabel}
               &nbsp;
               <b>{option.label}</b>
             </button>

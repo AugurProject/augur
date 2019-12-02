@@ -1,0 +1,38 @@
+// Fonts from https://github.com/google/fonts
+
+@font-face {
+  font-family: 'Lato';
+  src: url('~fonts/lato/Lato-Thin.woff2') format('woff2'),
+       url('https://fonts.googleapis.com/css?family=Lato'),
+       url('~fonts/lato/Lato-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'LatoBold';
+  src: url('~fonts/lato/Lato-Light.woff2') format('woff2'),
+       url('https://fonts.googleapis.com/css?family=Lato'),
+       url('~fonts/lato/Lato-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 500;
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 700;
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Mono-Regular.woff2') format('woff2');
+}

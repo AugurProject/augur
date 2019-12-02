@@ -9,7 +9,15 @@ beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
-  mockGnosisRelay = new MockGnosisRelayAPI();
+  const mary = await ContractAPI.userWrapper(
+    ACCOUNTS[1],
+    provider,
+    seed.addresses,
+    undefined,
+    undefined
+  );
+
+  mockGnosisRelay = new MockGnosisRelayAPI(mary);
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
 });
 

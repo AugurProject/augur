@@ -37,6 +37,7 @@ interface ModalReportingProps {
   migrateRep: boolean;
   migrateMarket: boolean;
   isDisputing: boolean;
+  getRepModal: Function;
 }
 
 interface ModalReportingState {
@@ -222,6 +223,9 @@ export default class ModalReporting extends Component<
       if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
         contributeToTentativeWinner = true;
       }
+      if (tentativeWinningStake.outcome === report.outcomeId) {
+        contributeToTentativeWinner = true;
+      }
       if (marketType === SCALAR) {
         const selectedOutcome = disputeInfo.stakes.find(
           s => s.outcome === selectedRadio.id
@@ -245,7 +249,7 @@ export default class ModalReporting extends Component<
   };
 
   render() {
-    const { closeAction, title, market, rep, migrateRep, isDisputing, migrateMarket } = this.props;
+    const { closeAction, title, market, rep, migrateRep, isDisputing, getRepModal } = this.props;
     const {
       checked,
       inputScalarOutcome,
@@ -256,7 +260,6 @@ export default class ModalReporting extends Component<
     const {
       description,
       marketType,
-      resolutionSource,
       details,
       creationTimeFormatted,
       endTimeFormatted,
@@ -272,11 +275,6 @@ export default class ModalReporting extends Component<
             }
             <MarketTypeLabel marketType={marketType} />
             <span>{description}</span>
-            <Subheaders
-              small
-              header="Resolution Source"
-              subheader={resolutionSource}
-            />
             <Subheaders
               small
               header="Resolution Details"
@@ -298,7 +296,7 @@ export default class ModalReporting extends Component<
           {isDisputing && (
             <div>
               <RepBalance alternate rep={rep} />
-              <SecondaryButton text="Get REP" action={null} />
+              <SecondaryButton text="Get REP" action={() => getRepModal()} />
             </div>
           )}
           <ReleasableRepNotice />

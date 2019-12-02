@@ -1,5 +1,4 @@
 import logError from 'utils/log-error';
-import { updateTopBarPL } from 'modules/positions/actions/update-top-bar-pl';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppState } from 'store';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
@@ -13,15 +12,6 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 
-interface UserTradingPositions {
-  frozenFundsTotal: {
-    frozenFunds: string;
-  };
-  tradingPositions: Getters.Users.TradingPosition[];
-  tradingPositionsPerMarket: Getters.Users.MarketTradingPosition;
-  tradingPositionsTotal?: Getters.Users.TradingPosition;
-}
-
 export const loadAllAccountPositions = (
   options: any = {},
   callback: NodeStyleCallback = logError,
@@ -32,7 +22,7 @@ export const loadAllAccountPositions = (
       options,
       (err: any, { marketIds = [], positions = {} }: any) => {
         if (marketIdAggregator) marketIdAggregator(marketIds);
-        if (!err) postProcessing(marketIds, dispatch, positions, callback);
+        if (!err) userPositionProcessing(positions, dispatch, callback);
       }
     )
   );
@@ -45,8 +35,8 @@ export const loadMarketAccountPositions = (
   dispatch(
     loadAccountPositionsInternal(
       { marketId },
-      (err: any, { marketIds = [], positions = {} }: any) => {
-        if (!err) postProcessing(marketIds, dispatch, positions, callback);
+      (err: any, { positions = {} }: any) => {
+        if (!err) userPositionProcessing(positions, dispatch, callback);
         dispatch(loadAccountPositionsTotals());
       }
     )
@@ -68,6 +58,7 @@ export const loadAccountPositionsTotals = (
   dispatch(
     updateLoginAccount({
       totalFrozenFunds: positions[30].frozenFunds,
+      totalRealizedPL: positions[30].realized,
       tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })
   );
@@ -111,21 +102,33 @@ const loadAccountPositionsInternal = (
   callback(null, { marketIds, positions });
 };
 
-const postProcessing = (
-  marketIds: Array<string>,
+export const userPositionProcessing = (
+  positions: Getters.Users.UserTradingPositions,
   dispatch: ThunkDispatch<void, any, Action>,
-  positions: UserTradingPositions,
-  callback: NodeStyleCallback
+  callback?: NodeStyleCallback
 ) => {
-  marketIds.forEach((marketId: string) => {
+  if (!positions || !positions.tradingPositions) {
+    if (callback) return callback(null);
+    return;
+  }
+
+  const userPositionsMarketIds: string[] = Array.from(
+    new Set([
+      ...positions.tradingPositions.reduce(
+        (p, position) => [...p, position.marketId],
+        []
+      ),
+    ])
+  );
+  userPositionsMarketIds.forEach((marketId: string) => {
     const marketPositionData: AccountPosition = {};
     const marketPositions = positions.tradingPositions.filter(
       (position: any) => position.marketId === marketId
     );
-    const outcomeIds: Array<number> = Array.from(
+    const outcomeIds: number[] = Array.from(
       new Set([
         ...marketPositions.reduce(
-          (p: Array<number>, position: Getters.Users.TradingPosition) => [
+          (p: number[], position: Getters.Users.TradingPosition) => [
             ...p,
             position.outcome,
           ],
@@ -160,6 +163,5 @@ const postProcessing = (
     };
     dispatch(updateAccountPositionsData(positionData));
   });
-  dispatch(updateTopBarPL());
   if (callback) callback(null, positions);
 };

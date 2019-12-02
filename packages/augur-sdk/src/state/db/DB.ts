@@ -1,5 +1,4 @@
 import { Augur } from '../../Augur';
-import { augurEmitter } from "../../events";
 import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
 import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
@@ -36,6 +35,7 @@ import {
   ProfitLossChangedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
+  ShareTokenBalanceChangedLog,
   TokensMinted,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
@@ -154,8 +154,8 @@ export class DB {
     this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
 
     // Custom Derived DBs here
-    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators']);
-    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId']);
+    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators'], this.augur);
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId'], this.augur);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
     // Create Indexes
@@ -277,9 +277,9 @@ export class DB {
 
     // Update LiquidityDatabase and set it to update whenever there's a new block
     await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
-    augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
 
-    augurEmitter.emit(SubscriptionEventName.SDKReady, {
+    this.augur.getAugurEventEmitter().on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
 
@@ -312,9 +312,8 @@ export class DB {
       }
     }
 
-    await Promise.all(dbSyncPromises);
-
-    await this.emitUserDataSynced();
+    // Only emit this if actually did something....
+    if((await Promise.all(dbSyncPromises)).length > 0) await this.emitUserDataSynced();
   }
 
   async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
@@ -343,7 +342,7 @@ export class DB {
   }
 
   async emitUserDataSynced(): Promise<void> {
-    augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
+    this.augur.getAugurEventEmitter().emit(SubscriptionEventName.UserDataSynced, {
       eventName: SubscriptionEventName.UserDataSynced,
       trackedUsers: await this.trackedUsers.getUsers(),
     });
@@ -762,6 +761,17 @@ export class DB {
   async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokenBalanceChangedLog[]> {
     const results = await this.findInSyncableDB(this.getDatabaseName('TokenBalanceChanged', user), request);
     return results.docs as unknown as TokenBalanceChangedLog[];
+  }
+
+  /**
+   * Queries the ShareTokenBalanceChanged DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<TokenBalanceChangedLog>>}
+   */
+  async findShareTokenBalanceChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<ShareTokenBalanceChangedLog[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName('ShareTokenBalanceChanged'), request);
+    return results.docs as unknown as ShareTokenBalanceChangedLog[];
   }
 
   async findTokensMintedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokensMinted[]> {

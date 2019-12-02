@@ -12,23 +12,25 @@ import {
 import Styles from 'modules/account/components/transactions.styles.less';
 
 interface TransactionsProps {
-  isMainnet: boolean;
+  showFaucets: boolean;
   repFaucet: Function;
   daiFaucet: Function;
   deposit: Function;
   withdraw: Function;
   transactions: Function;
   approval: Function;
+  addFunds: Function;
+  legacyRepFaucet: Function;
 }
 
 export const Transactions = ({
   transactions,
-  deposit,
+  addFunds,
   withdraw,
-  isMainnet,
+  showFaucets,
   repFaucet,
   daiFaucet,
-  approval,
+  legacyRepFaucet,
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"
@@ -36,16 +38,25 @@ export const Transactions = ({
       <div className={Styles.Content}>
         <p>Your transactions history</p>
         <ViewTransactionsButton action={transactions} />
-        <p>Your wallet</p>
-        <DepositButton action={deposit} />
+        <p>Your account</p>
+        <DepositButton action={addFunds} />
         <WithdrawButton action={withdraw} />
-        {!isMainnet && (
+        {showFaucets && (
           <div>
             <p>REP for test net</p>
             <REPFaucetButton action={repFaucet} />
           </div>
         )}
-        {!isMainnet && (
+        {showFaucets && (
+          <div>
+            <p>Legacy REP</p>
+            <REPFaucetButton
+              title="Legacy REP Faucet"
+              action={legacyRepFaucet}
+            />
+          </div>
+        )}
+        {showFaucets &&  (
           <div>
             <p>DAI for test net</p>
             <DAIFaucetButton action={daiFaucet} />

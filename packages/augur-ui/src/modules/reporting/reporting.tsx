@@ -45,9 +45,9 @@ export default class Reporting extends React.Component<ReportingProps> {
                     title={'Upcoming Designated Reporting'}
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage="Connect a wallet to see your markets that will soon be ready to Report on."
-                    emptyHeader="There are no markets coming up in the next week for you to Report on. "
+                    emptyHeader="There are no markets coming up in the next week for you to Report on."
                     emptySubheader="Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."
-                  /> 
+                  />
                   <ReportingModalButton
                     text="Designated Reporting Quick Guide"
                     action={openReportingModal}
@@ -57,7 +57,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   <ReportingList
                     reportingType={REPORTING_STATE.OPEN_REPORTING}
                     title={'Open Reporting'}
-                    emptyHeader="There are currently no markets in Open Reporting. "
+                    emptyHeader="There are currently no markets in Open Reporting."
                     emptySubheader=" Markets appear here once if a Designated Reporter fails to show up."
                   />
                 </ModulePane>
@@ -80,7 +80,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   loggedOutMessage="Connect a wallet to see your markets that will soon be ready to Report on."
                   emptyHeader="There are no markets coming up in the next week for you to Report on. "
                   emptySubheader="Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."
-                /> 
+                />
                 <ReportingList
                   reportingType={REPORTING_STATE.OPEN_REPORTING}
                   title={'Open Reporting'}

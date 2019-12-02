@@ -129,7 +129,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
             </span>
           )}
         </div>
-        {showButton &&
+        {showButton && (
           <SecondaryButton
             small
             disabled={!props.canDispute}
@@ -140,7 +140,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
             }
             action={() => props.dispute(props.id.toString())}
           />
-        }
+        )}
       </div>
     </div>
   );
@@ -222,32 +222,31 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   );
 
   const { inDispute, showOutcomeNumber } = props;
-  let dipsutingOutcomes = sortedStakeOutcomes;
+  let disputingOutcomes = sortedStakeOutcomes;
   let outcomesCopy = props.outcomes.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
 
   if (inDispute) {
     if (!props.expanded) {
-      dipsutingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
+      disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
-    if (
-      !props.expanded &&
-      props.outcomes.length > showOutcomeNumber
-    ) {
+    if (!props.expanded && props.outcomes.length > showOutcomeNumber) {
       outcomesCopy.splice(showOutcomeNumber - 1, 0, removedInvalid);
+    } else if (props.marketType === YES_NO) {
+      outcomesCopy.reverse().splice(outcomesCopy.length, 0, removedInvalid);
     } else {
       outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
     }
   }
-  const outcomesShow = inDispute ? dipsutingOutcomes : outcomesCopy;
+
+  const outcomesShow = inDispute ? disputingOutcomes : outcomesCopy;
+
   return (
     <div
       className={classNames(Styles.OutcomeGroup, {
-        [Styles.Categorical]: props.marketType === CATEGORICAL,
-        [Styles.Scalar]: props.marketType === SCALAR,
-        [Styles.YesNo]: props.marketType === YES_NO,
         [Styles.Dispute]: inDispute,
+        [Styles.Scalar]: props.marketType === SCALAR && !inDispute,
       })}
     >
       {props.marketType === SCALAR && !inDispute && (
@@ -256,7 +255,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             min={props.min}
             max={props.max}
             lastPrice={
-              props.outcomes[SCALAR_UP_ID].price ? formatNumber(props.outcomes[SCALAR_UP_ID].price) : null
+              props.outcomes[SCALAR_UP_ID].price
+                ? formatNumber(props.outcomes[SCALAR_UP_ID].price)
+                : null
             }
             scalarDenomination={props.scalarDenomination}
           />

@@ -5,10 +5,11 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 
 
 contract IUniverse {
+    uint256 public creationTime;
     mapping(address => uint256) public marketBalance;
 
     function fork() public returns (bool);
@@ -44,12 +45,12 @@ contract IUniverse {
     function isOpenInterestCash(address) public view returns (bool);
     function isForkingMarket() public view returns (bool);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);
+    function getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial) public view returns (uint256, uint256);
     function isParentOf(IUniverse _shadyChild) public view returns (bool);
     function updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash) public returns (bool);
     function isContainerForDisputeWindow(IDisputeWindow _shadyTarget) public view returns (bool);
     function isContainerForMarket(IMarket _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
-    function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function migrateMarketOut(IUniverse _destinationUniverse) public returns (bool);
     function migrateMarketIn(IMarket _market, uint256 _cashBalance, uint256 _marketOI) public returns (bool);
     function decrementOpenInterest(uint256 _amount) public returns (bool);
@@ -57,7 +58,7 @@ contract IUniverse {
     function incrementOpenInterest(uint256 _amount) public returns (bool);
     function getWinningChildUniverse() public view returns (IUniverse);
     function isForking() public view returns (bool);
-    function assertMarketBalance() public view returns (bool);
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool);
     function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket);
 }

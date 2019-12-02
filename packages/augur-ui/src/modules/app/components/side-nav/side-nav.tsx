@@ -4,12 +4,12 @@ import classNames from 'classnames';
 
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
+import ConnectAccount from 'modules/auth/containers/connect-account';
 import { LogoutIcon } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
-import { HelpResources } from '../help-resources';
-import { GlobalChat } from 'modules/global-chat/components/global-chat';
-import { SecondaryButton } from 'modules/common/buttons';
+import HelpResources from 'modules/app/containers/help-resources';
+import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
 import { Chevron } from 'modules/common/icons';
 
 interface SideNavProps {
@@ -21,6 +21,8 @@ interface SideNavProps {
   logout: Function;
   showNav: boolean;
   showGlobalChat: Function;
+  migrateV1Rep: Function;
+  showMigrateRepButton: boolean;
 }
 
 const SideNav = ({
@@ -31,7 +33,9 @@ const SideNav = ({
   logout,
   currentBasePath,
   showNav,
-  showGlobalChat
+  showGlobalChat,
+  migrateV1Rep,
+  showMigrateRepButton,
 }: SideNavProps) => {
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
@@ -43,47 +47,57 @@ const SideNav = ({
         [Styles.showNav]: showNav,
       })}
     >
+      <div>
+        {isLogged && <HelpResources />}
+        <ConnectAccount />
+      </div>
+
       <div className={Styles.SideNav__container}>
-        {isConnectionTrayOpen && <ConnectDropdown />}
-        <ul
-          className={classNames({
-            [Styles.accountDetailsOpen]: isConnectionTrayOpen,
-          })}
-        >
-          {accessFilteredMenu.map((item, idx) => (
-            <li
-              key={idx}
-              className={classNames({
-                [Styles.disabled]: item.disabled,
-                [Styles.selected]: item.route === currentBasePath,
-              })}
-            >
-              <Link
-                to={item.route ? makePath(item.route) : null}
-                onClick={() => defaultMobileClick()}
+        <div>
+          {isConnectionTrayOpen && <ConnectDropdown />}
+          <ul
+            className={classNames({
+              [Styles.accountDetailsOpen]: isConnectionTrayOpen,
+            })}
+          >
+            {accessFilteredMenu.map((item, idx) => (
+              <li
+                key={idx}
+                className={classNames({
+                  [Styles.disabled]: item.disabled,
+                  [Styles.selected]: item.route === currentBasePath,
+                })}
               >
-                <span>{item.title}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Link
+                  to={item.route ? makePath(item.route) : null}
+                  onClick={() => defaultMobileClick()}
+                >
+                  <span>{item.title}</span>
+                </Link>
+              </li>
+            ))}
 
-        <footer>
-          {isLogged && (
-            <>
+            <div>
+              {showMigrateRepButton && <PrimaryButton
+                text='Migrate V1 to V2 REP'
+                action={() => migrateV1Rep()}
+              />}
+            </div>
+          </ul>
+
+          <footer>
+            <div className={Styles.GlobalChat}>
+              <SecondaryButton
+                action={showGlobalChat}
+                text='Global Chat'
+                icon={Chevron}
+              />
+            </div>
+            {isLogged && (
               <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
-              <div className={Styles.GlobalChat}>
-                <SecondaryButton
-                  action={showGlobalChat}
-                  text='Global Chat'
-                  icon={Chevron}
-                />
-              </div>
-            </>
-          )}
-
-          {isLogged && <HelpResources />}
-        </footer>
+            )}
+          </footer>
+        </div>
       </div>
     </aside>
   );

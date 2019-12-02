@@ -13,12 +13,43 @@ import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form/form.styles.less';
 import { ExclamationCircle } from 'modules/common/icons';
 import { SquareDropdown } from 'modules/common/selection';
-import { Checkbox } from 'modules/common/form';
+import { Checkbox, TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { CancelTextButton } from 'modules/common/buttons';
+import { CancelTextButton, TextButtonFlip } from 'modules/common/buttons';
+import moment from 'moment';
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { SimpleTimeSelector } from 'modules/create-market/components/common';
+
+const DEFAULT_EXPIRATION_DAYS = 30;
+
+enum ADVANCED_OPTIONS {
+  GOOD_TILL = '0',
+  EXPIRATION = '1',
+  FILL = '2',
+}
+
+enum EXPIRATION_DATE_OPTIONS {
+  DAYS = '0',
+  CUSTOM = '1',
+}
+
+const advancedDropdownOptions = [
+  {
+    label: 'Good till cancelled',
+    value: ADVANCED_OPTIONS.GOOD_TILL,
+  },
+  {
+    label: 'Order expiration',
+    value: ADVANCED_OPTIONS.EXPIRATION,
+  },
+  {
+    label: 'Fill only',
+    value: ADVANCED_OPTIONS.FILL,
+  },
+];
 
 interface FromProps {
   market: MarketData;
@@ -28,13 +59,14 @@ interface FromProps {
   orderQuantity: string;
   orderPrice: string;
   orderDaiEstimate: string;
-  orderEscrowdEth: string;
+  orderEscrowdDai: string;
   selectedNav: string;
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateState: Function;
   sortedOutcomes: OutcomeFormatted[];
   updateOrderProperty: Function;
   doNotCreateOrders: boolean;
+  expirationDate: number;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
   updateTradeTotalCost: Function;
@@ -42,6 +74,11 @@ interface FromProps {
   clearOrderConfirmation: Function;
   initialLiquidity?: Boolean;
   orderBook: OutcomeOrderBook;
+  availableDai: BigNumber;
+  currentTimestamp: number;
+  Ox_ENABLED: boolean;
+  tradingTutorial?: boolean;
+  gasCostEst: string;
 }
 
 interface TestResults {
@@ -56,6 +93,10 @@ interface FormState {
   [item: string]: string;
   errors: object;
   errorCount: number;
+  showAdvanced: boolean;
+  advancedOption: string;
+  fastForwardDays: number;
+  expirationDateOption: string;
 }
 
 class Form extends Component<FromProps, FormState> {
@@ -65,6 +106,7 @@ class Form extends Component<FromProps, FormState> {
     DO_NOT_CREATE_ORDERS: string;
     EST_DAI: string;
     SELECTED_NAV: string;
+    EXPIRATION_DATE: number;
   };
 
   MINIMUM_TRADE_VALUE: BigNumber;
@@ -78,6 +120,7 @@ class Form extends Component<FromProps, FormState> {
       DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
       EST_DAI: 'orderDaiEstimate',
       SELECTED_NAV: 'selectedNav',
+      EXPIRATION_DATE: 'expirationDate',
     };
 
     this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000);
@@ -90,6 +133,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
+      [this.INPUT_TYPES.EXPIRATION_DATE]: props.expirationDate,
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
       [this.INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
       errors: {
@@ -104,24 +148,30 @@ class Form extends Component<FromProps, FormState> {
       isOrderValid: this.orderValidation(startState).isOrderValid,
       lastInputModified: '',
       errorCount: 0,
+      showAdvanced: false,
+      advancedOption: advancedDropdownOptions[0].value,
+      fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+      expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
     };
+
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.updateTestProperty(this.INPUT_TYPES.QUANTITY, nextProps);
-    this.updateTestProperty(this.INPUT_TYPES.PRICE, nextProps);
-    this.updateTestProperty(this.INPUT_TYPES.EST_DAI, nextProps);
+  componentDidUpdate() {
+    this.updateTestProperty(this.INPUT_TYPES.QUANTITY, this.props);
+    this.updateTestProperty(this.INPUT_TYPES.PRICE, this.props);
+    this.updateTestProperty(this.INPUT_TYPES.EST_DAI, this.props);
+    this.updateTestProperty(this.INPUT_TYPES.EXPIRATION_DATE, this.props);
 
     if (
-      nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
+      this.props[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
       this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]
     ) {
       this.setState({
         [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
-          nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
+          this.props[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
       });
     }
   }
@@ -178,7 +228,6 @@ class Form extends Component<FromProps, FormState> {
     value,
     errors: object,
     isOrderValid: boolean,
-    nextProps,
     fromExternal
   ): TestResults {
     let errorCount = 0;
@@ -225,7 +274,6 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       selectedNav,
       orderBook,
-      selectedOutcome,
     } = props;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
@@ -538,6 +586,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: '',
       [this.INPUT_TYPES.PRICE]: '',
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
+      [this.INPUT_TYPES.EXPIRATION_DATE]: '',
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [this.INPUT_TYPES.EST_DAI]: '',
       errors: {
@@ -560,6 +609,14 @@ class Form extends Component<FromProps, FormState> {
     updateSelectedOutcome(value);
   }
 
+  updateTotalValue(percent: Number) {
+    const { availableDai } = this.props;
+
+    const value = availableDai.times(createBigNumber(percent));
+
+    this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString());
+  }
+
   render() {
     const {
       market,
@@ -568,10 +625,13 @@ class Form extends Component<FromProps, FormState> {
       maxPrice,
       minPrice,
       updateState,
-      orderEscrowdEth,
+      orderEscrowdDai,
       updateSelectedOutcome,
       sortedOutcomes,
       initialLiquidity,
+      currentTimestamp,
+      Ox_ENABLED,
+      tradingTutorial
     } = this.props;
     const s = this.state;
 
@@ -593,6 +653,10 @@ class Form extends Component<FromProps, FormState> {
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
+    let advancedOptions = advancedDropdownOptions;
+    if (!Ox_ENABLED) {
+      advancedOptions = [advancedOptions[0], advancedOptions[2]];
+    }
 
     return (
       <div className={Styles.TradingForm}>
@@ -636,6 +700,7 @@ class Form extends Component<FromProps, FormState> {
                 }
                 placeholder="0.00"
                 value={quantityValue}
+                tabIndex={tradingTutorial ? -1 : 1}
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
@@ -670,10 +735,9 @@ class Form extends Component<FromProps, FormState> {
                 max={max}
                 min={min}
                 placeholder="0.00"
+                tabIndex={tradingTutorial ? -1 : 2}
                 value={
                   s[this.INPUT_TYPES.PRICE]
-                    ? createBigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
-                    : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
@@ -690,7 +754,7 @@ class Form extends Component<FromProps, FormState> {
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length,
                 })}
               >
-                {isScalerWithDenomination ? market.scalarDenomination : 'DAI'}
+                {isScalerWithDenomination ? market.scalarDenomination : '$'}
               </span>
             </div>
           </li>
@@ -716,6 +780,7 @@ class Form extends Component<FromProps, FormState> {
                 step={MIN_QUANTITY.toFixed()}
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
+                tabIndex={tradingTutorial ? "-1" : '2'}
                 value={
                   s[this.INPUT_TYPES.EST_DAI]
                     ? createBigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
@@ -731,46 +796,157 @@ class Form extends Component<FromProps, FormState> {
                     .length,
                 })}
               >
-                DAI
+                $
               </span>
             </div>
-            {orderEscrowdEth && (
-              <label className={Styles.smallLabel}>
-                {ExclamationCircle}
-                <span>
-                  Max cost of <span>{orderEscrowdEth} DAI </span> will be
-                  escrowed
-                </span>
-              </label>
-            )}
           </li>
-          <li>
-            {!initialLiquidity && (
-              <>
-                <Checkbox
-                  id="tr__input--do-no-create-orders"
-                  type="checkbox"
-                  isChecked={!!s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-                  value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-                  smallOnDesktop
-                  onClick={e =>
-                    updateState({
-                      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: !s[
-                        this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
-                      ],
-                    })
-                  }
-                />
-                <label htmlFor="tr__input--do-no-create-orders">
-                  Fill Orders Only
-                </label>
+          {!initialLiquidity && (
+            <li>
+              <div>
                 <CancelTextButton
-                  text="clear"
-                  action={() => this.clearOrderFormProperties()}
+                  text="25%"
+                  action={() => this.updateTotalValue(0.25)}
                 />
-              </>
-            )}
+                <CancelTextButton
+                  text="50%"
+                  action={() => this.updateTotalValue(0.5)}
+                />
+                <CancelTextButton
+                  text="75%"
+                  action={() => this.updateTotalValue(0.75)}
+                />
+                <CancelTextButton
+                  text="100%"
+                  action={() => this.updateTotalValue(1)}
+                />
+              </div>
+              <CancelTextButton
+                text="clear"
+                action={() => this.clearOrderFormProperties()}
+              />
+            </li>
+          )}
+          <li>
+            <label className={initialLiquidity ? Styles.Liquidity : Styles.smallLabel}>
+              {ExclamationCircle}
+              <span>
+                {`Max cost of ${orderEscrowdDai === '' ? '-' : orderEscrowdDai} $ will be escrowed`}
+              </span>
+            </label>
           </li>
+          {!initialLiquidity && (
+            <li>
+              <TextButtonFlip
+                text="Advanced"
+                action={() => {
+                  this.setState({
+                    advancedOption: '0',
+                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: '0',
+                    showAdvanced: !s.showAdvanced,
+                  });
+                }}
+                pointDown={s.showAdvanced}
+              />
+            </li>
+          )}
+          {s.showAdvanced && (
+            <li>
+              <SquareDropdown
+                defaultValue={advancedOptions[0].value}
+                options={advancedOptions}
+                onChange={value => {
+                  const date =
+                    value === ADVANCED_OPTIONS.EXPIRATION
+                      ? moment
+                          .unix(currentTimestamp)
+                          .add(DEFAULT_EXPIRATION_DAYS, 'days')
+                      : '';
+
+                  updateState({
+                    [this.INPUT_TYPES.EXPIRATION_DATE]: date,
+                    [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
+                      value === ADVANCED_OPTIONS.FILL,
+                  });
+
+                  this.setState({
+                    advancedOption: value,
+                    fastForwardDays: DEFAULT_EXPIRATION_DAYS,
+                    expirationDateOption: '0',
+                  });
+                }}
+              />
+              {s.advancedOption === '1' && (
+                <div>
+                  <div>
+                    {s.expirationDateOption ===
+                      EXPIRATION_DATE_OPTIONS.DAYS && (
+                      <TextInput
+                        value={s.fastForwardDays.toString()}
+                        placeholder={'0'}
+                        onChange={value => {
+                          const days =
+                            value === '' || isNaN(value) ? 0 : parseInt(value);
+                          updateState({
+                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment
+                              .unix(currentTimestamp)
+                              .add(days, 'days'),
+                          });
+                          this.setState({ fastForwardDays: days });
+                        }}
+                      />
+                    )}
+                    <SquareDropdown
+                      defaultValue={EXPIRATION_DATE_OPTIONS.DAYS}
+                      options={[
+                        {
+                          label: 'Days',
+                          value: EXPIRATION_DATE_OPTIONS.DAYS,
+                        },
+                        {
+                          label: 'Custom',
+                          value: EXPIRATION_DATE_OPTIONS.CUSTOM,
+                        },
+                      ]}
+                      onChange={value => {
+                        this.setState({ expirationDateOption: value });
+                      }}
+                    />
+                  </div>
+                  {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.DAYS && (
+                    <span>
+                      {
+                        convertUnixToFormattedDate(
+                          s[this.INPUT_TYPES.EXPIRATION_DATE]
+                        ).formattedLocalShortTime
+                      }
+                    </span>
+                  )}
+                  {s.expirationDateOption ===
+                    EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                    <section>
+                      <SimpleTimeSelector
+                        onChange={value => {
+                          updateState({
+                            [this.INPUT_TYPES.EXPIRATION_DATE]: moment(
+                              value
+                            ).unix(),
+                          });
+                        }}
+                        currentTime={currentTimestamp}
+                      />
+                    </section>
+                  )}
+                </div>
+              )}
+              {s.advancedOption === ADVANCED_OPTIONS.FILL && (
+                <span>
+                  Fill Only will fill up to the specified amount. Can be
+                  partially filled and will cancel the remaining balance.
+                </span>
+              )}
+            </li>
+          )}
         </ul>
         {errors.length > 0 && (
           <div className={Styles.TradingForm__error_message_container}>

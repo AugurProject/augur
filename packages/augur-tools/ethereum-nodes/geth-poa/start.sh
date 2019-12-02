@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 RPCPORT=8545
 WSPORT=8546
@@ -22,7 +23,6 @@ node_start() {
     --ws --wsapi eth,net,web3,personal,txpool --wsaddr 0.0.0.0 --wsport $WSPORT --wsorigins '*' \
     --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --rpcport $RPCPORT --rpccorsdomain '*' --rpcvhosts '*' \
     --nodiscover \
-    #--allow-insecure-unlock \
     --targetgaslimit 7500000 < /dev/null > $ROOT/geth.log 2>&1 &
   NODE_PID=$!
 

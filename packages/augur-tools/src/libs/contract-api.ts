@@ -1,27 +1,33 @@
+import { WSClient } from '@0x/mesh-rpc-client';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractInterfaces } from '@augurproject/core';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import {
+  GnosisSafeStateReponse,
+  IGnosisRelayAPI,
+  SafeResponse,
+} from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   Connectors,
+  CreateCategoricalMarketParams,
+  CreateScalarMarketParams,
+  CreateYesNoMarketParams,
   Getters,
   PlaceTradeDisplayParams,
   SimulateTradeData,
-  CreateScalarMarketParams,
-  CreateYesNoMarketParams,
-  CreateCategoricalMarketParams,
   ZeroXPlaceTradeDisplayParams,
-  ZeroXSimulateTradeData
+  ZeroXSimulateTradeData,
+  BrowserMesh,
+  EmptyConnector,
+  HotLoadMarketInfo,
+  DisputeWindow
 } from '@augurproject/sdk';
-import { ContractInterfaces } from '@augurproject/core';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
-import { Account } from '../constants';
-import { ContractAddresses } from '@augurproject/artifacts';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
-import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
-import { WSClient } from '@0x/mesh-rpc-client';
-import { BaseConnector } from '@augurproject/sdk/build/connector';
-import { EmptyConnector } from '@augurproject/sdk';
+import { formatBytes32String } from 'ethers/utils';
+import { Account } from '../constants';
+import { makeGnosisDependencies, makeSigner } from './blockchain';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -31,13 +37,14 @@ export class ContractAPI {
     account: Account,
     provider: EthersProvider,
     addresses: ContractAddresses,
-    connector: BaseConnector = new EmptyConnector(),
+    connector: Connectors.BaseConnector = new EmptyConnector(),
     gnosisRelay: IGnosisRelayAPI = undefined,
-    meshClient: WSClient = undefined
+    meshClient: WSClient = undefined,
+    meshBrowser: BrowserMesh = undefined
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient);
+    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient, meshBrowser);
 
     return new ContractAPI(augur, provider, dependencies, account);
   }
@@ -52,6 +59,14 @@ export class ContractAPI {
   async approveCentralAuthority(): Promise<void> {
     const authority = this.augur.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+
+    const fillOrder = this.augur.addresses.FillOrder;
+    await this.augur.contracts.cash.approve(fillOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
+
+    const createOrder = this.augur.addresses.CreateOrder;
+    await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
@@ -70,7 +85,7 @@ export class ContractAPI {
   }
 
   async getRepBond(): Promise<BigNumber> {
-    return await this.augur.contracts.universe.getOrCacheMarketRepBond_();
+    return this.augur.contracts.universe.getOrCacheMarketRepBond_();
   }
 
   async marketFauceting() {
@@ -195,7 +210,7 @@ export class ContractAPI {
     if (cost) {
       await this.faucet(cost);
     }
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), NULL_ADDRESS);
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(""));
   }
 
   async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
@@ -218,7 +233,7 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -233,26 +248,26 @@ export class ContractAPI {
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""), NULL_ADDRESS);
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(""), NULL_ADDRESS);
   }
 
   async cancelOrder(orderID: string): Promise<void> {
     await this.augur.contracts.cancelOrder.cancelOrder(orderID);
   }
 
-  async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+  async placeNativeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     const price = params.direction === 0 ? params.displayPrice : params.numTicks.minus(params.displayPrice);
     const cost = params.displayAmount.multipliedBy(price).multipliedBy(10**18);
     await this.faucet(cost);
     await this.augur.trade.placeTrade(params);
   }
 
-  async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+  async simulateNativeTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.augur.trade.simulateTrade(params);
   }
 
@@ -261,14 +276,14 @@ export class ContractAPI {
   }
 
   async placeBasicYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber): Promise<void> {
-    await this.placeTrade({
+    await this.placeNativeTrade({
       direction,
       market: market.address,
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -280,14 +295,14 @@ export class ContractAPI {
   }
 
   async simulateBasicYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber): Promise<SimulateTradeData> {
-    return this.simulateTrade({
+    return this.simulateNativeTrade({
       direction,
       market: market.address,
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
@@ -307,7 +322,7 @@ export class ContractAPI {
       outcome,
       tradeGroupId: formatBytes32String('42'),
       expirationTime: new BigNumber(Date.now() + 10000000),
-      affiliateAddress: NULL_ADDRESS,
+      fingerprint: formatBytes32String('11'),
       kycToken: NULL_ADDRESS,
       doNotCreateOrders,
       displayMinPrice: new BigNumber(0),
@@ -318,8 +333,8 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
-    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affiliateAddress);
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, fingerprint = formatBytes32String('11')): Promise<void> {
+    await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {
@@ -346,11 +361,11 @@ export class ContractAPI {
     const numTicks = await market.getNumTicks_();
     const cashValue = amount.multipliedBy(numTicks);
     await this.faucet(cashValue);
-    await this.augur.contracts.completeSets.publicBuyCompleteSets(market.address, amount);
+    await this.augur.contracts.shareToken.publicBuyCompleteSets(market.address, amount);
   }
 
   async sellCompleteSets(market: ContractInterfaces.Market, amount: BigNumber): Promise<void> {
-    await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount);
+    await this.augur.contracts.shareToken.publicSellCompleteSets(market.address, amount);
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
@@ -414,11 +429,8 @@ export class ContractAPI {
     return reputationToken.migrateOutByPayout(payoutNumerators, attotokens);
   }
 
-
   async getNumSharesInMarket(market: ContractInterfaces.Market, outcome: BigNumber): Promise<BigNumber> {
-    const shareTokenAddress = await market.getShareToken_(outcome);
-    const shareToken = this.augur.contracts.shareTokenFromAddress(shareTokenAddress);
-    return shareToken.balanceOf_(this.account.publicKey);
+    return this.augur.contracts.shareToken.balanceOfMarketOutcome_(market.address, outcome, this.account.publicKey);
   }
 
   async getOrCreateCurrentDisputeWindow(initial = false): Promise<string> {
@@ -530,7 +542,13 @@ export class ContractAPI {
   }
 
   async approve(wei: BigNumber): Promise<void> {
-    await  this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+    await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.FillOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.FillOrder, true);
+
+    await this.augur.contracts.cash.approve(this.augur.addresses.CreateOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.CreateOrder, true);
   }
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
@@ -580,6 +598,10 @@ export class ContractAPI {
     this.augur.setGnosisSafeAddress(safeAddress);
   }
 
+  setGasPrice(gasPrice: BigNumber): void {
+    this.augur.setGasPrice(gasPrice);
+  }
+
   setUseGnosisSafe(useSafe: boolean): void {
     this.augur.setUseGnosisSafe(useSafe);
   }
@@ -589,11 +611,18 @@ export class ContractAPI {
   }
 
   async approveAugurEternalApprovalValue(owner: string) {
-    const spender = this.augur.addresses.Augur;
-    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender));
+    const augur = this.augur.addresses.Augur;
+    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, augur));
 
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      const fillOrder = this.augur.addresses.FillOrder;
+      const createOrder = this.augur.addresses.CreateOrder;
+      await this.augur.contracts.cash.approve(augur, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      await this.augur.contracts.cash.approve(fillOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+      await this.augur.contracts.cash.approve(createOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
+
+      await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true, { sender: this.account.publicKey });
+      await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true, { sender: this.account.publicKey });
     }
   }
 
@@ -606,16 +635,57 @@ export class ContractAPI {
     return this.augur.gnosis.getGnosisSafeAddress(account);
   }
 
-  async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {
+  async createGnosisSafeViaRelay(paymentToken: string): Promise<SafeResponse> {
     const params = {
       paymentToken,
-      payment,
       owner: this.account.publicKey,
     };
     return this.augur.gnosis.createGnosisSafeViaRelay(params);
   }
 
-  async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
-    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
+  async getGnosisSafeDeploymentStatusViaRelay(owner: string, safe: string): Promise<GnosisSafeStateReponse> {
+    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay({
+      owner,
+      safe,
+    });
   }
+
+  async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
+    return await this.augur.hotLoading.getMarketDataParams({market});
+  }
+
+  async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
+    return await this.augur.hotLoading.getCurrentDisputeWindowData({
+      augur: this.augur.contracts.augur.address,
+      universe: this.augur.contracts.universe.address,
+    });
+  }
+
+  async mineBlock(): Promise<void> {
+    await this.provider.sendAsync({
+      id: 42,
+      method: 'evm_mine',
+      params: [],
+      jsonrpc: '2.0'
+    });
+  }
+
+  async startMining(): Promise<void> {
+    await this.provider.sendAsync({
+      id: 42,
+      method: 'miner_start',
+      params: [],
+      jsonrpc: '2.0'
+    });
+  }
+
+  async stopMining(): Promise<void> {
+    await this.provider.sendAsync({
+      id: 42,
+      method: 'miner_stop',
+      params: [],
+      jsonrpc: '2.0'
+    });
+  }
+
 }

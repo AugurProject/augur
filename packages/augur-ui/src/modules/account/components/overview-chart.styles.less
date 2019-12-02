@@ -4,7 +4,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding-top: @size-48;
+  padding-top: @size-16;
   border-top: 1px solid @color-table-header;
   border-radius: @border-radius-default;
 
@@ -44,15 +44,12 @@
 .ProfitLossChart {
   margin: 0;
   pointer-events: none;
+  width: 100%;
 
   svg {
     :global {
       .highcharts-background {
         fill: transparent;
-
-        // @media @breakpoint-mobile-mid {
-        //   fill: @color-dark-grey;
-        // }
       }
 
       g.highcharts-yaxis-labels > text {

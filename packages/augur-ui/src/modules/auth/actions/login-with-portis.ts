@@ -2,16 +2,18 @@ import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Web3Provider } from 'ethers/providers';
+import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import Portis, { INetwork } from '@portis/web3';
 import Web3 from 'web3';
 import {
   ACCOUNT_TYPES,
   PORTIS_API_KEY,
   NETWORK_IDS,
+  MODA_WALLET_ERROR,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { windowRef } from 'utils/window-ref';
+import { updateModal } from 'modules/modal/actions/update-modal';
 
 const getPortisNetwork = (networkId): false | string | INetwork => {
   const myPrivateEthereumNode = {
@@ -27,32 +29,25 @@ const getPortisNetwork = (networkId): false | string | INetwork => {
   }
 };
 
-export const loginWithPortis = (
-  forceRegisterPage = false,
-  showConnectingModal
-) => async (dispatch: ThunkDispatch<void, any, Action>) => {
+export const loginWithPortis = (forceRegisterPage = false) => async (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   const networkId = getNetworkId();
   const portisNetwork = getPortisNetwork(networkId);
 
   if (portisNetwork) {
-    const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
-      scope: ['email'],
-      registerPageByDefault: forceRegisterPage,
-    });
+    try {
+      const portis = new Portis(PORTIS_API_KEY, portisNetwork, {
+        scope: ['email'],
+        registerPageByDefault: forceRegisterPage,
+      });
 
+      const web3 = new Web3(portis.provider);
+      const provider = new PersonalSigningWeb3Provider(portis.provider);
 
-    windowRef.portis = portis;
+      windowRef.portis = portis;
 
-    const initPortis = async (portis, email = null) => {
-      try {
-        const web3 = new Web3(portis.provider);
-        const provider = new Web3Provider(portis.provider);
-
-        const accounts = await web3.eth.getAccounts();
-        const account = accounts[0];
-
-        showConnectingModal();
-
+      const initPortis = (portis, account, email = null) => {
         const accountObject = {
           address: account,
           mixedCaseAddress: toChecksumAddress(account),
@@ -67,25 +62,24 @@ export const loginWithPortis = (
           },
         };
 
-        await dispatch(updateSdk(accountObject, undefined));
-      } catch (error) {
-        throw error;
-      }
-    };
+        dispatch(updateSdk(accountObject, undefined));
+      };
 
-    portis.onLogin(async (_, email) => {
-      if (email) {
-        await initPortis(portis, email);
-      } else {
-        await initPortis(portis);
-      }
-    });
+      portis.onLogin((account, email) => {
+          initPortis(portis, account, email);
+      });
 
-    try {
-      const result = await portis.showPortis();
-      if (result && result.error) {
-        throw result.error;
-      }
+      portis.onError(error => {
+        document.querySelector('.por_portis-container').remove();
+        dispatch(
+          updateModal({
+            type: MODA_WALLET_ERROR,
+            error: error.toString(),
+          })
+        );
+      });
+
+      await web3.eth.getAccounts();
     } catch (error) {
       document.querySelector('.por_portis-container').remove();
       throw error;

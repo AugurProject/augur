@@ -1,0 +1,259 @@
+@import (reference) "~assets/styles/shared";
+
+.PriceHistory {
+  display: flex;
+  max-height: @charts-max-height;
+  height: @charts-max-height;
+  min-height: @charts-max-height;
+  width: 100%;
+
+  svg {
+    :global {
+      .highcharts-background {
+        fill: @color-module-background;
+      }
+
+      g.highcharts-yaxis-labels {
+        .mono-10-bold;
+
+        fill: @color-primary-text;
+      }
+
+      g.highcharts-xaxis-labels,
+      g.highcharts-xaxis-labels > text,
+      g.highcharts-xaxis-labels > text > tspan,
+      g.highcharts-xaxis-labels > text > title {
+        .mono-9;
+
+        fill: @color-primary-text;
+      }
+
+      .highcharts-no-data {
+        font-size: @size-16;
+      }
+
+      .highcharts-label-box {
+        fill: @color-module-background;
+        font-weight: bold;
+
+        > text > tspan:last-child {
+          font-size: @size-12;
+        }
+      }
+
+      .highcharts-tick {
+        stroke: @color-secondary-action-outline;
+      }
+
+      .highcharts-axis-line {
+        stroke: @color-secondary-action-outline;
+        transform: scaleX(1.15);
+      }
+
+      g.highcharts-yaxis-grid path.highcharts-grid-line:nth-child(1),
+      g.highcharts-yaxis path.highcharts-axis-line {
+        display: none;
+      }
+
+      .highcharts-xaxis-grid > .highcharts-grid-line {
+        stroke: fade(@color-secondary-action-outline, 25);
+      }
+
+      .highcharts-yaxis-grid {
+        .dashline-long;
+
+        .highcharts-grid-line {
+          stroke: @color-secondary-action-outline;
+          transform: scaleX(1.15);
+        }
+      }
+
+      .highcharts-xaxis-category {
+        display: none;
+      }
+
+      .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
+        stroke: @color-primary-text;
+      }
+
+      .highcharts-crosshair-label {
+        background-color: @color-module-background;
+        border-radius: 5px;
+        color: @color-primary-text;
+        font-size: @size-10;
+        z-index: @above-all-content;
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateX(38px);
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-10;
+
+        fill: @color-primary-text;
+        transform: translateX(38px);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateY(4px);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-9;
+
+        fill: @color-primary-text;
+        transform: translateY(4px);
+      }
+
+      .highcharts-crosshair {
+        .dashline-long;
+      }
+
+      .highcharts-halo,
+      path.highcharts-point,
+      .highcharts-tracker > path {
+        fill: @color-primary-text;
+        stroke: @color-primary-text;
+      }
+
+      // --- mulitple line styling
+      .highcharts-line-series.highcharts-color-0,
+      .highcharts-area-series.highcharts-color-0 {
+        fill: @color-outcome-invalid;
+        stroke: @color-outcome-invalid;
+      }
+
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-area {
+        fill: fade(@color-outcome-invalid, 40);
+        stroke: fade(@color-outcome-invalid, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-0 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
+        stroke: @color-outcome-invalid;
+      }
+
+      .highcharts-line-series.highcharts-color-1,
+      .highcharts-area-series.highcharts-color-1 {
+        fill: @color-outcome-one;
+        stroke: @color-outcome-one;
+      }
+
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-area {
+        fill: fade(@color-outcome-one, 40);
+        stroke: fade(@color-outcome-one, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-1 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-graph {
+        stroke: @color-outcome-one;
+      }
+
+      .highcharts-line-series.highcharts-color-2,
+      .highcharts-area-series.highcharts-color-2 {
+        fill: @color-outcome-two;
+        stroke: @color-outcome-two;
+      }
+
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-area {
+        fill: fade(@color-outcome-two, 40);
+        stroke: fade(@color-outcome-two, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-2 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-graph {
+        stroke: @color-outcome-two;
+      }
+
+      .highcharts-line-series.highcharts-color-3,
+      .highcharts-area-series.highcharts-color-3 {
+        fill: @color-outcome-three;
+        stroke: @color-outcome-three;
+      }
+
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-area {
+        fill: fade(@color-outcome-three, 40);
+        stroke: fade(@color-outcome-three, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-3 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-graph {
+        stroke: @color-outcome-three;
+      }
+
+      .highcharts-line-series.highcharts-color-4,
+      .highcharts-area-series.highcharts-color-4 {
+        fill: @color-outcome-four;
+        stroke: @color-outcome-four;
+      }
+
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-area {
+        fill: fade(@color-outcome-four, 40);
+        stroke: fade(@color-outcome-four, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-4 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-graph {
+        stroke: @color-outcome-four;
+      }
+
+      .highcharts-line-series.highcharts-color-5,
+      .highcharts-area-series.highcharts-color-5 {
+        fill: @color-outcome-five;
+        stroke: @color-outcome-five;
+      }
+
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-area {
+        fill: fade(@color-outcome-five, 40);
+        stroke: fade(@color-outcome-five, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-5 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-graph {
+        stroke: @color-outcome-five;
+      }
+
+      .highcharts-line-series.highcharts-color-6,
+      .highcharts-area-series.highcharts-color-6 {
+        fill: @color-outcome-six;
+        stroke: @color-outcome-six;
+      }
+
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-area {
+        fill: fade(@color-outcome-six, 40);
+        stroke: fade(@color-outcome-six, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-6 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-graph {
+        stroke: @color-outcome-six;
+      }
+
+      .highcharts-line-series.highcharts-color-7,
+      .highcharts-area-series.highcharts-color-7 {
+        fill: @color-outcome-seven;
+        stroke: @color-outcome-seven;
+      }
+
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-area {
+        fill: fade(@color-outcome-seven, 40);
+        stroke: fade(@color-outcome-seven, 40);
+      }
+
+      g.highcharts-line-series.highcharts-color-7 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-graph {
+        stroke: @color-outcome-seven;
+      }
+
+      text.highcharts-title tspan,
+      text.highcharts-title > tspan {
+        .text-10;
+
+        color: @color-primary-text;
+        fill: @color-primary-text;
+        text-transform: capitalize;
+      }
+    }
+  }
+}

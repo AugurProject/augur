@@ -1,0 +1,92 @@
+$height: 27.25vh;
+
+.MessageUserProfilePanel {
+  position: absolute;
+  z-index: 98;
+  overflow: hidden;
+  white-space: pre;
+  color: rgba(232, 232, 232, 1);
+  background-color: rgba(38, 38, 38, 1);
+  border: 1px solid rgb(48, 48, 48);
+  box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  margin-left: -20px;
+  padding: 1em;
+
+  max-width: 300px;
+
+  .close {
+    position: absolute;
+    right: 0.7em;
+    top: 0.5em;
+    font-size: 1.25em;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+  }
+
+  .close:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+
+  .picture {
+    height: 4em;
+    clip-path: circle(32px at center);
+    transform: translate(11px, 0px);
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  .name {
+    font-weight: bold;
+    font-size: 1.6em;
+    padding-bottom: 0.2em;
+    margin-bottom: 0.2em;
+    border-bottom: 1px solid rgba(64, 64, 64, 1);
+    box-sizing: border-box;
+  }
+
+  .country {
+    font-style: italic;
+    font-size: 0.8em;
+  }
+
+  .profileDataContainer {
+    margin-top: 40px;
+
+    dt {
+      color: rgba(250, 250, 250, 1);
+      font-weight: bold;
+      font-size: 0.8em;
+      margin-top: 1.2em;
+      margin-bottom: 0.2em;
+    }
+
+    dd {
+      font-style: italic;
+      font-size: 0.8em;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin: 0;
+
+      &.code {
+        font-family: monospace;
+        font-size: 1em;
+      }
+    }
+  }
+
+  pre {
+    font-family: 'Roboto Mono';
+    font-size: 0.8em;
+    background-color: rgba(32, 32, 32, 0.66);
+    margin: 0;
+    padding: 0.5em;
+    white-space: pre;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    height: $height;
+    box-sizing: border-box;
+  }
+}

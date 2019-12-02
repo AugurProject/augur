@@ -5,8 +5,11 @@ import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
-import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
+import { NodeStyleCallback, AccountPositionAction, AccountPosition } from 'modules/types';
+import {
+  simulateTrade,
+  simulateTradeGasLimit,
+} from 'modules/contracts/actions/contractCalls';
 import { Getters, SimulateTradeData } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
@@ -28,10 +31,7 @@ export function updateTradeCost({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const {
-      marketInfos,
-      accountPositions,
-    } = getState();
+    const { marketInfos, accountPositions } = getState();
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -71,10 +71,7 @@ export function updateTradeShares({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const {
-      marketInfos,
-      accountPositions,
-    } = getState();
+    const { marketInfos, accountPositions } = getState();
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -135,23 +132,25 @@ async function runSimulateTrade(
   market: Getters.Markets.MarketInfo,
   marketId: string,
   outcomeId: number,
-  accountPositions: any,
+  accountPositions: AccountPosition,
   callback: NodeStyleCallback
 ) {
   let sharesFilledAvgPrice = '';
   let reversal = null;
-  let outcomeRawPosition = ZERO;
   const positions = (accountPositions[marketId] || {}).tradingPositions;
+  const marketOutcomeShares = positions
+    ? (accountPositions[marketId].tradingPositionsPerMarket || {})
+        .userSharesBalances
+    : {};
   if (positions && positions[outcomeId]) {
     const position = positions[outcomeId];
     sharesFilledAvgPrice = position.averagePrice;
-    outcomeRawPosition = createBigNumber(position.rawPosition || 0);
     const isReversal =
       newTradeDetails.side === BUY
         ? createBigNumber(position.netPosition).lt(ZERO)
         : createBigNumber(position.netPosition).gt(ZERO);
     if (isReversal) {
-      const { netPosition: quantity, averagePrice: price } = position
+      const { netPosition: quantity, averagePrice: price } = position;
       // @ts-ignore
       reversal = {
         quantity: createBigNumber(quantity)
@@ -163,18 +162,18 @@ async function runSimulateTrade(
   }
 
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
-    const affiliateAddress = undefined; // TODO: get this from state
+  const fingerprint = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  const userShares = createBigNumber(outcomeRawPosition);
+  const userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
     marketId,
     market.numOutcomes,
     outcomeId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     market.numTicks,
@@ -182,7 +181,7 @@ async function runSimulateTrade(
     market.maxPrice,
     newTradeDetails.numShares,
     newTradeDetails.limitPrice,
-    userShares,
+    userShares
   );
 
   const gasLimit = await simulateTradeGasLimit(
@@ -190,7 +189,7 @@ async function runSimulateTrade(
     marketId,
     market.numOutcomes,
     outcomeId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     market.numTicks,
@@ -204,7 +203,8 @@ async function runSimulateTrade(
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
   // note: tokensDepleted, dai needed for trade
-  newTradeDetails.totalCost = simulateTradeValue.tokensDepleted;
+  newTradeDetails.totalCost = simulateTradeValue.sharesFilled.minus(simulateTradeValue.tokensDepleted);
+  newTradeDetails.costInDai = simulateTradeValue.tokensDepleted;
   // note: shareCost, shares you spent on the trade
   newTradeDetails.shareCost = simulateTradeValue.sharesDepleted;
   // note: sharesFilled, the amount of the order that was filled
@@ -213,6 +213,16 @@ async function runSimulateTrade(
     .dividedBy(createBigNumber(simulateTradeValue.tokensDepleted, 10))
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
+
+  // ignore share cost when user is shorting another outcome or longing another outcome
+  // and the user doesn't have shares on the traded outcome
+  if (
+    reversal === null &&
+    !newTradeDetails.shareCost.eq(ZERO) &&
+    userShares.gt(ZERO)
+  ) {
+    newTradeDetails.shareCost = '0';
+  }
 
   const tradeInfo = {
     ...newTradeDetails,

@@ -1,29 +1,42 @@
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
-import { TimeframeData } from 'modules/types';
+import { NodeStyleCallback } from 'modules/types';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { augurSdk } from 'services/augursdk';
+import { Getters } from '@augurproject/sdk';
 
 export const updateTimeframeData = (
-  options: any = {},
-  callback: any = logError
-) => (
+  options: { startTime: number },
+  callback: NodeStyleCallback = logError
+) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
-): void => {
-  const { universe, loginAccount } = getState();
+): Promise<void> => {
+  const { universe, loginAccount, blockchain } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);
+
+  const augur = augurSdk.get();
+  const stats: Getters.Users.AccountTimeRangedStatsResult = await augur.getAccountTimeRangedStats(
+    {
+      universe: universe.id,
+      account: loginAccount.address,
+      startTime: options.startTime ? options.startTime : 0,
+      endTime: blockchain.currentAugurTimestamp
+    }
+  );
+
   dispatch(
     updateLoginAccount({
       timeframeData: {
-        positions: 0,
-        numberOfTrades: 0,
-        marketsTraded: 0,
-        marketsCreated: 0,
-        successfulDisputes: 0,
-        redeemedPositions: 0,
+        positions: stats.positions,
+        numberOfTrades: stats.numberOfTrades,
+        marketsTraded: stats.marketsTraded,
+        marketsCreated: stats.marketsCreated,
+        successfulDisputes: stats.successfulDisputes,
+        redeemedPositions: stats.redeemedPositions,
       },
     })
   );

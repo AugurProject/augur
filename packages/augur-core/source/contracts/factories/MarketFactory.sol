@@ -4,7 +4,8 @@ pragma solidity 0.5.10;
 import 'ROOT/libraries/CloneFactory.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IReputationToken.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/factories/IMarketFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/IAugur.sol';
@@ -23,12 +24,14 @@ contract MarketFactory is CloneFactory, IMarketFactory {
     uint256 private constant MIN_OUTCOMES = 2; // Does not Include Invalid
     uint256 private constant MAX_OUTCOMES = 7; // Does not Include Invalid
 
-    function createMarket(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public returns (IMarket _market) {
+    function createMarket(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public returns (IMarket _market) {
         _market = IMarket(createClone(_augur.lookup("Market")));
         require(_augur.isKnownUniverse(_universe), "MarketFactory: Universe specified is unrecognized by Augur");
         IReputationToken _reputationToken = _universe.getReputationToken();
         require(_reputationToken.transfer(address(_market), _reputationToken.balanceOf(address(this))));
-        require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));
+        if (_sender != _augur.lookup("WarpSync")) {
+            require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));
+        }
 
         // Market param validation
         require(_numTicks.isMultipleOf(2), "MarketFactory.createMarket: numTicks must be multiple of 2");
@@ -41,7 +44,7 @@ contract MarketFactory is CloneFactory, IMarketFactory {
         require(_endTime < _augur.getMaximumMarketEndDate(), "MarketFactory.createMarket: endTime too far ahead");
         require(!_universe.isForking(), "MarketFactory.createMarket: Universe is forking");
 
-        _market.initialize(_augur, _universe, _endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _market.initialize(_augur, _universe, _endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         return _market;
     }
 }

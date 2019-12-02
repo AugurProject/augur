@@ -1,13 +1,14 @@
-import React from "react";
-import * as constants from "modules/common/constants";
-import logError from "utils/log-error";
-import { DaiLogoIcon } from "modules/common/icons";
-import ProfitLossChart from "modules/account/components/profit-loss-chart";
-import { MovementLabel } from "modules/common/labels";
-import Styles from "modules/account/components/overview-chart.styles.less";
-import { formatDai } from "utils/format-number";
-import { SizeTypes } from "modules/types";
-import { createBigNumber } from "utils/create-big-number";
+import React from 'react';
+import * as constants from 'modules/common/constants';
+import logError from 'utils/log-error';
+import { PulseLoader } from 'react-spinners';
+import { DaiLogoIcon } from 'modules/common/icons';
+import ProfitLossChart from 'modules/account/components/profit-loss-chart';
+import { MovementLabel } from 'modules/common/labels';
+import Styles from 'modules/account/components/overview-chart.styles.less';
+import { formatDai } from 'utils/format-number';
+import { SizeTypes } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
 
 const ALL_TIME = 3;
 export interface OverviewChartProps {
@@ -37,6 +38,7 @@ interface OverviewChartState {
   profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
+  isLoading: boolean;
 }
 
 const BEGINNING_START_TIME = 1530366577;
@@ -61,33 +63,42 @@ export default class OverviewChart extends React.Component<
   };
 
   componentDidUpdate = (prevProps: OverviewChartProps) => {
-    if (prevProps.timeframe !== this.props.timeframe) {
+    if (
+      prevProps.timeframe !== this.props.timeframe ||
+      (prevProps.currentAugurTimestamp === 0 &&
+        prevProps.currentAugurTimestamp !== this.props.currentAugurTimestamp)
+    ) {
       const timeRangeDataConfig =
         constants.TIMEFRAME_OPTIONS[this.props.timeframe];
       this.getChartData(timeRangeDataConfig);
     }
   };
 
-   getChartData = async (timeRangeDataConfig: TimeFrameOption) => {
+  getChartData = async (timeRangeDataConfig: TimeFrameOption) => {
     const { universe, currentAugurTimestamp } = this.props;
 
     if (currentAugurTimestamp === 0) {
       return;
     }
 
-    let startTime: number | null = (currentAugurTimestamp) - timeRangeDataConfig.periodInterval;
+    let startTime: number | null =
+      currentAugurTimestamp - timeRangeDataConfig.periodInterval;
 
     if (timeRangeDataConfig.id === ALL_TIME) {
       startTime = BEGINNING_START_TIME;
     }
 
     try {
-      const data = await this.props.getProfitLoss(universe, startTime, currentAugurTimestamp);
+      const data = await this.props.getProfitLoss(
+        universe,
+        startTime,
+        currentAugurTimestamp
+      );
 
       const noTrades = data
         .reduce(
           (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
-          constants.ZERO,
+          constants.ZERO
         )
         .eq(constants.ZERO);
 
@@ -99,7 +110,9 @@ export default class OverviewChart extends React.Component<
       const chartValues = data.reduce(
         (p, d) => ({
           ...p,
-          [d.timestamp === 0 ? startTime * 1000: d.timestamp * 1000]: createBigNumber((d.realized)).toNumber(),
+          [d.timestamp === 0
+            ? startTime * 1000
+            : d.timestamp * 1000]: createBigNumber(d.realized).toNumber(),
         }),
         {}
       );
@@ -120,20 +133,18 @@ export default class OverviewChart extends React.Component<
       if (this.container) {
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(lastData.realized || 0)
-            .formatted,
-          profitLossChangeHasValue: !createBigNumber(
-            lastData.realized || 0
-          ).eq(constants.ZERO),
+          profitLossChange: formatDai(lastData.realized || 0).formatted,
+          profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
+            constants.ZERO
+          ),
           profitLossValue: formatDai(lastData.realized).formatted,
-          noTrades,
+          noTrades: false,
         });
       }
-    }
-    catch (error) {
+    } catch (error) {
       logError(error);
     }
-  }
+  };
 
   render() {
     const {
@@ -144,12 +155,22 @@ export default class OverviewChart extends React.Component<
       noTrades,
     } = this.state;
     let content: any = null;
+    const { currentAugurTimestamp } = this.props;
+    const isLoading = currentAugurTimestamp === 0;
 
     if (noTrades) {
       content = (
         <>
           <h3>{constants.PROFIT_LOSS_CHART_TITLE}</h3>
-          <span>No Trading Activity</span>
+          {isLoading && (
+            <PulseLoader
+              color="#AFA7C1"
+              sizeUnit="px"
+              size={6}
+              loading={isLoading}
+            />
+          )}
+          {!isLoading && <span>No Trading Activity</span>}
         </>
       );
     } else {
@@ -165,20 +186,32 @@ export default class OverviewChart extends React.Component<
             size={SizeTypes.NORMAL}
           />
           <h4>
-            ${profitLossValue}
+            {profitLossValue >= 0
+              ? `$${profitLossValue}`
+              : `-$${Math.abs(profitLossValue)}`}
           </h4>
-          <ProfitLossChart
-            data={profitLossData}
-            // @ts-ignore
-            width={this.container.clientWidth}
-          />
+          {isLoading && (
+            <PulseLoader
+              color="#AFA7C1"
+              sizeUnit="px"
+              size={6}
+              loading={isLoading}
+            />
+          )}
+          {!isLoading && (
+            <ProfitLossChart
+              data={profitLossData}
+              // @ts-ignore
+              width={this.container.clientWidth}
+            />
+          )}
         </>
       );
     }
     return (
       <div
         className={Styles.OverviewChart}
-        ref={(container) => {
+        ref={container => {
           this.container = container;
         }}
       >

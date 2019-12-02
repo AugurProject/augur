@@ -1,7 +1,7 @@
 pragma solidity 0.5.10;
 
 
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'TEST/MockVariableSupplyToken.sol';
 

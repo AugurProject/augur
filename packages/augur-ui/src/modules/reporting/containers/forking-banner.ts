@@ -24,21 +24,15 @@ const mapStateToProps = (state: AppState) => {
   const { reporting, balances } = loginAccount;
   let hasStakedRep = false;
   if (reporting) {
+    const stakes = selectReportingWinningsByMarket(state);
     hasStakedRep =
-      !hasStakedRep && reporting.disputing
-        ? createBigNumber(reporting.disputing.totalStaked).gt(ZERO)
-        : hasStakedRep;
-    hasStakedRep =
-      !hasStakedRep && reporting.reporting
-        ? createBigNumber(reporting.reporting.totalStaked).gt(ZERO)
-        : hasStakedRep;
-    hasStakedRep =
-      !hasStakedRep && reporting.participationTokens
-        ? createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO)
-        : hasStakedRep;
+      stakes.claimableMarkets &&
+      stakes.claimableMarkets.marketContracts &&
+      stakes.claimableMarkets.marketContracts.length > 0;
   }
   const market = selectMarket(forkingInfo.forkingMarket);
-  const hasRepBalance = market !== null && balances && createBigNumber(balances.rep).gt(ZERO);
+  const hasRepBalance =
+    market !== null && balances && createBigNumber(balances.rep).gt(ZERO);
   const releasableRep = selectReportingWinningsByMarket(state);
 
   return {
@@ -49,6 +43,7 @@ const mapStateToProps = (state: AppState) => {
     releasableRep,
     forkTime: convertUnixToFormattedDate(forkingInfo.forkEndTime),
     currentTime: convertUnixToFormattedDate(blockchain.currentAugurTimestamp),
+    isForking: !forkingInfo.isForkingMarketFinalized,
   };
 };
 

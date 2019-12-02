@@ -1,15 +1,10 @@
-import React, { Component } from "react";
+import React from 'react';
 import classNames from 'classnames';
-import moment, { Moment } from 'moment';
 
 import {
   RadioCardGroup,
-  FormDropdown,
   TextInput,
-  DatePicker,
-  TimeSelector,
   RadioBarGroup,
-  TimezoneDropdown,
   CategoryMultiSelect,
 } from 'modules/common/form';
 import {
@@ -17,40 +12,40 @@ import {
   Subheaders,
   LineBreak,
   NumberedList,
-  DateTimeHeaders,
   SmallSubheaders,
   QuestionBuilder,
   DateTimeSelector,
-  ResolutionRules
+  ResolutionRules,
+  TemplateBanners,
+  InputHeading,
 } from 'modules/create-market/components/common';
 import {
   YES_NO,
   SCALAR,
   CATEGORICAL,
-  EXPIRY_SOURCE_GENERIC,
-  EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC,
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
-import { RepLogoIcon } from 'modules/common/icons';
 import {
   DESCRIPTION_PLACEHOLDERS,
-  DESCRIPTION,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES,
   MARKET_TYPE_NAME,
+  MARKET_COPY_LIST,
 } from 'modules/create-market/constants';
-import { formatDate, convertUnixToFormattedDate } from 'utils/format-date';
 import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
 import Styles from 'modules/create-market/components/form-details.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import {
+  hasNoTemplateCategoryChildren,
+  hasNoTemplateCategoryTertiaryChildren,
+} from 'modules/create-market/get-template';
+import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 
 interface FormDetailsProps {
-  updateNewMarket: Function;
   newMarket: NewMarket;
   currentTimestamp: number;
   onChange: Function;
@@ -63,16 +58,10 @@ interface FormDetailsState {
   timeFocused: Boolean;
 }
 
-interface TimeSelectorParams {
-  hour?: string;
-  minute?: string;
-  meridiem?: string;
-}
-
 export default class FormDetails extends React.Component<
   FormDetailsProps,
   FormDetailsState
-  > {
+> {
   state = {
     dateFocused: false,
     timeFocused: false,
@@ -85,9 +74,7 @@ export default class FormDetails extends React.Component<
       onChange,
       onError,
       isTemplate,
-      updateNewMarket,
     } = this.props;
-    const s = this.state;
 
     const {
       outcomes,
@@ -100,18 +87,18 @@ export default class FormDetails extends React.Component<
       scalarDenomination,
       minPrice,
       maxPrice,
-      tickSize,
       detailsText,
       categories,
-      expirySource,
-      backupSource,
-      expirySourceType,
       designatedReporterAddress,
       designatedReporterType,
       validations,
       timezone,
       endTimeFormatted,
+      template,
     } = newMarket;
+
+    const tickSize =
+      isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
 
     return (
       <div
@@ -134,8 +121,8 @@ export default class FormDetails extends React.Component<
                   subheader={categories[0]}
                 />
                 <SmallSubheaders
-                  header="Secondary category"
-                  subheader={categories[1]}
+                  header={'Secondary category'}
+                  subheader={categories[1] === '' ? '-' : categories[1]}
                 />
               </div>
               <LineBreak />
@@ -146,6 +133,7 @@ export default class FormDetails extends React.Component<
               <Subheaders
                 header="Market type"
                 link
+                copyType={MARKET_COPY_LIST.MARKET_TYPE}
                 subheader="Market types vary based on the amount of possible outcomes."
               />
               <RadioCardGroup
@@ -155,18 +143,21 @@ export default class FormDetails extends React.Component<
                   {
                     value: YES_NO,
                     header: 'Yes / No',
+                    icon: YesNoMarketIcon,
                     description:
                       'There are two possible outcomes: “Yes” or “No”',
                   },
                   {
                     value: CATEGORICAL,
                     header: 'Multiple Choice',
+                    icon: CategoricalMarketIcon,
                     description:
                       'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
                   },
                   {
                     value: SCALAR,
                     header: 'Scalar',
+                    icon: ScalarMarketIcon,
                     description:
                       'A range of numeric outcomes: “USD range” between “1” and “100”.',
                   },
@@ -177,7 +168,7 @@ export default class FormDetails extends React.Component<
           {isTemplate && (
             <QuestionBuilder
               newMarket={newMarket}
-              currentTime={currentTimestamp}
+              currentTimestamp={currentTimestamp}
               onChange={onChange}
             />
           )}
@@ -191,15 +182,22 @@ export default class FormDetails extends React.Component<
                 minute={minute}
                 meridiem={meridiem}
                 timezone={timezone}
+                currentTimestamp={currentTimestamp}
                 endTimeFormatted={endTimeFormatted}
                 uniqueKey={'nonTemplateRes'}
               />
 
-              <Subheaders
-                header="Market question"
-                link
-                subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time."
+              <InputHeading
+                name={'question'}
+                copyType={MARKET_COPY_LIST.MARKET_QUESTION}
+                heading={'Market question'}
+                subHeading={'What do you want people to predict?'}
+                listItems={[
+                  'If entering a date and time in the Market Question, enter a date and time in the UTC-0 timezone.',
+                  'If the winning outcome will be determined using a specific source, you must enter the source URL or its full name in the Market Question.'
+                ]}
               />
+
               <TextInput
                 type="textarea"
                 placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
@@ -212,6 +210,7 @@ export default class FormDetails extends React.Component<
                     validations.description.slice(1).toLowerCase()
                 }
               />
+              <TemplateBanners categories={newMarket.categories} />
             </>
           )}
 
@@ -220,7 +219,6 @@ export default class FormDetails extends React.Component<
               <Subheaders
                 header="Outcomes"
                 subheader="List the outcomes people can choose from."
-                link
               />
               <NumberedList
                 initialList={outcomes.map(outcome => {
@@ -232,7 +230,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={'Enter outcome'}
-                updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
+                updateList={(value: string[]) => onChange(OUTCOMES, value)}
                 errorMessage={validations.outcomes}
               />
             </>
@@ -242,6 +240,7 @@ export default class FormDetails extends React.Component<
             <>
               <Subheaders
                 header="Unit of measurement"
+                copyType={MARKET_COPY_LIST.UNIT_OF_MEASURMENT}
                 subheader="Choose a denomination for the range."
                 link
               />
@@ -250,11 +249,13 @@ export default class FormDetails extends React.Component<
                 onChange={(value: string) =>
                   onChange('scalarDenomination', value)
                 }
+                disabled={isTemplate}
                 value={scalarDenomination}
                 errorMessage={validations.scalarDenomination}
               />
               <Subheaders
                 header="Numeric range"
+                copyType={MARKET_COPY_LIST.NUMERIC_RANGE}
                 subheader="Choose the min and max values of the range."
                 link
               />
@@ -292,6 +293,7 @@ export default class FormDetails extends React.Component<
               </section>
               <Subheaders
                 header="Precision"
+                copyType={MARKET_COPY_LIST.PRECISION}
                 subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”."
                 link
               />
@@ -305,27 +307,35 @@ export default class FormDetails extends React.Component<
                     : 'Denomination'
                 }
                 value={tickSize}
+                disabled={isTemplate && template.tickSize}
                 errorMessage={validations.tickSize}
               />
             </>
           )}
-
-          {!isTemplate && (
-            <>
-              <Subheaders
-                header="Market category"
-                subheader="Categories help users to find your market on Augur."
-              />
-              <CategoryMultiSelect
-                initialSelected={categories}
-                sortedGroup={setCategories}
-                updateSelection={categoryArray =>
-                  onChange(CATEGORIES, categoryArray)
-                }
-                errorMessage={validations.categories}
-              />
-            </>
-          )}
+          <Subheaders
+            header="Market category"
+            subheader="Categories help users to find your market on Augur."
+          />
+          <CategoryMultiSelect
+            initialSelected={categories}
+            sortedGroup={setCategories}
+            updateSelection={categoryArray =>
+              onChange(CATEGORIES, categoryArray)
+            }
+            errorMessage={validations.categories}
+            disableCategory={isTemplate}
+            disableSubCategory={
+              isTemplate &&
+              !hasNoTemplateCategoryChildren(newMarket.categories[0])
+            }
+            disableTertiaryCategory={
+              isTemplate &&
+              !hasNoTemplateCategoryTertiaryChildren(
+                newMarket.categories[0],
+                newMarket.categories[1]
+              )
+            }
+          />
         </div>
         <LineBreak />
         <div>
@@ -346,65 +356,37 @@ export default class FormDetails extends React.Component<
             />
           )}
 
-          <Subheaders
-            header="Resolution source"
-            subheader="Describe what users need to know in order to resolve the market."
-            link
-          />
-          <RadioBarGroup
-            radioButtons={[
-              {
-                header: 'General knowledge',
-                value: EXPIRY_SOURCE_GENERIC,
-              },
-              {
-                header: 'Outcome available on a public website',
-                value: EXPIRY_SOURCE_SPECIFIC,
-                expandable: true,
-                placeholder: 'Enter website',
-                textValue: expirySource,
-                onTextChange: (value: string) =>
-                  onChange('expirySource', value),
-                errorMessage: validations.expirySource,
-                secondPlaceholder: 'Back up website (optional)',
-                secondTextValue: backupSource,
-                secondHeader:
-                  'If the primary resolution source is not available',
-                onSecondTextChange: (value: string) =>
-                  onChange('backupSource', value),
-              },
-            ]}
-            defaultSelected={expirySourceType}
-            onChange={(value: string) => {
-              if (value === EXPIRY_SOURCE_GENERIC) {
-                onChange(EXPIRY_SOURCE, '');
-                onError(EXPIRY_SOURCE, '');
-              }
-              onChange('expirySourceType', value);
-            }}
-          />
-
-          {isTemplate &&
+          {isTemplate && (
             <ResolutionRules newMarket={newMarket} onChange={onChange} />
-          }
+          )}
 
-          <Subheaders
-            header="Resolution details"
-            subheader="Describe what users need to know to determine the outcome of the event."
-            link
-          />
-          <TextInput
-            type="textarea"
-            placeholder="Describe how the event should be resolved under different scenarios."
-            rows="3"
-            value={detailsText}
-            onChange={(value: string) => onChange('detailsText', value)}
-          />
+          {!isTemplate && (
+            <>
+              <InputHeading
+                name={'resolution'}
+                heading={'Resolution details'}
+                copyType={MARKET_COPY_LIST.RESOLUTION_DETAILS}
+                subHeading={'Describe what users need to know to determine the outcome of the event.'}
+                listItems={[
+                  'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
+                  'Do not enter a resolution source in Resolution Details, it must be entered in the Market Question.'
+                ]}
+              />
+              <TextInput
+                type="textarea"
+                placeholder="Describe how the event should be resolved under different scenarios."
+                rows="3"
+                value={detailsText}
+                onChange={(value: string) => onChange('detailsText', value)}
+              />
+            </>
+          )}
 
           <Subheaders
             header="Designated reporter"
             subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)."
             link
+            copyType={MARKET_COPY_LIST.DESIGNATED_REPORTER}
           />
           <RadioBarGroup
             radioButtons={[

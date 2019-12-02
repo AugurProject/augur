@@ -1,13 +1,13 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { WithdrawForm } from "modules/modal/withdraw-form";
-import { AppState } from "store";
-import { closeModal } from "modules/modal/actions/close-modal";
-import { formatGasCostToEther, formatEtherEstimate } from "utils/format-number";
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
-import { transferFunds } from "modules/auth/actions/transfer-funds";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { WithdrawForm } from 'modules/modal/withdraw-form';
+import { AppState } from 'store';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
+import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import { transferFunds } from 'modules/auth/actions/transfer-funds';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 const TRANSFER_ETH_GAS_COST = 21000;
 const TRANSFER_REP_GAS_COST = 80000;
@@ -18,19 +18,24 @@ const mapStateToProps = (state: AppState) => ({
   GasCosts: {
     eth: formatEtherEstimate(
       formatGasCostToEther(
-        // @ts-ignore
         TRANSFER_ETH_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state),
-      ),
+        getGasPrice(state)
+      )
     ),
     rep: formatEtherEstimate(
       formatGasCostToEther(
-        // @ts-ignore
         TRANSFER_REP_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state),
-      ),
+        getGasPrice(state)
+      )
+    ),
+    dai: formatEtherEstimate(
+      formatGasCostToEther(
+        TRANSFER_REP_GAS_COST,
+        { decimalsRounded: 4 },
+        getGasPrice(state)
+      )
     ),
   },
 });
@@ -55,6 +60,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
-  )(WithdrawForm),
+    mergeProps
+  )(WithdrawForm)
 );

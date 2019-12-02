@@ -14,11 +14,12 @@ import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { LANDING_PAGE } from 'modules/routes/constants/views';
-import { HelpResources } from 'modules/app/components/help-resources';
+import HelpResources from 'modules/app/containers/help-resources';
 
 interface TopBarProps {
   alertsVisible: boolean;
   isLogged: boolean;
+  restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
   updateIsAlertVisible: Function;
@@ -29,6 +30,7 @@ interface TopBarProps {
 const TopBar: React.FC<TopBarProps> = ({
   alertsVisible,
   isLogged,
+  restoredAccount,
   stats,
   unseenCount,
   updateIsAlertVisible,
@@ -45,46 +47,38 @@ const TopBar: React.FC<TopBarProps> = ({
         </Link>
       </div>
 
-      {isLogged && (
+      {(isLogged || restoredAccount) && (
         <div className={Styles.statsContainer}>
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
-            <LinearPropertyLabelMovement
-              showColors
-              label={realizedPL.label}
-              numberValue={realizedPL.value}
-              value={realizedPL.value}
-            />
+            <LinearPropertyLabel {...realizedPL} highlightAlternateBolded />
           </div>
           <div>
             <span>{realizedPL.label}</span>
-            <MovementLabel showColors value={realizedPL.value} size='normal' />
+            <MovementLabel showColors value={realizedPL.value} size='normal' showNegative showCurrency="$" />
           </div>
         </div>
       )}
       <div>
-        {!isLogged && (
+        {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />
         )}
-        {!isLogged && (
+        {!isLogged && !restoredAccount && (
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
 
-        {isLogged && <HelpResources />}
+        {(isLogged || restoredAccount) && <HelpResources />}
         <ConnectAccount />
 
-        {isLogged && (
+        {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
               [Styles.alertsDark]: alertsVisible,
-              [Styles.alertsDisabled]: !isLogged,
             })}
-            onClick={(e: any) => {
-              if (isLogged) {
-                updateIsAlertVisible(!alertsVisible);
-              }
+            onClick={() => {
+              updateIsAlertVisible(!alertsVisible);
             }}
             tabIndex={-1}
           >

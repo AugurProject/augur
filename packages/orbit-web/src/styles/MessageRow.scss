@@ -1,0 +1,140 @@
+@import 'Animations';
+@import 'Colors';
+@import 'AugurColors';
+
+.highlighted {
+  background-color: rgb(37, 37, 37) !important;
+}
+
+.command {
+  font-style: italic;
+  color: rgba(240, 240, 240, 1) !important;
+}
+
+.Message {
+  display: grid;
+  grid-template-columns: 54px calc(100% - 54px);
+  grid-template-rows: auto auto;
+  padding-bottom: 1em;
+  font-size: 0.625rem; // 10px
+
+  &__Timestamp {
+    align-self: flex-end;
+    grid-column: 1;
+    grid-row: 1;
+    color: $orbit-color-secondary-text;
+    font-family: 'Roboto Mono', sans-serif;
+    font-size: 0.5625rem; // 9px
+  }
+
+  &__Content {
+    color: $orbit-color-primary-text;
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    margin: 0.25em 0.5em 0;
+    line-height: 1.5;
+  }
+
+  .popout {
+    display: flex;
+    position: absolute;
+    right: 0;
+  }
+
+  &__Popup {
+    border: 1px solid rgb(48, 48, 48);
+    font-size: 0.75em;
+    margin-right: 0.5em;
+    color: rgba(228, 228, 228, 0.8);
+    background: rgb(32, 32, 32);
+    padding: 1em;
+  }
+
+  &__User {
+    grid-column: 2;
+    grid-row: 1;
+    color: rgba(255, 255, 255, 0.95);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.6875rem; // 11px
+    font-weight: 700;
+    user-select: none;
+  }
+
+  &__Avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-left: 0.5em;
+    margin-top: 0.1em;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.25em;
+    font-family: 'Roboto', sans-serif;
+    color: rgb(95, 95, 95);
+
+    // background-image: url('../images/earth.png') cover;
+    // background-size: cover;
+    // background-repeat: no-repeat;
+  }
+}
+
+.size-normal {
+  .Message {
+    padding-bottom: 1em;
+
+    &__User {
+      margin-left: 0.5em;
+    }
+
+    &__Timestamp {
+      border-right: 1px solid $orbit-color-secondary-text;
+      font-style: normal;
+      padding: 0 0.5em;
+    }
+  }
+}
+
+.size-large {
+  .Message {
+    padding-bottom: 0.5em;
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 0.2em;
+      flex: 1;
+    }
+
+    &__Details {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      margin: 0 0.5em 0.1em 0.5em;
+    }
+
+    &__Timestamp {
+      border: none;
+      font-style: italic;
+      padding: 0 0.5em;
+    }
+  }
+}
+
+.font-normal {
+  .Message {
+    // font-size: 1em;
+    font-weight: 400;
+  }
+}
+
+.font-monospace {
+  .Message {
+    font-family: 'Roboto Mono';
+    // font-size: .9em;
+    font-weight: normal;
+  }
+}

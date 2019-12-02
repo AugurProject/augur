@@ -11,11 +11,15 @@ interface MarketCommentsProps {
 
 export const MarketComments = (props: MarketCommentsProps) => {
   const [didError, setDidError] = useState(false);
+  const { FB } = window;
 
   useEffect(() => {
     try {
-      // facebook sdk needs to be parsed, not sure why for each comments component
-      window.FB.XFBML.parse();
+      // XFBML enables you to incorporate FBML into your websites and IFrame applications.
+      // https://developers.facebook.com/docs/reference/javascript/FB.XFBML.parse/
+      if (FB) {
+        FB.XFBML.parse();
+      }
     } catch (error) {
       console.error(error);
       setDidError(true);
@@ -28,7 +32,7 @@ export const MarketComments = (props: MarketCommentsProps) => {
 
   const { marketId, colorScheme, numPosts, networkId } = props;
 
-  const fbCommentsUrl = `www.augur.net/comments/${networkId}/${marketId}`;
+  const fbCommentsUrl = `http://www.augur.net/comments/${networkId}/${marketId}`;
 
   return (
     <section className={Styles.MarketView__comments}>
@@ -39,7 +43,8 @@ export const MarketComments = (props: MarketCommentsProps) => {
         data-href={fbCommentsUrl}
         data-width='100%'
         data-numposts={numPosts.toString()}
-      ></div>
+        data-order-by='social' // social is seen as "Top" in the select input
+      />
     </section>
   );
 };

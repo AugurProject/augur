@@ -11,6 +11,7 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/utility/IRepSymbol.sol';
 
 
 /**
@@ -21,20 +22,25 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
     string constant public name = "Reputation";
-    string constant public symbol = "REP";
     IUniverse internal universe;
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
     IERC20 public legacyRepToken;
     IAugur public augur;
+    address public warpSync;
 
     constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc1820RegistryAddress) public {
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
+        warpSync = _augur.lookup("WarpSync");
         legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
+    }
+
+    function symbol() public view returns (string memory) {
+        return IRepSymbol(augur.lookup("RepSymbol")).getRepSymbol(address(augur), address(universe));
     }
 
     /**
@@ -75,9 +81,10 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
-    function mintForUniverse(uint256 _amountToMint, address _target) public returns (bool) {
-        require(universe == IUniverse(msg.sender));
+    function mintForWarpSync(uint256 _amountToMint, address _target) public returns (bool) {
+        require(warpSync == msg.sender);
         mint(_target, _amountToMint);
+        universe.updateForkValues();
         return true;
     }
 

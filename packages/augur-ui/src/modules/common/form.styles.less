@@ -23,10 +23,26 @@
     }
 
     &:nth-of-type(3) {
-      grid-template-columns: @size-24 @size-24 252px 252px;
+      grid-template-columns: @size-24 @size-24 252px 230px @size-16;
 
       > svg {
         grid-column: 2 / span 1;
+        height: @size-32;
+        margin: 0;
+      }
+
+      > button {
+        z-index: @above-all-content;
+        max-width: @size-32;
+
+        > svg {
+          height: @size-10;
+          width: @size-10;
+
+          > path {
+            stroke: @color-primary-text;
+          }
+        }
       }
     }
 
@@ -144,6 +160,7 @@
     color: @color-primary-action;
     cursor: default;
     padding: 0 @size-12;
+    white-space: nowrap;
 
     &.Selected {
       color: @color-primary-text;
@@ -151,7 +168,7 @@
   }
 
   > svg {
-    width: @size-16;
+    min-width: @size-16;
     height: @size-16;
 
     > path {
@@ -162,6 +179,9 @@
   @media @breakpoint-mobile-mid {
     border: 0;
     padding: 0;
+    overflow-x: auto;
+    max-width: 100%;
+    justify-content: flex-start;
 
     > span:first-of-type {
       padding-left: @size-8;
@@ -219,7 +239,7 @@
   margin-bottom: @size-8;
   height: 51px;
 
-  > svg{
+  > svg {
     height: @size-20;
     grid-column: 1;
     grid-row: 1;
@@ -248,6 +268,10 @@
       margin: auto;
       margin-left: @size-18;
     }
+  }
+
+  &.Disabled {
+    pointer-events: none;
   }
 }
 
@@ -338,9 +362,9 @@
   grid-template-columns: 52px 1fr;
 
   @media @breakpoint-mobile-mid {
-    height: 128px;
-    grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
-    width: 312px;
+    > svg {
+      grid-row: 1 / span 4;
+    }
   }
 
   > svg {
@@ -355,11 +379,14 @@
 
     @media @breakpoint-mobile-mid {
       .text-14;
+    }
 
-      width: 244px;
+    &.RenderMarkdown {
+      grid-row: 1;
     }
   }
 
+  > span,
   > p {
     .text-14;
 
@@ -375,7 +402,6 @@
 
       max-height: 50px;
       white-space: normal;
-      width: 244px;
     }
   }
 
@@ -528,19 +554,19 @@
 
   cursor: pointer;
   display: grid;
-  grid-template-rows: @size-20 64px 44px 64px 38px;
+  grid-template-rows: @size-20 auto auto auto;
   grid-template-columns: 100%;
   max-height: 230px;
   max-width: 210px;
-  min-height: 230px;
+  min-height: 154px;
   min-width: 210px;
 
   @media @breakpoint-mobile-mid {
     min-height: 75px;
-    max-height: 75px;
     max-width: 100%;
     grid-template-columns: 65px auto;
     grid-template-rows: @size-20 @size-20 auto;
+    padding-bottom: @size-16;
   }
 
   > div {
@@ -576,7 +602,7 @@
   > svg {
     height: @size-40;
     width: @size-40;
-    margin: @size-24 auto 0;
+    margin: @size-4 auto 0;
 
     @media @breakpoint-mobile-mid {
       align-self: center;
@@ -596,7 +622,7 @@
   > h5 {
     .text-16-bold;
 
-    margin: @size-24 @size-12 0;
+    margin: @size-16 @size-12 0;
     text-align: center;
     text-transform: capitalize;
 
@@ -613,7 +639,7 @@
 
     color: @color-secondary-text;
     line-height: @size-18;
-    margin: @size-12 @size-12 0;
+    margin: @size-12 0 @size-24;
     text-align: center;
 
     @media @breakpoint-mobile-mid {
@@ -621,16 +647,13 @@
       grid-row: 3;
       margin: 0 @size-4 0 0;
       text-align: left;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
     }
   }
 
   &.CustomIcon {
     > svg {
-      width: @size-48;
-      height: @size-48;
+      width: @size-40;
+      height: @size-40;
 
       > path {
         stroke: @color-primary-text;
@@ -775,7 +798,6 @@
         background-color: @color-dark-grey;
         border: 1px solid @color-inactive-text;
         color: @color-inactive-text;
-        opacity: 0.5;
 
         &::placeholder {
           color: @color-inactive-text;
@@ -889,6 +911,7 @@
 
     > div {
       left: 0;
+      right: 0;
     }
 
     > button {
@@ -913,6 +936,10 @@
 
     > button[class*='SelectedLabel'] {
       color: @color-primary-text;
+    }
+
+    > div {
+      right: unset;
     }
 
     &:hover {
@@ -1110,7 +1137,6 @@ div.FormDropdownActive {
   :global {
     .SingleDatePicker_1 {
       display: block;
-      z-index: @above-all-content;
     }
 
     .SingleDatePickerInput {
@@ -1168,6 +1194,7 @@ div.FormDropdownActive {
 
     .SingleDatePicker_picker {
       margin-top: -1px;
+      z-index: @above-all-content;
     }
 
     .DayPicker_weekHeader.DayPicker_weekHeader_1 {
@@ -1359,6 +1386,29 @@ div.FormDropdownActive {
       display: none;
     }
   }
+
+  &.Condensed {
+    :global {
+      .SingleDatePickerInput_calendarIcon {
+        display: none;
+      }
+
+      .DateInput_input_1 {
+        width: unset;
+      }
+
+      .DateInput_input.DateInput_input_1 {
+        .mono-9;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+        min-width: unset;
+        padding: @size-2 @size-4;
+        min-height: unset;
+        width: 80px;
+      }
+    }
+  }
 }
 
 .InputDropdown {
@@ -1542,6 +1592,27 @@ div.FormDropdownActive {
       fill: transparent;
     }
   }
+
+  &.Condensed {
+    min-width: unset;
+
+    > button {
+      padding: @size-2 @size-4;
+      height: unset;
+      width: 55px;
+
+      > span {
+        .mono-9;
+
+        text-transform: uppercase;
+        color: @color-primary-text;
+      }
+
+      > svg {
+        display: none;
+      }
+    }
+  }
 }
 
 .IndividualTimeSelector {
@@ -1696,6 +1767,26 @@ div.error > div > div > div > div > input {
   display: flex;
   flex-flow: column;
   position: relative;
+
+  &.Condensed {
+    > div > div {
+      > input {
+        .mono-9;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+        padding: @size-2 @size-4;
+        min-width: unset;
+        width: @size-34;
+        height: unset;
+      }
+
+      > div {
+        width: 120px;
+        left: 0;
+      }
+    }
+  }
 }
 
 .CategoryRow {
@@ -1712,6 +1803,11 @@ div.error > div > div > div > div > input {
     .text-11;
 
     color: @color-primary-text;
+    display: flex;
+
+    > svg {
+      margin-right: @size-10;
+    }
 
     @media @breakpoint-mobile {
       .text-14;
@@ -1782,6 +1878,6 @@ div.error > div > div > div > div > input {
     .text-18-bold;
 
     color: @color-primary-text;
-    margin: 0 @size-8
+    margin: 0 @size-8;
   }
 }

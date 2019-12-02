@@ -21,6 +21,7 @@ import {
   Clock,
   Arrow,
   LoadingEllipse,
+  CategorySports,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 import {
@@ -43,7 +44,8 @@ import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
-import { MarketData, DisputeInputtedValues } from 'modules/types';
+import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 
 interface CheckboxProps {
   id: string;
@@ -69,6 +71,7 @@ interface DatePickerProps {
   navPrev?: any;
   navNext?: any;
   errorMessage?: string;
+  condensedStyle?: boolean;
 }
 
 interface TextInputProps {
@@ -148,6 +151,7 @@ interface TimezoneDropdownProps {
   disabled?: boolean;
   timestamp?: number;
   timezone: string;
+  condensedStyle?: boolean;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
@@ -161,7 +165,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
   }, [props.timezone, props.timestamp]);
 
   return (
-    <section className={Styles.Timezones}>
+    <section className={classNames(Styles.Timezones, {[Styles.Condensed]: props.condensedStyle})}>
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
@@ -206,9 +210,9 @@ export const Error = (props: ErrorProps) => (
 export interface BaseRadioButtonProp {
   id: string;
   checked: boolean;
+  value?: string;
 }
 export interface RadioCardProps extends BaseRadioButtonProp {
-  value: string;
   header: string;
   description: string;
   onChange?: Function;
@@ -233,6 +237,7 @@ interface RadioGroupProps {
     | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
     | [];
   hideRadioButton?: boolean;
+  disabled?: boolean;
 }
 
 export interface RadioGroupState {
@@ -241,7 +246,6 @@ export interface RadioGroupState {
 
 export interface RadioBarProps extends BaseRadioButtonProp {
   header: string;
-  value: string;
   onChange?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -249,18 +253,13 @@ export interface RadioBarProps extends BaseRadioButtonProp {
   placeholder?: string;
   textValue?: string;
   errorMessage?: string;
-  onSecondTextChange?: Function;
-  secondPlaceholder?: string;
-  secondTextValue?: string;
-  secondErrorMessage?: string;
-  secondHeader?: string;
   multiSelect?: boolean;
+  disabled?: boolean;
 }
 
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   market: MarketData;
   header: string;
-  value: string | null;
   updateChecked?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -274,20 +273,20 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   userOutcomeCurrentRoundDispute: Getters.Accounts.UserCurrentOutcomeDisputeStake | null;
   hideButton?: boolean;
   isDisputing: boolean;
+  Gnosis_ENABLED: boolean;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
   header: string;
   description: string;
-  value: string;
   onChange: Function;
   error?: boolean;
   hideRadioButton?: boolean;
+  renderMarkdown?: boolean;
 }
 
 interface CheckboxBarProps extends BaseRadioButtonProp {
   header: string;
-  value: string;
   onChange: Function;
   error?: boolean;
 }
@@ -298,6 +297,9 @@ interface CategoryMultiSelectProps {
   initialValues?: string[];
   updateSelection: Function;
   errorMessage?: string[];
+  disableCategory?: boolean;
+  disableSubCategory?: boolean;
+  disableTertiaryCategory?: boolean;
 }
 
 interface CategoryMultiSelectState {
@@ -319,6 +321,8 @@ interface DropdownInputGroupProps {
   showText: boolean;
   showIcon: boolean;
   showDropdown: boolean;
+  disabled: boolean;
+  removable?: boolean;
 }
 
 const defaultMultiSelect = (amount: number, justStrings = false) => {
@@ -335,18 +339,19 @@ export const createGroups = (
   values: string[],
   selected: string[]
 ) => {
-  const primaryOptions = createOptions(groups);
+  const primaryOptions = createOptions(groups, selected[0]);
   const primarySubgroup = findSubgroup(groups, values[0]);
   const secondaryCustom = selected[1] === CUSTOM;
   const secondaryAutoComplete = secondaryCustom
     ? findAutoComplete(primarySubgroup, CUSTOM)
     : findAutoComplete(primarySubgroup, values[0]);
-  const secondaryOptions = createOptions(primarySubgroup);
+  const secondaryOptions = createOptions(primarySubgroup, selected[1]);
   const tertiaryAutoComplete = secondaryCustom
     ? findAutoComplete(secondaryAutoComplete, values[1])
     : findAutoComplete(primarySubgroup, values[1]);
   const tertiaryOptions = createOptions(
-    findSubgroup(primarySubgroup, values[1])
+    findSubgroup(primarySubgroup, values[1]),
+    selected[2]
   );
 
   return {
@@ -410,8 +415,12 @@ export const getNewSelected = (
   return updatedSelected;
 };
 
-export const createOptions = (sortedGroup: SortedGroup) => {
-  const options = sortedGroup.map(({ label, value }) => ({ label, value }));
+export const createOptions = (sortedGroup: SortedGroup, selected: string) => {
+  const options = sortedGroup.map(({ label, value }) => ({
+    label,
+    value,
+    selected: selected === value,
+  }));
   return options;
 };
 
@@ -451,6 +460,8 @@ export const DropdownInputGroup = ({
   showText,
   showIcon,
   showDropdown,
+  disabled,
+  removable,
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -461,6 +472,7 @@ export const DropdownInputGroup = ({
         onChange={onChangeDropdown}
         options={options}
         errorMessage={errorMessage}
+        disabled={disabled}
       />
     )}
     {showText && (
@@ -471,6 +483,19 @@ export const DropdownInputGroup = ({
         onChange={onChangeInput}
       />
     )}
+    {removable && !disabled && (
+      <button
+        onClick={e => {
+          if (showText) {
+            onChangeInput('');
+          } else if (showDropdown) {
+            onChangeDropdown('');
+          }
+        }}
+      >
+        {XIcon}
+      </button>
+    )}
   </li>
 );
 
@@ -480,10 +505,11 @@ interface CategorySingleSelectProps {
   initialSelected?: string;
   initialValue?: string;
   updateSelection: Function;
-  errorMessage?: string[];
-  staticLabel?: string;
   errorMessage?: string;
+  staticLabel?: string;
   placeholder?: string;
+  disabled?: boolean;
+  showDropdown?: boolean;
 }
 
 interface CategorySingleSelectState {
@@ -515,6 +541,9 @@ export class CategorySingleSelect extends Component<
   onChangeDropdown(choice) {
     let value = choice;
     if (choice === CUSTOM) value = '';
+    if (choice === '') {
+      value = '';
+    }
     this.handleUpdate(choice, value);
   }
 
@@ -531,8 +560,9 @@ export class CategorySingleSelect extends Component<
       errorMessage,
       staticLabel,
       placeholder,
-      defaultValue,
       autoCompleteList,
+      disabled,
+      showDropdown,
     } = this.props;
     const { selected, value, showText } = this.state;
     return (
@@ -547,8 +577,9 @@ export class CategorySingleSelect extends Component<
           placeholder={placeholder}
           onChangeInput={v => this.handleUpdate(selected, v)}
           showText={showText}
-          showDropdown={options.length > 0}
+          showDropdown={showDropdown || options.length > 0}
           autoCompleteList={autoCompleteList}
+          disabled={disabled}
         />
       </ul>
     );
@@ -569,6 +600,9 @@ export class CategoryMultiSelect extends Component<
   onChangeDropdown(choice, position) {
     let value = choice;
     if (choice === CUSTOM) value = '';
+    if (choice === '') {
+      value = '';
+    }
 
     // Reset children categories when parents is changed
     const clearAllChildren = (category, idx) => {
@@ -593,7 +627,12 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
-    const { errorMessage } = this.props;
+    const {
+      errorMessage,
+      disableCategory,
+      disableSubCategory,
+      disableTertiaryCategory,
+    } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -632,6 +671,7 @@ export class CategoryMultiSelect extends Component<
           showText={customPrimary}
           showIcon={false}
           showDropdown={true}
+          disabled={disableCategory}
         />
         {(showSecondaryDropdown || customSecondary) && (
           <DropdownInputGroup
@@ -649,17 +689,18 @@ export class CategoryMultiSelect extends Component<
             showIcon={showSecondaryDropdown || customSecondary}
             showDropdown={showSecondaryDropdown}
             autoCompleteList={secondaryAutoComplete}
+            disabled={disableSubCategory}
           />
         )}
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel="Tertiary Category"
+            staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
-            errorMessage={errorMessage[2]}
+            errorMessage={errorMessage && errorMessage[2]}
             value={values[2]}
-            placeholder="Custom Tertiary Category"
+            placeholder="Custom Sub Category"
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
@@ -667,6 +708,8 @@ export class CategoryMultiSelect extends Component<
             showIcon={showTertiaryDropdown || customTertiary}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
+            removable
+            disabled={disableTertiaryCategory}
           />
         )}
       </ul>
@@ -845,10 +888,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.updateChecked(nextProps.defaultSelected);
+  
+  componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState){
+    if (this.props.defaultSelected !== prevProps.defaultSelected){
+      this.updateChecked(this.props.defaultSelected)
     }
   }
 
@@ -878,25 +921,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 }
 
-export const MultiSelectRadioBarGroup = ({
-  radioButtons,
-  onChange,
-}: RadioGroupProps) => (
-  <div className={Styles.RadioBarGroup}>
-    {radioButtons.map(radio => (
-      <RadioBar
-        key={radio.value}
-        {...radio}
-        checked={radio.isSelected}
-        multiSelect
-        onChange={selected => {
-          onChange(selected);
-        }}
-      />
-    ))}
-  </div>
-);
-
 export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
@@ -915,6 +939,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
+      Gnosis_ENABLED,
     } = this.props;
 
     let { stake } = this.props;
@@ -1007,6 +1032,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
+                  Gnosis_ENABLED={Gnosis_ENABLED}
                 />
               )}
             </>
@@ -1040,18 +1066,15 @@ export const RadioBar = ({
   placeholder,
   textValue,
   errorMessage,
-  onSecondTextChange,
-  secondPlaceholder,
-  secondTextValue,
-  secondErrorMessage,
-  secondHeader,
   multiSelect,
+  disabled,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
       [Styles.MultiSelect]: multiSelect,
+      [Styles.Disabled]: disabled,
     })}
     role="button"
     onClick={e => onChange(value)}
@@ -1067,17 +1090,6 @@ export const RadioBar = ({
           onChange={onTextChange}
           errorMessage={errorMessage}
         />
-        {onSecondTextChange && (
-          <>
-            <h5>{secondHeader}</h5>
-            <TextInput
-              placeholder={secondPlaceholder}
-              value={secondTextValue}
-              onChange={onSecondTextChange}
-              errorMessage={secondErrorMessage}
-            />
-          </>
-        )}
       </>
     ) : null}
   </div>
@@ -1091,9 +1103,9 @@ export class RadioTwoLineBarGroup extends Component<
     selected: this.props.defaultSelected || null,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultSelected !== this.props.defaultSelected) {
-      this.updateChecked(nextProps.defaultSelected);
+  componentDidUpdate(prevProps: RadioGroupProps) {
+    if (this.props.defaultSelected !== prevProps.defaultSelected) {
+      this.updateChecked(this.props.defaultSelected);
     }
   }
 
@@ -1132,19 +1144,22 @@ export const RadioTwoLineBar = ({
   error,
   description,
   hideRadioButton,
+  renderMarkdown
 }: RadioTwoLineBarProps) => (
   <div
     className={classNames(Styles.RadioTwoLineBar, {
       [Styles.RadioBarError]: error,
       [Styles.HideRadioButton]: hideRadioButton,
       [Styles.Checked]: hideRadioButton && checked,
+      [Styles.RenderMarkdown]: !!renderMarkdown,
     })}
     role="button"
     onClick={e => onChange(value)}
   >
     {!hideRadioButton && (checked ? FilledRadio : EmptyRadio)}
     <h5>{header}</h5>
-    <p>{description}</p>
+    {renderMarkdown && <MarkdownRenderer hideLabel noPrewrap text={description} />}
+    {!renderMarkdown && <p>{description}</p>}
   </div>
 );
 
@@ -1231,7 +1246,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   state: TextInputState = {
-    value: this.props.value === null ? '' : this.props.value,
+    value: !this.props.value ? '' : this.props.value,
     showList: false,
   };
   refDropdown: any = null;
@@ -1240,10 +1255,10 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: TextInputProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: TextInputProps, prevState: TextInputState){
+    const { value } = prevProps;
+    if (value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
   }
 
@@ -1368,6 +1383,7 @@ interface TimeSelectorProps {
   focused?: boolean;
   errorMessage?: string;
   uniqueKey?: string;
+  condensedStyle?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1414,6 +1430,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       focused,
       errorMessage,
       uniqueKey,
+      condensedStyle
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1421,7 +1438,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
     return (
       <div
         key={`timeSelector${uniqueKey}`}
-        className={Styles.TimeSelector}
+        className={classNames(Styles.TimeSelector, {[Styles.Condensed]: condensedStyle})}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
@@ -1495,10 +1512,10 @@ class IndividualTimeSelector extends React.Component<
     value: this.props.value,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: IndividualTimeSelectorProps) {
+    const { value } = prevProps;
+    if (value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
   }
 
@@ -1527,7 +1544,9 @@ class IndividualTimeSelector extends React.Component<
   increment = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) + 1;
+      let newValue = parseFloat(value) + 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1537,7 +1556,9 @@ class IndividualTimeSelector extends React.Component<
   decrement = () => {
     const value = this.state.value;
     if (!this.props.hasOptions) {
-      const newValue = parseFloat(value) - 1;
+      let newValue = parseFloat(value) - 1;
+      if (newValue > this.props.max) newValue = this.props.min;
+      if (newValue < this.props.min) newValue = this.props.max;
       this.onChange(newValue);
     } else {
       this.onChange(value === 'AM' ? 'PM' : 'AM');
@@ -1621,6 +1642,7 @@ Checkbox.defaultProps = {
 export const DatePicker = (props: DatePickerProps) => (
   <div
     className={classNames(Styles.DatePicker, {
+      [Styles.Condensed]: props.condensedStyle,
       [Styles.error]:
         props.errorMessage &&
         props.errorMessage !== '' &&
@@ -1737,25 +1759,22 @@ export class Input extends Component<InputProps, InputState> {
     window.addEventListener('click', this.handleWindowOnClick);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { value } = this.props;
-    if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+  componentDidUpdate(prevProps: InputProps, prevState: InputState) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({ value: this.props.value });
     }
-  }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (
-      nextProps.canToggleVisibility &&
-      !nextState.value &&
-      nextState.isHiddenContentVisible
+      this.props.canToggleVisibility &&
+      !this.state.value &&
+      this.state.isHiddenContentVisible
     ) {
       this.updateIsHiddenContentVisible(false);
     }
 
     if (
-      this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible &&
-      nextState.isHiddenContentVisible
+      prevState.isHiddenContentVisible !== this.state.isHiddenContentVisible &&
+      this.state.isHiddenContentVisible
     ) {
       this.timeoutVisibleHiddenContent();
     }
@@ -2156,6 +2175,7 @@ export interface CategoryRowProps {
   loading?: boolean;
   category: string;
   count: number;
+  icon?: React.ReactNode;
 }
 
 export const CategoryRow = ({
@@ -2165,6 +2185,7 @@ export const CategoryRow = ({
   loading = false,
   category,
   count,
+  icon,
 }: CategoryRowProps) => (
   <div
     onClick={() => handleClick()}
@@ -2175,7 +2196,7 @@ export const CategoryRow = ({
     })}
   >
     <span>
-      {category && category.length <= 3 ? category.toUpperCase() : category}
+     {icon} {category && category.length <= 3 ? category.toUpperCase() : category}
     </span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}

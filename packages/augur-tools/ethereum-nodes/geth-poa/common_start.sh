@@ -19,14 +19,17 @@ read -r -d INITIAL_TX_DATA << --EOF
 
 
 node_cleanup() {
+  echo "killing PID $NODE_PID"
   kill $NODE_PID > /dev/null 2>&1
+  wait $NODE_PID
+  echo "$NODE_PID has stopped"
 }
 
 node_wait() {
   wait $NODE_PID
 }
 
-trap node_cleanup INT TERM
+trap node_cleanup SIGINT SIGTERM
 
 eth_call() {
   local response

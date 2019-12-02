@@ -4,7 +4,7 @@ import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 import { MarketTypeName } from '@augurproject/sdk/build/state/logs/types';
 
-export async function dispute(user: ContractAPI, market: MarketInfo, slow: boolean): Promise<void> {
+export async function dispute(user: ContractAPI, market: MarketInfo, slow: boolean, rounds: number = 0): Promise<void> {
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
   const payoutNumerators = getPayoutNumerators(market, 'invalid');
@@ -21,15 +21,29 @@ export async function dispute(user: ContractAPI, market: MarketInfo, slow: boole
   // Do the initial report, creating the first dispute window.
   const extraStake = slow ? SOME_REP.toString() : '0';
   await user.doInitialReport(marketContract, payoutNumerators, '', extraStake);
-
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.
   await user.contribute(marketContract, conflictNumerators, SOME_REP);
-
   // With pre-filled stake in initial report, pacing requires just one more dispute to enter slow mode.
-  if (slow) {
+  if (slow && rounds === 0) {
     await user.contribute(marketContract, conflictNumerators, SOME_REP);
   }
+
+  // fill dispute bonds for X number of rounds
+  if (rounds > 0) {
+    let i = 0;
+    for(i; i < rounds + 1; i++) {
+      console.log("round number", i);
+      let numerators = payoutNumerators;
+      if (i % 2) numerators = conflictNumerators;
+      await user.contribute(marketContract, numerators, SOME_REP);
+      await delay(5000); // give processing time to catch up
+    }
+  }
+}
+
+const delay = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid'): BigNumber[] {

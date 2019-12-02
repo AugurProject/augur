@@ -18,9 +18,9 @@ import {
 
 import Styles from 'modules/account/components/account-view.styles.less';
 import classNames from 'classnames';
-import ForkingBanner from 'modules/reporting/containers/forking-banner';
 export interface AccountViewProps {
   newNotifications?: boolean;
+  isLogged: boolean;
 }
 
 interface AccountViewState {
@@ -54,7 +54,6 @@ export default class AccountView extends React.Component<
 
   render() {
     const s = this.state;
-
     return (
       <>
         <Media query={SMALL_MOBILE}>
@@ -126,7 +125,7 @@ export default class AccountView extends React.Component<
                         this.toggle('extendWatchlist', 'extendTransactions')
                       }
                     />
-                    <Transactions />
+                    { this.props.isLogged && <Transactions /> }
                   </div>
                 </div>
                 <TermsAndConditions />

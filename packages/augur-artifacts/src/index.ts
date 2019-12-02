@@ -1,13 +1,27 @@
-export const abi = require("./abi.json");
-export const abiV1 = require("./abi.v1.json");
-export const Addresses = require("./addresses.json");
-export const Contracts = require("./contracts.json");
-export const UploadBlockNumbers = require("./upload-block-numbers.json");
-export const Networks = require("./networks.json");
-export { ContractEvents } from "./events";
+export const abi = require('./abi.json');
+export const abiV1 = require('./abi.v1.json');
+export const Addresses: AllContractAddresses = require('./addresses.json');
+export const Contracts = require('./contracts.json');
+export const UploadBlockNumbers: UploadBlockNumbers = require('./upload-block-numbers.json');
+export const Networks = require('./networks.json');
+export * from './templates';
+export { ContractEvents } from './events';
 
-import { exists, readFile, writeFile } from "async-file";
-import path from "path";
+import { exists, readFile, writeFile } from 'async-file';
+import path from 'path';
+
+try {
+  const localAddresses: {[networkId: string]: ContractAddresses} = require('./local-addresses.json');
+  Object.keys(localAddresses).forEach((networkId) => {
+    Addresses[networkId] = localAddresses[networkId];
+  })
+} catch (e) {}
+try {
+  const localUploadBlockNumbers: UploadBlockNumbers = require('./local-upload-block-numbers.json');
+  Object.keys(localUploadBlockNumbers).forEach((networkId) => {
+    UploadBlockNumbers[networkId] = localUploadBlockNumbers[networkId];
+  })
+} catch (e) {}
 
 export type NetworkId =
     '1'
@@ -20,19 +34,20 @@ export type NetworkId =
     | '103'
     | '104';
 
+export interface UploadBlockNumbers {[networkId: string]: number}
+
 export interface ContractAddresses {
     Universe: string;
     Augur: string;
+    AugurTrading: string;
     LegacyReputationToken: string;
     CancelOrder: string;
     Cash: string;
-    ClaimTradingProceeds: string;
-    CompleteSets: string;
+    ShareToken: string;
     CreateOrder: string;
     FillOrder: string;
     Order: string;
     Orders: string;
-    ShareToken: string;
     Trade: string;
     SimulateTrade: string;
     Controller?: string;
@@ -43,13 +58,27 @@ export interface ContractAddresses {
     TimeControlled?: string;
     GnosisSafe?: string;
     ProxyFactory?: string;
-    ZeroXTrade?: string;
-    ZeroXExchange?: string;
     BuyParticipationTokens?: string;
     RedeemStake?: string;
     CashFaucet?: string;
     GnosisSafeRegistry?: string;
+    HotLoading?: string;
+    ZeroXTrade?: string;
+    Affiliates?: string;
+    AffiliateValidator?: string;
+    // 0x
+    //   The 0x contract names must be what 0x mesh expects.
+    ERC20Proxy?: string;
+    ERC721Proxy?: string;
+    ERC1155Proxy?: string;
+    Exchange?: string; // ZeroXExchange
+    Coordinator?: string; // ZeroXCoordinator
+    DevUtils?: string;
+    WETH9?: string;
+    ZRXToken?: string;
 }
+
+export interface AllContractAddresses {[networkId: string]: ContractAddresses}
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually
 export interface NetworkContractAddresses {
@@ -65,14 +94,27 @@ export interface NetworkContractAddresses {
 }
 
 export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
-  const filepath = path.join(__dirname, "../src/addresses.json"); // be sure to be in src dir, not build
+  const filepath = path.join(__dirname, '../src/local-addresses.json'); // be sure to be in src dir, not build
 
-  let contents = {};
+  let contents: AllContractAddresses = {};
   if (await exists(filepath)) {
-    contents = JSON.parse(await readFile(filepath, "utf8"));
+    contents = JSON.parse(await readFile(filepath, 'utf8'));
   }
 
   contents[networkId] = addresses;
 
-  await writeFile(filepath, JSON.stringify(contents, null, 1), "utf8");
+  await writeFile(filepath, JSON.stringify(contents, null, 1), 'utf8');
+}
+
+export async function setUploadBlockNumber(networkId: NetworkId, uploadBlock: number): Promise<void> {
+  const filepath = path.join(__dirname, '../src/local-upload-block-numbers.json'); // be sure to be in src dir, not build
+
+  let contents: UploadBlockNumbers = {};
+  if (await exists(filepath)) {
+    contents = JSON.parse(await readFile(filepath, 'utf8'));
+  }
+
+  contents[networkId] = uploadBlock;
+
+  await writeFile(filepath, JSON.stringify(contents, null, 2), 'utf8');
 }

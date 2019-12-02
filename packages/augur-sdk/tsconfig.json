@@ -30,6 +30,8 @@
     },
     {
       "path": "../gnosis-relay-api"
-    }
-  ]
+    },
+    {
+      "path": "../contract-dependencies-ethers"
+    }]
 }

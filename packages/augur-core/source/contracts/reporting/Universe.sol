@@ -12,8 +12,9 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/trading/ICash.sol';
-import 'ROOT/trading/IOICash.sol';
+import 'ROOT/ICash.sol';
+import 'ROOT/reporting/IOICash.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
 import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
@@ -31,6 +32,8 @@ contract Universe is IUniverse {
     IAugur public augur;
     IUniverse private parentUniverse;
     IFormulas public formulas;
+    IShareToken public shareToken;
+    IRepPriceOracle public repPriceOracle;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
@@ -59,8 +62,6 @@ contract Universe is IUniverse {
     mapping (address => uint256) private shareSettlementFeeDivisor;
     uint256 public previousReportingFeeDivisor;
 
-    address public completeSets;
-
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
     uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
     uint256 constant public DEFAULT_NUM_TICKS = 100;
@@ -76,6 +77,7 @@ contract Universe is IUniverse {
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
+        creationTime = _augur.getTimestamp();
         parentUniverse = _parentUniverse;
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
         payoutNumerators = _payoutNumerators;
@@ -83,7 +85,8 @@ contract Universe is IUniverse {
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
-        completeSets = augur.lookup("CompleteSets");
+        shareToken = IShareToken(augur.lookup("ShareToken"));
+        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -249,14 +252,18 @@ contract Universe is IUniverse {
     function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public returns (IDisputeWindow) {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
-            uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
-            uint256 _buffer = Reporting.getDisputeWindowBufferSeconds();
-            uint256 _startTime = _timestamp.sub(_buffer).div(_duration).mul(_duration).add(_buffer);
+            (uint256 _startTime, uint256 _duration) = getDisputeWindowStartTimeAndDuration(_timestamp, _initial);
             IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, _windowId, _duration, _startTime, !_initial);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);
         }
         return disputeWindows[_windowId];
+    }
+
+    function getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial) public view returns (uint256 _startTime, uint256 _duration) {
+        _duration = getDisputeRoundDurationInSeconds(_initial);
+        uint256 _buffer = Reporting.getDisputeWindowBufferSeconds();
+        _startTime = _timestamp.sub(_buffer).div(_duration).mul(_duration).add(_buffer);
     }
 
     /**
@@ -367,7 +374,7 @@ contract Universe is IUniverse {
         require(isContainerForMarket(_market));
         markets[msg.sender] = false;
         uint256 _cashBalance = marketBalance[address(msg.sender)];
-        uint256 _marketOI = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
+        uint256 _marketOI = shareToken.totalSupplyForMarketOutcome(_market, 0).mul(_market.getNumTicks());
         withdraw(address(this), _cashBalance, msg.sender);
         openInterestInAttoCash = openInterestInAttoCash.sub(_marketOI);
         cash.approve(address(augur), _cashBalance);
@@ -384,14 +391,6 @@ contract Universe is IUniverse {
         return true;
     }
 
-    function isContainerForShareToken(IShareToken _shadyShareToken) public view returns (bool) {
-        IMarket _shadyMarket = _shadyShareToken.getMarket();
-        if (_shadyMarket == IMarket(0) || !isContainerForMarket(_shadyMarket)) {
-            return false;
-        }
-        return _shadyMarket.isContainerForShareToken(_shadyShareToken);
-    }
-
     function isContainerForReportingParticipant(IReportingParticipant _shadyReportingParticipant) public view returns (bool) {
         IMarket _shadyMarket = _shadyReportingParticipant.getMarket();
         if (_shadyMarket == IMarket(0) || !isContainerForMarket(_shadyMarket)) {
@@ -406,20 +405,20 @@ contract Universe is IUniverse {
     }
 
     function decrementOpenInterest(uint256 _amount) public returns (bool) {
-        require(msg.sender == completeSets);
+        require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
     function decrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
         require(isContainerForMarket(IMarket(msg.sender)));
-        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
+        uint256 _amount = shareToken.totalSupplyForMarketOutcome(_market, 0).mul(_market.getNumTicks());
         openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
     function incrementOpenInterest(uint256 _amount) public returns (bool) {
-        require(msg.sender == completeSets);
+        require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
     }
@@ -442,10 +441,17 @@ contract Universe is IUniverse {
      * @return The Market Cap of this Universe's REP
      */
     function getRepMarketCapInAttoCash() public view returns (uint256) {
-        // TODO: Must pass this Universe's REP token to the oracle. Not just one REP!
-        uint256 _attoCashPerRep = IRepPriceOracle(augur.lookup("RepPriceOracle")).getRepPriceInAttoCash();
-        uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
-        return _repMarketCapInAttoCash;
+        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash(reputationToken);
+        return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
+    }
+
+    function pokeRepMarketCapInAttoCash() public returns (uint256) {
+        uint256 _attoCashPerRep = repPriceOracle.pokeRepPriceInAttoCash(reputationToken);
+        return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
+    }
+
+    function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep ) private view returns (uint256) {
+        return reputationToken.totalSupply().mul(_attoCashPerRep).div(10 ** 18);
     }
 
     /**
@@ -536,7 +542,7 @@ contract Universe is IUniverse {
             return _currentFeeDivisor;
         }
 
-        _currentFeeDivisor = calculateReportingFeeDivisor();
+        _currentFeeDivisor = pokeReportingFeeDivisor();
 
         shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
         previousReportingFeeDivisor = _currentFeeDivisor;
@@ -558,7 +564,17 @@ contract Universe is IUniverse {
         return calculateReportingFeeDivisor();
     }
 
+    function pokeReportingFeeDivisor() public returns (uint256) {
+        uint256 _repMarketCapInAttoCash = pokeRepMarketCapInAttoCash();
+        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
+    }
+
     function calculateReportingFeeDivisor() public view returns (uint256) {
+        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
+        return calculateReportingFeeDivisorInternal(_repMarketCapInAttoCash);
+    }
+
+    function calculateReportingFeeDivisorInternal(uint256 _repMarketCapInAttoCash) private view returns (uint256) {
         uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
         uint256 _reportingFeeDivisor = 0;
@@ -579,13 +595,14 @@ contract Universe is IUniverse {
      * @notice Create a Yes / No Market
      * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateValidator Optional contract which validate the referrer for any attempt at distributing affiliate fees
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
         augur.logYesNoMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
         return _newMarket;
     }
@@ -594,14 +611,15 @@ contract Universe is IUniverse {
      * @notice Create a Categorical Market
      * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateValidator Optional contract which validate the referrer for any attempt at distributing affiliate fees
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _outcomes Array of outcome labels / descriptions
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
         augur.logCategoricalMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
         return _newMarket;
     }
@@ -610,6 +628,7 @@ contract Universe is IUniverse {
      * @notice Create a Scalar Market
      * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateValidator Optional contract which validate the referrer for any attempt at distributing affiliate fees
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _prices 2 element Array comprising a min price and max price in atto units in order to support decimal values. For example if the display range should be between .1 and .5 the prices should be 10**17 and 5 * 10 ** 17 respectively
@@ -617,16 +636,17 @@ contract Universe is IUniverse {
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
         augur.logScalarMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
         return _newMarket;
     }
 
-    function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
+    function createMarketInternal(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) private returns (IMarket _newMarket) {
         getReputationToken().trustedUniverseTransfer(_sender, address(marketFactory), getOrCacheMarketRepBond());
-        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
+        _newMarket = marketFactory.createMarket(augur, this, _endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _sender, _numOutcomes, _numTicks);
         markets[address(_newMarket)] = true;
+        shareToken.initializeMarket(_newMarket, _numOutcomes + 1, _numTicks); // To account for Invalid
         return _newMarket;
     }
 
@@ -666,6 +686,9 @@ contract Universe is IUniverse {
     }
 
     function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool) {
+        if (_amount == 0) {
+            return true;
+        }
         require(augur.isTrustedSender(msg.sender) || augur.isKnownMarket(IMarket(msg.sender)) || msg.sender == address(openInterestCash));
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
@@ -683,23 +706,6 @@ contract Universe is IUniverse {
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
         assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
         cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
-        return true;
-    }
-
-    function assertMarketBalance() public view returns (bool) {
-        IMarket _market = IMarket(msg.sender);
-        // Escrowed funds for open orders
-        uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
-        // Market Open Interest. If we're finalized we need actually calculate the value
-        if (_market.isFinalized()) {
-            for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
-                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_market.getWinningPayoutNumerator(i)));
-            }
-        } else {
-            _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
-        }
-
-        assert(marketBalance[msg.sender] >= _expectedBalance);
         return true;
     }
 }

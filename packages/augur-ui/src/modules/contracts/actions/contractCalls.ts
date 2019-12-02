@@ -36,6 +36,7 @@ import { TestNetReputationToken } from '@augurproject/core/build/libraries/Gener
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
+import { ExtraInfoTemplate } from '@augurproject/artifacts';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -92,6 +93,26 @@ export async function checkIsKnownUniverse(universeId: string) {
   return result;
 }
 
+
+export async function convertV1ToV2Approve() {
+  const { contracts } = augurSdk.get();
+
+  const allowance = createBigNumber(99999999999999999999).times(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+
+  const getReputationToken = await contracts.universe.getReputationToken_();
+  const response = contracts.legacyReputationToken.approve(getReputationToken, allowance);
+  return response;
+}
+
+export async function convertV1ToV2() {
+  const { contracts } = augurSdk.get();
+
+  const response = await contracts.reputationToken.migrateFromLegacyReputationToken();
+  return response;
+}
+
 export async function getCurrentBlock() {
   const Augur = augurSdk.get();
   const blockNumber = await Augur.provider.getBlockNumber();
@@ -104,12 +125,33 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string): Promise<BigNumber> {
+export async function getRepBalance(
+  universe: string,
+  address: string
+): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
-  const RepToken = contracts.getReputationToken();
-  const balance = await RepToken.balanceOf_(address);
+  const networkId = getNetworkId();
+  const repToken = await contracts
+    .universeFromAddress(universe)
+    .getReputationToken_();
+  const balance = await contracts
+    .reputationTokenFromAddress(repToken, networkId)
+    .balanceOf_(address);
   return balance;
 }
+
+export async function getLegacyRepBalance(
+  address: string
+): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  const lagacyRep = contracts.legacyReputationToken.address;
+  const networkId = getNetworkId();
+  const balance = await contracts
+    .reputationTokenFromAddress(lagacyRep, networkId)
+    .balanceOf_(address);
+  return balance;
+}
+
 
 export async function getEthBalance(address: string): Promise<number> {
   const Augur = augurSdk.get();
@@ -158,7 +200,9 @@ export async function getRepThresholdForPacing() {
 
 export async function getDisputeThresholdForFork(universeId: string) {
   const { contracts } = augurSdk.get();
-  const disputeThresholdForFork = await contracts.universeFromAddress(universeId).getDisputeThresholdForFork_();
+  const disputeThresholdForFork = await contracts
+    .universeFromAddress(universeId)
+    .getDisputeThresholdForFork_();
   return createBigNumber(disputeThresholdForFork);
 }
 
@@ -170,25 +214,33 @@ export async function getOpenInterestInAttoCash() {
 
 export async function getForkingMarket(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkingMarket = await contracts.universeFromAddress(universeId).getForkingMarket_();
+  const forkingMarket = await contracts
+    .universeFromAddress(universeId)
+    .getForkingMarket_();
   return forkingMarket;
 }
 
 export async function getForkEndTime(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkEndTime = await contracts.universeFromAddress(universeId).getForkEndTime_();
+  const forkEndTime = await contracts
+    .universeFromAddress(universeId)
+    .getForkEndTime_();
   return forkEndTime;
 }
 
 export async function getForkReputationGoal(universeId: string) {
   const { contracts } = augurSdk.get();
-  const forkReputationGoal = await contracts.universeFromAddress(universeId).getForkReputationGoal_();
+  const forkReputationGoal = await contracts
+    .universeFromAddress(universeId)
+    .getForkReputationGoal_();
   return forkReputationGoal;
 }
 
 export async function getWinningChildUniverse(universeId: string) {
   const { contracts } = augurSdk.get();
-  const winningChildUniverse = await contracts.universeFromAddress(universeId).getWinningChildUniverse_();
+  const winningChildUniverse = await contracts
+    .universeFromAddress(universeId)
+    .getWinningChildUniverse_();
   return winningChildUniverse;
 }
 
@@ -218,10 +270,64 @@ export function getDai() {
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
 }
 
+export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(102);
+}
+
+export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(100);
+}
+
+export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(182);
+}
+
+export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(104);
+}
+
+export async function uniswapRepForDaiRate(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(108);
+}
+
+export async function uniswapDaiForRepRate(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(110);
+}
+
+export async function uniswapEthForRep(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(103);
+}
+
+export async function uniswapRepForEth(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(101);
+}
+
+export async function uniswapEthForDai(wei: BigNumber): Promise<BigNumber> {
+  return new BigNumber(107);
+}
+
+export async function uniswapDaiForEth(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(105);
+}
+
+export async function uniswapRepForDai(rep: BigNumber): Promise<BigNumber> {
+  return new BigNumber(109);
+}
+
+export async function uniswapDaiForRep(dai: BigNumber): Promise<BigNumber> {
+  return new BigNumber(111);
+}
+
 export function getRep() {
   const { contracts } = augurSdk.get();
   const rep = contracts.reputationToken as TestNetReputationToken<BigNumber>;
   return rep.faucet(createBigNumber('100000000000000000000'));
+}
+
+export function getLegacyRep() {
+  const { contracts } = augurSdk.get();
+  const rep = contracts.legacyReputationToken;
+  return rep.faucet(createBigNumber('10000000000000000000'));
 }
 
 export async function getCreateMarketBreakdown() {
@@ -270,6 +376,20 @@ export async function redeemUserStakesEstimateGas(
   );
 }
 
+export async function forkAndRedeem(reportingParticipantsContracts: string) {
+  const { contracts } = augurSdk.get();
+  try {
+    contracts
+      .getReportingParticipant(reportingParticipantsContracts)
+      .forkAndRedeem();
+  } catch (e) {
+    console.error(
+      'Could not fork and redeem sigle reporting participant contract',
+      e
+    );
+  }
+}
+
 export async function redeemUserStakes(
   reportingParticipantsContracts: string[],
   disputeWindows: string[]
@@ -281,9 +401,17 @@ export async function redeemUserStakes(
       disputeWindows
     );
   } catch (e) {
-    console.error("Could not redeem REP", e);
+    console.error('Could not redeem REP', e);
   }
+}
 
+export async function disavowMarket(marketId: string) {
+  const { contracts } = augurSdk.get();
+  try {
+    contracts.marketFromAddress(marketId).disavowCrowdsourcers();
+  } catch (e) {
+    console.error('Could not disavow market', marketId, e);
+  }
 }
 
 export interface doReportDisputeAddStake {
@@ -359,7 +487,6 @@ function getPayoutNumerators(inputs: doReportDisputeAddStake) {
 export interface CreateNewMarketParams {
   outcomes?: string[];
   scalarDenomination: string;
-  expirySource: string;
   description: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -373,7 +500,7 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
-  backupSource?: string;
+  template?: ExtraInfoTemplate;
 }
 
 export function createMarket(
@@ -406,7 +533,6 @@ export function createMarketRetry(market: CreateMarketData) {
     scalarDenomination: extraInfo._scalarDenomination,
     marketType: market.marketType,
     endTime: market.endTime.timestamp,
-    expirySource: extraInfo.resolutionSource,
     description: market.description,
     designatedReporterAddress: market.txParams._designatedReporterAddress,
     minPrice: market.txParams._prices && market.txParams._prices[0],
@@ -417,7 +543,6 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
-    backupSource: extraInfo.backupSource,
   };
 
   return createMarket(newMarket, true);
@@ -429,7 +554,11 @@ export async function approveToTrade() {
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
-  return contracts.cash.approve(augurContract, allowance);
+  contracts.cash.approve(augurContract, allowance);
+  contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
+  contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true);
+  contracts.cash.approve(contracts.fillOrder.address, allowance);
+  contracts.cash.approve(contracts.createOrder.address, allowance);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {
@@ -545,7 +674,7 @@ export async function placeTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  affiliateAddress: string = NULL_ADDRESS,
+  fingerprint: string = formatBytes32String('11'),
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
@@ -564,7 +693,7 @@ export async function placeTrade(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
@@ -581,7 +710,7 @@ export async function simulateTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  affiliateAddress: string = NULL_ADDRESS,
+  fingerprint: string = formatBytes32String('11'),
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
@@ -600,7 +729,7 @@ export async function simulateTrade(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
@@ -618,7 +747,7 @@ export async function simulateTradeGasLimit(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  affiliateAddress: string = NULL_ADDRESS,
+  fingerprint: string = formatBytes32String('11'),
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
@@ -637,7 +766,7 @@ export async function simulateTradeGasLimit(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    affiliateAddress,
+    fingerprint,
     kycToken,
     doNotCreateOrders,
     displayMinPrice: createBigNumber(minPrice),
@@ -653,21 +782,21 @@ export async function simulateTradeGasLimit(
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
-  affiliateAddress: string = NULL_ADDRESS
+  fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
 
   if (markets.length > 1) {
-    augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+    augur.contracts.augurTrading.claimMarketsProceeds(
       markets,
       shareHolder,
-      affiliateAddress
+      fingerprint
     );
   } else {
-    augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    augur.contracts.augurTrading.claimTradingProceeds(
       markets[0],
       shareHolder,
-      affiliateAddress
+      fingerprint
     );
   }
 }

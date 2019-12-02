@@ -8,7 +8,7 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/factories/MarketFactory.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';

@@ -16,6 +16,7 @@ import {
   MARKET_STATUS_MESSAGES,
   REPORTING_ENDS,
 } from "modules/common/constants";
+import MarketTitle from "modules/market/containers/market-title";
 
 interface BaseProps {
   market: MarketData;
@@ -100,7 +101,7 @@ const TemplateBody = (props: TemplateBodyProps) => {
     return (
       <span>
         {parts[0]}
-        <MarketLink id={id}>{wrapMarketName(description)}</MarketLink>
+        <MarketTitle id={id} isWrapped />
         {parts[1]}
       </span>
     );
@@ -247,6 +248,3 @@ export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => 
     />
   );
 };
-
-// Helper
-const wrapMarketName = (marketName: string) => <span>{`"${marketName}"`}</span>;

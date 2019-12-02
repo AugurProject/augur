@@ -46,7 +46,7 @@ def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHun
 
 def test_reporter_fees(contractsFixture, universe, market, cash):
     defaultValue = 100
-    completeSets = contractsFixture.contracts['CompleteSets']
+    shareToken = contractsFixture.contracts['ShareToken']
 
     assert universe.getOrCacheReportingFeeDivisor() == defaultValue
 
@@ -54,7 +54,7 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
     assert universe.getOpenInterestInAttoCash() == 0
     cost = 10 * market.getNumTicks()
     with BuyWithCash(cash, cost, contractsFixture.accounts[1], "buy complete set"):
-        completeSets.publicBuyCompleteSets(market.address, 10, sender = contractsFixture.accounts[1])
+        shareToken.publicBuyCompleteSets(market.address, 10, sender = contractsFixture.accounts[1])
     assert universe.getOpenInterestInAttoCash() > 0
 
     # Move dispute window forward

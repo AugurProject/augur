@@ -1,0 +1,105 @@
+{
+  "channel": {
+    "beginningOf": "Beginning of #{{channel}}",
+    "showingLast": "Showing only one message of #{{channel}}",
+    "showingLast_plural": "Showing the last {{count}} messages of #{{channel}}",
+    "file": {
+      "download": "Download",
+      "previewLoading": "$t(loading)...",
+      "open": "Open",
+      "unableToDisplay": "Unable to display file",
+      "dropzone": {
+        "add": "Add files to #{{channel}}"
+      }
+    },
+    "loadingHistory": "Loading history...",
+    "loadMore": "Click or scroll up to load older messages",
+    "sendMessagePlaceholder": "Type a message...",
+    "status": {
+      "users": "online",
+      "users_plural": "online"
+    }
+  },
+  "configuration": "Configuration",
+  "controlPanel": {
+    "channels": "Channels",
+    "closeChannel": "Close",
+    "startJsIpfs": "Start js-ipfs"
+  },
+  "disclaimer": {
+    "alpha": {
+      "content": "This is an alpha version of the software. Things will break and change \u2014 chats will be lost. Use at your own risk."
+    }
+  },
+  "joinChannel": {
+    "inputPlaceholder": "Join channel"
+  },
+  "login": {
+    "nickname": "Enter a name",
+    "orLoginWith": "Or login with",
+    "pressEnterToLogin": "Press ENTER to login"
+  },
+  "loading": "Loading",
+  "settings": {
+    "names": {
+      "themeName": "Theme",
+      "language": "Language",
+      "sidePanelPosition": "Sidepanel position",
+      "colorifyUsernames": "Colorify usernames",
+      "useEmojis": "Use emojis",
+      "emojiSet": "Emoji theme",
+      "useMonospaceFont": "Use monospace font",
+      "useLargeMessage": "Use large messages",
+      "messageNotifications": "Notifications"
+    },
+    "descriptions": {},
+    "options": {
+      "themeName": {
+        "default": "Default",
+        "purple1": "Purple 1",
+        "purple2": "Purple 2",
+        "magenta": "Magenta",
+        "red": "Red",
+        "orange": "Orange",
+        "brown": "Brown",
+        "lime": "Lime",
+        "green": "Green",
+        "cyan": "Cyan",
+        "blue1": "Blue 1",
+        "blue2": "Blue 2",
+        "grey": "Grey"
+      },
+      "language": {
+        "en": "English",
+        "fi": "Suomi",
+        "pt": "Portuguese"
+      },
+      "sidePanelPosition": {
+        "left": "Left",
+        "right": "Right"
+      },
+      "emojiSet": {
+        "apple": "Apple",
+        "emojione": "Emojione",
+        "facebook": "Facebook",
+        "google": "Google",
+        "messenger": "Messenger",
+        "twitter": "Twitter"
+      },
+      "messageNotifications": {
+        "all": "All",
+        "mentions": "Only mentions",
+        "none": "None"
+      }
+    }
+  },
+  "userProfile": {
+    "identityType": "Identity provider",
+    "identityId": "Identity id",
+    "identityPublicKey": "Public key"
+  },
+  "version": "Version",
+  "viewNames": {
+    "settings": "Settings"
+  }
+}

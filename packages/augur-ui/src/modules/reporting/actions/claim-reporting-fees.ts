@@ -1,39 +1,49 @@
 import logError from 'utils/log-error';
-import { AppState } from 'store';
 import { NodeStyleCallback, ClaimReportingOptions } from 'modules/types';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   redeemUserStakes,
   redeemUserStakesEstimateGas,
+  forkAndRedeem,
 } from 'modules/contracts/actions/contractCalls';
 
 export const CLAIM_FEES_GAS_COST = 3000000;
 export const CLAIM_WINDOW_GAS_COST = 210000;
 export const CROWDSOURCER_BATCH_SIZE = 4;
+export const CROWDSOURCER_DISAVOWED_BATCH_SIZE = 1;
 export const DISPUTE_WINDOW_BATCH_SIZE = 10;
 
 export function redeemStake(
   options: ClaimReportingOptions,
   callback: NodeStyleCallback = logError
 ) {
-  const { reportingParticipants, disputeWindows, estimateGas } = options;
+  const {
+    reportingParticipants,
+    disputeWindows,
+    estimateGas,
+    disavowed,
+    isForkingMarket,
+  } = options;
 
-  batchContractIds(disputeWindows, reportingParticipants).map(batch =>
-    runPayload(
-      batch.disputeWindows,
-      batch.reportingParticipants,
-      callback,
-      estimateGas
-    )
+  batchContractIds(disputeWindows, reportingParticipants, disavowed, isForkingMarket).map(
+    batch =>
+      runPayload(
+        batch.disputeWindows,
+        batch.reportingParticipants,
+        callback,
+        estimateGas,
+        isForkingMarket
+      )
   );
 }
 
-export function redeemStakeBatches(
-  options: ClaimReportingOptions
-) {
-  const { reportingParticipants, disputeWindows } = options;
-  const batches = batchContractIds(disputeWindows, reportingParticipants);
+export function redeemStakeBatches(options: ClaimReportingOptions) {
+  const { reportingParticipants, disputeWindows, disavowed, isForkingMarket } = options;
+  const batches = batchContractIds(
+    disputeWindows,
+    reportingParticipants,
+    disavowed,
+    isForkingMarket,
+  );
   return batches.length;
 }
 
@@ -44,14 +54,19 @@ interface Batch {
 
 function batchContractIds(
   disputeWindows: string[],
-  reportingParticipants: string[]
+  reportingParticipants: string[],
+  disavowed: boolean = false,
+  isForkingMarket: boolean = false,
 ) {
+  const batchSize = (disavowed || isForkingMarket)
+    ? CROWDSOURCER_DISAVOWED_BATCH_SIZE
+    : CROWDSOURCER_BATCH_SIZE;
   const batches = [] as Batch[];
   const disputeWindowBatchSize = Math.ceil(
     disputeWindows.length / DISPUTE_WINDOW_BATCH_SIZE
   );
   const crowdsourcerBatchSize = Math.ceil(
-    reportingParticipants.length / CROWDSOURCER_BATCH_SIZE
+    reportingParticipants.length / batchSize
   );
 
   // max case, assuming DISPUTE_WINDOW_BATCH_SIZE number of fee windows and CROWDSOURCER_BATCH_SIZE number of crowdsourcers can run in one tx.
@@ -73,8 +88,8 @@ function batchContractIds(
     batches.push({
       disputeWindows: [],
       reportingParticipants: reportingParticipants.slice(
-        i * CROWDSOURCER_BATCH_SIZE,
-        i * CROWDSOURCER_BATCH_SIZE + CROWDSOURCER_BATCH_SIZE
+        i * batchSize,
+        i * batchSize + batchSize
       ),
     });
   }
@@ -86,7 +101,8 @@ async function runPayload(
   disputeWindows: string[],
   reportingParticipants: string[],
   callback: Function,
-  estimateGas: boolean
+  estimateGas: boolean,
+  isForkingMarket: boolean
 ) {
   if (estimateGas) {
     const gas = await redeemUserStakesEstimateGas(
@@ -95,5 +111,7 @@ async function runPayload(
     );
     if (callback) callback(null, gas);
   }
-  redeemUserStakes(reportingParticipants, disputeWindows);
+  isForkingMarket
+    ? forkAndRedeem(reportingParticipants[0]) // should be batches of one
+    : redeemUserStakes(reportingParticipants, disputeWindows);
 }

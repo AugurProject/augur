@@ -28,7 +28,7 @@ def test_designatedReportHappyPath(localFixture, universe, market):
         "universe": universe.address,
         "reporter": localFixture.accounts[0],
         "market": market.address,
-        "amountStaked": universe.getInitialReportMinValue(),
+        "amountStaked": market.repBond(),
         "isDesignatedReporter": True,
         "payoutNumerators": [0, 0, market.getNumTicks()],
         "description": "Obviously I'm right",
@@ -151,6 +151,8 @@ def test_initialReport_methods(localFixture, universe, market, constants):
 def test_roundsOfReporting(rounds, localFixture, market, universe):
     disputeWindow = universe.getOrCreateCurrentDisputeWindow(False)
 
+    marketRepBond = market.repBond()
+
     # Do the initial report
     proceedToNextRound(localFixture, market, moveTimeForward = False)
 
@@ -161,7 +163,7 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     crowdsourcerCreatedLog = {
         "universe": universe.address,
         "market": market.address,
-        "size": universe.getInitialReportMinValue() * 2,
+        "size": marketRepBond * 2,
         "payoutNumerators": [0, 0, market.getNumTicks()],
     }
 
@@ -169,10 +171,10 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         "universe": universe.address,
         "reporter": localFixture.accounts[0],
         "market": market.address,
-        "amountStaked": universe.getInitialReportMinValue() * 2,
+        "amountStaked": marketRepBond * 2,
         "description": "Clearly incorrect",
         "payoutNumerators": [0, 0, market.getNumTicks()],
-        "currentStake": universe.getInitialReportMinValue() * 2,
+        "currentStake": marketRepBond * 2,
         "stakeRemaining": 0,
     }
 
@@ -182,10 +184,10 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         "market": market.address,
         "nextWindowStartTime": disputeWindow.getStartTime(),
         "nextWindowEndTime": disputeWindow.getEndTime(),
-        "totalRepStakedInMarket": universe.getInitialReportMinValue() * 3,
+        "totalRepStakedInMarket": marketRepBond * 3,
         "disputeRound": 2,
         "payoutNumerators": [0, 0, market.getNumTicks()],
-        "totalRepStakedInPayout": universe.getInitialReportMinValue() * 2,
+        "totalRepStakedInPayout": marketRepBond * 2,
     }
 
     with AssertLog(localFixture, "DisputeCrowdsourcerCreated", crowdsourcerCreatedLog):
@@ -205,12 +207,12 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
-    #(False, True),
-    #(True, False),
-    #(False, False),
+    (False, True),
+    (True, False),
+    (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
-    claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
+    shareToken = localFixture.contracts["ShareToken"]
 
     time = localFixture.contracts["Time"].getTimestamp()
     farOutEndTime = time + (365 * 24 * 60 * 60)
@@ -277,27 +279,23 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     newUniverse = localFixture.applySignature("Universe", newUniverseAddress)
 
     # Let's make sure fork payouts work correctly for the forking market
-    completeSets = localFixture.contracts['CompleteSets']
     numSets = 10
     cost = market.getNumTicks() * numSets
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, numSets)
+        assert shareToken.publicBuyCompleteSets(market.address, numSets)
 
-    yesShare = localFixture.applySignature("ShareToken", market.getShareToken(YES))
-    noShare = localFixture.applySignature("ShareToken", market.getShareToken(NO))
-
-    noShare.transfer(localFixture.accounts[1], noShare.balanceOf(localFixture.accounts[0]))
+    shareToken.safeTransferFrom(localFixture.accounts[0], localFixture.accounts[1], shareToken.getTokenId(market.address, NO), shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[0]), "")
 
     expectedYesOutcomePayout = newUniverse.payoutNumerators(YES)
     expectedNoOutcomePayout = newUniverse.payoutNumerators(NO)
 
-    expectedYesPayout = expectedYesOutcomePayout * yesShare.balanceOf(localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
+    expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[0], longTo32Bytes(11))
 
-    expectedNoPayout = expectedNoOutcomePayout * noShare.balanceOf(localFixture.accounts[1]) * .98 # to account for fees
+    expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .98 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+        shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], longTo32Bytes(11))
 
     # Migrate a market that has not ended yet
     assert farOutMarket.migrateThroughOneFork([], "")
@@ -306,7 +304,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     numSets = 10
     cost = categoricalMarket.getNumTicks() * numSets
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, numSets)
+        assert shareToken.publicBuyCompleteSets(categoricalMarket.address, numSets)
     assert universe.getOpenInterestInAttoCash() == cost
 
     marketMigratedLog = {

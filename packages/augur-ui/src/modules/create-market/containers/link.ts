@@ -8,9 +8,9 @@ import { NodeStyleCallback } from "modules/types";
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, oP) => ({
   updateModal: (cb: NodeStyleCallback) =>
-    dispatch(updateModal({ type: MODAL_CREATION_HELP, cb })),
+    dispatch(updateModal({ type: MODAL_CREATION_HELP, copyType: oP.copyType, cb })),
 });
 
 const LinkContainer = connect(

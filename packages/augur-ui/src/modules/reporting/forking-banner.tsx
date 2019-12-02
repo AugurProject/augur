@@ -11,6 +11,7 @@ interface ForkingProps {
   show: boolean;
   hasStakedRep?: boolean;
   hasRepBalance?: boolean;
+  isForking?: boolean;
   forkTime?: DateFormattedObject;
   currentTime?: DateFormattedObject;
   hasStakedRepAction: Function;
@@ -38,7 +39,7 @@ export const Forking = (props: ForkingProps) => (
             text={'Release my REP'}
           />
         )}
-        {props.hasRepBalance && (
+        {props.hasRepBalance && props.isForking && (
           <PrimaryButton
             action={props.hasRepMigrationAction}
             text={'Migrate REP'}

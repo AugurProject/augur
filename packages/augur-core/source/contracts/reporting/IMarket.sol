@@ -2,13 +2,14 @@ pragma solidity 0.5.10;
 
 
 import 'ROOT/libraries/IOwnable.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
-import 'ROOT/trading/IShareToken.sol';
+import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
+import 'ROOT/external/IAffiliateValidator.sol';
 import 'ROOT/IAugur.sol';
 
 
@@ -19,13 +20,13 @@ contract IMarket is IOwnable {
         SCALAR
     }
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public;
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public;
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators) public view returns (bytes32);
+    function doInitialReport(uint256[] memory _payoutNumerators, string memory _description, uint256 _additionalStake) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getDisputeWindow() public view returns (IDisputeWindow);
     function getNumberOfOutcomes() public view returns (uint256);
     function getNumTicks() public view returns (uint256);
-    function getShareToken(uint256 _outcome)  public view returns (IShareToken);
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256);
     function getForkingMarket() public view returns (IMarket _market);
     function getEndTime() public view returns (uint256);
@@ -37,9 +38,12 @@ contract IMarket is IOwnable {
     function getInitialReporter() public view returns (IInitialReporter);
     function getDesignatedReportingEndTime() public view returns (uint256);
     function getValidityBondAttoCash() public view returns (uint256);
+    function getAffiliateFeeDivisor() public view returns (uint256);
+    function getNumParticipants() public view returns (uint256);
+    function getDesignatedReporter() public view returns (address);
+    function getDisputePacingOn() public view returns (bool);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
-    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress) public returns (bool);
-    function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
+    function recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint) public returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isInvalid() public view returns (bool);
     function finalize() public returns (bool);
@@ -47,4 +51,5 @@ contract IMarket is IOwnable {
     function designatedReporterShowed() public view returns (bool);
     function isFinalized() public view returns (bool);
     function assertBalances() public view returns (bool);
+    function getOpenInterest() public view returns (uint256);
 }

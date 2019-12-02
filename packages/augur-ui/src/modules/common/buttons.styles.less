@@ -48,7 +48,7 @@
     width: @size-16;
 
     > path {
-      stroke: @color-primary-text;
+      stroke: @color-secondary-text;
     }
   }
 }
@@ -383,6 +383,10 @@
     }
   }
 
+  > span {
+    margin-left: @size-4;
+  }
+
   &:hover {
     color: @color-primary-text;
 
@@ -658,8 +662,16 @@
   color: @color-primary-action;
   display: inline-flex;
 
+  > a {
+    color: @color-primary-action;
+  }
+
   &:hover {
     color: @color-primary-text;
+
+    > a {
+      color: @color-primary-text;
+    }
   }
 
   > svg {
@@ -678,6 +690,10 @@
 
   &.LightAlternate {
     color: @color-outcome-seven;
+
+    > a {
+      color: @color-outcome-seven;
+    }
 
     > svg > path {
       &:nth-child(odd) {
@@ -731,13 +747,16 @@
 
   align-items: center;
   line-height: @size-15;
+  max-height: @size-32;
   min-width: 9rem;
+  padding: 0 @size-24;
   white-space: nowrap;
 
   > svg {
     fill: none;
     height: @size-14;
     width: @size-10;
+    margin: 0 1px 0 @size-8;
 
     > path {
       stroke: @color-primary-text;
@@ -761,7 +780,7 @@
     width: @size-8;
 
     > path {
-      fill: @color-inactive-text;
+      fill: @color-secondary-text;
 
       &:hover {
         fill: @color-primary-text;

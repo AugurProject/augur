@@ -4,8 +4,6 @@ import {
   SELL,
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
-  INVALID_SHOW,
-  INVALID_HIDE,
 } from 'modules/common/constants';
 import {
   MARKET_ID_PARAM_NAME,
@@ -16,7 +14,7 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { Template } from 'modules/create-market/get-template';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -24,8 +22,21 @@ export enum SizeTypes {
   LARGE = 'large',
 }
 
+export interface TextLink {
+  text: string;
+  link?: string;
+  linkText?: string;
+  lighten?: boolean;
+}
+
+export interface TextObject {
+  title: string;
+  subheader: TextLink[];
+}
+
 export interface Alert {
   id: string;
+  uniqueId: string;
   title: string;
   name: string;
   description: string;
@@ -116,6 +127,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
   outcomesFormatted: OutcomeFormatted[];
+  isTemplate: boolean;
 }
 
 export interface ForkingInfo {
@@ -130,6 +142,7 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
+  timeframeData?: Getters.Platform.PlatformActivityStatsResult;
 }
 
 export interface UserReports {
@@ -253,6 +266,10 @@ export interface UIOrder {
   minPrice: string;
 }
 
+export interface CreateLiquidityOrders {
+  marketId: string;
+  chunkOrders: boolean;
+}
 export interface LiquidityOrders {
   [txParamHash: string]: {
     [outcome: number]: LiquidityOrder[];
@@ -281,27 +298,29 @@ export interface NewMarketPropertiesValidations {
   type?: string;
   designatedReporterType?: string;
   designatedReporterAddress?: string;
-  expirySourceType?: string;
   setEndTime?: string;
   hour?: string;
   minute?: string;
   meridiem?: string;
-  outcomes?: string[];
+  outcomes?: string | string[];
   settlementFee?: string;
   affiliateFee?: number;
+  inputs?: NewMarketPropertiesValidations[];
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
   affiliateFee?: number;
+  inputs?: NewMarketPropertiesValidations[];
+  outcomes?: string | string[];
 }
 export interface NewMarket {
   uniqueId: number;
   isValid: boolean;
   validations:
-  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
-  backupSource: string;
+    | NewMarketPropertiesValidations
+    | NewMarketPropertyValidations;
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -309,8 +328,6 @@ export interface NewMarket {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -360,8 +377,6 @@ export interface Draft {
   scalarBigNum: string;
   scalarDenomination: string;
   description: string;
-  expirySourceType: string;
-  expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
   minPrice: string;
@@ -397,6 +412,7 @@ export interface MarketsList {
   };
   selectedCategories: string[];
   marketCardFormat: string;
+  isSearchInPlace: boolean;
 }
 
 export interface DefaultOrderProperties {
@@ -434,8 +450,7 @@ export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
-  userDefinedGasPrice: string;
-  blockNumber: string;
+  userDefinedGasPrice: number;
 }
 
 export enum INVALID_OPTIONS {
@@ -450,7 +465,7 @@ export interface FilterSortOptions {
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
-  hasOrders: boolean;
+  templateFilter: string;
 }
 
 export interface Favorite {
@@ -487,6 +502,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isReconnectionPaused: boolean;
+  canHotload: boolean;
 }
 
 export interface Category {
@@ -507,10 +523,16 @@ export interface Blockchain {
 export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
+  isHelpMenuOpen: boolean;
+  ethToDaiRate: BigNumber;
+  gnosisEnabled: boolean;
+  zeroXEnabled: boolean;
+  gnosisStatus: GnosisSafeState;
 }
 
 export interface AuthStatus {
   isLogged?: boolean;
+  restoredAccount?: boolean;
   edgeLoading?: boolean;
   edgeContext?: string;
   isConnectionTrayOpen?: boolean;
@@ -547,7 +569,9 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  legacyRep: number;
   attoRep: string;
+  legacyAttoRep: string;
 }
 
 export interface LoginAccountMeta {
@@ -561,7 +585,8 @@ export interface LoginAccountMeta {
 }
 
 export interface LoginAccountSettings {
-  showInvalidMarketsBanner?: boolean;
+  showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
+  showInvalidMarketsBannerHideOrShow?: boolean;
 }
 
 export interface LoginAccount {
@@ -569,6 +594,7 @@ export interface LoginAccount {
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;
   totalFrozenFunds?: string;
+  totalRealizedPL?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
@@ -679,6 +705,8 @@ export interface ClaimReportingOptions {
   reportingParticipants: string[],
   disputeWindows: string[],
   estimateGas?: boolean;
+  disavowed?: boolean;
+  isForkingMarket?: boolean;
 }
 
 export interface MarketReportContracts {
@@ -723,4 +751,16 @@ export interface SortedGroup {
   label: string;
   subGroup?: Array<SortedGroup>;
   autoCompleteList?: Array<SortedGroup>;
+}
+
+export interface CategoryList {
+  [category: string]: [
+    {
+      [category: string]: [
+        {
+          [index: number]: string;
+        }
+      ];
+    }
+  ];
 }

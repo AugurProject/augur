@@ -9,11 +9,12 @@ import 'ROOT/trading/ICancelOrder.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/trading/ICash.sol';
+import 'ROOT/ICash.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
+import 'ROOT/trading/IAugurTrading.sol';
 
 
 /**
@@ -22,17 +23,20 @@ import 'ROOT/trading/IProfitLoss.sol';
  */
 contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
-    IAugur public augur;
+    IAugurTrading public augurTrading;
     IOrders public orders;
     ICash public cash;
+    IShareToken public shareToken;
     IProfitLoss public profitLoss;
 
-    function initialize(IAugur _augur) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
-        augur = _augur;
-        orders = IOrders(augur.lookup("Orders"));
-        cash = ICash(augur.lookup("Cash"));
-        profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
+        cash = ICash(_augur.lookup("Cash"));
+        shareToken = IShareToken(_augur.lookup("ShareToken"));
+
+        augurTrading = _augurTrading;
+        orders = IOrders(_augurTrading.lookup("Orders"));
+        profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
     }
 
     /**
@@ -59,26 +63,31 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     function cancelOrderInternal(address _sender, bytes32 _orderId) internal returns (bool) {
         require(_orderId != bytes32(0), "CancelOrder.cancelOrderInternal: Order id is 0x0");
 
+        IOrders _orders = orders;
         // Look up the order the sender wants to cancel
-        uint256 _moneyEscrowed = orders.getOrderMoneyEscrowed(_orderId);
-        uint256 _sharesEscrowed = orders.getOrderSharesEscrowed(_orderId);
-        Order.Types _type = orders.getOrderType(_orderId);
-        IMarket _market = orders.getMarket(_orderId);
-        uint256 _outcome = orders.getOutcome(_orderId);
-        address _creator = orders.getOrderCreator(_orderId);
-
-        // Check that the order ID is correct and that the sender owns the order
-        require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+        uint256 _moneyEscrowed;
+        uint256 _sharesEscrowed;
+        Order.Types _type;
+        IMarket _market;
+        uint256 _outcome;
+        // Check creator in inner scope to reduce stack depth
+        {
+            /* solium-disable indentation */
+            address _creator;
+            (_moneyEscrowed, _sharesEscrowed, _type, _market, _outcome, _creator) = _orders.getOrderDataForCancel(_orderId);
+            // Check that the order ID is correct and that the sender owns the order
+            require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
+            /* solium-enable indentation */
+        }
 
         // Clear the order first
-        orders.removeOrder(_orderId);
+        _orders.removeOrder(_orderId);
 
         refundOrder(_sender, _type, _sharesEscrowed, _moneyEscrowed, _market, _outcome);
-        _market.assertBalances();
 
-        augur.logOrderCanceled(_market.getUniverse(), _market, _creator, _moneyEscrowed, _sharesEscrowed, _orderId);
-        profitLoss.recordFrozenFundChange(_market, _sender, _outcome, -int256(_moneyEscrowed));
-
+        IUniverse _universe = _market.getUniverse();
+        augurTrading.logOrderCanceled(_universe, _market, _sender, _moneyEscrowed, _sharesEscrowed, _orderId);
+        profitLoss.recordFrozenFundChange(_universe, _market, _sender, _outcome, -int256(_moneyEscrowed));
         return true;
     }
 
@@ -86,20 +95,28 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         if (_sharesEscrowed > 0) {
             // Return to user sharesEscrowed that weren't filled yet for all outcomes except the order outcome
             if (_type == Order.Types.Bid) {
-                for (uint256 _i = 0; _i < _market.getNumberOfOutcomes(); ++_i) {
-                    if (_i != _outcome) {
-                        _market.getShareToken(_i).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
+                uint256[] memory _shortOutcomes = new uint256[](_numberOfOutcomes - 1);
+                uint256[] memory _values = new uint256[](_numberOfOutcomes - 1);
+                uint256 _indexOutcome = 0;
+                for (uint256 _i = 0; _i < _numberOfOutcomes - 1; _i++) {
+                    if (_i == _outcome) {
+                        _indexOutcome++;
                     }
+                    _shortOutcomes[_i] = _indexOutcome;
+                    _values[_i] = _sharesEscrowed;
+                    _indexOutcome++;
                 }
-            // Shares refund if has shares escrowed for this outcome
+                uint256[] memory _tokenIds = shareToken.getTokenIds(_market, _shortOutcomes);
+                shareToken.unsafeBatchTransferFrom(address(augurTrading), _sender, _tokenIds, _values);
             } else {
-                _market.getShareToken(_outcome).trustedCancelOrderTransfer(address(_market), _sender, _sharesEscrowed);
+                shareToken.unsafeTransferFrom(address(augurTrading), _sender, shareToken.getTokenId(_market, _outcome), _sharesEscrowed);
             }
         }
 
         // Return to user moneyEscrowed that wasn't filled yet
         if (_moneyEscrowed > 0) {
-            _market.getUniverse().withdraw(_sender, _moneyEscrowed, address(_market));
+            cash.transferFrom(address(augurTrading), _sender, _moneyEscrowed);
         }
 
         return true;

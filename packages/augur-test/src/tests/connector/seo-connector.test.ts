@@ -33,9 +33,9 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
     create: () => {
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
-        addresses.Augur,
         john.augur.events.getEventTopics,
-        john.augur.events.parseLogs
+        john.augur.events.parseLogs,
+        john.augur.events.getEventContractAddress,
       );
       const api = new API(john.augur, db);
       const controller = new Controller(
@@ -74,7 +74,7 @@ test('SEOConnector :: Should route correctly and handle events, extraInfo', asyn
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
-  await connector.on(
+  connector.on(
     SubscriptionEventName.MarketCreated,
     async (arg: MarketCreated): Promise<void> => {
       expect(arg).toHaveProperty(
@@ -107,9 +107,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
-  await connector.connect('');
-
-  await connector.on(
+  connector.on(
     SubscriptionEventName.NewBlock,
     async (arg: NewBlock): Promise<void> => {
       expect(arg).toEqual(

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { DefaultButtonProps } from 'modules/common/buttons';
 import {
@@ -6,49 +6,54 @@ import {
   LargeSubheader,
   SmallSubheader,
   MediumSubheader,
-  DaiGraphic,
-  TestBet,
   LinkContentSection,
   Stepper,
 } from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { LinkContent } from 'modules/types';
+import classNames from 'classnames';
 
 interface OnboardingProps {
   closeAction: Function;
   buttons: DefaultButtonProps[];
   largeHeader?: string;
   smallHeader?: string;
-  daiGraphic?: boolean;
   mediumHeader?: string;
   linkContent?: LinkContent[];
-  testBet?: boolean;
   currentStep?: number;
+  icon: React.ReactNode;
+  condensed?: boolean;
+  analyticsEvent?: Function;
 }
 
 export const Onboarding = ({
   largeHeader,
   buttons,
   smallHeader,
-  daiGraphic,
   mediumHeader,
   linkContent,
-  testBet,
   currentStep,
-}: OnboardingProps) => (
-  <div className={Styles.Onboarding}>
-    <main>
-      {largeHeader && <LargeSubheader text={largeHeader} />}
-      {smallHeader && <SmallSubheader text={smallHeader} />}
-      {daiGraphic && <DaiGraphic />}
-      {testBet && <TestBet />}
-      {mediumHeader && <MediumSubheader text={mediumHeader} />}
-      {linkContent && <LinkContentSection linkContent={linkContent} />}
-    </main>
-    <div>
-      {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-      {currentStep && <Stepper currentStep={currentStep} maxSteps={3} /> }
+  icon,
+  condensed,
+  analyticsEvent
+}: OnboardingProps) => {
+  useEffect(() => {
+    analyticsEvent && analyticsEvent();
+  });
+  return (
+    <div className={classNames(Styles.Onboarding, {[Styles.Condensed]: condensed})}>
+      <main>
+        {icon && <div>{icon}</div>}
+        {largeHeader && <LargeSubheader text={largeHeader} />}
+        {smallHeader && <SmallSubheader text={smallHeader} />}
+        {mediumHeader && <MediumSubheader text={mediumHeader} />}
+        {linkContent && <LinkContentSection linkContent={linkContent} />}
+      </main>
+      <div>
+        {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
+        {currentStep && <Stepper currentStep={currentStep} maxSteps={4} /> }
+      </div>
     </div>
-  </div>
-);
+  );
+}

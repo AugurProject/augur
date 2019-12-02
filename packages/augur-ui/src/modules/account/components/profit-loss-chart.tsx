@@ -66,9 +66,9 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
     this.buidOptions(data);
   }
 
-  UNSAFE_componentWillUpdate(nextProps: ChartProps) {
-    if (JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data)) {
-      this.buidOptions(nextProps.data);
+  componentDidUpdate(prevProps: ChartProps) {
+    if (JSON.stringify(this.props.data) !== JSON.stringify(prevProps.data)) {
+      this.buidOptions(this.props.data);
     }
   }
 
@@ -199,14 +199,13 @@ export default class ProfitLossChart extends Component<ChartProps, ChartState> {
 
   buidOptions(data: number[][]) {
     const { width } = this.props;
-
     const options = this.getDefaultOptions(data);
     const intervalInfo = this.calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
 
     options.chart = {
       ...options.chart,
-      width: width - 10,
+      width,
     };
 
     if (Array.isArray(options.xAxis)) {
