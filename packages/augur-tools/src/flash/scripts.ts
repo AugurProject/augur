@@ -205,14 +205,26 @@ export function addScripts(flash: FlashSession) {
         description: 'Quantity of REP.',
         required: true,
       },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
+      const target = String(args.target);
 
       await user.repFaucet(atto);
+
+      // if we have a target we transfer from current account to target.
+      if(target) {
+        await user.augur.contracts.reputationToken.transfer(target, atto);
+      }
     },
   });
 
