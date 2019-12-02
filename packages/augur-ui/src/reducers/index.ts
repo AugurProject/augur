@@ -57,7 +57,6 @@ import {
   Analytics
 } from "modules/types";
 import { Getters } from "@augurproject/sdk";
-import { AnnotationsTunnelTypeHeightControlPointOptions } from "highcharts";
 
 export function createReducer() {
   return {
