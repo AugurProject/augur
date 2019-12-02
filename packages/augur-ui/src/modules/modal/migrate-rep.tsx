@@ -80,7 +80,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
         <div>
           <LinearPropertyLabel
             key='cost'
-            label='Gas Cost (est)'
+            label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Cost'}
             value={
               Gnosis_ENABLED
                 ? displayGasInDai(gasEstimate, ethToDaiRate)

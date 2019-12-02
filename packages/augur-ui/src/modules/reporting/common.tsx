@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
@@ -8,6 +8,7 @@ import {
   REPORTING_STATE,
   SCALAR,
   DISPUTE_GAS_COST,
+  INITAL_REPORT_GAS_COST,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -365,7 +366,6 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
-  reportActionGasEstimate: Function;
   Gnosis_ENABLED: boolean;
   gasPrice: number;
   ethToDaiRate: BigNumber;
@@ -376,7 +376,7 @@ interface DisputingBondsViewState {
   scalarError: string;
   stakeError: string;
   isScalar: boolean;
-  gasLimit: BigNumber;
+  gasEstimate: string;
 }
 
 export class DisputingBondsView extends Component<
@@ -388,7 +388,11 @@ export class DisputingBondsView extends Component<
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
-    gasLimit: DISPUTE_GAS_COST,
+    gasEstimate: formatGasCostToEther(
+      DISPUTE_GAS_COST,
+      { decimalsRounded: 4 },
+      this.props.gasPrice,
+    ),
   };
 
   updateScalarOutcome = (range: string) => {
@@ -485,7 +489,11 @@ export class DisputingBondsView extends Component<
     if (this.props.Gnosis_ENABLED) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
-        gasLimit
+        gasEstimate: formatGasCostToEther(
+          gasLimit,
+          { decimalsRounded: 4 },
+          this.props.gasPrice,
+        ),
       });
     }
   }
@@ -500,24 +508,16 @@ export class DisputingBondsView extends Component<
       reportAction,
       id,
       Gnosis_ENABLED,
-      gasPrice,
       ethToDaiRate,
     } = this.props;
 
-    const { disabled, scalarError, stakeError, isScalar } = this.state;
+    const { disabled, scalarError, stakeError, isScalar, gasEstimate } = this.state;
     const min = convertAttoValueToDisplayValue(
       createBigNumber(market.noShowBondAmount)
     );
     const remaining = convertAttoValueToDisplayValue(
       createBigNumber(stakeRemaining)
     );
-
-    const gasEstimate = formatGasCostToEther(
-      this.state.gasLimit,
-      { decimalsRounded: 4 },
-      gasPrice,
-    );
-
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div className={classNames(Styles.DisputingBondsView)}>
@@ -561,20 +561,11 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
-        {Gnosis_ENABLED && (
-          <LinearPropertyLabel
-            key="estimatedGasFee"
-            label="Estimated Gas Fee"
-            value={displayGasInDai(gasEstimate, ethToDaiRate)}
-          />
-        )}
-        {!Gnosis_ENABLED && (
-          <LinearPropertyLabel
-            key="estimatedGasFee"
-            label="Estimated Gas Fee"
-            value={gasEstimate}
-          />
-        )}
+        <LinearPropertyLabel
+          key="estimatedGasFee"
+          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
+          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
+        />
         <PrimaryButton
           text="Confirm"
           action={() => reportAction(false)}
@@ -589,8 +580,10 @@ export interface ReportingBondsViewProps {
   market: MarketData;
   id: string;
   updateScalarOutcome: Function;
-  reportingGasFee: FormattedNumber;
   reportAction: Function;
+  Gnosis_ENABLED: boolean;
+  gasPrice: number;
+  ethToDaiRate: BigNumber;
   inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
@@ -609,6 +602,7 @@ interface ReportingBondsViewState {
   isScalar: boolean;
   threshold: string;
   readAndAgreedCheckbox: boolean;
+  gasEstimate: string;
 }
 
 export class ReportingBondsView extends Component<
@@ -623,6 +617,11 @@ export class ReportingBondsView extends Component<
     isScalar: this.props.market.marketType === SCALAR,
     threshold: this.props.userAttoRep.toString(),
     readAndAgreedCheckbox: false,
+    gasEstimate: formatGasCostToEther(
+      INITAL_REPORT_GAS_COST,
+      { decimalsRounded: 4 },
+      this.props.gasPrice,
+    ),
   };
 
   async componentDidMount() {
@@ -631,6 +630,18 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
+
+      if (this.props.Gnosis_ENABLED) {
+        const gasLimit = await this.props.reportAction(true);
+        this.setState({
+          gasEstimate: formatGasCostToEther(
+            gasLimit,
+            { decimalsRounded: 4 },
+            this.props.gasPrice,
+          )
+
+        });
+      }
     }
   }
 
@@ -699,7 +710,6 @@ export class ReportingBondsView extends Component<
     const {
       market,
       inputScalarOutcome,
-      reportingGasFee,
       reportAction,
       inputtedReportingStake,
       userAttoRep,
@@ -707,6 +717,8 @@ export class ReportingBondsView extends Component<
       migrateRep,
       initialReport,
       owesRep,
+      Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
 
     const {
@@ -717,6 +729,7 @@ export class ReportingBondsView extends Component<
       isScalar,
       threshold,
       readAndAgreedCheckbox,
+      gasEstimate,
     } = this.state;
 
     const repAmount = migrateRep
@@ -770,8 +783,8 @@ export class ReportingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label="Transaction Fee"
-          value={reportingGasFee}
+          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
+          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
         />
         {initialReport && (
           <PreFilledStake

@@ -336,21 +336,24 @@ export default class Review extends React.Component<
             />
           </span>
 
-          { s.formattedInitialLiquidityDai.value > 0 && <Subheaders header="Initial liquidity" subheader={"The total of the initial batch of orders you added on the previous step."} /> }
-          { s.formattedInitialLiquidityDai.value > 0 && <span>
-            <LinearPropertyLabel
-              label={"Initial Liquidity"}
-              value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
-            />
-            {Gnosis_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
-              label={'Estimated Transaction fee'}
-              value={initialLiquidityGasInDai + ' DAI'}
-            />}
-            {!Gnosis_ENABLED && <LinearPropertyLabelTooltip
-              label={'Estimated Transaction fee'}
-              value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
-            />}
-          </span> }
+          { s.formattedInitialLiquidityDai.value > 0 &&
+          <>
+            <Subheaders header="Initial liquidity" subheader={"The total of the initial batch of orders you added on the previous step."} />
+            <span>
+              <LinearPropertyLabel
+                label={"Initial Liquidity"}
+                value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
+              />
+              {Gnosis_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
+                label={'Transaction Fee'}
+                value={initialLiquidityGasInDai + ' DAI'}
+              />}
+              {!Gnosis_ENABLED && <LinearPropertyLabelTooltip
+                label={'Gas Cost'}
+                value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
+              />}
+            </span>
+          </>}
 
           <Subheaders header="Totals" subheader={Gnosis_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
           <span>
@@ -359,7 +362,7 @@ export default class Review extends React.Component<
               value={totalDai.formattedValue + " DAI"}
             />
             {Gnosis_ENABLED && <LinearPropertyLabel
-              label={"Transaction fee"}
+              label={"Transaction Fee"}
               value={totalGasInDai + " DAI"}
             />}
             {!Gnosis_ENABLED && <LinearPropertyLabel
