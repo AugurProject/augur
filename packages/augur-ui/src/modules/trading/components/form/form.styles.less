@@ -5,8 +5,6 @@
   padding: @size-12 @size-12 0;
 
     > li {
-      .text-16;
-
       color: @color-primary-text;
       display: flex;
       flex-flow: column nowrap;
@@ -16,12 +14,34 @@
         padding: @size-16 @size-32;
       }
 
+      > div.TradingForm__input__container {
+        max-height: @size-32;
+        min-height: @size-32;
+
+        > span {
+          .mono-10;
+
+          max-height: @size-32;
+          min-height: @size-32;
+          padding: @size-10 @size-16 @size-10 0;
+        }
+
+        > input {
+          .mono-12;
+
+          max-height: @size-30;
+          min-height: @size-30;
+          padding: 0 @size-16;
+        }
+      }
+
       &:not(:nth-of-type(4)) {
         margin-bottom: @size-12;
 
         > label {
-          .mono-9-bold;
+          .mono-10-bold;
 
+          color: @color-secondary-text;
           text-transform: uppercase;
         }
       }
@@ -37,9 +57,17 @@
         font-size: @size-12;
         min-height: @size-16;
 
+        > button {
+          .mono-10;
+        }
+
         > div {
           display: flex;
           flex: 1;
+
+          > button {
+            .mono-10;
+          }
 
           > button:not(:first-of-type) {
             margin-left: @size-4;
@@ -74,6 +102,10 @@
       &:nth-of-type(6) {
         margin: @size-12 0;
         width: fit-content;
+
+        > button {
+          .mono-10;
+        }
       }
 
       &:nth-of-type(7) {
@@ -81,7 +113,7 @@
         flex-direction: row;
 
         > span {
-          .text-9;
+          .text-10;
 
           color: @color-dark-text;
           margin-left: @size-12;
@@ -131,7 +163,7 @@
         width: 100%;
 
         &.smallLabel {
-          .mono-9;
+          .mono-10-bold;
 
           color: @color-primary-text;
           padding-top: @size-12;
@@ -153,10 +185,6 @@
             > path {
               fill: @color-primary-text;
             }
-          }
-
-          > span > span {
-            .mono-9-bold;
           }
         }
 
@@ -237,6 +265,9 @@
 
 .Outcome {
   padding: @size-12 @size-12 0;
+  > div > button {
+    .text-12;
+  }
 }
 
 .HideOnMobile {
@@ -300,10 +331,9 @@
   }
 
   > span {
-    .mono-9;
+    .mono-10;
 
     color: @color-secondary-text;
-    min-width: 4.28rem;
     overflow: hidden;
     padding: @size-10 @size-12;
     text-align: right;
@@ -345,7 +375,7 @@
 
   .TradingForm__input__container {
     > span {
-      font-size: @size-9;
+      font-size: @size-10;
     }
 
     > input[type="number"] {

@@ -1,11 +1,7 @@
 import { createBigNumber } from 'utils/create-big-number';
 
-import {
-  BUY,
-  MAX_BULK_ORDER_COUNT,
-  ZERO,
-} from 'modules/common/constants';
-import { LiquidityOrder } from 'modules/types';
+import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
+import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -159,6 +155,7 @@ export const sendLiquidityOrder = (options: any) => async (
     bnAllowance,
     orderCB,
     seriesCB,
+    chunkOrders,
   } = options;
   const orderType = order.type === BUY ? 0 : 1;
   const { orderEstimate } = order;
@@ -184,11 +181,11 @@ export const sendLiquidityOrder = (options: any) => async (
   }
 };
 
-export const startOrderSending = (options: any) => async (
+export const startOrderSending = (options: CreateLiquidityOrders) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { marketId } = options;
+  const { marketId, chunkOrders } = options;
   const { loginAccount, marketInfos, pendingLiquidityOrders } = getState();
 
   if (loginAccount.allowance.lte(ZERO)) await approveToTrade();
@@ -199,15 +196,24 @@ export const startOrderSending = (options: any) => async (
   Object.keys(liquidity).map(outcomeId => {
     orders = [...orders, ...liquidity[outcomeId]];
   });
-  // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
-  let i = 0;
-  const groups = [];
-  for (i; i < orders.length; i += MAX_BULK_ORDER_COUNT) {
-    groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
-  }
-  try {
-    groups.map(group => createLiquidityOrders(market, group));
-  } catch (e) {
-    console.error(e);
+
+  if (!chunkOrders) {
+    try {
+      createLiquidityOrders(market, orders);
+    } catch (e) {
+      console.error(e);
+    }
+  } else {
+    // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
+    let i = 0;
+    const groups = [];
+    for (i; i < orders.length; i += MAX_BULK_ORDER_COUNT) {
+      groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
+    }
+    try {
+      groups.map(group => createLiquidityOrders(market, group));
+    } catch (e) {
+      console.error(e);
+    }
   }
 };

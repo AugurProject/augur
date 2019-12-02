@@ -10,12 +10,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 export const loadAccountData = (
   callback: NodeStyleCallback = logError
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { loginAccount, universe } = getState();
+  const { loginAccount, universe, gasPriceInfo } = getState();
   const { address } = loginAccount;
   if (!address) return callback('account address required');
   const windowApp = windowRef as WindowApp;
@@ -34,4 +35,5 @@ export const loadAccountData = (
   dispatch(loadUniverseDetails(universe.id, address));
   dispatch(loadGasPriceInfo());
   dispatch(getEthToDaiRate());
+  registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average);
 };

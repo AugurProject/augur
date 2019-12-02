@@ -9,7 +9,7 @@ import {
   MarketTradingHistory,
   Orders,
   OrderState,
-} from '@augurproject/sdk/build/state/getter/Trading';
+} from '@augurproject/sdk/build/state/getter/OnChainTrading';
 import { BigNumber } from 'bignumber.js';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';

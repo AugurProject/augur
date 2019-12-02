@@ -454,6 +454,7 @@ export default class AppView extends Component<AppProps> {
                 })}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
+                id={'mainContent'}
               >
                 <ForkingBanner />
 

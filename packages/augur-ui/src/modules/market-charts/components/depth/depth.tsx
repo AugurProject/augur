@@ -5,11 +5,11 @@ import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
 import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
 
-import Styles from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles.less';
+import Styles from 'modules/market-charts/components/depth/depth.styles.less';
 import { MarketDepth } from 'modules/markets/helpers/order-for-market-depth';
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
 
-interface MarketOutcomeDepthProps {
+interface DepthChartProps {
   marketDepth: MarketDepth;
   orderBookKeys: { max: BigNumber; min: BigNumber; mid: BigNumber };
   pricePrecision: number;
@@ -22,7 +22,7 @@ interface MarketOutcomeDepthProps {
   hoveredPrice?: any;
 }
 
-interface MarketOutcomeDepthState {
+interface DepthChartState {
   zoom: number;
 }
 
@@ -67,9 +67,9 @@ function determineInitialZoom(props) {
   return zoom === -1 ? ZOOM_MAX : zoom;
 }
 
-export default class MarketOutcomeDepth extends Component<
-  MarketOutcomeDepthProps,
-  MarketOutcomeDepthState
+export default class DepthChart extends Component<
+  DepthChartProps,
+  DepthChartState
 > {
   static defaultProps = {
     hoveredPrice: null,
@@ -130,7 +130,6 @@ export default class MarketOutcomeDepth extends Component<
     const { hoveredPrice, marketDepth, orderBookKeys } = this.props;
     const oldZoom = this.state.zoom;
     const { zoom } = nextState;
-    const { containerHeight, containerWidth } = this;
     const curMarketDepth = JSON.stringify(marketDepth);
     const nextMarketDepth = JSON.stringify(nextProps.marketDepth);
     const handleChartDraw = () => this.drawDepth({
@@ -908,9 +907,6 @@ function attachHoverClickHandlers(options) {
       const mouse = d3.mouse(d3.select('#depth_chart').node());
       const asksDepthLine = '.depth-line-asks';
       const bidsDepthLine = '.depth-line-bids';
-      // const highlightAsks = orderBookKeys.mid.lt(
-      //   drawParams.xScale.invert(mouse[0]).toFixed(pricePrecision)
-      // );
       // Determine closest order
       const hoveredPrice = drawParams.xScale
         .invert(mouse[0])

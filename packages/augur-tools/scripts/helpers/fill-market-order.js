@@ -108,7 +108,7 @@ getPrivateKey(null, function(err, auth) {
                       chalk.red.bold(orderType),
                       order
                     );
-                  augur.trading.placeTrade({
+                  augur.trading.placeNativeTrade({
                     meta: auth,
                     amount: order.amount,
                     limitPrice: order.price,

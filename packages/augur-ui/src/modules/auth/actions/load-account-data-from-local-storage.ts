@@ -5,7 +5,6 @@ import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-man
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
 import { loadPendingOrdersTransactions } from "modules/orders/actions/pending-orders-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
-import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 import { updateUniverse } from "modules/universe/actions/update-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
@@ -109,7 +108,6 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
               gasPriceInfo.userDefinedGasPrice
           })
         );
-        dispatch(registerUserDefinedGasPriceFunction());
       }
     }
   }

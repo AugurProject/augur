@@ -266,6 +266,10 @@ export interface UIOrder {
   minPrice: string;
 }
 
+export interface CreateLiquidityOrders {
+  marketId: string;
+  chunkOrders: boolean;
+}
 export interface LiquidityOrders {
   [txParamHash: string]: {
     [outcome: number]: LiquidityOrder[];
@@ -446,8 +450,7 @@ export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
-  userDefinedGasPrice: string;
-  blockNumber: string;
+  userDefinedGasPrice: number;
 }
 
 export enum INVALID_OPTIONS {
@@ -523,6 +526,7 @@ export interface AppStatus {
   isHelpMenuOpen: boolean;
   ethToDaiRate: BigNumber;
   gnosisEnabled: boolean;
+  zeroXEnabled: boolean;
   gnosisStatus: GnosisSafeState;
 }
 

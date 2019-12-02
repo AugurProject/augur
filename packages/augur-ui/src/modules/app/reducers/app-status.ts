@@ -5,6 +5,7 @@ import {
   IS_HELP_MENU_OPEN,
   ETH_TO_DAI_RATE,
   GNOSIS_ENABLED,
+  Ox_ENABLED,
   GNOSIS_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
@@ -17,6 +18,7 @@ const DEFAULT_STATE = {
   [ETH_TO_DAI_RATE]: null,
   [GNOSIS_ENABLED]: false,
   [GNOSIS_STATUS]: null,
+  [Ox_ENABLED]: false,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

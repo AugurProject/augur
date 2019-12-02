@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
-import Wrapper from 'modules/trading/components/wrapper/wrapper';
-import { ACCOUNT_SUMMARY } from 'modules/routes/constants/views';
-import makePath from 'modules/routes/helpers/make-path';
+import Wrapper, { SelectedOrderProperties } from 'modules/trading/components/wrapper/wrapper';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
-
 import { PrimaryButton } from 'modules/common/buttons';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { BigNumber } from 'utils/create-big-number';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build';
+import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 
 interface TradingFormProps {
   availableEth: BigNumber;
@@ -20,7 +15,7 @@ interface TradingFormProps {
   market: MarketData;
   disclaimerSeen: boolean;
   disclaimerModal: Function;
-  selectedOrderProperties: object;
+  selectedOrderProperties: SelectedOrderProperties;
   selectedOutcomeId: number;
   sortedOutcomes: OutcomeFormatted[];
   updateSelectedOrderProperties: Function;
@@ -36,11 +31,12 @@ interface TradingFormProps {
   addFundsModal: Function;
   loginModal: Function;
   signupModal: Function;
-  currentTimestamp: Number;
+  currentTimestamp: number;
   tradingTutorial?: boolean;
   addPendingOrder: Function;
   tutorialNext?: Function;
   Gnosis_ENABLED: boolean;
+  Ox_ENABLED: boolean;
   ethToDaiRate: BigNumber;
   gnosisStatus: GnosisSafeState;
 }
@@ -65,19 +61,19 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       ),
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: TradingFormProps) {
-    const { selectedOutcomeId } = this.props;
-    const { market } = nextProps;
+  componentDidUpdate(prevProps: TradingFormProps) {
+    const { selectedOutcomeId } = prevProps;
+    const { market } = this.props;
     if (
-      selectedOutcomeId !== nextProps.selectedOutcomeId ||
-      market.outcomes !== this.props.market.outcomes
+      selectedOutcomeId !== this.props.selectedOutcomeId ||
+      market.outcomes !== prevProps.market.outcomes
     ) {
-      if (nextProps.selectedOutcomeId !== null) {
+      if (this.props.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
           market.outcomesFormatted &&
           market.outcomesFormatted.find(
-            outcome => outcome.id === nextProps.selectedOutcomeId
+            outcome => outcome.id === this.props.selectedOutcomeId
           );
         this.setState({ selectedOutcome });
       }
@@ -117,6 +113,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       addPendingOrder,
       tutorialNext,
       Gnosis_ENABLED,
+      Ox_ENABLED,
       ethToDaiRate,
       gnosisStatus,
     } = this.props;
@@ -155,6 +152,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           availableEth={availableEth}
           availableDai={availableDai}
           Gnosis_ENABLED={Gnosis_ENABLED}
+          Ox_ENABLED={Ox_ENABLED}
           ethToDaiRate={ethToDaiRate}
           updateSelectedOrderProperties={
             this.props.updateSelectedOrderProperties

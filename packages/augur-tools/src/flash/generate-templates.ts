@@ -18,7 +18,14 @@ const templateArtifactsFile = '../augur-artifacts/src/templates.ts';
 const templateTemplateFile = './src/templates-template.ts';
 
 export const generateTemplateValidations = async () => {
-  let validations = {};
+  const validations = {
+    templateValidation: null,
+    templateValidationResRules: null,
+    requiredOutcomes: null,
+    outcomeDependencies: null,
+    substituteDependencies: null,
+    marketQuestionDependencies: null,
+  };
   let newTemplates = JSON.parse(JSON.stringify(TEMPLATES));
   const topCategories = Object.keys(newTemplates);
   topCategories.map(c => addTemplates(newTemplates[c], validations));
@@ -56,6 +63,8 @@ const addTemplates = (category: CategoryTemplate, validations: TemplateValidatio
         templateValidationResRules: generateResolutionRulesHash(t.resolutionRules),
         requiredOutcomes: getRequiredOutcomes(t.inputs),
         outcomeDependencies: getDropdownDependencies(t.inputs),
+        substituteDependencies: getSubstituteOutcomeDependencies(t.inputs),
+        marketQuestionDependencies: getMarketQuestionDependencies(t.inputs),
       };
     });
   }
@@ -80,17 +89,37 @@ function listToRegEx(values: object[], property: string) {
 
 function getDropdownDependencies(inputs: TemplateInput[]): DropdownDependencies {
   let listValues = null;
-  const hasDepend = inputs.filter(i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP);
-  if (hasDepend && hasDepend.length > 0) {
-    listValues = hasDepend.map(i => {
-      const values = Object.keys(i.values).reduce((p, key) => {
-        p[key] = i.values[key].map(i => i.value);
-        return p;
-      }, {});
-      return { inputSourceId: i.inputSourceId, values };
-    });
+  const hasDepend = inputs.find(i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP);
+  if (hasDepend) {
+    listValues = listValues = getDependencies(hasDepend, hasDepend.values);
   }
   return listValues;
+}
+
+function getMarketQuestionDependencies(inputs: TemplateInput[]): DropdownDependencies {
+  let listValues = null;
+  const hasDepend = inputs.find(i => i.type === TemplateInputType.DROPDOWN_QUESTION_DEP);
+  if (hasDepend) {
+    listValues = getDependencies(hasDepend, hasDepend.inputDestValues);
+  }
+  return listValues;
+}
+
+function getDependencies(input: TemplateInput, sourceValues: object): DropdownDependencies {
+  return {
+    inputSourceId: input.inputSourceId || input.id,
+    inputDestId: input.inputDestId,
+    values: Object.keys(sourceValues).reduce((p, key) => {
+      p[key] = sourceValues[key].map(i => i.value);
+      return p;
+    }, {})
+  }
+}
+
+function getSubstituteOutcomeDependencies(inputs: TemplateInput[]): string[] {
+  return inputs
+    .filter(i => i.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME)
+    .map(i => i.placeholder);
 }
 
 function getValidationValues(input: TemplateInput) {
@@ -104,8 +133,13 @@ function getValidationValues(input: TemplateInput) {
       return reg;
     case TemplateInputType.DENOMINATION_DROPDOWN:
     case TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME:
+    case TemplateInputType.DROPDOWN_QUESTION_DEP:
     case TemplateInputType.DROPDOWN:
-      const validations = listToRegEx(input.values, 'label');
+      let validations = listToRegEx(input.values, 'label');
+      if (input.defaultLabel) {
+        // list of values is unknown at this point, treat as text
+        validations = ValidationTemplateInputType[TemplateInputType.TEXT]
+      }
       return validations;
     default:
       return ValidationTemplateInputType[type];
