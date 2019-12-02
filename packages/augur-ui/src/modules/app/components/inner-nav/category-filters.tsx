@@ -54,20 +54,20 @@ export default class CategoryFilters extends React.Component<
     };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
-      if (nextProps.categoryMetaData && nextProps.categoryMetaData.categories) {
-        const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, nextProps.categoryMetaData.categories);
+  componentDidUpdate(prevProps: CategoryFiltersProps) {
+    if (JSON.stringify(prevProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
+      if (this.props.categoryMetaData && this.props.categoryMetaData.categories) {
+        const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, this.props.categoryMetaData.categories);
         this.setState({
           currentCategories: newCategory ? newCategory.children : null,
         });
       }
     }
 
-    const selectedCategory = parseQuery(nextProps.location.search)[
+    const selectedCategory = parseQuery(this.props.location.search)[
       CATEGORY_PARAM_NAME
     ];
-    const oldSelectedCategory = parseQuery(this.props.location.search)[
+    const oldSelectedCategory = parseQuery(prevProps.location.search)[
       CATEGORY_PARAM_NAME
     ];
 
@@ -77,7 +77,7 @@ export default class CategoryFilters extends React.Component<
     const toSelect = selected[selected.length - 1];
     const allOthers = selected.length === 1 ? [] : selected.slice(0, selected.length - 1);
 
-    if ((!nextProps.isSearching && !this.state.selectedCategory && nextProps.categoryMetaData && selectedCategory) ||
+    if ((!this.props.isSearching && !this.state.selectedCategory && this.props.categoryMetaData && selectedCategory) ||
        (selectedCategory && selectedCategory !== oldSelectedCategory)) {
       this.getChildrenCategories(toSelect, allOthers, false);
     }
