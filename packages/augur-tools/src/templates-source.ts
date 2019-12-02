@@ -5047,7 +5047,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5078,7 +5078,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, BitBittrex (bittrex.com)trex should be used.`
+                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5162,7 +5162,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5205,7 +5205,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will BTC close at in USDT on [0] on [1]?`,
                 example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5277,7 +5277,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5320,7 +5320,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will BTC close at in EUR on [0] on [1]?`,
                 example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -5396,7 +5396,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5511,7 +5511,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5554,7 +5554,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will ETH close at in USDT on [0] on [1]?`,
                 example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5626,7 +5626,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5669,7 +5669,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will ETH close at in EUR on [0] on [1]?`,
                 example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -5745,7 +5745,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5860,7 +5860,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5903,7 +5903,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will LTC close at in USDT on [0] on [1]?`,
                 example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5975,7 +5975,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -6018,7 +6018,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will LTC close at in EUR on [0] on [1]?`,
                 example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
