@@ -52,6 +52,7 @@ services:
     depends_on:
       - db
       - redis
+      - web
     command: docker/web/celery/worker/run.sh
     networks:
       - augur
