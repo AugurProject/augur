@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.7'
 
 volumes:
   nginx-shared:
@@ -60,6 +60,7 @@ services:
   scheduler:
     <<: *worker
     command: docker/web/celery/scheduler/run.sh
+    restart: on-failure
     networks:
       - augur
 
