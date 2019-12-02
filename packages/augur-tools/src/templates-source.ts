@@ -4807,7 +4807,7 @@ export const TEMPLATES = {
                 'If more than one person hosts the event and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
             },
             {
-              text: `Person has to officially host the event in order for the market resolve as "Yes", not just named as host`,
+              text: `Person has to officially host the event in order for the market to resolve as "Yes", not just named as host`,
             },
             {
               text: `If event does not occur the market should resolve as "No"`,
