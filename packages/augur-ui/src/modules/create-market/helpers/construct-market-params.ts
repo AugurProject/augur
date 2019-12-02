@@ -29,7 +29,7 @@ export function constructMarketParams(
   );
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
-  const marketEndTime = new BigNumber(newMarket.endTime);
+  const marketEndTime = new BigNumber(newMarket.endTime ? newMarket.endTime : newMarket.endTimeFormatted.timestamp);
   const extraInfo = JSON.stringify({
     categories: newMarket.categories,
     description: newMarket.description,
