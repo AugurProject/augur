@@ -8,6 +8,7 @@ import {
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
+import { marketLinkCopied } from 'services/analytics/helpers';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -46,6 +47,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => ({
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  marketLinkCopied: (marketId, location) => dispatch(marketLinkCopied(marketId, location))
 });
 
 const MarketHeaderContainer = withRouter(

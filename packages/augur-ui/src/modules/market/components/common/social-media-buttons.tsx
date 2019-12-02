@@ -1,10 +1,12 @@
 import React from 'react';
 
 import { FacebookButton, TwitterButton } from 'modules/common/icons';
+import { MARKET_SHARED, MARKET_PAGE } from 'services/analytics/helpers';
 
 interface SocialMediaButtonsProps {
   marketDescription: string;
   marketAddress: string;
+  track: Function;
 }
 
 export const SocialMediaButtons = (props: SocialMediaButtonsProps) => {
@@ -32,17 +34,29 @@ export const SocialMediaButtons = (props: SocialMediaButtonsProps) => {
     <>
       <button
         id="facebookButton"
-        onClick={() =>
-          showFacebookShare(encodedMarketUrl, encodedMarketDescription)
-        }
+        onClick={() => {
+          props.track(MARKET_SHARED, {
+            source: MARKET_PAGE,
+            service: 'facebook',
+            marketId: props.marketAddress,
+            marketDescription: props.marketDescription,
+          });
+          showFacebookShare(encodedMarketUrl, encodedMarketDescription);
+        }}
       >
         {FacebookButton}
       </button>
       <button
         id="twitterButton"
-        onClick={() =>
-          showTwitterShare(encodedMarketUrl, encodedMarketDescription)
-        }
+        onClick={() => {
+          props.track(MARKET_SHARED, {
+            source: MARKET_PAGE,
+            service: 'twitter',
+            marketId: props.marketAddress,
+            marketDescription: props.marketDescription,
+          });
+          showTwitterShare(encodedMarketUrl, encodedMarketDescription);
+        }}
       >
         {TwitterButton}
       </button>
