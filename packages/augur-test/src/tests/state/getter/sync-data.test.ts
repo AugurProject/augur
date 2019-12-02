@@ -21,7 +21,7 @@ beforeAll(async () => {
 
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts
 test("State API :: Status :: getSyncData", async () => {
-  const dbName = (await db).getDatabaseName("MarketCreated");
+  const dbName = "MarketCreated";
 
   await (await db).syncStatus.setHighestSyncBlock(dbName, 10, false);
 

@@ -10,16 +10,10 @@ export class SingleThreadConnector extends BaseConnector {
   protected events;
 
   connect = async (ethNodeUrl: string, account?: string): Promise<any> => {
-    this.api = Sync.start(ethNodeUrl, account, true, {});
+    this.api = Sync.start(ethNodeUrl, account, true);
     const api = (await this.api)
     this.events = new Subscriptions(api.augur.getAugurEventEmitter())
     return this.api;
-  }
-
-  async syncUserData(account: string): Promise<any> {
-    const api = (await this.api);
-    const db = await api.db;
-    return db.addTrackedUser(account, 100000, 10);
   }
 
   async disconnect(): Promise<any> {

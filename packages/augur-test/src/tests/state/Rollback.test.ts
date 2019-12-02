@@ -29,9 +29,8 @@ test('sync databases', async () => {
     mock.constants.blockstreamDelay
   );
 
-  const syncableDBName =
-    mock.constants.networkId + '-DisputeCrowdsourcerCompleted';
-  const metaDBName = mock.constants.networkId + '-BlockNumbersSequenceIds';
+  const syncableDBName = 'DisputeCrowdsourcerCompleted';
+  const metaDBName = 'BlockNumbersSequenceIds';
   const universe = '0x11149d40d255fCeaC54A3ee3899807B0539bad60';
 
   const originalHighestSyncedBlockNumbers: any = {};
@@ -77,12 +76,7 @@ test('sync databases', async () => {
   );
 
   // Verify that 2 new blocks were added to SyncableDB
-  const queryObj: any = {
-    selector: { universe },
-    fields: ['_id', 'universe'],
-    sort: ['_id'],
-  };
-  let result = await db.findInSyncableDB(syncableDBName, queryObj);
+  let result = await db.DisputeCrowdsourcerCompleted.toArray();
   // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
   expect(result).toEqual(
     expect.objectContaining({
@@ -103,9 +97,7 @@ test('sync databases', async () => {
             '.00000000001',
           universe,
         },
-      ],
-      warning:
-        'no matching index found, create an index to optimize query time',
+      ]
     })
   );
 
@@ -114,7 +106,7 @@ test('sync databases', async () => {
   await db.rollback(highestSyncedBlockNumber - 1);
 
   // Verify that newest 2 blocks were removed from SyncableDB
-  result = await db.findInSyncableDB(syncableDBName, queryObj);
+  result = await db.DisputeCrowdsourcerCompleted.toArray();
   expect(result).toEqual(
     expect.objectContaining({
       docs: [],

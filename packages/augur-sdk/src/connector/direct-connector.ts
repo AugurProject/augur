@@ -28,10 +28,6 @@ export class DirectConnector extends BaseConnector {
         };
     }
 
-    async syncUserData(account: string): Promise<any> {
-        await this.db.addTrackedUser(account, 100000, 10);
-    }
-
     async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
     }
 

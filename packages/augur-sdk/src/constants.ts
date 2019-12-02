@@ -174,3 +174,9 @@ export enum MarketReportingState {
   Forking = 'Forking',
   AwaitingForkMigration = 'AwaitingForkMigration'
 }
+
+export enum OrderEventType {
+  Create = 0,
+  Cancel = 1,
+  Fill = 2,
+}

@@ -9,11 +9,7 @@ export type Timestamp = string;
 export interface GenericEventDBDescription {
   EventName: string;
   indexes: string[];
-}
-
-export interface Doc {
-  _id: string;
-  _rev: string;
+  primaryKey?: string;
 }
 
 export interface Timestamped {
@@ -32,7 +28,7 @@ export interface MarketsUpdatedLog {
   data: MarketData[]
 }
 
-export interface CompleteSetsPurchasedLog extends Log, Doc, Timestamped {
+export interface CompleteSetsPurchasedLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   account: Address;
@@ -40,7 +36,7 @@ export interface CompleteSetsPurchasedLog extends Log, Doc, Timestamped {
   marketOI: string;
 }
 
-export interface CompleteSetsSoldLog extends Log, Doc, Timestamped {
+export interface CompleteSetsSoldLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   account: Address;
@@ -50,7 +46,7 @@ export interface CompleteSetsSoldLog extends Log, Doc, Timestamped {
   reporterFees: string;
 }
 
-export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
+export interface DisputeCrowdsourcerCompletedLog extends Log {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
@@ -63,7 +59,6 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
 
 export interface DisputeCrowdsourcerContributionLog
   extends Log,
-    Doc,
     Timestamped {
   universe: Address;
   reporter: Address;
@@ -72,9 +67,10 @@ export interface DisputeCrowdsourcerContributionLog
   payoutNumerators: PayoutNumerators;
   amountStaked: string;
   description: string;
+  disputeRound: string;
 }
 
-export interface DisputeCrowdsourcerCreatedLog extends Log, Doc {
+export interface DisputeCrowdsourcerCreatedLog extends Log {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
@@ -83,7 +79,7 @@ export interface DisputeCrowdsourcerCreatedLog extends Log, Doc {
   disputeRound: string;
 }
 
-export interface DisputeCrowdsourcerRedeemedLog extends Log, Doc, Timestamped {
+export interface DisputeCrowdsourcerRedeemedLog extends Log, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -93,7 +89,7 @@ export interface DisputeCrowdsourcerRedeemedLog extends Log, Doc, Timestamped {
   payoutNumerators: PayoutNumerators;
 }
 
-export interface DisputeWindowCreatedLog extends Log, Doc {
+export interface DisputeWindowCreatedLog extends Log {
   universe: Address;
   disputeWindow: Address;
   startTime: Timestamp;
@@ -102,7 +98,7 @@ export interface DisputeWindowCreatedLog extends Log, Doc {
   initial: boolean;
 }
 
-export interface InitialReporterRedeemedLog extends Log, Doc, Timestamped {
+export interface InitialReporterRedeemedLog extends Log, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -112,7 +108,7 @@ export interface InitialReporterRedeemedLog extends Log, Doc, Timestamped {
   payoutNumerators: PayoutNumerators;
 }
 
-export interface InitialReportSubmittedLog extends Log, Doc, Timestamped {
+export interface InitialReportSubmittedLog extends Log, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -131,7 +127,7 @@ export interface MarketCreatedLogExtraInfo {
   tags?: string[];
 }
 
-export interface MarketCreatedLog extends Log, Doc, Timestamped {
+export interface MarketCreatedLog extends Log, Timestamped {
   universe: Address;
   endTime: Timestamp;
   extraInfo: string;
@@ -146,13 +142,13 @@ export interface MarketCreatedLog extends Log, Doc, Timestamped {
   timestamp: string;
 }
 
-export interface MarketFinalizedLog extends Log, Doc, Timestamped {
+export interface MarketFinalizedLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   winningPayoutNumerators: string[];
 }
 
-export interface MarketMigratedLog extends Log, Doc {
+export interface MarketMigratedLog extends Log {
   market: Address;
   originalUniverse: Address;
   newUniverse: Address;
@@ -180,14 +176,14 @@ export enum YesNoOutcomes {
   Yes = 'Yes',
 }
 
-export interface MarketVolumeChangedLog extends Log, Doc {
+export interface MarketVolumeChangedLog extends Log {
   universe: Address;
   market: Address;
   volume: string;
   outcomeVolumes: string[];
 }
 
-export interface MarketOIChangedLog extends Log, Doc {
+export interface MarketOIChangedLog extends Log {
   universe: Address;
   market: Address;
   marketOI: string;
@@ -207,7 +203,7 @@ export interface MarketOIChangedLog extends Log, Doc {
 //  5:  fees (Fill)
 //  6:  amountFilled (Fill)
 //  7:  timestamp
-export interface OrderEventLog extends Log, Doc, Timestamped {
+export interface OrderEventLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   eventType: OrderEventType;
@@ -218,7 +214,7 @@ export interface OrderEventLog extends Log, Doc, Timestamped {
   uint256Data: string[];
 }
 
-export interface ParsedOrderEventLog extends Log, Doc, Timestamped {
+export interface ParsedOrderEventLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   eventType: OrderEventType;
@@ -238,6 +234,10 @@ export interface ParsedOrderEventLog extends Log, Doc, Timestamped {
   timestamp: string;
   sharesEscrowed: string;
   tokensEscrowed: string;
+}
+
+export interface CurrentOrder extends ParsedOrderEventLog {
+  open: number; // 0 == false, 1 == true. Can't index booleans
 }
 
 export enum OrderType {
@@ -291,7 +291,7 @@ export const ORDER_EVENT_TIMESTAMP = 'uint256Data.7';
 export const ORDER_EVENT_SHARES_ESCROWED = 'uint256Data.8';
 export const ORDER_EVENT_TOKENS_ESCROWED = 'uint256Data.9';
 
-export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
+export interface ParticipationTokensRedeemedLog extends Log, Timestamped {
   universe: Address;
   disputeWindow: Address;
   account: Address;
@@ -299,13 +299,13 @@ export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   feePayoutShare: string;
 }
 
-export interface ReportingParticipantDisavowedLog extends Log, Doc, Timestamped {
+export interface ReportingParticipantDisavowedLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   reportingParticipant: Address;
 }
 
-export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
+export interface ProfitLossChangedLog extends Log, Timestamped {
   universe: Address;
   market: Address;
   account: Address;
@@ -317,7 +317,7 @@ export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
   realizedCost: string;
 }
 
-export interface TimestampSetLog extends Log, Doc {
+export interface TimestampSetLog extends Log {
   newTimestamp: Timestamp;
 }
 
@@ -330,7 +330,7 @@ export enum TokenType {
   ParticipationToken,
 }
 
-export interface TokensMinted extends Log, Doc {
+export interface TokensMinted extends Log {
   universe: Address;
   token: Address;
   target: Address;
@@ -340,7 +340,7 @@ export interface TokensMinted extends Log, Doc {
   totalSupply: string;
 }
 
-export interface TokenBalanceChangedLog extends Log, Doc {
+export interface TokenBalanceChangedLog extends Log {
   universe: Address;
   owner: Address;
   token: string;
@@ -350,7 +350,7 @@ export interface TokenBalanceChangedLog extends Log, Doc {
   outcome: string;
 }
 
-export interface ShareTokenBalanceChangedLog extends Log, Doc {
+export interface ShareTokenBalanceChangedLog extends Log {
   universe: Address;
   account: Address;
   market: Address;
@@ -358,7 +358,7 @@ export interface ShareTokenBalanceChangedLog extends Log, Doc {
   balance: string;
 }
 
-export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
+export interface TradingProceedsClaimedLog extends Log, Timestamped {
   universe: Address;
   shareToken: Address;
   sender: Address;
@@ -369,12 +369,12 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
   fees: string;
 }
 
-export interface UniverseForkedLog extends Log, Doc {
+export interface UniverseForkedLog extends Log {
   universe: Address;
   forkingMarket: Address;
 }
 
-export interface UniverseCreatedLog extends Log, Doc {
+export interface UniverseCreatedLog extends Log {
   parentUniverse: Address;
   childUniverse: Address;
   payoutNumerators: string[];
@@ -393,7 +393,7 @@ export interface ExtraInfo {
   template?: ExtraInfoTemplate;
 }
 
-export interface MarketData extends Log, Doc {
+export interface MarketData extends Log {
   universe: Address;
   endTime: Timestamp;
   extraInfo: ExtraInfo;
@@ -426,9 +426,11 @@ export interface MarketData extends Log, Doc {
   noShowBond: string;
   disavowed: boolean;
   isTemplate: boolean;
+  feePercent: number;
+  finalized: boolean;
 }
 
-export interface DisputeDoc extends Log, Doc {
+export interface DisputeDoc extends Log {
   payoutNumerators: string[];
   bondSizeCurrent: string; // current round bond size
   stakeCurrent: string; // current round stake that's been provided by reporters so far
@@ -437,4 +439,49 @@ export interface DisputeDoc extends Log, Doc {
   totalRepStakedInPayout: string; // total REP across all rounds staked in completed bonds for this payout
   tentativeWinningOnRound: string; // Indicates that on a particular round this was the tentative winning payout
   disputeRound: string; // number of times the dispute bond has been filled in the reporting process; initial report is round 1
+}
+
+export interface InitialReporterTransferredLog extends Log {
+  universe: string;
+  market: string;
+  from: string;
+  to: string;
+}
+
+export interface MarketParticipantsDisavowedLog extends Log {
+  universe: string;
+  market: string;
+}
+
+export interface MarketTransferredLog extends Log {
+  universe: string;
+  market: string;
+  from: string;
+  to: string;
+}
+
+export interface TokensTransferredLog extends Log {
+  universe: string;
+  market: string;
+  token: string;
+  from: string;
+  to: string;
+  value: string;
+  tokenType: number;
+}
+
+export interface TransferSingleLog extends Log {
+  operator: string;
+  from: string;
+  to: string;
+  id: string;
+  value: string;
+}
+
+export interface TransferBatchLog extends Log {
+  operator: string;
+  from: string;
+  to: string;
+  ids: string[];
+  values: string[];
 }

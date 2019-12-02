@@ -14,10 +14,11 @@ import {
   Address,
   OrderEventType,
   ParsedOrderEventLog,
-  Timestamp
+  MarketData,
 } from "../logs/types";
 
 import * as t from "io-ts";
+import Dexie from "dexie";
 
 const ZERO = new BigNumber(0);
 
@@ -58,9 +59,7 @@ export const OrdersParams = t.partial({
   account: t.string,
   orderState: t.string,
   filterFinalized: t.boolean,
-  makerTaker,
-  earliestCreationTime: t.number,
-  latestCreationTime: t.number,
+  makerTaker
 });
 
 export interface MarketTradingHistory {
@@ -158,7 +157,6 @@ export class OnChainTrading {
   static GetAllOrdersParams = t.partial({
     account: t.string,
     filterFinalized: t.boolean,
-    makerTaker,
   });
   static GetOrdersParams = t.intersection([sortOptions, OrdersParams]);
   static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
@@ -171,29 +169,30 @@ export class OnChainTrading {
   ): Promise<MarketTradingHistory> {
     if (!params.account && params.marketIds.length === 0) {
       throw new Error(
-        "'getTradingHistory' requires an 'account' or 'marketId' param be provided"
+        "'getTradingHistory' requires an 'account' or 'marketIds' param be provided"
       );
     }
 
-    const request = {
-      selector: {
-        universe: params.universe,
-        market: { $in: params.marketIds },
-        outcome: params.outcome,
-        $or: [
-          { orderCreator: params.account },
-          { orderFiller: params.account },
-        ],
-      },
-      sort: params.sortBy ? [params.sortBy] : undefined,
-      limit: params.limit,
-      skip: params.offset,
-    };
-    const orderFilledResponse = await db.findOrderFilledLogs(request);
-    const orderIds = _.map(orderFilledResponse, 'orderId');
-    const ordersResponse = await db.findOrderCreatedLogs({
-      selector: { orderId: { $in: orderIds } },
+    let orderFilledCollection: Dexie.Collection<ParsedOrderEventLog, any>;
+    if (params.marketIds) {
+      orderFilledCollection = db.OrderEvent.where("market").anyOf(params.marketIds);
+    } else {
+      orderFilledCollection = db.OrderEvent.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account);
+    }
+
+    const formattedOutcome = `0x${params.outcome.toString(16)}`;
+
+    orderFilledCollection = orderFilledCollection.and((log) => {
+      if (log.universe !== params.universe) return false;
+      if (log.eventType !== OrderEventType.Fill) return false;
+      return log.outcome === formattedOutcome;
     });
+    if (params.limit) orderFilledCollection = orderFilledCollection.limit(params.limit);
+    if (params.offset) orderFilledCollection = orderFilledCollection.offset(params.offset);
+    const orderFilledResponse = await orderFilledCollection.toArray();
+
+    const orderIds = _.map(orderFilledResponse, 'orderId');
+    const ordersResponse = await db.OrderEvent.where("orderId").anyOf(orderIds).toArray();
     const orders = _.keyBy(ordersResponse, 'orderId');
 
     const marketIds = _.map(orderFilledResponse, 'market');
@@ -268,35 +267,8 @@ export class OnChainTrading {
     if (!params.account) {
       throw new Error("'getAllOrders' requires an 'account' param be provided");
     }
-    if (!params.makerTaker) {
-      params.makerTaker = 'either';
-    }
 
-    const request = {
-      selector: {
-        amount: { $gt: '0x00' },
-      },
-    };
-    if (params.makerTaker === 'either') {
-      request.selector = Object.assign(request.selector, {
-        $or: [
-          { orderCreator: params.account },
-          { orderFiller: params.account },
-        ],
-      });
-    }
-    if (params.makerTaker === 'maker') {
-      request.selector = Object.assign(request.selector, {
-        orderCreator: params.account,
-      });
-    }
-    if (params.makerTaker === 'taker') {
-      request.selector = Object.assign(request.selector, {
-        orderFiller: params.account,
-      });
-    }
-
-    const currentOrdersResponse = await db.findCurrentOrderLogs(request);
+    const currentOrdersResponse = await db.CurrentOrders.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account).and((log) => log.amount > '0x00').toArray();
 
     const marketIds = _.map(currentOrdersResponse, 'market');
     const markets = await getMarkets(
@@ -340,88 +312,42 @@ export class OnChainTrading {
     db: DB,
     params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
   ): Promise<Orders> {
-    if (!params.universe && !params.marketId) {
+    if (!params.marketId) {
       throw new Error(
-        "'getOrders' requires a 'universe' or 'marketId' param be provided"
+        "'getOrders' requires a 'marketId' or 'universe' param be provided"
       );
     }
-    if (!params.makerTaker) {
-      params.makerTaker = 'either';
-    }
 
-    const request = {
-      selector: {
-        universe: params.universe,
-        market: params.marketId,
-        outcome: params.outcome,
-        orderType: params.orderType,
-      },
-      sort: params.sortBy ? [params.sortBy] : undefined,
-      limit: params.limit,
-      skip: params.offset,
-    };
-    if (params.account) {
-      if (params.makerTaker === 'either') {
-        request.selector = Object.assign(request.selector, {
-          $or: [
-            { orderCreator: params.account },
-            { orderFiller: params.account },
-          ],
-        });
-      }
-      if (params.makerTaker === 'maker') {
-        request.selector = Object.assign(request.selector, {
-          orderCreator: params.account,
-        });
-      }
-      if (params.makerTaker === 'taker') {
-        request.selector = Object.assign(request.selector, {
-          orderFiller: params.account,
-        });
-      }
-    }
-    if (params.orderState === OrderState.OPEN) {
-      request.selector = Object.assign(request.selector, {
-        amount: { $ne: '0x00' },
-        eventType: { $ne: 1 },
-      });
-    }
-    if (params.orderState === OrderState.CANCELED) {
-      request.selector = Object.assign(request.selector, { eventType: 1 });
-    }
-    if (params.orderState === OrderState.FILLED) {
-      request.selector = Object.assign(request.selector, { eventType: 3 });
-    }
+    let currentOrdersResponse: ParsedOrderEventLog[];
 
-    if (params.latestCreationTime && params.earliestCreationTime) {
-      request.selector = Object.assign(request.selector, {
-        $and: [
-          {
-            timestamp: { $lte: `0x${params.latestCreationTime.toString(16)}` },
-          },
-          {
-            timestamp: {
-              $gte: `0x${params.earliestCreationTime.toString(16)}`,
-            },
-          },
-        ],
-      });
-    } else if (params.latestCreationTime) {
-      request.selector = Object.assign(request.selector, {
-        timestamp: { $lte: `0x${params.latestCreationTime.toString(16)}` },
-      });
-    } else if (params.earliestCreationTime) {
-      request.selector = Object.assign(request.selector, {
-        timestamp: { $gte: `0x${params.earliestCreationTime.toString(16)}` },
-      });
-    }
+    if (params.universe) {
+      currentOrdersResponse = await db.CurrentOrders.where('orderCreator').equals(params.account).or('orderFiller').equals(params.account).and((log) => {
+        return log.universe === params.universe;
+      }).toArray();
+    } else {
+      currentOrdersResponse = await db.CurrentOrders.where('[market+outcome+orderType]').between([
+        params.marketId,
+        params.outcome ? `0x0${params.outcome}` : Dexie.minKey,
+        params.orderType ? params.orderType : Dexie.minKey
+      ], [
+        params.marketId,
+        params.outcome ? `0x0${params.outcome}` : Dexie.maxKey,
+        params.orderType ? params.orderType : Dexie.maxKey
+      ]).and((log) => {
+        if (params.account) {
+          if (log.orderCreator != params.account && log.orderFiller != params.account) return false;
+        }
 
-    const currentOrdersResponse = await db.findCurrentOrderLogs(request);
+        if (params.orderState === OrderState.OPEN && log.amount == "0x00") return false;
+        if (params.orderState === OrderState.CANCELED && log.eventType !== OrderEventType.Cancel) return false;
+        if (params.orderState === OrderState.FILLED && log.eventType !== OrderEventType.Fill) return false;
+
+        return true;
+      }).toArray();
+    }
 
     const orderIds = _.map(currentOrdersResponse, 'orderId');
-    const originalOrdersResponse = await db.findOrderCreatedLogs({
-      selector: { orderId: { $in: orderIds } },
-    });
+    const originalOrdersResponse = await db.OrderEvent.where("orderId").anyOf(orderIds).and((log) => log.eventType === OrderEventType.Create).toArray();
     const originalOrders = _.keyBy(originalOrdersResponse, 'orderId');
 
     const marketIds = _.map(currentOrdersResponse, 'market');
@@ -524,23 +450,15 @@ export class OnChainTrading {
     db: DB,
     params: t.TypeOf<typeof OnChainTrading.GetBetterWorseOrdersParams>
   ): Promise<BetterWorseResult> {
-    const request = {
-      selector: {
-        market: params.marketId,
-        outcome: `0x0${params.outcome.toString()}`,
-        orderType: params.orderType === 'buy' ? 0 : 1,
-        amount: { $gt: '0x00' },
-      },
-    };
+    const desiredOrderType = params.orderType === 'buy' ? 0 : 1;
 
-    const currentOrdersResponse = await db.findCurrentOrderLogs(request);
-    const marketReponse = await db.findMarketCreatedLogs({
-      selector: { market: params.marketId },
-    });
-    if (marketReponse.length < 1) {
+    const currentOrdersResponse = await db.CurrentOrders.where("[market+open]").equals([params.marketId, 1]).and((log) => {
+      return log.outcome === `0x0${params.outcome.toString()}` && log.orderType === desiredOrderType;
+    }).toArray();
+    const marketDoc = await db.MarketCreated.get(params.marketId);
+    if (!marketDoc) {
       throw new Error(`Market ${params.marketId} not found.`);
     }
-    const marketDoc = marketReponse[0];
     const minPrice = new BigNumber(marketDoc.prices[0]);
     const maxPrice = new BigNumber(marketDoc.prices[1]);
     const numTicks = new BigNumber(marketDoc.numTicks);
@@ -589,13 +507,14 @@ export async function getMarkets(
   db: DB,
   filterFinalized: boolean
 ) {
-  let request = { selector: { market: { $in: marketIds }}};
+  let marketsData: MarketData[];
   if (filterFinalized) {
-    request.selector = Object.assign(request.selector, {
-      finalized: false
-    })
+    marketsData = await db.Markets.where("market").anyOf(marketIds).and((log) => {
+      return log.finalized === false;
+    }).toArray();
+  } else {
+    marketsData = await db.Markets.where("market").anyOf(marketIds).toArray();
   }
-  const marketsResponse = await db.findMarkets(request);
-  const markets = _.keyBy(marketsResponse, 'market');
+  const markets = _.keyBy(marketsData, 'market');
   return markets;
 }

@@ -43,7 +43,7 @@ import {
   augurEmitter,
   EventNameEmitter,
 } from './events';
-import { Address, GenericEventDBDescription } from './state/logs/types';
+import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
 
 export class Augur<TProvider extends Provider = Provider> {
@@ -71,36 +71,6 @@ export class Augur<TProvider extends Provider = Provider> {
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
-
-  readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
-    { EventName: 'CompleteSetsPurchased', indexes: [] },
-    { EventName: 'CompleteSetsSold', indexes: [] },
-    { EventName: 'DisputeCrowdsourcerCompleted', indexes: ['market'] },
-    { EventName: 'DisputeCrowdsourcerContribution', indexes: [] },
-    { EventName: 'DisputeCrowdsourcerCreated', indexes: [] },
-    { EventName: 'DisputeCrowdsourcerRedeemed', indexes: [] },
-    { EventName: 'DisputeWindowCreated', indexes: [] },
-    { EventName: 'InitialReporterRedeemed', indexes: [] },
-    { EventName: 'InitialReportSubmitted', indexes: [] },
-    { EventName: 'InitialReporterTransferred', indexes: [] },
-    { EventName: 'MarketCreated', indexes: ['market'] },
-    { EventName: 'MarketFinalized', indexes: ['market'] },
-    { EventName: 'MarketMigrated', indexes: ['market'] },
-    { EventName: 'MarketParticipantsDisavowed', indexes: [] },
-    { EventName: 'MarketTransferred', indexes: [] },
-    { EventName: 'MarketVolumeChanged', indexes: [] },
-    { EventName: 'MarketOIChanged', indexes: [] },
-    { EventName: 'OrderEvent', indexes: [] },
-    { EventName: 'ParticipationTokensRedeemed', indexes: [] },
-    { EventName: 'ReportingParticipantDisavowed', indexes: [] },
-    { EventName: 'TimestampSet', indexes: ['newTimestamp'] },
-    { EventName: 'TradingProceedsClaimed', indexes: [] },
-    { EventName: 'UniverseCreated', indexes: [] },
-    { EventName: 'UniverseForked', indexes: ['universe'] },
-    { EventName: 'TransferSingle', indexes: []},
-    { EventName: 'TransferBatch', indexes: []},
-    { EventName: 'ShareTokenBalanceChanged', indexes: []},
-  ];
 
   constructor(
     provider: TProvider,
@@ -350,12 +320,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getZeroXOrders = (
     params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrders>[2]
   ) => {
-    delete params.sortBy;
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrders)(params);
-  };
-
-  syncUserData(account: string): void {
-    this.connector.syncUserData(account);
   };
 
   get signer(): EthersSigner {

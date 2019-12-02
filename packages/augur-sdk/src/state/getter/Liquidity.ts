@@ -51,7 +51,8 @@ export class Liquidity {
         numOutcomes: params.numOutcomes,
         spread: params.spread,
     });
-    const totalMarkets = (await db.getNumRowsFromDB("Markets", true)) + 1; // + 1 to include this uncreated hypothetical market being ranked
+    const unfinalizedMarkets = await db.Markets.where("finalized").equals(0);
+    const totalMarkets = await unfinalizedMarkets.count() + 1; // 1 to account for this theoretical market
     if (liquidityScore.isZero()) {
         return {
             marketRank: 0,
@@ -59,12 +60,9 @@ export class Liquidity {
             hasLiquidity: false
         };
     }
-    const key = `liquidity.${params.spread}`;
-    const rankingMarkets = await db.findMarkets({
-        selector: {
-            [key]: { $gt: "0" }
-        }
-    });
+    const rankingMarkets = await unfinalizedMarkets.and((market) => {
+        return market.liquidity[params.spread] > 0;
+    }).toArray();
     const higherRankingMarkets = _.reduce(rankingMarkets, (numHigher, market) => {
         if (market.liquidity) {
             return numHigher + (liquidityScore.lt(market.liquidity[params.spread]) ? 1 : 0);
