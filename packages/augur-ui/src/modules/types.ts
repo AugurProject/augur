@@ -404,13 +404,15 @@ export interface Analytics {
 }
 
 export interface Analytic {
-  addedTimestamp: number;
   type: string;
   eventName: string;
   payload: AnalyticPayload;
 }
 
-export interface AnalyticPayload {}
+export interface AnalyticPayload {
+  addedTimestamp: number;
+  userAgent: string;
+}
 
 export interface MarketsList {
   isSearching: boolean;

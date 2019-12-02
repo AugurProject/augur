@@ -11,7 +11,21 @@ import {
   SEND_DELAY_SECONDS,
 } from 'modules/app/actions/analytics-management';
 
-export const track = (eventName, payload): ThunkAction<any, any, any, any> => (
+export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(track(eventName, {
+    ...payload,
+    url: window.location.href,
+    title: null,
+    hash: window.location.hash,
+    path: window.location.pathname,
+    search: window.location.search,
+  }, ANALYTIC_EVENT_TYPES.PAGE));
+};
+
+export const track = (eventName, payload, type?): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -19,9 +33,11 @@ export const track = (eventName, payload): ThunkAction<any, any, any, any> => (
   const analyticId = `${eventName}-${blockchain.currentAugurTimestamp}`;
   const analytic = {
     eventName,
-    payload,
-    addedTimestamp: blockchain.currentAugurTimestamp,
-    type: ANALYTIC_EVENT_TYPES.TRACK,
+    payload: {
+      ...payload,
+      addedTimestamp: blockchain.currentAugurTimestamp,
+    },
+    type: type || ANALYTIC_EVENT_TYPES.TRACK,
   };
   dispatch(addAnalytic(analytic, analyticId));
 
@@ -39,11 +55,17 @@ export const sendAnalytic = (
 ) => {
   try {
     if (!isLocalHost()) {
-      // todo: need to also have page here
-      analytics.track(analytic.eventName, {
-        userAgent: window.navigator.userAgent,
-        ...analytic.payload,
-      });
+      if (analytic.type === ANALYTIC_EVENT_TYPES.TRACK) {
+        analytics.track(analytic.eventName, {
+          userAgent: window.navigator.userAgent,
+          ...analytic.payload,
+        });
+      } else if (analytic.type === ANALYTIC_EVENT_TYPES.PAGE) {
+        analytics.page({
+          userAgent: window.navigator.userAgent,
+          ...analytic.payload,
+        });
+      }
     }
   } catch (err) {
     console.log(err);
@@ -59,7 +81,7 @@ export const addedDaiEvent = (dai: Number): ThunkAction<any, any, any, any> => (
     loginAccount.balances.dai &&
     createBigNumber(loginAccount.balances.dai).gt(createBigNumber(dai))
   ) {
-    track(ADDED_DAI, {});
+    track(ADDED_DAI, {}, null);
   }
 };
 
@@ -79,3 +101,7 @@ export const AUGUR_USES_DAI = 'Onboarding - Augur Uses Dai';
 export const ADD_FUNDS = 'Add Funds Modal';
 export const ACCOUNT_CREATED = 'Onboarding - Account Created';
 export const ADDED_DAI = 'Added Dai';
+
+// Modal event names
+export const MODAL_CLOSED = 'Modal - Modal Closed';
+export const MODAL_VIEWED = 'Modal - Modal Viewed';
