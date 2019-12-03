@@ -10,6 +10,7 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
+import { NULL_ADDRESS } from '@augurproject/sdk/src';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -28,9 +29,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       {
         orderSource: [
           {
-            senderAddress: '0x0000000000000000000000000000000000000000',
+            senderAddress: NULL_ADDRESS,
             makerAddress: '0x14e2f1f157e7dd4057d02817436d628a37120fd1',
-            takerAddress: '0x0000000000000000000000000000000000000000',
+            takerAddress: NULL_ADDRESS,
             makerFee: new BigNumber('0'),
             takerFee: new BigNumber('0'),
             makerAssetAmount: new BigNumber('94000000000000000000'),
@@ -40,7 +41,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
             takerAssetData:
               '0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c',
             expirationTimeSeconds: new BigNumber('1549008000'),
-            feeRecipientAddress: '0x0000000000000000000000000000000000000000',
+            feeRecipientAddress: NULL_ADDRESS,
             salt: new BigNumber(
               '15865382935540085750341462125291637590635483813634352296303261539769641236771'
             ),

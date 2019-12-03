@@ -73,6 +73,9 @@
 
     > div:first-of-type {
       align-items: center;
+      justify-content: center;
+      max-width: 340px;
+      margin: auto;
 
       > span:first-of-type {
         .text-24-bold;
@@ -94,6 +97,8 @@
         width: 100%;
 
         > button:first-of-type {
+          margin: auto;
+          max-width: 156px;
           width: 100%;
         }
 
@@ -106,6 +111,14 @@
 
     > div:last-of-type {
       display: none;
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    > div:first-of-type {
+      > div > button:first-of-type {
+        max-width: 100%;
+      }
     }
   }
 }

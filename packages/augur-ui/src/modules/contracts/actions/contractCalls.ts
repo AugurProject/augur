@@ -113,6 +113,22 @@ export async function convertV1ToV2() {
   return response;
 }
 
+export async function convertV1ToV2_estimate() {
+  const { contracts } = augurSdk.get();
+  const allowance = createBigNumber(99999999999999999999).times(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+
+  const getReputationToken = await contracts.universe.getReputationToken_();
+  const approvalGas = await contracts.legacyReputationToken.approve_estimateGas(
+    getReputationToken,
+    allowance
+  );
+  const migrationGas = await contracts.reputationToken.migrateFromLegacyReputationToken_estimateGas();
+
+  return approvalGas.plus(migrationGas);
+}
+
 export async function getCurrentBlock() {
   const Augur = augurSdk.get();
   const blockNumber = await Augur.provider.getBlockNumber();
@@ -166,6 +182,15 @@ export async function getDaiBalance(address: string): Promise<number> {
   return formatAttoDai(balance).value;
 }
 
+export async function sendDai_estimateGas(address: string, amount: string): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  const Cash = contracts.cash;
+  const onChainAmount = createBigNumber(amount).multipliedBy(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  return Cash.transfer_estimateGas(address, onChainAmount);
+}
+
 export async function sendDai(address: string, amount: string) {
   const { contracts } = augurSdk.get();
   const Cash = contracts.cash;
@@ -182,6 +207,16 @@ export async function sendEthers(address: string, amount: string) {
   );
   return Augur.sendETH(address, onChainAmount);
 }
+
+export async function sendRep_estimateGas(address: string, amount: string): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  const RepToken = contracts.getReputationToken();
+  const onChainAmount = createBigNumber(amount).multipliedBy(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  return RepToken.transfer_estimateGas(address, onChainAmount);
+}
+
 
 export async function sendRep(address: string, amount: string) {
   const { contracts } = augurSdk.get();
@@ -279,7 +314,7 @@ export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
 }
 
 export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(182);
+  return new BigNumber(148);
 }
 
 export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
@@ -427,6 +462,17 @@ export interface doReportDisputeAddStake {
   isInvalid: boolean;
 }
 
+export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
+  const market = getMarket(report.marketId);
+  if (!market) return false;
+  const payoutNumerators = getPayoutNumerators(report);
+  return market.doInitialReport_estimateGas(
+    payoutNumerators,
+    report.description,
+    createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
 export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
@@ -435,6 +481,19 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
     payoutNumerators,
     report.description,
     createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
+export async function addRepToTentativeWinningOutcome_estimateGas(
+  addStake: doReportDisputeAddStake
+) {
+  const market = getMarket(addStake.marketId);
+  if (!market) return false;
+  const payoutNumerators = getPayoutNumerators(addStake);
+  return market.contributeToTentative_estimateGas(
+    payoutNumerators,
+    createBigNumber(addStake.attoRepAmount),
+    addStake.description
   );
 }
 
@@ -448,6 +507,17 @@ export async function addRepToTentativeWinningOutcome(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
     addStake.description
+  );
+}
+
+export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
+  const market = getMarket(dispute.marketId);
+  if (!market) return false;
+  const payoutNumerators = getPayoutNumerators(dispute);
+  return market.contribute_estimateGas(
+    payoutNumerators,
+    createBigNumber(dispute.attoRepAmount),
+    dispute.description
   );
 }
 
@@ -501,6 +571,51 @@ export interface CreateNewMarketParams {
   affiliateFee: number;
   offsetName?: string;
   template?: ExtraInfoTemplate;
+}
+
+export function createMarketEstimateGas(
+  newMarket: CreateNewMarketParams,
+  isRetry: Boolean
+) {
+  const params = constructMarketParams(newMarket, isRetry) as any;
+  const Augur = augurSdk.get();
+  const { universe } = Augur.contracts;
+
+  switch (newMarket.marketType) {
+    case SCALAR: {
+      return universe.createScalarMarket_estimateGas(
+        params.endTime,
+        params.feePerCashInAttoCash,
+        NULL_ADDRESS,
+        params.affiliateFeeDivisor,
+        '0x0000000000000000000000000000000000000001',
+        params.prices,
+        params.numTicks,
+        params.extraInfo
+      );
+    }
+    case CATEGORICAL: {
+      return universe.createCategoricalMarket_estimateGas(
+        params.endTime,
+        params.feePerCashInAttoCash,
+        NULL_ADDRESS,
+        params.affiliateFeeDivisor,
+        '0x0000000000000000000000000000000000000001',
+        params.outcomes,
+        params.extraInfo
+      );
+    }
+    default: {
+      return universe.createYesNoMarket_estimateGas(
+        params.endTime,
+        params.feePerCashInAttoCash,
+        NULL_ADDRESS,
+        params.affiliateFeeDivisor,
+        '0x0000000000000000000000000000000000000001',
+        params.extraInfo
+      );
+    }
+  }
 }
 
 export function createMarket(
@@ -779,6 +894,28 @@ export async function simulateTradeGasLimit(
   return Augur.simulateTradeGasLimit(params);
 }
 
+export async function claimMarketsProceedsEstimateGas(
+  markets: string[],
+  shareHolder: string,
+  fingerprint: string = formatBytes32String('11')
+) {
+  const augur = augurSdk.get();
+
+  if (markets.length > 1) {
+    return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
+      markets,
+      shareHolder,
+      fingerprint
+    );
+  } else {
+    return augur.contracts.augurTrading.claimTradingProceeds_estimateGas(
+      markets[0],
+      shareHolder,
+      fingerprint
+    );
+  }
+}
+
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
@@ -825,6 +962,19 @@ export async function migrateThroughOneFork(
     market.migrateThroughOneFork(payoutNumerators, description);
   } catch (e) {
     console.error('Could not migrate market', e);
+  }
+}
+
+export async function reportAndMigrateMarket_estimateGas(
+  migration: doReportDisputeAddStake
+) {
+  const Augur = augurSdk.get();
+  const market = Augur.getMarket(migration.marketId);
+  const payoutNumerators = getPayoutNumerators(migration);
+  try {
+    market.migrateThroughOneFork_estimateGas(payoutNumerators, migration.description);
+  } catch (e) {
+    console.error('Could not report and migrate market', e);
   }
 }
 

@@ -24,8 +24,9 @@ import {
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { BaseAction, CreateLiquidityOrders } from 'modules/types';
+import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
@@ -36,6 +37,8 @@ const mapStateToProps = (state: AppState) => {
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 
@@ -101,13 +104,11 @@ const mergeProps = (sP, dP, oP) => {
     submitAllTxCount,
     breakdown: [
       {
-        label: 'Estimated GAS',
-        // @ts-ignore
-        value: formatEther(gasCost).full,
+        label: 'Transaction Fee',
+        value: sP.Gnosis_ENABLED ? displayGasInDai(gasCost, sP.ethToDaiRate) : formatEther(gasCost).full,
       },
       {
         label: 'Total Cost (DAI)',
-        // @ts-ignore
         value: formatDai(totalCost.toFixed()).full,
         highlight: true,
       },
