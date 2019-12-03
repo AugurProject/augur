@@ -201,6 +201,7 @@ export default class ModalReporting extends Component<
         this.state.inputScalarOutcome || this.state.checked
       );
     }
+    const ONE_REP = '1000000000000000000';
     const report = {
       marketId,
       maxPrice,
@@ -209,7 +210,7 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       description: '',
-      attoRepAmount: estimateGas ? '100000000000000000000' : this.state.inputtedReportingStake.inputToAttoRep,
+      attoRepAmount: estimateGas ? ONE_REP : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
     };
