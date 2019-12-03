@@ -5,15 +5,17 @@ import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 
+
 const mapStateToProps = (state, ownProps) => {
   const { loginAccount, appStatus, blockchain } = state;
   const { zeroXEnabled: Ox_ENABLED } = appStatus;
-
+  
   const selectedOutcomeId =
-    ownProps.selectedOutcomeId !== undefined &&
-    ownProps.selectedOutcomeId !== null
-      ? ownProps.selectedOutcomeId
+    ownProps.selectedOutcome !== undefined &&
+    ownProps.selectedOutcome !== null
+      ? ownProps.selectedOutcome.id
       : ownProps.market.defaultSelectedOutcomeId;
+
   let outcomeOrderBook = {};
   if (ownProps.initialLiquidity) {
     outcomeOrderBook = formatOrderBook(
@@ -21,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
     );
   }
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);
-
+  
   return {
     availableDai: createBigNumber(loginAccount.balances.dai),
     currentTimestamp: blockchain.currentAugurTimestamp,
