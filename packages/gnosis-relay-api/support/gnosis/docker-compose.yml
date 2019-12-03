@@ -79,6 +79,7 @@ services:
       - BLOCK_POLLING_INTERVAL=1s
       - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120
       - VERBOSITY=6
+      - RPC_ADDR=0x:60557
     networks:
       - augur
 
