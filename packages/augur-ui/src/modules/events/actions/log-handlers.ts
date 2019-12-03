@@ -133,7 +133,8 @@ export const handleGnosisStateUpdate = (response) => (
 };
 
 export const handleSDKReadyEvent = () => (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   // wire up events for sdk
   augurSdk.subscribe(dispatch);
@@ -143,9 +144,11 @@ export const handleSDKReadyEvent = () => (
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats())
-  dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
-  dispatch(updateAuthStatus(IS_LOGGED, true));
-  dispatch(loadAccountData());
+  if (loginAccount.address) {
+    dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
+    dispatch(loadAccountData());
+  }
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (
