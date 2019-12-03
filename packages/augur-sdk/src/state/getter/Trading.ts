@@ -28,8 +28,6 @@ const TradingHistoryParams = t.partial({
   marketIds: t.array(t.string),
   outcome: t.number,
   filterFinalized: t.boolean,
-  earliestCreationTime: t.number,
-  latestCreationTime: t.number,
 });
 
 export const OutcomeParam = t.keyof({
@@ -180,12 +178,13 @@ export class Trading {
       orderFilledCollection = db.OrderEvent.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account);
     }
 
-    const formattedOutcome = `0x${params.outcome.toString(16)}`;
+    const formattedOutcome = params.outcome ? `0x${params.outcome.toString(16)}` : "";
 
     orderFilledCollection = orderFilledCollection.and((log) => {
-      if (log.universe !== params.universe) return false;
       if (log.eventType !== OrderEventType.Fill) return false;
-      return log.outcome === formattedOutcome;
+      if (params.universe && log.universe !== params.universe) return false;
+      if (params.outcome && log.outcome !== formattedOutcome) return false;
+      return true;
     });
     if (params.limit) orderFilledCollection = orderFilledCollection.limit(params.limit);
     if (params.offset) orderFilledCollection = orderFilledCollection.offset(params.offset);
@@ -455,7 +454,7 @@ export class Trading {
     const currentOrdersResponse = await db.CurrentOrders.where("[market+open]").equals([params.marketId, 1]).and((log) => {
       return log.outcome === `0x0${params.outcome.toString()}` && log.orderType === desiredOrderType;
     }).toArray();
-    const marketDoc = await db.MarketCreated.get(params.marketId);
+    const marketDoc = await db.Markets.get(params.marketId);
     if (!marketDoc) {
       throw new Error(`Market ${params.marketId} not found.`);
     }
@@ -510,7 +509,7 @@ export async function getMarkets(
   let marketsData: MarketData[];
   if (filterFinalized) {
     marketsData = await db.Markets.where("market").anyOf(marketIds).and((log) => {
-      return log.finalized === false;
+      return !log.finalized;
     }).toArray();
   } else {
     marketsData = await db.Markets.where("market").anyOf(marketIds).toArray();

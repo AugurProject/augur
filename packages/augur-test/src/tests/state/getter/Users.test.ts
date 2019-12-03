@@ -423,8 +423,8 @@ describe('State API :: Users :: ', () => {
     expect(stats).toMatchObject({
       marketsCreated: 3,
       marketsTraded: 3,
-      numberOfTrades: 3,
-      positions: 9,
+      numberOfTrades: 2,
+      positions: 8,
       redeemedPositions: 2,
       successfulDisputes: 1,
     });
@@ -598,7 +598,7 @@ describe('State API :: Users :: ', () => {
     });
     expect(stats).toMatchObject({
       positions: 16,
-      numberOfTrades: 3,
+      numberOfTrades: 2,
       marketsCreated: 0,
       marketsTraded: 6,
       successfulDisputes: 0,
@@ -725,8 +725,8 @@ describe('State API :: Users :: ', () => {
     expect(stats).toMatchObject({
       marketsCreated: 6,
       marketsTraded: 6,
-      numberOfTrades: 3,
-      positions: 18,
+      numberOfTrades: 2,
+      positions: 16,
       redeemedPositions: 4,
       successfulDisputes: 2,
     });

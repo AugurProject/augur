@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import { NumericDictionary } from 'lodash';
+import { Dexie } from "dexie";
 import {
   ProfitLossChangedLog,
   ParsedOrderEventLog,
@@ -352,9 +353,9 @@ export class Users {
         ((disputeCrowdsourcerReedeemedLogs as any) as DisputeCrowdsourcerRedeemed[]).map(
           async (log: DisputeCrowdsourcerRedeemed) => {
             // TODO: If this is a slowdown this could be a single query outside of the loop
-            const market = await db.MarketFinalized.get(log.market);
+            const market = await db.Markets.get(log.market);
 
-            if (market) {
+            if (market.finalized) {
               return compareArrays(
                 market.winningPayoutNumerators,
                 log.payoutNumerators
@@ -539,7 +540,13 @@ try {
     );
 
     // Create mapping for market/outcome balances
-    const tokenBalanceChangedLogs = await db.TokenBalanceChanged.where("account").equals(params.account).and((log) => {
+    const tokenBalanceChangedLogs = await db.TokenBalanceChanged.where("[owner+token]").between([
+      params.account,
+      Dexie.minKey
+    ],[
+      params.account,
+      Dexie.maxKey
+    ], true, true).and((log) => {
       return marketIds.includes(log.market);
     }).toArray();
     const marketOutcomeBalances = {};

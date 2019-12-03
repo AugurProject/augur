@@ -123,7 +123,7 @@ export class DB {
     { EventName: 'MarketTransferred', indexes: [] },
     { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
-    { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]'] },
+    { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'orderCreator', 'orderFiller'] },
     { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
     { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
     { EventName: 'ReportingParticipantDisavowed', indexes: [] },
@@ -226,7 +226,7 @@ export class DB {
       schemas[genericEventDBDescription.EventName] = fields.join(',');
     }
     schemas["Markets"] = "market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber";
-    schemas["CurrentOrders"] = "orderId, [market+open], [market+outcome+orderType], orderCreator, orderFiller, blockNumber";
+    schemas["CurrentOrders"] = "orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber";
     schemas["Dispute"] = "[market+payoutNumerators],market,blockNumber";
     schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],blockNumber";
     schemas["SyncStatus"] = "eventName,blockNumber,syncing";

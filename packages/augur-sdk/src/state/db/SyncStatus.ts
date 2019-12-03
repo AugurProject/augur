@@ -31,7 +31,7 @@ export class SyncStatus extends AbstractTable {
 
   async getLowestSyncingBlockForAllDBs(): Promise<number> {
     const results = await this.find({
-      syncing: true,
+      syncing: 1,
     });
     const sorted = await results.sortBy("blockNumber");
 

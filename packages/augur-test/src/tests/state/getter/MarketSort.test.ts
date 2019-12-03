@@ -27,7 +27,7 @@ describe('State API :: Market Sorts', () => {
     // With no orders on the book the invalidFilter will be false
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     let marketData = await (await db).Markets.get(market.address);
-    await expect(marketData.invalidFilter).toEqual(false);
+    await expect(marketData.invalidFilter).toEqual(0);
 
     // Place a bid order on Invalid
     let bid = new BigNumber(0);
