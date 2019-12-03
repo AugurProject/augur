@@ -124,12 +124,12 @@ export class GnosisRelayAPI implements IGnosisRelayAPI {
 
     try {
         const result = await axios.post(url, createSafeTx);
-
         return result.data;
     }
     catch(error) {
-      console.error('createSafe', error.response.data);
-      throw error.response.data;
+      const err = error.response ? error.response.data : error;
+      console.error('createSafe', err);
+      throw err;
     }
   }
 
