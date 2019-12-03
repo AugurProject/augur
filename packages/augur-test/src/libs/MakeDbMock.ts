@@ -6,6 +6,9 @@ import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/B
 import * as _ from "lodash";
 import * as fs from "fs";
 import uuid = require("uuid");
+import { configureDexieForNode } from "@augurproject/sdk/build/state/utils/DexieIDBShim";
+
+configureDexieForNode(true);
 
 let MOCK_NET_ID = 0;
 
@@ -51,7 +54,7 @@ export function makeDbMock(prefix:string = uuid.v4()) {
         constants.blockstreamDelay,
         constants.defaultStartSyncBlockNumber,
         augur,
-        makeBlockAndLogStreamerListener(),
+        makeBlockAndLogStreamerListener()
       );
       mockState.db = db;
 
