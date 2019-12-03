@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
-import { AbstractTable, BaseDocument } from './AbstractTable';
+import { BaseDocument } from './AbstractTable';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { Log, ParsedLog } from '@augurproject/types';
 import { SyncStatus } from './SyncStatus';
 import { SubscriptionEventName } from '../../constants';
+import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -13,12 +14,8 @@ export interface Document extends BaseDocument {
 /**
  * Stores event logs for non-user-specific events.
  */
-export class SyncableDB extends AbstractTable {
-  protected augur: Augur;
+export class SyncableDB extends RollbackTable {
   protected eventName: string;
-  private syncStatus: SyncStatus;
-  private syncing: boolean;
-  private rollingBack: boolean;
 
   constructor(
     augur: Augur,
@@ -28,15 +25,12 @@ export class SyncableDB extends AbstractTable {
     dbName: string = eventName,
     indexes: string[] = []
   ) {
-    super(networkId, dbName, db.dexieDB);
-    this.augur = augur;
+    super(networkId, augur, dbName, db);
     this.eventName = eventName;
-    this.syncStatus = db.syncStatus;
 
     db.notifySyncableDBAdded(this);
     db.registerEventListener(this.eventName, this.addNewBlock);
 
-    this.syncing = false;
     this.rollingBack = false;
   }
 
@@ -141,27 +135,6 @@ export class SyncableDB extends AbstractTable {
 
     return blocknumber;
   };
-
-  async rollback(blockNumber: number): Promise<void> {
-    // Remove each change from blockNumber onward
-    this.rollingBack = true;
-
-    try {
-      const docsToRemove = await this.table.where("blockNumber").aboveOrEqual(blockNumber);
-      const idsToRemove = await docsToRemove.primaryKeys();
-      await this.table.bulkDelete(idsToRemove);
-
-      if (this.augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
-        await this.augur.syncableFlexSearch.removeMarketCreatedDocs(docsToRemove);
-      }
-
-      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
-    } catch (err) {
-      console.error(err);
-    }
-
-    this.rollingBack = false;
-  }
 
   protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);

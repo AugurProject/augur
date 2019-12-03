@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
-import { AbstractTable, BaseDocument } from './AbstractTable';
-import { SyncStatus } from './SyncStatus';
+import { BaseDocument } from './AbstractTable';
 import { Log, ParsedLog } from '@augurproject/types';
 import { DB } from './DB';
 import { sleep } from '../utils/utils';
+import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -13,8 +13,7 @@ export interface Document extends BaseDocument {
 /**
  * Stores derived data from multiple logs and post-log processing
  */
-export class DerivedDB extends AbstractTable {
-  protected syncStatus: SyncStatus;
+export class DerivedDB extends RollbackTable {
   protected stateDB: DB;
   private mergeEventNames: string[];
   private name: string;
@@ -35,9 +34,7 @@ export class DerivedDB extends AbstractTable {
     mergeEventNames: string[],
     augur: Augur
   ) {
-    super(networkId, name, db.dexieDB);
-    this.augur = augur;
-    this.syncStatus = db.syncStatus;
+    super(networkId, augur, name, db);
     this.mergeEventNames = mergeEventNames;
     this.stateDB = db;
     this.name = name;
@@ -46,12 +43,14 @@ export class DerivedDB extends AbstractTable {
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
     await this.doSync(highestAvailableBlockNumber);
     await this.syncStatus.setHighestSyncBlock(
       this.dbName,
       highestAvailableBlockNumber,
       true
     );
+    this.syncing = false;
   }
 
   // For all mergable event types get any new documents we haven't pulled in and pull them in
@@ -71,37 +70,6 @@ export class DerivedDB extends AbstractTable {
     }
 
     await this.syncStatus.updateSyncingToFalse(this.dbName);
-  }
-
-  async rollback(blockNumber: number): Promise<void> {
-    try {
-      const blocksToRemove = await this.table.where("blockNumber").aboveOrEqual(blockNumber).toArray();
-      for (const doc of blocksToRemove) {
-        /* XX TODO rollback behavior
-        const revDocs = await this.table.get<Document>(doc._id, {
-          open_revs: 'all',
-          revs: true,
-        });
-        // If a revision exists before this blockNumber make that the new record, otherwise simply delete the doc.
-        const replacementDoc = _.maxBy(
-          _.remove(revDocs, doc => doc.ok.blockNumber > blockNumber),
-          'ok.blockNumber'
-        );
-        if (replacementDoc) {
-          await this.table.put(replacementDoc.ok);
-        } else {
-          await this.table.remove(doc._id, doc._rev);
-        }
-        */
-      }
-      await this.syncStatus.setHighestSyncBlock(
-        this.dbName,
-        --blockNumber,
-        false
-      );
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
