@@ -23,6 +23,7 @@ interface LandingProps {
   updatePage: Function;
   clearNewMarket: Function;
   categoryStats: Getters.Markets.CategoryStats;
+  marketCreationStarted: Function;
 }
 
 export default class Landing extends React.Component<LandingProps> {
@@ -38,6 +39,7 @@ export default class Landing extends React.Component<LandingProps> {
       newMarket,
       clearNewMarket,
       categoryStats,
+      marketCreationStarted,
     } = this.props;
 
     return (
@@ -101,6 +103,7 @@ export default class Landing extends React.Component<LandingProps> {
               text="Create a custom market"
               action={() => {
                 clearNewMarket();
+                marketCreationStarted('', false);
                 updatePage(SCRATCH);
               }}
             />

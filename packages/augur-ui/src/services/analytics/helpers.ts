@@ -5,11 +5,6 @@ import { AppState } from 'store';
 import { createBigNumber } from 'utils/create-big-number';
 import { Analytic } from 'modules/types';
 import { isLocalHost } from 'utils/is-localhost';
-import {
-  addAnalytic,
-  removeAnalytic,
-  SEND_DELAY_SECONDS,
-} from 'modules/app/actions/analytics-management';
 
 export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -18,14 +13,7 @@ export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch(
     track(
       eventName,
-      {
-        ...payload,
-        url: window.location.href,
-        title: null,
-        hash: window.location.hash,
-        path: window.location.pathname,
-        search: window.location.search,
-      },
+      payload,
       ANALYTIC_EVENT_TYPES.PAGE
     )
   );
@@ -40,7 +28,6 @@ export const track = (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  const analyticId = `${eventName}-${blockchain.currentAugurTimestamp}`;
   const analytic = {
     eventName,
     payload: {
@@ -49,12 +36,8 @@ export const track = (
     },
     type: type || ANALYTIC_EVENT_TYPES.TRACK,
   };
-  dispatch(addAnalytic(analytic, analyticId));
 
-  setTimeout(() => {
-    dispatch(sendAnalytic(analytic));
-    dispatch(removeAnalytic(analyticId));
-  }, SEND_DELAY_SECONDS * 1000);
+  dispatch(sendAnalytic(analytic));
 };
 
 export const sendAnalytic = (
@@ -131,6 +114,39 @@ export const sendTwitterShare = (marketAddress: string, marketDescription: strin
   }));
 }
 
+export const marketCreationStarted = (templateName: string, isTemplate: boolean): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(track(MARKET_CREATION_STARTED, {
+    templateName,
+    isTemplate,
+  }));
+}
+
+export const marketCreationSaved = (templateName: string, isTemplate: boolean): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(track(MARKET_CREATION_SAVED, {
+    templateName,
+    isTemplate,
+  }));
+}
+
+export const marketCreationCreated = (marketId: string, extraInfo: string): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const info = JSON.parse(extraInfo);
+  dispatch(track(MARKET_CREATION_CREATED, {
+    marketId,
+    isTemplate: info.template !== null,
+    templateHash: info.template && info.template.hash,
+    tempalteName: info.template && info.template.question,
+  }));
+}
+
 // Basic analytic event types
 export const ANALYTIC_EVENT_TYPES = {
   TRACK: 'TRACK',
@@ -159,3 +175,8 @@ export const MARKET_SHARED = 'Market Shared';
 // Locations
 export const MARKET_PAGE = 'Market page';
 export const MARKET_LIST_CARD = 'Market List Card';
+
+// Market creation events
+export const MARKET_CREATION_STARTED = 'Market Creation - Started';
+export const MARKET_CREATION_SAVED = 'Market Creation - Saved';
+export const MARKET_CREATION_CREATED = 'Market Creation - Created';

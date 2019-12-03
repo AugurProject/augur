@@ -16,6 +16,7 @@ import {
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { NodeStyleCallback } from "modules/types";
+import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
@@ -36,6 +37,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateModal({ type: MODAL_DISCARD, cb })),
   openCreateMarketModal: (cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_CREATE_MARKET, cb })),
+  marketCreationStarted: (templateName, isTemplate) => dispatch(marketCreationStarted(templateName, isTemplate)),
+  marketCreationSaved: (templateName, isTemplate) => dispatch(marketCreationSaved(templateName, isTemplate)),
 });
 
 const FormContainer = withRouter(

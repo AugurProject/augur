@@ -62,6 +62,7 @@ import {
 } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
+import { marketCreationCreated } from 'services/analytics/helpers';
 
 const handleAlert = (
   log: any,
@@ -221,7 +222,7 @@ export const handleMarketCreatedLog = (log: any) => (
   }
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, false, dispatch, getState);
-    dispatch(loadCreateMarketHistory());
+    dispatch(marketCreationCreated(log.market, log.extraInfo));
   }
 };
 
