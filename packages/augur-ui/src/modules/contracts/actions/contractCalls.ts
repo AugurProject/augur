@@ -586,7 +586,7 @@ export function createMarketEstimateGas(
       return universe.createScalarMarket_estimateGas(
         params.endTime,
         params.feePerCashInAttoCash,
-        '0x0000000000000000000000000000000000000000',
+        NULL_ADDRESS,
         params.affiliateFeeDivisor,
         '0x0000000000000000000000000000000000000001',
         params.prices,
@@ -598,7 +598,7 @@ export function createMarketEstimateGas(
       return universe.createCategoricalMarket_estimateGas(
         params.endTime,
         params.feePerCashInAttoCash,
-        '0x0000000000000000000000000000000000000000',
+        NULL_ADDRESS,
         params.affiliateFeeDivisor,
         '0x0000000000000000000000000000000000000001',
         params.outcomes,
@@ -609,7 +609,7 @@ export function createMarketEstimateGas(
       return universe.createYesNoMarket_estimateGas(
         params.endTime,
         params.feePerCashInAttoCash,
-        '0x0000000000000000000000000000000000000000',
+        NULL_ADDRESS,
         params.affiliateFeeDivisor,
         '0x0000000000000000000000000000000000000001',
         params.extraInfo
