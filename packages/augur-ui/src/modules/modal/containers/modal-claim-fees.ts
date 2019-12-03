@@ -6,19 +6,18 @@ import {
   formatGasCostToEther,
   formatAttoRep,
   formatAttoDai,
-  formatDai,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
 import { ActionRowsProps } from 'modules/modal/common';
 import {
-  CLAIM_FEES_GAS_COST,
   redeemStake,
   redeemStakeBatches,
 } from 'modules/reporting/actions/claim-reporting-fees';
 import {
   CLAIM_FEE_WINDOWS,
   CLAIM_STAKE_FEES,
+  CLAIM_FEES_GAS_COST,
   ZERO,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
@@ -26,18 +25,17 @@ import { Action } from 'redux';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
-import getValue from 'utils/get-value';
-import { createBigNumber } from 'utils/create-big-number';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
-    Gnosis_ENABLED: getValue(state, 'appStatus.gnosisEnabled'),
     gasCost: formatGasCostToEther(
       CLAIM_FEES_GAS_COST,
       { decimalsRounded: 4 },
       getGasPrice(state)
     ),
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
@@ -55,12 +53,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const isForking = !!sP.forkingInfo;
   const forkingMarket = isForking ? sP.forkingInfo.forkingMarket : null;
   const { gasCost, pendingQueue } = sP;
-  let gasCostDai = null;
-
-  if (sP.Gnosis_ENABLED && sP.ethToDaiRate) {
-    gasCostDai = formatDai(sP.ethToDaiRate.multipliedBy(createBigNumber(gasCost))).formattedValue;
-  }
-
   const claimReportingFees = sP.claimReportingFees as MarketReportClaimableContracts;
   const modalRows: ActionRowsProps[] = [];
 
@@ -128,8 +120,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
             addExtraSpace: true,
           },
           {
-            label: 'est gas cost',
-            value: gasCostDai ? `${gasCostDai} DAI` : `${gasCost} ETH`,
+            label: 'Transaction Fee',
+            value: sP.Gnosis_ENABLED ? displayGasInDai(gasCost, sP.ethToDaiRate) : gasCost + ' ETH',
           },
         ],
         action,
@@ -161,11 +153,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         },
         {
           label: 'Reporting Fees',
-          value: `${daiFormatted.formatted} DAI`,
+          value: `$${daiFormatted.formatted}`,
         },
         {
-          label: 'Est Gas cost',
-          value: gasCostDai ? `${gasCostDai} DAI` : `${gasCost} ETH`,
+          label: 'Transaction Fee',
+          value: sP.Gnosis_ENABLED ? displayGasInDai(gasCost, sP.ethToDaiRate) : gasCost + ' ETH',
         },
       ],
       action: () => {

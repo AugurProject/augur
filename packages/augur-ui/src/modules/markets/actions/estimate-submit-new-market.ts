@@ -1,16 +1,18 @@
-import logError from "utils/log-error";
-import noop from "utils/noop";
-import { AppState } from "store";
-import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { NEW_MARKET_GAS_ESTIMATE } from "modules/common/constants";
+import logError from 'utils/log-error';
+import { NodeStyleCallback } from 'modules/types';
+import { createMarketEstimateGas } from 'modules/contracts/actions/contractCalls';
+import { NEW_MARKET_GAS_ESTIMATE } from 'modules/common/constants';
 
-export const estimateSubmitNewMarket = (
+export const estimateSubmitNewMarket = async (
   newMarket: any,
-  callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { universe, loginAccount, contractAddresses } = getState();
-  // TODO: get market creation gas estimates for now use constant
-  callback(null, NEW_MARKET_GAS_ESTIMATE.toString());
+  callback: NodeStyleCallback = logError
+) => {
+  try {
+    const gasLimit = await createMarketEstimateGas(newMarket, false);
+    callback(null, gasLimit);
+  }
+  catch (error) {
+    console.error('error could estimate gas', error);
+    return NEW_MARKET_GAS_ESTIMATE;
+  }
 };

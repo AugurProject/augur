@@ -5,6 +5,7 @@ import { ZERO, REPORTING_STATE } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'store';
 import { isSameAddress } from 'utils/isSameAddress';
+import getGasPrice from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, loginAccount } = state;
@@ -25,6 +26,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     migrateMarket,
     migrateRep,
     userAttoRep: convertAttoValueToDisplayValue(userAttoRep),
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
+    gasPrice: getGasPrice(state),
   };
 };
 
