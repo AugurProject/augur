@@ -26,7 +26,7 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI, FAILURE } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
@@ -102,7 +102,7 @@ export interface ActionRow {
   value: string;
   notice?: string;
   action: Function;
-  status: typeof PENDING | typeof SUCCESS;
+  status: typeof PENDING | typeof SUCCESS | typeof FAILURE;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
 }
 
@@ -461,7 +461,7 @@ export const ActionRows = (props: ActionRowsProps) =>
         </div>
       </section>
       <div>
-        {row.status === PENDING && <PendingLabel />}
+        {row.status !== SUCCESS && <PendingLabel status={row.status} />}
         {row.status === SUCCESS && <ConfirmedLabel />}
         <SubmitTextButton
           disabled={row.status === SUCCESS || row.status === PENDING}
