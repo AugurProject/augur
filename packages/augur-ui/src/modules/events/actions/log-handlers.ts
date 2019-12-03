@@ -138,17 +138,11 @@ export const handleSDKReadyEvent = () => (
 ) => {
   // wire up events for sdk
   augurSdk.subscribe(dispatch);
-  const { loginAccount } = getState();
 
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats())
-  if (loginAccount.address) {
-    dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
-    dispatch(updateAuthStatus(IS_LOGGED, true));
-    dispatch(loadAccountData());
-  }
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (
@@ -172,7 +166,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     dispatch(loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp));
   }
 
-  if (  
+  if (
     getState().appStatus.gnosisEnabled &&
     getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {
