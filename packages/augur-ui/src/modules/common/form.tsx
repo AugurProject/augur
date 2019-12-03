@@ -888,7 +888,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
-  
+
   componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState){
     if (this.props.defaultSelected !== prevProps.defaultSelected){
       this.updateChecked(this.props.defaultSelected)
@@ -956,7 +956,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         stake = disputeInfo.stakes.find(s => s.outcome === null);
       }
     }
-    const reportingGasFee = formatNumber('0'); // TODO: get actual gas cost
+
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && inputtedReportingStake
@@ -1032,7 +1032,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   stakeRemaining={stake && stake.stakeRemaining}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
-                  Gnosis_ENABLED={Gnosis_ENABLED}
                 />
               )}
             </>
@@ -1046,7 +1045,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               reportAction={reportAction}
               inputtedReportingStake={inputtedReportingStake}
               updateInputtedStake={updateInputtedStake}
-              reportingGasFee={reportingGasFee}
             />
           )}
         </div>

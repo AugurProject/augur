@@ -15,6 +15,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { CreateNewMarketParams } from 'modules/contracts/actions/contractCalls';
+import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 
 export function constructMarketParams(
   newMarket: CreateNewMarketParams,
@@ -28,7 +29,7 @@ export function constructMarketParams(
   );
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
-  const marketEndTime = new BigNumber(newMarket.endTime);
+  const marketEndTime = new BigNumber(newMarket.endTime ? newMarket.endTime : newMarket.endTimeFormatted.timestamp);
   const extraInfo = JSON.stringify({
     categories: newMarket.categories,
     description: newMarket.description,
@@ -82,51 +83,23 @@ export function constructMarketParams(
   }
 }
 
-export function constructMarketParamsReturn(
+export function getConstructedMarketId(
   newMarket: NewMarket
-): TransactionMetadataParams {
-  const fee = new BigNumber(newMarket.settlementFee || 0).div(
-    new BigNumber(100)
-  );
-  const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
-  const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
-  const marketEndTime = new BigNumber(newMarket.endTime);
-  const extraInfo = JSON.stringify({
-    categories: newMarket.categories,
+): string {
+  const params: TransactionMetadataParams = {
     description: newMarket.description,
-    longDescription: newMarket.detailsText,
-    _scalarDenomination: newMarket.scalarDenomination,
-    offsetName: newMarket.offsetName,
-  });
+  };
+  return generateTxParameterId(params);
+}
 
-  let params: TransactionMetadataParams = {
-    _endTime: marketEndTime,
-    _feePerCashInAttoCash: feePerCashInAttoCash,
-    _affiliateFeeDivisor: affiliateFeeDivisor,
-    _designatedReporterAddress: newMarket.designatedReporterAddress,
-    _extraInfo: extraInfo,
+export function getDeconstructedMarketId(
+  marketParameters
+): string {
+  const extraInfo = JSON.parse(marketParameters._extraInfo);
+
+  const params: TransactionMetadataParams = {
+    description: extraInfo.description,
   };
 
-  if (newMarket.marketType === SCALAR) {
-    const prices = [
-      convertDisplayValuetoAttoValue(new BigNumber(newMarket.minPrice)),
-      convertDisplayValuetoAttoValue(new BigNumber(newMarket.maxPrice)),
-    ];
-    const numTicks = tickSizeToNumTickWithDisplayPrices(
-      new BigNumber(newMarket.tickSize),
-      new BigNumber(newMarket.minPrice),
-      new BigNumber(newMarket.maxPrice)
-    );
-    params = Object.assign(params, {
-      _prices: prices,
-      _numTicks: numTicks,
-    });
-  } else if (newMarket.marketType === CATEGORICAL) {
-    const _outcomes = newMarket.outcomes.map(o => stringTo32ByteHex(o));
-    params = Object.assign(params, {
-      _outcomes,
-    });
-  }
-
-  return params;
+  return generateTxParameterId(params);
 }

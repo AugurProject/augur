@@ -77,6 +77,8 @@ interface AppProps {
   isConnectionTrayOpen: boolean;
   showGlobalChat: Function;
   updateHelpMenuState: Function;
+  migrateV1Rep: Function;
+  showMigrateRepButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -122,7 +124,7 @@ export default class AppView extends Component<AppProps> {
     },
   ];
 
-  UNSAFE_componentWillMount() {
+  handleComponentMount = () => {
     const {
       env,
       ethereumNodeHttp,
@@ -168,6 +170,7 @@ export default class AppView extends Component<AppProps> {
   }
 
   componentDidMount() {
+    this.handleComponentMount();
     window.addEventListener('resize', this.handleWindowResize);
 
     // Restyle all scrollbars on windows
@@ -177,7 +180,7 @@ export default class AppView extends Component<AppProps> {
     this.checkIsMobile();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: AppProps) {
+  componentDidUpdate(prevProps: AppProps) {
     const {
       isMobile,
       location,
@@ -185,16 +188,16 @@ export default class AppView extends Component<AppProps> {
       updateCurrentBasePath,
       updateMobileMenuState,
     } = this.props;
-    if (isMobile !== nextProps.isMobile) {
+    if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-    if (universe.forkingInfo !== nextProps.universe.forkingInfo) {
-      this.sideNavMenuData[5].disabled = !!nextProps.universe.forkingInfo;
+    if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
+      this.sideNavMenuData[5].disabled = !!prevProps.universe.forkingInfo;
     }
 
-    if (location !== nextProps.location) {
+    if (location !== prevProps.location) {
       const lastBasePath = parsePath(location.pathname)[0];
-      const nextBasePath = parsePath(nextProps.location.pathname)[0];
+      const nextBasePath = parsePath(prevProps.location.pathname)[0];
 
       if (lastBasePath !== nextBasePath) {
         updateCurrentBasePath(nextBasePath);
@@ -326,6 +329,8 @@ export default class AppView extends Component<AppProps> {
       toasts,
       isConnectionTrayOpen,
       updateConnectionTray,
+      migrateV1Rep,
+      showMigrateRepButton,
     } = this.props;
 
     const currentPath = parsePath(location.pathname)[0];
@@ -399,6 +404,8 @@ export default class AppView extends Component<AppProps> {
                 isConnectionTrayOpen={isConnectionTrayOpen}
                 logout={() => this.props.logout()}
                 showGlobalChat={() => this.props.showGlobalChat()}
+                migrateV1Rep={migrateV1Rep}
+                showMigrateRepButton={showMigrateRepButton}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -406,6 +413,8 @@ export default class AppView extends Component<AppProps> {
                 isLogged={isLogged || restoredAccount}
                 menuData={this.sideNavMenuData}
                 currentBasePath={sidebarStatus.currentBasePath}
+                migrateV1Rep={migrateV1Rep}
+                showMigrateRepButton={showMigrateRepButton}
               />
             </section>
             <AlertsContainer
@@ -445,6 +454,7 @@ export default class AppView extends Component<AppProps> {
                 })}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
+                id={'mainContent'}
               >
                 <ForkingBanner />
 

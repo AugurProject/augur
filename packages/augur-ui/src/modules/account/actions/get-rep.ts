@@ -3,16 +3,13 @@ import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { NodeStyleCallback } from "modules/types";
 import { getRep } from "modules/contracts/actions/contractCalls";
-import { updateAssets } from "modules/auth/actions/update-assets";
 
 export default function(callback: NodeStyleCallback = logError) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     await getRep().catch((err: Error) => {
-      console.log("error could not get dai", err);
-      logError(new Error("get-Dai"));
+      console.log("error could not get rep", err);
+      logError(new Error("get-Rep"));
     });
-    // TODO: this will change when pending tx exists
-    dispatch(updateAssets());
     callback(null);
   };
 }

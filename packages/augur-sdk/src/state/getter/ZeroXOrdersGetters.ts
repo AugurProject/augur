@@ -9,7 +9,7 @@ import {
 } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { OrderState, Order } from "./Trading";
+import { OrderState, Order } from "./OnChainTrading";
 import { StoredOrder } from "../db/ZeroXOrders";
 
 import * as t from "io-ts";

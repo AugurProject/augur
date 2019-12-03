@@ -20,12 +20,18 @@ import {
   addRepToTentativeWinningOutcome,
   migrateRepToUniverse,
   reportAndMigrateMarket,
+  migrateRepToUniverseEstimateGas,
+  reportAndMigrateMarket_estimateGas,
+  doInitialReport_estimaetGas,
+  addRepToTentativeWinningOutcome_estimateGas,
+  contribute_estimateGas,
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Getters } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
+
 interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
@@ -172,7 +178,7 @@ export default class ModalReporting extends Component<
     return radioButtons;
   };
 
-  reportingAction = () => {
+  reportingAction = (estimateGas = false) => {
     const { migrateMarket, migrateRep, market } = this.props;
     const {
       marketId,
@@ -195,7 +201,7 @@ export default class ModalReporting extends Component<
         this.state.inputScalarOutcome || this.state.checked
       );
     }
-
+    const ONE_REP = '1000000000000000000';
     const report = {
       marketId,
       maxPrice,
@@ -204,16 +210,29 @@ export default class ModalReporting extends Component<
       numOutcomes,
       marketType,
       description: '',
-      attoRepAmount: this.state.inputtedReportingStake.inputToAttoRep,
+      attoRepAmount: estimateGas ? ONE_REP : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,
     };
+
     if (migrateRep) {
-      migrateRepToUniverse(report);
+      if (estimateGas) {
+        return migrateRepToUniverseEstimateGas(report);
+      } else {
+        migrateRepToUniverse(report);
+      }
     } else if (migrateMarket) {
-      reportAndMigrateMarket(report);
+      if (estimateGas) {
+        return reportAndMigrateMarket_estimateGas(report);
+      } else {
+        reportAndMigrateMarket(report);
+      }
     } else if (isReporting) {
-      doInitialReport(report);
+      if (estimateGas) {
+        return doInitialReport_estimaetGas(report);
+      } else {
+        doInitialReport(report);
+      }
     } else {
       // disputing
       let contributeToTentativeWinner = false;
@@ -223,6 +242,9 @@ export default class ModalReporting extends Component<
       if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
         contributeToTentativeWinner = true;
       }
+      if (tentativeWinningStake.outcome === report.outcomeId) {
+        contributeToTentativeWinner = true;
+      }
       if (marketType === SCALAR) {
         const selectedOutcome = disputeInfo.stakes.find(
           s => s.outcome === selectedRadio.id
@@ -230,11 +252,21 @@ export default class ModalReporting extends Component<
         if (selectedOutcome && selectedOutcome.tentativeWinning) contributeToTentativeWinner = true
       }
 
-      contributeToTentativeWinner
+      if (estimateGas) {
+        if (contributeToTentativeWinner) {
+          return addRepToTentativeWinningOutcome_estimateGas(report);
+        } else {
+          return contribute_estimateGas(report);
+        }
+      } else {
+        contributeToTentativeWinner
         ? addRepToTentativeWinningOutcome(report)
         : contribute(report);
+      }
     }
-    setTimeout(() => this.props.closeAction(), 1000);
+    if (!estimateGas) {
+      setTimeout(() => this.props.closeAction(), 1000);
+    }
   };
 
   updateInputtedStake = (inputtedReportingStake: DisputeInputtedValues) => {

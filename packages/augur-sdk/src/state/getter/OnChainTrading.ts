@@ -147,7 +147,7 @@ export interface BetterWorseResult {
   worseOrderId: string | null;
 }
 
-export class Trading {
+export class OnChainTrading {
   static GetTradingHistoryParams = t.intersection([
     sortOptions,
     TradingHistoryParams,
@@ -163,7 +163,7 @@ export class Trading {
   static async getTradingHistory(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Trading.GetTradingHistoryParams>
+    params: t.TypeOf<typeof OnChainTrading.GetTradingHistoryParams>
   ): Promise<MarketTradingHistory> {
     if (!params.account && params.marketIds.length === 0) {
       throw new Error(
@@ -261,7 +261,7 @@ export class Trading {
   static async getAllOrders(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Trading.GetAllOrdersParams>
+    params: t.TypeOf<typeof OnChainTrading.GetAllOrdersParams>
   ): Promise<AllOrders> {
     if (!params.account) {
       throw new Error("'getAllOrders' requires an 'account' param be provided");
@@ -309,7 +309,7 @@ export class Trading {
   static async getOrders(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Trading.GetOrdersParams>
+    params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
   ): Promise<Orders> {
     if (!params.marketId) {
       throw new Error(
@@ -447,7 +447,7 @@ export class Trading {
   static async getBetterWorseOrders(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Trading.GetBetterWorseOrdersParams>
+    params: t.TypeOf<typeof OnChainTrading.GetBetterWorseOrdersParams>
   ): Promise<BetterWorseResult> {
     const desiredOrderType = params.orderType === 'buy' ? 0 : 1;
 

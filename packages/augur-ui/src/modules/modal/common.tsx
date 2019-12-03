@@ -10,6 +10,7 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
+  ViewIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -25,7 +26,7 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI, FAILURE } from 'modules/common/constants';
 import { LinkContent } from 'modules/types';
 import { generateDaiTooltip } from 'modules/modal/add-funds';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
@@ -101,7 +102,7 @@ export interface ActionRow {
   value: string;
   notice?: string;
   action: Function;
-  status: typeof PENDING | typeof SUCCESS;
+  status: typeof PENDING | typeof SUCCESS | typeof FAILURE;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
 }
 
@@ -336,13 +337,13 @@ interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
-export const LinkContentSection = (props: LinkContentSectionProps) => (
+export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
-    {props.linkContent.map((content, idx) => (
+    {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
           <a href={content.link} target="_blank">
-            {content.content}
+            <ExternalLinkButton label={content.content} />
           </a>
         )}
         {!content.link && <span>{content.content}</span>}
@@ -460,7 +461,7 @@ export const ActionRows = (props: ActionRowsProps) =>
         </div>
       </section>
       <div>
-        {row.status === PENDING && <PendingLabel />}
+        {row.status !== SUCCESS && <PendingLabel status={row.status} />}
         {row.status === SUCCESS && <ConfirmedLabel />}
         <SubmitTextButton
           disabled={row.status === SUCCESS || row.status === PENDING}
@@ -571,8 +572,8 @@ interface FundsHelpProps {
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <span>Need help?</span>
-    <span>Learn how to buy {fundType === DAI ? `${DAI} ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and transfer it into your account.</span>
-    <ExternalLinkButton label='Learn More' />
+    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
   </div>
 );
 

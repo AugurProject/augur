@@ -16,6 +16,32 @@ export const LIST_VALUES = {
       value: '2022',
       label: '2022',
     },
+    {
+      value: '2023',
+      label: '2023',
+    },
+    {
+      value: '2024',
+      label: '2024',
+    },
+    {
+      value: '2025',
+      label: '2025',
+    },
+  ],
+  PRES_YEARS: [
+    {
+      value: '2020',
+      label: '2020',
+    },
+    {
+      value: '2024',
+      label: '2024',
+    },
+    {
+      value: '2028',
+      label: '2028',
+    },
   ],
   YEAR_RANGE: [
     {
@@ -103,24 +129,6 @@ export const LIST_VALUES = {
       label: 'World Series',
     },
   ],
-  ENTERTAINMENT_EVENT: [
-    {
-      value: 'Academy Awards',
-      label: 'Academy Awards',
-    },
-    {
-      value: 'Emmy Awards',
-      label: 'Emmy Awards',
-    },
-    {
-      value: 'Grammy Awards',
-      label: 'Grammy Awards',
-    },
-    {
-      value: 'Golden Globe Awards',
-      label: 'Golden Globe Awards',
-    },
-  ],
   CURRENCY: [
     {
       value: 'US dollar (USD)',
@@ -153,8 +161,8 @@ export const LIST_VALUES = {
   ],
   REGION: [
     {
-      value: 'US (United States)',
-      label: 'US (United States)',
+      value: 'in the US (United States)',
+      label: 'in the US (United States)',
     },
     {
       value: 'Worldwide',
@@ -173,30 +181,40 @@ export const LIST_VALUES = {
   ],
   PRES_OFFICES: [
     {
-      value: 'President',
-      label: 'President',
+      value: 'U.S. President',
+      label: 'U.S. President',
     },
     {
-      value: 'Vice-President',
-      label: 'Vice-President',
+      value: 'U.S. Vice-President',
+      label: 'U.S. Vice-President',
     },
   ],
   OFFICES: [
     {
-      value: 'President',
-      label: 'President',
+      value: 'U.S. President',
+      label: 'U.S. President',
     },
     {
-      value: 'Vice-President',
-      label: 'Vice-President',
+      value: 'U.S. Vice-President',
+      label: 'U.S. Vice-President',
     },
     {
-      value: 'Senator',
-      label: 'Senator',
+      value: 'U.S. Senator',
+      label: 'U.S. Senator',
     },
     {
-      value: 'Congress',
-      label: 'Congress',
+      value: 'U.S House of Representatives',
+      label: 'U.S House of Representatives',
+    },
+  ],
+  POL_HOUSE_SENATE_OFFICE: [
+    {
+      value: 'U.S. Senate',
+      label: 'U.S. Senate',
+    },
+    {
+      value: 'U.S. House of Representatives',
+      label: 'U.S. House of Representatives',
     },
   ],
   POL_POSITION: [
@@ -213,8 +231,12 @@ export const LIST_VALUES = {
       label: 'Supreme Leader',
     },
     {
-      value: 'Crown Prince',
-      label: 'Crown Prince',
+      value: 'King',
+      label: 'King',
+    },
+    {
+      value: 'Prince',
+      label: 'Prince',
     },
     {
       value: 'Chancellor',
@@ -439,6 +461,40 @@ export const LIST_VALUES = {
     {
       value: 'NBA Championship',
       label: 'NBA Championship',
+    },
+  ],
+  BASEBALL_AWARDS: [
+    {
+      value: 'NL Rookie of the Year',
+      label: 'NL Rookie of the Year',
+    },
+    {
+      value: 'AL Rookie of the Year',
+      label: 'AL Rookie of the Year',
+    },
+    {
+      value: 'NL Manager of the Year',
+      label: 'NL Manager of the Year',
+    },
+    {
+      value: 'AL Manager of the Year',
+      label: 'AL Manager of the Year',
+    },
+    {
+      value: 'NL Cy Young',
+      label: 'NL Cy Young',
+    },
+    {
+      value: 'AL Cy Young',
+      label: 'AL Cy Young',
+    },
+    {
+      value: 'NL MVP',
+      label: 'NL MVP',
+    },
+    {
+      value: 'AL MVP',
+      label: 'AL MVP',
     },
   ],
   NBA_BASKETBALL_AWARD: [
@@ -1529,8 +1585,8 @@ export const LIST_VALUES = {
       label: 'Kansas City Royals',
     },
     {
-      value: 'Las Angeles Angels',
-      label: 'Las Angeles Angels',
+      value: 'Los Angeles Angels',
+      label: 'Los Angeles Angels',
     },
     {
       value: 'Minnesota Twins',
@@ -1583,8 +1639,8 @@ export const LIST_VALUES = {
       label: 'Colorado Rockies',
     },
     {
-      value: 'Las Angeles Dodgers',
-      label: 'Las Angeles Dodgers',
+      value: 'Los Angeles Dodgers',
+      label: 'Los Angeles Dodgers',
     },
     {
       value: 'Miami Marlins',
@@ -1673,12 +1729,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Royals',
     },
     {
-      value: 'Las Angeles Angels',
-      label: 'Las Angeles Angels',
+      value: 'Los Angeles Angels',
+      label: 'Los Angeles Angels',
     },
     {
-      value: 'Las Angeles Dodgers',
-      label: 'Las Angeles Dodgers',
+      value: 'Los Angeles Dodgers',
+      label: 'Los Angeles Dodgers',
     },
     {
       value: 'Miami Marlins',
@@ -1943,12 +1999,12 @@ export const LIST_VALUES = {
       label: 'Kansas City Chiefs',
     },
     {
-      value: 'Las Angeles Chargers',
-      label: 'Las Angeles Chargers',
+      value: 'Los Angeles Chargers',
+      label: 'Los Angeles Chargers',
     },
     {
-      value: 'Las Angeles Rams',
-      label: 'Las Angeles Rams',
+      value: 'Los Angeles Rams',
+      label: 'Los Angeles Rams',
     },
     {
       value: 'Miami Dolphins',
@@ -2309,8 +2365,8 @@ export const LIST_VALUES = {
       label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
+      value: 'Bitfinex (bitfinex.com)',
+      label: 'Bitfinex (bitfinex.com)',
     },
     {
       value: 'Bittrex (bittrex.com)',
@@ -2321,10 +2377,6 @@ export const LIST_VALUES = {
     {
       value: 'Coinbase Pro (pro.coinbase.com)',
       label: 'Coinbase Pro (pro.coinbase.com)',
-    },
-    {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
     },
     {
       value: 'Kraken (kraken.com)',
@@ -2341,10 +2393,6 @@ export const LIST_VALUES = {
       label: 'Bittrex (bittrex.com)',
     },
     {
-      value: 'Binance (binance.com)',
-      label: 'Binance (binance.com)',
-    },
-    {
       value: 'Huobi Global (hbg.com)',
       label: 'Huobi Global (hbg.com)',
     },
@@ -2355,8 +2403,8 @@ export const LIST_VALUES = {
       label: 'Coinbase Pro (pro.coinbase.com)',
     },
     {
-      value: 'Bitstamp (bitstamp.net)',
-      label: 'Bitstamp (bitstamp.net)',
+      value: 'Bitfinex (bitfinex.com)',
+      label: 'Bitfinex (bitfinex.com)',
     },
     {
       value: 'Kraken (kraken.com)',
@@ -6429,6 +6477,1575 @@ export const LIST_VALUES = {
       value: 'UT-Pan American',
     },
   ],
+  TENNIS_MENS_SINGLES_TOURNAMENTS: [
+    {
+      label: 'Qatar Exxon Mobil Open',
+      value: 'Qatar Exxon Mobil Open',
+    },
+    {
+      label: 'Brisbane International',
+      value: 'Brisbane International',
+    },
+    {
+      label: 'Tata Open Maharashtra',
+      value: 'Tata Open Maharashtra',
+    },
+    {
+      label: 'Sydney International',
+      value: 'Sydney International',
+    },
+    {
+      label: 'ASB Classic',
+      value: 'ASB Classic',
+    },
+    {
+      label: 'Australian Open',
+      value: 'Australian Open',
+    },
+    {
+      label: 'Cordoba Open',
+      value: 'Cordoba Open',
+    },
+    {
+      label: 'Open Sud de France',
+      value: 'Open Sud de France',
+    },
+    {
+      label: 'Sofia Open',
+      value: 'Sofia Open',
+    },
+    {
+      label: 'ABN Amro World Tennis Tournament',
+      value: 'ABN Amro World Tennis Tournament',
+    },
+    {
+      label: 'New York Open',
+      value: 'New York Open',
+    },
+    {
+      label: 'Argentina Open',
+      value: 'Argentina Open',
+    },
+    {
+      label: 'Delray Beach Open',
+      value: 'Delray Beach Open',
+    },
+    {
+      label: 'Open 13 Provence',
+      value: 'Open 13 Provence',
+    },
+    {
+      label: 'Rio Open',
+      value: 'Rio Open',
+    },
+    {
+      label: 'Dubai Duty Free Tennis Championships',
+      value: 'Dubai Duty Free Tennis Championships',
+    },
+    {
+      label: 'Abierto Mexicano Telcel',
+      value: 'Abierto Mexicano Telcel',
+    },
+    {
+      label: 'Brasil Open',
+      value: 'Brasil Open',
+    },
+    {
+      label: 'BNP Paribas Open',
+      value: 'BNP Paribas Open',
+    },
+    {
+      label: 'Miami Open',
+      value: 'Miami Open',
+    },
+    {
+      label: 'Roland Garros',
+      value: 'Roland Garros',
+    },
+    {
+      label: 'US Mens Clay Court Championship',
+      value: 'US Mens Clay Court Championship',
+    },
+    {
+      label: 'Grand Prix Hassan II',
+      value: 'Grand Prix Hassan II',
+    },
+    {
+      label: 'Rolex Monte-Carlo Masters',
+      value: 'Rolex Monte-Carlo Masters',
+    },
+    {
+      label: 'Hungarian Open',
+      value: 'Hungarian Open',
+    },
+    {
+      label: 'Barcelona Open Banc Sabadell',
+      value: 'Barcelona Open Banc Sabadell',
+    },
+    {
+      label: 'BMW Open by FWU',
+      value: 'BMW Open by FWU',
+    },
+    {
+      label: 'Millennium Estoril Open',
+      value: 'Millennium Estoril Open',
+    },
+    {
+      label: 'Mutua Madrid Open',
+      value: 'Mutua Madrid Open',
+    },
+    {
+      label: 'Internazionali BNL dItalia',
+      value: 'Internazionali BNL dItalia',
+    },
+    {
+      label: 'Banque Eric Sturdza Geneva Open',
+      value: 'Banque Eric Sturdza Geneva Open',
+    },
+    {
+      label: 'Open Parc Auvergne-Rhone-Alpes Lyon',
+      value: 'Open Parc Auvergne-Rhone-Alpes Lyon',
+    },
+    {
+      label: 'French Open',
+      value: 'French Open',
+    },
+    {
+      label: 'Mercedes Cup',
+      value: 'Mercedes Cup',
+    },
+    {
+      label: 'Libema Open',
+      value: 'Libema Open',
+    },
+    {
+      label: 'Fever-Tree Championships',
+      value: 'Fever-Tree Championships',
+    },
+    {
+      label: 'Noventi Open',
+      value: 'Noventi Open',
+    },
+    {
+      label: 'Turkish Airlines Open Antalya',
+      value: 'Turkish Airlines Open Antalya',
+    },
+    {
+      label: 'Nature Valley International',
+      value: 'Nature Valley International',
+    },
+    {
+      label: 'Wimbledon',
+      value: 'Wimbledon',
+    },
+    {
+      label: 'Hall of Fame Open',
+      value: 'Hall of Fame Open',
+    },
+    {
+      label: 'Plava Laguna Croatia Open Umag',
+      value: 'Plava Laguna Croatia Open Umag',
+    },
+    {
+      label: 'Swedish Open',
+      value: 'Swedish Open',
+    },
+    {
+      label: 'Hamburg Open',
+      value: 'Hamburg Open',
+    },
+    {
+      label: 'BB&T Atlanta Open',
+      value: 'BB&T Atlanta Open',
+    },
+    {
+      label: 'J Safra Sarasin Swiss Open Gstaad',
+      value: 'J Safra Sarasin Swiss Open Gstaad',
+    },
+    {
+      label: 'Generali Open',
+      value: 'Generali Open',
+    },
+    {
+      label: 'Abierto Mexicano de Tenis Mifel presentado por Cinemax',
+      value: 'Abierto Mexicano de Tenis Mifel presentado por Cinemax',
+    },
+    {
+      label: 'Citi Open',
+      value: 'Citi Open',
+    },
+    {
+      label: 'Rogers Cup (M)',
+      value: 'Rogers Cup (M)',
+    },
+    {
+      label: 'Western & Southern Open',
+      value: 'Western & Southern Open',
+    },
+    {
+      label: 'Winston-Salem Open',
+      value: 'Winston-Salem Open',
+    },
+    {
+      label: 'US Open',
+      value: 'US Open',
+    },
+    {
+      label: 'Moselle Open',
+      value: 'Moselle Open',
+    },
+    {
+      label: 'St Petersburg Open',
+      value: 'St Petersburg Open',
+    },
+    {
+      label: 'Chengdu Open',
+      value: 'Chengdu Open',
+    },
+    {
+      label: 'China Open',
+      value: 'China Open',
+    },
+    {
+      label: 'Rakuten Japan Open Tennis Championships',
+      value: 'Rakuten Japan Open Tennis Championships',
+    },
+    {
+      label: 'Rolex Shanghai Masters',
+      value: 'Rolex Shanghai Masters',
+    },
+    {
+      label: 'Intrum Stockholm Open',
+      value: 'Intrum Stockholm Open',
+    },
+    {
+      label: 'European Open',
+      value: 'European Open',
+    },
+    {
+      label: 'VTB Kremlin Cup',
+      value: 'VTB Kremlin Cup',
+    },
+    {
+      label: 'Swiss Indoors Basel',
+      value: 'Swiss Indoors Basel',
+    },
+    {
+      label: 'Erste Bank Open 500',
+      value: 'Erste Bank Open 500',
+    },
+    {
+      label: 'Rolex Paris Masters',
+      value: 'Rolex Paris Masters',
+    },
+    {
+      label: 'Nitto ATP Finals',
+      value: 'Nitto ATP Finals',
+    },
+    {
+      label: 'ATP Cup',
+      value: 'ATP Cup',
+    },
+    {
+      label: 'Davis Cup',
+      value: 'Davis Cup',
+    },
+    {
+      label: 'Laver Cup',
+      value: 'Laver Cup',
+    },
+  ],
+  TENNIS_MENS_DOUBLES_TOURNAMENTS: [
+    {
+      label: 'Qatar Exxon Mobil Open',
+      value: 'Qatar Exxon Mobil Open',
+    },
+    {
+      label: 'Brisbane International',
+      value: 'Brisbane International',
+    },
+    {
+      label: 'Tata Open Maharashtra',
+      value: 'Tata Open Maharashtra',
+    },
+    {
+      label: 'Sydney International',
+      value: 'Sydney International',
+    },
+    {
+      label: 'ASB Classic',
+      value: 'ASB Classic',
+    },
+    {
+      label: 'Australian Open',
+      value: 'Australian Open',
+    },
+    {
+      label: 'Cordoba Open',
+      value: 'Cordoba Open',
+    },
+    {
+      label: 'Open Sud de France',
+      value: 'Open Sud de France',
+    },
+    {
+      label: 'Sofia Open',
+      value: 'Sofia Open',
+    },
+    {
+      label: 'ABN Amro World Tennis Tournament',
+      value: 'ABN Amro World Tennis Tournament',
+    },
+    {
+      label: 'New York Open',
+      value: 'New York Open',
+    },
+    {
+      label: 'Argentina Open',
+      value: 'Argentina Open',
+    },
+    {
+      label: 'Delray Beach Open',
+      value: 'Delray Beach Open',
+    },
+    {
+      label: 'Open 13 Provence',
+      value: 'Open 13 Provence',
+    },
+    {
+      label: 'Rio Open',
+      value: 'Rio Open',
+    },
+    {
+      label: 'Dubai Duty Free Tennis Championships',
+      value: 'Dubai Duty Free Tennis Championships',
+    },
+    {
+      label: 'Abierto Mexicano Telcel',
+      value: 'Abierto Mexicano Telcel',
+    },
+    {
+      label: 'Brasil Open',
+      value: 'Brasil Open',
+    },
+    {
+      label: 'BNP Paribas Open',
+      value: 'BNP Paribas Open',
+    },
+    {
+      label: 'Miami Open',
+      value: 'Miami Open',
+    },
+    {
+      label: 'Roland Garros',
+      value: 'Roland Garros',
+    },
+    {
+      label: 'US Mens Clay Court Championship',
+      value: 'US Mens Clay Court Championship',
+    },
+    {
+      label: 'Grand Prix Hassan II',
+      value: 'Grand Prix Hassan II',
+    },
+    {
+      label: 'Rolex Monte-Carlo Masters',
+      value: 'Rolex Monte-Carlo Masters',
+    },
+    {
+      label: 'Hungarian Open',
+      value: 'Hungarian Open',
+    },
+    {
+      label: 'Barcelona Open Banc Sabadell',
+      value: 'Barcelona Open Banc Sabadell',
+    },
+    {
+      label: 'BMW Open by FWU',
+      value: 'BMW Open by FWU',
+    },
+    {
+      label: 'Millennium Estoril Open',
+      value: 'Millennium Estoril Open',
+    },
+    {
+      label: 'Mutua Madrid Open',
+      value: 'Mutua Madrid Open',
+    },
+    {
+      label: 'Internazionali BNL dItalia',
+      value: 'Internazionali BNL dItalia',
+    },
+    {
+      label: 'Banque Eric Sturdza Geneva Open',
+      value: 'Banque Eric Sturdza Geneva Open',
+    },
+    {
+      label: 'Open Parc Auvergne-Rhone-Alpes Lyon',
+      value: 'Open Parc Auvergne-Rhone-Alpes Lyon',
+    },
+    {
+      label: 'French Open',
+      value: 'French Open',
+    },
+    {
+      label: 'Mercedes Cup',
+      value: 'Mercedes Cup',
+    },
+    {
+      label: 'Libema Open',
+      value: 'Libema Open',
+    },
+    {
+      label: 'Fever-Tree Championships',
+      value: 'Fever-Tree Championships',
+    },
+    {
+      label: 'Noventi Open',
+      value: 'Noventi Open',
+    },
+    {
+      label: 'Turkish Airlines Open Antalya',
+      value: 'Turkish Airlines Open Antalya',
+    },
+    {
+      label: 'Nature Valley International',
+      value: 'Nature Valley International',
+    },
+    {
+      label: 'Wimbledon',
+      value: 'Wimbledon',
+    },
+    {
+      label: 'Hall of Fame Open',
+      value: 'Hall of Fame Open',
+    },
+    {
+      label: 'Plava Laguna Croatia Open Umag',
+      value: 'Plava Laguna Croatia Open Umag',
+    },
+    {
+      label: 'Swedish Open',
+      value: 'Swedish Open',
+    },
+    {
+      label: 'Hamburg Open',
+      value: 'Hamburg Open',
+    },
+    {
+      label: 'BB&T Atlanta Open',
+      value: 'BB&T Atlanta Open',
+    },
+    {
+      label: 'J Safra Sarasin Swiss Open Gstaad',
+      value: 'J Safra Sarasin Swiss Open Gstaad',
+    },
+    {
+      label: 'Generali Open',
+      value: 'Generali Open',
+    },
+    {
+      label: 'Abierto Mexicano de Tenis Mifel presentado por Cinemax',
+      value: 'Abierto Mexicano de Tenis Mifel presentado por Cinemax',
+    },
+    {
+      label: 'Citi Open',
+      value: 'Citi Open',
+    },
+    {
+      label: 'Rogers Cup (M)',
+      value: 'Rogers Cup (M)',
+    },
+    {
+      label: 'Western & Southern Open',
+      value: 'Western & Southern Open',
+    },
+    {
+      label: 'Winston-Salem Open',
+      value: 'Winston-Salem Open',
+    },
+    {
+      label: 'US Open',
+      value: 'US Open',
+    },
+    {
+      label: 'Moselle Open',
+      value: 'Moselle Open',
+    },
+    {
+      label: 'St Petersburg Open',
+      value: 'St Petersburg Open',
+    },
+    {
+      label: 'Chengdu Open',
+      value: 'Chengdu Open',
+    },
+    {
+      label: 'China Open',
+      value: 'China Open',
+    },
+    {
+      label: 'Rakuten Japan Open Tennis Championships',
+      value: 'Rakuten Japan Open Tennis Championships',
+    },
+    {
+      label: 'Rolex Shanghai Masters',
+      value: 'Rolex Shanghai Masters',
+    },
+    {
+      label: 'Intrum Stockholm Open',
+      value: 'Intrum Stockholm Open',
+    },
+    {
+      label: 'European Open',
+      value: 'European Open',
+    },
+    {
+      label: 'VTB Kremlin Cup',
+      value: 'VTB Kremlin Cup',
+    },
+    {
+      label: 'Swiss Indoors Basel',
+      value: 'Swiss Indoors Basel',
+    },
+    {
+      label: 'Erste Bank Open 500',
+      value: 'Erste Bank Open 500',
+    },
+    {
+      label: 'Rolex Paris Masters',
+      value: 'Rolex Paris Masters',
+    },
+    {
+      label: 'Nitto ATP Finals',
+      value: 'Nitto ATP Finals',
+    },
+  ],
+  TENNIS_WOMENS_SINGLES_TOURNAMENTS: [
+    {
+      label: 'Brisbane International',
+      value: 'Brisbane International',
+    },
+    {
+      label: 'Shenzhen Open',
+      value: 'Shenzhen Open',
+    },
+    {
+      label: 'ASB Classic',
+      value: 'ASB Classic',
+    },
+    {
+      label: 'Adelaide International',
+      value: 'Adelaide International',
+    },
+    {
+      label: 'Sydney International',
+      value: 'Sydney International',
+    },
+    {
+      label: 'Hobart International',
+      value: 'Hobart International',
+    },
+    {
+      label: 'Australian Open',
+      value: 'Australian Open',
+    },
+    {
+      label: 'Fed Cup by BNP Paribas Qualifiers',
+      value: 'Fed Cup by BNP Paribas Qualifiers',
+    },
+    {
+      label: 'St. Petersburg Ladies Trophy',
+      value: 'St. Petersburg Ladies Trophy',
+    },
+    {
+      label: 'Thailand Open',
+      value: 'Thailand Open',
+    },
+    {
+      label: 'Fed Cup',
+      value: 'Fed Cup',
+    },
+    {
+      label: 'Dubai Duty Free Tennis Championships',
+      value: 'Dubai Duty Free Tennis Championships',
+    },
+    {
+      label: 'Hungarian Ladies Open',
+      value: 'Hungarian Ladies Open',
+    },
+    {
+      label: 'Qatar Total Open',
+      value: 'Qatar Total Open',
+    },
+    {
+      label: 'Abierto Mexicano TELCEL',
+      value: 'Abierto Mexicano TELCEL',
+    },
+    {
+      label: 'Open 6ème Sens',
+      value: 'Open 6ème Sens',
+    },
+    {
+      label: 'Abierto GNP Seguros',
+      value: 'Abierto GNP Seguros',
+    },
+    {
+      label: 'BNP Paribas Open',
+      value: 'BNP Paribas Open',
+    },
+    {
+      label: 'Miami Open',
+      value: 'Miami Open',
+    },
+    {
+      label: 'Volvo Car Open',
+      value: 'Volvo Car Open',
+    },
+    {
+      label: 'Claro Open Colsanitas',
+      value: 'Claro Open Colsanitas',
+    },
+    {
+      label: 'Fed Cup by BNP Paribas',
+      value: 'Fed Cup by BNP Paribas',
+    },
+    {
+      label: 'Porsche Tennis Grand Prix',
+      value: 'Porsche Tennis Grand Prix',
+    },
+    {
+      label: 'Samsung Open',
+      value: 'Samsung Open',
+    },
+    {
+      label: 'J&T Banka Prague Open',
+      value: 'J&T Banka Prague Open',
+    },
+    {
+      label: 'Mutua Madrid Open',
+      value: 'Mutua Madrid Open',
+    },
+    {
+      label: "Internazionali BNL d'Italia",
+      value: "Internazionali BNL d'Italia",
+    },
+    {
+      label: 'Nurnberg Open',
+      value: 'Nurnberg Open',
+    },
+    {
+      label: 'Internationaux de Strasbourg',
+      value: 'Internationaux de Strasbourg',
+    },
+    {
+      label: 'Roland Garros',
+      value: 'Roland Garros',
+    },
+    {
+      label: 'Nature Valley Open',
+      value: 'Nature Valley Open',
+    },
+    {
+      label: 'Libema Open',
+      value: 'Libema Open',
+    },
+    {
+      label: 'Grass Court Championships',
+      value: 'Grass Court Championships',
+    },
+    {
+      label: 'Nature Valley Classic',
+      value: 'Nature Valley Classic',
+    },
+    {
+      label: 'Nature Valley International',
+      value: 'Nature Valley International',
+    },
+    {
+      label: 'Bad Homburg Open',
+      value: 'Bad Homburg Open',
+    },
+    {
+      label: 'Wimbledon',
+      value: 'Wimbledon',
+    },
+    {
+      label: 'Bucharest Open',
+      value: 'Bucharest Open',
+    },
+    {
+      label: 'Ladies Open Lausanne',
+      value: 'Ladies Open Lausanne',
+    },
+    {
+      label: 'Baltic Open',
+      value: 'Baltic Open',
+    },
+    {
+      label: '31° Palermo Ladies Open',
+      value: '31° Palermo Ladies Open',
+    },
+    {
+      label: 'Olympic Tennis Event',
+      value: 'Olympic Tennis Event',
+    },
+    {
+      label: 'Mubadala Silicon',
+      value: 'Mubadala Silicon',
+    },
+    {
+      label: 'Valley Classic',
+      value: 'Valley Classic',
+    },
+    {
+      label: 'Citi Open',
+      value: 'Citi Open',
+    },
+    {
+      label: 'Rogers Cup',
+      value: 'Rogers Cup',
+    },
+    {
+      label: 'Western & Southern Open',
+      value: 'Western & Southern Open',
+    },
+    {
+      label: 'Albany Open',
+      value: 'Albany Open',
+    },
+    {
+      label: 'US Open',
+      value: 'US Open',
+    },
+    {
+      label: 'Zhengzhou Open',
+      value: 'Zhengzhou Open',
+    },
+    {
+      label: "Hana-cupid Japan Women's Open",
+      value: "Hana-cupid Japan Women's Open",
+    },
+    {
+      label: 'Jiangxi Open',
+      value: 'Jiangxi Open',
+    },
+    {
+      label: 'Toray Pan Pacific Open',
+      value: 'Toray Pan Pacific Open',
+    },
+    {
+      label: 'Guangzhou Open',
+      value: 'Guangzhou Open',
+    },
+    {
+      label: 'Korea Open',
+      value: 'Korea Open',
+    },
+    {
+      label: 'Hong Kong Tennis Open 2020',
+      value: 'Hong Kong Tennis Open 2020',
+    },
+    {
+      label: 'Tianjin Open',
+      value: 'Tianjin Open',
+    },
+    {
+      label: 'VTB Kremlin Cup',
+      value: 'VTB Kremlin Cup',
+    },
+    {
+      label: 'BGL BNP Paribas Luxembourg Open',
+      value: 'BGL BNP Paribas Luxembourg Open',
+    },
+    {
+      label: 'WTA Elite Trophy',
+      value: 'WTA Elite Trophy',
+    },
+    {
+      label: 'WTA Finals',
+      value: 'WTA Finals',
+    },
+  ],
+  TENNIS_WOMENS_DOUBLES_TOURNAMENTS: [
+    {
+      label: 'Brisbane International',
+      value: 'Brisbane International',
+    },
+    {
+      label: 'Shenzhen Open',
+      value: 'Shenzhen Open',
+    },
+    {
+      label: 'Aucland Open',
+      value: 'Aucland Open',
+    },
+    {
+      label: 'ASB Classic',
+      value: 'ASB Classic',
+    },
+    {
+      label: 'Sydney International',
+      value: 'Sydney International',
+    },
+    {
+      label: 'Hobart International',
+      value: 'Hobart International',
+    },
+    {
+      label: 'Australian Open',
+      value: 'Australian Open',
+    },
+    {
+      label: 'St. Petersburg Ladies Trophy',
+      value: 'St. Petersburg Ladies Trophy',
+    },
+    {
+      label: 'Thailand Open',
+      value: 'Thailand Open',
+    },
+    {
+      label: 'Fed Cup',
+      value: 'Fed Cup',
+    },
+    {
+      label: 'Dubai Duty Free Tennis Championships',
+      value: 'Dubai Duty Free Tennis Championships',
+    },
+    {
+      label: 'Hungarian Ladies Open',
+      value: 'Hungarian Ladies Open',
+    },
+    {
+      label: 'Qatar Total Open',
+      value: 'Qatar Total Open',
+    },
+    {
+      label: 'Mexican Open',
+      value: 'Mexican Open',
+    },
+    {
+      label: 'Indian Wells Open',
+      value: 'Indian Wells Open',
+    },
+    {
+      label: 'Miami Open',
+      value: 'Miami Open',
+    },
+    {
+      label: 'Charleston Open',
+      value: 'Charleston Open',
+    },
+    {
+      label: 'Monterrey Open',
+      value: 'Monterrey Open',
+    },
+    {
+      label: 'Ladies Open Lugano',
+      value: 'Ladies Open Lugano',
+    },
+    {
+      label: 'Stuttgart Open',
+      value: 'Stuttgart Open',
+    },
+    {
+      label: 'Istanbul Cup',
+      value: 'Istanbul Cup',
+    },
+    {
+      label: 'Prague Open',
+      value: 'Prague Open',
+    },
+    {
+      label: 'Morocco Open',
+      value: 'Morocco Open',
+    },
+    {
+      label: 'Madrid Open',
+      value: 'Madrid Open',
+    },
+    {
+      label: 'International de Strasbourg',
+      value: 'International de Strasbourg',
+    },
+    {
+      label: 'Numberg Cup',
+      value: 'Numberg Cup',
+    },
+    {
+      label: 'French Open',
+      value: 'French Open',
+    },
+    {
+      label: 'Nottingham Open',
+      value: 'Nottingham Open',
+    },
+    {
+      label: 'Rosmalen Grass Court Championships',
+      value: 'Rosmalen Grass Court Championships',
+    },
+    {
+      label: 'Birmingham Classic',
+      value: 'Birmingham Classic',
+    },
+    {
+      label: 'Mallorca Open',
+      value: 'Mallorca Open',
+    },
+    {
+      label: 'Eastbourne International',
+      value: 'Eastbourne International',
+    },
+    {
+      label: 'Wimbledon',
+      value: 'Wimbledon',
+    },
+    {
+      label: 'Bucharest Open',
+      value: 'Bucharest Open',
+    },
+    {
+      label: 'Ladies Open Lausanne',
+      value: 'Ladies Open Lausanne',
+    },
+    {
+      label: 'Baltic Open',
+      value: 'Baltic Open',
+    },
+    {
+      label: 'Palermo International',
+      value: 'Palermo International',
+    },
+    {
+      label: 'Washington Open',
+      value: 'Washington Open',
+    },
+    {
+      label: 'Canadian Open',
+      value: 'Canadian Open',
+    },
+    {
+      label: 'Cincinnati Open',
+      value: 'Cincinnati Open',
+    },
+    {
+      label: 'Bronx Open',
+      value: 'Bronx Open',
+    },
+    {
+      label: 'US Open',
+      value: 'US Open',
+    },
+    {
+      label: 'Zhengzhou Open',
+      value: 'Zhengzhou Open',
+    },
+    {
+      label: "Japan Women's Open",
+      value: "Japan Women's Open",
+    },
+    {
+      label: 'Jiangxi Open',
+      value: 'Jiangxi Open',
+    },
+    {
+      label: 'Pan Pacific Open',
+      value: 'Pan Pacific Open',
+    },
+    {
+      label: 'Guangzhou Open',
+      value: 'Guangzhou Open',
+    },
+    {
+      label: 'Korea Open',
+      value: 'Korea Open',
+    },
+    {
+      label: 'Wuhan Open',
+      value: 'Wuhan Open',
+    },
+    {
+      label: 'Tashkent Open',
+      value: 'Tashkent Open',
+    },
+    {
+      label: 'China Open',
+      value: 'China Open',
+    },
+    {
+      label: 'Tianjin Open',
+      value: 'Tianjin Open',
+    },
+    {
+      label: 'Linz Open',
+      value: 'Linz Open',
+    },
+    {
+      label: 'Kremlin Cup',
+      value: 'Kremlin Cup',
+    },
+    {
+      label: 'Luxembourg Open',
+      value: 'Luxembourg Open',
+    },
+    {
+      label: 'WTA Elite Trophy',
+      value: 'WTA Elite Trophy',
+    },
+    {
+      label: 'WTA Finals',
+      value: 'WTA Finals',
+    },
+  ],
+  ENTERTAINMENT_EVENT: [
+    {
+      value: 'Academy Awards',
+      label: 'Academy Awards',
+    },
+    {
+      value: 'Emmy Awards',
+      label: 'Emmy Awards',
+    },
+    {
+      value: 'Grammy Awards',
+      label: 'Grammy Awards',
+    },
+    {
+      value: 'Golden Globe Awards',
+      label: 'Golden Globe Awards',
+    },
+    {
+      value: 'Razzies Awards',
+      label: 'Razzies Awards',
+    },
+    {
+      value: 'BAFTA Awards',
+      label: 'BAFTA Awards',
+    },
+    {
+      value: 'MTV Video Music Awards',
+      label: 'MTV Video Music Awards',
+    },
+    {
+      value: 'American Music Awards',
+      label: 'American Music Awards',
+    },
+    {
+      value: 'Brit Awards',
+      label: 'Brit Awards',
+    },
+  ],
+  ENT_ACAD_AWARDS: [
+    {
+      label: 'Best Picture',
+      value: 'Best Picture',
+    },
+    {
+      label: 'Best Actor',
+      value: 'Best Actor',
+    },
+    {
+      label: 'Best Actress',
+      value: 'Best Actress',
+    },
+    {
+      label: 'Best Director',
+      value: 'Best Director',
+    },
+    {
+      label: 'Best Supporting Actor',
+      value: 'Best Supporting Actor',
+    },
+    {
+      label: 'Best Supporting Actress',
+      value: 'Best Supporting Actress',
+    },
+    {
+      label: 'Best Original Screenplay',
+      value: 'Best Original Screenplay',
+    },
+    {
+      label: 'Best Adapted Screenplay',
+      value: 'Best Adapted Screenplay',
+    },
+  ],
+  ENT_EMMY_AWARDS: [
+    {
+      label: 'Outstanding Comedy Series',
+      value: 'Outstanding Comedy Series',
+    },
+    {
+      label: 'Outstanding Lead Actor In A Comedy Series',
+      value: 'Outstanding Lead Actor In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Lead Actress In A Comedy Series',
+      value: 'Outstanding Lead Actress In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Supporting Actor In A Comedy Series',
+      value: 'Outstanding Supporting Actor In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Supporting Actress In A Comedy Series',
+      value: 'Outstanding Supporting Actress In A Comedy Series',
+    },
+    {
+      label: 'Outstanding Drama Series',
+      value: 'Outstanding Drama Series',
+    },
+    {
+      label: 'Outstanding Lead Actor In A Drama Series',
+      value: 'Outstanding Lead Actor In A Drama Series',
+    },
+    {
+      label: 'Outstanding Lead Actress In A Drama Series',
+      value: 'Outstanding Lead Actress In A Drama Series',
+    },
+    {
+      label: 'Outstanding Supporting Actor In A Drama Series',
+      value: 'Outstanding Supporting Actor In A Drama Series',
+    },
+    {
+      label: 'Outstanding Supporting Actress In A Drama Series',
+      value: 'Outstanding Supporting Actress In A Drama Series',
+    },
+    {
+      label: 'Outstanding Limited Series',
+      value: 'Outstanding Limited Series',
+    },
+    {
+      label: 'Outstanding Television Movie',
+      value: 'Outstanding Television Movie',
+    },
+  ],
+  ENT_GRAMMY_AWARDS: [
+    {
+      label: 'Album Of The Year',
+      value: 'Album Of The Year',
+    },
+    {
+      label: 'Record Of The Year',
+      value: 'Record Of The Year',
+    },
+    {
+      label: 'Song Of The Year',
+      value: 'Song Of The Year',
+    },
+    {
+      label: 'Best New Artist',
+      value: 'Best New Artist',
+    },
+  ],
+  ENT_GOLDEN_GLOBE_AWARDS: [
+    {
+      label: 'Best Motion Picture - Drama',
+      value: 'Best Motion Picture - Drama',
+    },
+    {
+      label: 'Best Motion Picture - Musical or Comedy',
+      value: 'Best Motion Picture - Musical or Comedy',
+    },
+    {
+      label: 'Best Performance by an Actress in a Motion Picture - Drama',
+      value: 'Best Performance by an Actress in a Motion Picture - Drama',
+    },
+    {
+      label: 'Best Performance by an Actor in a Motion Picture - Drama',
+      value: 'Best Performance by an Actor in a Motion Picture - Drama',
+    },
+    {
+      label:
+        'Best Performance by an Actress in a Motion Picture - Musical or Comedy',
+      value:
+        'Best Performance by an Actress in a Motion Picture - Musical or Comedy',
+    },
+    {
+      label:
+        'Best Performance by an Actor in a Motion Picture - Musical or Comedy',
+      value:
+        'Best Performance by an Actor in a Motion Picture - Musical or Comedy',
+    },
+    {
+      label: 'Best Director - Motion Picture',
+      value: 'Best Director - Motion Picture',
+    },
+    {
+      label: 'Best Screenplay - Motion Picture',
+      value: 'Best Screenplay - Motion Picture',
+    },
+    {
+      label: 'Best Motion Picture - Animated',
+      value: 'Best Motion Picture - Animated',
+    },
+    {
+      label: 'Best Motion Picture - Foreign Language',
+      value: 'Best Motion Picture - Foreign Language',
+    },
+    {
+      label: 'Best Original Song - Motion Picture',
+      value: 'Best Original Song - Motion Picture',
+    },
+    {
+      label: 'Best Television Series - Drama',
+      value: 'Best Television Series - Drama',
+    },
+    {
+      label: 'Best Television Series - Musical or Comedy',
+      value: 'Best Television Series - Musical or Comedy',
+    },
+    {
+      label:
+        'Best Television Limited Series or Motion Picture Made for Television',
+      value:
+        'Best Television Limited Series or Motion Picture Made for Television',
+    },
+  ],
+  ENT_RAZZIE_AWARDS: [
+    {
+      label: 'Worst Picture',
+      value: 'Worst Picture',
+    },
+    {
+      label: 'Worst Actor',
+      value: 'Worst Actor',
+    },
+    {
+      label: 'Worst Actress',
+      value: 'Worst Actress',
+    },
+  ],
+  ENT_BAFTA_AWARDS: [
+    {
+      label: 'Best Film',
+      value: 'Best Film',
+    },
+    {
+      label: 'Best Animated Film',
+      value: 'Best Animated Film',
+    },
+    {
+      label: 'Best Director',
+      value: 'Best Director',
+    },
+    {
+      label: 'Best Actor',
+      value: 'Best Actor',
+    },
+    {
+      label: 'Best Actress',
+      value: 'Best Actress',
+    },
+    {
+      label: 'Best Supporting Actor',
+      value: 'Best Supporting Actor',
+    },
+    {
+      label: 'Best Supporting Actress',
+      value: 'Best Supporting Actress',
+    },
+  ],
+  ENT_MTV_AWARDS: [
+    {
+      label: 'Artist of the Year',
+      value: 'Artist of the Year',
+    },
+    {
+      label: 'Song of the year',
+      value: 'Song of the year',
+    },
+    {
+      label: 'Best new artist',
+      value: 'Best new artist',
+    },
+    {
+      label: 'Best pop',
+      value: 'Best pop',
+    },
+    {
+      label: 'Best hip-hop',
+      value: 'Best hip-hop',
+    },
+    {
+      label: 'Best r&b',
+      value: 'Best r&b',
+    },
+    {
+      label: 'Best dance',
+      value: 'Best dance',
+    },
+    {
+      label: 'Best rock',
+      value: 'Best rock',
+    },
+  ],
+  ENT_AMER_MUSIC: [
+    {
+      label: 'Artist of the Year',
+      value: 'Artist of the Year',
+    },
+    {
+      label: 'New Artist of the Year',
+      value: 'New Artist of the Year',
+    },
+    {
+      label: 'Tour of the Year',
+      value: 'Tour of the Year',
+    },
+    {
+      label: 'Favorite Music Video',
+      value: 'Favorite Music Video',
+    },
+    {
+      label: 'Favorite Male Artist - Pop/Rock',
+      value: 'Favorite Male Artist - Pop/Rock',
+    },
+    {
+      label: 'Favorite Female Artist - Pop/Rock',
+      value: 'Favorite Female Artist - Pop/Rock',
+    },
+    {
+      label: 'Favorite Album - Pop/Rock',
+      value: 'Favorite Album - Pop/Rock',
+    },
+    {
+      label: 'Favorite Song - Pop/Rock',
+      value: 'Favorite Song - Pop/Rock',
+    },
+    {
+      label: 'Favorite Male Artist - Country',
+      value: 'Favorite Male Artist - Country',
+    },
+    {
+      label: 'Favorite Female Artist - Country',
+      value: 'Favorite Female Artist - Country',
+    },
+    {
+      label: 'Favorite Album - Country',
+      value: 'Favorite Album - Country',
+    },
+    {
+      label: 'Favorite Song - Country',
+      value: 'Favorite Song - Country',
+    },
+    {
+      label: 'Favorite Artist - Rap/Hip-Hop',
+      value: 'Favorite Artist - Rap/Hip-Hop',
+    },
+    {
+      label: 'Favorite Album - Rap/Hip-Hop',
+      value: 'Favorite Album - Rap/Hip-Hop',
+    },
+    {
+      label: 'Favorite Song - Rap/Hip-Hop',
+      value: 'Favorite Song - Rap/Hip-Hop',
+    },
+    {
+      label: 'Favorite Male Artist - Soul/R&B',
+      value: 'Favorite Male Artist - Soul/R&B',
+    },
+    {
+      label: 'Favorite Female Artist - Soul/R&B',
+      value: 'Favorite Female Artist - Soul/R&B',
+    },
+    {
+      label: 'Favorite Album - Soul/R&B',
+      value: 'Favorite Album - Soul/R&B',
+    },
+    {
+      label: 'Favorite Song - Soul/R&B',
+      value: 'Favorite Song - Soul/R&B',
+    },
+    {
+      label: 'Favorite Soundtrack',
+      value: 'Favorite Soundtrack',
+    },
+  ],
+  ENT_BRIT_AWARDS: [
+    {
+      label: 'British album of the year',
+      value: 'British album of the year',
+    },
+    {
+      label: 'British female solo artist',
+      value: 'British female solo artist',
+    },
+    {
+      label: 'British male solo artist',
+      value: 'British male solo artist',
+    },
+    {
+      label: 'British group',
+      value: 'British group',
+    },
+    {
+      label: 'British single',
+      value: 'British single',
+    },
+    {
+      label: 'International male solo artist',
+      value: 'International male solo artist',
+    },
+    {
+      label: 'International female solo artist',
+      value: 'International female solo artist',
+    },
+    {
+      label: 'International group',
+      value: 'International group',
+    },
+  ],
+  FIN_INDEXES: [
+    {
+      label: 'S&P 500 Index',
+      value: 'S&P 500 Index',
+    },
+    {
+      label: 'Dow Jones Industrial Average',
+      value: 'Dow Jones Industrial Average',
+    },
+    {
+      label: 'Nasdaq Composite',
+      value: 'Nasdaq Composite',
+    },
+    {
+      label: 'Wilshire 5000',
+      value: 'Wilshire 5000',
+    },
+    {
+      label: 'Russell 1000',
+      value: 'Russell 1000',
+    },
+    {
+      label: 'NYSE Composite',
+      value: 'NYSE Composite',
+    },
+    {
+      label: 'MSCI World Index',
+      value: 'MSCI World Index',
+    },
+    {
+      label: 'FTSE All-World Index',
+      value: 'FTSE All-World Index',
+    },
+    {
+      label: 'Dow Jones Global Titans 50',
+      value: 'Dow Jones Global Titans 50',
+    },
+    {
+      label: 'S&P Global 100 Index',
+      value: 'S&P Global 100 Index',
+    },
+    {
+      label: 'FTSE 100',
+      value: 'FTSE 100',
+    },
+    {
+      label: 'DAX',
+      value: 'DAX',
+    },
+    {
+      label: 'Shanghai SE Composite',
+      value: 'Shanghai SE Composite',
+    },
+    {
+      label: 'Hang Seng',
+      value: 'Hang Seng',
+    },
+    {
+      label: 'Nikkei 225',
+      value: 'Nikkei 225',
+    },
+    {
+      label: 'S&P/TSX Composite',
+      value: 'S&P/TSX Composite',
+    },
+    {
+      label: 'CAC 40',
+      value: 'CAC 40',
+    },
+    {
+      label: 'All Ordinaries',
+      value: 'All Ordinaries',
+    },
+    {
+      label: 'BSE Sensex 30',
+      value: 'BSE Sensex 30',
+    },
+    {
+      label: 'KOSPI Index',
+      value: 'KOSPI Index',
+    },
+    {
+      label: 'VIX',
+      value: 'VIX',
+    },
+  ],
+  FIN_STOCK_EXCHANGES: [
+    {
+      label: 'New York Stock Exchange (traded in USD)',
+      value: 'New York Stock Exchange (traded in USD)',
+    },
+    {
+      label: 'Nasdaq (traded in USD)',
+      value: 'Nasdaq (traded in USD)',
+    },
+    {
+      label: 'American Stock Exchange (traded in USD)',
+      value: 'American Stock Exchange (traded in USD)',
+    },
+    {
+      label: 'Tokyo Stock Exchange (traded in Japanese Yen)',
+      value: 'Tokyo Stock Exchange (traded in Japanese Yen)',
+    },
+    {
+      label: 'London Stock Exchange (traded in Pound Sterling)',
+      value: 'London Stock Exchange (traded in Pound Sterling)',
+    },
+    {
+      label: 'Shanghai Stock Exchange (A shares traded in Yuan)',
+      value: 'Shanghai Stock Exchange (A shares traded in Yuan)',
+    },
+    {
+      label: 'Shanghai Stock Exchange (B shares traded in USD)',
+      value: 'Shanghai Stock Exchange (B shares traded in USD)',
+    },
+    {
+      label: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
+      value: 'Hong Kong Stock Exchange (traded in HKD Hong Kong Dollar)',
+    },
+    {
+      label: 'Toronto Stock Exchange (traded in Canadian Dollar)',
+      value: 'Toronto Stock Exchange (traded in Canadian Dollar)',
+    },
+    {
+      label: 'Euronext NV (traded in Euro)',
+      value: 'Euronext NV (traded in Euro)',
+    },
+  ],
+};
+
+export const ENTERTAINMENT_EVENT_DEP_TEAMS = {
+  'Academy Awards': LIST_VALUES.ENT_ACAD_AWARDS,
+  'Emmy Awards': LIST_VALUES.ENT_EMMY_AWARDS,
+  'Grammy Awards': LIST_VALUES.ENT_GRAMMY_AWARDS,
+  'Golden Globe Awards': LIST_VALUES.ENT_GOLDEN_GLOBE_AWARDS,
+  'Razzies Awards': LIST_VALUES.ENT_RAZZIE_AWARDS,
+  'BAFTA Awards': LIST_VALUES.ENT_BAFTA_AWARDS,
+  'MTV Video Music Awards': LIST_VALUES.ENT_MTV_AWARDS,
+  'American Music Awards': LIST_VALUES.ENT_AMER_MUSIC,
+  'Brit Awards': LIST_VALUES.ENT_BRIT_AWARDS,
+};
+
+export const TENNIS_SINGLES_EVENTS = {
+  "Men's": LIST_VALUES.TENNIS_MENS_SINGLES_TOURNAMENTS,
+  "Women's": LIST_VALUES.TENNIS_WOMENS_SINGLES_TOURNAMENTS,
+};
+
+export const TENNIS_DOUBLES_EVENTS = {
+  "Men's": LIST_VALUES.TENNIS_MENS_DOUBLES_TOURNAMENTS,
+  "Women's": LIST_VALUES.TENNIS_WOMENS_DOUBLES_TOURNAMENTS,
+  Mixed: LIST_VALUES.TENNIS_EVENT,
 };
 
 export const BASKETBALL_EVENT_DEP_TEAMS = {

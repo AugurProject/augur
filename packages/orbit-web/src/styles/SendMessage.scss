@@ -60,7 +60,7 @@
   }
 
   textarea::placeholder {
-    color: transparentize($orbit-color-secondary-text, 0.75);
+    color: $orbit-color-secondary-text;
     opacity: 1;
   }
 

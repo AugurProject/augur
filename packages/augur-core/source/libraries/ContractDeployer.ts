@@ -221,7 +221,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.contractName === 'CashFaucetProxy') continue;
             if (contract.contractName === 'UniswapV2') continue;
             if (contract.contractName === 'UniswapV2Factory') continue;
-            if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract: this.contracts.get('TimeControlled');
+            if (contract.contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
                 if (this.configuration.isProduction) continue;
@@ -594,6 +594,7 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['ZRXToken'] = this.contracts.get('ZRXToken').address!;
 
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
+        if (this.contracts.get('Time')) mapping['Time'] = this.contracts.get('Time').address;
 
         for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;

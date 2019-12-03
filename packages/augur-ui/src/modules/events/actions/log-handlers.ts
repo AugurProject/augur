@@ -61,6 +61,7 @@ import {
   GNOSIS_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
+import { loadAnalytics } from 'modules/app/actions/analytics-management';
 
 const handleAlert = (
   log: any,
@@ -132,7 +133,8 @@ export const handleGnosisStateUpdate = (response) => (
 };
 
 export const handleSDKReadyEvent = () => (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   // wire up events for sdk
   augurSdk.subscribe(dispatch);
@@ -142,16 +144,18 @@ export const handleSDKReadyEvent = () => (
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats())
-  dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
-  dispatch(updateAuthStatus(IS_LOGGED, true));
-  dispatch(loadAccountData());
+  if (loginAccount.address) {
+    dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
+    dispatch(loadAccountData());
+  }
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { appStatus } = getState();
+  const { blockchain } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -165,11 +169,12 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
+    dispatch(loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp));
   }
 
-  if (
-    appStatus.gnosisEnabled &&
-    appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
+  if (  
+    getState().appStatus.gnosisEnabled &&
+    getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {
     const status = augurSdk.sdk.gnosis.augur.getGnosisStatus();
     if (status) {

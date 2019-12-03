@@ -1,91 +1,115 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { ButtonsRow, Breakdown, Title } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO } from 'modules/common/constants';
-import { formatEther, formatRep } from 'utils/format-number';
-import isAddress from 'modules/auth/helpers/is-address';
+import { ButtonsRow, Title } from 'modules/modal/common';
+import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
-import { createBigNumber } from 'utils/create-big-number';
-import convertExponentialToDecimal from 'utils/convert-exponential';
-import { FormattedNumber, LoginAccount } from 'modules/types';
-import { FormDropdown, TextInput } from 'modules/common/form';
-import { CloseButton, ExternalLinkButton } from 'modules/common/buttons';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { LoginAccount } from 'modules/types';
+import { ExternalLinkButton } from 'modules/common/buttons';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { V1_REP_MIGRATE_ESTIMATE } from 'modules/common/constants';
 
 interface MigrateRepForm {
   closeAction: Function;
   loginAccount: LoginAccount;
   convertV1ToV2: Function;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
+  convertV1ToV2Estimate: Function;
+  gasPrice: number;
 }
 
-export class MigrateRep extends Component<MigrateRepForm, {}> {
-  render() {
-    const { closeAction, convertV1ToV2 } = this.props;
+export const MigrateRep = (props: MigrateRepForm) => {
+  const {
+    closeAction,
+    convertV1ToV2,
+    loginAccount,
+    Gnosis_ENABLED,
+    convertV1ToV2Estimate,
+    ethToDaiRate,
+    gasPrice,
+  } = props;
 
-    return (
-      <div className={Styles.MigrateRep}>
-        <Title title={'Migrate Rep'} closeAction={closeAction} />
+  const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
 
-        <main>
-          <h1>You have V1 REP in your wallet</h1>
-          <h2>
-            Migrate your V1 REP to V2 REP to use it in Augur V2. 
-            <ExternalLinkButton
-              label="Learn more"
-              URL="http://docs.augur.net/"
-            />
-          </h2>
+  useEffect(() => {
+    if (Gnosis_ENABLED) {
+      convertV1ToV2Estimate().then(gasLimit => {
+        setGasLimit(gasLimit);
+      });
+    }
+  }, []);
 
+  const gasEstimate = formatGasCostToEther(
+    gasLimit,
+    { decimalsRounded: 4 },
+    gasPrice,
+  );
+
+  return (
+    <div className={Styles.MigrateRep}>
+      <Title title={'Migrate Rep'} closeAction={closeAction} />
+
+      <main>
+        <h1>You have V1 REP in your wallet</h1>
+        <h2>
+          Migrate your V1 REP to V2 REP to use it in Augur V2.
+          <ExternalLinkButton label='Learn more' URL='http://docs.augur.net/' />
+        </h2>
+
+        <div>
           <div>
-            <div>
-              <span>V1 REP Balance</span>
-              <span>80.0000</span>
-              <span>-</span>
-            </div>
-            <div>
-              <span>V1 REP Balance</span>
-              <span>80.0000</span>
-              <span>-</span>
-            </div>
+            <span>V1 REP Balance</span>
+            <span>
+              {formatRep(loginAccount.balances.legacyRep).formattedValue}
+            </span>
+            <span>
+              -{formatRep(loginAccount.balances.legacyRep).formattedValue}
+            </span>
           </div>
-
           <div>
-            <label>Amount</label>
-            <button onClick={null}>MAX</button>
-            <TextInput type="number" placeholder="0.00" onChange={null} />
+            <span>V2 REP Balance</span>
+            <span>{formatRep(loginAccount.balances.rep).formattedValue}</span>
+            <span>
+              +{formatRep(loginAccount.balances.legacyRep).formattedValue}
+            </span>
           </div>
+        </div>
+        <div>
+          <LinearPropertyLabel
+            key='cost'
+            label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Cost'}
+            value={
+              Gnosis_ENABLED
+                ? displayGasInDai(gasEstimate, ethToDaiRate)
+                : gasEstimate
+            }
+          />
+        </div>
 
-          <div>
-            <LinearPropertyLabel
-              key="migrate"
-              label="Migrate"
-              value={'0.0000'}
-            />
-            <LinearPropertyLabel
-              key="cost"
-              label="Gas Cost (est)"
-              value={'0.0000'}
-            />
-          </div>
-
-          <div>
-            {InfoIcon} Your wallet will need to sign <span>2</span> transactions
-          </div>
-        </main>
-        <ButtonsRow
-          buttons={[
-            {
-              text: 'Convert',
-              action: () => convertV1ToV2,
+        <div>
+          {InfoIcon} Your wallet will need to sign <span>2</span> transactions
+        </div>
+      </main>
+      <ButtonsRow
+        buttons={[
+          {
+            text: 'Convert',
+            action: () => {
+              closeAction();
+              convertV1ToV2();
             },
-            {
-              text: 'Cancel',
-              action: closeAction,
-            },
-          ]}
-        />
-      </div>
-    );
-  }
-}
+            disabled:
+              formatRep(loginAccount.balances.legacyRep).fullPrecision < 0,
+          },
+          {
+            text: 'Cancel',
+            action: closeAction,
+          },
+        ]}
+      />
+    </div>
+  );
+};

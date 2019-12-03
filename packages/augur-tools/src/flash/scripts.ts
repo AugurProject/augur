@@ -153,6 +153,49 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'transfer',
+    description: 'Transfer tokens to account',
+    options: [
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'Quantity',
+        required: true,
+      },
+      {
+        name: 'token',
+        abbr: 'k',
+        description: 'REP, ETH, DAI',
+        required: true,
+      },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+
+      const target = String(args.target);
+      const amount = Number(args.amount);
+      const token = String(args.token);
+      const atto = new BigNumber(amount).times(_1_ETH);
+
+      switch(token) {
+        case 'REP':
+          return await user.augur.contracts.getReputationToken().transfer(target, atto);
+        case 'ETH':
+          return await user.augur.sendETH(target, atto);
+        default:
+          return await user.augur.contracts.cash.transfer(target, atto);
+      }
+    },
+  });
+
+  flash.addScript({
     name: 'rep-faucet',
     description: 'Mints REP tokens for user.',
     options: [
@@ -162,14 +205,26 @@ export function addScripts(flash: FlashSession) {
         description: 'Quantity of REP.',
         required: true,
       },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
+      const target = String(args.target);
 
       await user.repFaucet(atto);
+
+      // if we have a target we transfer from current account to target.
+      if(target) {
+        await user.augur.contracts.reputationToken.transfer(target, atto);
+      }
     },
   });
 
@@ -1055,4 +1110,49 @@ export function addScripts(flash: FlashSession) {
       const result = await user.augur.contracts.gnosisSafeRegistry.getSafe_(args['target'] as string);
       console.log(result);
   }});
+
+  flash.addScript({
+    name: '0x-docker',
+    async call(this: FlashSession) {
+      if (this.noProvider()) return null;
+
+      const networkId = await this.provider.getNetworkId();
+      // const ethNode = this.network.http;
+      const ethNode = 'http://geth:8545';
+      const addresses = Addresses[networkId];
+
+      console.log(`Starting 0x mesh. chainId=${networkId} ethnode=${ethNode}`);
+
+      const mesh = spawn('docker', [
+        'run',
+        '--rm',
+        '--network', 'augur',
+        '--name', '0x',
+        '-p', '60557:60557', // rpc_port_number
+        '-p', '60558:60558', // P2PTCPPort
+        '-p', '60559:60559', // P2PWebSocketsPort
+        '-e', `ETHEREUM_CHAIN_ID=${networkId}`,
+        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
+        '-e', 'USE_BOOTSTRAP_LIST=false',
+        '-e', 'BLOCK_POLLING_INTERVAL=1s',
+        '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
+        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(addresses)}`,
+        '-e', 'VERBOSITY=4', // 5=debug 6=trace
+        '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
+        '0xorg/mesh:7.1.1-beta-0xv3', // TODO update this until we hit a stable release
+      ]);
+
+      mesh.on('error', console.error);
+      mesh.on('exit', (code, signal) => {
+        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
+      });
+      mesh.stdout.on('data', (data) => {
+        console.log(data.toString());
+      });
+      mesh.stderr.on('data', (data) => {
+        console.error(data.toString());
+      });
+    },
+  })
+
 }

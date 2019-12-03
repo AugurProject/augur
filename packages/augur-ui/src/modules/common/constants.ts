@@ -38,6 +38,7 @@ export const NETWORK_NAMES = {
   42: 'Kovan',
   123456: 'Private',
 };
+
 // network name to id map
 export const NETWORK_IDS = {
   Mainnet: '1',
@@ -50,11 +51,22 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
+export const GAS_PRICE_API_ENDPOINT = 'https://ethgasstation.info/json/ethgasAPI.json';
+
 export const GAS_SPEED_LABELS = {
   STANDARD: 'Standard',
   FAST: 'Fast',
   SLOW: 'Slow',
 };
+
+export const GAS_TIME_LEFT_LABELS = {
+  STANDARD: '< 5 min',
+  FAST: '< 2 min',
+  SAFELOW: '< 30 min',
+  SLOW: '30 min or more',
+};
+
+
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
 // ethereumNodeWs
@@ -86,7 +98,7 @@ export const ACCOUNT_TYPES = {
   EDGE: 'Edge',
   PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
-  TORUS: 'Torus',
+  TORUS: 'Tor.us',
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
@@ -655,12 +667,16 @@ export const TWO = createBigNumber(2, 10);
 export const TEN = createBigNumber(10, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
-export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+export const DISPUTE_GAS_COST = createBigNumber(480000);
+export const INITAL_REPORT_GAS_COST = createBigNumber(1094412);
+export const V1_REP_MIGRATE_ESTIMATE = createBigNumber(303000);
+export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(675334);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
-export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(3000000);
+export const CLAIM_FEES_GAS_COST = createBigNumber(250000);
+export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(290000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
   createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
     .div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
@@ -1020,7 +1036,7 @@ export const TRADING_TUTORIAL_COPY = {
         text: "This shows the amount of money required to make this trade.",
       },
       {
-        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value.",
+        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.",
       },
     ],
   },
@@ -1150,7 +1166,23 @@ export const DISPUTING_GUIDE = {
 
 export const REPORTING_GUIDE = {
   title: 'REPORTING QUICK GUIDE',
-  content: [],
+  content: [{
+    header: 'Upcoming Designated Reporting',
+    paragraphs: [
+      'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting'
+    ]
+  }, {
+    header: 'Designated Reporting',
+    paragraphs: [
+      'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
+      'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.'
+    ]
+  }, {
+    header: 'Open Reporting',
+    paragraphs: [
+      'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.'
+    ]
+  }],
   learnMoreButtonText: 'Learn more about reporting',
   closeButtonText: 'Close'
 };

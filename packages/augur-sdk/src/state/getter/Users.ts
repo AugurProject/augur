@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import { NumericDictionary } from 'lodash';
-import { Dexie } from "dexie";
+import Dexie from 'dexie';
 import {
   ProfitLossChangedLog,
   ParsedOrderEventLog,
@@ -29,7 +29,7 @@ import { MarketReportingState, OrderEventType } from '../../constants';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import { QUINTILLION } from '../../utils';
-import { Trading, MarketTradingHistory, Orders } from './Trading';
+import { OnChainTrading, MarketTradingHistory, Orders } from './OnChainTrading';
 import { MarketInfo, Markets } from './Markets';
 import { Accounts, AccountReportingHistory } from './Accounts';
 
@@ -205,7 +205,7 @@ export class Users {
     let userPositions: UserTradingPositions = null;
     let userStakedRep: AccountReportingHistory = null;
     try {
-      userTradeHistory = await Trading.getTradingHistory(augur, db, {
+      userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
         account: params.account,
         universe: params.universe,
         filterFinalized: true
@@ -214,10 +214,10 @@ export class Users {
       const uniqMarketIds = Object.keys(userTradeHistory);
 
       if (uniqMarketIds.length > 0) {
-        marketTradeHistory = await Trading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
+        marketTradeHistory = await OnChainTrading.getTradingHistory(augur, db, { marketIds: uniqMarketIds });
       }
 
-      userOpenOrders = await Trading.getOrders(augur, db, {
+      userOpenOrders = await OnChainTrading.getOrders(augur, db, {
         account: params.account,
         universe: params.universe,
         orderState: OrderState.OPEN,

@@ -38,7 +38,6 @@ export default class ModalTradingOverlay extends Component<ModalTradingOverlayPr
     const {
       closeModal,
       marketId,
-      outcomes,
       selectedOutcome,
     } = this.props;
 

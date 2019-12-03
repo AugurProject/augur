@@ -1,7 +1,6 @@
 import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
-import createCachedSelector from 're-reselect';
-import store from 'store';
+import store, { AppState } from 'store';
 
 import { isOrderOfUser } from 'modules/orders/helpers/is-order-of-user';
 
@@ -11,18 +10,19 @@ import {
   SELL,
   BUY,
   OPEN,
+  FAILURE,
 } from 'modules/common/constants';
 
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { formatNone, formatEther, formatShares, formatDai } from 'utils/format-number';
+import { formatNone, formatShares, formatDai } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectMarketInfosState,
   selectUserMarketOpenOrders,
   selectOrderCancellationState,
   selectPendingOrdersState,
-  selectLoginAccountAddress,
 } from 'store/select-state';
+import { createSelector } from 'reselect';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -33,24 +33,23 @@ function selectUserMarketOpenOrdersMarket(state, marketId) {
 }
 
 function selectPendingOrdersStateMarket(state, marketId) {
-  return selectPendingOrdersState(state)[marketId];
+  const pending = selectPendingOrdersState(state)[marketId];
+  return !!pending ? [...pending] : pending;
 }
 
 export default function(marketId) {
   if (!marketId) return [];
 
-  return selectUserOpenOrders(store.getState(), marketId);
+  return selectUserOpenOrders(store.getState() as AppState, marketId);
 }
 
-export const selectUserOpenOrders = createCachedSelector(
+export const selectUserOpenOrders = createSelector(
   selectMarketsDataStateMarket,
   selectUserMarketOpenOrdersMarket,
   selectOrderCancellationState,
   selectPendingOrdersStateMarket,
-  selectLoginAccountAddress,
-  (market, userMarketOpenOrders, orderCancellation, pendingOrders, account) => {
+  (market, userMarketOpenOrders, orderCancellation, pendingOrders) => {
     if (!market) return [];
-
     let userOpenOrders =
       market.outcomes
         .map(outcome =>
@@ -60,7 +59,7 @@ export const selectUserOpenOrders = createCachedSelector(
             userMarketOpenOrders,
             orderCancellation,
             market.description,
-            outcome.description
+            outcome.description,
           )
         )
         .filter(collection => collection.length !== 0)
@@ -73,13 +72,14 @@ export const selectUserOpenOrders = createCachedSelector(
         unmatchedShares: formatShares(o.amount),
         avgPrice: formatDai(o.fullPrecisionPrice),
         pending: !!o.status, // TODO: can show status of transaction in the future
+        status: o.status,
       }))
       userOpenOrders = formatted.concat(userOpenOrders);
     }
 
     return userOpenOrders || [];
   }
-)((state, marketId) => marketId);
+);
 
 function selectUserOpenOrdersInternal(
   marketId,
@@ -87,9 +87,9 @@ function selectUserOpenOrdersInternal(
   userMarketOpenOrders,
   orderCancellation,
   marketDescription,
-  name
+  name,
 ) {
-  const { loginAccount } = store.getState();
+  const { loginAccount } = store.getState() as AppState;
   if (!loginAccount.address || userMarketOpenOrders == null) return [];
 
   return userOpenOrders(
@@ -99,7 +99,7 @@ function selectUserOpenOrdersInternal(
     userMarketOpenOrders,
     orderCancellation,
     marketDescription,
-    name
+    name,
   );
 }
 
@@ -111,7 +111,7 @@ const userOpenOrders = memoize(
     userMarketOpenOrders,
     orderCancellation,
     marketDescription,
-    name
+    name,
   ) => {
     const orderData = userMarketOpenOrders[outcomeId];
 
@@ -126,7 +126,7 @@ const userOpenOrders = memoize(
             loginAccount.address,
             orderCancellation,
             marketDescription,
-            name
+            name,
           );
     const userAsks =
       orderData == null || orderData[SELL_INDEX] == null
@@ -139,7 +139,7 @@ const userOpenOrders = memoize(
             loginAccount.address,
             orderCancellation,
             marketDescription,
-            name
+            name,
           );
 
     const orders = userAsks.concat(userBids);
@@ -158,7 +158,7 @@ function getUserOpenOrders(
   userId,
   orderCancellation = {},
   marketDescription = '',
-  name = ''
+  name = '',
 ) {
   const typeOrders = orders[orderType];
 
@@ -177,6 +177,7 @@ function getUserOpenOrders(
       outcomeId,
       creationTime: convertUnixToFormattedDate(order.creationTime),
       pending: !!orderCancellation[order.orderId],
+      status: order.status,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
       avgPrice: formatDai(order.fullPrecisionPrice),

@@ -14,9 +14,19 @@
   margin-right: @size-12;
   padding-bottom: @size-8;
 
+  > div[class*='LinearPropertyLabel'] {
+    > span {
+      .mono-10-bold;
+
+      &:first-of-type {
+        color: @color-secondary-text;
+      }
+    }
+  }
+
   > svg {
     > line {
-      stroke: fade(@color-primary-text, 40%);
+      stroke: @color-secondary-text;
     }
   }
 }
@@ -27,9 +37,9 @@
 }
 
 .TradingConfirm__position__properties {
-  .mono-9-bold;
+  .mono-10-bold;
 
-  color: @color-primary-text;
+  color: @color-secondary-text;
   display: flex;
   flex-direction: row;
   margin-bottom: @size-4;
@@ -42,14 +52,14 @@
 }
 
 .TradingConfirm__agg_position {
-  .mono-9;
+  .mono-10;
 
   color: @color-primary-text;
   padding-bottom: @size-4;
   text-transform: uppercase;
 
   > span > span {
-    .mono-9-bold;
+    .mono-10-bold;
 
     margin: 0 @size-4;
   }
@@ -65,15 +75,15 @@
 
 .TradingConfirm__TooltipHint {
   margin-bottom: 0;
-  width: 0.9rem;
+  width: @size-16;
 
   > svg {
     height: @size-12;
     width: @size-12;
 
     > circle {
-      fill: @color-secondary-action;
-      stroke: @color-secondary-action-outline;
+      fill: @color-secondary-text;
+      stroke: @color-secondary-text;
       stroke-width: 1.5;
     }
 
@@ -95,8 +105,8 @@
   flex-direction: column;
   left: @size-12;
   line-height: @size-14;
+  margin: @size-12;
   padding: @size-10 @size-12;
-  position: absolute;
   right: @size-12;
 
   &.error {
@@ -170,6 +180,7 @@
 }
 
 .TradingConfirm__TooltipContainer {
+  color: @color-secondary-text;
   margin-left: @size-8;
   position: absolute;
   top: -0.1875rem;
@@ -195,7 +206,7 @@
     padding: @size-24 @size-32 @size-24;
 
     > h2 {
-      color: @color-primary-text;
+      color: @color-secondary-text;
 
       &.order__buy {
         color: @color-positive;
@@ -241,6 +252,6 @@
 
   .TradingConfirm__details > li > span,
   .TradingConfirm__details > li > span:first-child {
-    color: @color-primary-text;
+    color: @color-secondary-text;
   }
 }

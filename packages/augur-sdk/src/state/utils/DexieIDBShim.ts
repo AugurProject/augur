@@ -1,4 +1,4 @@
-import { Dexie } from "dexie";
+import Dexie from 'dexie';
 const setGlobalVars = require('indexeddbshim');
 
 // ID_Start (includes Other_ID_Start)

@@ -481,7 +481,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     const errorMsg = checkValidations.find(validation => {
       if (typeof validation === 'string') {
         return validation !== '';
-      } else if (validation === null) {
+      } else if (validation === null || validation === undefined) {
         return false;
       } else {
         return !validation.every(
@@ -521,6 +521,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           id: 0,
           description: 'Invalid',
         });
+        removeAllOrdersFromNewMarket();
       } else if (newMarket.marketType === SCALAR) {
         outcomesFormatted = SCALAR_OUTCOMES;
         outcomesFormatted[1].description =

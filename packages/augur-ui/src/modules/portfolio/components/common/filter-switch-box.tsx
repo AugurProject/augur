@@ -22,6 +22,9 @@ export interface FilterBoxProps {
   sortByStyles?: object;
   noBackgroundBottom?: boolean;
   normalOnMobile?: boolean;
+  toggle?: Function;
+  extend?: boolean;
+  hide?:boolean;
 }
 
 interface FilterBoxState {
@@ -40,17 +43,19 @@ export default class FilterSwitchBox extends React.Component<
     view: false,
   };
 
-  UNSAFE_componentWillUpdate(
-    { data }: FilterBoxProps,
-    { search, view }: FilterBoxState
+  componentDidUpdate(
+    prevProps: FilterBoxProps,
+    prevState: FilterBoxState
   ) {
+    const { data } = prevProps;
+    const { search, view } = prevState;
     if (
       JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       this.state.view !== view
     ) {
-      let filteredData = data;
-      if (search !== '') {
-        filteredData = this.applySearch(search, data);
+      let filteredData = this.props.data;
+      if (this.state.search !== '') {
+        filteredData = this.applySearch(this.state.search, this.props.data);
       }
       this.updateFilteredData(filteredData);
     }

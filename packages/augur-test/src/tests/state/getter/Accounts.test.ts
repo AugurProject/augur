@@ -4,7 +4,7 @@ import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import {
   MarketReportingState,
 } from '@augurproject/sdk/build/constants';
-import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
+import { AllOrders } from '@augurproject/sdk/build/state/getter/OnChainTrading';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';

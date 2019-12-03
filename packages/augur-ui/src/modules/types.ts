@@ -266,6 +266,10 @@ export interface UIOrder {
   minPrice: string;
 }
 
+export interface CreateLiquidityOrders {
+  marketId: string;
+  chunkOrders: boolean;
+}
 export interface LiquidityOrders {
   [txParamHash: string]: {
     [outcome: number]: LiquidityOrder[];
@@ -399,6 +403,19 @@ export interface Drafts {
   [uniqueId: string]: Draft;
 }
 
+export interface Analytics {
+  [id: string]: Analytic;
+}
+
+export interface Analytic {
+  addedTimestamp: number;
+  type: string;
+  eventName: string;
+  payload: AnalyticPayload;
+}
+
+export interface AnalyticPayload {}
+
 export interface MarketsList {
   isSearching: boolean;
   meta: {
@@ -446,8 +463,7 @@ export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
-  userDefinedGasPrice: string;
-  blockNumber: string;
+  userDefinedGasPrice: number;
 }
 
 export enum INVALID_OPTIONS {
@@ -523,6 +539,7 @@ export interface AppStatus {
   isHelpMenuOpen: boolean;
   ethToDaiRate: BigNumber;
   gnosisEnabled: boolean;
+  zeroXEnabled: boolean;
   gnosisStatus: GnosisSafeState;
 }
 
@@ -565,7 +582,9 @@ export interface AccountBalances {
   eth: number;
   rep: number;
   dai: number;
+  legacyRep: number;
   attoRep: string;
+  legacyAttoRep: string;
 }
 
 export interface LoginAccountMeta {

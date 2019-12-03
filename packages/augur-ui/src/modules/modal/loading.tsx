@@ -4,7 +4,7 @@ import ModalMetaMaskFinder from './components/common/modal-metamask-finder';
 import { LoadingEllipse } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { CloseButton } from 'modules/common/buttons';
+import { CloseButton, ExternalLinkButton } from 'modules/common/buttons';
 
 interface LoadingProps {
   shouldClose: boolean;
@@ -13,6 +13,7 @@ interface LoadingProps {
   callback: Function;
   closeModal: Function;
   showCloseAfterDelay?: boolean;
+  showLearnMore?: boolean;
 }
 
 const ONE_MINUTES = 60000;
@@ -24,6 +25,7 @@ export const Loading = ({
   message,
   closeModal,
   showCloseAfterDelay,
+  showLearnMore,
 }: LoadingProps) => {
   if (shouldClose) {
     callback();
@@ -52,7 +54,11 @@ export const Loading = ({
         <ModalMetaMaskFinder handleClick={() => setshowHelper(false)} />
       )}
       {LoadingEllipse}
-      <div>{message}</div>
+      <div>
+        {message}
+        { showLearnMore && <ExternalLinkButton URL='https://docs.augur.net/' label={'Learn More'} /> }
+      </div>
+
       { showAbandon && <CloseButton action={() => closeModal()} />}
     </div>
   );

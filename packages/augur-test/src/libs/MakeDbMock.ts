@@ -1,4 +1,4 @@
-import { Dexie } from "dexie";
+import Dexie from 'dexie';
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
 import { Account } from "@augurproject/tools";
