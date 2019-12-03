@@ -1,42 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="fragment" content="!">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Decentralized Prediction Markets | Augur</title>
-    <meta name="description"
+  <meta charset="utf-8">
+  <meta name="fragment" content="!">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decentralized Prediction Markets | Augur</title>
+  <meta name="description"
         content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
-    <script>
-        (async function () {
-            const baseUrl = "http://localhost:8080/ipfs/QmcJhPthfu9DCFZ6vgbmcookC9x2KaF5pSobLkcibjUfiC/";
-            const data = await fetch(baseUrl);
-            let dataText = await data.text();
+  <script src="https://unpkg.com/ipfs/dist/index.min.js"></script>
+  <script>
+      (async function() {
+          const node = await window.Ipfs.create();
+          const pageData = await fetch(window.location.href);
 
-            const regex = new RegExp(/url\('\.\.\/\.\.\/(.+)'\)/gm)
-            dataText = dataText.replace(regex, "url('" + baseUrl + "/$1')");
+          if (!pageData.ok) {
+              return console.error(pageData.statusText);
+          } else {
+              await node.add(await pageData.text(), (error, response) => {
+                  if (error) {
+                      console.error(error);
+                  } else {
+                      console.log('IPFS response:', response);
+                  }
+              });
+          }
 
-            const el = document.createElement('html');
-            el.innerHTML = dataText;
-            window.resEl = el;
+          let githubData, ipfsHash;
 
-            document.head.innerHTML += el.querySelector('head').innerHTML;
-            document.body.innerHTML = el.querySelector('body').innerHTML;
-            el.querySelectorAll('script').forEach((s) => {
-                const ns = document.createElement('script');
-                ns.src = s.src;
-                document.head.appendChild(ns);
-            });
-            el.querySelectorAll('script').forEach((s) => {
-                const ns = document.createElement('script');
-                ns.src = s.src;
-                document.body.appendChild(ns);
-            });
+          try {
+              const githubReleaseApiUrl = 'https://api.github.com/repos/AugurProject/augur/releases';
+              githubData = await fetch(githubReleaseApiUrl);
 
-        })().then(res => { });
-    </script>
-    <base href="http://localhost:8080/ipfs/QmcJhPthfu9DCFZ6vgbmcookC9x2KaF5pSobLkcibjUfiC/">
+              if (!githubData.ok) {
+                  return console.error(data.statusText);
+              }
+
+              githubData = await githubData.json();
+
+              if (githubData.length === 0) {
+                  return console.error('It appears that Augur has no releases.');
+              }
+          } catch(e) {
+              return console.error(e);
+          }
+
+          const ipfsAsset = githubData[0].assets.find(asset => asset.name.substring(asset.name.length - 5) === '.ipfs');
+
+          if (!ipfsAsset) {
+              return console.error(`Asset for IPFS: ${ipfsAsset}`);
+          } else {
+              ipfsHash = ipfsAsset.name.substring(0, ipfsAsset.name.length - 5);
+          }
+
+          try {
+              const augurUrl = `http://localhost:8080/ipfs/${ipfsHash}/`;
+              document.getElementsByTagName('base')[0].setAttribute('href', augurUrl);
+              const augurData = await fetch(augurUrl);
+
+              if (!augurData.ok) {
+                  return console.error(augurData.statusText);
+              }
+
+              const el = document.createElement('html');
+              el.innerHTML = await augurData.text();
+              window.resEl = el;
+              document.head.innerHTML += el.querySelector('head').innerHTML;
+              document.body.innerHTML = el.querySelector('body').innerHTML;
+
+              el.querySelectorAll('script').forEach((s) => {
+                  const ns = document.createElement('script');
+                  ns.src = s.src;
+                  document.head.appendChild(ns);
+              });
+
+              el.querySelectorAll('script').forEach((s) => {
+                  const ns = document.createElement('script');
+                  ns.src = s.src;
+                  document.body.appendChild(ns);
+              });
+          } catch(e) {
+              return console.error(e);
+          }
+      })().then(res => {});
+  </script>
+  <base href="">
 </head>
 
 <body>Loading Augur</body>
