@@ -107,6 +107,30 @@ export const marketLinkCopied = (
   );
 };
 
+export const sendFacebookShare = (marketAddress: string, marketDescription: string): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(track(MARKET_SHARED, {
+    source: MARKET_PAGE,
+    service: 'facebook',
+    marketId: marketAddress,
+    marketDescription: marketDescription,
+  }));
+}
+
+export const sendTwitterShare = (marketAddress: string, marketDescription: string): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(track(MARKET_SHARED, {
+    source: MARKET_PAGE,
+    service: 'twitter',
+    marketId: marketAddress,
+    marketDescription: marketDescription,
+  }));
+}
+
 // Basic analytic event types
 export const ANALYTIC_EVENT_TYPES = {
   TRACK: 'TRACK',

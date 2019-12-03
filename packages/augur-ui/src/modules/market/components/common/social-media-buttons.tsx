@@ -6,7 +6,8 @@ import { MARKET_SHARED, MARKET_PAGE } from 'services/analytics/helpers';
 interface SocialMediaButtonsProps {
   marketDescription: string;
   marketAddress: string;
-  track: Function;
+  sendFacebookShare: Function;
+  sendTwitterShare: Function;
 }
 
 export const SocialMediaButtons = (props: SocialMediaButtonsProps) => {
@@ -35,12 +36,7 @@ export const SocialMediaButtons = (props: SocialMediaButtonsProps) => {
       <button
         id="facebookButton"
         onClick={() => {
-          props.track(MARKET_SHARED, {
-            source: MARKET_PAGE,
-            service: 'facebook',
-            marketId: props.marketAddress,
-            marketDescription: props.marketDescription,
-          });
+          props.sendFacebookShare(props.marketAddress, props.marketDescription);
           showFacebookShare(encodedMarketUrl, encodedMarketDescription);
         }}
       >
@@ -49,12 +45,7 @@ export const SocialMediaButtons = (props: SocialMediaButtonsProps) => {
       <button
         id="twitterButton"
         onClick={() => {
-          props.track(MARKET_SHARED, {
-            source: MARKET_PAGE,
-            service: 'twitter',
-            marketId: props.marketAddress,
-            marketDescription: props.marketDescription,
-          });
+          props.sendTwitterShare(props.marketAddress, props.marketDescription);
           showTwitterShare(encodedMarketUrl, encodedMarketDescription);
         }}
       >
