@@ -211,6 +211,9 @@ export default class MarketView extends Component<
       this.props.loadFullMarket(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
     }
+    if (isMarketLoading !== this.props.isMarketLoading) {
+      closeMarketLoadingModal();
+    }
   }
 
   tradingTutorialWidthCheck() {
