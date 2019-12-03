@@ -10,13 +10,7 @@ export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(
-    track(
-      eventName,
-      payload,
-      ANALYTIC_EVENT_TYPES.PAGE
-    )
-  );
+  dispatch(track(eventName, payload, ANALYTIC_EVENT_TYPES.PAGE));
 };
 
 export const track = (
@@ -90,62 +84,118 @@ export const marketLinkCopied = (
   );
 };
 
-export const sendFacebookShare = (marketAddress: string, marketDescription: string): ThunkAction<any, any, any, any> => (
+export const sendFacebookShare = (
+  marketAddress: string,
+  marketDescription: string
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(track(MARKET_SHARED, {
-    source: MARKET_PAGE,
-    service: 'facebook',
-    marketId: marketAddress,
-    marketDescription: marketDescription,
-  }));
-}
+  dispatch(
+    track(MARKET_SHARED, {
+      source: MARKET_PAGE,
+      service: 'facebook',
+      marketId: marketAddress,
+      marketDescription: marketDescription,
+    })
+  );
+};
 
-export const sendTwitterShare = (marketAddress: string, marketDescription: string): ThunkAction<any, any, any, any> => (
+export const sendTwitterShare = (
+  marketAddress: string,
+  marketDescription: string
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(track(MARKET_SHARED, {
-    source: MARKET_PAGE,
-    service: 'twitter',
-    marketId: marketAddress,
-    marketDescription: marketDescription,
-  }));
-}
+  dispatch(
+    track(MARKET_SHARED, {
+      source: MARKET_PAGE,
+      service: 'twitter',
+      marketId: marketAddress,
+      marketDescription: marketDescription,
+    })
+  );
+};
 
-export const marketCreationStarted = (templateName: string, isTemplate: boolean): ThunkAction<any, any, any, any> => (
+export const marketCreationStarted = (
+  templateName: string,
+  isTemplate: boolean
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(track(MARKET_CREATION_STARTED, {
-    templateName,
-    isTemplate,
-  }));
-}
+  dispatch(
+    track(MARKET_CREATION_STARTED, {
+      templateName,
+      isTemplate,
+    })
+  );
+};
 
-export const marketCreationSaved = (templateName: string, isTemplate: boolean): ThunkAction<any, any, any, any> => (
+export const marketCreationSaved = (
+  templateName: string,
+  isTemplate: boolean
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(track(MARKET_CREATION_SAVED, {
-    templateName,
-    isTemplate,
-  }));
-}
+  dispatch(
+    track(MARKET_CREATION_SAVED, {
+      templateName,
+      isTemplate,
+    })
+  );
+};
 
-export const marketCreationCreated = (marketId: string, extraInfo: string): ThunkAction<any, any, any, any> => (
+export const marketCreationCreated = (
+  marketId: string,
+  extraInfo: string
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const info = JSON.parse(extraInfo);
-  dispatch(track(MARKET_CREATION_CREATED, {
-    marketId,
-    isTemplate: info.template !== null,
-    templateHash: info.template && info.template.hash,
-    tempalteName: info.template && info.template.question,
-  }));
-}
+  dispatch(
+    track(MARKET_CREATION_CREATED, {
+      marketId,
+      isTemplate: info.template !== null,
+      templateHash: info.template && info.template.hash,
+      tempalteName: info.template && info.template.question,
+    })
+  );
+};
+
+export const marketListViewed = (
+  search,
+  selectedCategories,
+  maxLiquiditySpread,
+  marketFilter,
+  marketSort,
+  maxFee,
+  templateFilter,
+  includeInvalidMarkets,
+  resultCount,
+  pageNumber
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(
+    track(MARKET_LIST_VIEWED, {
+      search,
+      selectedCategories,
+      maxLiquiditySpread,
+      marketFilter,
+      marketSort,
+      maxFee,
+      templateFilter,
+      includeInvalidMarkets,
+      resultCount,
+      pageNumber,
+    })
+  );
+};
 
 // Basic analytic event types
 export const ANALYTIC_EVENT_TYPES = {
@@ -168,15 +218,23 @@ export const ADDED_DAI = 'Added Dai';
 export const MODAL_CLOSED = 'Modal - Modal Closed';
 export const MODAL_VIEWED = 'Modal - Modal Viewed';
 
-// Market events
+// Market/ Market list events
 export const MARKET_LINK_COPIED = 'Market Link Copied';
 export const MARKET_SHARED = 'Market Shared';
-
-// Locations
-export const MARKET_PAGE = 'Market page';
-export const MARKET_LIST_CARD = 'Market List Card';
+export const MARKET_LIST_VIEWED = 'Market List Viewed';
 
 // Market creation events
 export const MARKET_CREATION_STARTED = 'Market Creation - Started';
 export const MARKET_CREATION_SAVED = 'Market Creation - Saved';
 export const MARKET_CREATION_CREATED = 'Market Creation - Created';
+
+// Order Form Events
+export const ORDER_AMOUNT_ENTERED = 'Order Form - Order Amount Entered';
+export const ORDER_PRICE_ENTERED = 'Order Form - Order Price Entered';
+export const ORDER_SUBMITTED = 'Order Form - Order Submitted';
+export const ORDER_CREATED = 'Order Form - Order Created';
+export const ORDER_FILLED = 'Order Form - Order Filled';
+
+// Locations
+export const MARKET_PAGE = 'Market page';
+export const MARKET_LIST_CARD = 'Market List Card';
