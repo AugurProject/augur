@@ -5,8 +5,8 @@ import { GnosisRelayAPI, GnosisSafeState, RelayTransaction } from '../index';
 
 // Local testing
 const RELAY_API = 'http://localhost:8000/api/';
-const SAFE_FUNDER_PRIVATE_KEY = '0x395df67f0c2d2d9fe1ad08d1bc8b6627011959b79c53d7dd6a3536a33ab8a4fd';
-const SAFE_FUNDER_PUBLIC_KEY = '0x95cED938F7991cd0dFcb48F0a06a40FA1aF46EBC';
+const SAFE_FUNDER_PRIVATE_KEY = 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a';
+const SAFE_FUNDER_PUBLIC_KEY = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';
 const URL = 'http://localhost:8545';
 // Rinkeby testing
 // const RELAY_API = 'https://safe-relay.rinkeby.gnosis.pm/api/';
@@ -37,6 +37,8 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
         threshold: 1,
         owners: [SAFE_FUNDER_PUBLIC_KEY],
         paymentToken: NULL_ADDRESS,
+        setupData: '',
+        to: NULL_ADDRESS,
     };
 
     // Get safe creation data
