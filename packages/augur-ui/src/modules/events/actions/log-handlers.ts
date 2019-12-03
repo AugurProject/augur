@@ -136,29 +136,22 @@ export const handleSDKReadyEvent = () => (
 ) => {
   // wire up events for sdk
   augurSdk.subscribe(dispatch);
+  const { loginAccount } = getState();
+
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats())
-};
-
-export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { loginAccount } = getState();
-  const { mixedCaseAddress, address } = loginAccount;
-  if (mixedCaseAddress && log.trackedUsers.includes(mixedCaseAddress)) {
-    dispatch(loadAccountDataFromLocalStorage(address));
-    dispatch(updateAuthStatus(IS_LOGGED, true));
-    dispatch(loadAccountData());
-  }
+  dispatch(loadAccountDataFromLocalStorage(loginAccount.address));
+  dispatch(updateAuthStatus(IS_LOGGED, true));
+  dispatch(loadAccountData());
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { appStatus } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -175,8 +168,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   }
 
   if (
-    getState().appStatus.gnosisEnabled &&
-    getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
+    appStatus.gnosisEnabled &&
+    appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {
     const status = augurSdk.sdk.gnosis.augur.getGnosisStatus();
     if (status) {
