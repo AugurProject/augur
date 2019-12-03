@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import { Augur } from '../../index';
-import { Dexie } from "dexie";
+import Dexie from 'dexie';
 import * as _ from 'lodash';
 import {
   Address,

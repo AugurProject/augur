@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import { NumericDictionary } from 'lodash';
-import { Dexie } from "dexie";
+import Dexie from 'dexie';
 import {
   ProfitLossChangedLog,
   ParsedOrderEventLog,

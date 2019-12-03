@@ -1,6 +1,6 @@
 import { Augur } from '../../Augur';
 import { SubscriptionEventName } from '../../constants';
-import { Dexie } from "dexie";
+import Dexie from 'dexie';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 //import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
