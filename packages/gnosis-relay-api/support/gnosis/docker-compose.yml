@@ -68,18 +68,18 @@ services:
     image: 0xorg/mesh:0xV3
     hostname: 0x
     ports:
-      - 60557:60557
-      - 60558:60558
-      - 60559:60559
+      - 60557:60557 # rpc_port_number
+      - 60558:60558 # P2PTCPPort
+      - 60559:60559 # P2PWebSocketsPort
     environment:
       - ETHEREUM_CHAIN_ID=${ETHEREUM_CHAIN_ID}
       - CUSTOM_CONTRACT_ADDRESSES=${CUSTOM_CONTRACT_ADDRESSES}
       - ETHEREUM_RPC_URL=http://geth:8545
       - USE_BOOTSTRAP_LIST=false
       - BLOCK_POLLING_INTERVAL=1s
-      - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120
-      - VERBOSITY=6
-      - RPC_ADDR=0x:60557
+      - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120 # needed when polling interval is 1s
+      - VERBOSITY=4 # 5=debug 6=trace
+      - RPC_ADDR=0x:60557 # need to use "0x" network
     networks:
       - augur
 
