@@ -4861,7 +4861,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross $[1] USD or more, in it's opening weekend [2]?`,
+        question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
@@ -4874,25 +4874,19 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Amount`,
           },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `US / Worldwide`,
-            values: LIST_VALUES.REGION,
-          },
         ],
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
             },
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head, Will [0] gross more than [1] on it's opening weekend [2]?`,
-        example: `Head-to-Head, Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
+        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -4904,17 +4898,11 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Past Movie`,
           },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `US / Worldwide`,
-            values: LIST_VALUES.REGION,
-          },
         ],
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
           ],
         },
@@ -5036,7 +5024,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5078,7 +5066,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5110,7 +5098,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5266,7 +5254,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5308,7 +5296,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5340,7 +5328,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5385,7 +5373,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5427,7 +5415,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5459,7 +5447,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5615,7 +5603,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5657,7 +5645,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5689,7 +5677,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5734,7 +5722,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5776,7 +5764,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5808,7 +5796,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5964,7 +5952,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -6006,7 +5994,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -6038,7 +6026,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`

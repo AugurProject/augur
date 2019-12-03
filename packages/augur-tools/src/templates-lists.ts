@@ -161,8 +161,8 @@ export const LIST_VALUES = {
   ],
   REGION: [
     {
-      value: 'US (United States)',
-      label: 'US (United States)',
+      value: 'in the US (United States)',
+      label: 'in the US (United States)',
     },
     {
       value: 'Worldwide',
