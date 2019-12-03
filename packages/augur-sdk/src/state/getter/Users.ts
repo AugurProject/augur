@@ -452,16 +452,21 @@ try {
       await getProfitLossRecordsByMarketAndOutcome(db, params.account, profitLossRecords)
     );
 
-    const orders = await db.OrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).and((log) => {
-      return log.orderCreator === params.account || log.orderFiller === params.account;
-    }).toArray();
-    const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getOrderFilledRecordsByMarketAndOutcome(db, orders)
-    );
-
-    const allOrders = await db.OrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).toArray();
+    let allOrders: ParsedOrderEventLog[];
+    if (params.marketId) {
+      allOrders = await db.OrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).toArray();
+    } else {
+      allOrders = await db.OrderEvent.where('eventType').equals(OrderEventType.Fill).toArray();
+    }
     const allOrdersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
       await getOrderFilledRecordsByMarketAndOutcome(db, allOrders)
+    );
+    
+    const orders = _.filter(allOrders, (log) => {
+      return log.orderCreator === params.account || log.orderFiller === params.account;
+    });
+    const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getOrderFilledRecordsByMarketAndOutcome(db, orders)
     );
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);

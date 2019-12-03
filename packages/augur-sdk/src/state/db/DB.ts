@@ -89,7 +89,7 @@ export class DB {
     { EventName: 'MarketTransferred', indexes: [] },
     { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
-    { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'orderCreator', 'orderFiller'] },
+    { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'eventType', 'orderCreator', 'orderFiller'] },
     { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
     { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
     { EventName: 'ReportingParticipantDisavowed', indexes: [] },
