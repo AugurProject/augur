@@ -230,6 +230,7 @@ export class DB {
     schemas["Dispute"] = "[market+payoutNumerators],market,blockNumber";
     schemas["ZeroXOrders"] = "orderHash, [market+outcome+orderType],blockNumber";
     schemas["SyncStatus"] = "eventName,blockNumber,syncing";
+    schemas["Rollback"] = ",[tableName+rollbackBlockNumber]";
     return schemas;
   }
 

@@ -90,9 +90,7 @@ describe('State API :: Trading :: ', () => {
       account: mary.account.publicKey,
     });
 
-    console.log(1);
     await expect(trades[market1.address]).toHaveLength(1);
-    console.log(2);
     await expect(trades[market2.address]).toHaveLength(1);
 
     const trade = trades[market1.address][0];
@@ -108,7 +106,6 @@ describe('State API :: Trading :: ', () => {
       marketIds: [market1.address],
     });
 
-    console.log(3);
     await expect(trades[market1.address]).toHaveLength(2);
     await expect(trades[market2.address]).toBeUndefined();
 
@@ -135,7 +132,6 @@ describe('State API :: Trading :: ', () => {
     });
 
     await expect(trades[market1.address]).toBeUndefined();
-    console.log(4);
     await expect(trades[market2.address]).toHaveLength(2);
   });
 
