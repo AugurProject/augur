@@ -144,7 +144,7 @@
 
   margin: @size-8 0 @size-28;
   color: @color-secondary-text;
-  line-height: 140%;
+  line-height: 150%;
   text-align: center;
 
   > div {
@@ -152,6 +152,10 @@
 
     > a {
       color: @color-primary-action;
+
+      > button {
+        .text-12;
+      }
     }
   }
 }
@@ -351,7 +355,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > span:nth-of-type(2) {
-    .text-12;
+    .text-10;
 
     color: @color-secondary-text;
     line-height: 140%;
@@ -394,6 +398,7 @@ div.ButtonsRow:last-of-type {
 
   flex-direction: row;
   max-width: 800px;
+  min-height: @add-funds-height;
 
   > div {
     flex: 1;
@@ -422,6 +427,10 @@ div.ButtonsRow:last-of-type {
 
         margin: @size-4 0 @size-24;
         color: @color-secondary-text;
+      }
+
+      > div:first-of-type {
+        min-height: 242px;
       }
     }
   }
@@ -499,7 +508,7 @@ div.ButtonsRow:last-of-type {
 
       > div,
       > span {
-        margin-bottom: @size-24;
+        margin-bottom: @size-6;
       }
 
       > ol {
@@ -720,14 +729,6 @@ div.ButtonsRow:last-of-type {
     flex: 1;
     max-width: unset;
     max-height: unset;
-  }
-}
-
-.Loading {
-  > button {
-    position: absolute;
-    top: @size-16;
-    right: @size-16;
   }
 }
 
@@ -964,6 +965,14 @@ div.ButtonsRow:last-of-type {
     color: @color-secondary-text;
     text-align: center;
     margin-top: @size-28;
+  }
+
+  > div:last-of-type {
+    flex-direction: column;
+
+    > button {
+      margin-top: @size-8;
+    }
   }
 
   > button {
@@ -2172,7 +2181,7 @@ div.ButtonsRow:last-of-type {
           min-height: @size-32;
           max-height: @size-32;
           min-width: 0;
-    
+
           @media @breakpoint-mobile {
             min-width: 0;
           }

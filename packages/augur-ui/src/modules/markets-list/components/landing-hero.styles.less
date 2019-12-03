@@ -22,11 +22,15 @@
 
   > div:first-of-type {
     z-index: @default-z-index;
-    margin-right: 120px;
+    margin-right: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex: 1;
+
+    @media @breakpoint-min-desktop-min {
+      margin-right: 120px;
+    }
 
     > span:first-of-type {
       .text-36-bold;
@@ -58,7 +62,7 @@
     }
   }
 
-  @media @breakpoint-max-tablet {
+  @media @breakpoint-mobile {
     height: 245px;
     padding: @size-24 @size-16;
 
@@ -68,8 +72,10 @@
     }
 
     > div:first-of-type {
-      margin-right: 0;
       align-items: center;
+      justify-content: center;
+      max-width: 340px;
+      margin: auto;
 
       > span:first-of-type {
         .text-24-bold;
@@ -91,6 +97,8 @@
         width: 100%;
 
         > button:first-of-type {
+          margin: auto;
+          max-width: 156px;
           width: 100%;
         }
 
@@ -103,6 +111,14 @@
 
     > div:last-of-type {
       display: none;
+    }
+  }
+
+  @media @breakpoint-mobile-new {
+    > div:first-of-type {
+      > div > button:first-of-type {
+        max-width: 100%;
+      }
     }
   }
 }

@@ -4181,7 +4181,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `U.S. Vice President is elected with President as thier running mate`,
+                  text: `U.S. Vice President is elected with President as their running mate`,
                 },
                 {
                   text: 'The candidate elected president/vice president shall be female.'
@@ -4807,7 +4807,7 @@ export const TEMPLATES = {
                 'If more than one person hosts the event and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
             },
             {
-              text: `Person has to officially host the event in order for the market solve as "Yes", not just named as host`,
+              text: `Person has to officially host the event in order for the market to resolve as "Yes", not just named as host`,
             },
             {
               text: `If event does not occur the market should resolve as "No"`,
@@ -4861,7 +4861,7 @@ export const TEMPLATES = {
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross $[1] USD or more, in it's opening weekend [2]?`,
+        question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
@@ -4874,25 +4874,19 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Amount`,
           },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `US / Worldwide`,
-            values: LIST_VALUES.REGION,
-          },
         ],
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
             },
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head, Will [0] gross more than [1] on it's opening weekend [2]?`,
-        example: `Head-to-Head, Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
+        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -4904,17 +4898,11 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Past Movie`,
           },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `US / Worldwide`,
-            values: LIST_VALUES.REGION,
-          },
         ],
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
           ],
         },
@@ -5036,7 +5024,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5047,7 +5035,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5078,7 +5066,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, BitBittrex (bittrex.com)trex should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5110,7 +5098,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5162,7 +5150,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5205,7 +5193,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will BTC close at in USDT on [0] on [1]?`,
                 example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5266,7 +5254,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5277,7 +5265,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5308,7 +5296,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5320,7 +5308,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will BTC close at in EUR on [0] on [1]?`,
                 example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -5340,7 +5328,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5385,7 +5373,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5396,7 +5384,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5427,7 +5415,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5459,7 +5447,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5511,7 +5499,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5554,7 +5542,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will ETH close at in USDT on [0] on [1]?`,
                 example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5615,7 +5603,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5626,7 +5614,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5657,7 +5645,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5669,7 +5657,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will ETH close at in EUR on [0] on [1]?`,
                 example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -5689,7 +5677,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5734,7 +5722,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5745,7 +5733,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5776,7 +5764,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5808,7 +5796,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5860,7 +5848,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5903,7 +5891,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will LTC close at in USDT on [0] on [1]?`,
                 example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5964,7 +5952,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5975,7 +5963,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -6006,7 +5994,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -6018,7 +6006,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will LTC close at in EUR on [0] on [1]?`,
                 example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -6038,7 +6026,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`

@@ -10,6 +10,7 @@ import {
   RelayTxEstimateData,
   RelayTxEstimateResponse,
   SafeResponse,
+  GasStationResponse,
 } from '@augurproject/gnosis-relay-api';
 import { NULL_ADDRESS } from '@augurproject/sdk';
 
@@ -156,6 +157,10 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
 
   async execTransaction(relayTx: RelayTransaction): Promise<string> {
     return this.payer.dependencies.execTransactionDirectly(relayTx);
+  }
+
+  async gasStation(): Promise<GasStationResponse> {
+    throw new Error('Not Implemented');
   }
 
   async estimateTransaction(

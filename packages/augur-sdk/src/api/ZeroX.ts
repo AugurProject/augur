@@ -24,10 +24,12 @@ import { ProviderSubprovider } from '../zeroX/ProviderSubprovider';
 import { SignerSubprovider } from '../zeroX/SignerSubprovider';
 import { Augur } from './../Augur';
 import {
-  PlaceTradeChainParams,
-  PlaceTradeDisplayParams,
+  NativePlaceTradeDisplayParams,
+  NativePlaceTradeChainParams,
   TradeTransactionLimits,
-} from './Trade';
+  NativePlaceTradeParams
+} from './OnChainTrade';
+
 
 export enum Verbosity {
   Panic = 0,
@@ -57,11 +59,11 @@ export interface BrowserMesh {
   addOrdersAsync(orders: SignedOrder[]): Promise<ValidationResults>;
 }
 
-export interface ZeroXPlaceTradeDisplayParams extends PlaceTradeDisplayParams {
+export interface ZeroXPlaceTradeDisplayParams extends NativePlaceTradeDisplayParams {
   expirationTime: BigNumber;
 }
 
-export interface ZeroXPlaceTradeParams extends PlaceTradeChainParams {
+export interface ZeroXPlaceTradeParams extends NativePlaceTradeChainParams {
   expirationTime: BigNumber;
 }
 
@@ -500,7 +502,7 @@ export class ZeroX {
   }
 
   getTradeTransactionLimits(
-    params: PlaceTradeChainParams
+    params: NativePlaceTradeChainParams
   ): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
     const placeOrderGas = params.shares.gt(0)
@@ -526,5 +528,11 @@ export class ZeroX {
       loopLimit,
       gasLimit,
     };
+  }
+
+  async simulateTradeGasLimit(params: ZeroXPlaceTradeDisplayParams): Promise<BigNumber> {
+    const onChainTradeParams = this.getOnChainTradeParams(params);
+    const { gasLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
+    return gasLimit;
   }
 }

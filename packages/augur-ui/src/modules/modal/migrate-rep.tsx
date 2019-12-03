@@ -1,27 +1,52 @@
-import React, { Component, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { ButtonsRow, Breakdown, Title } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO } from 'modules/common/constants';
-import { formatEther, formatRep } from 'utils/format-number';
-import isAddress from 'modules/auth/helpers/is-address';
+import { ButtonsRow, Title } from 'modules/modal/common';
+import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
-import { createBigNumber } from 'utils/create-big-number';
-import convertExponentialToDecimal from 'utils/convert-exponential';
-import { FormattedNumber, LoginAccount } from 'modules/types';
-import { FormDropdown, Input, TextInput } from 'modules/common/form';
-import { CloseButton, ExternalLinkButton } from 'modules/common/buttons';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { LoginAccount } from 'modules/types';
+import { ExternalLinkButton } from 'modules/common/buttons';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { V1_REP_MIGRATE_ESTIMATE } from 'modules/common/constants';
 
 interface MigrateRepForm {
   closeAction: Function;
   loginAccount: LoginAccount;
   convertV1ToV2: Function;
   Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
+  convertV1ToV2Estimate: Function;
+  gasPrice: number;
 }
 
 export const MigrateRep = (props: MigrateRepForm) => {
-  const { closeAction, convertV1ToV2, loginAccount, Gnosis_ENABLED } = props;
+  const {
+    closeAction,
+    convertV1ToV2,
+    loginAccount,
+    Gnosis_ENABLED,
+    convertV1ToV2Estimate,
+    ethToDaiRate,
+    gasPrice,
+  } = props;
+
+  const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
+
+  useEffect(() => {
+    if (Gnosis_ENABLED) {
+      convertV1ToV2Estimate().then(gasLimit => {
+        setGasLimit(gasLimit);
+      });
+    }
+  }, []);
+
+  const gasEstimate = formatGasCostToEther(
+    gasLimit,
+    { decimalsRounded: 4 },
+    gasPrice,
+  );
 
   return (
     <div className={Styles.MigrateRep}>
@@ -55,8 +80,12 @@ export const MigrateRep = (props: MigrateRepForm) => {
         <div>
           <LinearPropertyLabel
             key='cost'
-            label='Gas Cost (est)'
-            value={Gnosis_ENABLED ? '0.00' : '0.0000'} // TODO Gas UI Work
+            label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Cost'}
+            value={
+              Gnosis_ENABLED
+                ? displayGasInDai(gasEstimate, ethToDaiRate)
+                : gasEstimate
+            }
           />
         </div>
 

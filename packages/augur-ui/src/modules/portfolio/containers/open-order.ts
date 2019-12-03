@@ -66,6 +66,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       disabled: openOrder.pending,
       text: "Cancel",
       pending: openOrder.pending || openOrder.pendingOrder,
+      status: openOrder.status,
       action: (e: Event) => {
         e.stopPropagation();
         openOrder.cancelOrder(openOrder);

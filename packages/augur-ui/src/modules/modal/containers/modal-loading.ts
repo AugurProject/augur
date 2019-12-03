@@ -22,6 +22,7 @@ const mergeProps = (sP: any, dP: any) => ({
   callback: sP.modal.callback,
   showMetaMaskHelper: sP.modal.showMetaMaskHelper,
   showCloseAfterDelay: sP.modal.showCloseAfterDelay,
+  showLearnMore: sP.modal.showLearnMore,
   closeModal: dP.closeModal,
 });
 

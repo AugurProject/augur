@@ -174,8 +174,6 @@ export default class MarketView extends Component<
 
     if (isMarketLoading) {
       showMarketLoadingModal();
-    } else {
-      this.showMarketDisclaimer();
     }
   }
 
@@ -215,7 +213,6 @@ export default class MarketView extends Component<
     }
     if (isMarketLoading !== this.props.isMarketLoading) {
       closeMarketLoadingModal();
-      this.showMarketDisclaimer();
     }
   }
 
@@ -228,6 +225,7 @@ export default class MarketView extends Component<
     }
   }
 
+  // don't show the market disclaimer when user shows up. TODO: Design to figure out when to show
   showMarketDisclaimer() {
     const { marketReviewSeen, marketReviewModal } = this.props;
     if (!marketReviewSeen && marketReviewModal) {
@@ -344,6 +342,11 @@ export default class MarketView extends Component<
   };
 
   next = () => {
+    if (this.state.tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK) {
+      // Scroll to bottom since next tutorial card will be below the fold.
+      document.querySelector('#mainContent').scrollTo(0, document.body.scrollHeight);
+    }
+
     if (!this.checkTutorialErrors(this.state.selectedOrderProperties)) {
       this.setState({ tutorialStep: this.state.tutorialStep + 1 });
     }

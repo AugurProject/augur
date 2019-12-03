@@ -24,8 +24,9 @@ import {
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { BaseAction } from 'modules/types';
+import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
@@ -35,20 +36,24 @@ const mapStateToProps = (state: AppState) => {
     liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
+    chunkOrders: !state.appStatus.zeroXEnabled,
+    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  startOrderSending: (options: object) => dispatch(startOrderSending(options)),
+  startOrderSending: (options: CreateLiquidityOrders) => dispatch(startOrderSending(options)),
   clearMarketLiquidityOrders: (marketId: string) =>
     dispatch(clearMarketLiquidityOrders(marketId)),
-  removeLiquidityOrder: (data: BaseAction) =>
+  removeLiquidityOrder: (data) =>
     dispatch(removeLiquidityOrder(data)),
   sendLiquidityOrder: (data: object) => dispatch(sendLiquidityOrder(data)),
 });
 
 const mergeProps = (sP, dP, oP) => {
+  const { chunkOrders } = sP;
   let numberOfTransactions = 0;
   let totalCost = ZERO;
 
@@ -67,9 +72,9 @@ const mergeProps = (sP, dP, oP) => {
   );
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
-  const submitAllTxCount = Math.ceil(
+  const submitAllTxCount = chunkOrders ? Math.ceil(
     numberOfTransactions / MAX_BULK_ORDER_COUNT
-  );
+  ) : 1;
   const {
     marketType,
     scalarDenomination,
@@ -99,13 +104,11 @@ const mergeProps = (sP, dP, oP) => {
     submitAllTxCount,
     breakdown: [
       {
-        label: 'Estimated GAS',
-        // @ts-ignore
-        value: formatEther(gasCost).full,
+        label: 'Transaction Fee',
+        value: sP.Gnosis_ENABLED ? displayGasInDai(gasCost, sP.ethToDaiRate) : formatEther(gasCost).full,
       },
       {
         label: 'Total Cost (DAI)',
-        // @ts-ignore
         value: formatDai(totalCost.toFixed()).full,
         highlight: true,
       },
@@ -128,7 +131,7 @@ const mergeProps = (sP, dP, oP) => {
     buttons: [
       {
         text: 'Submit All',
-        action: () => dP.startOrderSending({ marketId }),
+        action: () => dP.startOrderSending({ marketId, chunkOrders }),
       },
       {
         text: 'Cancel All',

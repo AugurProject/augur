@@ -87,6 +87,19 @@ export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberO
   });
 }
 
+export function formatDaiEstimate(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+  return formatNumber(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: " DAI (estimated)",
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
 export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,

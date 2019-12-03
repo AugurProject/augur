@@ -5,7 +5,6 @@ import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-man
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
 import { loadPendingOrdersTransactions } from "modules/orders/actions/pending-orders-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
-import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 import { updateUniverse } from "modules/universe/actions/update-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
@@ -15,6 +14,7 @@ import { Action } from "redux";
 import { AppState } from "store";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { loadAnalytics } from "modules/app/actions/analytics-management";
 
 export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -57,7 +57,8 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         pendingLiquidityOrders,
         pendingOrders,
         gasPriceInfo,
-        drafts
+        drafts,
+        analytics
       } = storedAccountData;
       if (drafts) {
         dispatch(
@@ -90,6 +91,13 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         );
       }
       if (
+        analytics
+      ) {
+        dispatch(
+          loadAnalytics(analytics, 0)
+        );
+      }
+      if (
         pendingOrders && Object.keys(pendingOrders).length > 0
       ) {
         dispatch(loadPendingOrdersTransactions(pendingOrders));
@@ -109,7 +117,6 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
               gasPriceInfo.userDefinedGasPrice
           })
         );
-        dispatch(registerUserDefinedGasPriceFunction());
       }
     }
   }
