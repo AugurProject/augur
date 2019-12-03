@@ -92,19 +92,6 @@ ctx.addEventListener('message', async (message: any) => {
       ctx.postMessage(
         MakeJsonRpcResponse(messageData.id, true)
       );
-    } else if (messageData.method === 'syncUserData') {
-      const account = messageData.params[0];
-      try {
-        const db = await (await api).db;
-        db.addTrackedUser(account, settings.chunkSize, settings.blockStreamDelay);
-        ctx.postMessage(
-          MakeJsonRpcResponse(messageData.id, { account })
-        );
-      } catch (err) {
-        ctx.postMessage(
-          MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, { account })
-        );
-      }
     } else {
       try {
         const request = messageData as JsonRpcRequest;
