@@ -311,7 +311,7 @@ export class OnChainTrading {
     db: DB,
     params: t.TypeOf<typeof OnChainTrading.GetOrdersParams>
   ): Promise<Orders> {
-    if (!params.marketId) {
+    if (!params.marketId && !params.universe) {
       throw new Error(
         "'getOrders' requires a 'marketId' or 'universe' param be provided"
       );
