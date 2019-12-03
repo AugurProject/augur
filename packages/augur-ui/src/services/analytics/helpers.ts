@@ -5,6 +5,11 @@ import { AppState } from 'store';
 import { createBigNumber } from 'utils/create-big-number';
 import { Analytic } from 'modules/types';
 import { isLocalHost } from 'utils/is-localhost';
+import { BUY_INDEX, SELL_INDEX } from 'modules/common/constants';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { getInfo } from 'modules/alerts/actions/set-alert-text';
+import { TXEventName } from '@augurproject/sdk';
 
 export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -161,7 +166,7 @@ export const marketCreationCreated = (
       marketId,
       isTemplate: info.template !== null,
       templateHash: info.template && info.template.hash,
-      tempalteName: info.template && info.template.question,
+      templateName: info.template && info.template.question,
     })
   );
 };
@@ -193,6 +198,102 @@ export const marketListViewed = (
       includeInvalidMarkets,
       resultCount,
       pageNumber,
+    })
+  );
+};
+
+export const orderAmountEntered = (
+  type: string,
+  marketId: string
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(
+    track(ORDER_AMOUNT_ENTERED, {
+      marketId,
+      type,
+    })
+  );
+};
+
+export const orderPriceEntered = (
+  type: string,
+  marketId: string
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(
+    track(ORDER_PRICE_ENTERED, {
+      marketId,
+      type,
+    })
+  );
+};
+
+export const orderSubmitted = (
+  type: string,
+  marketId: string
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(
+    track(ORDER_SUBMITTED, {
+      marketId,
+      type,
+    })
+  );
+};
+
+export const orderCreated = (
+  marketId,
+  order
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(
+    track(ORDER_CREATED, {
+      marketId,
+      order: order,
+    })
+  );
+};
+
+export const orderFilled = (
+  marketId,
+  log,
+  isCreator
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(
+    loadMarketsInfoIfNotLoaded([marketId], () => {
+      const marketInfo = selectMarket(marketId);
+      if (marketInfo === null) return;
+
+      let updatedOrderType = log.orderType;
+      if (!isCreator) {
+        updatedOrderType = log.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
+      }
+
+      const params = {
+        ...log,
+        orderType: updatedOrderType,
+        amount: log.amountFilled,
+      };
+      const orderInfo = getInfo(params, TXEventName.Success, marketInfo);
+
+      dispatch(
+        track(ORDER_FILLED, {
+          marketId,
+          order: orderInfo,
+          isCreator,
+        })
+      );
     })
   );
 };

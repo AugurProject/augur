@@ -66,6 +66,9 @@ interface WrapperProps {
   Gnosis_ENABLED: boolean;
   Ox_ENABLED: boolean;
   ethToDaiRate: BigNumber;
+  orderPriceEntered: Function;
+  orderAmountEntered: Function;
+  orderSubmitted: Function;
 }
 
 
@@ -339,6 +342,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   placeMarketTrade(market, selectedOutcome, s) {
+    this.props.orderSubmitted(s.selectedNav, market.id);
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
@@ -432,6 +436,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       Gnosis_ENABLED,
       Ox_ENABLED,
       ethToDaiRate,
+      orderPriceEntered,
+      orderAmountEntered
     } = this.props;
     let {
       marketType,
@@ -530,6 +536,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               initialLiquidity={initialLiquidity}
               availableDai={availableDai}
               Ox_ENABLED={Ox_ENABLED}
+              orderPriceEntered={orderPriceEntered}
+              orderAmountEntered={orderAmountEntered}
             />
           )}
         </div>

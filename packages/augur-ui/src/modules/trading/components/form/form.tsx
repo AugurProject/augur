@@ -79,6 +79,8 @@ interface FromProps {
   Ox_ENABLED: boolean;
   tradingTutorial?: boolean;
   gasCostEst: string;
+  orderPriceEntered: Function;
+  orderAmountEntered: Function;
 }
 
 interface TestResults {
@@ -631,7 +633,10 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       currentTimestamp,
       Ox_ENABLED,
-      tradingTutorial
+      tradingTutorial,
+      orderPriceEntered,
+      orderAmountEntered,
+      selectedNav
     } = this.props;
     const s = this.state;
 
@@ -704,6 +709,9 @@ class Form extends Component<FromProps, FormState> {
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
+                onBlur={e => {
+                  if (!initialLiquidity && !tradingTutorial) orderAmountEntered(selectedNav, market.id)
+                }}
               />
               <span
                 className={classNames({
@@ -742,6 +750,9 @@ class Form extends Component<FromProps, FormState> {
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
                 }
+                onBlur={e => {
+                  if (!initialLiquidity && !tradingTutorial) orderPriceEntered(selectedNav, market.id)
+                }}
               />
               <span
                 className={classNames({
