@@ -5,7 +5,7 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk';
 import { Callback } from '@augurproject/sdk/src/events';
-import Worker from "worker-loader?inline!./Sync.worker.ts";
+import Worker from 'worker-loader?inline!./Sync.worker.ts';
 
 interface OutstandingRequest {
   id: number;
