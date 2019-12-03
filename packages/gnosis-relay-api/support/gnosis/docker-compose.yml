@@ -26,6 +26,10 @@ services:
     image: augurproject/safe-relay-service_web:latest
     env_file:
       - .env
+    environment:
+      - SAFE_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
+      - SAFE_OLD_CONTRACT_ADDRESS=${GNOSIS_SAFE_CONTRACT_ADDRESS}
+      - SAFE_PROXY_FACTORY_ADDRESS=${PROXY_FACTORY_CONTRACT_ADDRESS}
     depends_on:
       - db
       - redis
