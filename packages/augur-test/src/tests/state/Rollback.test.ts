@@ -4,11 +4,6 @@ import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
-beforeEach(async () => {
-  mock.cancelFail();
-  await mock.wipeDB();
-});
-
 let augur: Augur;
 beforeAll(async () => {
   const seed = await loadSeedFile(defaultSeedPath);
@@ -77,43 +72,16 @@ test('sync databases', async () => {
 
   // Verify that 2 new blocks were added to SyncableDB
   let result = await db.DisputeCrowdsourcerCompleted.toArray();
-  // TODO Remove warning property from expected result once indexes are being used on SyncableDBs
-  expect(result).toEqual(
-    expect.objectContaining({
-      docs: [
-        {
-          _id:
-            10000000000 +
-            originalHighestSyncedBlockNumbers[syncableDBName] +
-            1 +
-            '.00000000001',
-          universe,
-        },
-        {
-          _id:
-            10000000000 +
-            originalHighestSyncedBlockNumbers[syncableDBName] +
-            2 +
-            '.00000000001',
-          universe,
-        },
-      ]
-    })
-  );
-
-  // TODO If derived DBs are used, verify MetaDB contents before & after rollback
+  expect(result[0].blockNumber).toEqual(originalHighestSyncedBlockNumbers[syncableDBName] + 1);
+  expect(result[0].logIndex).toEqual(1);
+  expect(result[1].blockNumber).toEqual(originalHighestSyncedBlockNumbers[syncableDBName] + 2);
+  expect(result[1].logIndex).toEqual(1);
 
   await db.rollback(highestSyncedBlockNumber - 1);
 
   // Verify that newest 2 blocks were removed from SyncableDB
   result = await db.DisputeCrowdsourcerCompleted.toArray();
-  expect(result).toEqual(
-    expect.objectContaining({
-      docs: [],
-      warning:
-        'no matching index found, create an index to optimize query time',
-    })
-  );
+  expect(result).toEqual([]);
 
   expect(await db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(originalHighestSyncedBlockNumbers[syncableDBName]);
   expect(await db.syncStatus.getHighestSyncBlock(metaDBName)).toBe(originalHighestSyncedBlockNumbers[metaDBName]);

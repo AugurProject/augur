@@ -148,7 +148,7 @@ export class SyncableDB extends AbstractTable {
 
     try {
       const docsToRemove = await this.table.where("blockNumber").aboveOrEqual(blockNumber);
-      const idsToRemove = await docsToRemove.keys();
+      const idsToRemove = await docsToRemove.primaryKeys();
       await this.table.bulkDelete(idsToRemove);
 
       if (this.augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {

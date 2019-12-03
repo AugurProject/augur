@@ -18,13 +18,19 @@ test('database failure during sync, followed by another sync', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
 
   console.log('Sync with a database failure.');
-  mock.failForever();
+  const originalSync = db.sync;
+  db.sync = async function () {
+    throw Error("This was an intentional");
+  };
+
   await expect(
     db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay)
   ).rejects.toThrow();
-  mock.cancelFail();
+
+  db.sync = originalSync;
 
   console.log('Sync successfully.');
+
   await db.sync(
     augur,
     mock.constants.chunkSize,
@@ -43,11 +49,16 @@ test('syncing: succeed then fail then succeed again', async () => {
   );
 
   console.log('Sync with a database failure.');
-  mock.failForever();
+  const originalSync = db.sync;
+  db.sync = async function () {
+    throw Error("This was an intentional");
+  };
+
   await expect(
     db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay)
   ).rejects.toThrow();
-  mock.cancelFail();
+
+  db.sync = originalSync;
 
   console.log('Sync successfully.');
   await db.sync(

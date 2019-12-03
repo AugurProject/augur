@@ -90,7 +90,9 @@ describe('State API :: Trading :: ', () => {
       account: mary.account.publicKey,
     });
 
+    console.log(1);
     await expect(trades[market1.address]).toHaveLength(1);
+    console.log(2);
     await expect(trades[market2.address]).toHaveLength(1);
 
     const trade = trades[market1.address][0];
@@ -106,6 +108,7 @@ describe('State API :: Trading :: ', () => {
       marketIds: [market1.address],
     });
 
+    console.log(3);
     await expect(trades[market1.address]).toHaveLength(2);
     await expect(trades[market2.address]).toBeUndefined();
 
@@ -132,6 +135,7 @@ describe('State API :: Trading :: ', () => {
     });
 
     await expect(trades[market1.address]).toBeUndefined();
+    console.log(4);
     await expect(trades[market2.address]).toHaveLength(2);
   });
 
@@ -189,15 +193,6 @@ describe('State API :: Trading :: ', () => {
     await expect(order.sharesEscrowed).toEqual('0');
     await expect(order.orderState).toEqual(OrderState.FILLED);
 
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      account: john.account.publicKey,
-      makerTaker: 'maker',
-    });
-    await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
-    await expect(orders[market.address][0]['0'][orderId]).not.toBeUndefined();
-
-
     // Cancel order
     await john.cancelOrder(orderId);
 
@@ -243,29 +238,8 @@ describe('State API :: Trading :: ', () => {
       stringTo32ByteHex(''),
       stringTo32ByteHex('42')
     );
-    const newOrderId = await john.getBestOrderId(bid, market.address, outcome);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Get orders for the market after the initial time
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      latestCreationTime: initialTimestamp.plus(1).toNumber(),
-    });
-    await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
-    await expect(orders[market.address][0]['0'][orderId].orderId).toEqual(
-      orderId
-    );
-
-    // Get order for the market before the new time
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      earliestCreationTime: initialTimestamp.plus(1).toNumber(),
-    });
-    await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
-    await expect(orders[market.address][0]['0'][newOrderId].orderId).toEqual(
-      newOrderId
-    );
 
     // Test `filterFinalized` param
     orders = await api.route('getOrders', {

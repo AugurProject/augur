@@ -15,8 +15,6 @@ export function makeDbMock(prefix:string = uuid.v4()) {
 
   const mockState = {
     db: undefined as Promise<DB>,
-    failCountdown: -1,  // default state never fails
-    alwaysFail: false,
   };
 
   async function wipeDB(): Promise<void> {
@@ -24,8 +22,6 @@ export function makeDbMock(prefix:string = uuid.v4()) {
     await Promise.all(Object.values(db.dexieDB.tables).map((db) => {
       return db.clear();
     }));
-
-    mockState.db = undefined;
   }
 
   function makeBlockAndLogStreamerListener(): IBlockAndLogStreamerListener {
@@ -49,13 +45,6 @@ export function makeDbMock(prefix:string = uuid.v4()) {
   return {
     wipeDB,
     constants,
-    failNext: () => mockState.failCountdown = 1,
-    failInN: (n: number) => mockState.failCountdown = n,
-    failForever: () => mockState.alwaysFail = true,
-    cancelFail: () => {
-      mockState.failCountdown = -1;
-      mockState.alwaysFail = false;
-    },
     makeDB: (augur: Augur, accounts: Account[]) => {
       const db = DB.createAndInitializeDB(
         constants.networkId,
