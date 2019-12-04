@@ -399,17 +399,18 @@ export default class Form extends React.Component<FormProps, FormState> {
     } else {
       // create new draft
       const createdDate = currentTimestamp;
+      const key = createdDate + '-' + newMarket.description;
       const draftMarket = {
         ...newMarket,
         currentStep,
-        uniqueId: createdDate,
+        uniqueId: key,
         created: createdDate,
         updated: createdDate,
       };
 
-      addDraft(createdDate, draftMarket);
+      addDraft(key, draftMarket);
       updateNewMarket({
-        uniqueId: createdDate,
+        uniqueId: key,
         created: createdDate,
         updated: createdDate,
       });

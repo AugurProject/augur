@@ -16,33 +16,21 @@
   > button:first-of-type {
     display: flex;
     flex: 1;
-
-    > div {
-      align-items: flex-start;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
+    flex-direction: column;
       
-      > span:first-of-type {
-        .text-12-medium;
+    > span:first-of-type {
+      .text-12-medium;
 
-        color: @color-primary-text;
-        text-align: left;
-      }
-
-      > span:last-of-type {
-        .mono-12;
-
-        color: @color-secondary-text;
-        margin-top: @size-4;
-        text-align: left;
-      }
+      color: @color-primary-text;
+      text-align: left;
     }
 
-    > span {
-      max-height: fit-content;
-      padding: @size-6 @size-8;
-      margin-right: @size-28;
+    > span:last-of-type {
+      .mono-12;
+
+      color: @color-secondary-text;
+      margin-top: @size-4;
+      text-align: left;
     }
   }
   
