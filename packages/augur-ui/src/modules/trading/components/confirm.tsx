@@ -14,8 +14,8 @@ import {
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import Styles from 'modules/trading/components/confirm/confirm.styles.less';
-import { XIcon, ExclamationCircle, InfoIcon } from 'modules/common/icons';
+import Styles from 'modules/trading/components/confirm.styles.less';
+import { XIcon, ExclamationCircle, InfoIcon, InformationIcon } from 'modules/common/icons';
 import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
@@ -43,6 +43,7 @@ interface ConfirmProps {
   tradingTutorial?: boolean;
   ethToDaiRate: BigNumber;
   Gnosis_ENABLED: boolean;
+  GnosisUnavailable: boolean;
 }
 
 interface ConfirmState {
@@ -65,11 +66,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   }
 
   componentDidUpdate(prevProps) {
-    const { trade, gasPrice, availableEth } = this.props;
+    const { trade, gasPrice, availableEth, availableDai } = this.props;
     if (
       JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
       gasPrice !== prevProps.gasPrice ||
-      !createBigNumber(availableEth).eq(createBigNumber(availableEth))
+      !createBigNumber(prevProps.availableEth).eq(createBigNumber(availableEth)) ||
+      !createBigNumber(prevProps.availableDai).eq(createBigNumber(availableDai))
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -88,6 +90,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       tradingTutorial,
       ethToDaiRate,
       Gnosis_ENABLED,
+      GnosisUnavailable,
     } = props || this.props;
 
     const {
@@ -183,6 +186,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
+    if (GnosisUnavailable) {
+      messages = {
+        header: 'Waiting For Gnosis Safe',
+        type: WARNING,
+        message: 'Please hold on while we create your Augur wallet',
+      }
+    }
+
     return messages;
   }
 
@@ -253,21 +264,21 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     return (
       <section className={Styles.TradingConfirm}>
         {shareCost && shareCost.value !== 0 && (
-          <div className={Styles.TradingConfirm__details}>
-            <div className={Styles.TradingConfirm__position__properties}>
+          <div className={Styles.details}>
+            <div className={Styles.properties}>
               CLOSING POSITION
             </div>
             <div
-              className={classNames(Styles.TradingConfirm__agg_position, {
+              className={classNames(Styles.AggregatePosition, {
                 [Styles.long]: side === BUY,
                 [Styles.short]: side === SELL,
               })}
             >
-              <span>
-                {side !== BUY ? SELLING_OUT : BUYING_BACK}
-                <span>{shareCost.fullPrecision}</span>
-                Shares @<span>{limitPrice}</span>
-              </span>
+              {
+                `${side === BUY ? BUYING_BACK : SELLING_OUT}
+                ${shareCost.fullPrecision}
+                Shares @ ${limitPrice}`
+              }
             </div>
             <LinearPropertyLabel
               label="Estimated Fee"
@@ -281,19 +292,19 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           </div>
         )}
         {newOrderAmount !== "0" && (
-          <div className={Styles.TradingConfirm__details}>
+          <div className={Styles.details}>
             <div
               className={classNames(
-                Styles.TradingConfirm__position__properties,
-                Styles.TradingConfirm__position__tooltipContainer
+                Styles.properties,
+                Styles.TooltipContainer
               )}
             >
               NEW POSITION
-              <span className={Styles.TradingConfirm__TooltipContainer}>
+              <span className={Styles.Tooltip}>
                 <label
                   className={classNames(
                     TooltipStyles.TooltipHint,
-                    Styles.TradingConfirm__TooltipHint
+                    Styles.TooltipHint
                   )}
                   data-tip
                   data-for="tooltip--confirm"
@@ -312,16 +323,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               </span>
             </div>
             <div
-              className={classNames(Styles.TradingConfirm__agg_position, {
+              className={classNames(Styles.AggregatePosition, {
                 [Styles.long]: side === BUY,
                 [Styles.short]: side === SELL,
               })}
             >
-              <span>
-                {side === BUY ? BUYING : SELLING}
-                <span>{newOrderAmount}</span>
-                Shares @<span>{limitPrice}</span>
-              </span>
+                {
+                `${side === BUY ? BUYING : SELLING}
+                ${newOrderAmount}
+                Shares @ ${limitPrice}`
+                }
             </div>
             <LinearPropertyLabel
               label="Max Profit"
@@ -336,27 +347,18 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         {messages && (
           <div
             className={classNames(
-              Styles.TradingConfirm__error_message_container,
+              Styles.MessageContainer,
               {
-                [Styles.error]: messages.type === ERROR,
+                [Styles.Error]: messages.type === ERROR
               }
             )}
           >
-            <div
-              className={classNames({
-                [Styles.TradingConfirm__message__warning]:
-                  messages.type === WARNING,
-                [Styles.TradingConfirm__message__error]:
-                  messages.type === ERROR,
-              })}
-            >
-              {ExclamationCircle}
-              <span>{messages.header}</span>
-              {messages.type !== ERROR && (
-                <button onClick={this.clearErrorMessage}>{XIcon}</button>
-              )}
-            </div>
+            {messages.type === ERROR ? ExclamationCircle : InformationIcon}
+            <span>{messages.header}</span>
             <div>{messages.message}</div>
+            {messages.type !== ERROR && (
+              <button onClick={this.clearErrorMessage}>{XIcon}</button>
+            )}
           </div>
         )}
       </section>

@@ -10,10 +10,10 @@ import {
   SELL,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
-import Styles from 'modules/trading/components/form/form.styles.less';
+import Styles from 'modules/trading/components/form.styles.less';
 import { ExclamationCircle } from 'modules/common/icons';
 import { SquareDropdown } from 'modules/common/selection';
-import { Checkbox, TextInput } from 'modules/common/form';
+import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';

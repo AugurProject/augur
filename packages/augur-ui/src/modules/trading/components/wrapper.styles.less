@@ -8,21 +8,14 @@
   > div:last-of-type {
     align-items: flex-end;
     display: flex;
-    flex-grow: 1;
-    margin-bottom: @size-12;
-    padding: 0 @size-12;
+    padding: @size-12;
 
-    > button {
-      .mono-14-bold;
+    > button[class*='PrimaryButton'] {
+      .text-12-bold;
 
-      border-width: 2px;
-      padding: 0;
-      text-transform: uppercase;
-      width: 100%;
-    }
-
-    &.Full {
-      flex-grow: 1;
+      height: @size-32;
+      max-height: @size-32;
+      margin: 0 auto;
     }
   }
 }
@@ -95,12 +88,6 @@
 }
 
 @media @breakpoint-mobile-mid {
-  .Wrapper {
-    > div:last-of-type {
-      margin-top: @size-16;
-    }
-  }
-
   .Buy,
   .Sell {
     justify-content: center;
