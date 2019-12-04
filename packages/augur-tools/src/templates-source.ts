@@ -5093,7 +5093,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com "for BTCUSD (crypto - Coinbase)"?`,
+            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com for "BTCUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -5226,7 +5226,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com "for BTCUSD (crypto - Coinbase)"?`,
+            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com for "BTCUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -5359,7 +5359,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com "for BTCUSD (crypto - Coinbase)"?`,
+            example: `What price will BTC/USD open at on December 31, 2019, according to TradingView.com for "BTCUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
