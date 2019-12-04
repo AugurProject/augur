@@ -3800,7 +3800,7 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `NCAA (Point Spread) FB: [0] to win by more than [1].5 points over [1]?`,
+                question: `NCAA (Point Spread) FB: [0] to win by more than [1].5 points over [2]?`,
                 example: `NCAA (Point Spread) FB: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
