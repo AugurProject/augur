@@ -5,15 +5,16 @@
 }
 
 div.Table {
+  color: white;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   margin-top: 0;
+  position: relative;
   width: 100%;
 
   > div:first-of-type {
     overflow-y: auto;
-    max-height: 42vh;
   }
 
   &.Outcomes {
@@ -22,6 +23,14 @@ div.Table {
       min-height: unset;
     }
   }
+}
+
+div.TableHeight {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: @size-32;
+  position: absolute;
 }
 
 .Empty {
@@ -33,6 +42,10 @@ div.Table {
   justify-content: flex-end;
   min-height: @size-32;
   padding: @size-8 @size-16;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 div.HideOutcomes {
@@ -45,6 +58,7 @@ div.HideOutcomes {
   .Footer {
     background: @color-dark-grey;
     margin-top: 2px;
+    position: relative;
   }
 
   div.Table {
@@ -58,5 +72,9 @@ div.HideOutcomes {
         max-height: unset;
       }
     }
+  }
+
+  div.TableHeight {
+    position: relative;
   }
 }
