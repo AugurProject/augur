@@ -196,8 +196,8 @@ export default class AppView extends Component<AppProps> {
     }
 
     if (location !== prevProps.location) {
-      const lastBasePath = parsePath(location.pathname)[0];
-      const nextBasePath = parsePath(prevProps.location.pathname)[0];
+      const nextBasePath = parsePath(location.pathname)[0];
+      const lastBasePath = parsePath(prevProps.location.pathname)[0];
 
       if (lastBasePath !== nextBasePath) {
         updateCurrentBasePath(nextBasePath);
