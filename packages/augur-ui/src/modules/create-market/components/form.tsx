@@ -302,9 +302,12 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? contentPages.length - 1
         : currentStep + 1;
     updateNewMarket({ currentStep: newStep });
-    if (isTemplate && template) {
+
+    const { mainContent } = contentPages[currentStep];
+    if (isTemplate && template && mainContent === TEMPLATE_PICKER) {
       marketCreationStarted(template.question, true);
     }
+    
     this.node && this.node.scrollIntoView();
   };
 
