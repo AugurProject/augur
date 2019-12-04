@@ -12,6 +12,7 @@
   background-color: @color-module-background;
   flex-direction: row;
   cursor: pointer;
+  align-items: center;
 
   > button:first-of-type {
     display: flex;
@@ -33,14 +34,11 @@
       text-align: left;
     }
   }
-  
+
   > button:last-of-type {
-  	.mono-12;
-
-  	color: @color-primary-action;
-  	text-transform: uppercase;
+    height: min-content;
   }
-
+  
   @media @breakpoint-mobile-mid {
     padding: @size-16 @size-16;
     
@@ -49,5 +47,9 @@
         display: none;
       }
     }
+  }
+
+  &:last-of-type {
+    border-bottom: 0;
   }
 }
