@@ -35,11 +35,10 @@ export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!templates) return [];
   //const icon = MarketTypeIcons[t.marketType];
   const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
-  const values = [...new Set(marketTypes)].map(m =>
+  return [...new Set(marketTypes)].map(m =>
     MARKET_TYPE_TEMPLATES.find(t => t.value === m)
   )
   .map(i => ({...i, icon: MarketTypeIcons[i.value]}));
-  return values;
 };
 
 export const getTemplatesByTertiaryMarketTypes = (categories: Categories) => {
