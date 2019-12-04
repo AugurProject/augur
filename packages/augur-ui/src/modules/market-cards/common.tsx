@@ -56,9 +56,9 @@ export const Outcome = (props: OutcomeProps) => {
     >
       <div>
         <span>{props.description}</span>
-        <span>
+        <span className={classNames({[Styles.Zero]: percent === 0})}>
           {percent === 0
-            ? `-${props.isScalar ? '' : '%'}`
+            ? `0.00${props.isScalar ? '' : '%'}`
             : `${formatDai(percent).formatted}%`}
         </span>
       </div>
