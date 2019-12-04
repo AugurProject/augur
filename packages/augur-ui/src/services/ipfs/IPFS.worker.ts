@@ -1,9 +1,7 @@
 import IPFS from 'ipfs';
-import Orbit from 'orbit_';
 
 declare var self: Worker;
 
-const ORBIT_EVENTS = ['connected', 'disconnected', 'joined', 'left', 'peers'];
 const CHANNEL_FEED_EVENTS = [
   'write',
   'load.progress',
@@ -14,7 +12,6 @@ const CHANNEL_FEED_EVENTS = [
 
 const ctx = self;
 let ipfs: IPFS = null;
-let orbit: Orbit = null;
 let currentChannelName = '';
 let currentChannel = null;
 let ethereumNetwork = '';
@@ -46,36 +43,18 @@ ctx.addEventListener(
               },
             },
           };
-
-          const orbitOptions = {
-            directory: `augur-orbit-chat-orbitdb-${ethereumNetwork}`,
-            id: senderAccount,
-          };
-
           ipfs = await IPFS.create(ipfsOptions);
-          orbit = await Orbit.create(ipfs, orbitOptions);
-
-          orbit.events.emit('connected', (orbit as any).user);
 
           trackNumberOfPeers();
-
           ctx.postMessage({ method: 'IPFS:started' });
-
           break;
         }
         case 'IPFS:sendMessage': {
           const [data, channel] = messageData.params;
-
           if (!data || !channel) break;
 
-          if (currentChannelName !== channel || currentChannel == null) {
-            if (currentChannelName) {
-              await orbit.leave(currentChannelName);
-            }
-
-            currentChannelName = `${channel}-network-${ethereumNetwork}`;
-
-            currentChannel = await orbit.join(currentChannelName);
+          if (currentChannelName !== channel) {
+            currentChannelName = 'augur-analytics-network-kovan';
           }
 
           // remove http:// or https://, so message can show fully on orbit chat
@@ -84,12 +63,10 @@ ctx.addEventListener(
             ''
           );
 
-          const sendFunc = currentChannel.sendMessage.bind(
-            currentChannel,
+          await ipfs.pubsub.publish(
+            currentChannelName,
             message
           );
-
-          await sendFunc();
 
           break;
         }
@@ -101,68 +78,6 @@ ctx.addEventListener(
     }
   }
 );
-
-function subscribeOrbitEvents() {
-  ORBIT_EVENTS.forEach(eventName => {
-    try {
-      orbit.events.on(eventName, orbitEvent.bind(this, eventName));
-    } catch (error) {
-      console.error('[IPFS.worker] subscribeOrbitEvents', error);
-    }
-  });
-}
-
-function orbitEvent(eventName, ...args) {
-  if (typeof eventName !== 'string') return;
-
-  if (['joined', 'left'].indexOf(eventName) !== -1) {
-    args = [args[0]];
-  } else {
-    args = [];
-  }
-
-  console.log({ action: 'orbit-event', name: eventName, args });
-}
-
-function subscribeOrbitChannelEvents(
-  currentChannel,
-  currentChannelName: string
-) {
-  CHANNEL_FEED_EVENTS.forEach(eventName => {
-    try {
-      currentChannel.feed.events.on(
-        eventName,
-        channelEvent.bind(this, eventName, currentChannelName)
-      );
-    } catch (error) {
-      console.error('[IPFS.worker] subscribeOrbitChannelEvents', error);
-    }
-  });
-}
-
-async function channelEvent(eventName, channelName, ...args) {
-  if (typeof eventName !== 'string') return;
-  if (typeof channelName !== 'string') return;
-
-  const channel = orbit.channels[channelName];
-
-  const meta = {
-    channelName,
-    replicationStatus: channel.replicationStatus,
-    peers: null,
-  };
-
-  if (eventName === 'peer.update') {
-    meta.peers = await channel.peers;
-  }
-
-  console.log({
-    action: 'channel-event',
-    name: eventName,
-    meta,
-    args,
-  });
-}
 
 function trackNumberOfPeers() {
   setInterval(async () => {
