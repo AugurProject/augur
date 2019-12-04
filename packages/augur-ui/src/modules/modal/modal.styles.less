@@ -719,7 +719,7 @@ div.ButtonsRow:last-of-type {
     padding: @size-24;
     flex: 1;
     max-width: unset;
-    max-height: unset;
+    max-height: fit-content;
   }
 }
 
@@ -750,6 +750,7 @@ div.ButtonsRow:last-of-type {
 }
 
 .SignIn {
+
   @media @breakpoint-mobile-new {
     margin: @size-48 0;
     margin: @size-48 0;
@@ -838,6 +839,10 @@ div.ButtonsRow:last-of-type {
     &:after {
       margin: 0 @size-21 0 0;
     }
+  }
+
+  > div:last-of-type {
+    display: inline;
   }
 
   > button {
@@ -935,6 +940,7 @@ div.ButtonsRow:last-of-type {
   justify-content: center;
   max-width: @login-signup-modal-height;
   min-height: @login-signup-modal-width;
+  max-height: fit-content;
 
   > svg {
     animation-duration: 1s;
@@ -2163,7 +2169,7 @@ div.ButtonsRow:last-of-type {
           min-height: @size-32;
           max-height: @size-32;
           min-width: 0;
-    
+
           @media @breakpoint-mobile {
             min-width: 0;
           }
