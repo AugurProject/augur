@@ -28,6 +28,7 @@ import { dispute } from './dispute';
 import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn } from 'child_process';
+import { showTemplateByHash } from './template-utils';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -581,6 +582,28 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       generateTemplateValidations();
       this.log('Generated Templates to augur-artifacts\n');
+    },
+  });
+
+  flash.addScript({
+    name: 'show-template',
+    options: [
+      {
+        name: 'hash',
+        description: 'Hash value of template to show',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      try {
+        const hash = String(args.hash);
+        this.log(hash);
+        const template = showTemplateByHash(hash);
+        if (!template) this.log(`Template not found for hash ${hash}`);
+        this.log(JSON.stringify(template, null, ' '));
+      } catch (e) {
+        this.log(e);
+      }
     },
   });
 
