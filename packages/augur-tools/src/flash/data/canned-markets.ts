@@ -356,26 +356,58 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
   {
     marketType: "categorical",
     endTime: midnightTomorrow.getTime() / 1000,
-    outcomes: ["Georgia", "Florida"],
+    outcomes: ["NE Patriots", "SF 49ers", "Tie/No Winner"],
     affiliateFeeDivisor: 4,
     extraInfo: {
-      categories: ["sports", "football", "college football"],
+      categories: ["sports", "American Football", "NFL"],
       description:
-        "Who will win the University of Georgia vs. University of Florida football game on " +
-        midnightTomorrow.toDateString() +
-        " according to http://www.mcubed.net/ncaaf/series/fla/ga.shtml?",
-      tags: ["college football", "football"],
+        "Which NFL Team will win: NE Patriots vs. SF 49ers, Scheduled on " +
+        midnightTomorrow.toDateString() + "?",
+      tags: [],
       longDescription:
-        "The Florida–Georgia football rivalry is an American college football rivalry game played annually by the University of Florida Gators and the University of Georgia Bulldogs. https://en.wikipedia.org/wiki/Florida%E2%80%93Georgia_football_rivalry",
+        "Include Regulation and Overtime\nAt least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as Tie/No Winner",
     },
     orderBook: {
       1: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
+        buy: [
+          { shares: "100.00", price: "0.50" },
+          { shares: "200.00", price: "0.48" },
+          { shares: "250.00", price: "0.47" },
+          { shares: "150.00", price: "0.45" },
+          { shares: "500.00", price: "0.43" },
+        ],
+        sell: [
+          { shares: "500.00", price: "0.60" },
+          { shares: "350.00", price: "0.56" },
+          { shares: "50.00", price: "0.55" },
+          { shares: "150.00", price: "0.53" },
+          { shares: "200.00", price: "0.52" },
+        ],
       },
       2: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
+        buy: [
+          { shares: "150.00", price: "0.38" },
+          { shares: "200.00", price: "0.37" },
+          { shares: "250.00", price: "0.35" },
+          { shares: "500.00", price: "0.33" },
+        ],
+        sell: [
+          { shares: "500.00", price: "0.45" },
+          { shares: "200.00", price: "0.43" },
+          { shares: "100.00", price: "0.41" },
+          { shares: "150.00", price: "0.40" },
+        ],
+      },
+      3: {
+        buy: [
+          { shares: "100.00", price: "0.08" },
+          { shares: "200.00", price: "0.06" },
+          { shares: "500.00", price: "0.05" },
+        ],
+        sell: [
+          { shares: "150.00", price: "0.15" },
+          { shares: "200.00", price: "0.20" },
+        ],
       },
     },
   },
@@ -383,22 +415,62 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "categorical",
     endTime: midnightTomorrow.getTime() / 1000,
     outcomes: [
-      "Unchanged from 2016",
-      "Existing, but changed from 2016",
-      "Formally abolished",
+      "LSU Tigers",
+      "Alabama Crimson Tide",
+      "Cancelled/Unofficial game",
     ],
     affiliateFeeDivisor: 4,
     extraInfo: {
-      categories: ["politics"],
+      categories: ["Sports", "American Football", "NCAA"],
       description:
-        "What will be the status of the U.S. electoral college on " +
+        "NCAA FB: LSU Who will win, LSU Tigers vs Alabama Crimson Tide, scheduled on " +
         midnightTomorrow.toDateString() +
         "?",
-      tags: ["elections", "US politics"],
+      tags: [],
       longDescription:
-        "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia). http://www.nationalpopularvote.com",
+        "Includes Regulation and Overtime\nIf the game is not played, the market should resolve as 'NO' as Team A did NOT win vs. team B\nAt least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'",
     },
-    orderBook: {},
+    orderBook: {
+      1: {
+        buy: [
+          { shares: "100.00", price: "0.54" },
+          { shares: "200.00", price: "0.52" },
+          { shares: "250.00", price: "0.50" },
+          { shares: "150.00", price: "0.45" },
+          { shares: "500.00", price: "0.42" },
+        ],
+        sell: [
+          { shares: "200.00", price: "0.56" },
+          { shares: "150.00", price: "0.57" },
+          { shares: "50.00", price: "0.59" },
+          { shares: "350.00", price: "0.60" },
+          { shares: "500.00", price: "0.65" },
+        ],
+      },
+      2: {
+        buy: [
+          { shares: "100.00", price: "0.42" },
+          { shares: "150.00", price: "0.40" },
+          { shares: "200.00", price: "0.37" },
+          { shares: "250.00", price: "0.35" },
+        ],
+        sell: [
+          { shares: "50.00", price: "0.45" },
+          { shares: "100.00", price: "0.46" },
+          { shares: "200.00", price: "0.48" },
+          { shares: "500.00", price: "0.50" },
+        ],
+      },
+      3: {
+        buy: [
+          { shares: "100.00", price: "0.02" },
+          { shares: "500.00", price: "0.01" },
+        ],
+        sell: [
+          { shares: "200.00", price: "0.10" },
+        ],
+      },
+    },
   },
   {
     marketType: "categorical",

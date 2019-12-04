@@ -177,8 +177,36 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   }
 
   async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
-    if (this.useSafe && this.safeAddress) transaction.from = this.safeAddress;
-    return super.estimateGas(transaction);
+    if (this.useSafe && this.safeAddress && this.useRelay) {
+      transaction.from = this.safeAddress;
+      const response = await this.relayerEstimateGas(transaction);
+      return response;
+    } else {
+      return super.estimateGas(transaction);
+    }
+  }
+
+  async relayerEstimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
+    transaction.from = this.safeAddress;
+    const to = transaction.to;
+    const value = transaction.value;
+
+    const relayEstimateRequest = {
+      safe: this.safeAddress,
+      to,
+      data: transaction.data,
+      value: value ? new BigNumber(value.toString()) : new BigNumber(0),
+      operation: Operation.Call,
+      gasToken: this.gasToken
+    };
+
+    const gasEstimates: RelayTxEstimateResponse = await this.estimateTransactionViaRelay(
+      relayEstimateRequest
+    );
+    const safeTxGas = new BigNumber(gasEstimates.safeTxGas);
+    const baseGas = new BigNumber(gasEstimates.baseGas);
+
+    return safeTxGas.plus(baseGas);
   }
 
   async estimateTransactionViaRelay(

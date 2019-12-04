@@ -42,6 +42,7 @@ const localStorageMiddleware = store => next => action => {
   const { address } = state.loginAccount;
   const {
     pendingLiquidityOrders,
+    analytics,
     favorites,
     alerts,
     readNotifications,
@@ -81,6 +82,7 @@ const localStorageMiddleware = store => next => action => {
       address,
       JSON.stringify({
         pendingLiquidityOrders,
+        analytics,
         favorites: processedFavorites,
         alerts,
         readNotifications,

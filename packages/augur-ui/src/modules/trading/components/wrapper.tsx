@@ -51,6 +51,7 @@ interface WrapperProps {
   handleFilledOnly: Function;
   loginModal: Function;
   onSubmitPlaceTrade: Function;
+  orderSubmitted: Function;
   tutorialNext?: Function;
   updateLiquidity?: Function;
   updateSelectedOrderProperties: Function;
@@ -345,6 +346,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   placeMarketTrade(market, selectedOutcome, s) {
+    this.props.orderSubmitted(s.selectedNav, market.id);
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,

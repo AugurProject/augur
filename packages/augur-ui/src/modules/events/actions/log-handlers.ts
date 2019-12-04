@@ -61,6 +61,8 @@ import {
   GNOSIS_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
+import { loadAnalytics } from 'modules/app/actions/analytics-management';
+import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 
 const handleAlert = (
   log: any,
@@ -159,6 +161,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { blockchain } = getState();
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -172,9 +175,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
+    dispatch(loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp));
   }
 
-  if (
+  if (  
     getState().appStatus.gnosisEnabled &&
     getState().appStatus.gnosisStatus !== GnosisSafeState.AVAILABLE
   ) {
@@ -218,7 +222,7 @@ export const handleMarketCreatedLog = (log: any) => (
   }
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, false, dispatch, getState);
-    dispatch(loadCreateMarketHistory());
+    dispatch(marketCreationCreated(log.market, log.extraInfo));
   }
 };
 
@@ -332,6 +336,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
+    dispatch(orderFilled(marketId, log, isSameAddress(log.orderCreator, address)));
   }
   dispatch(loadMarketTradingHistory(marketId));
   if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));

@@ -9,6 +9,17 @@ import * as COMPONENTS from 'modules/routes/constants/components';
 
 import { withPageAnalytic } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { AppState } from 'store';
+import { connect } from 'react-redux';
+import { page } from 'services/analytics/helpers';
+
+const mapStateToProps = (state: AppState) => ({});
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+  page: (eventName, payload) => dispatch(page(eventName, payload)),
+});
 
 const getLoggedInAccountFromLocalStorage = () => {
   let loggedInAccount = null;
@@ -59,4 +70,11 @@ const Routes = p => {
   );
 };
 
-export default isLocalHost() ? withRouter(Routes) : withRouter(withPageAnalytic(Routes));
+export default isLocalHost()
+  ? withRouter(Routes)
+  : withRouter(
+      connect(
+        mapStateToProps,
+        mapDispatchToProps
+      )(withPageAnalytic(Routes))
+    );

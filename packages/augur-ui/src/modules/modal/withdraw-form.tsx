@@ -2,24 +2,35 @@ import React, { Component } from 'react';
 
 import { ButtonsRow, Breakdown } from 'modules/modal/common';
 import { DAI, ETH, REP, ZERO } from 'modules/common/constants';
-import { formatEther, formatRep } from 'utils/format-number';
+import {
+  formatEther,
+  formatRep,
+  formatDai,
+  formatGasCostToEther,
+} from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormattedNumber, LoginAccount } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton } from 'modules/common/buttons';
+import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
+import { ethToDai, displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface WithdrawFormProps {
   closeAction: Function;
   transferFunds: Function;
-  GasCosts: {
+  transferFundsGasEstimate: Function;
+  fallBackGasCosts: {
     eth: FormattedNumber;
     rep: FormattedNumber;
     dai: FormattedNumber;
   };
   loginAccount: LoginAccount;
+  Gnosis_ENABLED: boolean;
+  ethToDaiRate: BigNumber;
+  gasPrice: number;
 }
 
 interface WithdrawFormState {
@@ -30,6 +41,7 @@ interface WithdrawFormState {
     address: string;
     amount: string;
   };
+  relayerGasCosts: BigNumber;
 }
 
 function sanitizeArg(arg) {
@@ -41,6 +53,7 @@ export class WithdrawForm extends Component<
   WithdrawFormState
 > {
   state: WithdrawFormState = {
+    relayerGasCosts: createBigNumber(TRANSFER_ETH_GAS_COST),
     address: '',
     currency: ETH,
     amount: '',
@@ -74,12 +87,12 @@ export class WithdrawForm extends Component<
   };
 
   handleMax = () => {
-    const { loginAccount, GasCosts } = this.props;
+    const { loginAccount, fallBackGasCosts } = this.props;
     const { currency } = this.state;
     const fullAmount = createBigNumber(
       loginAccount.balances[currency.toLowerCase()]
     );
-    const valueMinusGas = fullAmount.minus(GasCosts.eth.fullPrecision);
+    const valueMinusGas = fullAmount.minus(fallBackGasCosts.eth.fullPrecision);
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
     this.amountChange(
       currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed()
@@ -87,22 +100,50 @@ export class WithdrawForm extends Component<
   };
 
   amountChange = (amount: string) => {
-    const { loginAccount, GasCosts } = this.props;
+    const {
+      loginAccount,
+      fallBackGasCosts,
+      Gnosis_ENABLED,
+      ethToDaiRate,
+      gasPrice,
+    } = this.props;
+    const { relayerGasCosts } = this.state;
     const newAmount = convertExponentialToDecimal(sanitizeArg(amount));
     const bnNewAmount = createBigNumber(newAmount || '0');
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = '';
     const availableEth = createBigNumber(loginAccount.balances.eth);
+    const availableDai = createBigNumber(loginAccount.balances.dai);
     let amountMinusGas = ZERO;
-    if (currency === ETH && newAmount) {
-      amountMinusGas = availableEth
-        .minus(bnNewAmount)
-        .minus(GasCosts.eth.fullPrecision);
+
+    if (Gnosis_ENABLED) {
+      const relayerGasCostsETH = formatGasCostToEther(
+        relayerGasCosts,
+        { decimalsRounded: 4 },
+        gasPrice
+      );
+      const relayerGasCostsDAI = ethToDai(relayerGasCostsETH, ethToDaiRate);
+
+      if (currency === DAI) {
+        amountMinusGas = availableDai
+          .minus(bnNewAmount)
+          .minus(createBigNumber(relayerGasCostsDAI.value));
+      } else {
+        amountMinusGas = availableDai.minus(
+          createBigNumber(relayerGasCostsDAI.value)
+        );
+      }
     } else {
-      amountMinusGas =
-        currency === DAI
-          ? availableEth.minus(GasCosts.dai.fullPrecision)
-          : availableEth.minus(GasCosts.rep.fullPrecision);
+      if (currency === ETH && newAmount) {
+        amountMinusGas = availableEth
+          .minus(bnNewAmount)
+          .minus(fallBackGasCosts.eth.fullPrecision);
+      } else {
+        amountMinusGas =
+          currency === DAI
+            ? availableEth.minus(fallBackGasCosts.dai.fullPrecision)
+            : availableEth.minus(fallBackGasCosts.rep.fullPrecision);
+      }
     }
     // validation...
     if (newAmount === '' || newAmount === undefined) {
@@ -111,11 +152,11 @@ export class WithdrawForm extends Component<
     }
 
     if (!isFinite(Number(newAmount))) {
-      updatedErrors.amount = 'Quantity isn\'t finite.';
+      updatedErrors.amount = "Quantity isn't finite.";
     }
 
     if (isNaN(parseFloat(String(newAmount)))) {
-      updatedErrors.amount = 'Quantity isn\'t a number.';
+      updatedErrors.amount = "Quantity isn't a number.";
     }
 
     if (
@@ -130,12 +171,36 @@ export class WithdrawForm extends Component<
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (amountMinusGas.lt(ZERO)) {
+    if (Gnosis_ENABLED && amountMinusGas.lt(ZERO)) {
+      updatedErrors.amount = 'Not enough DAI available to pay gas cost.';
+    }
+
+    if (!Gnosis_ENABLED && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough ETH available to pay gas cost.';
     }
 
     this.setState({ amount: newAmount, errors: updatedErrors });
   };
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.currency && this.state.currency !== prevState.currency) {
+      const formattedAmount =
+        this.state.currency === ETH
+          ? formatEther(Number(this.state.amount) || 0)
+          : formatRep(this.state.amount || 0);
+
+      const relayerGasCosts = await this.props.transferFundsGasEstimate(
+        formattedAmount.fullPrecision,
+        this.state.currency,
+        this.state.address
+          ? this.state.address
+          : this.props.loginAccount.address
+      );
+      this.setState({
+        relayerGasCosts,
+      });
+    }
+  }
 
   addressChange = (address: string) => {
     const { errors: updatedErrors } = this.state;
@@ -151,23 +216,36 @@ export class WithdrawForm extends Component<
   };
 
   render() {
-    const { GasCosts, transferFunds, loginAccount, closeAction } = this.props;
-    const { amount, currency, address, errors } = this.state;
+    const {
+      fallBackGasCosts,
+      transferFunds,
+      loginAccount,
+      closeAction,
+      Gnosis_ENABLED,
+      ethToDaiRate,
+      gasPrice,
+    } = this.props;
+    const { relayerGasCosts, amount, currency, address, errors } = this.state;
     const { amount: errAmount, address: errAddress } = errors;
     const isValid =
       errAmount === '' && errAddress === '' && amount.length && address.length;
 
-    const formattedAmount =
-      currency === ETH
-        ? formatEther(Number(amount) || 0)
-        : formatRep(amount || 0);
-    const gasCost = GasCosts[currency.toLowerCase()];
-    const formattedTotal =
-      currency === ETH
-        ? formatEther(
-            createBigNumber(amount || 0).plus(GasCosts.eth.fullPrecision)
-          )
-        : formattedAmount;
+    let formattedAmount = formatEther(amount || 0);
+
+    if (currency === DAI) {
+      formattedAmount = formatDai(amount || 0);
+    } else if (currency === REP) {
+      formattedAmount = formatRep(amount || 0);
+    }
+
+    const gasEstimate = Gnosis_ENABLED
+      ? formatGasCostToEther(
+          relayerGasCosts,
+          { decimalsRounded: 4 },
+          gasPrice,
+        )
+      : fallBackGasCosts[currency.toLowerCase()];
+
     const buttons = [
       {
         text: 'Send',
@@ -186,13 +264,10 @@ export class WithdrawForm extends Component<
         value: formattedAmount,
       },
       {
-        label: 'Transaction Cost',
-        value: gasCost,
-      },
-      {
-        label: 'Total',
-        value: formattedTotal,
-        highlight: true,
+        label: 'Transaction Fee',
+        value: Gnosis_ENABLED
+          ? displayGasInDai(gasEstimate, ethToDaiRate)
+          : gasEstimate,
       },
     ];
 

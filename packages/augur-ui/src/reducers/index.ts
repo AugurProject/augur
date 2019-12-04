@@ -17,6 +17,7 @@ import alerts from "modules/alerts/reducers/alerts";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
+import analytics from "modules/app/reducers/analytics";
 import universe from "modules/universe/reducers/universe";
 import categoryStats from "modules/app/reducers/category-stats";
 import pendingOrders from "modules/orders/reducers/pending-orders";
@@ -53,6 +54,7 @@ import {
   Drafts,
   MarketsList,
   ReportingListState,
+  Analytics
 } from "modules/types";
 import { Getters } from "@augurproject/sdk";
 
@@ -87,6 +89,7 @@ export function createReducer() {
     drafts,
     marketsList,
     reportingListState,
+    analytics
   };
 }
 
@@ -122,4 +125,5 @@ export interface AppStateInterface {
   drafts: Drafts;
   marketsList: MarketsList;
   reportingListState: ReportingListState;
+  analytics: Analytics;
 }

@@ -173,8 +173,6 @@ export default class MarketView extends Component<
 
     if (isMarketLoading) {
       showMarketLoadingModal();
-    } else {
-      this.showMarketDisclaimer();
     }
   }
 
@@ -214,7 +212,6 @@ export default class MarketView extends Component<
     }
     if (isMarketLoading !== this.props.isMarketLoading) {
       closeMarketLoadingModal();
-      this.showMarketDisclaimer();
     }
   }
 
@@ -227,6 +224,7 @@ export default class MarketView extends Component<
     }
   }
 
+  // don't show the market disclaimer when user shows up. TODO: Design to figure out when to show
   showMarketDisclaimer() {
     const { marketReviewSeen, marketReviewModal } = this.props;
     if (!marketReviewSeen && marketReviewModal) {

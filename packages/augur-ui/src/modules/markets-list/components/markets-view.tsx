@@ -55,6 +55,7 @@ interface MarketsViewProps {
   showInvalidMarketsBannerHideOrShow: boolean;
   templateFilter: string;
   setMarketsListSearchInPlace: Function;
+  marketListViewed: Function;
 }
 
 interface MarketsViewState {
@@ -98,8 +99,7 @@ export default class MarketsView extends Component<
     }
   }
 
-
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       search,
       marketFilter,
@@ -111,7 +111,36 @@ export default class MarketsView extends Component<
       isConnected,
       isLogged,
       templateFilter,
+      marketListViewed,
     } = this.props;
+    const { marketCount, offset } = this.state;
+
+    if (
+      offset !== prevState.offset ||
+      marketCount !== prevState.marketCount ||
+      (search !== prevProps.search ||
+        selectedCategories !== prevProps.selectedCategories ||
+        maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
+        marketFilter !== prevProps.marketFilter ||
+        marketSort !== prevProps.marketSort ||
+        maxFee !== prevProps.maxFee ||
+        templateFilter !== prevProps.templateFilter ||
+        includeInvalidMarkets !== prevProps.includeInvalidMarkets)
+    ) {
+      marketListViewed(
+        search,
+        selectedCategories,
+        maxLiquiditySpread,
+        marketFilter,
+        marketSort,
+        maxFee,
+        templateFilter,
+        includeInvalidMarkets,
+        this.state.marketCount,
+        this.state.offset
+      );
+    }
+
     if (
       isConnected !== prevProps.isConnected ||
       isLogged !== prevProps.isLogged ||
@@ -124,12 +153,14 @@ export default class MarketsView extends Component<
         templateFilter !== prevProps.templateFilter ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
-
-      this.setState({
-        offset: 1,
-      }, () => {
-        this.updateFilteredMarkets();
-      });
+      this.setState(
+        {
+          offset: 1,
+        },
+        () => {
+          this.updateFilteredMarkets();
+        }
+      );
     }
   }
 
@@ -149,7 +180,6 @@ export default class MarketsView extends Component<
     this.setState({ offset }, () => {
       this.updateFilteredMarkets();
     });
-
   }
 
   updateFilteredMarkets() {
@@ -170,7 +200,7 @@ export default class MarketsView extends Component<
 
     this.props.setLoadMarketsPending(true);
     this.props.setMarketsListSearchInPlace(Boolean(search));
-    
+
     this.props.loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
@@ -231,17 +261,21 @@ export default class MarketsView extends Component<
       marketCount,
       limit,
       offset,
-      showPagination
+      showPagination,
     } = this.state;
 
     const displayFee = this.props.maxFee !== MAX_FEE_100_PERCENT;
-    const displayLiquiditySpread = this.props.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS;
+    const displayLiquiditySpread =
+      this.props.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS;
     let feesLiquidityMessage = '';
 
     if (!displayFee && !displayLiquiditySpread) {
-      feesLiquidityMessage = '“Fee” and “Liquidity Spread” filters are set to “All”. This puts you at risk of trading on invalid markets.';
+      feesLiquidityMessage =
+        '“Fee” and “Liquidity Spread” filters are set to “All”. This puts you at risk of trading on invalid markets.';
     } else if (!displayFee || !displayLiquiditySpread) {
-      feesLiquidityMessage = `The ${!displayFee ? '“Fee”' : '“Liquidity Spread”'} filter is set to “All”. This puts you at risk of trading on invalid markets.`;
+      feesLiquidityMessage = `The ${
+        !displayFee ? '“Fee”' : '“Liquidity Spread”'
+      } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
     }
 
     return (
@@ -254,7 +288,7 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {(!isLogged && !restoredAccount) && <LandingHero/>}
+        {!isLogged && !restoredAccount && <LandingHero />}
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearching}
@@ -266,9 +300,11 @@ export default class MarketsView extends Component<
           updateMobileMenuState={updateMobileMenuState}
         />
 
-        <div className={classNames({
-          [Styles.Disabled]: isSearching,
-        })}>
+        <div
+          className={classNames({
+            [Styles.Disabled]: isSearching,
+          })}
+        >
           <MarketTypeFilter
             isSearchingMarkets={isSearching}
             marketCount={this.state.marketCount}
@@ -299,13 +335,13 @@ export default class MarketsView extends Component<
           updateLoginAccountSettings={updateLoginAccountSettings}
           settings={{
             propertyName: 'showInvalidMarketsBannerHideOrShow',
-            propertyValue: showInvalidMarketsBannerHideOrShow
+            propertyValue: showInvalidMarketsBannerHideOrShow,
           }}
           content={
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
               trading on invalid markets.{' '}
-              <a href='https://augur.net' target='_blank'>
+              <a href="https://augur.net" target="_blank">
                 Learn more
               </a>
             </span>
@@ -318,12 +354,12 @@ export default class MarketsView extends Component<
           updateLoginAccountSettings={updateLoginAccountSettings}
           settings={{
             propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
-            propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread
+            propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,
           }}
           content={
             <span>
               {feesLiquidityMessage}{' '}
-              <a href='https://augur.net' target='_blank'>
+              <a href="https://augur.net" target="_blank">
                 Learn more
               </a>
             </span>
@@ -331,7 +367,7 @@ export default class MarketsView extends Component<
         />
 
         <MarketsList
-          testid='markets'
+          testid="markets"
           markets={markets}
           showPagination={showPagination && !isSearching}
           filteredMarkets={filterSortedMarkets}

@@ -13,7 +13,7 @@ import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
 import { ExclamationCircle } from 'modules/common/icons';
 import { SquareDropdown } from 'modules/common/selection';
-import { Checkbox, TextInput } from 'modules/common/form';
+import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
@@ -79,6 +79,8 @@ interface FromProps {
   Ox_ENABLED: boolean;
   tradingTutorial?: boolean;
   gasCostEst: string;
+  orderPriceEntered: Function;
+  orderAmountEntered: Function;
 }
 
 interface TestResults {
@@ -631,7 +633,10 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       currentTimestamp,
       Ox_ENABLED,
-      tradingTutorial
+      tradingTutorial,
+      orderPriceEntered,
+      orderAmountEntered,
+      selectedNav
     } = this.props;
     const s = this.state;
 
@@ -704,6 +709,9 @@ class Form extends Component<FromProps, FormState> {
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)
                 }
+                onBlur={e => {
+                  if (!initialLiquidity && !tradingTutorial) orderAmountEntered(selectedNav, market.id)
+                }}
               />
               <span
                 className={classNames({
@@ -742,6 +750,9 @@ class Form extends Component<FromProps, FormState> {
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
                 }
+                onBlur={e => {
+                  if (!initialLiquidity && !tradingTutorial) orderPriceEntered(selectedNav, market.id)
+                }}
               />
               <span
                 className={classNames({

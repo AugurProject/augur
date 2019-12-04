@@ -6,8 +6,6 @@ import {
   forkAndRedeem,
 } from 'modules/contracts/actions/contractCalls';
 
-export const CLAIM_FEES_GAS_COST = 3000000;
-export const CLAIM_WINDOW_GAS_COST = 210000;
 export const CROWDSOURCER_BATCH_SIZE = 4;
 export const CROWDSOURCER_DISAVOWED_BATCH_SIZE = 1;
 export const DISPUTE_WINDOW_BATCH_SIZE = 10;

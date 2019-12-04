@@ -20,6 +20,7 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { addPendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { orderSubmitted } from 'services/analytics/helpers';
 
 const getMarketPath = id => {
   return {
@@ -96,6 +97,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         onComplete,
       })
     ),
+    orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId))
 });
 
 const mergeProps = (sP, dP, oP) => {

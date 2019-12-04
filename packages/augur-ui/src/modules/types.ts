@@ -403,6 +403,21 @@ export interface Drafts {
   [uniqueId: string]: Draft;
 }
 
+export interface Analytics {
+  [id: string]: Analytic;
+}
+
+export interface Analytic {
+  type: string;
+  eventName: string;
+  payload: AnalyticPayload;
+}
+
+export interface AnalyticPayload {
+  addedTimestamp: number;
+  userAgent: string;
+}
+
 export interface MarketsList {
   isSearching: boolean;
   meta: {

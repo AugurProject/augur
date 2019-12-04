@@ -7,6 +7,8 @@ import {
   ALL_TIME_PROFIT_AND_LOSS_REP,
   REPORTING_STATE,
   SCALAR,
+  DISPUTE_GAS_COST,
+  INITAL_REPORT_GAS_COST,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -29,7 +31,7 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
-import { formatRep, formatAttoRep } from 'utils/format-number';
+import { formatRep, formatAttoRep, formatGasCostToEther } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -44,6 +46,7 @@ import {
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -364,6 +367,8 @@ export interface DisputingBondsViewProps {
   tentativeWinning?: boolean;
   reportAction: Function;
   Gnosis_ENABLED: boolean;
+  gasPrice: number;
+  ethToDaiRate: BigNumber;
 }
 
 interface DisputingBondsViewState {
@@ -371,6 +376,7 @@ interface DisputingBondsViewState {
   scalarError: string;
   stakeError: string;
   isScalar: boolean;
+  gasEstimate: string;
 }
 
 export class DisputingBondsView extends Component<
@@ -382,6 +388,11 @@ export class DisputingBondsView extends Component<
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
+    gasEstimate: formatGasCostToEther(
+      DISPUTE_GAS_COST,
+      { decimalsRounded: 4 },
+      this.props.gasPrice,
+    ),
   };
 
   updateScalarOutcome = (range: string) => {
@@ -474,6 +485,19 @@ export class DisputingBondsView extends Component<
     updateInputtedStake({ inputStakeValue, inputToAttoRep });
   };
 
+  async componentDidMount() {
+    if (this.props.Gnosis_ENABLED) {
+      const gasLimit = await this.props.reportAction(true);
+      this.setState({
+        gasEstimate: formatGasCostToEther(
+          gasLimit,
+          { decimalsRounded: 4 },
+          this.props.gasPrice,
+        ),
+      });
+    }
+  }
+
   render() {
     const {
       market,
@@ -484,9 +508,10 @@ export class DisputingBondsView extends Component<
       reportAction,
       id,
       Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
 
-    const { disabled, scalarError, stakeError, isScalar } = this.state;
+    const { disabled, scalarError, stakeError, isScalar, gasEstimate } = this.state;
     const min = convertAttoValueToDisplayValue(
       createBigNumber(market.noShowBondAmount)
     );
@@ -536,23 +561,14 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
-        {Gnosis_ENABLED && (
-          <LinearPropertyLabel
-            key="estimatedGasFee"
-            label="Estimated Gas Fee"
-            value={'0.00 DAI'}
-          />
-        )}
-        {!Gnosis_ENABLED && (
-          <LinearPropertyLabel
-            key="estimatedGasFee"
-            label="Estimated Gas Fee"
-            value={'0.0000 ETH'}
-          />
-        )}
+        <LinearPropertyLabel
+          key="estimatedGasFee"
+          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
+          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
+        />
         <PrimaryButton
           text="Confirm"
-          action={reportAction}
+          action={() => reportAction(false)}
           disabled={disabled}
         />
       </div>
@@ -564,8 +580,10 @@ export interface ReportingBondsViewProps {
   market: MarketData;
   id: string;
   updateScalarOutcome: Function;
-  reportingGasFee: FormattedNumber;
   reportAction: Function;
+  Gnosis_ENABLED: boolean;
+  gasPrice: number;
+  ethToDaiRate: BigNumber;
   inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
@@ -584,6 +602,7 @@ interface ReportingBondsViewState {
   isScalar: boolean;
   threshold: string;
   readAndAgreedCheckbox: boolean;
+  gasEstimate: string;
 }
 
 export class ReportingBondsView extends Component<
@@ -598,6 +617,11 @@ export class ReportingBondsView extends Component<
     isScalar: this.props.market.marketType === SCALAR,
     threshold: this.props.userAttoRep.toString(),
     readAndAgreedCheckbox: false,
+    gasEstimate: formatGasCostToEther(
+      INITAL_REPORT_GAS_COST,
+      { decimalsRounded: 4 },
+      this.props.gasPrice,
+    ),
   };
 
   async componentDidMount() {
@@ -606,6 +630,18 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
+
+      if (this.props.Gnosis_ENABLED) {
+        const gasLimit = await this.props.reportAction(true);
+        this.setState({
+          gasEstimate: formatGasCostToEther(
+            gasLimit,
+            { decimalsRounded: 4 },
+            this.props.gasPrice,
+          )
+
+        });
+      }
     }
   }
 
@@ -674,7 +710,6 @@ export class ReportingBondsView extends Component<
     const {
       market,
       inputScalarOutcome,
-      reportingGasFee,
       reportAction,
       inputtedReportingStake,
       userAttoRep,
@@ -682,6 +717,8 @@ export class ReportingBondsView extends Component<
       migrateRep,
       initialReport,
       owesRep,
+      Gnosis_ENABLED,
+      ethToDaiRate,
     } = this.props;
 
     const {
@@ -692,6 +729,7 @@ export class ReportingBondsView extends Component<
       isScalar,
       threshold,
       readAndAgreedCheckbox,
+      gasEstimate,
     } = this.state;
 
     const repAmount = migrateRep
@@ -745,8 +783,8 @@ export class ReportingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label="Transaction Fee"
-          value={reportingGasFee}
+          label={Gnosis_ENABLED ? "Transaction Fee" : "Gas Fee"}
+          value={Gnosis_ENABLED ? displayGasInDai(gasEstimate, ethToDaiRate) : gasEstimate}
         />
         {initialReport && (
           <PreFilledStake

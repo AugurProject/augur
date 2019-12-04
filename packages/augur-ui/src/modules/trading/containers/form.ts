@@ -4,6 +4,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { orderPriceEntered, orderAmountEntered } from 'services/analytics/helpers';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -36,15 +37,23 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  orderPriceEntered: (type, marketId) => dispatch(orderPriceEntered(type, marketId)),
+  orderAmountEntered: (type, marketId) => dispatch(orderAmountEntered(type, marketId)),
+})
+
+
 const mergeProps = (sP, dP, oP) => {
   return {
     ...oP,
+    ...dP,
     ...sP,
   };
 };
 
 const FormContainer = connect(
   mapStateToProps,
+  mapDispatchToProps,
   mergeProps
 )(Form);
 

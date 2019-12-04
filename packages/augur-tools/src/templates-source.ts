@@ -86,10 +86,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
@@ -126,10 +126,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `If a tournament or match is cancelled the market should resolve as No. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
@@ -168,7 +168,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No winner/Event Cancelled.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
@@ -212,10 +212,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
@@ -252,10 +252,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `If a tournament or match is cancelled the market should resolve as No. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
@@ -294,7 +294,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No winner/Event Cancelled.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
@@ -338,10 +338,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No'.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid.`,
@@ -378,10 +378,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                     {
-                      text: `If a tournament or match is cancelled the market should resolve as No. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
+                      text: `If a tournament or match is cancelled the market should resolve as 'No'. If the tournament is postponed and not be completed before the market's Event Expiration time, but the player named officially made the cut, noted by the tournament association, then the outcome should resolve as Yes.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as Invalid`,
@@ -420,7 +420,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as No winner/Event Cancelled.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
                     },
                     {
                       text: `For any Pro-Am markets both players names must be listed, If only one name is listed and that pair still wins, the market will should as invalid`,
@@ -470,10 +470,10 @@ export const TEMPLATES = {
                 },
                 {
                   text:
-                    'The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.',
+                    `The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and 'No' should be deemed the winning outcome.`,
                 },
                 {
-                  text: 'If game is not played market should resolve as "No"',
+                  text: `If game is not played market should resolve as 'No'`,
                 },
               ],
             },
@@ -514,10 +514,10 @@ export const TEMPLATES = {
                 },
                 {
                   text:
-                    'The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and "No" should be deemed the winning outcome.',
+                    `The game must go 55 minutes or more to be considered official. If it does not, the game will be considered unofficial and 'No' should be deemed the winning outcome.`,
                 },
                 {
-                  text: 'If game is not played market should resolve as "No"',
+                  text: `If game is not played market should resolve as 'No'`,
                 },
               ],
             },
@@ -576,10 +576,10 @@ export const TEMPLATES = {
                   text: `Include Regulation, overtime and any shoot-outs.`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as "No Winner"`,
+                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as 'No Winner'`,
                 },
                 {
-                  text: `If game is not played market should resolve as "No Winner"`,
+                  text: `If game is not played market should resolve as 'No Winner'`,
                 },
               ],
             },
@@ -631,7 +631,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played market should resolve as "No Winner"`,
+                  text: `If the game is not played market should resolve as 'No Winner'`,
                 },
                 {
                   text: `Include Regulation, overtime and any shoot-outs`,
@@ -690,7 +690,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played market should resolve as "No Winner"`,
+                  text: `If the game is not played market should resolve as 'No Winner'`,
                 },
                 {
                   text: `Include Regulation, overtime and any shoot-outs`,
@@ -831,7 +831,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as "No".`,
+                  text: `If the horse named in the market is scratched and does NOT run, including the cancellation of the race, or is disqualified for any reason, the market should resolve as 'No'.`,
                 },
               ],
             },
@@ -870,7 +870,7 @@ export const TEMPLATES = {
                   text: `If the winning horse is not one of the outcomes listed, market should resolve as "Other (Field)"`,
                 },
                 {
-                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as "No Winner"`,
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as 'No Winner'`,
                 },
                 {
                   text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's event expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`,
@@ -922,7 +922,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1018,10 +1018,10 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
                     },
                   ],
                 },
@@ -1065,7 +1065,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as "No"`,
+                      text: `If either player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1161,10 +1161,10 @@ export const TEMPLATES = {
                       text: `If either player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If either player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as "No Winner".`,
+                      text: `If either player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as "No Winner".`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
                     },
                   ],
                 },
@@ -1521,7 +1521,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1562,7 +1562,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1603,7 +1603,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official.  If less than 43 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1693,7 +1693,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as "No Winner"`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -1748,7 +1748,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as "No Winner"`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -1803,7 +1803,7 @@ export const TEMPLATES = {
                       text: `Include Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as "No Winner"`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -1990,7 +1990,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -2031,7 +2031,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -2072,7 +2072,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO"'`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -2162,7 +2162,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as "No Winner"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -2217,7 +2217,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as "No Winner"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -2270,7 +2270,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as "No Winner"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -2453,10 +2453,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' `,
+                      text: `If the game is not played, the market should resolve as 'No' `,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -2500,10 +2500,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' `,
+                      text: `If the game is not played, the market should resolve as 'No' `,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official.  If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -2547,10 +2547,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No'`,
                     },
                     {
-                      text: 'If game is not played market should resolve as "No"',
+                      text: `If game is not played market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -2653,10 +2653,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
                     },
                     {
-                      text: 'If game is not played market should resolve as "No Winner"',
+                      text: `If game is not played market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -2717,10 +2717,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
                     },
                     {
-                      text: 'If game is not played market should resolve as "No Winner"',
+                      text: `If game is not played market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -2781,7 +2781,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as "No Winner"`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -2942,17 +2942,17 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text:
-                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner"',
+                    `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
                 },
                 {
                   text:
-                    'If event is postponed and concludes after markets event expiration the market should resolve as "No Winner"',
+                    `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
                 },
                 {
-                  text: 'If the game is not played market should resolve as "No Winner"',
+                  text: `If the game is not played market should resolve as 'No Winner'`,
                 },
                 {
-                  text: 'Extra innings count towards settlement purposes',
+                  text: `Extra innings count towards settlement purposes`,
                 },
               ],
             },
@@ -3043,17 +3043,17 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text:
-                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner"',
+                    `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
                 },
                 {
                   text:
-                    'If event is postponed and concludes after markets event expiration the market should resolve as "No Winner"',
+                    `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
                 },
                 {
-                  text: 'If the game is not played market should resolve as "No Winner"',
+                  text: `If the game is not played market should resolve as 'No Winner'`,
                 },
                 {
-                  text: 'Extra innings count towards settlement purposes',
+                  text: `Extra innings count towards settlement purposes`,
                 },
               ],
             },
@@ -3106,17 +3106,17 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text:
-                    'In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as "No Winner"',
+                    `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
                 },
                 {
                   text:
-                    'If event is postponed and concludes after markets event expiration the market should resolve as "No Winner"',
+                    `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
                 },
                 {
-                  text: 'If the game is not played market should resolve as "No Winner"',
+                  text: `If the game is not played market should resolve as 'No Winner'`,
                 },
                 {
-                  text: 'Extra innings count towards settlement purposes',
+                  text: `Extra innings count towards settlement purposes`,
                 },
               ],
             },
@@ -3215,13 +3215,13 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `If the game ends in a tie, the market should resolve as "NO' as Team A did NOT win vs. team B`,
+                      text: `If the game ends in a tie, the market should resolve as 'No' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "No"`,
+                      text: `If the game is not played market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -3259,10 +3259,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "No"`,
+                      text: `If the game is not played market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -3300,10 +3300,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "No"`,
+                      text: `If the game is not played market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -3474,10 +3474,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "No Winner"`,
+                      text: `If the game is not played market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -3530,10 +3530,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "No Winner"`,
+                      text: `If the game is not played market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -3668,10 +3668,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs. team B`,
+                      text: `If the game is not played, the market should resolve as 'NO' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -3709,10 +3709,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO'`,
+                      text: `If the game is not played, the market should resolve as 'No'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -3750,10 +3750,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO'`,
+                      text: `If the game is not played, the market should resolve as 'No'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -3793,7 +3793,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as "NO Winner' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -3849,7 +3849,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as 'No Winner'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -3905,7 +3905,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as 'NO Winner'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
                     },
                   ],
                 },
@@ -3951,7 +3951,7 @@ export const TEMPLATES = {
                       text: `If the game is not played, the market should resolve as 'NO Winner'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
                     },
                     {
                       text: `If either of the teams listed are incorrect, market should resolve as Invalid`,
@@ -4017,10 +4017,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO' as Team A did NOT win vs. team B`,
+                      text: `If the game is not played, the market should resolve as 'No' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No'`,
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`
@@ -4486,7 +4486,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If location/country does not have the stated position in market, market should resolve as "No"`,
+                  text: `If location/country does not have the stated position in market, market should resolve as 'No'`,
                 },
               ],
             },
@@ -4807,10 +4807,10 @@ export const TEMPLATES = {
                 'If more than one person hosts the event and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
             },
             {
-              text: `Person has to officially host the event in order for the market solve as "Yes", not just named as host`,
+              text: `Person has to officially host the event in order for the market to resolve as "Yes", not just named as host`,
             },
             {
-              text: `If event does not occur the market should resolve as "No"`,
+              text: `If event does not occur the market should resolve as 'No'`,
             },
           ],
         },
@@ -4854,14 +4854,14 @@ export const TEMPLATES = {
                 'If more than one person wins the award and the person named in the market is one of the named, the market should resolve as "Yes"',
             },
             {
-              text: `If event does not occur the market should resolve as "No"`,
+              text: `If event does not occur the market should resolve as 'No'`,
             },
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Will [0] gross $[1] USD or more, in it's opening weekend [2]?`,
+        question: `Will [0] gross $[1] USD or more, in it's opening weekend in the US?`,
         example: `Will Avangers: Endgame gross $350 million USD or more in it's opening weekend in the US?`,
         inputs: [
           {
@@ -4874,25 +4874,19 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Amount`,
           },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `US / Worldwide`,
-            values: LIST_VALUES.REGION,
-          },
         ],
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
             },
           ],
         },
       },
       {
         marketType: YES_NO,
-        question: `Head-to-Head, Will [0] gross more than [1] on it's opening weekend [2]?`,
-        example: `Head-to-Head, Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
+        question: `Head-to-Head: Will [0] gross more than [1] on it's opening weekend in the US?`,
+        example: `Head-to-Head: Will Avangers: Endgame gross more than Avangers: Age of Ultron on it's opening weekend in the US?`,
         inputs: [
           {
             id: 0,
@@ -4904,17 +4898,11 @@ export const TEMPLATES = {
             type: TemplateInputType.TEXT,
             placeholder: `Past Movie`,
           },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `US / Worldwide`,
-            values: LIST_VALUES.REGION,
-          },
         ],
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: 'Gross total should include 4-day weekend in if it is a holiday weekend',
+              text: 'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
             },
           ],
         },
@@ -5036,7 +5024,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5047,7 +5035,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5078,7 +5066,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, BitBittrex (bittrex.com)trex should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5110,7 +5098,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Bittrex (bittrex.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5162,7 +5150,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed $8000 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5205,7 +5193,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will BTC close at in USDT on [0] on [1]?`,
                 example: `What price will BTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5266,7 +5254,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5277,7 +5265,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of BTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of BTC exceed 8000 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5308,7 +5296,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5320,7 +5308,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will BTC close at in EUR on [0] on [1]?`,
                 example: `What price will BTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -5340,7 +5328,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5385,7 +5373,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5396,7 +5384,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed $200 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5427,7 +5415,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5459,7 +5447,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5511,7 +5499,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5554,7 +5542,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will ETH close at in USDT on [0] on [1]?`,
                 example: `What price will ETH close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5615,7 +5603,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5626,7 +5614,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of ETH, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of ETH exceed 200 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5657,7 +5645,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5669,7 +5657,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will ETH close at in EUR on [0] on [1]?`,
                 example: `What price will ETH close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -5689,7 +5677,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5734,7 +5722,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5745,7 +5733,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USD, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $100 USD on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5776,7 +5764,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5808,7 +5796,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5860,7 +5848,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] USDT, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed 100 USDT on Binance (binance.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -5903,7 +5891,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will LTC close at in USDT on [0] on [1]?`,
                 example: `What price will LTC close at in USDT on December 31, 2019 on Binance (binance.com)?`,
-                denomination: 'USD',
+                denomination: 'USDT',
                 inputs: [
                   {
                     id: 0,
@@ -5964,7 +5952,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -5975,7 +5963,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `Will the price of LTC, exceed [0] EUR, on [1] anytime between the open of [2] and close of [3]?`,
-                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the oepn of September 1, 2019 and close of December 31, 2019?`,
+                example: `Will the price of LTC exceed $40 EUR on Coinbase Pro (pro.coinbase.com) anytime between the open of September 1, 2019 and close of December 31, 2019?`,
                 inputs: [
                   {
                     id: 0,
@@ -6006,7 +5994,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`
@@ -6018,7 +6006,7 @@ export const TEMPLATES = {
                 marketType: SCALAR,
                 question: `What price will LTC close at in EUR on [0] on [1]?`,
                 example: `What price will LTC close at in EUR on December 31, 2019 on Coinbase Pro (pro.coinbase.com)?`,
-                denomination: 'USD',
+                denomination: 'EUR',
                 inputs: [
                   {
                     id: 0,
@@ -6038,7 +6026,7 @@ export const TEMPLATES = {
                       text: `Closing datetime is determine by exchange's trading day where the crypto pairs are traded`
                     },
                     {
-                      text: `If coinbase pro is exchange in market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
+                      text: `If coinbase pro is the exchange in the market question and not available by the end of designated reporting timeframe, Kraken (kraken.com) should be used.`
                     },
                     {
                       text: `If coinbase pro is not the exchange in market question, Coinbase Pro (pro.coinbase.com) will be the backup exchange if primary is not available by the end of designated reporting timeframe`

@@ -14,6 +14,7 @@ import { Action } from "redux";
 import { AppState } from "store";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { loadAnalytics } from "modules/app/actions/analytics-management";
 
 export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -56,7 +57,8 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         pendingLiquidityOrders,
         pendingOrders,
         gasPriceInfo,
-        drafts
+        drafts,
+        analytics
       } = storedAccountData;
       if (drafts) {
         dispatch(
@@ -86,6 +88,13 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
       ) {
         dispatch(
           loadPendingLiquidityOrders(pendingLiquidityOrders)
+        );
+      }
+      if (
+        analytics
+      ) {
+        dispatch(
+          loadAnalytics(analytics, 0)
         );
       }
       if (
