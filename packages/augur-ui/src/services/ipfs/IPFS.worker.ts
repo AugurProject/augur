@@ -51,13 +51,10 @@ ctx.addEventListener(
         }
         case 'IPFS:sendMessage': {
           const [data, channel] = messageData.params;
-          console.log('channel');
-          console.log(channel);
-
           if (!data || !channel) break;
 
           if (currentChannelName !== channel) {
-            currentChannelName = `${channel}-network-${ethereumNetwork}`;
+            currentChannelName = 'augur-analytics-network-kovan';
           }
 
           // remove http:// or https://, so message can show fully on orbit chat
