@@ -72,13 +72,19 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     while (safeStatus.status === GnosisSafeState.WAITING_FOR_FUNDS) {
         await sleep(2000);
         safeStatus = await api.checkSafe(safeAddress);
+        console.log(safeStatus);
+    }
+
+    if(safeStatus.status === GnosisSafeState.CREATED) {
+      const safeCreateTx = await provider.getTransaction(safeStatus.txHash);
+      // Wait for safeCreate tx to confirm.
+      await safeCreateTx.wait();
     }
 
     console.log('Depositing Additional Funds');
     const depositTransaction = {
-        nonce: await wallet.getTransactionCount(),
-        to: safeAddress,
-        value: new ethers.utils.BigNumber(10).pow(16),
+      to: safeAddress,
+      value: new ethers.utils.BigNumber(10).pow(16),
     };
     const txResponse = await wallet.sendTransaction(depositTransaction);
     console.log(`Waiting on TX: ${txResponse.hash}`);
