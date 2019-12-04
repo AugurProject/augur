@@ -2359,58 +2359,6 @@ export const LIST_VALUES = {
       label: 'Washington Mystics',
     },
   ],
-  BTC_USD_EXCHANGES: [
-    {
-      value: 'Coinbase Pro (pro.coinbase.com)',
-      label: 'Coinbase Pro (pro.coinbase.com)',
-    },
-    {
-      value: 'Bitfinex (bitfinex.com)',
-      label: 'Bitfinex (bitfinex.com)',
-    },
-    {
-      value: 'Bittrex (bittrex.com)',
-      label: 'Bittrex (bittrex.com)',
-    },
-  ],
-  NON_BTC_USD_EXCHANGES: [
-    {
-      value: 'Coinbase Pro (pro.coinbase.com)',
-      label: 'Coinbase Pro (pro.coinbase.com)',
-    },
-    {
-      value: 'Kraken (kraken.com)',
-      label: 'Kraken (kraken.com)',
-    },
-    {
-      value: 'Bittrex (bittrex.com)',
-      label: 'Bittrex (bittrex.com)',
-    },
-  ],
-  USDT_EXCHANGES: [
-    {
-      value: 'Bittrex (bittrex.com)',
-      label: 'Bittrex (bittrex.com)',
-    },
-    {
-      value: 'Huobi Global (hbg.com)',
-      label: 'Huobi Global (hbg.com)',
-    },
-  ],
-  EUR_EXCHANGES: [
-    {
-      value: 'Coinbase Pro (pro.coinbase.com)',
-      label: 'Coinbase Pro (pro.coinbase.com)',
-    },
-    {
-      value: 'Bitfinex (bitfinex.com)',
-      label: 'Bitfinex (bitfinex.com)',
-    },
-    {
-      value: 'Kraken (kraken.com)',
-      label: 'Kraken (kraken.com)',
-    },
-  ],
   NCAA_FOOTBALL_EVENT: [
     {
       label: 'National',
@@ -8023,6 +7971,180 @@ export const LIST_VALUES = {
       value: 'Euronext NV (traded in Euro)',
     },
   ],
+  BTC_USD_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'BTCUSD (crypto - Coinbase)',
+      label: 'BTCUSD (crypto - Coinbase)',
+    },
+    {
+      value: 'BTCUSD (crypto - Bitfinex)',
+      label: 'BTCUSD (crypto - Bitfinex)',
+    },
+    {
+      value: 'BTCUSD (crypto - Bittrex)',
+      label: 'BTCUSD (crypto - Bittrex)',
+    },
+  ],
+  BTC_USDT_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'BTCUSDT (crypto - Bittrex)',
+      label: 'BTCUSDT (crypto - Bittrex)',
+    },
+    {
+      value: 'BTCUSDT (crypto - Huobi)',
+      label: 'BTCUSDT (crypto - Huobi)',
+    },
+    {
+      value: 'BTCUSDT (crypto - Binance)',
+      label: 'BTCUSDT (crypto - Binance)',
+    },
+  ],
+  BTC_EUR_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'BTCEUR (crypto - Coinbase)',
+      label: 'BTCEUR (crypto - Coinbase)',
+    },
+    {
+      value: 'BTCEUR (crypto - Bitfinex)',
+      label: 'BTCEUR (crypto - Bitfinex)',
+    },
+  ],
+  ETH_USD_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'ETHUSD (crypto - Coinbase)',
+      label: 'ETHUSD (crypto - Coinbase)',
+    },
+    {
+      value: 'ETHUSD (crypto - Bitfinex)',
+      label: 'ETHUSD (crypto - Bitfinex)',
+    },
+    {
+      value: 'ETHUSD (crypto - Bittrex)',
+      label: 'ETHUSD (crypto - Bittrex)',
+    },
+  ],
+  ETH_USDT_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'ETHUSDT (crypto - Bittrex)',
+      label: 'ETHUSDT (crypto - Bittrex)',
+    },
+    {
+      value: 'ETHUSDT (crypto - Huobi)',
+      label: 'ETHUSDT (crypto - Huobi)',
+    },
+    {
+      value: 'ETHUSDT (crypto - Binance)',
+      label: 'ETHUSDT (crypto - Binance)',
+    },
+  ],
+  ETH_EUR_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'ETHEUR (crypto - Coinbase)',
+      label: 'ETHEUR (crypto - Coinbase)',
+    },
+    {
+      value: 'ETHEUR (crypto - Bitfinex)',
+      label: 'ETHEUR (crypto - Bitfinex)',
+    },
+  ],
+  LTC_USD_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'LTCUSD (crypto - Coinbase)',
+      label: 'LTCUSD (crypto - Coinbase)',
+    },
+    {
+      value: 'LTCUSD (crypto - Bitfinex)',
+      label: 'LTCUSD (crypto - Bitfinex)',
+    },
+    {
+      value: 'LTCUSD (crypto - Bittrex)',
+      label: 'LTCUSD (crypto - Bittrex)',
+    },
+  ],
+  LTC_USDT_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'LTCUSDT (crypto - Bittrex)',
+      label: 'LTCUSDT (crypto - Bittrex)',
+    },
+    {
+      value: 'LTCUSDT (crypto - Huobi)',
+      label: 'LTCUSDT (crypto - Huobi)',
+    },
+    {
+      value: 'LTCUSDT (crypto - Binance)',
+      label: 'LTCUSDT (crypto - Binance)',
+    },
+  ],
+  LTC_EUR_TRADING_VIEW_EXCHANGES: [
+    {
+      value: 'LTCEUR (crypto - Coinbase)',
+      label: 'LTCEUR (crypto - Coinbase)',
+    },
+    {
+      value: 'LTCEUR (crypto - Kraken)',
+      label: 'LTCEUR (crypto - Kraken)',
+    },
+  ],
+  BTC_CURRENCY_PAIRS: [
+    {
+      value: 'BTC/USD',
+      label: 'BTC/USD',
+    },
+    {
+      value: 'BTC/USDT',
+      label: 'BTC/USDT',
+    },
+    {
+      value: 'BTC/EUR',
+      label: 'BTC/EUR',
+    },
+  ],
+  ETH_CURRENCY_PAIRS: [
+    {
+      value: 'ETH/USD',
+      label: 'ETH/USD',
+    },
+    {
+      value: 'ETH/USDT',
+      label: 'ETH/USDT',
+    },
+    {
+      value: 'ETH/EUR',
+      label: 'ETH/EUR',
+    },
+  ],
+  LTC_CURRENCY_PAIRS: [
+    {
+      value: 'LTC/USD',
+      label: 'LTC/USD',
+    },
+    {
+      value: 'LTC/USDT',
+      label: 'LTC/USDT',
+    },
+    {
+      value: 'LTC/EUR',
+      label: 'LTC/EUR',
+    },
+  ],
+};
+
+export const CRYPTO_BTC_CURRENCY_MARKETS = {
+  'BTC/USD': LIST_VALUES.BTC_USD_TRADING_VIEW_EXCHANGES,
+  'BTC/USDT': LIST_VALUES.BTC_USDT_TRADING_VIEW_EXCHANGES,
+  'BTC/EUR': LIST_VALUES.BTC_EUR_TRADING_VIEW_EXCHANGES,
+};
+
+export const CRYPTO_ETH_CURRENCY_MARKETS = {
+  'ETH/USD': LIST_VALUES.ETH_USD_TRADING_VIEW_EXCHANGES,
+  'ETH/USDT': LIST_VALUES.ETH_USDT_TRADING_VIEW_EXCHANGES,
+  'ETH/EUR': LIST_VALUES.ETH_EUR_TRADING_VIEW_EXCHANGES,
+};
+
+export const CRYPTO_LTC_CURRENCY_MARKETS = {
+  'LTC/USD': LIST_VALUES.LTC_USD_TRADING_VIEW_EXCHANGES,
+  'LTC/USDT': LIST_VALUES.LTC_USDT_TRADING_VIEW_EXCHANGES,
+  'LTC/EUR': LIST_VALUES.LTC_EUR_TRADING_VIEW_EXCHANGES,
 };
 
 export const ENTERTAINMENT_EVENT_DEP_TEAMS = {
