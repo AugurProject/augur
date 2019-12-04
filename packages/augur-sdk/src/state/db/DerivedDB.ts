@@ -60,7 +60,7 @@ export class DerivedDB extends RollbackTable {
     );
     for (const eventName of this.mergeEventNames) {
       const result = await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
-      if (result) {
+      if (result.length > 0) {
         await this.handleMergeEvent(
           highestAvailableBlockNumber,
           (result as unknown[]) as ParsedLog[],

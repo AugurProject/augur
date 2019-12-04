@@ -43,7 +43,7 @@ export class RollbackTable extends AbstractTable {
                 await this.rollbackTable.put(rollbackDocument, rollbackID);
             }
         }
-        super.upsertDocument(documentID, document);
+        await super.upsertDocument(documentID, document);
     }
 
     async rollback(blockNumber: number): Promise<void> {
