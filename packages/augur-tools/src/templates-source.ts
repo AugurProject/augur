@@ -5100,7 +5100,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 3,
+                inputDestId: 2,
                 values: LIST_VALUES.BTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
