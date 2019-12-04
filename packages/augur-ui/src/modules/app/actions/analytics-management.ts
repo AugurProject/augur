@@ -17,7 +17,7 @@ export const loadAnalytics = (analytics: Analytics, prevCurrentAugurTimestamp) =
   if (prevCurrentAugurTimestamp === 0) {
     Object.keys(analytics).map(id => {
         const analytic = analytics[id];
-        if ((blockchain.currentAugurTimestamp - analytic.addedTimestamp) > SEND_DELAY_SECONDS) {
+        if ((blockchain.currentAugurTimestamp - analytic.properties.addedTimestamp) > SEND_DELAY_SECONDS) {
           dispatch(sendAnalytic(analytic));
           dispatch(removeAnalytic(id));
         } else {

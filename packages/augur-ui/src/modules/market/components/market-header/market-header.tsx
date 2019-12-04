@@ -20,8 +20,6 @@ import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   SCALAR,
-  COPY_MARKET_ID,
-  COPY_AUTHOR,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
@@ -32,6 +30,7 @@ import Clipboard from 'clipboard';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/containers/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
+import { MARKET_PAGE } from 'services/analytics/helpers';
 
 const OVERFLOW_DETAILS_LENGTH = 25; // in px, overflow limit to trigger MORE details
 
@@ -56,6 +55,7 @@ interface MarketHeaderProps {
   step: number;
   totalSteps: number;
   showTutorialDetails?: boolean;
+  marketLinkCopied: Function;
 }
 
 interface MarketHeaderState {
@@ -153,7 +153,8 @@ export default class MarketHeader extends Component<
       step,
       totalSteps,
       text,
-      showTutorialDetails
+      showTutorialDetails,
+      marketLinkCopied
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -209,7 +210,7 @@ export default class MarketHeader extends Component<
                   marketAddress={market.id}
                   marketDescription={description}
                 />
-                <div id="copy_marketId" data-clipboard-text={market.id}>
+                <div id="copy_marketId" data-clipboard-text={market.id} onClick={() => marketLinkCopied(market.id, MARKET_PAGE)}>
                   {CopyAlternateIcon}
                 </div>
                 {toggleFavorite && (

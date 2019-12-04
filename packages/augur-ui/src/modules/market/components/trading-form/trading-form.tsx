@@ -39,6 +39,9 @@ interface TradingFormProps {
   Ox_ENABLED: boolean;
   ethToDaiRate: BigNumber;
   gnosisStatus: GnosisSafeState;
+  orderPriceEntered: Function;
+  orderAmountEntered: Function;
+  orderSubmitted: Function;
 }
 
 interface TradingFormState {
@@ -116,6 +119,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       Ox_ENABLED,
       ethToDaiRate,
       gnosisStatus,
+      orderPriceEntered,
+      orderAmountEntered,
+      orderSubmitted
     } = this.props;
     const s = this.state;
 
@@ -171,6 +177,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           tradingTutorial={tradingTutorial}
           addPendingOrder={addPendingOrder}
           tutorialNext={tutorialNext}
+          orderPriceEntered={orderPriceEntered}
+          orderAmountEntered={orderAmountEntered}
+          orderSubmitted={orderSubmitted}
         />
         {initialMessage && (
           <div>
