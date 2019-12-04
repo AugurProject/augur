@@ -76,9 +76,8 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     }
 
     if(safeStatus.status === GnosisSafeState.CREATED) {
-      const safeCreateTx = await provider.getTransaction(safeStatus.txHash);
       // Wait for safeCreate tx to confirm.
-      await safeCreateTx.wait();
+      await provider.waitForTransaction(safeStatus.txHash);
     }
 
     console.log('Depositing Additional Funds');
@@ -88,7 +87,7 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     };
     const txResponse = await wallet.sendTransaction(depositTransaction);
     console.log(`Waiting on TX: ${txResponse.hash}`);
-    await provider.getTransactionReceipt(txResponse.hash);
+    await provider.waitForTransaction(txResponse.hash);
 
     // Lets send a transaction through the safe using the relay service
     const gnosisSafe = new ethers.Contract(safeAddress, abi['GnosisSafe'], provider);
@@ -141,7 +140,8 @@ test('Gnosis Relay API:: Make safe and do transactions', async () => {
     await expect(txHash).not.toEqual(undefined);
 
     console.log(`Waiting on TX: ${txHash}`);
-    const receipt = await provider.getTransactionReceipt(txHash);
+    const receipt = await provider.waitForTransaction(txHash);
+
     expect(receipt).toMatchObject({
       to: safeAddress,
       status: 1,
