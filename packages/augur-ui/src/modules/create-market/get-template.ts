@@ -20,15 +20,26 @@ import {
   REQUIRED,
   CHOICE,
 } from '@augurproject/artifacts';
+import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/common/constants';
+
+const MarketTypeIcons = {
+  [YES_NO]: YesNoMarketIcon,
+  [CATEGORICAL]: CategoricalMarketIcon,
+  [SCALAR]: ScalarMarketIcon,
+};
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
   const templates = getTemplatesPerSubcategory(categories, false);
   if (!templates) return [];
+  //const icon = MarketTypeIcons[t.marketType];
   const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
-  return [...new Set(marketTypes)].map(m =>
+  const values = [...new Set(marketTypes)].map(m =>
     MARKET_TYPE_TEMPLATES.find(t => t.value === m)
-  );
+  )
+  .map(i => ({...i, icon: MarketTypeIcons[i.value]}));
+  return values;
 };
 
 export const getTemplatesByTertiaryMarketTypes = (categories: Categories) => {
