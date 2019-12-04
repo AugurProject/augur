@@ -118,11 +118,11 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({ market, reportingBarSho
             <TimeLabel
               label="Date Created"
               time={market.creationTimeFormatted}
-              showLocal
             />
             <TimeLabel
               label="Event Expiration"
               time={market.endTimeFormatted}
+              showLocal
               hint={
                 <>
                   <h4>{EVENT_EXPIRATION_TOOLTIP.header}</h4>
